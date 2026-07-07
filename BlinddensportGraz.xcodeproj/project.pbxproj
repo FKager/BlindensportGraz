@@ -1,0 +1,354 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2368EA4A02A933DB6446EAA5 /* TrainingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2B7AFBCE707C413DFFBFE6 /* TrainingsViews.swift */; };
+		2631C73706798280A68A9D52 /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CB704552BB8D78AD71B88A4 /* AccountView.swift */; };
+		3067FBE30AE663D9239B7415 /* BlinddensportGrazApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E604025CC32082711DD4939 /* BlinddensportGrazApp.swift */; };
+		54005023DCB28135C07EB13B /* TeamsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB112450263FFEA24C098EBE /* TeamsViews.swift */; };
+		5B6F088AE935DF9D78B4633F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FC1963550679AC71D174E5 /* DashboardView.swift */; };
+		6C2EE433FE9AC38AB3DA2D0B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05DB5ABAAA537BF701E53E4 /* Models.swift */; };
+		7CD9BDE31073A3ECB3CB5CC5 /* EventsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D94C743DCB4E208FBE05F /* EventsViews.swift */; };
+		E6B9D16A27919E109B502436 /* TournamentsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64415C2902BA3A799A9639A /* TournamentsViews.swift */; };
+		F3AD4E27EC2DF2B89D82A4E6 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37992DE9128A121ECED8F509 /* RootView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0CB704552BB8D78AD71B88A4 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
+		37992DE9128A121ECED8F509 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		3E604025CC32082711DD4939 /* BlinddensportGrazApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinddensportGrazApp.swift; sourceTree = "<group>"; };
+		8A2B7AFBCE707C413DFFBFE6 /* TrainingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsViews.swift; sourceTree = "<group>"; };
+		A64415C2902BA3A799A9639A /* TournamentsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentsViews.swift; sourceTree = "<group>"; };
+		AD2D94C743DCB4E208FBE05F /* EventsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsViews.swift; sourceTree = "<group>"; };
+		C8FC1963550679AC71D174E5 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		CB112450263FFEA24C098EBE /* TeamsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsViews.swift; sourceTree = "<group>"; };
+		F05DB5ABAAA537BF701E53E4 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		F166A0D94AB6AA2DE2259155 /* BlinddensportGraz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BlinddensportGraz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		2406850FFC38B04B77FC9E7F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F166A0D94AB6AA2DE2259155 /* BlinddensportGraz.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7DCCDDEE0BECE73BF77A4DA8 = {
+			isa = PBXGroup;
+			children = (
+				E3138068935430842D06A762 /* BlinddensportGraz */,
+				2406850FFC38B04B77FC9E7F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E3138068935430842D06A762 /* BlinddensportGraz */ = {
+			isa = PBXGroup;
+			children = (
+				0CB704552BB8D78AD71B88A4 /* AccountView.swift */,
+				3E604025CC32082711DD4939 /* BlinddensportGrazApp.swift */,
+				C8FC1963550679AC71D174E5 /* DashboardView.swift */,
+				AD2D94C743DCB4E208FBE05F /* EventsViews.swift */,
+				F05DB5ABAAA537BF701E53E4 /* Models.swift */,
+				37992DE9128A121ECED8F509 /* RootView.swift */,
+				CB112450263FFEA24C098EBE /* TeamsViews.swift */,
+				A64415C2902BA3A799A9639A /* TournamentsViews.swift */,
+				8A2B7AFBCE707C413DFFBFE6 /* TrainingsViews.swift */,
+			);
+			path = BlinddensportGraz;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		35B5864A3289C7955C30068C /* BlinddensportGraz */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7D7E76B97A7B76E911CAE7EF /* Build configuration list for PBXNativeTarget "BlinddensportGraz" */;
+			buildPhases = (
+				D8C0BE1518098A6AB91BA739 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BlinddensportGraz;
+			packageProductDependencies = (
+			);
+			productName = BlinddensportGraz;
+			productReference = F166A0D94AB6AA2DE2259155 /* BlinddensportGraz.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7C81FCB7F2081BE9952FC76B /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					35B5864A3289C7955C30068C = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 7D97FF5712D14A2F8DD4CE63 /* Build configuration list for PBXProject "BlinddensportGraz" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 7DCCDDEE0BECE73BF77A4DA8;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2406850FFC38B04B77FC9E7F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				35B5864A3289C7955C30068C /* BlinddensportGraz */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D8C0BE1518098A6AB91BA739 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2631C73706798280A68A9D52 /* AccountView.swift in Sources */,
+				3067FBE30AE663D9239B7415 /* BlinddensportGrazApp.swift in Sources */,
+				5B6F088AE935DF9D78B4633F /* DashboardView.swift in Sources */,
+				7CD9BDE31073A3ECB3CB5CC5 /* EventsViews.swift in Sources */,
+				6C2EE433FE9AC38AB3DA2D0B /* Models.swift in Sources */,
+				F3AD4E27EC2DF2B89D82A4E6 /* RootView.swift in Sources */,
+				54005023DCB28135C07EB13B /* TeamsViews.swift in Sources */,
+				E6B9D16A27919E109B502436 /* TournamentsViews.swift in Sources */,
+				2368EA4A02A933DB6446EAA5 /* TrainingsViews.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		361A7934034174CBB67979A7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BlinddensportGraz/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Blinddensport Graz";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = it.a11y.BlinddensportGraz;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		4B0AD70AED7B106BD830EAB7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_DEBUG_DYLIB = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C3B6E513FA0BC1E98476E92B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BlinddensportGraz/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Blinddensport Graz";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = it.a11y.BlinddensportGraz;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DF50357FED74052900BE97C6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_DEBUG_DYLIB = NO;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7D7E76B97A7B76E911CAE7EF /* Build configuration list for PBXNativeTarget "BlinddensportGraz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3B6E513FA0BC1E98476E92B /* Debug */,
+				361A7934034174CBB67979A7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7D97FF5712D14A2F8DD4CE63 /* Build configuration list for PBXProject "BlinddensportGraz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF50357FED74052900BE97C6 /* Debug */,
+				4B0AD70AED7B106BD830EAB7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7C81FCB7F2081BE9952FC76B /* Project object */;
+}
