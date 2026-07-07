@@ -34,7 +34,7 @@ struct AddEventView: View {
                           .lineLimit(3...6)
                   }
              }
-             navigationTitle("Neues Event")
+             .navigationTitle("Neues Event")
               .navigationBarTitleDisplayMode(.inline)
               .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -60,6 +60,54 @@ struct AddEventView: View {
                 }
            }
         }
+    }
+
+struct EventsListView: View {
+    let currentUser: User?
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \SportEvent.startDate) private var events: [SportEvent]
+    @State private var showAdd = false
+
+    var canManageEvents: Bool {
+        guard let user = currentUser else { return false }
+        return user.role == "admin" || user.role == "coach"
+    }
+
+    var body: some View {
+        List {
+            if events.isEmpty {
+                ContentUnavailableView("Keine Events",
+                                       systemImage: "calendar",
+                                       description: Text("Lege ein neues Event an."))
+            } else {
+                ForEach(events) { event in
+                    NavigationLink {
+                        EventDetailView(event: event, currentUser: currentUser)
+                    } label: {
+                        EventRow(event: event)
+                    }
+                }
+                .onDelete(perform: deleteEvents)
+            }
+        }
+        .navigationTitle("Events")
+        .toolbar {
+            if canManageEvents {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showAdd = true } label: { Image(systemName: "plus") }
+                }
+            }
+        }
+        .sheet(isPresented: $showAdd) {
+            AddEventView(currentUser: currentUser)
+        }
+    }
+
+    private func deleteEvents(at offsets: IndexSet) {
+        for index in offsets {
+            modelContext.delete(events[index])
+        }
+        try? modelContext.save()
     }
 }
 

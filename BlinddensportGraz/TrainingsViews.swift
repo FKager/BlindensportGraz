@@ -3,6 +3,8 @@ import SwiftData
 import Combine
 
 struct AddTrainingView: View {
+     let currentUser: User?
+
      @Environment(\.modelContext) private var modelContext
       @Environment(\.dismiss) private var dismiss
 
@@ -33,49 +35,48 @@ struct AddTrainingView: View {
                    }
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
-                           lineLimit(3...6)
-                   }
-             }
-              navigationTitle("Neues Training")
-           navigationBarTitleDisplayMode(.inline)
-        toolbar {
-           ToolbarItem(placement: .cancellationAction) {
-               Button("Abbrechen") { dismiss() }
-                  }
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Speichern") {
-                    let training = Training(
-                        title: title,
-                        sport: sport,
-                        location: location,
-                        startDate: startDate,
-                        durationMinutes: durationMinutes,
-                        focusArea: focusArea,
-                        notes: notes,
-                        createdBy: currentUser?.username ?? ""
+                        .lineLimit(3...6)
+                }
+            }
+            .navigationTitle("Neues Training")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Abbrechen") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Speichern") {
+                        let training = Training(
+                            title: title,
+                            sport: sport,
+                            location: location,
+                            startDate: startDate,
+                            durationMinutes: durationMinutes,
+                            focusArea: focusArea,
+                            notes: notes,
+                            createdBy: currentUser?.username ?? ""
                         )
-                    modelContext.insert(training)
-                    try? modelContext.save()
+                        modelContext.insert(training)
+                        try? modelContext.save()
 
-                    // Post notification when training is created
-                   NotificationCenter.default.post(
-                       name: NSNotification.Name("TrainingCreated"),
-                       object: nil,
-                       userInfo: [
-                           "message": "Neues Training erstellt!",
-                           "title": title,
-                           "sport": sport,
-                           "location": location,
-                           "durationMinutes": durationMinutes
-                        ]
-                    )
+                        // Post notification when training is created
+                        NotificationCenter.default.post(
+                            name: NSNotification.Name("TrainingCreated"),
+                            object: nil,
+                            userInfo: [
+                                "message": "Neues Training erstellt!",
+                                "title": title,
+                                "sport": sport,
+                                "location": location,
+                                "durationMinutes": durationMinutes
+                            ]
+                        )
 
-                   dismiss()
-                      }
-                       disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
-                      }
-                   }
-             }
+                        dismiss()
+                    }
+                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
         }
     }
 }
@@ -124,18 +125,18 @@ struct TrainingDetailView: View {
               }
            Section("Notizen") {
                 TextField("Notizen", text: $training.notes, axis: .vertical)
-                       lineLimit(3...6)
+                    .lineLimit(3...6)
               }
          }
-          navigationTitle(training.title)
-          navigationBarTitleDisplayMode(.inline)
-      }
+        .navigationTitle(training.title)
+        .navigationBarTitleDisplayMode(.inline)
+    }
 }
 
 struct TrainingsListView: View {
      let currentUser: User?
         @Environment(\.modelContext) private var modelContext
-        @Query(sort: \(Training.startDate)) private var trainings: [Training]
+        @Query(sort: \Training.startDate) private var trainings: [Training]
         @State private var showAdd = false
 
     var canManageEvents: Bool {
@@ -159,22 +160,25 @@ struct TrainingsListView: View {
                        }.onDelete(perform: deleteTrainings)
                       }
                  }
-
-             navigationTitle("Trainings")
-             toolbar {
-               if canManageEvents {
-                   ToolbarItem(placement: .topBarTrailing) {
-                       Button { showAdd = true } label: {
-                            Image(systemName: "plus")
-                           }
-                         }
+        .navigationTitle("Trainings")
+        .toolbar {
+            if canManageEvents {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showAdd = true } label: {
+                        Image(systemName: "plus")
                     }
                 }
-           }
-
-            sheet(isPresented: $showAdd) {
-                 AddTrainingView(currentUser: currentUser)
-               }
+            }
         }
+        .sheet(isPresented: $showAdd) {
+            AddTrainingView(currentUser: currentUser)
+        }
+    }
+
+    private func deleteTrainings(at offsets: IndexSet) {
+        for index in offsets {
+            modelContext.delete(trainings[index])
+        }
+        try? modelContext.save()
     }
 }

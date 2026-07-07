@@ -35,50 +35,48 @@ struct AddTournamentView: View {
                        }
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
-                           lineLimit(3...6)
-                      }
-               }
-              navigationTitle("Neues Turnier")
-              navigationBarTitleDisplayMode(.inline)
-           toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Abbrechen") { dismiss() }
-                  }
-             ToolbarItem(placement: .confirmationAction) {
-                 Button("Speichern") {
-                     let tournament = Tournament(
-                         name: name,
-                         sport: sport,
-                         venue: venue,
-                         startDate: startDate,
-                         endDate: endDate,
-                         maxTeams: maxTeams,
-                         notes: notes
-                          )
-                     modelContext.insert(tournament)
-                     try? modelContext.save()
-
-                      // Post notification when tournament is created
-                    NotificationCenter.default.post(
-                        name: NSNotification.Name("TournamentCreated"),
-                        object: nil,
-                        userInfo: [
-                              "message": "Neues Turnier erstellt!",
-                              "title": name,
-                              "sport": sport,
-                              "venue": venue
-                            ]
-                          )
-
-                    dismiss()
-                    }
-                     disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                      }
-                       }
-                 }
+                        .lineLimit(3...6)
+                }
             }
-         }
-     }
+            .navigationTitle("Neues Turnier")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Abbrechen") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Speichern") {
+                        let tournament = Tournament(
+                            name: name,
+                            sport: sport,
+                            venue: venue,
+                            startDate: startDate,
+                            endDate: endDate,
+                            maxTeams: maxTeams,
+                            notes: notes
+                        )
+                        modelContext.insert(tournament)
+                        try? modelContext.save()
+
+                        // Post notification when tournament is created
+                        NotificationCenter.default.post(
+                            name: NSNotification.Name("TournamentCreated"),
+                            object: nil,
+                            userInfo: [
+                                "message": "Neues Turnier erstellt!",
+                                "title": name,
+                                "sport": sport,
+                                "venue": venue
+                            ]
+                        )
+
+                        dismiss()
+                    }
+                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
+        }
+    }
 }
 
 struct TournamentRow: View {
@@ -149,8 +147,8 @@ var body: some View {
         }
         Section("Notizen") {
             TextField("Notizen", text: $tournament.notes, axis: .vertical)
-                   lineLimit(3...6)
-         }
+                .lineLimit(3...6)
+        }
     }
     .navigationTitle(tournament.name)
     .navigationBarTitleDisplayMode(.inline)
@@ -160,7 +158,7 @@ var body: some View {
 struct TournamentsListView: View {
      let currentUser: User?
       @Environment(\.modelContext) private var modelContext
-       @Query(sort: \(Tournament.startDate)) private var tournaments: [Tournament]
+       @Query(sort: \Tournament.startDate) private var tournaments: [Tournament]
         @State private var showAdd = false
 
   var canManageEvents: Bool {
@@ -174,38 +172,35 @@ struct TournamentsListView: View {
               ContentUnavailableView("Keine Turniere",
                                     systemImage: "trophy",
                                     description: Text("Lege ein neues Turnier an."))
-                  } else {
-                     ForEach(tournaments) { tournament in
-                        NavigationLink {
-                            TournamentDetailView(tournament: tournament)
-                          } label: {
-                           TournamentRow(tournament: tournament)
-                         }
-                        }.onDelete(perform: deleteTournaments)
-                   }
-                 }
-
-             navigationTitle("Turniere")
-             toolbar {
-               if canManageEvents {
-                   ToolbarItem(placement: .topBarTrailing) {
-                       Button { showAdd = true } label: {
-                            Image(systemName: "plus")
-                          }
-                      }
-                     }
+          } else {
+              ForEach(tournaments) { tournament in
+                  NavigationLink {
+                      TournamentDetailView(tournament: tournament)
+                  } label: {
+                      TournamentRow(tournament: tournament)
                   }
-            }
-
-            // Observe for tournament creation notification
-      if let userInfo = NotificationCenter.default.publisher(for: NSNotification.Name("TournamentCreated")).current,
-         let message = userInfo["message"] as? String {
-          Color.black.opacity(0.3)
-              .frame(height: 40)
-           }
-
-         sheet(isPresented: $showAdd) {
-      AddTournamentView()
+              }.onDelete(perform: deleteTournaments)
+          }
        }
+       .navigationTitle("Turniere")
+       .toolbar {
+           if canManageEvents {
+               ToolbarItem(placement: .topBarTrailing) {
+                   Button { showAdd = true } label: {
+                       Image(systemName: "plus")
+                   }
+               }
+           }
+       }
+       .sheet(isPresented: $showAdd) {
+           AddTournamentView()
+       }
+    }
+
+    private func deleteTournaments(at offsets: IndexSet) {
+        for index in offsets {
+            modelContext.delete(tournaments[index])
+        }
+        try? modelContext.save()
     }
 }

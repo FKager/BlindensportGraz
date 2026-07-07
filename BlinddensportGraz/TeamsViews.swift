@@ -5,6 +5,8 @@ struct TeamsListView: View {
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Team.name) private var teams: [Team]
+    @State private var showAdd = false
+
     var canManageTeams: Bool {
         guard let user = currentUser else { return false }
         return user.role == "admin" || user.role == "coach"
@@ -91,6 +93,11 @@ struct TeamDetailView: View {
     var availableUsers: [User] {
         let memberIDs = Set(team.memberships.map { $0.user.id })
         return users.filter { !memberIDs.contains($0.id) }
+    }
+
+    var canManageTeams: Bool {
+        guard let user = currentUser else { return false }
+        return user.role == "admin" || user.role == "coach"
     }
 
     var body: some View {

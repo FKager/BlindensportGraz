@@ -29,7 +29,6 @@ struct BlinddensportGrazApp: App {
                 }
            }
        }
-}
 
 // MARK: - Notification Handling for Push Notifications (Toast)
 extension BlinddensportGrazApp {

@@ -111,6 +111,7 @@ struct EditAccountView: View {
                     TextField("E-Mail", text: $user.email)
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
                 }
                 Section("Rolle") {
                     Picker("Rolle", selection: $user.role) {

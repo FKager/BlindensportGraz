@@ -14,7 +14,9 @@
 		5B6F088AE935DF9D78B4633F /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8FC1963550679AC71D174E5 /* DashboardView.swift */; };
 		6C2EE433FE9AC38AB3DA2D0B /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05DB5ABAAA537BF701E53E4 /* Models.swift */; };
 		7CD9BDE31073A3ECB3CB5CC5 /* EventsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D94C743DCB4E208FBE05F /* EventsViews.swift */; };
+		D55DF26388DD931558151A77 /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = B6319367FCEC58AA05D7DEB9 /* settings.local.json */; };
 		E6B9D16A27919E109B502436 /* TournamentsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64415C2902BA3A799A9639A /* TournamentsViews.swift */; };
+		F24F6C3BC5768861624AF4D7 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 887AEA8D621BDD9EF0A8FCBF /* CLAUDE.md */; };
 		F3AD4E27EC2DF2B89D82A4E6 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37992DE9128A121ECED8F509 /* RootView.swift */; };
 /* End PBXBuildFile section */
 
@@ -22,9 +24,11 @@
 		0CB704552BB8D78AD71B88A4 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		37992DE9128A121ECED8F509 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		3E604025CC32082711DD4939 /* BlinddensportGrazApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlinddensportGrazApp.swift; sourceTree = "<group>"; };
+		887AEA8D621BDD9EF0A8FCBF /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		8A2B7AFBCE707C413DFFBFE6 /* TrainingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsViews.swift; sourceTree = "<group>"; };
 		A64415C2902BA3A799A9639A /* TournamentsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentsViews.swift; sourceTree = "<group>"; };
 		AD2D94C743DCB4E208FBE05F /* EventsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsViews.swift; sourceTree = "<group>"; };
+		B6319367FCEC58AA05D7DEB9 /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
 		C8FC1963550679AC71D174E5 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		CB112450263FFEA24C098EBE /* TeamsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsViews.swift; sourceTree = "<group>"; };
 		F05DB5ABAAA537BF701E53E4 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -48,11 +52,20 @@
 			);
 			sourceTree = "<group>";
 		};
+		B16C7E67926BCB910A848AE6 /* .claude */ = {
+			isa = PBXGroup;
+			children = (
+				B6319367FCEC58AA05D7DEB9 /* settings.local.json */,
+			);
+			path = .claude;
+			sourceTree = "<group>";
+		};
 		E3138068935430842D06A762 /* BlinddensportGraz */ = {
 			isa = PBXGroup;
 			children = (
 				0CB704552BB8D78AD71B88A4 /* AccountView.swift */,
 				3E604025CC32082711DD4939 /* BlinddensportGrazApp.swift */,
+				887AEA8D621BDD9EF0A8FCBF /* CLAUDE.md */,
 				C8FC1963550679AC71D174E5 /* DashboardView.swift */,
 				AD2D94C743DCB4E208FBE05F /* EventsViews.swift */,
 				F05DB5ABAAA537BF701E53E4 /* Models.swift */,
@@ -60,6 +73,7 @@
 				CB112450263FFEA24C098EBE /* TeamsViews.swift */,
 				A64415C2902BA3A799A9639A /* TournamentsViews.swift */,
 				8A2B7AFBCE707C413DFFBFE6 /* TrainingsViews.swift */,
+				B16C7E67926BCB910A848AE6 /* .claude */,
 			);
 			path = BlinddensportGraz;
 			sourceTree = "<group>";
@@ -72,6 +86,7 @@
 			buildConfigurationList = 7D7E76B97A7B76E911CAE7EF /* Build configuration list for PBXNativeTarget "BlinddensportGraz" */;
 			buildPhases = (
 				D8C0BE1518098A6AB91BA739 /* Sources */,
+				AEEFF4D59494BFDFACD5C2CC /* Resources */,
 			);
 			buildRules = (
 			);
@@ -117,6 +132,18 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AEEFF4D59494BFDFACD5C2CC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F24F6C3BC5768861624AF4D7 /* CLAUDE.md in Resources */,
+				D55DF26388DD931558151A77 /* settings.local.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D8C0BE1518098A6AB91BA739 /* Sources */ = {
