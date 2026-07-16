@@ -172,10 +172,20 @@ struct TournamentDetailView: View {
    @Bindable var tournament: Tournament
    let currentUser: User?
    @Environment(\.modelContext) private var modelContext
+   @Query private var allTeams: [Team]
    @State private var showMemberList = false
 
    var isAdmin: Bool {
        currentUser?.role == "admin"
+   }
+
+   // Same admin-bypass as AddTournamentView.myTeams — an admin can reassign a
+   // tournament to any team, not just ones they personally joined.
+   var myTeams: [Team] {
+       guard let user = currentUser else { return [] }
+       if user.role == "admin" { return allTeams }
+       let myTeamIDs = Set(user.memberships.map { $0.team.id })
+       return allTeams.filter { myTeamIDs.contains($0.id) }
    }
 
 var body: some View {
@@ -199,6 +209,32 @@ var body: some View {
                 Text("Beendet").tag("finished")
               }
         }
+        if !myTeams.isEmpty {
+            Section("Beteiligte Teams") {
+                ForEach(myTeams) { team in
+                    Button {
+                        if tournament.teams.contains(where: { $0.id == team.id }) {
+                            tournament.teams.removeAll { $0.id == team.id }
+                        } else {
+                            tournament.teams.append(team)
+                        }
+                    } label: {
+                        HStack {
+                            Text(team.name)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            if tournament.teams.contains(where: { $0.id == team.id }) {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(.blue)
+                            }
+                        }
+                    }
+                }
+                Text("Keine Auswahl = für alle sichtbar")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
         Section("Notizen") {
             TextField("Notizen", text: $tournament.notes, axis: .vertical)
                 .lineLimit(3...6)
@@ -219,6 +255,10 @@ var body: some View {
     }
     .sheet(isPresented: $showMemberList) {
         MemberListView(itemName: tournament.name, teams: tournament.teams)
+    }
+    .onDisappear {
+        try? modelContext.save()
+        CloudKitSync.shared.pushTournament(tournament)
     }
    }
 

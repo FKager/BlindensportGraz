@@ -201,10 +201,20 @@ struct EventDetailView: View {
     let currentUser: User?
       @Environment(\.modelContext) private var modelContext
       @Query private var users: [User]
+      @Query private var allTeams: [Team]
       @State private var showMemberList = false
 
     var isAdmin: Bool {
         currentUser?.role == "admin"
+    }
+
+    // Same admin-bypass as AddEventView.myTeams — an admin can reassign an
+    // event to any team, not just ones they personally joined.
+    var myTeams: [Team] {
+        guard let user = currentUser else { return [] }
+        if user.role == "admin" { return allTeams }
+        let myTeamIDs = Set(user.memberships.map { $0.team.id })
+        return allTeams.filter { myTeamIDs.contains($0.id) }
     }
 
     var body: some View {
@@ -223,6 +233,33 @@ struct EventDetailView: View {
                     Text(event.notes)
                  }
              }
+
+            if !myTeams.isEmpty {
+                Section("Beteiligte Teams") {
+                    ForEach(myTeams) { team in
+                        Button {
+                            if event.teams.contains(where: { $0.id == team.id }) {
+                                event.teams.removeAll { $0.id == team.id }
+                            } else {
+                                event.teams.append(team)
+                            }
+                        } label: {
+                            HStack {
+                                Text(team.name)
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                if event.teams.contains(where: { $0.id == team.id }) {
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(.blue)
+                                }
+                            }
+                        }
+                    }
+                    Text("Keine Auswahl = für alle sichtbar")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
 
             Section("Teilnehmer (\(event.participations.count))") {
                 if event.participations.isEmpty {
@@ -265,6 +302,10 @@ struct EventDetailView: View {
         }
         .sheet(isPresented: $showMemberList) {
             MemberListView(itemName: event.title, teams: event.teams)
+        }
+        .onDisappear {
+            try? modelContext.save()
+            CloudKitSync.shared.pushEvent(event)
         }
     }
 

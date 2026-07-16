@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-16T18:02:31.749Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-16T18:13:23.277Z
 > Files: 43 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -53,14 +53,14 @@
 - `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~1871 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1055 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1548 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~2957 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~3424 tok)
 - `Info.plist` (~414 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~619 tok)
 - `Models.swift` — Class: User (~3248 tok)
 - `RootView.swift` — SwiftUI view: RootView (~2432 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~2962 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~2630 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~3404 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~2942 tok)
 
 ## BlindensportGraz/.claude/
 

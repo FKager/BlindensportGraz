@@ -874,6 +874,24 @@
       "related_bugs": ["bug-045"],
       "occurrences": 1,
       "last_seen": "2026-07-17T00:10:00Z"
+    },
+    {
+      "id": "bug-055",
+      "timestamp": "2026-07-17T00:20:00Z",
+      "error_message": "User-reported: 'The app says: no team assigned, when i want to add a member to a training.'",
+      "file": "BlindensportGraz/TrainingsViews.swift, EventsViews.swift, TournamentsViews.swift",
+      "root_cause": "TrainingDetailView/EventDetailView/TournamentDetailView had no UI to assign or change a team after creation — only the Add*View creation forms had a team picker, and that picker was itself broken until bug-054 was fixed. So a training created before that fix (or with 'Fur alle sichtbar' chosen) was permanently team-less; the admin-only member list correctly reported 'no team assigned' since MemberListView derives members entirely from the item's team(s). Separately discovered while fixing this: editing any field on an existing Event/Training/Tournament never pushed the change to CloudKit at all — pushEvent/pushTraining/pushTournament were only ever called once, at creation, in the Add*View.",
+      "fix": "Added a team-assignment Picker to TrainingDetailView (single team, state-backed via selectedTeamID: UUID? to match the existing UUID-tag convention) and a multi-team toggle list to EventDetailView/TournamentDetailView (same 'Beteiligte Teams' pattern already used in the Add*View forms). Added .onDisappear { modelContext.save(); CloudKitSync.shared.push...(...) } to all three detail views so any edit, not just team reassignment, now syncs to CloudKit on leaving the screen.",
+      "tags": [
+        "user-reported",
+        "swiftui",
+        "team-assignment",
+        "cloudkit-sync",
+        "missing-feature"
+      ],
+      "related_bugs": ["bug-054"],
+      "occurrences": 1,
+      "last_seen": "2026-07-17T00:20:00Z"
     }
   ]
 }

@@ -139,10 +139,21 @@ struct TrainingDetailView: View {
      @Bindable var training: Training
      let currentUser: User?
      @Environment(\.modelContext) private var modelContext
+     @Query private var allTeams: [Team]
      @State private var showMemberList = false
+     @State private var selectedTeamID: UUID?
 
     var isAdmin: Bool {
         currentUser?.role == "admin"
+    }
+
+    // Same admin-bypass as AddTrainingView.myTeams — an admin can reassign a
+    // training to any team, not just ones they personally joined.
+    var myTeams: [Team] {
+        guard let user = currentUser else { return [] }
+        if user.role == "admin" { return allTeams }
+        let myTeamIDs = Set(user.memberships.map { $0.team.id })
+        return allTeams.filter { myTeamIDs.contains($0.id) }
     }
 
     var body: some View {
@@ -159,6 +170,17 @@ struct TrainingDetailView: View {
                Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
                TextField("Schwerpunkt", text: $training.focusArea)
               }
+           Section("Team") {
+               Picker("Team", selection: $selectedTeamID) {
+                   Text("Für alle sichtbar").tag(UUID?.none)
+                   ForEach(myTeams) { team in
+                       Text(team.name).tag(Optional(team.id))
+                   }
+               }
+               .onChange(of: selectedTeamID) { _, newValue in
+                   training.team = myTeams.first(where: { $0.id == newValue })
+               }
+           }
            Section("Notizen") {
                 TextField("Notizen", text: $training.notes, axis: .vertical)
                     .lineLimit(3...6)
@@ -179,6 +201,13 @@ struct TrainingDetailView: View {
         }
         .sheet(isPresented: $showMemberList) {
             MemberListView(itemName: training.title, teams: training.team.map { [$0] } ?? [])
+        }
+        .onAppear {
+            selectedTeamID = training.team?.id
+        }
+        .onDisappear {
+            try? modelContext.save()
+            CloudKitSync.shared.pushTraining(training)
         }
     }
 

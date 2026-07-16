@@ -277,3 +277,11 @@
 | 20:05 | Fixed user-reported bug ("membership assignment to a training is not working"): myTeams/visible* in TrainingsViews/EventsViews/TournamentsViews all filtered by currentUser's personal TeamMembership, so an admin who creates a team can't assign or see anything for it (AddTeamView never adds the creator as a member). Same bug in all three files. Added admin bypass (full access per CLAUDE.md role hierarchy) while keeping coach's team-restricted behavior; verified full simulator build (BUILD SUCCEEDED) | TrainingsViews.swift, EventsViews.swift, TournamentsViews.swift | success | ~3000 |
 | 20:05 | Session end | — | — | — |
 | 20:03 | Session end: 81 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~55986 tok |
+| 20:07 | Session end: 81 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~55986 tok |
+| 20:12 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~779 |
+| 20:12 | Edited BlindensportGraz/EventsViews.swift | modified Section() | ~703 |
+| 20:13 | Edited BlindensportGraz/EventsViews.swift | modified addImage() | ~106 |
+| 20:13 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~937 |
+| 20:16 | Fixed user-reported bug ("no team assigned" opening member list on a training): TrainingDetailView/EventDetailView/TournamentDetailView had no team-assignment UI at all after creation, and separately, editing any existing item never pushed to CloudKit (only creation did). Added team Picker (Training, single) / toggle list (Event+Tournament, multi, matching existing Add*View pattern) plus onDisappear save+push to all three detail views; verified full simulator build (BUILD SUCCEEDED) | TrainingsViews.swift, EventsViews.swift, TournamentsViews.swift | success | ~4000 |
+| 20:16 | Session end | — | — | — |
+| 20:14 | Session end: 85 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~59248 tok |
