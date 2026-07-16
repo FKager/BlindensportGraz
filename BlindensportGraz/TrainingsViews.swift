@@ -21,8 +21,12 @@ struct AddTrainingView: View {
 
     let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
 
+    // Admins manage every team, not just ones they personally joined — a team
+    // they just created via AddTeamView has no TeamMembership for them yet, so
+    // without this bypass it could never be assigned to anything.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
+        if user.role == "admin" { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
@@ -204,6 +208,7 @@ struct TrainingsListView: View {
        }
 
     var visibleTrainings: [Training] {
+        if currentUser?.role == "admin" { return trainings }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
         return trainings.filter { $0.team == nil || myTeamIDs.contains($0.team!.id) }
     }

@@ -374,6 +374,9 @@
     "Grazer VSC" : {
 
     },
+    "Grazer VSC Mitglieder ohne Konto" : {
+
+    },
     "Hier ist dein Überblick" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -673,6 +676,9 @@
     "Mitgliedsnummer" : {
 
     },
+    "Nachname" : {
+
+    },
     "Nächste Events" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -832,6 +838,9 @@
           }
         }
       }
+    },
+    "Registrierte Benutzer" : {
+
     },
     "Rolle" : {
       "extractionState" : "manual",
@@ -1072,6 +1081,9 @@
           }
         }
       }
+    },
+    "Vorname" : {
+
     },
     "Willkommen, %@" : {
       "extractionState" : "manual",

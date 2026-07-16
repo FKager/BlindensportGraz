@@ -267,3 +267,13 @@
 | 19:50 | Split ClubMember.fullName into firstName+lastName (computed fullName extension keeps old call sites working); updated @Query sort (computed props can't be sort keys) and ClubMemberDetailView/AddClubMemberView to two TextFields; propagated to RootCLI import-members (ClubMemberInput, RootCLI.swift, members.example.json, README); caught via live testing that non-optional Decodable fields abort the whole batch decode on one missing key, contradicting the tool's per-entry-skip design — fixed by making firstName/lastName optional with ?? "" fallback; re-verified end-to-end against real CloudKit servers after the fix; both iOS simulator build and RootCLI debug+release builds green | Models.swift, CloudKitSync.swift, ClubMembersViews.swift, RootCLI/Sources/rootcli/ClubMemberImport.swift, RootCLI.swift, members.example.json, README.md | success | ~6000 |
 | 19:50 | Session end | — | — | — |
 | 19:49 | Session end: 75 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~54609 tok |
+| 19:52 | Session end: 75 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~54609 tok |
+| 20:01 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~161 |
+| 20:01 | Edited BlindensportGraz/TrainingsViews.swift | 4→5 lines | ~72 |
+| 20:01 | Edited BlindensportGraz/EventsViews.swift | modified Section() | ~160 |
+| 20:02 | Edited BlindensportGraz/EventsViews.swift | 4→5 lines | ~78 |
+| 20:02 | Edited BlindensportGraz/TournamentsViews.swift | 5→9 lines | ~131 |
+| 20:02 | Edited BlindensportGraz/TournamentsViews.swift | 4→5 lines | ~82 |
+| 20:05 | Fixed user-reported bug ("membership assignment to a training is not working"): myTeams/visible* in TrainingsViews/EventsViews/TournamentsViews all filtered by currentUser's personal TeamMembership, so an admin who creates a team can't assign or see anything for it (AddTeamView never adds the creator as a member). Same bug in all three files. Added admin bypass (full access per CLAUDE.md role hierarchy) while keeping coach's team-restricted behavior; verified full simulator build (BUILD SUCCEEDED) | TrainingsViews.swift, EventsViews.swift, TournamentsViews.swift | success | ~3000 |
+| 20:05 | Session end | — | — | — |
+| 20:03 | Session end: 81 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~55986 tok |

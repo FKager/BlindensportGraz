@@ -808,6 +808,72 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-16T17:47:55.053Z"
+    },
+    {
+      "id": "bug-051",
+      "timestamp": "2026-07-16T18:01:50.799Z",
+      "error_message": "Wrong return value",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Was returning: trainings.filter { $0.team == nil || myTeamIDs.con",
+      "fix": "Now returns: trainings }",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T18:01:50.799Z"
+    },
+    {
+      "id": "bug-052",
+      "timestamp": "2026-07-16T18:02:11.176Z",
+      "error_message": "Wrong return value",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "Was returning: events.filter { $0.teams.isEmpty || $0.teams.conta",
+      "fix": "Now returns: events }",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T18:02:11.176Z"
+    },
+    {
+      "id": "bug-053",
+      "timestamp": "2026-07-16T18:02:31.756Z",
+      "error_message": "Wrong return value",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Was returning: tournaments.filter { $0.teams.isEmpty || $0.teams.",
+      "fix": "Now returns: tournaments }",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T18:02:31.756Z"
+    },
+    {
+      "id": "bug-054",
+      "timestamp": "2026-07-17T00:10:00Z",
+      "error_message": "User-reported: 'The membership assignment to a training is not working.'",
+      "file": "BlindensportGraz/TrainingsViews.swift, EventsViews.swift, TournamentsViews.swift",
+      "root_cause": "myTeams (in AddEventView/AddTrainingView/AddTournamentView) and visibleEvents/visibleTrainings/visibleTournaments (in the corresponding ListViews) filtered teams/items down to only ones the current user personally has a TeamMembership for. AddTeamView never creates a TeamMembership for the team's creator, so an admin who creates a new team can't assign it to an event/training/tournament (the Team picker section doesn't render at all when myTeams is empty) and can't see items already scoped to that team either. Same bug independently present in all three files; not training-specific, just reported there first. Same root cause class as the ClubMember team-assignment bug fixed earlier the same day (bug-045).",
+      "fix": "myTeams and every visible* computed property now bypass the personal-membership filter when currentUser.role == \"admin\" (matches CLAUDE.md's documented 'admin - Full access to all features'); coach keeps the original team-restricted behavior, which CLAUDE.md documents as intentional.",
+      "tags": [
+        "user-reported",
+        "swiftdata",
+        "team-membership",
+        "admin-permissions",
+        "design-gap"
+      ],
+      "related_bugs": ["bug-045"],
+      "occurrences": 1,
+      "last_seen": "2026-07-17T00:10:00Z"
     }
   ]
 }

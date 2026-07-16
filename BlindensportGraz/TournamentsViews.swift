@@ -19,9 +19,13 @@ struct AddTournamentView: View {
         @State private var includesTime = true
 
         let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
-    
+        
+    // Admins manage every team, not just ones they personally joined — a team
+    // they just created via AddTeamView has no TeamMembership for them yet, so
+    // without this bypass it could never be assigned to anything.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
+        if user.role == "admin" { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
@@ -244,6 +248,7 @@ struct TournamentsListView: View {
        }
 
     var visibleTournaments: [Tournament] {
+        if currentUser?.role == "admin" { return tournaments }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
         return tournaments.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }
