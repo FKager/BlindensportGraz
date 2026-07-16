@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct BlinddensportGrazApp: App {
+struct BlindensportGrazApp: App {
     let modelContainer: ModelContainer
 
     init() {
@@ -13,9 +13,14 @@ struct BlinddensportGrazApp: App {
             Training.self,
             Team.self,
             TeamMembership.self,
-            EventParticipation.self
+            EventParticipation.self,
+            ClubMember.self,
+            EventImage.self
                ])
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        // Local store only. Cross-user, team-scoped sharing is handled by
+        // CloudKitSync's manual public-database push/pull, not SwiftData's
+        // automatic CloudKit mirroring (which only supports private, per-user sync).
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false, cloudKitDatabase: .none)
         do {
             modelContainer = try ModelContainer(for: schema, configurations: [config])
              } catch {
@@ -27,11 +32,12 @@ struct BlinddensportGrazApp: App {
         WindowGroup {
             RootView()
                 }
+        .modelContainer(modelContainer)
            }
        }
 
 // MARK: - Notification Handling for Push Notifications (Toast)
-extension BlinddensportGrazApp {
+extension BlindensportGrazApp {
    func handleEventCreated(_ notification: Notification) {
        guard let userInfo = notification.userInfo else { return }
        showNotification(

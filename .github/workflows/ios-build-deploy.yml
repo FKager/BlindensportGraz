@@ -9,7 +9,7 @@ name: iOS Build and Deploy
 # Required repository secrets for the deploy job:
 #   BUILD_CERTIFICATE_BASE64        base64 of your Distribution .p12  (base64 -i cert.p12 | pbcopy)
 #   P12_PASSWORD                    password used when exporting the .p12
-#   BUILD_PROVISION_PROFILE_BASE64  base64 of the .mobileprovision for it.a11y.BlinddensportGraz
+#   BUILD_PROVISION_PROFILE_BASE64  base64 of the .mobileprovision for it.a11y.BlindensportGraz
 #   KEYCHAIN_PASSWORD               any random string, used only for the temporary CI keychain
 #   APPSTORE_TEAM_ID                your 10-character Apple Developer Team ID
 #   APP_STORE_CONNECT_KEY_ID        App Store Connect API key ID
@@ -25,9 +25,9 @@ on:
   workflow_dispatch:
 
 env:
-  SCHEME: BlinddensportGraz
-  PROJECT: BlinddensportGraz.xcodeproj
-  BUNDLE_ID: it.a11y.BlinddensportGraz
+  SCHEME: BlindensportGraz
+  PROJECT: BlindensportGraz.xcodeproj
+  BUNDLE_ID: it.a11y.BlindensportGraz
 
 jobs:
   build:

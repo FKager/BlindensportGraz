@@ -194,6 +194,8 @@ struct AddMemberView: View {
                            let user = availableUsers.first(where: { $0.id == id }) {
                             let membership = TeamMembership(user: user, team: team, role: role)
                             modelContext.insert(membership)
+                            try? modelContext.save()
+                            CloudKitSync.shared.pushMembership(membership)
                         }
                         dismiss()
                     }
@@ -237,6 +239,7 @@ struct AddTeamView: View {
                         let team = Team(name: name, sport: sport, descriptionText: descriptionText)
                         modelContext.insert(team)
                         try? modelContext.save()
+                        CloudKitSync.shared.pushTeam(team)
                         dismiss()
                     }
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)

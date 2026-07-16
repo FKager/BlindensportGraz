@@ -3,8 +3,10 @@ import SwiftData
 import Combine
 
 struct AddTournamentView: View {
+      let currentUser: User?
       @Environment(\.modelContext) private var modelContext
        @Environment(\.dismiss) private var dismiss
+       @Query private var allTeams: [Team]
 
         @State private var name = ""
         @State private var sport = "Torball"
@@ -13,8 +15,16 @@ struct AddTournamentView: View {
         @State private var endDate = Date().addingTimeInterval(86400)
         @State private var maxTeams = 8
         @State private var notes = ""
+        @State private var selectedTeamIDs: Set<UUID> = []
+        @State private var includesTime = true
 
-     let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
+        let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
+    
+    var myTeams: [Team] {
+        guard let user = currentUser else { return [] }
+        let myTeamIDs = Set(user.memberships.map { $0.team.id })
+        return allTeams.filter { myTeamIDs.contains($0.id) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -27,12 +37,41 @@ struct AddTournamentView: View {
                     TextField("Veranstaltungsort", text: $venue)
                      }
                 Section("Zeitraum") {
-                    DatePicker("Start", selection: $startDate)
-                    DatePicker("Ende", selection: $endDate)
+                    Toggle("Uhrzeit festlegen", isOn: $includesTime)
+                    DatePicker("Start", selection: $startDate,
+                               displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
+                    DatePicker("Ende", selection: $endDate,
+                               displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
                       }
                 Section("Details") {
                     Stepper("Max. Teams: \(maxTeams)", value: $maxTeams, in: 2...64)
                        }
+                if !myTeams.isEmpty {
+                    Section("Beteiligte Teams") {
+                        ForEach(myTeams) { team in
+                            Button {
+                                if selectedTeamIDs.contains(team.id) {
+                                    selectedTeamIDs.remove(team.id)
+                                } else {
+                                    selectedTeamIDs.insert(team.id)
+                                }
+                            } label: {
+                                HStack {
+                                    Text(team.name)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    if selectedTeamIDs.contains(team.id) {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(.blue)
+                                    }
+                                }
+                            }
+                        }
+                        Text("Keine Auswahl = für alle sichtbar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
@@ -53,10 +92,12 @@ struct AddTournamentView: View {
                             startDate: startDate,
                             endDate: endDate,
                             maxTeams: maxTeams,
-                            notes: notes
+                            notes: notes,
+                            teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
                         )
                         modelContext.insert(tournament)
                         try? modelContext.save()
+                        CloudKitSync.shared.pushTournament(tournament)
 
                         // Post notification when tournament is created
                         NotificationCenter.default.post(
@@ -125,9 +166,18 @@ struct TournamentRow: View {
 
 struct TournamentDetailView: View {
    @Bindable var tournament: Tournament
+   let currentUser: User?
+   @Environment(\.modelContext) private var modelContext
+   @State private var showMemberList = false
+
+   var isAdmin: Bool {
+       currentUser?.role == "admin"
+   }
 
 var body: some View {
     Form {
+        EventImagesSection(images: tournament.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+
         Section("Turnier") {
             TextField("Name", text: $tournament.name)
             TextField("Sportart", text: $tournament.sport)
@@ -152,7 +202,34 @@ var body: some View {
     }
     .navigationTitle(tournament.name)
     .navigationBarTitleDisplayMode(.inline)
+    .toolbar {
+        if isAdmin {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showMemberList = true
+                } label: {
+                    Label("Mitgliederliste", systemImage: "list.bullet.clipboard")
+                }
+            }
+        }
+    }
+    .sheet(isPresented: $showMemberList) {
+        MemberListView(itemName: tournament.name, teams: tournament.teams)
+    }
    }
+
+    private func addImage(_ data: Data) {
+        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", tournament: tournament)
+        modelContext.insert(image)
+        try? modelContext.save()
+        CloudKitSync.shared.pushEventImage(image)
+    }
+
+    private func deleteImage(_ image: EventImage) {
+        CloudKitSync.shared.deleteEventImage(image.id)
+        modelContext.delete(image)
+        try? modelContext.save()
+    }
 }
 
 struct TournamentsListView: View {
@@ -166,16 +243,21 @@ struct TournamentsListView: View {
       return user.role == "admin" || user.role == "coach"
        }
 
+    var visibleTournaments: [Tournament] {
+        let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
+        return tournaments.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
+    }
+
    var body: some View {
        List {
-          if tournaments.isEmpty {
+          if visibleTournaments.isEmpty {
               ContentUnavailableView("Keine Turniere",
                                     systemImage: "trophy",
                                     description: Text("Lege ein neues Turnier an."))
           } else {
-              ForEach(tournaments) { tournament in
+              ForEach(visibleTournaments) { tournament in
                   NavigationLink {
-                      TournamentDetailView(tournament: tournament)
+                      TournamentDetailView(tournament: tournament, currentUser: currentUser)
                   } label: {
                       TournamentRow(tournament: tournament)
                   }
@@ -183,6 +265,9 @@ struct TournamentsListView: View {
           }
        }
        .navigationTitle("Turniere")
+       .refreshable {
+           await CloudKitSync.shared.syncAll(modelContext: modelContext)
+       }
        .toolbar {
            if canManageEvents {
                ToolbarItem(placement: .topBarTrailing) {
@@ -193,7 +278,7 @@ struct TournamentsListView: View {
            }
        }
        .sheet(isPresented: $showAdd) {
-           AddTournamentView()
+           AddTournamentView(currentUser: currentUser)
        }
     }
 

@@ -65,7 +65,7 @@ struct DashboardView: View {
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Willkommen, \(currentUser?.displayName ?? "Sportler")")
+            Text("Willkommen, \(currentUser?.displayName ?? String(localized: "Sportler"))")
                 .font(.title2)
                 .bold()
             Text("Hier ist dein Überblick")
@@ -75,7 +75,7 @@ struct DashboardView: View {
         .padding(.horizontal)
     }
 
-    private func sectionHeader(_ title: String, systemImage: String) -> some View {
+    private func sectionHeader(_ title: LocalizedStringKey, systemImage: String) -> some View {
         HStack {
             Image(systemName: systemImage)
             Text(title)
@@ -88,7 +88,7 @@ struct DashboardView: View {
 
 struct StatCard: View {
     let icon: String
-    let title: String
+    let title: LocalizedStringKey
     let value: String
     let color: Color
 

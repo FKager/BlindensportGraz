@@ -5,6 +5,7 @@ struct AddEventView: View {
     let currentUser: User?
         @Environment(\.modelContext) private var modelContext
         @Environment(\.dismiss) private var dismiss
+        @Query private var allTeams: [Team]
 
        @State private var title = ""
        @State private var sport = "Torball"
@@ -12,8 +13,16 @@ struct AddEventView: View {
        @State private var startDate = Date()
        @State private var endDate = Date().addingTimeInterval(3600)
        @State private var notes = ""
+       @State private var selectedTeamIDs: Set<UUID> = []
+       @State private var includesTime = true
 
     let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
+
+    var myTeams: [Team] {
+        guard let user = currentUser else { return [] }
+        let myTeamIDs = Set(user.memberships.map { $0.team.id })
+        return allTeams.filter { myTeamIDs.contains($0.id) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -26,9 +35,38 @@ struct AddEventView: View {
                     TextField("Ort", text: $location)
                  }
                 Section("Zeit") {
-                    DatePicker("Start", selection: $startDate)
-                    DatePicker("Ende", selection: $endDate)
+                    Toggle("Uhrzeit festlegen", isOn: $includesTime)
+                    DatePicker("Start", selection: $startDate,
+                               displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
+                    DatePicker("Ende", selection: $endDate,
+                               displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
                  }
+                if !myTeams.isEmpty {
+                    Section("Beteiligte Teams") {
+                        ForEach(myTeams) { team in
+                            Button {
+                                if selectedTeamIDs.contains(team.id) {
+                                    selectedTeamIDs.remove(team.id)
+                                } else {
+                                    selectedTeamIDs.insert(team.id)
+                                }
+                            } label: {
+                                HStack {
+                                    Text(team.name)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    if selectedTeamIDs.contains(team.id) {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(.blue)
+                                    }
+                                }
+                            }
+                        }
+                        Text("Keine Auswahl = für alle sichtbar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                           .lineLimit(3...6)
@@ -49,10 +87,12 @@ struct AddEventView: View {
                             startDate: startDate,
                             endDate: endDate,
                             notes: notes,
-                            createdBy: currentUser?.username ?? ""
+                            createdBy: currentUser?.username ?? "",
+                            teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
                             )
                         modelContext.insert(event)
                         try? modelContext.save()
+                        CloudKitSync.shared.pushEvent(event)
                        dismiss()
                      }
                       .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -73,14 +113,19 @@ struct EventsListView: View {
         return user.role == "admin" || user.role == "coach"
     }
 
+    var visibleEvents: [SportEvent] {
+        let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
+        return events.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
+    }
+
     var body: some View {
         List {
-            if events.isEmpty {
+            if visibleEvents.isEmpty {
                 ContentUnavailableView("Keine Events",
                                        systemImage: "calendar",
                                        description: Text("Lege ein neues Event an."))
             } else {
-                ForEach(events) { event in
+                ForEach(visibleEvents) { event in
                     NavigationLink {
                         EventDetailView(event: event, currentUser: currentUser)
                     } label: {
@@ -91,6 +136,9 @@ struct EventsListView: View {
             }
         }
         .navigationTitle("Events")
+        .refreshable {
+            await CloudKitSync.shared.syncAll(modelContext: modelContext)
+        }
         .toolbar {
             if canManageEvents {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -148,9 +196,16 @@ struct EventDetailView: View {
     let currentUser: User?
       @Environment(\.modelContext) private var modelContext
       @Query private var users: [User]
+      @State private var showMemberList = false
+
+    var isAdmin: Bool {
+        currentUser?.role == "admin"
+    }
 
     var body: some View {
         Form {
+            EventImagesSection(images: event.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+
             Section("Details") {
                 LabeledContent("Sportart", value: event.sport)
                 LabeledContent("Ort", value: event.location)
@@ -185,11 +240,39 @@ struct EventDetailView: View {
                             let participation = EventParticipation(user: user, event: event, status: "confirmed")
                             modelContext.insert(participation)
                             try? modelContext.save()
+                            CloudKitSync.shared.pushParticipation(participation)
                            }
                        }
                   }
              }
         }
         .navigationTitle(event.title)
+        .toolbar {
+            if isAdmin {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showMemberList = true
+                    } label: {
+                        Label("Mitgliederliste", systemImage: "list.bullet.clipboard")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showMemberList) {
+            MemberListView(itemName: event.title, teams: event.teams)
+        }
+    }
+
+    private func addImage(_ data: Data) {
+        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", event: event)
+        modelContext.insert(image)
+        try? modelContext.save()
+        CloudKitSync.shared.pushEventImage(image)
+    }
+
+    private func deleteImage(_ image: EventImage) {
+        CloudKitSync.shared.deleteEventImage(image.id)
+        modelContext.delete(image)
+        try? modelContext.save()
     }
 }

@@ -1,0 +1,28 @@
+default_platform(:ios)
+
+PROJECT_DIR  = File.expand_path("..", __dir__)
+DEVICE_ID    = "00008130-001875010A78001C" # "iPhone von Franz"
+DERIVED_DATA = File.join(PROJECT_DIR, "build")
+
+platform :ios do
+  desc "Build a Debug build and install it on the connected iPhone"
+  lane :device do
+    sh("cd '#{PROJECT_DIR}' && xcodegen generate")
+
+    sh(
+      "cd '#{PROJECT_DIR}' && xcodebuild " \
+      "-project BlindensportGraz.xcodeproj " \
+      "-scheme BlindensportGraz " \
+      "-configuration Debug " \
+      "-destination 'id=#{DEVICE_ID}' " \
+      "-derivedDataPath '#{DERIVED_DATA}' " \
+      "-allowProvisioningUpdates " \
+      "build"
+    )
+
+    app_path = Dir.glob(File.join(DERIVED_DATA, "Build/Products/Debug-iphoneos/*.app")).first
+    UI.user_error!("Could not find built .app bundle in derived data") unless app_path
+
+    sh("ios-deploy --bundle '#{app_path}' --id #{DEVICE_ID} --justlaunch", chdir: PROJECT_DIR)
+  end
+end

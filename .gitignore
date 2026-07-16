@@ -4,3 +4,7 @@ DerivedData/
 *.xcuserstate
 xcuserdata/
 .claude/settings.local.json
+RootCLI/.build/
+*.pem
+fastlane/report.xml
+.wolf/hooks/_session.json

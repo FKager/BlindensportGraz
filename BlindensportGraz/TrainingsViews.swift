@@ -7,6 +7,7 @@ struct AddTrainingView: View {
 
      @Environment(\.modelContext) private var modelContext
       @Environment(\.dismiss) private var dismiss
+      @Query private var allTeams: [Team]
 
        @State private var title = ""
        @State private var sport = "Torball"
@@ -15,8 +16,16 @@ struct AddTrainingView: View {
        @State private var durationMinutes = 90
        @State private var focusArea = ""
        @State private var notes = ""
+       @State private var selectedTeamID: UUID?
+       @State private var includesTime = true
 
     let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
+
+    var myTeams: [Team] {
+        guard let user = currentUser else { return [] }
+        let myTeamIDs = Set(user.memberships.map { $0.team.id })
+        return allTeams.filter { myTeamIDs.contains($0.id) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -29,10 +38,22 @@ struct AddTrainingView: View {
                     TextField("Ort", text: $location)
                    }
                 Section("Planung") {
-                    DatePicker("Start", selection: $startDate)
+                    Toggle("Uhrzeit festlegen", isOn: $includesTime)
+                    DatePicker("Start", selection: $startDate,
+                               displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
                     Stepper("Dauer: \(durationMinutes) min", value: $durationMinutes, in: 15...240, step: 15)
                     TextField("Schwerpunkt", text: $focusArea)
                    }
+                if !myTeams.isEmpty {
+                    Section("Team") {
+                        Picker("Team", selection: $selectedTeamID) {
+                            Text("Für alle sichtbar").tag(UUID?.none)
+                            ForEach(myTeams) { team in
+                                Text(team.name).tag(Optional(team.id))
+                            }
+                        }
+                    }
+                }
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
@@ -54,10 +75,12 @@ struct AddTrainingView: View {
                             durationMinutes: durationMinutes,
                             focusArea: focusArea,
                             notes: notes,
-                            createdBy: currentUser?.username ?? ""
+                            createdBy: currentUser?.username ?? "",
+                            team: myTeams.first(where: { $0.id == selectedTeamID })
                         )
                         modelContext.insert(training)
                         try? modelContext.save()
+                        CloudKitSync.shared.pushTraining(training)
 
                         // Post notification when training is created
                         NotificationCenter.default.post(
@@ -110,9 +133,18 @@ struct TrainingRow: View {
 
 struct TrainingDetailView: View {
      @Bindable var training: Training
+     let currentUser: User?
+     @Environment(\.modelContext) private var modelContext
+     @State private var showMemberList = false
+
+    var isAdmin: Bool {
+        currentUser?.role == "admin"
+    }
 
     var body: some View {
         Form {
+            EventImagesSection(images: training.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+
             Section("Training") {
                 TextField("Titel", text: $training.title)
                 TextField("Sportart", text: $training.sport)
@@ -130,6 +162,33 @@ struct TrainingDetailView: View {
          }
         .navigationTitle(training.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if isAdmin {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showMemberList = true
+                    } label: {
+                        Label("Mitgliederliste", systemImage: "list.bullet.clipboard")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showMemberList) {
+            MemberListView(itemName: training.title, teams: training.team.map { [$0] } ?? [])
+        }
+    }
+
+    private func addImage(_ data: Data) {
+        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", training: training)
+        modelContext.insert(image)
+        try? modelContext.save()
+        CloudKitSync.shared.pushEventImage(image)
+    }
+
+    private func deleteImage(_ image: EventImage) {
+        CloudKitSync.shared.deleteEventImage(image.id)
+        modelContext.delete(image)
+        try? modelContext.save()
     }
 }
 
@@ -144,16 +203,21 @@ struct TrainingsListView: View {
         return user.role == "admin" || user.role == "coach"
        }
 
+    var visibleTrainings: [Training] {
+        let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
+        return trainings.filter { $0.team == nil || myTeamIDs.contains($0.team!.id) }
+    }
+
     var body: some View {
         List {
-           if trainings.isEmpty {
+           if visibleTrainings.isEmpty {
                ContentUnavailableView("Keine Trainings",
                                       systemImage: "figure.run",
                                       description: Text("Lege ein neues Training an."))
               } else {
-                  ForEach(trainings) { training in
+                  ForEach(visibleTrainings) { training in
                     NavigationLink {
-                        TrainingDetailView(training: training)
+                        TrainingDetailView(training: training, currentUser: currentUser)
                           } label: {
                            TrainingRow(training: training)
                          }
@@ -161,6 +225,9 @@ struct TrainingsListView: View {
                       }
                  }
         .navigationTitle("Trainings")
+        .refreshable {
+            await CloudKitSync.shared.syncAll(modelContext: modelContext)
+        }
         .toolbar {
             if canManageEvents {
                 ToolbarItem(placement: .topBarTrailing) {

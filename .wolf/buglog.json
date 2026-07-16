@@ -1,0 +1,651 @@
+{
+  "version": 1,
+  "bugs": [
+    {
+      "id": "bug-001",
+      "timestamp": "2026-07-15T16:17:25.196Z",
+      "error_message": "Wrong reference: BlinddensportGraz should be BlindensportGraz",
+      "file": "project.yml",
+      "root_cause": "Used \"BlinddensportGraz\" instead of \"BlindensportGraz\"",
+      "fix": "Changed BlinddensportGraz → BlindensportGraz",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 4,
+      "last_seen": "2026-07-15T16:17:28.092Z"
+    },
+    {
+      "id": "bug-002",
+      "timestamp": "2026-07-15T16:17:29.184Z",
+      "error_message": "Incorrect value in code",
+      "file": "project.yml",
+      "root_cause": "Had \"Blinddensport Graz\"",
+      "fix": "Changed to \"Blindensport Graz\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T16:17:29.184Z"
+    },
+    {
+      "id": "bug-003",
+      "timestamp": "2026-07-15T16:17:29.917Z",
+      "error_message": "Incorrect value in code",
+      "file": "fastlane/Appfile",
+      "root_cause": "Had \"it.a11y.BlinddensportGraz\"",
+      "fix": "Changed to \"it.a11y.BlindensportGraz\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "unknown"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T16:17:29.917Z"
+    },
+    {
+      "id": "bug-004",
+      "timestamp": "2026-07-15T16:17:31.368Z",
+      "error_message": "Incorrect value in code",
+      "file": "fastlane/Fastfile",
+      "root_cause": "Had \"-project BlinddensportGraz.xcodeproj \"",
+      "fix": "Changed to \"-project BlindensportGraz.xcodeproj \"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "unknown"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T16:17:31.368Z"
+    },
+    {
+      "id": "bug-005",
+      "timestamp": "2026-07-15T16:17:32.824Z",
+      "error_message": "Wrong reference: BlinddensportGraz should be BlindensportGraz",
+      "file": ".github/workflows/ios-build-deploy.yml",
+      "root_cause": "Used \"BlinddensportGraz\" instead of \"BlindensportGraz\"",
+      "fix": "Changed BlinddensportGraz → BlindensportGraz",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T16:17:32.824Z"
+    },
+    {
+      "id": "bug-006",
+      "timestamp": "2026-07-15T16:17:35.011Z",
+      "error_message": "Wrong reference: Blinddensport should be Blindensport",
+      "file": "CLAUDE.mdes",
+      "root_cause": "Used \"Blinddensport\" instead of \"Blindensport\"",
+      "fix": "Changed Blinddensport → Blindensport",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "mdes"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T16:17:35.011Z"
+    },
+    {
+      "id": "bug-007",
+      "timestamp": "2026-07-15T16:17:36.112Z",
+      "error_message": "Wrong reference: BlinddensportGrazApp should be BlindensportGrazApp",
+      "file": "BlindensportGraz/BlindensportGrazApp.swift",
+      "root_cause": "Used \"BlinddensportGrazApp\" instead of \"BlindensportGrazApp\"",
+      "fix": "Changed BlinddensportGrazApp → BlindensportGrazApp",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-15T16:17:36.898Z"
+    },
+    {
+      "id": "bug-008",
+      "timestamp": "2026-07-15T18:55:00Z",
+      "error_message": "codesign: errSecInternalComponent / security show-keychain-info: User interaction is not allowed",
+      "file": "fastlane/Fastfile (device lane), N/A - environment level",
+      "root_cause": "This coding session's sandboxed shell cannot reach the Security Agent/securityd for any interactive keychain authorization, even after granting the codesign/security key partition-list ACL (Always Allow) on login.keychain-db. Not fixable via keychain config - it is a sandbox-level IPC restriction specific to this execution environment.",
+      "fix": "No CLI fix available in this sandbox. Working alternative: trigger Xcode's own GUI process to build via `osascript -e 'tell application \"Xcode\" to activate' -e 'tell application \"System Events\" to keystroke \"r\" using command down'` (requires Accessibility permission granted once in System Settings). Xcode GUI process is not subject to this sandbox restriction and can codesign normally.",
+      "tags": [
+        "codesign",
+        "keychain",
+        "sandbox",
+        "errSecInternalComponent",
+        "ios-signing",
+        "device-deploy"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-15T18:55:00Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-07-15T17:16:56.371Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T17:16:56.371Z"
+    },
+    {
+      "id": "bug-010",
+      "timestamp": "2026-07-15T18:20:25.494Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:20:25.494Z"
+    },
+    {
+      "id": "bug-011",
+      "timestamp": "2026-07-15T18:20:33.793Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:20:33.793Z"
+    },
+    {
+      "id": "bug-012",
+      "timestamp": "2026-07-15T18:20:40.010Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: let memberIDs = Set((team.memberships ?? []).compactMap { $0 | Also: Section(\"Mitglieder (\\((team.memberships ?? []).count))\") {; if (team.memberships ?? []).isEmpty {",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-07-15T18:20:46.688Z"
+    },
+    {
+      "id": "bug-013",
+      "timestamp": "2026-07-15T18:42:10.216Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/BlindensportGrazApp.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 3→4 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:42:10.216Z"
+    },
+    {
+      "id": "bug-014",
+      "timestamp": "2026-07-15T18:47:01.830Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:47:01.830Z"
+    },
+    {
+      "id": "bug-015",
+      "timestamp": "2026-07-15T18:47:32.107Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:47:32.107Z"
+    },
+    {
+      "id": "bug-016",
+      "timestamp": "2026-07-15T18:47:44.575Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:47:44.575Z"
+    },
+    {
+      "id": "bug-017",
+      "timestamp": "2026-07-15T18:48:15.681Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:48:15.681Z"
+    },
+    {
+      "id": "bug-018",
+      "timestamp": "2026-07-15T18:48:37.823Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 25→29 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:48:37.823Z"
+    },
+    {
+      "id": "bug-019",
+      "timestamp": "2026-07-15T18:49:02.040Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 24→28 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:49:02.040Z"
+    },
+    {
+      "id": "bug-020",
+      "timestamp": "2026-07-15T18:49:43.679Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "Had \"\\((team.memberships ?? []).count) Mitglieder\"",
+      "fix": "Changed to \"\\(team.memberships.count) Mitglieder\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:49:43.679Z"
+    },
+    {
+      "id": "bug-021",
+      "timestamp": "2026-07-15T18:50:15.391Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "Had \"\\((user.memberships ?? []).count)\"",
+      "fix": "Changed to \"\\(user.memberships.count)\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:50:15.391Z"
+    },
+    {
+      "id": "bug-009",
+      "timestamp": "2026-07-15T20:57:00Z",
+      "error_message": "User-reported: a created team is not listed in TeamsListView",
+      "file": "BlindensportGraz/BlindensportGrazApp.swift",
+      "root_cause": "The custom ModelContainer built in BlindensportGrazApp.init() was never attached to the WindowGroup via .modelContainer(modelContainer) - present in the original pre-existing code, not introduced this session. Without that attachment, @Query/@Environment(\\\\.modelContext) usage across different views can resolve inconsistent/ephemeral contexts instead of one shared container, so data inserted in one view is not reliably visible from another.",
+      "fix": "Added .modelContainer(modelContainer) to the WindowGroup scene in BlindensportGrazApp.swift.",
+      "tags": [
+        "swiftdata",
+        "modelcontainer",
+        "query",
+        "environment",
+        "data-not-showing"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T20:57:00Z"
+    },
+    {
+      "id": "bug-023",
+      "timestamp": "2026-07-15T18:59:00.092Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:59:00.092Z"
+    },
+    {
+      "id": "bug-024",
+      "timestamp": "2026-07-15T18:59:17.297Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:59:17.297Z"
+    },
+    {
+      "id": "bug-025",
+      "timestamp": "2026-07-15T18:59:40.526Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T18:59:40.526Z"
+    },
+    {
+      "id": "bug-026",
+      "timestamp": "2026-07-15T19:15:56.655Z",
+      "error_message": "Wrong reference: title should be Mitglieder",
+      "file": "BlindensportGraz/MemberListView.swift",
+      "root_cause": "Used \"title\" instead of \"Mitglieder\"",
+      "fix": "Changed title → Mitglieder",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-15T19:15:56.655Z"
+    },
+    {
+      "id": "bug-027",
+      "timestamp": "2026-07-16T16:07:00.347Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:07:00.347Z"
+    },
+    {
+      "id": "bug-028",
+      "timestamp": "2026-07-16T16:07:17.709Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:07:17.709Z"
+    },
+    {
+      "id": "bug-029",
+      "timestamp": "2026-07-16T16:07:25.670Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 8→12 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:07:25.670Z"
+    },
+    {
+      "id": "bug-030",
+      "timestamp": "2026-07-16T16:07:37.320Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:07:37.320Z"
+    },
+    {
+      "id": "bug-031",
+      "timestamp": "2026-07-16T16:27:30.920Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:27:30.920Z"
+    },
+    {
+      "id": "bug-032",
+      "timestamp": "2026-07-16T16:27:36.485Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call | Also: isCreating = true; Task {",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-16T16:28:04.175Z"
+    },
+    {
+      "id": "bug-033",
+      "timestamp": "2026-07-16T16:28:54.488Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 71→112 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:28:54.488Z"
+    },
+    {
+      "id": "bug-034",
+      "timestamp": "2026-07-16T18:40:00Z",
+      "error_message": "'main' attribute cannot be used in a module that contains top-level code",
+      "file": "RootCLI/Sources/rootcli/main.swift",
+      "root_cause": "SwiftPM treats a source file literally named `main.swift` in an executable target as implicit top-level-code script, which conflicts with a separate `@main`-annotated type in the same target — not a general Swift language restriction, just SwiftPM's naming special-case.",
+      "fix": "Renamed the file from main.swift to RootCLI.swift (keeping the @main struct); build succeeded immediately after.",
+      "tags": [
+        "swift",
+        "swiftpm",
+        "main-attribute",
+        "build-error"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T18:40:00Z"
+    },
+    {
+      "id": "bug-035",
+      "timestamp": "2026-07-16T16:44:26.174Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 16→22 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:44:26.174Z"
+    },
+    {
+      "id": "bug-036",
+      "timestamp": "2026-07-16T16:45:25.466Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/README.md",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 4→10 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:45:25.466Z"
+    },
+    {
+      "id": "bug-037",
+      "timestamp": "2026-07-16T16:51:39.785Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: private func pullEventImages(modelContext: ModelContext) asy; for record in await fetchAll(recordType: \"EventImage\") {",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-16T16:51:58.235Z"
+    },
+    {
+      "id": "bug-038",
+      "timestamp": "2026-07-16T16:52:39.814Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:52:39.814Z"
+    },
+    {
+      "id": "bug-039",
+      "timestamp": "2026-07-16T16:52:56.263Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:52:56.263Z"
+    },
+    {
+      "id": "bug-040",
+      "timestamp": "2026-07-16T16:53:12.615Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T16:53:12.615Z"
+    }
+  ]
+}

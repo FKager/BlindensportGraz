@@ -50,6 +50,11 @@ struct AccountView: View {
                                    value: user.createdAt.formatted(date: .abbreviated, time: .omitted))
                     LabeledContent("Teams", value: "\(user.memberships.count)")
                     LabeledContent("Teilnahmen", value: "\(user.participations.count)")
+                    LabeledContent("Grazer VSC") {
+                        Label(user.isGrazerVSCMember ? "Mitglied" : "Kein Mitglied",
+                              systemImage: user.isGrazerVSCMember ? "checkmark.seal.fill" : "xmark.seal")
+                            .foregroundStyle(user.isGrazerVSCMember ? .green : .secondary)
+                    }
                 }
 
                 Section {
@@ -59,7 +64,7 @@ struct AccountView: View {
                         Label("Profil bearbeiten", systemImage: "pencil")
                     }
 
-                    if user.role == "admin" {
+                    if user.role == "admin" || user.isRoot {
                         Button {
                             showUserList = true
                         } label: {
@@ -86,11 +91,13 @@ struct AccountView: View {
             }
         }
         .sheet(isPresented: $showUserList) {
-            UserListView()
+            if let user = currentUser {
+                UserListView(currentUser: user)
+            }
         }
     }
 
-    private func roleLabel(_ role: String) -> String {
+    private func roleLabel(_ role: String) -> LocalizedStringKey {
         switch role {
         case "admin": return "Administrator"
         case "coach": return "Trainer:in"
@@ -113,12 +120,11 @@ struct EditAccountView: View {
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
                 }
-                Section("Rolle") {
-                    Picker("Rolle", selection: $user.role) {
-                        Text("Mitglied").tag("member")
-                        Text("Trainer:in").tag("coach")
-                        Text("Admin").tag("admin")
-                    }
+                Section {
+                    LabeledContent("Rolle", value: roleLabel(user.role))
+                    Text("Die Rolle kann nur von einem Root-Benutzer geändert werden.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
             .navigationTitle("Profil bearbeiten")
@@ -130,9 +136,18 @@ struct EditAccountView: View {
             }
         }
     }
+
+    private func roleLabel(_ role: String) -> String {
+        switch role {
+        case "admin": return "Administrator"
+        case "coach": return "Trainer:in"
+        default: return "Mitglied"
+        }
+    }
 }
 
 struct UserListView: View {
+    let currentUser: User
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \User.createdAt) private var users: [User]
     @Environment(\.dismiss) private var dismiss
@@ -143,15 +158,35 @@ struct UserListView: View {
                 ForEach(users) { user in
                     HStack {
                         VStack(alignment: .leading) {
-                            Text(user.displayName)
+                            HStack(spacing: 6) {
+                                Text(user.displayName)
+                                if user.isRoot {
+                                    Text("ROOT")
+                                        .font(.caption2)
+                                        .bold()
+                                        .padding(.horizontal, 6)
+                                        .padding(.vertical, 1)
+                                        .background(.orange.opacity(0.2), in: Capsule())
+                                        .foregroundStyle(.orange)
+                                }
+                            }
                             Text("@\(user.username)")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
                         Spacer()
-                        Text(user.role)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        if currentUser.isRoot && user.id != currentUser.id {
+                            Picker("Rolle", selection: roleBinding(for: user)) {
+                                Text("Mitglied").tag("member")
+                                Text("Trainer:in").tag("coach")
+                                Text("Admin").tag("admin")
+                            }
+                            .labelsHidden()
+                        } else {
+                            Text(user.role)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 .onDelete { offsets in
@@ -168,5 +203,18 @@ struct UserListView: View {
                 }
             }
         }
+    }
+
+    /// Only a root user reaches this binding (see the `currentUser.isRoot` gate above),
+    /// and never for their own row — so this can never be used for self-promotion.
+    private func roleBinding(for user: User) -> Binding<String> {
+        Binding(
+            get: { user.role },
+            set: { newRole in
+                user.role = newRole
+                try? modelContext.save()
+                CloudKitSync.shared.pushUserIdentity(user)
+            }
+        )
     }
 }

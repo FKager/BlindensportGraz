@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Blinddensport Graz** is a SwiftUI iOS app for managing sport events organized for visually impaired athletes. The app helps organize tournaments, trainings, team memberships, and event participations for sports like Torball, Goalball, Blindenfußball, Showdown, Judo, Athletics, Swimming, Skiing, and Cycling.
+**Blindensport Graz** is a SwiftUI iOS app for managing sport events organized for visually impaired athletes. The app helps organize tournaments, trainings, team memberships, and event participations for sports like Torball, Goalball, Blindenfußball, Showdown, Judo, Athletics, Swimming, Skiing, and Cycling.
 
 ## Architecture
 
@@ -19,7 +19,7 @@ All data models use SwiftData's `@Model` protocol with iCloud sync via `ModelCon
 - **Training**: Training sessions with focus area, duration, location
 - **EventParticipation**: Link between users and events with status (invited/confirmed/declined)
 
-The `ModelContainer` is initialized in `BlinddensportGrazApp.swift` with all 7 model types configured for persistent storage.
+The `ModelContainer` is initialized in `BlindensportGrazApp.swift` with all 7 model types configured for persistent storage.
 
 ### Application Structure
 ```
@@ -51,27 +51,27 @@ try? modelContext.save()
 
 **macOS (Xcode):**
 ```bash
-xcodebuild -project BlinddensportGraz.xcodeproj -configuration Debug -scheme BlinddensportGraz
+xcodebuild -project BlindensportGraz.xcodeproj -configuration Debug -scheme BlindensportGraz
 ```
 
 **Build for iOS Simulator:**
 ```bash
 xcodebuild \
-  -project BlinddensportGraz.xcodeproj \
+  -project BlindensportGraz.xcodeproj \
   -configuration Debug \
   -sdk iphonesimulator \
   -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
-  -scheme BlinddensportGraz
+  -scheme BlindensportGraz
 ```
 
 **Build for Device (iOS):**
 ```bash
 xcodebuild \
-  -project BlinddensportGraz.xcodeproj \
+  -project BlindensportGraz.xcodeproj \
   -configuration Debug \
   -sdk iphoneos \
   -destination 'platform=iOS' \
-  -scheme BlinddensportGraz
+  -scheme BlindensportGraz
 ```
 
 ### Common Commands
@@ -83,7 +83,7 @@ xcodebuild -showBuildSettings -json >> BUILD_SETTINGS.json
 
 **Run tests:**
 ```bash
-xcodebuild test -project BlinddensportGraz.xcodeproj -configuration Debug -scheme BlinddensportGraz
+xcodebuild test -project BlindensportGraz.xcodeproj -configuration Debug -scheme BlindensportGraz
 ```
 
 **Clean build directory:**
@@ -93,7 +93,7 @@ rm -rf ~/Library/Developer/Xcode/DerivedData/*
 
 ### Opening in Xcode
 ```bash
-open BlinddensportGraz.xcodeproj
+open BlindensportGraz.xcodeproj
 ```
 
 ## Testing Guidelines
