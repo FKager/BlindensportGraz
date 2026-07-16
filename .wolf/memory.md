@@ -285,3 +285,12 @@
 | 20:16 | Fixed user-reported bug ("no team assigned" opening member list on a training): TrainingDetailView/EventDetailView/TournamentDetailView had no team-assignment UI at all after creation, and separately, editing any existing item never pushed to CloudKit (only creation did). Added team Picker (Training, single) / toggle list (Event+Tournament, multi, matching existing Add*View pattern) plus onDisappear save+push to all three detail views; verified full simulator build (BUILD SUCCEEDED) | TrainingsViews.swift, EventsViews.swift, TournamentsViews.swift | success | ~4000 |
 | 20:16 | Session end | — | — | — |
 | 20:14 | Session end: 85 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~59248 tok |
+| 20:17 | Session end: 85 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~59248 tok |
+| 20:21 | Session end: 85 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~59248 tok |
+| 20:23 | Session end: 85 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~59248 tok |
+| 20:27 | Session end: 85 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~59248 tok |
+| 20:31 | Session end: 85 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~59248 tok |
+| 20:36 | Edited fastlane/Fastfile | expanded (+15 lines) | ~492 |
+| 20:37 | User asked for a fastlane lane so they no longer need Xcode GUI. Replaced ios-deploy (old USB UDID, likely incompatible with this CoreDevice-only device) with devicectl install+launch (Apple's own tool, no extra dependency), updated DEVICE_ID to the CoreDevice id confirmed working earlier this session. Validated via `fastlane lanes` (parses, lists correctly) — did NOT attempt a full run, since it would hit the same known sandbox codesign wall (bug-008) pointlessly; the lane's value is for the user's own Terminal, not this session. Not committed — user didn't explicitly ask this time | fastlane/Fastfile | success | ~2000 |
+| 20:37 | Session end | — | — | — |
+| 20:37 | Session end: 86 writes across 23 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 20 reads | ~59896 tok |

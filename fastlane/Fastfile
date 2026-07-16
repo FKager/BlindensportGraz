@@ -1,11 +1,17 @@
 default_platform(:ios)
 
 PROJECT_DIR  = File.expand_path("..", __dir__)
-DEVICE_ID    = "00008130-001875010A78001C" # "iPhone von Franz"
+# CoreDevice id from `xcrun devicectl list devices` — NOT the old-style USB UDID.
+# This device is only reachable over the modern CoreDevice transport (shows as
+# "connected" via devicectl even when `xcrun xctrace list devices` reports it
+# offline), so both the build destination and the install/launch step below
+# need this id, not ios-deploy's classic UDID.
+DEVICE_ID    = "BD764E6D-F84C-5BC9-B52C-BB372A7B3190" # "iPhone von Franz"
 DERIVED_DATA = File.join(PROJECT_DIR, "build")
+BUNDLE_ID    = "it.a11y.BlindensportGraz"
 
 platform :ios do
-  desc "Build a Debug build and install it on the connected iPhone"
+  desc "Build a Debug build and install+launch it on the connected iPhone — no Xcode GUI needed"
   lane :device do
     sh("cd '#{PROJECT_DIR}' && xcodegen generate")
 
@@ -23,6 +29,15 @@ platform :ios do
     app_path = Dir.glob(File.join(DERIVED_DATA, "Build/Products/Debug-iphoneos/*.app")).first
     UI.user_error!("Could not find built .app bundle in derived data") unless app_path
 
-    sh("ios-deploy --bundle '#{app_path}' --id #{DEVICE_ID} --justlaunch", chdir: PROJECT_DIR)
+    # devicectl replaces ios-deploy here — it's Apple's own tool (ships with
+    # Xcode's command line tools, no extra install), and unlike ios-deploy it
+    # reliably supports CoreDevice-only devices on current iOS.
+    UI.message("Installing on device via devicectl…")
+    sh("xcrun devicectl device install app --device '#{DEVICE_ID}' '#{app_path}'")
+
+    UI.message("Launching #{BUNDLE_ID}…")
+    sh("xcrun devicectl device process launch --terminate-existing --device '#{DEVICE_ID}' #{BUNDLE_ID}")
+
+    UI.success("Installed and launched on device.")
   end
 end

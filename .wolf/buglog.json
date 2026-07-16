@@ -871,7 +871,9 @@
         "admin-permissions",
         "design-gap"
       ],
-      "related_bugs": ["bug-045"],
+      "related_bugs": [
+        "bug-045"
+      ],
       "occurrences": 1,
       "last_seen": "2026-07-17T00:10:00Z"
     },
@@ -889,9 +891,27 @@
         "cloudkit-sync",
         "missing-feature"
       ],
-      "related_bugs": ["bug-054"],
+      "related_bugs": [
+        "bug-054"
+      ],
       "occurrences": 1,
       "last_seen": "2026-07-17T00:20:00Z"
+    },
+    {
+      "id": "bug-056",
+      "timestamp": "2026-07-16T18:36:11.217Z",
+      "error_message": "Significant refactor of ",
+      "file": "fastlane/Fastfile",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 28→43 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "unknown"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T18:36:11.217Z"
     }
   ]
 }

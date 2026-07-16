@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-16T18:13:23.277Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-16T18:36:11.210Z
 > Files: 43 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
@@ -83,4 +83,4 @@
 ## fastlane/
 
 - `Appfile` — app_identifier it.a11y.BlindensportGraz, team 5Q57Y9YT8J (~30 tok)
-- `Fastfile` — `device` lane: xcodegen generate -> xcodebuild build (Debug, device destination) -> ios-deploy install+launch (~120 tok)
+- `Fastfile` (~493 tok)

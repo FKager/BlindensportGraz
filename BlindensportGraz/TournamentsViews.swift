@@ -17,11 +17,11 @@ struct AddTournamentView: View {
         @State private var notes = ""
         @State private var selectedTeamIDs: Set<UUID> = []
         @State private var includesTime = true
-
+                
         let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
         
-    // Admins manage every team, not just ones they personally joined — a team
-    // they just created via AddTeamView has no TeamMembership for them yet, so
+// A    d                           mins manage every team, not just ones they personally joined — a team
+    // they just c      reated via AddTeamView has no TeamMembership for them yet, so
     // without this bypass it could never be assigned to anything.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }

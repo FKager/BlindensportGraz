@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane ios device
 ```
 
-Build a Debug build and install it on the connected iPhone
+Build a Debug build and install+launch it on the connected iPhone — no Xcode GUI needed
 
 ----
 
