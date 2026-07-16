@@ -2,7 +2,8 @@
 
 A command-line tool that talks directly to the `iCloud.it.a11y.BlindensportGraz`
 CloudKit container's public database — outside the app entirely — to change a
-user's `role` or `isRoot` flag. It authenticates as a **Server-to-Server (S2S)**
+user's `role` or `isRoot` flag, and to bulk-import the Grazer VSC membership
+roster from a JSON file. It authenticates as a **Server-to-Server (S2S)**
 client using an ECDSA key pair registered in CloudKit Dashboard, the same
 mechanism Apple documents for backend integrations.
 
@@ -46,7 +47,11 @@ By default the S2S key writes with the same permissions as any other client
 1. Dashboard → **Schema** → **Security Roles**.
 2. Create a role (e.g. `RootAdmin`) and add your S2S key as a member of it.
 3. On the `UserIdentity` record type, set the **World** role to **Read Only**,
-   and grant your new `RootAdmin` role **Read/Write**.
+   and grant your new `RootAdmin` role **Read/Write**. Do the same for
+   `ClubMember` if you want `import-members` to be the only way roster entries
+   get written — the app itself only ever needs to read/write it as an admin
+   action, so it's a reasonable second record type to lock down alongside
+   `UserIdentity`.
 4. Repeat for the **Production** environment once you're ready to promote there
    (Development and Production schemas/roles are configured separately).
 
@@ -76,6 +81,7 @@ export CLOUDKIT_ENVIRONMENT=development   # or production
 rootcli list
 rootcli set-role someuser admin
 rootcli set-root someuser true
+rootcli import-members members.json
 ```
 
 `list` prints every `UserIdentity` record as a table — name, username, role,
@@ -89,5 +95,20 @@ tradeoff, not just a missing feature).
 (case-insensitive) and refuse to guess if more than one account matches —
 re-run with the exact id from `list` in that case.
 
+`import-members <file.json>` reads a JSON array of club members and creates
+(or, if you re-run it with the same `id`, updates) matching `ClubMember`
+records — see `members.example.json` for the shape. `firstName` and
+`lastName` are both required; everything else defaults the way the app's own
+"Neues Mitglied" form does. If you don't supply an `id`, a new UUID is
+generated each run — so re-importing a file without `id`s creates duplicates
+rather than updating existing entries. Bad entries (empty firstName/lastName,
+non-UUID `id`) are skipped with a message rather than aborting the whole file;
+the final line reports how many
+succeeded/failed out of the total.
+
 Changes made this way reach app instances the same way any other cross-device
 change does: on next login or pull-to-refresh, via `CloudKitSync.syncAll`.
+Newly-imported members are also matched retroactively the next time someone
+creates an app account — but not against *existing* accounts, since
+`ClubMember.checkMembership` only ever runs at account-creation time (see
+`cerebrum.md`'s 2026-07-16 entry on the Grazer VSC feature).

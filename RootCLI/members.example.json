@@ -1,0 +1,17 @@
+[
+  {
+    "firstName": "Anna",
+    "lastName": "Muster",
+    "address": "Musterstraße 1, 8010 Graz",
+    "email": "anna@example.com",
+    "phone": "+43 660 1234567",
+    "memberNumber": "1001",
+    "joinedAt": "2020-05-01",
+    "notes": "Vorstandsmitglied"
+  },
+  {
+    "firstName": "Peter",
+    "lastName": "Huber",
+    "email": "peter@example.com"
+  }
+]

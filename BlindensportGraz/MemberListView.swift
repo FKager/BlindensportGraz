@@ -8,7 +8,7 @@ struct MemberListView: View {
 
     private var exportText: String {
         teams.map { team in
-            let names = team.memberships.map(\.user.displayName).sorted()
+            let names = team.memberships.map(\.displayName).sorted()
             let noMembers = String(localized: "Keine Mitglieder")
             let lines = names.isEmpty ? noMembers : names.map { "- \($0)" }.joined(separator: "\n")
             return "\(team.name):\n\(lines)"
@@ -29,9 +29,9 @@ struct MemberListView: View {
                                 Text("Keine Mitglieder")
                                     .foregroundStyle(.secondary)
                             } else {
-                                ForEach(team.memberships.sorted { $0.user.displayName < $1.user.displayName }) { membership in
+                                ForEach(team.memberships.sorted { $0.displayName < $1.displayName }) { membership in
                                     HStack {
-                                        Text(membership.user.displayName)
+                                        Text(membership.displayName)
                                         Spacer()
                                         Text(membership.role)
                                             .font(.caption)

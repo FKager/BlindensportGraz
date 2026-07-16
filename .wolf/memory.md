@@ -222,3 +222,48 @@
 | 18:54 | Session end: 40 writes across 17 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 11 reads | ~36176 tok |
 | 19:00 | Session end: 40 writes across 17 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 12 reads | ~36176 tok |
 | 19:18 | Edited .gitignore | 3→5 lines | ~26 |
+| 19:19 | Session end: 41 writes across 17 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 12 reads | ~36210 tok |
+| 19:24 | Session end: 41 writes across 17 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 12 reads | ~36210 tok |
+| 19:30 | Edited BlindensportGraz/Models.swift | added optional chaining | ~349 |
+| 19:30 | Edited BlindensportGraz/Models.swift | 11→14 lines | ~115 |
+| 19:30 | Edited BlindensportGraz/CloudKitSync.swift | added optional chaining | ~121 |
+| 19:31 | Edited BlindensportGraz/CloudKitSync.swift | modified findUser() | ~144 |
+| 19:31 | Edited BlindensportGraz/CloudKitSync.swift | modified pullMemberships() | ~383 |
+| 19:31 | Edited BlindensportGraz/TeamsViews.swift | added optional chaining | ~172 |
+| 19:31 | Edited BlindensportGraz/TeamsViews.swift | modified ForEach() | ~419 |
+| 19:31 | Edited BlindensportGraz/TeamsViews.swift | modified Section() | ~896 |
+| 19:32 | Edited BlindensportGraz/MemberListView.swift | 8→8 lines | ~103 |
+| 19:32 | Edited BlindensportGraz/MemberListView.swift | modified ForEach() | ~62 |
+| 19:35 | Fixed user-reported bug: Grazer VSC roster members couldn't be assigned to teams since AddMemberView only queried registered Users. Made TeamMembership.user optional + added optional clubMember (exactly one set), added displayName/subtitle helpers, sectioned AddMemberView picker (registered users / roster-only), updated CloudKitSync push/pull for both id fields; asked user to confirm approach first (kept EventParticipation account-only vs. loosening TeamMembership) since it reversed an earlier explicit decision; verified full simulator build (BUILD SUCCEEDED) | Models.swift, CloudKitSync.swift, TeamsViews.swift, MemberListView.swift | success | ~7000 |
+| 19:35 | Session end | — | — | — |
+| 19:33 | Session end: 51 writes across 19 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 14 reads | ~43676 tok |
+| 19:38 | Edited RootCLI/Sources/rootcli/CloudKitS2SClient.swift | modified updateRecord() | ~438 |
+| 19:38 | Created RootCLI/Sources/rootcli/ClubMemberImport.swift | — | ~494 |
+| 19:38 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 3→5 lines | ~47 |
+| 19:38 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added error handling | ~806 |
+| 19:40 | Created RootCLI/members.example.json | — | ~91 |
+| 19:40 | Edited RootCLI/README.md | 5→6 lines | ~116 |
+| 19:40 | Edited RootCLI/README.md | 6→10 lines | ~180 |
+| 19:40 | Edited RootCLI/README.md | 4→5 lines | ~31 |
+| 19:41 | Edited RootCLI/README.md | expanded (+14 lines) | ~337 |
+| 19:43 | Added `rootcli import-members <file.json>` for bulk-creating Grazer VSC roster entries via CloudKit S2S: CloudKitS2SClient.createOrReplaceRecord (forceReplace, idempotent), ClubMemberImport.swift (JSON parsing, lenient joinedAt, UUID validation for optional id), per-entry error handling with summary tally; added members.example.json + README docs (incl. recommending ClubMember join UserIdentity in the write-restriction setup); verified end-to-end against real CloudKit servers with a throwaway key (empty-name skip, invalid-UUID skip, and real signed requests all confirmed); debug + release builds both green | RootCLI/Sources/rootcli/CloudKitS2SClient.swift, ClubMemberImport.swift (new), RootCLI.swift, members.example.json (new), README.md | success | ~4500 |
+| 19:43 | Session end | — | — | — |
+| 19:41 | Session end: 60 writes across 21 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 15 reads | ~48201 tok |
+| 19:44 | Edited BlindensportGraz/Models.swift | expanded (+11 lines) | ~363 |
+| 19:44 | Edited BlindensportGraz/CloudKitSync.swift | modified pushClubMember() | ~72 |
+| 19:44 | Edited BlindensportGraz/CloudKitSync.swift | 23→26 lines | ~389 |
+| 19:44 | Edited BlindensportGraz/ClubMembersViews.swift | 1→2 lines | ~36 |
+| 19:44 | Edited BlindensportGraz/ClubMembersViews.swift | modified Section() | ~77 |
+| 19:44 | Edited BlindensportGraz/ClubMembersViews.swift | 2→3 lines | ~30 |
+| 19:44 | Edited BlindensportGraz/ClubMembersViews.swift | modified Section() | ~78 |
+| 19:44 | Edited BlindensportGraz/ClubMembersViews.swift | modified Button() | ~196 |
+| 19:45 | Edited RootCLI/Sources/rootcli/ClubMemberImport.swift | 16→17 lines | ~182 |
+| 19:45 | Edited RootCLI/Sources/rootcli/RootCLI.swift | modified print() | ~521 |
+| 19:45 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added 1 import(s) | ~68 |
+| 19:45 | Created RootCLI/members.example.json | — | ~102 |
+| 19:45 | Edited RootCLI/README.md | 8→9 lines | ~168 |
+| 19:47 | Edited RootCLI/Sources/rootcli/ClubMemberImport.swift | 5→8 lines | ~97 |
+| 19:47 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added nullish coalescing | ~47 |
+| 19:50 | Split ClubMember.fullName into firstName+lastName (computed fullName extension keeps old call sites working); updated @Query sort (computed props can't be sort keys) and ClubMemberDetailView/AddClubMemberView to two TextFields; propagated to RootCLI import-members (ClubMemberInput, RootCLI.swift, members.example.json, README); caught via live testing that non-optional Decodable fields abort the whole batch decode on one missing key, contradicting the tool's per-entry-skip design — fixed by making firstName/lastName optional with ?? "" fallback; re-verified end-to-end against real CloudKit servers after the fix; both iOS simulator build and RootCLI debug+release builds green | Models.swift, CloudKitSync.swift, ClubMembersViews.swift, RootCLI/Sources/rootcli/ClubMemberImport.swift, RootCLI.swift, members.example.json, README.md | success | ~6000 |
+| 19:50 | Session end | — | — | — |
+| 19:49 | Session end: 75 writes across 22 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 18 reads | ~54609 tok |

@@ -88,11 +88,17 @@ struct TeamDetailView: View {
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [User]
+    @Query private var clubMembers: [ClubMember]
     @State private var showAddMember = false
 
     var availableUsers: [User] {
-        let memberIDs = Set(team.memberships.map { $0.user.id })
+        let memberIDs = Set(team.memberships.compactMap { $0.user?.id })
         return users.filter { !memberIDs.contains($0.id) }
+    }
+
+    var availableClubMembers: [ClubMember] {
+        let memberIDs = Set(team.memberships.compactMap { $0.clubMember?.id })
+        return clubMembers.filter { !memberIDs.contains($0.id) }
     }
 
     var canManageTeams: Bool {
@@ -117,8 +123,8 @@ struct TeamDetailView: View {
                     ForEach(team.memberships) { m in
                         HStack {
                             VStack(alignment: .leading) {
-                                Text(m.user.displayName)
-                                Text("@\(m.user.username)")
+                                Text(m.displayName)
+                                Text(m.subtitle)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -142,34 +148,51 @@ struct TeamDetailView: View {
                 } label: {
                     Label("Mitglied hinzufügen", systemImage: "person.badge.plus")
                 }
-                .disabled(availableUsers.isEmpty || !canManageTeams)
+                .disabled((availableUsers.isEmpty && availableClubMembers.isEmpty) || !canManageTeams)
             }
         }
         .navigationTitle(team.name)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showAddMember) {
-            AddMemberView(team: team, availableUsers: availableUsers)
+            AddMemberView(team: team, availableUsers: availableUsers, availableClubMembers: availableClubMembers)
         }
     }
+}
+
+private enum MemberSelection: Hashable {
+    case user(UUID)
+    case clubMember(UUID)
 }
 
 struct AddMemberView: View {
     let team: Team
     let availableUsers: [User]
+    let availableClubMembers: [ClubMember]
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    @State private var selectedUserID: UUID?
+    @State private var selection: MemberSelection?
     @State private var role = "player"
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Mitglied") {
-                    Picker("Benutzer", selection: $selectedUserID) {
-                        Text("Auswählen").tag(UUID?.none)
-                        ForEach(availableUsers) { user in
-                            Text(user.displayName).tag(Optional(user.id))
+                    Picker("Mitglied", selection: $selection) {
+                        Text("Auswählen").tag(MemberSelection?.none)
+                        if !availableUsers.isEmpty {
+                            Section("Registrierte Benutzer") {
+                                ForEach(availableUsers) { user in
+                                    Text(user.displayName).tag(MemberSelection?.some(.user(user.id)))
+                                }
+                            }
+                        }
+                        if !availableClubMembers.isEmpty {
+                            Section("Grazer VSC Mitglieder ohne Konto") {
+                                ForEach(availableClubMembers) { member in
+                                    Text(member.fullName).tag(MemberSelection?.some(.clubMember(member.id)))
+                                }
+                            }
                         }
                     }
                 }
@@ -190,16 +213,25 @@ struct AddMemberView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Hinzufügen") {
-                        if let id = selectedUserID,
-                           let user = availableUsers.first(where: { $0.id == id }) {
-                            let membership = TeamMembership(user: user, team: team, role: role)
+                        let membership: TeamMembership?
+                        switch selection {
+                        case .user(let id):
+                            guard let user = availableUsers.first(where: { $0.id == id }) else { membership = nil; break }
+                            membership = TeamMembership(user: user, team: team, role: role)
+                        case .clubMember(let id):
+                            guard let member = availableClubMembers.first(where: { $0.id == id }) else { membership = nil; break }
+                            membership = TeamMembership(clubMember: member, team: team, role: role)
+                        case nil:
+                            membership = nil
+                        }
+                        if let membership {
                             modelContext.insert(membership)
                             try? modelContext.save()
                             CloudKitSync.shared.pushMembership(membership)
                         }
                         dismiss()
                     }
-                    .disabled(selectedUserID == nil)
+                    .disabled(selection == nil)
                 }
             }
         }

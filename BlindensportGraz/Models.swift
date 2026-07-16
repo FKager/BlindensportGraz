@@ -50,7 +50,8 @@ final class User {
 @Model
 final class ClubMember {
     @Attribute(.unique) var id: UUID = UUID()
-    var fullName: String = ""
+    var firstName: String = ""
+    var lastName: String = ""
     var address: String = ""
     var email: String = ""
     var phone: String = ""
@@ -58,8 +59,12 @@ final class ClubMember {
     var joinedAt: Date = Date.now
     var notes: String = ""
 
+    @Relationship(deleteRule: .cascade, inverse: \TeamMembership.clubMember)
+    var teamMemberships: [TeamMembership] = []
+
     init(id: UUID = UUID(),
-         fullName: String,
+         firstName: String,
+         lastName: String,
          address: String = "",
          email: String = "",
          phone: String = "",
@@ -67,13 +72,22 @@ final class ClubMember {
          joinedAt: Date = .now,
          notes: String = "") {
         self.id = id
-        self.fullName = fullName
+        self.firstName = firstName
+        self.lastName = lastName
         self.address = address
         self.email = email
         self.phone = phone
         self.memberNumber = memberNumber
         self.joinedAt = joinedAt
         self.notes = notes
+    }
+}
+
+extension ClubMember {
+    /// Combines firstName/lastName for display and matching; not stored, so it
+    /// can't be used as a @Query sort key path — sort by lastName/firstName instead.
+    var fullName: String {
+        [firstName, lastName].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
     }
 }
 
@@ -136,24 +150,44 @@ final class Team {
     }
 }
 
+/// Exactly one of `user`/`clubMember` is set, never both/neither. `user` covers
+/// people with a registered app account; `clubMember` covers Grazer VSC roster
+/// entries who haven't signed into the app yet — teams routinely include both,
+/// since real club rosters aren't 1:1 with app installs.
 @Model
 final class TeamMembership {
     @Attribute(.unique) var id: UUID = UUID()
-    var user: User
+    var user: User?
+    var clubMember: ClubMember?
     var team: Team
     var role: String = "player" // "player", "coach", "assistant"
     var joinedAt: Date = Date.now
 
     init(id: UUID = UUID(),
-         user: User,
+         user: User? = nil,
+         clubMember: ClubMember? = nil,
          team: Team,
          role: String = "player",
          joinedAt: Date = .now) {
         self.id = id
         self.user = user
+        self.clubMember = clubMember
         self.team = team
         self.role = role
         self.joinedAt = joinedAt
+    }
+}
+
+extension TeamMembership {
+    var displayName: String {
+        user?.displayName ?? clubMember?.fullName ?? "?"
+    }
+
+    /// Secondary line under the name in member lists: "@username" for a
+    /// registered account, or a note that this roster entry has none yet.
+    var subtitle: String {
+        if let user { return "@\(user.username)" }
+        return "Grazer VSC – kein Konto"
     }
 }
 

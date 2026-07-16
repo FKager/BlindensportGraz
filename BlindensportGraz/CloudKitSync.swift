@@ -37,7 +37,8 @@ final class CloudKitSync {
 
     func pushMembership(_ membership: TeamMembership) {
         let record = CKRecord(recordType: "TeamMembership", recordID: recordID(membership.id))
-        record["userID"] = membership.user.id.uuidString
+        record["userID"] = membership.user?.id.uuidString
+        record["clubMemberID"] = membership.clubMember?.id.uuidString
         record["teamID"] = membership.team.id.uuidString
         record["role"] = membership.role
         record["joinedAt"] = membership.joinedAt
@@ -109,7 +110,8 @@ final class CloudKitSync {
 
     func pushClubMember(_ member: ClubMember) {
         let record = CKRecord(recordType: "ClubMember", recordID: recordID(member.id))
-        record["fullName"] = member.fullName
+        record["firstName"] = member.firstName
+        record["lastName"] = member.lastName
         record["address"] = member.address
         record["email"] = member.email
         record["phone"] = member.phone
@@ -243,6 +245,12 @@ final class CloudKitSync {
         return try? modelContext.fetch(descriptor).first
     }
 
+    private func findClubMember(_ id: UUID, modelContext: ModelContext) -> ClubMember? {
+        var descriptor = FetchDescriptor<ClubMember>(predicate: #Predicate { $0.id == id })
+        descriptor.fetchLimit = 1
+        return try? modelContext.fetch(descriptor).first
+    }
+
     private func findEvent(_ id: UUID, modelContext: ModelContext) -> SportEvent? {
         var descriptor = FetchDescriptor<SportEvent>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
@@ -290,7 +298,8 @@ final class CloudKitSync {
     private func pullClubMembers(modelContext: ModelContext) async {
         for record in await fetchAll(recordType: "ClubMember") {
             guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
-            let fullName = record["fullName"] as? String ?? ""
+            let firstName = record["firstName"] as? String ?? ""
+            let lastName = record["lastName"] as? String ?? ""
             let address = record["address"] as? String ?? ""
             let email = record["email"] as? String ?? ""
             let phone = record["phone"] as? String ?? ""
@@ -301,15 +310,17 @@ final class CloudKitSync {
             var descriptor = FetchDescriptor<ClubMember>(predicate: #Predicate { $0.id == id })
             descriptor.fetchLimit = 1
             if let existing = try? modelContext.fetch(descriptor).first {
-                existing.fullName = fullName
+                existing.firstName = firstName
+                existing.lastName = lastName
                 existing.address = address
                 existing.email = email
                 existing.phone = phone
                 existing.memberNumber = memberNumber
                 existing.notes = notes
             } else {
-                let member = ClubMember(id: id, fullName: fullName, address: address, email: email,
-                                         phone: phone, memberNumber: memberNumber, joinedAt: joinedAt, notes: notes)
+                let member = ClubMember(id: id, firstName: firstName, lastName: lastName, address: address,
+                                         email: email, phone: phone, memberNumber: memberNumber,
+                                         joinedAt: joinedAt, notes: notes)
                 modelContext.insert(member)
             }
         }
@@ -339,10 +350,14 @@ final class CloudKitSync {
     private func pullMemberships(modelContext: ModelContext) async {
         for record in await fetchAll(recordType: "TeamMembership") {
             guard let id = UUID(uuidString: record.recordID.recordName),
-                  let userIDString = record["userID"] as? String, let userID = UUID(uuidString: userIDString),
                   let teamIDString = record["teamID"] as? String, let teamID = UUID(uuidString: teamIDString),
-                  let user = findUser(userID, modelContext: modelContext),
                   let team = findTeam(teamID, modelContext: modelContext) else { continue }
+            let user = (record["userID"] as? String).flatMap { UUID(uuidString: $0) }
+                .flatMap { findUser($0, modelContext: modelContext) }
+            let clubMember = (record["clubMemberID"] as? String).flatMap { UUID(uuidString: $0) }
+                .flatMap { findClubMember($0, modelContext: modelContext) }
+            // Exactly one side must resolve — a membership with neither is orphaned data.
+            guard user != nil || clubMember != nil else { continue }
             let role = record["role"] as? String ?? "player"
             let joinedAt = record["joinedAt"] as? Date ?? .now
 
@@ -351,7 +366,7 @@ final class CloudKitSync {
             if let existing = try? modelContext.fetch(descriptor).first {
                 existing.role = role
             } else {
-                let membership = TeamMembership(id: id, user: user, team: team, role: role, joinedAt: joinedAt)
+                let membership = TeamMembership(id: id, user: user, clubMember: clubMember, team: team, role: role, joinedAt: joinedAt)
                 modelContext.insert(membership)
             }
         }

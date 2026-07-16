@@ -25,6 +25,8 @@ struct RootCLI {
             try await runSetRole(rest)
         case "set-root":
             try await runSetRoot(rest)
+        case "import-members":
+            try await runImportMembers(rest)
         case "-h", "--help", "help":
             printUsage()
         default:
@@ -85,15 +87,83 @@ struct RootCLI {
         print("Updated @\(user.stringField("username") ?? identifier): isRoot -> \(flag)")
     }
 
+    private static func runImportMembers(_ args: [String]) async throws {
+        guard args.count == 1 else {
+            throw CLIError.message("Usage: rootcli import-members <file.json>")
+        }
+        let inputs = try ClubMemberImport.loadRecords(from: args[0])
+        guard !inputs.isEmpty else {
+            print("No members found in \(args[0]).")
+            return
+        }
+
+        let client = try makeClient()
+        var succeeded = 0
+        var failed = 0
+
+        for input in inputs {
+            let firstName = (input.firstName ?? "").trimmingCharacters(in: .whitespaces)
+            let lastName = (input.lastName ?? "").trimmingCharacters(in: .whitespaces)
+            let fullName = [firstName, lastName].filter { !$0.isEmpty }.joined(separator: " ")
+            guard !firstName.isEmpty, !lastName.isEmpty else {
+                print("Skipped an entry with an empty firstName or lastName.")
+                failed += 1
+                continue
+            }
+
+            let recordName: String
+            if let providedID = input.id {
+                guard UUID(uuidString: providedID) != nil else {
+                    print("Skipped \(fullName): id '\(providedID)' is not a valid UUID (the app only reads UUID record names).")
+                    failed += 1
+                    continue
+                }
+                recordName = providedID
+            } else {
+                recordName = UUID().uuidString
+            }
+
+            let joinedAt = ClubMemberImport.parseJoinedAt(input.joinedAt) ?? Date()
+            let fields: [String: Any] = [
+                "firstName": ["value": firstName],
+                "lastName": ["value": lastName],
+                "address": ["value": input.address ?? ""],
+                "email": ["value": input.email ?? ""],
+                "phone": ["value": input.phone ?? ""],
+                "memberNumber": ["value": input.memberNumber ?? ""],
+                "notes": ["value": input.notes ?? ""],
+                "joinedAt": ["value": Int64(joinedAt.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
+            ]
+
+            do {
+                try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: fields)
+                print("Imported \(fullName) (\(recordName))")
+                succeeded += 1
+            } catch {
+                print("Failed to import \(fullName): \(error)")
+                failed += 1
+            }
+        }
+
+        print("Done: \(succeeded) imported, \(failed) failed, out of \(inputs.count).")
+    }
+
     private static func printUsage() {
         print("""
-        rootcli — manage BlindensportGraz user roles directly in CloudKit, via
-        Server-to-Server auth. Does not require the app or an account in it.
+        rootcli — manage BlindensportGraz user roles and the Grazer VSC roster
+        directly in CloudKit, via Server-to-Server auth. Does not require the
+        app or an account in it.
 
         USAGE:
           rootcli list
           rootcli set-role <username|displayName|id> <member|coach|admin>
           rootcli set-root <username|displayName|id> <true|false>
+          rootcli import-members <file.json>
+
+        import-members reads a JSON array of club members and creates/updates
+        matching ClubMember records in CloudKit. "firstName" and "lastName" are
+        required; see RootCLI/README.md and RootCLI/members.example.json for
+        the schema.
 
         ENVIRONMENT:
           CLOUDKIT_CONTAINER          default: iCloud.it.a11y.BlindensportGraz

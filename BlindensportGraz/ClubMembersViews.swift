@@ -6,7 +6,8 @@ import SwiftData
 /// (see ClubMember.checkMembership in Models.swift).
 struct ClubMembersListView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \ClubMember.fullName) private var members: [ClubMember]
+    @Query(sort: [SortDescriptor(\ClubMember.lastName), SortDescriptor(\ClubMember.firstName)])
+    private var members: [ClubMember]
     @Query private var users: [User]
     @State private var showAdd = false
 
@@ -88,7 +89,8 @@ struct ClubMemberDetailView: View {
     var body: some View {
         Form {
             Section("Mitglied") {
-                TextField("Name", text: $member.fullName)
+                TextField("Vorname", text: $member.firstName)
+                TextField("Nachname", text: $member.lastName)
                 TextField("Adresse", text: $member.address, axis: .vertical)
                     .lineLimit(2...4)
             }
@@ -122,7 +124,8 @@ struct AddClubMemberView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    @State private var fullName = ""
+    @State private var firstName = ""
+    @State private var lastName = ""
     @State private var address = ""
     @State private var email = ""
     @State private var phone = ""
@@ -134,7 +137,8 @@ struct AddClubMemberView: View {
         NavigationStack {
             Form {
                 Section("Mitglied") {
-                    TextField("Name", text: $fullName)
+                    TextField("Vorname", text: $firstName)
+                    TextField("Nachname", text: $lastName)
                     TextField("Adresse", text: $address, axis: .vertical)
                         .lineLimit(2...4)
                 }
@@ -163,15 +167,16 @@ struct AddClubMemberView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
-                        let member = ClubMember(fullName: fullName, address: address, email: email,
-                                                 phone: phone, memberNumber: memberNumber,
+                        let member = ClubMember(firstName: firstName, lastName: lastName, address: address,
+                                                 email: email, phone: phone, memberNumber: memberNumber,
                                                  joinedAt: joinedAt, notes: notes)
                         modelContext.insert(member)
                         try? modelContext.save()
                         CloudKitSync.shared.pushClubMember(member)
                         dismiss()
                     }
-                    .disabled(fullName.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(firstName.trimmingCharacters(in: .whitespaces).isEmpty ||
+                              lastName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }

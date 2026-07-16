@@ -125,4 +125,25 @@ final class CloudKitS2SClient {
         ]
         return try await send(endpoint: "records/modify", body: body)
     }
+
+    /// Creates a record at `recordName`, or unconditionally overwrites it if one
+    /// already exists there — no recordChangeTag needed, unlike `updateRecord`.
+    /// Used for batch imports, where re-running the same file should just apply
+    /// the current data rather than fail on a stale change tag. Matches the app's
+    /// own push semantics (CloudKitSync's `save(_:)` doesn't check for conflicts
+    /// either), so this stays consistent with what the app itself would do.
+    @discardableResult
+    func createOrReplaceRecord(recordType: String, recordName: String, fields: [String: Any]) async throws -> [String: Any] {
+        let body: [String: Any] = [
+            "operations": [[
+                "operationType": "forceReplace",
+                "record": [
+                    "recordName": recordName,
+                    "recordType": recordType,
+                    "fields": fields
+                ] as [String: Any]
+            ]]
+        ]
+        return try await send(endpoint: "records/modify", body: body)
+    }
 }

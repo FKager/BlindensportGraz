@@ -646,6 +646,168 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-16T16:53:12.615Z"
+    },
+    {
+      "id": "bug-041",
+      "timestamp": "2026-07-16T17:30:41.277Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:30:41.277Z"
+    },
+    {
+      "id": "bug-042",
+      "timestamp": "2026-07-16T17:30:55.820Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:30:55.820Z"
+    },
+    {
+      "id": "bug-043",
+      "timestamp": "2026-07-16T17:31:35.090Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:31:35.090Z"
+    },
+    {
+      "id": "bug-044",
+      "timestamp": "2026-07-16T17:31:57.302Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 52→78 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:31:57.302Z"
+    },
+    {
+      "id": "bug-045",
+      "timestamp": "2026-07-17T00:00:00Z",
+      "error_message": "User-reported: 'I can not assign a member of Grazer VSC to a newly created team. The members are not listed.'",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "TeamMembership.user required a registered User (not the ClubMember roster), and AddMemberView's picker only ever queried [User]. Most Grazer VSC roster entries (ClubMember) have no matching app account, since they're admin-entered roster data, not sign-ups — so they never appeared as assignable team members. Not a code defect so much as a design gap: two separate 'member' concepts (registered User vs. roster ClubMember) with no bridge between them for team assignment.",
+      "fix": "Made TeamMembership.user optional and added an optional TeamMembership.clubMember, exactly one set per membership. Added TeamMembership.displayName/.subtitle computed helpers so rendering code doesn't need to know which side is set. AddMemberView now shows two Picker sections: 'Registrierte Benutzer' and 'Grazer VSC Mitglieder ohne Konto'. CloudKitSync publishes/resolves either userID or clubMemberID on the TeamMembership record. EventParticipation was deliberately left untouched (self-registering for an event still requires an account).",
+      "tags": [
+        "user-reported",
+        "swiftdata",
+        "clubmember",
+        "team-membership",
+        "design-gap"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-17T00:00:00Z"
+    },
+    {
+      "id": "bug-046",
+      "timestamp": "2026-07-16T17:38:57.031Z",
+      "error_message": "Missing error handling in throws",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:38:57.031Z"
+    },
+    {
+      "id": "bug-047",
+      "timestamp": "2026-07-16T17:44:00.364Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 34→45 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:44:00.364Z"
+    },
+    {
+      "id": "bug-048",
+      "timestamp": "2026-07-16T17:44:49.369Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/ClubMembersViews.swift",
+      "root_cause": "Had \"\n    @State private var address = \"",
+      "fix": "Changed to \"\n    @State private var lastName = \"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:44:49.369Z"
+    },
+    {
+      "id": "bug-049",
+      "timestamp": "2026-07-16T17:47:50.116Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/rootcli/ClubMemberImport.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→8 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:47:50.116Z"
+    },
+    {
+      "id": "bug-050",
+      "timestamp": "2026-07-16T17:47:55.053Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-16T17:47:55.053Z"
     }
   ]
 }
