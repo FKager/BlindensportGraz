@@ -131,7 +131,7 @@ final class Team {
     @Relationship(deleteRule: .nullify, inverse: \SportEvent.teams)
     var events: [SportEvent] = []
 
-    @Relationship(deleteRule: .nullify, inverse: \Training.team)
+    @Relationship(deleteRule: .nullify, inverse: \Training.teams)
     var trainings: [Training] = []
 
     @Relationship(deleteRule: .nullify, inverse: \Tournament.teams)
@@ -289,11 +289,14 @@ final class Training {
     var notes: String = ""
     var createdBy: String = ""
     var createdAt: Date = Date.now
-    // nil = visible to everyone; set = scoped to that team's members only.
-    var team: Team?
+    // Empty = visible to everyone; non-empty = scoped to members of any listed team.
+    var teams: [Team] = []
 
     @Relationship(deleteRule: .cascade, inverse: \EventImage.training)
     var images: [EventImage] = []
+
+    @Relationship(deleteRule: .cascade, inverse: \TrainingAttendance.training)
+    var attendances: [TrainingAttendance] = []
 
     init(id: UUID = UUID(),
          title: String,
@@ -305,7 +308,7 @@ final class Training {
          notes: String = "",
          createdBy: String = "",
          createdAt: Date = .now,
-         team: Team? = nil) {
+         teams: [Team] = []) {
         self.id = id
         self.title = title
         self.sport = sport
@@ -316,7 +319,32 @@ final class Training {
         self.notes = notes
         self.createdBy = createdBy
         self.createdAt = createdAt
-        self.team = team
+        self.teams = teams
+    }
+}
+
+/// Attendance record for one team-roster entry (TeamMembership) at one
+/// Training. Created lazily the first time a checkbox is toggled in
+/// TrainingDetailView's "Anwesenheit" section, not upfront for every
+/// assigned member — most trainings will only ever get some members checked.
+@Model
+final class TrainingAttendance {
+    @Attribute(.unique) var id: UUID = UUID()
+    var training: Training
+    var membership: TeamMembership
+    var attended: Bool = false
+    var recordedAt: Date = Date.now
+
+    init(id: UUID = UUID(),
+         training: Training,
+         membership: TeamMembership,
+         attended: Bool = false,
+         recordedAt: Date = .now) {
+        self.id = id
+        self.training = training
+        self.membership = membership
+        self.attended = attended
+        self.recordedAt = recordedAt
     }
 }
 

@@ -70,7 +70,16 @@ final class CloudKitSync {
         record["notes"] = training.notes
         record["createdBy"] = training.createdBy
         record["createdAt"] = training.createdAt
-        record["teamID"] = training.team?.id.uuidString
+        record["teamIDs"] = training.teams.map { $0.id.uuidString }
+        save(record)
+    }
+
+    func pushTrainingAttendance(_ attendance: TrainingAttendance) {
+        let record = CKRecord(recordType: "TrainingAttendance", recordID: recordID(attendance.id))
+        record["trainingID"] = attendance.training.id.uuidString
+        record["membershipID"] = attendance.membership.id.uuidString
+        record["attended"] = attendance.attended
+        record["recordedAt"] = attendance.recordedAt
         save(record)
     }
 
@@ -213,6 +222,7 @@ final class CloudKitSync {
         await pullTournaments(modelContext: modelContext)
         await pullEventImages(modelContext: modelContext)
         await pullParticipations(modelContext: modelContext)
+        await pullTrainingAttendances(modelContext: modelContext)
         try? modelContext.save()
     }
 
@@ -265,6 +275,12 @@ final class CloudKitSync {
 
     private func findTournament(_ id: UUID, modelContext: ModelContext) -> Tournament? {
         var descriptor = FetchDescriptor<Tournament>(predicate: #Predicate { $0.id == id })
+        descriptor.fetchLimit = 1
+        return try? modelContext.fetch(descriptor).first
+    }
+
+    private func findMembership(_ id: UUID, modelContext: ModelContext) -> TeamMembership? {
+        var descriptor = FetchDescriptor<TeamMembership>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
         return try? modelContext.fetch(descriptor).first
     }
@@ -416,8 +432,7 @@ final class CloudKitSync {
             let notes = record["notes"] as? String ?? ""
             let createdBy = record["createdBy"] as? String ?? ""
             let createdAt = record["createdAt"] as? Date ?? .now
-            let teamID = (record["teamID"] as? String).flatMap { UUID(uuidString: $0) }
-            let team = findTeam(teamID, modelContext: modelContext)
+            let teams = findTeams(record["teamIDs"] as? [String] ?? [], modelContext: modelContext)
 
             var descriptor = FetchDescriptor<Training>(predicate: #Predicate { $0.id == id })
             descriptor.fetchLimit = 1
@@ -429,13 +444,36 @@ final class CloudKitSync {
                 existing.durationMinutes = durationMinutes
                 existing.focusArea = focusArea
                 existing.notes = notes
-                existing.team = team
+                existing.teams = teams
             } else {
                 let training = Training(id: id, title: title, sport: sport, location: location,
                                          startDate: startDate, durationMinutes: durationMinutes,
                                          focusArea: focusArea, notes: notes, createdBy: createdBy,
-                                         createdAt: createdAt, team: team)
+                                         createdAt: createdAt, teams: teams)
                 modelContext.insert(training)
+            }
+        }
+    }
+
+    private func pullTrainingAttendances(modelContext: ModelContext) async {
+        for record in await fetchAll(recordType: "TrainingAttendance") {
+            guard let id = UUID(uuidString: record.recordID.recordName),
+                  let trainingIDString = record["trainingID"] as? String, let trainingID = UUID(uuidString: trainingIDString),
+                  let training = findTraining(trainingID, modelContext: modelContext),
+                  let membershipIDString = record["membershipID"] as? String, let membershipID = UUID(uuidString: membershipIDString),
+                  let membership = findMembership(membershipID, modelContext: modelContext) else { continue }
+            let attended = record["attended"] as? Bool ?? false
+            let recordedAt = record["recordedAt"] as? Date ?? .now
+
+            var descriptor = FetchDescriptor<TrainingAttendance>(predicate: #Predicate { $0.id == id })
+            descriptor.fetchLimit = 1
+            if let existing = try? modelContext.fetch(descriptor).first {
+                existing.attended = attended
+                existing.recordedAt = recordedAt
+            } else {
+                let attendance = TrainingAttendance(id: id, training: training, membership: membership,
+                                                     attended: attended, recordedAt: recordedAt)
+                modelContext.insert(attendance)
             }
         }
     }

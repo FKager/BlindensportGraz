@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-16T18:36:11.210Z
-> Files: 43 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-17T18:52:07.391Z
+> Files: 44 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -25,6 +25,7 @@
 ## .github/workflows/
 
 - `ios-build-deploy.yml` — CI: iOS Build and Deploy (~1894 tok)
+- `ios-device-deploy.yml` — CI: iOS Device Deploy (~717 tok)
 
 ## BlindensportGraz.xcodeproj/
 
@@ -47,20 +48,20 @@
 - `AccountView.swift` — SwiftUI view: AccountView (~2237 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
-- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~723 tok)
+- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~733 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~6688 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~7266 tok)
 - `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~1871 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1055 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1548 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3424 tok)
 - `Info.plist` (~414 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~619 tok)
-- `Models.swift` — Class: User (~3248 tok)
+- `Models.swift` — Class: User; Training.teams now multi-team; new TrainingAttendance model (~3511 tok)
 - `RootView.swift` — SwiftUI view: RootView (~2432 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~3404 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~2942 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~3829 tok)
 
 ## BlindensportGraz/.claude/
 

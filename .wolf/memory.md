@@ -294,3 +294,44 @@
 | 20:37 | User asked for a fastlane lane so they no longer need Xcode GUI. Replaced ios-deploy (old USB UDID, likely incompatible with this CoreDevice-only device) with devicectl install+launch (Apple's own tool, no extra dependency), updated DEVICE_ID to the CoreDevice id confirmed working earlier this session. Validated via `fastlane lanes` (parses, lists correctly) — did NOT attempt a full run, since it would hit the same known sandbox codesign wall (bug-008) pointlessly; the lane's value is for the user's own Terminal, not this session. Not committed — user didn't explicitly ask this time | fastlane/Fastfile | success | ~2000 |
 | 20:37 | Session end | — | — | — |
 | 20:37 | Session end: 86 writes across 23 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 20 reads | ~59896 tok |
+| 20:44 | Session end: 86 writes across 23 files (Models.swift, CloudKitSync.swift, RootView.swift, AccountView.swift, Package.swift) | 20 reads | ~59896 tok |
+
+## Session: 2026-07-17 02:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-17 20:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:39 | Edited BlindensportGraz/Models.swift | 2→2 lines | ~27 |
+| 20:39 | Edited BlindensportGraz/Models.swift | expanded (+28 lines) | ~515 |
+| 20:39 | Edited BlindensportGraz/BlindensportGrazApp.swift | 3→4 lines | ~30 |
+| 20:40 | Edited BlindensportGraz/CloudKitSync.swift | modified pushTrainingAttendance() | ~167 |
+| 20:40 | Edited BlindensportGraz/CloudKitSync.swift | modified findTournament() | ~151 |
+| 20:40 | Edited BlindensportGraz/CloudKitSync.swift | modified pullTrainingAttendances() | ~715 |
+| 20:40 | Edited BlindensportGraz/CloudKitSync.swift | 4→5 lines | ~80 |
+| 20:40 | Edited BlindensportGraz/TrainingsViews.swift | 3→3 lines | ~38 |
+| 20:40 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~334 |
+| 20:41 | Edited BlindensportGraz/TrainingsViews.swift | first() → contains() | ~48 |
+| 20:41 | Edited BlindensportGraz/TrainingsViews.swift | added nullish coalescing | ~342 |
+| 20:41 | Edited BlindensportGraz/TrainingsViews.swift | added nullish coalescing | ~496 |
+| 20:41 | Edited BlindensportGraz/TrainingsViews.swift | modified attendance() | ~376 |
+| 20:41 | Edited BlindensportGraz/TrainingsViews.swift | 5→5 lines | ~79 |
+| 20:42 | Verified xcodebuild (iphonesimulator, CODE_SIGNING_ALLOWED=NO) | Models.swift, CloudKitSync.swift, TrainingsViews.swift, BlindensportGrazApp.swift | BUILD SUCCEEDED | ~200 |
+| 20:42 | Session end: 14 writes across 4 files (Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 6 reads | ~21478 tok |
+| 20:51 | Edited BlindensportGraz/TrainingsViews.swift | added 1 import(s) | ~13 |
+| 20:51 | Edited BlindensportGraz/TrainingsViews.swift | 2→2 lines | ~29 |
+| 20:52 | Created .github/workflows/ios-device-deploy.yml | — | ~717 |
+| 20:52 | Session end: 17 writes across 5 files (Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift, ios-device-deploy.yml) | 10 reads | ~25963 tok |
+
+## Session: 2026-07-17 20:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-17 20:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

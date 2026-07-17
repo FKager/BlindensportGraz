@@ -6,7 +6,7 @@ struct AddTrainingView: View {
      let currentUser: User?
 
      @Environment(\.modelContext) private var modelContext
-      @Environment(\.dismiss) private var dismiss
+        @Environment(\.dismiss) private var dismiss
       @Query private var allTeams: [Team]
 
        @State private var title = ""
@@ -16,7 +16,7 @@ struct AddTrainingView: View {
        @State private var durationMinutes = 90
        @State private var focusArea = ""
        @State private var notes = ""
-       @State private var selectedTeamID: UUID?
+       @State private var selectedTeamIDs: Set<UUID> = []
        @State private var includesTime = true
 
     let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
@@ -49,13 +49,29 @@ struct AddTrainingView: View {
                     TextField("Schwerpunkt", text: $focusArea)
                    }
                 if !myTeams.isEmpty {
-                    Section("Team") {
-                        Picker("Team", selection: $selectedTeamID) {
-                            Text("Für alle sichtbar").tag(UUID?.none)
-                            ForEach(myTeams) { team in
-                                Text(team.name).tag(Optional(team.id))
+                    Section("Beteiligte Teams") {
+                        ForEach(myTeams) { team in
+                            Button {
+                                if selectedTeamIDs.contains(team.id) {
+                                    selectedTeamIDs.remove(team.id)
+                                } else {
+                                    selectedTeamIDs.insert(team.id)
+                                }
+                            } label: {
+                                HStack {
+                                    Text(team.name)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    if selectedTeamIDs.contains(team.id) {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(.blue)
+                                    }
+                                }
                             }
                         }
+                        Text("Keine Auswahl = für alle sichtbar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 Section("Notizen") {
@@ -80,7 +96,7 @@ struct AddTrainingView: View {
                             focusArea: focusArea,
                             notes: notes,
                             createdBy: currentUser?.username ?? "",
-                            team: myTeams.first(where: { $0.id == selectedTeamID })
+                            teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
                         )
                         modelContext.insert(training)
                         try? modelContext.save()
@@ -141,7 +157,6 @@ struct TrainingDetailView: View {
      @Environment(\.modelContext) private var modelContext
      @Query private var allTeams: [Team]
      @State private var showMemberList = false
-     @State private var selectedTeamID: UUID?
 
     var isAdmin: Bool {
         currentUser?.role == "admin"
@@ -154,6 +169,23 @@ struct TrainingDetailView: View {
         if user.role == "admin" { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
+    }
+
+    // Every roster entry across all assigned teams, deduped by the underlying
+    // person (a user/clubMember could otherwise show twice if they're in two
+    // teams both assigned to this training).
+    var allMemberships: [TeamMembership] {
+        var seenKeys = Set<UUID>()
+        var result: [TeamMembership] = []
+        for team in training.teams {
+            for membership in team.memberships {
+                let key = membership.user?.id ?? membership.clubMember?.id ?? membership.id
+                if seenKeys.insert(key).inserted {
+                    result.append(membership)
+                }
+            }
+        }
+        return result.sorted { $0.displayName < $1.displayName }
     }
 
     var body: some View {
@@ -170,15 +202,42 @@ struct TrainingDetailView: View {
                Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
                TextField("Schwerpunkt", text: $training.focusArea)
               }
-           Section("Team") {
-               Picker("Team", selection: $selectedTeamID) {
-                   Text("Für alle sichtbar").tag(UUID?.none)
+           if !myTeams.isEmpty {
+               Section("Beteiligte Teams") {
                    ForEach(myTeams) { team in
-                       Text(team.name).tag(Optional(team.id))
+                       Button {
+                           if training.teams.contains(where: { $0.id == team.id }) {
+                               training.teams.removeAll { $0.id == team.id }
+                           } else {
+                               training.teams.append(team)
+                           }
+                       } label: {
+                           HStack {
+                               Text(team.name)
+                                   .foregroundStyle(.primary)
+                               Spacer()
+                               if training.teams.contains(where: { $0.id == team.id }) {
+                                   Image(systemName: "checkmark")
+                                       .foregroundStyle(.blue)
+                               }
+                           }
+                       }
                    }
+                   Text("Keine Auswahl = für alle sichtbar")
+                       .font(.caption)
+                       .foregroundStyle(.secondary)
                }
-               .onChange(of: selectedTeamID) { _, newValue in
-                   training.team = myTeams.first(where: { $0.id == newValue })
+           }
+           if !allMemberships.isEmpty {
+               Section("Anwesenheit") {
+                   ForEach(allMemberships) { membership in
+                       Toggle(isOn: Binding(
+                           get: { attendance(for: membership)?.attended ?? false },
+                           set: { newValue in setAttendance(newValue, for: membership) }
+                       )) {
+                           Text(membership.displayName)
+                       }
+                   }
                }
            }
            Section("Notizen") {
@@ -200,15 +259,29 @@ struct TrainingDetailView: View {
             }
         }
         .sheet(isPresented: $showMemberList) {
-            MemberListView(itemName: training.title, teams: training.team.map { [$0] } ?? [])
-        }
-        .onAppear {
-            selectedTeamID = training.team?.id
+            MemberListView(itemName: training.title, teams: training.teams)
         }
         .onDisappear {
             try? modelContext.save()
             CloudKitSync.shared.pushTraining(training)
         }
+    }
+
+    private func attendance(for membership: TeamMembership) -> TrainingAttendance? {
+        training.attendances.first { $0.membership.id == membership.id }
+    }
+
+    private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
+        let record: TrainingAttendance
+        if let existing = attendance(for: membership) {
+            existing.attended = attended
+            record = existing
+        } else {
+            record = TrainingAttendance(training: training, membership: membership, attended: attended)
+            modelContext.insert(record)
+        }
+        try? modelContext.save()
+        CloudKitSync.shared.pushTrainingAttendance(record)
     }
 
     private func addImage(_ data: Data) {
@@ -239,7 +312,7 @@ struct TrainingsListView: View {
     var visibleTrainings: [Training] {
         if currentUser?.role == "admin" { return trainings }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
-        return trainings.filter { $0.team == nil || myTeamIDs.contains($0.team!.id) }
+        return trainings.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }
 
     var body: some View {
