@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 1362124,
-    "total_reads": 557,
-    "total_writes": 1941,
+    "total_tokens_estimated": 1364870,
+    "total_reads": 558,
+    "total_writes": 1946,
     "total_sessions": 11,
-    "anatomy_hits": 526,
+    "anatomy_hits": 527,
     "anatomy_misses": 31,
     "repeated_reads_blocked": 449,
-    "estimated_savings_vs_bare_cli": 1437119
+    "estimated_savings_vs_bare_cli": 1437319
   },
   "sessions": [
     {
@@ -13955,6 +13955,102 @@
         "writes_count": 17,
         "repeated_reads_blocked": 3,
         "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-07-17-2054",
+      "started": "2026-07-17T18:54:41.880Z",
+      "ended": "2026-07-17T19:26:55.411Z",
+      "reads": [],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 548,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 548,
+        "reads_count": 0,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-07-17-2054",
+      "started": "2026-07-17T18:54:41.880Z",
+      "ended": "2026-07-17T19:53:28.426Z",
+      "reads": [],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 548,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 548,
+        "reads_count": 0,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-07-17-2054",
+      "started": "2026-07-17T18:54:41.880Z",
+      "ended": "2026-07-17T19:54:20.198Z",
+      "reads": [],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 548,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 548,
+        "reads_count": 0,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-07-17-2054",
+      "started": "2026-07-17T18:54:41.880Z",
+      "ended": "2026-07-17T19:56:18.774Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 511,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 548,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 43,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 511,
+        "output_tokens_estimated": 591,
+        "reads_count": 1,
+        "writes_count": 2,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],

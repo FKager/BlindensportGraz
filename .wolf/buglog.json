@@ -992,6 +992,22 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-07-17T18:41:21.388Z"
+    },
+    {
+      "id": "bug-062",
+      "timestamp": "2026-07-17T19:56:15.586Z",
+      "error_message": "Wrong reference: identi should be identity",
+      "file": "download_certificate.sh",
+      "root_cause": "Used \"identi\" instead of \"identity\"",
+      "fix": "Changed identi → identity",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-17T19:56:15.586Z"
     }
   ]
 }

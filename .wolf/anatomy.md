@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-17T18:52:07.391Z
-> Files: 44 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-17T20:07:24.650Z
+> Files: 45 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ./
 
@@ -10,6 +10,7 @@
 - `.mcp.json` (~58 tok)
 - `CLAUDE.md` — OpenWolf (~129 tok)
 - `CLAUDE.mdes` — Requirements (~91 tok)
+- `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
 - `profile.plist` (~0 tok)
 - `project.yml` (~419 tok)
 
@@ -25,7 +26,7 @@
 ## .github/workflows/
 
 - `ios-build-deploy.yml` — CI: iOS Build and Deploy (~1894 tok)
-- `ios-device-deploy.yml` — CI: iOS Device Deploy (~717 tok)
+- `ios-device-deploy.yml` — CI: iOS Device Deploy (~2144 tok)
 
 ## BlindensportGraz.xcodeproj/
 
