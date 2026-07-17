@@ -20,8 +20,8 @@ struct AddTournamentView: View {
                 
         let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
         
-// A    d                           mins manage every team, not just ones they personally joined — a team
-    // they just c      reated via AddTeamView has no TeamMembership for them yet, so
+// Admins manage every team, not just ones they personally joined — a team
+    // they just created via AddTeamView has no TeamMembership for them yet, so
     // without this bypass it could never be assigned to anything.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
@@ -188,6 +188,26 @@ struct TournamentDetailView: View {
        return allTeams.filter { myTeamIDs.contains($0.id) }
    }
 
+    // Every roster entry across all assigned teams, deduped by the underlying
+    // person — mirrors TrainingDetailView.allMemberships.
+    var allMemberships: [TeamMembership] {
+        var seenKeys = Set<UUID>()
+        var result: [TeamMembership] = []
+        for team in tournament.teams {
+            for membership in team.memberships {
+                let key = membership.user?.id ?? membership.clubMember?.id ?? membership.id
+                if seenKeys.insert(key).inserted {
+                    result.append(membership)
+                }
+            }
+        }
+        return result.sorted { $0.displayName < $1.displayName }
+    }
+
+    var attendedMemberships: [TeamMembership] {
+        allMemberships.filter { attendance(for: $0)?.attended == true }
+    }
+
 var body: some View {
     Form {
         EventImagesSection(images: tournament.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
@@ -235,6 +255,18 @@ var body: some View {
                     .foregroundStyle(.secondary)
             }
         }
+        if !allMemberships.isEmpty {
+            Section("Anwesenheit") {
+                ForEach(allMemberships) { membership in
+                    Toggle(isOn: Binding(
+                        get: { attendance(for: membership)?.attended ?? false },
+                        set: { newValue in setAttendance(newValue, for: membership) }
+                    )) {
+                        Text(membership.displayName)
+                    }
+                }
+            }
+        }
         Section("Notizen") {
             TextField("Notizen", text: $tournament.notes, axis: .vertical)
                 .lineLimit(3...6)
@@ -254,13 +286,40 @@ var body: some View {
         }
     }
     .sheet(isPresented: $showMemberList) {
-        MemberListView(itemName: tournament.name, teams: tournament.teams)
+        MemberListView(
+            itemName: tournament.name,
+            teams: tournament.teams,
+            exportContext: TeilnehmerlisteContext(
+                betrifft: tournament.name,
+                ort: tournament.venue,
+                startDate: tournament.startDate,
+                endDate: tournament.endDate,
+                attendedMemberships: attendedMemberships
+            )
+        )
     }
     .onDisappear {
         try? modelContext.save()
         CloudKitSync.shared.pushTournament(tournament)
     }
    }
+
+    private func attendance(for membership: TeamMembership) -> TournamentAttendance? {
+        tournament.attendances.first { $0.membership.id == membership.id }
+    }
+
+    private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
+        let record: TournamentAttendance
+        if let existing = attendance(for: membership) {
+            existing.attended = attended
+            record = existing
+        } else {
+            record = TournamentAttendance(tournament: tournament, membership: membership, attended: attended)
+            modelContext.insert(record)
+        }
+        try? modelContext.save()
+        CloudKitSync.shared.pushTournamentAttendance(record)
+    }
 
     private func addImage(_ data: Data) {
         let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", tournament: tournament)

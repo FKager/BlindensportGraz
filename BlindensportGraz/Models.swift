@@ -252,6 +252,9 @@ final class Tournament {
     @Relationship(deleteRule: .cascade, inverse: \EventImage.tournament)
     var images: [EventImage] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \TournamentAttendance.tournament)
+    var attendances: [TournamentAttendance] = []
+
     init(id: UUID = UUID(),
          name: String,
          sport: String,
@@ -274,6 +277,30 @@ final class Tournament {
         self.notes = notes
         self.createdAt = createdAt
         self.teams = teams
+    }
+}
+
+/// Attendance record for one team-roster entry (TeamMembership) at one
+/// Tournament. Mirrors TrainingAttendance — created lazily the first time a
+/// checkbox is toggled in TournamentDetailView's "Anwesenheit" section.
+@Model
+final class TournamentAttendance {
+    @Attribute(.unique) var id: UUID = UUID()
+    var tournament: Tournament
+    var membership: TeamMembership
+    var attended: Bool = false
+    var recordedAt: Date = Date.now
+
+    init(id: UUID = UUID(),
+         tournament: Tournament,
+         membership: TeamMembership,
+         attended: Bool = false,
+         recordedAt: Date = .now) {
+        self.id = id
+        self.tournament = tournament
+        self.membership = membership
+        self.attended = attended
+        self.recordedAt = recordedAt
     }
 }
 

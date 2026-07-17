@@ -188,6 +188,10 @@ struct TrainingDetailView: View {
         return result.sorted { $0.displayName < $1.displayName }
     }
 
+    var attendedMemberships: [TeamMembership] {
+        allMemberships.filter { attendance(for: $0)?.attended == true }
+    }
+
     var body: some View {
         Form {
             EventImagesSection(images: training.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
@@ -259,7 +263,17 @@ struct TrainingDetailView: View {
             }
         }
         .sheet(isPresented: $showMemberList) {
-            MemberListView(itemName: training.title, teams: training.teams)
+            MemberListView(
+                itemName: training.title,
+                teams: training.teams,
+                exportContext: TeilnehmerlisteContext(
+                    betrifft: training.title,
+                    ort: training.location,
+                    startDate: training.startDate,
+                    endDate: training.startDate,
+                    attendedMemberships: attendedMemberships
+                )
+            )
         }
         .onDisappear {
             try? modelContext.save()

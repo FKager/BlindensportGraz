@@ -14,6 +14,10 @@ settings:
     TARGETED_DEVICE_FAMILY: "1,2"
     ENABLE_PREVIEWS: "YES"
     ENABLE_DEBUG_DYLIB: "NO"
+packages:
+  ZIPFoundation:
+    url: https://github.com/weichsel/ZIPFoundation.git
+    from: 0.9.0
 targets:
   BlindensportGraz:
     type: application
@@ -24,6 +28,8 @@ targets:
         excludes:
           - "Info.plist"
           - "BlindensportGraz.entitlements"
+    dependencies:
+      - package: ZIPFoundation
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz

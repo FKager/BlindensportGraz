@@ -98,6 +98,15 @@ final class CloudKitSync {
         save(record)
     }
 
+    func pushTournamentAttendance(_ attendance: TournamentAttendance) {
+        let record = CKRecord(recordType: "TournamentAttendance", recordID: recordID(attendance.id))
+        record["tournamentID"] = attendance.tournament.id.uuidString
+        record["membershipID"] = attendance.membership.id.uuidString
+        record["attended"] = attendance.attended
+        record["recordedAt"] = attendance.recordedAt
+        save(record)
+    }
+
     func pushParticipation(_ participation: EventParticipation) {
         let record = CKRecord(recordType: "EventParticipation", recordID: recordID(participation.id))
         record["userID"] = participation.user.id.uuidString
@@ -223,6 +232,7 @@ final class CloudKitSync {
         await pullEventImages(modelContext: modelContext)
         await pullParticipations(modelContext: modelContext)
         await pullTrainingAttendances(modelContext: modelContext)
+        await pullTournamentAttendances(modelContext: modelContext)
         try? modelContext.save()
     }
 
@@ -509,6 +519,29 @@ final class CloudKitSync {
                                              startDate: startDate, endDate: endDate, maxTeams: maxTeams,
                                              status: status, notes: notes, createdAt: createdAt, teams: teams)
                 modelContext.insert(tournament)
+            }
+        }
+    }
+
+    private func pullTournamentAttendances(modelContext: ModelContext) async {
+        for record in await fetchAll(recordType: "TournamentAttendance") {
+            guard let id = UUID(uuidString: record.recordID.recordName),
+                  let tournamentIDString = record["tournamentID"] as? String, let tournamentID = UUID(uuidString: tournamentIDString),
+                  let tournament = findTournament(tournamentID, modelContext: modelContext),
+                  let membershipIDString = record["membershipID"] as? String, let membershipID = UUID(uuidString: membershipIDString),
+                  let membership = findMembership(membershipID, modelContext: modelContext) else { continue }
+            let attended = record["attended"] as? Bool ?? false
+            let recordedAt = record["recordedAt"] as? Date ?? .now
+
+            var descriptor = FetchDescriptor<TournamentAttendance>(predicate: #Predicate { $0.id == id })
+            descriptor.fetchLimit = 1
+            if let existing = try? modelContext.fetch(descriptor).first {
+                existing.attended = attended
+                existing.recordedAt = recordedAt
+            } else {
+                let attendance = TournamentAttendance(id: id, tournament: tournament, membership: membership,
+                                                       attended: attended, recordedAt: recordedAt)
+                modelContext.insert(attendance)
             }
         }
     }
