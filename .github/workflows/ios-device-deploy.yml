@@ -110,21 +110,16 @@ jobs:
         env:
           IOS_CI_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_CI_PROVISIONING_PROFILE_BASE64 }}
         run: |
-          set -uo pipefail
+          set -euo pipefail
           PP_PATH="$RUNNER_TEMP/profile.mobileprovision"
-          echo "DEBUG: secret length is ${#IOS_CI_PROVISIONING_PROFILE_BASE64} chars"
           echo -n "$IOS_CI_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PP_PATH"
-          echo "DEBUG: decoded file size is $(wc -c < "$PP_PATH") bytes"
-          echo "DEBUG: first 32 bytes hex:"
-          xxd -l 32 "$PP_PATH" || hexdump -C -n 32 "$PP_PATH"
-          echo "DEBUG: file command says:"
-          file "$PP_PATH"
-          echo "DEBUG: running security cms -D directly:"
+
+          # Writing security cms -D's output to a file rather than piping it
+          # straight into PlistBuddy via /dev/stdin intermittently produced
+          # "Cannot parse a NULL or zero-length data" on this runner even though
+          # the decoded .mobileprovision itself was always valid — splitting the
+          # pipeline like this reliably avoids it.
           security cms -D -i "$PP_PATH" > "$RUNNER_TEMP/decoded_profile.plist"
-          CMS_EXIT=$?
-          echo "DEBUG: security cms -D exit code: $CMS_EXIT"
-          echo "DEBUG: decoded plist size: $(wc -c < "$RUNNER_TEMP/decoded_profile.plist") bytes"
-          set -e
 
           mkdir -p ~/Library/MobileDevice/"Provisioning Profiles"
           PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" "$RUNNER_TEMP/decoded_profile.plist")
@@ -134,16 +129,22 @@ jobs:
       - name: Build for device
         run: |
           set -o pipefail
+          # The installed profile is an Xcode-managed "Team Provisioning Profile" —
+          # those are only usable under Automatic signing (project.yml's default);
+          # forcing CODE_SIGN_STYLE=Manual against one fails with "is Xcode managed,
+          # but signing settings require a manually managed profile." Automatic
+          # signing resolves it locally here without any network/Apple ID calls
+          # since a valid, non-expired profile for this exact bundle id + device is
+          # already installed and the matching identity is on the keychain search
+          # list — no -allowProvisioningUpdates needed.
           xcodebuild build \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -configuration Debug \
             -destination "id=$DEVICE_ID" \
             -derivedDataPath "$RUNNER_TEMP/build" \
-            CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Development" \
             DEVELOPMENT_TEAM="5Q57Y9YT8J" \
-            PROVISIONING_PROFILE="$PROFILE_UUID" \
             OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH"
 
       - name: Install and launch on device
