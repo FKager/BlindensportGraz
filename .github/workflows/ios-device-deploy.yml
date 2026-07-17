@@ -112,7 +112,9 @@ jobs:
         run: |
           set -euo pipefail
           PP_PATH="$RUNNER_TEMP/profile.mobileprovision"
+          echo "DEBUG: secret length is ${#IOS_CI_PROVISIONING_PROFILE_BASE64} chars"
           echo -n "$IOS_CI_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PP_PATH"
+          echo "DEBUG: decoded file size is $(wc -c < "$PP_PATH") bytes"
 
           mkdir -p ~/Library/MobileDevice/"Provisioning Profiles"
           PROFILE_UUID=$(security cms -D -i "$PP_PATH" | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
