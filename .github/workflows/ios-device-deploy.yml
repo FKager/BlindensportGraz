@@ -1,0 +1,54 @@
+name: iOS Device Deploy
+
+# Builds a Debug build and installs + launches it directly on your iPhone by
+# running the existing `fastlane device` lane (fastlane/Fastfile), which wraps
+# `xcodebuild` + `xcrun devicectl`.
+#
+# IMPORTANT — this only works on a SELF-HOSTED runner:
+# GitHub's own hosted macOS runners are ephemeral cloud VMs with no physical or
+# network access to a real iPhone. There is no way for a cloud job to install
+# onto your device directly. This workflow must run on a runner registered on
+# the same Mac that has the iPhone connected (USB, or same Wi-Fi network for
+# wireless debugging).
+#
+# One-time setup on that Mac:
+#   1. GitHub repo -> Settings -> Actions -> Runners -> New self-hosted runner
+#      (macOS). Follow the generated ./config.sh command, then either ./run.sh
+#      to run it in a terminal, or `./svc.sh install && ./svc.sh start` to
+#      install it as a launchd service so it survives reboots/logout.
+#   2. Make sure that Mac has Xcode + command line tools, XcodeGen
+#      (`brew install xcodegen`), and fastlane (`brew install fastlane`)
+#      installed for the account the runner runs as.
+#   3. The iPhone must already have been registered once via Xcode's own Run
+#      button — first-time CoreDevice device registration doesn't reliably
+#      complete from a pure CLI/background session (see .wolf/cerebrum.md).
+#   4. The runner needs to execute as the same user whose login keychain holds
+#      the Apple Development signing certificate — project.yml uses
+#      CODE_SIGN_STYLE: Automatic, which resolves against whatever's in that
+#      keychain. No CI signing secrets are needed here (unlike the TestFlight
+#      workflow) since this never leaves your own trusted Mac.
+#   5. If you ever pair a different iPhone, update DEVICE_ID in
+#      fastlane/Fastfile — get the new id from `xcrun devicectl list devices`.
+#
+# Security note: self-hosted runners execute workflow code with full access to
+# that Mac, so this is intentionally scoped to push-to-main/manual dispatch
+# only — never add a `pull_request` trigger to a job that runs on this runner.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  device-deploy:
+    name: Build & install on iPhone
+    runs-on: [self-hosted, macOS]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew list xcodegen &>/dev/null || brew install xcodegen
+
+      - name: Build, install and launch on device
+        run: fastlane device
