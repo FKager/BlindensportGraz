@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 1364870,
-    "total_reads": 558,
-    "total_writes": 1946,
+    "total_tokens_estimated": 1371810,
+    "total_reads": 560,
+    "total_writes": 1955,
     "total_sessions": 11,
-    "anatomy_hits": 527,
+    "anatomy_hits": 529,
     "anatomy_misses": 31,
-    "repeated_reads_blocked": 449,
-    "estimated_savings_vs_bare_cli": 1437319
+    "repeated_reads_blocked": 452,
+    "estimated_savings_vs_bare_cli": 1445186
   },
   "sessions": [
     {
@@ -14051,6 +14051,80 @@
         "writes_count": 2,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-07-17-2054",
+      "started": "2026-07-17T18:54:41.880Z",
+      "ended": "2026-07-17T20:19:42.923Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 511,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 2489,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 548,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/claude/download_certificate.sh",
+          "tokens_estimated": 43,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 2004,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 361,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 289,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 312,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 200,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 3000,
+        "output_tokens_estimated": 3940,
+        "reads_count": 2,
+        "writes_count": 9,
+        "repeated_reads_blocked": 3,
+        "anatomy_lookups": 2
       }
     }
   ],

@@ -348,3 +348,21 @@
 | 22:14 | Edited .github/workflows/ios-device-deploy.yml | expanded (+10 lines) | ~289 |
 | 22:16 | Edited .github/workflows/ios-device-deploy.yml | expanded (+6 lines) | ~312 |
 | 22:17 | Edited .github/workflows/ios-device-deploy.yml | 18→13 lines | ~200 |
+| 22:19 | Session end: 9 writes across 2 files (download_certificate.sh, ios-device-deploy.yml) | 2 reads | ~6940 tok |
+| 22:44 | Edited BlindensportGraz/Models.swift | expanded (+27 lines) | ~473 |
+| 22:44 | Edited BlindensportGraz/BlindensportGrazApp.swift | 3→4 lines | ~33 |
+| 22:45 | Edited BlindensportGraz/CloudKitSync.swift | modified pushTournamentAttendance() | ~135 |
+| 22:45 | Edited BlindensportGraz/CloudKitSync.swift | 2→3 lines | ~45 |
+| 22:45 | Edited BlindensportGraz/CloudKitSync.swift | added nullish coalescing | ~406 |
+| 22:45 | Edited BlindensportGraz/TournamentsViews.swift | 3→3 lines | ~59 |
+| 22:45 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~249 |
+| 22:45 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~224 |
+| 22:45 | Edited BlindensportGraz/TournamentsViews.swift | modified attendance() | ~261 |
+| 22:46 | Edited project.yml | expanded (+6 lines) | ~180 |
+| 22:54 | Created BlindensportGraz/TeilnehmerlisteExport.swift | — | ~2206 |
+| 22:54 | Edited BlindensportGraz/MemberListView.swift | added error handling | ~1133 |
+| 22:54 | Edited BlindensportGraz/TrainingsViews.swift | added optional chaining | ~60 |
+| 22:54 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~135 |
+| 22:54 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~59 |
+| 22:55 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~122 |
+| 22:56 | Created ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/main.swift | — | ~843 |
