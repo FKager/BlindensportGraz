@@ -1008,6 +1008,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-17T19:56:15.586Z"
+    },
+    {
+      "id": "bug-063",
+      "timestamp": "2026-07-17T20:14:17.019Z",
+      "error_message": "Significant refactor of ",
+      "file": ".github/workflows/ios-device-deploy.yml",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8→18 lines (2 removed) | Also: CODE_SIGN_STYLE=Manual \\; PROVISIONING_PROFILE=\"$PROFILE_UUID\" \\",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-17T20:16:54.599Z"
     }
   ]
 }

@@ -344,3 +344,7 @@
 | 22:06 | Created .github/workflows/ios-device-deploy.yml | — | ~2004 |
 | 22:07 | Edited .github/workflows/ios-device-deploy.yml | 14→19 lines | ~361 |
 | 22:07 | Edited .github/workflows/ios-device-deploy.yml | 5→7 lines | ~88 |
+| 22:12 | Edited .github/workflows/ios-device-deploy.yml | 3→5 lines | ~95 |
+| 22:14 | Edited .github/workflows/ios-device-deploy.yml | expanded (+10 lines) | ~289 |
+| 22:16 | Edited .github/workflows/ios-device-deploy.yml | expanded (+6 lines) | ~312 |
+| 22:17 | Edited .github/workflows/ios-device-deploy.yml | 18→13 lines | ~200 |
