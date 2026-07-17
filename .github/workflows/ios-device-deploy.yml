@@ -1,8 +1,7 @@
 name: iOS Device Deploy
 
-# Builds a Debug build and installs + launches it directly on your iPhone by
-# running the existing `fastlane device` lane (fastlane/Fastfile), which wraps
-# `xcodebuild` + `xcrun devicectl`.
+# Builds a Debug build and installs + launches it directly on your iPhone
+# ("iPhone von Franz") via xcodebuild + `xcrun devicectl`.
 #
 # IMPORTANT — this only works on a SELF-HOSTED runner:
 # GitHub's own hosted macOS runners are ephemeral cloud VMs with no physical or
@@ -11,24 +10,39 @@ name: iOS Device Deploy
 # the same Mac that has the iPhone connected (USB, or same Wi-Fi network for
 # wireless debugging).
 #
+# Signing uses a self-contained, ephemeral CI keychain built fresh every run
+# from the IOS_CI_CERTIFICATE_P12_BASE64/IOS_CI_CERTIFICATE_PASSWORD secrets —
+# it deliberately never touches the runner's real login keychain. An earlier
+# version of this workflow relied on automatic signing against the login
+# keychain and failed with `errSecInternalComponent`: a non-interactive
+# launchd process (the self-hosted runner) can't satisfy the Security Agent
+# prompt that protected private key ever needs. A keychain we create and
+# unlock ourselves in-process has no such prompt, which is the standard fix.
+#
 # One-time setup on that Mac:
 #   1. GitHub repo -> Settings -> Actions -> Runners -> New self-hosted runner
 #      (macOS). Follow the generated ./config.sh command, then either ./run.sh
 #      to run it in a terminal, or `./svc.sh install && ./svc.sh start` to
 #      install it as a launchd service so it survives reboots/logout.
-#   2. Make sure that Mac has Xcode + command line tools, XcodeGen
-#      (`brew install xcodegen`), and fastlane (`brew install fastlane`)
-#      installed for the account the runner runs as.
+#   2. Make sure that Mac has Xcode + command line tools and XcodeGen
+#      (`brew install xcodegen`) installed for the account the runner runs as.
 #   3. The iPhone must already have been registered once via Xcode's own Run
 #      button — first-time CoreDevice device registration doesn't reliably
 #      complete from a pure CLI/background session (see .wolf/cerebrum.md).
-#   4. The runner needs to execute as the same user whose login keychain holds
-#      the Apple Development signing certificate — project.yml uses
-#      CODE_SIGN_STYLE: Automatic, which resolves against whatever's in that
-#      keychain. No CI signing secrets are needed here (unlike the TestFlight
-#      workflow) since this never leaves your own trusted Mac.
-#   5. If you ever pair a different iPhone, update DEVICE_ID in
-#      fastlane/Fastfile — get the new id from `xcrun devicectl list devices`.
+#   4. Repo secrets (Settings -> Secrets and variables -> Actions):
+#        IOS_CI_CERTIFICATE_P12_BASE64      base64 of an exported .p12
+#                                            containing the "Apple
+#                                            Development" identity + private
+#                                            key (see download_certificate.sh)
+#        IOS_CI_CERTIFICATE_PASSWORD        password used when exporting that .p12
+#        IOS_CI_PROVISIONING_PROFILE_BASE64 base64 of a Development
+#                                            .mobileprovision for
+#                                            it.a11y.BlindensportGraz that
+#                                            already includes this device's
+#                                            UDID
+#   5. If you ever pair a different iPhone, update DEVICE_ID below (get it
+#      from `xcrun devicectl list devices`) — it must also be in a
+#      provisioning profile you upload as IOS_CI_PROVISIONING_PROFILE_BASE64.
 #
 # Security note: self-hosted runners execute workflow code with full access to
 # that Mac, so this is intentionally scoped to push-to-main/manual dispatch
@@ -38,6 +52,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+
+env:
+  SCHEME: BlindensportGraz
+  PROJECT: BlindensportGraz.xcodeproj
+  BUNDLE_ID: it.a11y.BlindensportGraz
+  DEVICE_ID: BD764E6D-F84C-5BC9-B52C-BB372A7B3190 # "iPhone von Franz" — must match fastlane/Fastfile's DEVICE_ID
 
 jobs:
   device-deploy:
@@ -50,5 +70,81 @@ jobs:
       - name: Install XcodeGen
         run: brew list xcodegen &>/dev/null || brew install xcodegen
 
-      - name: Build, install and launch on device
-        run: fastlane device
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Set up ephemeral CI keychain and import signing identity
+        env:
+          IOS_CI_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CI_CERTIFICATE_P12_BASE64 }}
+          IOS_CI_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CI_CERTIFICATE_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+          echo "KEYCHAIN_PASSWORD=$KEYCHAIN_PASSWORD" >> "$GITHUB_ENV"
+
+          CERT_PATH="$RUNNER_TEMP/ci-cert.p12"
+          KEYCHAIN_PATH="$RUNNER_TEMP/ios-device-deploy.keychain-db"
+          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
+
+          echo -n "$IOS_CI_CERTIFICATE_P12_BASE64" | base64 --decode -o "$CERT_PATH"
+
+          # This is a real, persistent Mac (not an ephemeral cloud runner) — save
+          # the current user keychain search list so cleanup can restore it
+          # exactly, instead of permanently narrowing it to just our two entries.
+          security list-keychains -d user | sed -e 's/^ *"//' -e 's/"$//' > "$RUNNER_TEMP/original-keychains.txt"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          security import "$CERT_PATH" -P "$IOS_CI_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          # We created this keychain and know its password, so this partition-list
+          # call succeeds non-interactively — no Security Agent prompt involved,
+          # unlike the same call against the protected login keychain.
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychains -d user -s "$KEYCHAIN_PATH" $(cat "$RUNNER_TEMP/original-keychains.txt")
+
+          rm -f "$CERT_PATH"
+
+      - name: Install provisioning profile
+        env:
+          IOS_CI_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_CI_PROVISIONING_PROFILE_BASE64 }}
+        run: |
+          set -euo pipefail
+          PP_PATH="$RUNNER_TEMP/profile.mobileprovision"
+          echo -n "$IOS_CI_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PP_PATH"
+
+          mkdir -p ~/Library/MobileDevice/"Provisioning Profiles"
+          PROFILE_UUID=$(security cms -D -i "$PP_PATH" | /usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin)
+          cp "$PP_PATH" ~/Library/MobileDevice/"Provisioning Profiles"/"$PROFILE_UUID.mobileprovision"
+          echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
+
+      - name: Build for device
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Debug \
+            -destination "id=$DEVICE_ID" \
+            -derivedDataPath "$RUNNER_TEMP/build" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Apple Development" \
+            DEVELOPMENT_TEAM="5Q57Y9YT8J" \
+            PROVISIONING_PROFILE="$PROFILE_UUID" \
+            OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH"
+
+      - name: Install and launch on device
+        run: |
+          set -euo pipefail
+          APP_PATH=$(find "$RUNNER_TEMP/build/Build/Products/Debug-iphoneos" -maxdepth 1 -name "*.app" | head -n1)
+          xcrun devicectl device install app --device "$DEVICE_ID" "$APP_PATH"
+          xcrun devicectl device process launch --terminate-existing --device "$DEVICE_ID" "$BUNDLE_ID"
+
+      - name: Clean up keychain
+        if: always()
+        run: |
+          security delete-keychain "$KEYCHAIN_PATH" 2>/dev/null || true
+          if [ -f "$RUNNER_TEMP/original-keychains.txt" ]; then
+            security list-keychains -d user -s $(cat "$RUNNER_TEMP/original-keychains.txt")
+          fi
