@@ -6,6 +6,15 @@ struct RootView: View {
     @State private var currentUser: User?
     @State private var isResolvingAccount = true
     @AppStorage("appleUserIdentifier") private var storedAppleUserIdentifier = ""
+    // appleUserIdentifier is deliberately never synced to CloudKit (privacy —
+    // stays device-local), so if the local store is ever wiped and rebuilt
+    // from a CloudKit resync (see BlindensportGrazApp's ModelContainer
+    // migration fallback), the freshly-pulled User row has no
+    // appleUserIdentifier to match against on this device anymore. This
+    // second key remembers the local `id` (which CloudKit does carry) so
+    // resolveAccount can re-link to the same synced account instead of
+    // silently minting a duplicate one below.
+    @AppStorage("localUserID") private var storedUserID = ""
 
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [User]
@@ -33,7 +42,12 @@ struct RootView: View {
         defer { isResolvingAccount = false }
 
         if !storedAppleUserIdentifier.isEmpty {
-            currentUser = users.first { $0.appleUserIdentifier == storedAppleUserIdentifier }
+            if let match = users.first(where: { $0.appleUserIdentifier == storedAppleUserIdentifier }) {
+                currentUser = match
+                storedUserID = match.id.uuidString
+            } else if !storedUserID.isEmpty, let id = UUID(uuidString: storedUserID) {
+                currentUser = users.first { $0.id == id }
+            }
             triggerBackgroundSync()
             return
         }
@@ -42,6 +56,7 @@ struct RootView: View {
 
         if let existing = users.first(where: { $0.appleUserIdentifier == result.userIdentifier }) {
             storedAppleUserIdentifier = result.userIdentifier
+            storedUserID = existing.id.uuidString
             currentUser = existing
             triggerBackgroundSync()
             return
@@ -72,6 +87,7 @@ struct RootView: View {
         CloudKitSync.shared.pushUserIdentity(user)
 
         storedAppleUserIdentifier = result.userIdentifier
+        storedUserID = user.id.uuidString
         currentUser = user
         triggerBackgroundSync()
     }

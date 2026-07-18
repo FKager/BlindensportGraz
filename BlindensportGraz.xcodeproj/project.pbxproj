@@ -16,6 +16,7 @@
 		38B8B1D161FA86B44AD28F4B /* TN_TeilnehmerInnenliste.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */; };
 		50D5828C877DB7411A16D9E5 /* TeamsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B624DF0AE87AB21129137E98 /* TeamsViews.swift */; };
 		54B2D9923B891FB754B57ECE /* AppleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA89D2EB7A70D732E8D254C5 /* AppleSignIn.swift */; };
+		60A1D7FA23E0AF252C26E319 /* InheritanceQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */; };
 		60D9C878D9FB8EDC6C3BA5E6 /* CloudKitSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB191BC0FAABBA7206E135 /* CloudKitSync.swift */; };
 		746DF2717BB82DDF95BF84B1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A214338B12D918B771269754 /* ZIPFoundation */; };
 		883A941D130AF6840F6283D0 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9DE238BBE5A6E6B45BA118 /* RootView.swift */; };
@@ -48,6 +49,7 @@
 		20BB191BC0FAABBA7206E135 /* CloudKitSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSync.swift; sourceTree = "<group>"; };
 		2C9DE238BBE5A6E6B45BA118 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		40551CD48F48617AB9E75979 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InheritanceQueryTests.swift; sourceTree = "<group>"; };
 		683DD62FB77BF46E434620D2 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		72DD020ECDC368BEE589A742 /* BlindensportGraz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BlindensportGraz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83D9A0D3FAB093A5FAE4A12C /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
@@ -80,6 +82,7 @@
 		3237A39CC43E35FAD349A115 /* BlindensportGrazTests */ = {
 			isa = PBXGroup;
 			children = (
+				46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */,
 				9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */,
 			);
 			path = BlindensportGrazTests;
@@ -262,6 +265,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				60A1D7FA23E0AF252C26E319 /* InheritanceQueryTests.swift in Sources */,
 				C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -284,7 +288,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5Q57Y9YT8J;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -314,7 +318,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -343,7 +347,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -410,7 +414,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -472,7 +476,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -491,7 +495,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5Q57Y9YT8J;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

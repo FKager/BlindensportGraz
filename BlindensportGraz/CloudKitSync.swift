@@ -65,6 +65,7 @@ final class CloudKitSync {
         record["sport"] = training.sport
         record["location"] = training.location
         record["startDate"] = training.startDate
+        record["endDate"] = training.endDate
         record["durationMinutes"] = training.durationMinutes
         record["focusArea"] = training.focusArea
         record["notes"] = training.notes
@@ -74,36 +75,41 @@ final class CloudKitSync {
         save(record)
     }
 
-    func pushTrainingAttendance(_ attendance: TrainingAttendance) {
-        let record = CKRecord(recordType: "TrainingAttendance", recordID: recordID(attendance.id))
-        record["trainingID"] = attendance.training.id.uuidString
+    /// Shared by Training and Tournament attendance (both now backed by the
+    /// single local `Attendance` model) — keeps the two existing CKRecord
+    /// types ("TrainingAttendance"/"TournamentAttendance") for backward
+    /// compatibility with already-synced data, picking the type via
+    /// `attendance.event.kind` rather than introducing a new unified record
+    /// type that old data wouldn't be found under.
+    func pushAttendance(_ attendance: Attendance) {
+        let recordType = attendance.event.kind == "tournament" ? "TournamentAttendance" : "TrainingAttendance"
+        let record = CKRecord(recordType: recordType, recordID: recordID(attendance.id))
+        record["trainingID"] = attendance.event.kind == "tournament" ? nil : attendance.event.id.uuidString
+        record["tournamentID"] = attendance.event.kind == "tournament" ? attendance.event.id.uuidString : nil
         record["membershipID"] = attendance.membership.id.uuidString
         record["attended"] = attendance.attended
         record["recordedAt"] = attendance.recordedAt
         save(record)
     }
 
+    /// Writes both the new (`title`/`location`) and old (`name`/`venue`) field
+    /// names for one release cycle, so a still-updating old client editing the
+    /// same record doesn't clobber the new fields with stale data mid-rollout.
     func pushTournament(_ tournament: Tournament) {
         let record = CKRecord(recordType: "Tournament", recordID: recordID(tournament.id))
-        record["name"] = tournament.name
+        record["title"] = tournament.title
+        record["name"] = tournament.title
         record["sport"] = tournament.sport
-        record["venue"] = tournament.venue
+        record["location"] = tournament.location
+        record["venue"] = tournament.location
         record["startDate"] = tournament.startDate
         record["endDate"] = tournament.endDate
         record["maxTeams"] = tournament.maxTeams
         record["status"] = tournament.status
         record["notes"] = tournament.notes
+        record["createdBy"] = tournament.createdBy
         record["createdAt"] = tournament.createdAt
         record["teamIDs"] = tournament.teams.map { $0.id.uuidString }
-        save(record)
-    }
-
-    func pushTournamentAttendance(_ attendance: TournamentAttendance) {
-        let record = CKRecord(recordType: "TournamentAttendance", recordID: recordID(attendance.id))
-        record["tournamentID"] = attendance.tournament.id.uuidString
-        record["membershipID"] = attendance.membership.id.uuidString
-        record["attended"] = attendance.attended
-        record["recordedAt"] = attendance.recordedAt
         save(record)
     }
 
@@ -160,8 +166,6 @@ final class CloudKitSync {
         record["uploadedBy"] = image.uploadedBy
         record["uploadedAt"] = image.uploadedAt
         record["eventID"] = image.event?.id.uuidString
-        record["trainingID"] = image.training?.id.uuidString
-        record["tournamentID"] = image.tournament?.id.uuidString
 
         let tmpURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(image.id.uuidString).jpg")
         do {
@@ -233,8 +237,7 @@ final class CloudKitSync {
         await pullTournaments(modelContext: modelContext)
         await pullEventImages(modelContext: modelContext)
         await pullParticipations(modelContext: modelContext)
-        await pullTrainingAttendances(modelContext: modelContext)
-        await pullTournamentAttendances(modelContext: modelContext)
+        await pullAttendances(modelContext: modelContext)
         try? modelContext.save()
     }
 
@@ -273,20 +276,11 @@ final class CloudKitSync {
         return try? modelContext.fetch(descriptor).first
     }
 
+    /// SportEvent is polymorphically fetchable — this resolves a Training or
+    /// Tournament id just as well as a plain SportEvent id, since they're all
+    /// the same underlying type hierarchy now.
     private func findEvent(_ id: UUID, modelContext: ModelContext) -> SportEvent? {
         var descriptor = FetchDescriptor<SportEvent>(predicate: #Predicate { $0.id == id })
-        descriptor.fetchLimit = 1
-        return try? modelContext.fetch(descriptor).first
-    }
-
-    private func findTraining(_ id: UUID, modelContext: ModelContext) -> Training? {
-        var descriptor = FetchDescriptor<Training>(predicate: #Predicate { $0.id == id })
-        descriptor.fetchLimit = 1
-        return try? modelContext.fetch(descriptor).first
-    }
-
-    private func findTournament(_ id: UUID, modelContext: ModelContext) -> Tournament? {
-        var descriptor = FetchDescriptor<Tournament>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
         return try? modelContext.fetch(descriptor).first
     }
@@ -443,6 +437,7 @@ final class CloudKitSync {
             let sport = record["sport"] as? String ?? ""
             let location = record["location"] as? String ?? ""
             let startDate = record["startDate"] as? Date ?? .now
+            let endDate = record["endDate"] as? Date ?? startDate
             let durationMinutes = record["durationMinutes"] as? Int ?? 90
             let focusArea = record["focusArea"] as? String ?? ""
             let notes = record["notes"] as? String ?? ""
@@ -457,6 +452,7 @@ final class CloudKitSync {
                 existing.sport = sport
                 existing.location = location
                 existing.startDate = startDate
+                existing.endDate = endDate
                 existing.durationMinutes = durationMinutes
                 existing.focusArea = focusArea
                 existing.notes = notes
@@ -466,30 +462,38 @@ final class CloudKitSync {
                                          startDate: startDate, durationMinutes: durationMinutes,
                                          focusArea: focusArea, notes: notes, createdBy: createdBy,
                                          createdAt: createdAt, teams: teams)
+                training.endDate = endDate
                 modelContext.insert(training)
             }
         }
     }
 
-    private func pullTrainingAttendances(modelContext: ModelContext) async {
-        for record in await fetchAll(recordType: "TrainingAttendance") {
-            guard let id = UUID(uuidString: record.recordID.recordName),
-                  let trainingIDString = record["trainingID"] as? String, let trainingID = UUID(uuidString: trainingIDString),
-                  let training = findTraining(trainingID, modelContext: modelContext),
-                  let membershipIDString = record["membershipID"] as? String, let membershipID = UUID(uuidString: membershipIDString),
-                  let membership = findMembership(membershipID, modelContext: modelContext) else { continue }
-            let attended = record["attended"] as? Bool ?? false
-            let recordedAt = record["recordedAt"] as? Date ?? .now
+    /// Pulls both CKRecord types ("TrainingAttendance"/"TournamentAttendance",
+    /// kept distinct for backward compatibility — see pushAttendance) into the
+    /// single local `Attendance` model, resolving `event` via the now-generic
+    /// `findEvent`.
+    private func pullAttendances(modelContext: ModelContext) async {
+        for recordType in ["TrainingAttendance", "TournamentAttendance"] {
+            let eventIDField = recordType == "TournamentAttendance" ? "tournamentID" : "trainingID"
+            for record in await fetchAll(recordType: recordType) {
+                guard let id = UUID(uuidString: record.recordID.recordName),
+                      let eventIDString = record[eventIDField] as? String, let eventID = UUID(uuidString: eventIDString),
+                      let event = findEvent(eventID, modelContext: modelContext),
+                      let membershipIDString = record["membershipID"] as? String, let membershipID = UUID(uuidString: membershipIDString),
+                      let membership = findMembership(membershipID, modelContext: modelContext) else { continue }
+                let attended = record["attended"] as? Bool ?? false
+                let recordedAt = record["recordedAt"] as? Date ?? .now
 
-            var descriptor = FetchDescriptor<TrainingAttendance>(predicate: #Predicate { $0.id == id })
-            descriptor.fetchLimit = 1
-            if let existing = try? modelContext.fetch(descriptor).first {
-                existing.attended = attended
-                existing.recordedAt = recordedAt
-            } else {
-                let attendance = TrainingAttendance(id: id, training: training, membership: membership,
-                                                     attended: attended, recordedAt: recordedAt)
-                modelContext.insert(attendance)
+                var descriptor = FetchDescriptor<Attendance>(predicate: #Predicate { $0.id == id })
+                descriptor.fetchLimit = 1
+                if let existing = try? modelContext.fetch(descriptor).first {
+                    existing.attended = attended
+                    existing.recordedAt = recordedAt
+                } else {
+                    let attendance = Attendance(id: id, event: event, membership: membership,
+                                                 attended: attended, recordedAt: recordedAt)
+                    modelContext.insert(attendance)
+                }
             }
         }
     }
@@ -497,23 +501,24 @@ final class CloudKitSync {
     private func pullTournaments(modelContext: ModelContext) async {
         for record in await fetchAll(recordType: "Tournament") {
             guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
-            let name = record["name"] as? String ?? ""
+            let title = (record["title"] as? String) ?? (record["name"] as? String) ?? ""
             let sport = record["sport"] as? String ?? ""
-            let venue = record["venue"] as? String ?? ""
+            let location = (record["location"] as? String) ?? (record["venue"] as? String) ?? ""
             let startDate = record["startDate"] as? Date ?? .now
             let endDate = record["endDate"] as? Date ?? .now
             let maxTeams = record["maxTeams"] as? Int ?? 8
             let status = record["status"] as? String ?? "planned"
             let notes = record["notes"] as? String ?? ""
+            let createdBy = record["createdBy"] as? String ?? ""
             let createdAt = record["createdAt"] as? Date ?? .now
             let teams = findTeams(record["teamIDs"] as? [String] ?? [], modelContext: modelContext)
 
             var descriptor = FetchDescriptor<Tournament>(predicate: #Predicate { $0.id == id })
             descriptor.fetchLimit = 1
             if let existing = try? modelContext.fetch(descriptor).first {
-                existing.name = name
+                existing.title = title
                 existing.sport = sport
-                existing.venue = venue
+                existing.location = location
                 existing.startDate = startDate
                 existing.endDate = endDate
                 existing.maxTeams = maxTeams
@@ -521,33 +526,11 @@ final class CloudKitSync {
                 existing.notes = notes
                 existing.teams = teams
             } else {
-                let tournament = Tournament(id: id, name: name, sport: sport, venue: venue,
+                let tournament = Tournament(id: id, title: title, sport: sport, location: location,
                                              startDate: startDate, endDate: endDate, maxTeams: maxTeams,
-                                             status: status, notes: notes, createdAt: createdAt, teams: teams)
+                                             status: status, notes: notes, createdBy: createdBy,
+                                             createdAt: createdAt, teams: teams)
                 modelContext.insert(tournament)
-            }
-        }
-    }
-
-    private func pullTournamentAttendances(modelContext: ModelContext) async {
-        for record in await fetchAll(recordType: "TournamentAttendance") {
-            guard let id = UUID(uuidString: record.recordID.recordName),
-                  let tournamentIDString = record["tournamentID"] as? String, let tournamentID = UUID(uuidString: tournamentIDString),
-                  let tournament = findTournament(tournamentID, modelContext: modelContext),
-                  let membershipIDString = record["membershipID"] as? String, let membershipID = UUID(uuidString: membershipIDString),
-                  let membership = findMembership(membershipID, modelContext: modelContext) else { continue }
-            let attended = record["attended"] as? Bool ?? false
-            let recordedAt = record["recordedAt"] as? Date ?? .now
-
-            var descriptor = FetchDescriptor<TournamentAttendance>(predicate: #Predicate { $0.id == id })
-            descriptor.fetchLimit = 1
-            if let existing = try? modelContext.fetch(descriptor).first {
-                existing.attended = attended
-                existing.recordedAt = recordedAt
-            } else {
-                let attendance = TournamentAttendance(id: id, tournament: tournament, membership: membership,
-                                                       attended: attended, recordedAt: recordedAt)
-                modelContext.insert(attendance)
             }
         }
     }
@@ -568,15 +551,18 @@ final class CloudKitSync {
 
             let uploadedBy = record["uploadedBy"] as? String ?? ""
             let uploadedAt = record["uploadedAt"] as? Date ?? .now
-            let event = (record["eventID"] as? String).flatMap { UUID(uuidString: $0) }
+            // New records only carry eventID; pre-refactor records carried the
+            // FK under trainingID/tournamentID instead — fall back to those so
+            // a device syncing for the first time after this change still
+            // resolves images uploaded before it.
+            let eventIDString = (record["eventID"] as? String)
+                ?? (record["trainingID"] as? String)
+                ?? (record["tournamentID"] as? String)
+            let event = eventIDString.flatMap { UUID(uuidString: $0) }
                 .flatMap { findEvent($0, modelContext: modelContext) }
-            let training = (record["trainingID"] as? String).flatMap { UUID(uuidString: $0) }
-                .flatMap { findTraining($0, modelContext: modelContext) }
-            let tournament = (record["tournamentID"] as? String).flatMap { UUID(uuidString: $0) }
-                .flatMap { findTournament($0, modelContext: modelContext) }
 
             let image = EventImage(id: id, imageData: data, uploadedBy: uploadedBy, uploadedAt: uploadedAt,
-                                    event: event, training: training, tournament: tournament)
+                                    event: event)
             modelContext.insert(image)
         }
     }

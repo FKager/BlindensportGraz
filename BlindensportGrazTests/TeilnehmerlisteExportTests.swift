@@ -33,7 +33,7 @@ final class TeilnehmerlisteExportTests: XCTestCase {
         let schema = Schema([
             User.self, SportEvent.self, Tournament.self, Training.self, Team.self,
             TeamMembership.self, EventParticipation.self, ClubMember.self,
-            EventImage.self, TrainingAttendance.self, TournamentAttendance.self
+            EventImage.self, Attendance.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
         return try ModelContainer(for: schema, configurations: [config])

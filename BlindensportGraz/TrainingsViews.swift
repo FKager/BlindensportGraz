@@ -203,7 +203,9 @@ struct TrainingDetailView: View {
                }
            Section("Planung") {
                DatePicker("Start", selection: $training.startDate)
+                   .onChange(of: training.startDate) { training.recomputeEndDate() }
                Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
+                   .onChange(of: training.durationMinutes) { training.recomputeEndDate() }
                TextField("Schwerpunkt", text: $training.focusArea)
               }
            if !myTeams.isEmpty {
@@ -270,7 +272,7 @@ struct TrainingDetailView: View {
                     betrifft: training.title,
                     ort: training.location,
                     startDate: training.startDate,
-                    endDate: training.startDate,
+                    endDate: training.endDate,
                     attendedMemberships: attendedMemberships
                 )
             )
@@ -281,25 +283,25 @@ struct TrainingDetailView: View {
         }
     }
 
-    private func attendance(for membership: TeamMembership) -> TrainingAttendance? {
+    private func attendance(for membership: TeamMembership) -> Attendance? {
         training.attendances.first { $0.membership.id == membership.id }
     }
 
     private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
-        let record: TrainingAttendance
+        let record: Attendance
         if let existing = attendance(for: membership) {
             existing.attended = attended
             record = existing
         } else {
-            record = TrainingAttendance(training: training, membership: membership, attended: attended)
+            record = Attendance(event: training, membership: membership, attended: attended)
             modelContext.insert(record)
         }
         try? modelContext.save()
-        CloudKitSync.shared.pushTrainingAttendance(record)
+        CloudKitSync.shared.pushAttendance(record)
     }
 
     private func addImage(_ data: Data) {
-        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", training: training)
+        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", event: training)
         modelContext.insert(image)
         try? modelContext.save()
         CloudKitSync.shared.pushEventImage(image)

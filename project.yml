@@ -2,7 +2,7 @@ name: BlindensportGraz
 options:
   bundleIdPrefix: it.a11y
   deploymentTarget:
-    iOS: "17.0"
+    iOS: "26.0"
   createIntermediateGroups: true
   developmentLanguage: de
 settings:
@@ -10,7 +10,7 @@ settings:
     SWIFT_VERSION: "5.0"
     DEVELOPMENT_TEAM: "5Q57Y9YT8J"
     CODE_SIGN_STYLE: Automatic
-    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "26.0"
     TARGETED_DEVICE_FAMILY: "1,2"
     ENABLE_PREVIEWS: "YES"
     ENABLE_DEBUG_DYLIB: "NO"
@@ -22,7 +22,7 @@ targets:
   BlindensportGraz:
     type: application
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "26.0"
     sources:
       - path: BlindensportGraz
         excludes:
@@ -48,7 +48,7 @@ targets:
   BlindensportGrazTests:
     type: bundle.unit-test
     platform: iOS
-    deploymentTarget: "17.0"
+    deploymentTarget: "26.0"
     sources:
       - path: BlindensportGrazTests
     dependencies:

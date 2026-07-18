@@ -8,9 +8,9 @@ struct AddTournamentView: View {
        @Environment(\.dismiss) private var dismiss
        @Query private var allTeams: [Team]
 
-        @State private var name = ""
+        @State private var title = ""
         @State private var sport = "Torball"
-        @State private var venue = "Graz"
+        @State private var location = "Graz"
         @State private var startDate = Date()
         @State private var endDate = Date().addingTimeInterval(86400)
         @State private var maxTeams = 8
@@ -34,11 +34,11 @@ struct AddTournamentView: View {
         NavigationStack {
             Form {
                 Section("Turnier") {
-                    TextField("Name", text: $name)
+                    TextField("Name", text: $title)
                     Picker("Sportart", selection: $sport) {
                         ForEach(sports, id: \.self) { Text($0) }
                           }
-                    TextField("Veranstaltungsort", text: $venue)
+                    TextField("Veranstaltungsort", text: $location)
                      }
                 Section("Zeitraum") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
@@ -90,13 +90,14 @@ struct AddTournamentView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
                         let tournament = Tournament(
-                            name: name,
+                            title: title,
                             sport: sport,
-                            venue: venue,
+                            location: location,
                             startDate: startDate,
                             endDate: endDate,
                             maxTeams: maxTeams,
                             notes: notes,
+                            createdBy: currentUser?.username ?? "",
                             teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
                         )
                         modelContext.insert(tournament)
@@ -109,15 +110,15 @@ struct AddTournamentView: View {
                             object: nil,
                             userInfo: [
                                 "message": "Neues Turnier erstellt!",
-                                "title": name,
+                                "title": title,
                                 "sport": sport,
-                                "venue": venue
+                                "venue": location
                             ]
                         )
 
                         dismiss()
                     }
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }
@@ -139,7 +140,7 @@ struct TournamentRow: View {
   var body: some View {
       VStack(alignment: .leading, spacing: 6) {
           HStack {
-              Text(tournament.name)
+              Text(tournament.title)
                 .font(.headline)
                Spacer()
              Text(tournament.status)
@@ -159,7 +160,7 @@ struct TournamentRow: View {
 
          HStack {
             Image(systemName: "mappin.and.ellipse")
-             Text(tournament.venue)
+             Text(tournament.location)
           }
           .font(.caption)
           .foregroundColor(.secondary)
@@ -213,9 +214,9 @@ var body: some View {
         EventImagesSection(images: tournament.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
 
         Section("Turnier") {
-            TextField("Name", text: $tournament.name)
+            TextField("Name", text: $tournament.title)
             TextField("Sportart", text: $tournament.sport)
-            TextField("Veranstaltungsort", text: $tournament.venue)
+            TextField("Veranstaltungsort", text: $tournament.location)
         }
         Section("Zeitraum") {
             DatePicker("Start", selection: $tournament.startDate)
@@ -272,7 +273,7 @@ var body: some View {
                 .lineLimit(3...6)
         }
     }
-    .navigationTitle(tournament.name)
+    .navigationTitle(tournament.title)
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {
         if isAdmin {
@@ -287,11 +288,11 @@ var body: some View {
     }
     .sheet(isPresented: $showMemberList) {
         MemberListView(
-            itemName: tournament.name,
+            itemName: tournament.title,
             teams: tournament.teams,
             exportContext: TeilnehmerlisteContext(
-                betrifft: tournament.name,
-                ort: tournament.venue,
+                betrifft: tournament.title,
+                ort: tournament.location,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
                 attendedMemberships: attendedMemberships
@@ -304,25 +305,25 @@ var body: some View {
     }
    }
 
-    private func attendance(for membership: TeamMembership) -> TournamentAttendance? {
+    private func attendance(for membership: TeamMembership) -> Attendance? {
         tournament.attendances.first { $0.membership.id == membership.id }
     }
 
     private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
-        let record: TournamentAttendance
+        let record: Attendance
         if let existing = attendance(for: membership) {
             existing.attended = attended
             record = existing
         } else {
-            record = TournamentAttendance(tournament: tournament, membership: membership, attended: attended)
+            record = Attendance(event: tournament, membership: membership, attended: attended)
             modelContext.insert(record)
         }
         try? modelContext.save()
-        CloudKitSync.shared.pushTournamentAttendance(record)
+        CloudKitSync.shared.pushAttendance(record)
     }
 
     private func addImage(_ data: Data) {
-        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", tournament: tournament)
+        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", event: tournament)
         modelContext.insert(image)
         try? modelContext.save()
         CloudKitSync.shared.pushEventImage(image)

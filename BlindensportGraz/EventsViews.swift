@@ -109,7 +109,12 @@ struct AddEventView: View {
 struct EventsListView: View {
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \SportEvent.startDate) private var events: [SportEvent]
+    // SportEvent is polymorphically fetchable (Training/Tournament subclass
+    // it), so this needs the `kind` discriminator filter to exclude them —
+    // otherwise every training and tournament would also show up as an
+    // "Event" here.
+    @Query(filter: #Predicate<SportEvent> { $0.kind == "event" }, sort: \SportEvent.startDate)
+    private var events: [SportEvent]
     @State private var showAdd = false
 
     var canManageEvents: Bool {

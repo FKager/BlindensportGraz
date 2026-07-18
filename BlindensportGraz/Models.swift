@@ -141,14 +141,14 @@ final class Team {
     @Relationship(deleteRule: .cascade, inverse: \TeamMembership.team)
     var memberships: [TeamMembership] = []
 
+    // Never read directly anywhere in the app (SportEvent/Training/Tournament
+    // membership is always navigated the other way, filtering `.teams`
+    // client-side) — this exists so deleteRule: .nullify protects any
+    // assigned event/training/tournament from a dangling Team reference when
+    // a team is deleted (see TeamsViews.swift's delete). One relationship
+    // covers all three now that Training/Tournament are SportEvent subclasses.
     @Relationship(deleteRule: .nullify, inverse: \SportEvent.teams)
-    var events: [SportEvent] = []
-
-    @Relationship(deleteRule: .nullify, inverse: \Training.teams)
-    var trainings: [Training] = []
-
-    @Relationship(deleteRule: .nullify, inverse: \Tournament.teams)
-    var tournaments: [Tournament] = []
+    var sportEvents: [SportEvent] = []
 
     init(id: UUID = UUID(),
          name: String,
@@ -204,9 +204,18 @@ extension TeamMembership {
     }
 }
 
+/// Base type for anything that's fundamentally "a sport happening at a place
+/// and time": a plain SportEvent, or (via the Training/Tournament subclasses
+/// below) a training session or a tournament. `kind` is a stored
+/// discriminator ("event"/"training"/"tournament") — SwiftData's polymorphic
+/// fetch means a plain `@Query`/`FetchDescriptor<SportEvent>` returns
+/// Training/Tournament instances too, so any query that wants ONLY plain
+/// events (EventsListView, DashboardView) must filter on `kind == "event"`.
 @Model
-final class SportEvent {
+@available(iOS 26, *)
+class SportEvent {
     @Attribute(.unique) var id: UUID = UUID()
+    var kind: String = "event" // "event", "training", "tournament"
     var title: String = ""
     var sport: String = ""
     var location: String = ""
@@ -224,6 +233,9 @@ final class SportEvent {
     @Relationship(deleteRule: .cascade, inverse: \EventImage.event)
     var images: [EventImage] = []
 
+    @Relationship(deleteRule: .cascade, inverse: \Attendance.event)
+    var attendances: [Attendance] = []
+
     init(id: UUID = UUID(),
          title: String,
          sport: String,
@@ -248,95 +260,36 @@ final class SportEvent {
 }
 
 @Model
-final class Tournament {
-    @Attribute(.unique) var id: UUID = UUID()
-    var name: String = ""
-    var sport: String = ""
-    var venue: String = ""
-    var startDate: Date = Date.now
-    var endDate: Date = Date.now
+@available(iOS 26, *)
+final class Tournament: SportEvent {
     var maxTeams: Int = 8
     var status: String = "planned" // "planned", "ongoing", "finished"
-    var notes: String = ""
-    var createdAt: Date = Date.now
-    // Empty = visible to everyone; non-empty = scoped to members of any listed team.
-    var teams: [Team] = []
-
-    @Relationship(deleteRule: .cascade, inverse: \EventImage.tournament)
-    var images: [EventImage] = []
-
-    @Relationship(deleteRule: .cascade, inverse: \TournamentAttendance.tournament)
-    var attendances: [TournamentAttendance] = []
 
     init(id: UUID = UUID(),
-         name: String,
+         title: String,
          sport: String,
-         venue: String,
+         location: String,
          startDate: Date,
          endDate: Date,
          maxTeams: Int = 8,
          status: String = "planned",
          notes: String = "",
+         createdBy: String = "",
          createdAt: Date = .now,
          teams: [Team] = []) {
-        self.id = id
-        self.name = name
-        self.sport = sport
-        self.venue = venue
-        self.startDate = startDate
-        self.endDate = endDate
         self.maxTeams = maxTeams
         self.status = status
-        self.notes = notes
-        self.createdAt = createdAt
-        self.teams = teams
-    }
-}
-
-/// Attendance record for one team-roster entry (TeamMembership) at one
-/// Tournament. Mirrors TrainingAttendance — created lazily the first time a
-/// checkbox is toggled in TournamentDetailView's "Anwesenheit" section.
-@Model
-final class TournamentAttendance {
-    @Attribute(.unique) var id: UUID = UUID()
-    var tournament: Tournament
-    var membership: TeamMembership
-    var attended: Bool = false
-    var recordedAt: Date = Date.now
-
-    init(id: UUID = UUID(),
-         tournament: Tournament,
-         membership: TeamMembership,
-         attended: Bool = false,
-         recordedAt: Date = .now) {
-        self.id = id
-        self.tournament = tournament
-        self.membership = membership
-        self.attended = attended
-        self.recordedAt = recordedAt
+        super.init(id: id, title: title, sport: sport, location: location, startDate: startDate,
+                   endDate: endDate, notes: notes, createdBy: createdBy, createdAt: createdAt, teams: teams)
+        self.kind = "tournament"
     }
 }
 
 @Model
-final class Training {
-    @Attribute(.unique) var id: UUID = UUID()
-    var title: String = ""
-    var sport: String = ""
-    var location: String = ""
-    var startDate: Date = Date.now
+@available(iOS 26, *)
+final class Training: SportEvent {
     var durationMinutes: Int = 90
     var focusArea: String = ""
-    var notes: String = ""
-    var createdBy: String = ""
-    var createdAt: Date = Date.now
-    // Empty = visible to everyone; non-empty = scoped to members of any listed team.
-    var teams: [Team] = []
-
-    @Relationship(deleteRule: .cascade, inverse: \EventImage.training)
-    var images: [EventImage] = []
-
-    @Relationship(deleteRule: .cascade, inverse: \TrainingAttendance.training)
-    var attendances: [TrainingAttendance] = []
 
     init(id: UUID = UUID(),
          title: String,
@@ -349,48 +302,52 @@ final class Training {
          createdBy: String = "",
          createdAt: Date = .now,
          teams: [Team] = []) {
-        self.id = id
-        self.title = title
-        self.sport = sport
-        self.location = location
-        self.startDate = startDate
         self.durationMinutes = durationMinutes
         self.focusArea = focusArea
-        self.notes = notes
-        self.createdBy = createdBy
-        self.createdAt = createdAt
-        self.teams = teams
+        let endDate = startDate.addingTimeInterval(TimeInterval(durationMinutes) * 60)
+        super.init(id: id, title: title, sport: sport, location: location, startDate: startDate,
+                   endDate: endDate, notes: notes, createdBy: createdBy, createdAt: createdAt, teams: teams)
+        self.kind = "training"
+    }
+
+    /// Keeps the inherited, stored `endDate` in sync with startDate +
+    /// durationMinutes. SwiftData model properties don't support
+    /// didSet/property-observer sync, so this has to be called explicitly
+    /// wherever startDate or durationMinutes changes — see
+    /// TrainingDetailView's .onChange handlers.
+    func recomputeEndDate() {
+        endDate = startDate.addingTimeInterval(TimeInterval(durationMinutes) * 60)
     }
 }
 
 /// Attendance record for one team-roster entry (TeamMembership) at one
-/// Training. Created lazily the first time a checkbox is toggled in
-/// TrainingDetailView's "Anwesenheit" section, not upfront for every
-/// assigned member — most trainings will only ever get some members checked.
+/// SportEvent — in practice always a Training or Tournament, since only
+/// their detail views have an "Anwesenheit" section. Created lazily the
+/// first time a checkbox is toggled, not upfront for every assigned member.
 @Model
-final class TrainingAttendance {
+final class Attendance {
     @Attribute(.unique) var id: UUID = UUID()
-    var training: Training
+    var event: SportEvent
     var membership: TeamMembership
     var attended: Bool = false
     var recordedAt: Date = Date.now
 
     init(id: UUID = UUID(),
-         training: Training,
+         event: SportEvent,
          membership: TeamMembership,
          attended: Bool = false,
          recordedAt: Date = .now) {
         self.id = id
-        self.training = training
+        self.event = event
         self.membership = membership
         self.attended = attended
         self.recordedAt = recordedAt
     }
 }
 
-/// A photo attached to a SportEvent, Training, or Tournament (exactly one of the
-/// three relationships is set). Randomly featured on that item's detail screen
-/// and browsable as a full gallery — see EventImagesSection.
+/// A photo attached to a SportEvent (or, via inheritance, a Training or
+/// Tournament). Randomly featured on that item's detail screen and browsable
+/// as a full gallery — see EventImagesSection.
 @Model
 final class EventImage {
     @Attribute(.unique) var id: UUID = UUID()
@@ -398,23 +355,17 @@ final class EventImage {
     var uploadedBy: String = ""
     var uploadedAt: Date = Date.now
     var event: SportEvent?
-    var training: Training?
-    var tournament: Tournament?
 
     init(id: UUID = UUID(),
          imageData: Data,
          uploadedBy: String = "",
          uploadedAt: Date = .now,
-         event: SportEvent? = nil,
-         training: Training? = nil,
-         tournament: Tournament? = nil) {
+         event: SportEvent? = nil) {
         self.id = id
         self.imageData = imageData
         self.uploadedBy = uploadedBy
         self.uploadedAt = uploadedAt
         self.event = event
-        self.training = training
-        self.tournament = tournament
     }
 }
 

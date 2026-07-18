@@ -1,11 +1,15 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-18T06:53:02.128Z
-> Files: 48 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-18T07:48:48.292Z
+> Files: 50 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
 - `main.swift` — Struct: Entry (~843 tok)
+
+## ../../.claude/plans/
+
+- `functional-inventing-dream.md` — Make SportEvent the base class for Training and Tournament (~3676 tok)
 
 ## ./
 
@@ -53,21 +57,21 @@
 - `AccountView.swift` — SwiftUI view: AccountView (~2237 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
-- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~743 tok)
+- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1119 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~7860 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~7736 tok)
 - `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~1944 tok)
-- `DashboardView.swift` — SwiftUI view: DashboardView (~1055 tok)
+- `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1548 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~3424 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~3506 tok)
 - `Info.plist` (~414 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1378 tok)
-- `Models.swift` — Class: User (~3915 tok)
-- `RootView.swift` — SwiftUI view: RootView (~2432 tok)
+- `Models.swift` — Class: User (~3731 tok)
+- `RootView.swift` — SwiftUI view: RootView (~2690 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2138 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4018 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~3962 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4032 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~3998 tok)
 
 ## BlindensportGraz/.claude/
 
@@ -75,7 +79,8 @@
 
 ## BlindensportGrazTests/
 
-- `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1643 tok)
+- `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~1626 tok)
+- `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
 
 ## RootCLI/
 

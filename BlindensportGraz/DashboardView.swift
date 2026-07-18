@@ -3,7 +3,10 @@ import SwiftData
 
 struct DashboardView: View {
     let currentUser: User?
-    @Query(sort: \SportEvent.startDate) private var events: [SportEvent]
+    // SportEvent is polymorphically fetchable (Training/Tournament subclass
+    // it) — filter to plain events only, same reasoning as EventsListView.
+    @Query(filter: #Predicate<SportEvent> { $0.kind == "event" }, sort: \SportEvent.startDate)
+    private var events: [SportEvent]
     @Query(sort: \Tournament.startDate) private var tournaments: [Tournament]
     @Query(sort: \Training.startDate) private var trainings: [Training]
     @Query private var teams: [Team]

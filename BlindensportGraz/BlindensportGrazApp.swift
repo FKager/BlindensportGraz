@@ -16,8 +16,7 @@ struct BlindensportGrazApp: App {
             EventParticipation.self,
             ClubMember.self,
             EventImage.self,
-            TrainingAttendance.self,
-            TournamentAttendance.self
+            Attendance.self
                ])
         // Local store only. Cross-user, team-scoped sharing is handled by
         // CloudKitSync's manual public-database push/pull, not SwiftData's
@@ -25,10 +24,35 @@ struct BlindensportGrazApp: App {
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false, cloudKitDatabase: .none)
         do {
             modelContainer = try ModelContainer(for: schema, configurations: [config])
-             } catch {
-               fatalError("Could not create ModelContainer: \(error)")
-              }
+        } catch {
+            // The SportEvent/Training/Tournament inheritance refactor is a
+            // bigger schema shape change than SwiftData's automatic
+            // lightweight migration is documented to support (flattening
+            // independent entities into a class hierarchy). Rather than
+            // crash outright if an existing local store can't open under the
+            // new schema, wipe it and start fresh — CloudKitSync.syncAll()
+            // (triggered on next login via RootView) fully repopulates local
+            // data from CloudKit's public database, which is already the
+            // durable cross-device source of truth. Only truly offline-only,
+            // never-synced local edits would be lost, a narrow edge case
+            // since every local write already pushes to CloudKit
+            // synchronously today.
+            UserDefaults.standard.set("\(Date.now): \(error)", forKey: "lastModelContainerResetReason")
+            BlindensportGrazApp.deleteLocalStore(for: config)
+            do {
+                modelContainer = try ModelContainer(for: schema, configurations: [config])
+            } catch {
+                fatalError("Could not create ModelContainer even after resetting the local store: \(error)")
             }
+        }
+    }
+
+    private static func deleteLocalStore(for config: ModelConfiguration) {
+        let fileManager = FileManager.default
+        for suffix in ["", "-wal", "-shm"] {
+            try? fileManager.removeItem(at: URL(fileURLWithPath: config.url.path + suffix))
+        }
+    }
 
     var body: some Scene {
         WindowGroup {

@@ -1423,6 +1423,150 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-18T06:53:02.134Z"
+    },
+    {
+      "id": "bug-087",
+      "timestamp": "2026-07-18T07:40:24.526Z",
+      "error_message": "Incorrect value in code",
+      "file": "project.yml",
+      "root_cause": "Had \"17.0\"",
+      "fix": "Changed to \"26.0\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-07-18T07:40:32.423Z"
+    },
+    {
+      "id": "bug-088",
+      "timestamp": "2026-07-18T07:41:07.367Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 11→11 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T07:41:07.367Z"
+    },
+    {
+      "id": "bug-089",
+      "timestamp": "2026-07-18T07:43:25.607Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→3 lines (2 removed) | Also: private func findTraining(_ id: UUID, modelContext; var descriptor = FetchDescriptor<Training>(predica",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-18T07:43:33.743Z"
+    },
+    {
+      "id": "bug-090",
+      "timestamp": "2026-07-18T07:44:58.753Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/BlindensportGrazApp.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 24→48 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T07:44:58.753Z"
+    },
+    {
+      "id": "bug-091",
+      "timestamp": "2026-07-18T07:46:25.778Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Had \"\n        @State private var venue = \"",
+      "fix": "Changed to \"\n        @State private var location = \"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T07:46:25.778Z"
+    },
+    {
+      "id": "bug-092",
+      "timestamp": "2026-07-18T07:46:38.094Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T07:46:38.094Z"
+    },
+    {
+      "id": "bug-093",
+      "timestamp": "2026-07-18T07:46:41.762Z",
+      "error_message": "Wrong reference: name should be title",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Used \"name\" instead of \"title\"",
+      "fix": "Changed name → title",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-18T07:46:59.349Z"
+    },
+    {
+      "id": "bug-094",
+      "timestamp": "2026-07-18T07:48:01.086Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Had \"durationMinutes\"",
+      "fix": "Changed to \"endDate\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T07:48:01.086Z"
+    },
+    {
+      "id": "bug-095",
+      "timestamp": "2026-07-18T07:48:48.299Z",
+      "error_message": "Wrong reference: XCTAssertEqual should be XCTAssertTrue",
+      "file": "BlindensportGrazTests/InheritanceQueryTests.swift",
+      "root_cause": "Used \"XCTAssertEqual\" instead of \"XCTAssertTrue\"",
+      "fix": "Changed XCTAssertEqual → XCTAssertTrue",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T07:48:48.299Z"
     }
   ]
 }

@@ -450,3 +450,41 @@
 | 08:49 | Split ClubMember.address into street/zip/city across Models, views, CloudKitSync, export, tests, RootCLI | Models.swift, ClubMembersViews.swift, CloudKitSync.swift, TeilnehmerlisteExport.swift, RootCLI | build + unit tests + simulator launch all verified | ~6000 |
 | 08:51 | Session end: 36 writes across 12 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 18 reads | ~42217 tok |
 | 08:53 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | inline fix | ~16 |
+| 08:54 | Session end: 37 writes across 12 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 18 reads | ~42235 tok |
+| 09:38 | Created ../../.claude/plans/functional-inventing-dream.md | — | ~3921 |
+| 09:40 | Edited project.yml | 2→2 lines | ~10 |
+| 09:40 | Edited project.yml | "17.0" → "26.0" | ~11 |
+| 09:40 | Edited project.yml | "17.0" → "26.0" | ~8 |
+| 09:41 | Edited BlindensportGraz/Models.swift | 11→11 lines | ~181 |
+| 09:41 | Edited BlindensportGraz/Models.swift | modified recomputeEndDate() | ~1498 |
+| 09:41 | Edited BlindensportGraz/Models.swift | 2→3 lines | ~13 |
+| 09:42 | Edited BlindensportGraz/Models.swift | 2→3 lines | ~18 |
+| 09:42 | Edited BlindensportGraz/Models.swift | 2→3 lines | ~17 |
+| 09:42 | Created BlindensportGrazTests/InheritanceQueryTests.swift | — | ~1625 |
+| 09:43 | Edited BlindensportGraz/CloudKitSync.swift | modified pushTraining() | ~756 |
+| 09:43 | Edited BlindensportGraz/CloudKitSync.swift | 5→3 lines | ~40 |
+| 09:43 | Edited BlindensportGraz/CloudKitSync.swift | modified findEvent() | ~128 |
+| 09:43 | Edited BlindensportGraz/CloudKitSync.swift | 8→7 lines | ~101 |
+| 09:44 | Edited BlindensportGraz/CloudKitSync.swift | modified pullAttendances() | ~1823 |
+| 09:44 | Edited BlindensportGraz/BlindensportGrazApp.swift | modified deleteLocalStore() | ~634 |
+| 09:45 | Edited BlindensportGraz/RootView.swift | expanded (+9 lines) | ~187 |
+| 09:45 | Edited BlindensportGraz/RootView.swift | modified first() | ~230 |
+| 09:45 | Edited BlindensportGraz/RootView.swift | 4→5 lines | ~44 |
+| 09:45 | Edited BlindensportGraz/EventsViews.swift | 1→6 lines | ~101 |
+| 09:45 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~128 |
+| 09:46 | Edited BlindensportGraz/TrainingsViews.swift | 7→7 lines | ~86 |
+| 09:46 | Edited BlindensportGraz/TrainingsViews.swift | modified attendance() | ~213 |
+| 09:46 | Edited BlindensportGraz/TournamentsViews.swift | 3→3 lines | ~34 |
+| 09:46 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~89 |
+| 09:46 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~391 |
+| 09:46 | Edited BlindensportGraz/TournamentsViews.swift | 3→3 lines | ~24 |
+| 09:46 | Edited BlindensportGraz/TournamentsViews.swift | 4→4 lines | ~32 |
+| 09:46 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~60 |
+| 09:46 | Edited BlindensportGraz/TournamentsViews.swift | 2→2 lines | ~22 |
+| 09:47 | Edited BlindensportGraz/TournamentsViews.swift | 11→11 lines | ~110 |
+| 09:47 | Edited BlindensportGraz/TournamentsViews.swift | modified attendance() | ~214 |
+| 09:47 | Edited BlindensportGraz/DashboardView.swift | 1→4 lines | ~76 |
+| 09:47 | Edited BlindensportGrazTests/TeilnehmerlisteExportTests.swift | 5→5 lines | ~65 |
+| 09:48 | Edited BlindensportGraz/CloudKitSync.swift | 2→3 lines | ~55 |
+| 09:48 | Edited BlindensportGrazTests/InheritanceQueryTests.swift | inline fix | ~19 |
+| 09:52 | Made SportEvent a real SwiftData base class (Tournament/Training subclass it); bumped deployment target to iOS 26; unified Attendance/EventImage; added local-store-wipe migration fallback | Models.swift, CloudKitSync.swift, BlindensportGrazApp.swift, RootView.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, DashboardView.swift, project.yml | build + all 7 tests pass, simulator install/launch verified | ~45000 |
