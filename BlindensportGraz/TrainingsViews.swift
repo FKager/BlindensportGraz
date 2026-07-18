@@ -157,8 +157,6 @@ struct TrainingDetailView: View {
      @Environment(\.modelContext) private var modelContext
      @Query private var allTeams: [Team]
      @State private var showMemberList = false
-     @State private var exportedFileURL: URL?
-     @State private var showShareSheet = false
 
     var isAdmin: Bool {
         currentUser?.role == "admin"
@@ -264,17 +262,7 @@ struct TrainingDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $showMemberList, onDismiss: {
-            // Presenting the share sheet directly from within MemberListView
-            // (a sheet-on-a-sheet) froze the app under VoiceOver, since
-            // VoiceOver's synchronous accessibility-tree recompute doesn't
-            // play well with a second modal presented while the first is
-            // still resolving — presenting it only after the first sheet has
-            // fully dismissed avoids that entirely.
-            if exportedFileURL != nil {
-                showShareSheet = true
-            }
-        }) {
+        .sheet(isPresented: $showMemberList) {
             MemberListView(
                 itemName: training.title,
                 teams: training.teams,
@@ -284,14 +272,8 @@ struct TrainingDetailView: View {
                     startDate: training.startDate,
                     endDate: training.startDate,
                     attendedMemberships: attendedMemberships
-                ),
-                onExported: { url in exportedFileURL = url }
+                )
             )
-        }
-        .sheet(isPresented: $showShareSheet) {
-            if let exportedFileURL {
-                ActivityView(activityItems: [exportedFileURL])
-            }
         }
         .onDisappear {
             try? modelContext.save()

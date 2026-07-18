@@ -8,15 +8,8 @@ struct MemberListView: View {
     // Only set for Training/Tournament, which track per-member attendance —
     // nil for SportEvent, which has no such concept, so no export button shows.
     var exportContext: TeilnehmerlisteContext? = nil
-    // Called with the generated file once export succeeds; the caller is
-    // responsible for presenting the share sheet itself, after this view has
-    // been dismissed (see onExported below) — presenting a second .sheet
-    // directly on top of this one froze the app under VoiceOver (nested
-    // modal presentation + VoiceOver's synchronous accessibility-tree
-    // recompute don't mix), even though it worked fine with VoiceOver off.
-    var onExported: (URL) -> Void = { _ in }
 
-    @Environment(\.dismiss) private var dismiss
+    @State private var exportedFileURL: URL?
     @State private var exportErrorMessage: String?
 
     private var exportText: String {
@@ -57,10 +50,22 @@ struct MemberListView: View {
                 }
                 if let exportContext, !exportContext.attendedMemberships.isEmpty {
                     Section {
-                        Button {
-                            exportTeilnehmerliste(exportContext)
-                        } label: {
-                            Label("TeilnehmerInnenliste exportieren (Sport Austria)", systemImage: "square.and.arrow.up.on.square")
+                        // Deliberately ShareLink, not a Button that presents a
+                        // hand-rolled UIActivityViewController sheet — the
+                        // latter froze the app under VoiceOver every time,
+                        // even after eliminating sheet-on-sheet nesting,
+                        // while this exact ShareLink pattern (see the text
+                        // export in the toolbar below) works reliably under
+                        // VoiceOver. The file is generated eagerly in .task
+                        // below (it's fast, well under a second) so it's
+                        // ready by the time this renders.
+                        if let exportedFileURL {
+                            ShareLink(item: exportedFileURL) {
+                                Label("TeilnehmerInnenliste exportieren (Sport Austria)", systemImage: "square.and.arrow.up.on.square")
+                            }
+                        } else {
+                            Label("TeilnehmerInnenliste wird vorbereitet …", systemImage: "square.and.arrow.up.on.square")
+                                .foregroundStyle(.secondary)
                         }
                         if exportContext.attendedMemberships.count > TeilnehmerlisteExporter.maxRows {
                             Text("Das Formular fasst nur \(TeilnehmerlisteExporter.maxRows) Personen — es werden nur die ersten \(TeilnehmerlisteExporter.maxRows) von \(exportContext.attendedMemberships.count) exportiert.")
@@ -87,16 +92,14 @@ struct MemberListView: View {
             } message: {
                 Text(exportErrorMessage ?? "")
             }
-        }
-    }
-
-    private func exportTeilnehmerliste(_ context: TeilnehmerlisteContext) {
-        do {
-            let url = try TeilnehmerlisteExporter.export(context: context)
-            dismiss()
-            onExported(url)
-        } catch {
-            exportErrorMessage = error.localizedDescription
+            .task(id: exportContext?.attendedMemberships.map(\.id)) {
+                guard let exportContext, exportedFileURL == nil else { return }
+                do {
+                    exportedFileURL = try TeilnehmerlisteExporter.export(context: exportContext)
+                } catch {
+                    exportErrorMessage = error.localizedDescription
+                }
+            }
         }
     }
 }

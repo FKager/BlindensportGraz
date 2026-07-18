@@ -419,3 +419,15 @@
 | 08:10 | Edited project.yml | expanded (+13 lines) | ~119 |
 | 08:11 | Created BlindensportGrazTests/TeilnehmerlisteExportTests.swift | — | ~1637 |
 | 08:13 | Edited BlindensportGrazTests/TeilnehmerlisteExportTests.swift | inline fix | ~29 |
+| 08:21 | Session end: 12 writes across 6 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 12 reads | ~25532 tok |
+| 08:23 | Edited BlindensportGraz/MemberListView.swift | reduced (-7 lines) | ~82 |
+| 08:23 | Edited BlindensportGraz/MemberListView.swift | modified ShareLink() | ~375 |
+| 08:23 | Edited BlindensportGraz/MemberListView.swift | added optional chaining | ~201 |
+| 08:24 | Edited BlindensportGraz/TrainingsViews.swift | 3→1 lines | ~13 |
+| 08:24 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~141 |
+| 08:24 | Edited BlindensportGraz/TournamentsViews.swift | 3→1 lines | ~12 |
+| 08:24 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~122 |
+| 08:24 | Edited BlindensportGraz/TournamentsViews.swift | 9→4 lines | ~30 |
+| 08:24 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | 4→2 lines | ~11 |
+| 08:25 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | reduced (-10 lines) | ~136 |
+| 08:25 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | removed 29 lines | ~1 |

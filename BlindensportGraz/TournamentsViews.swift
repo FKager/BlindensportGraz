@@ -174,8 +174,6 @@ struct TournamentDetailView: View {
    @Environment(\.modelContext) private var modelContext
    @Query private var allTeams: [Team]
    @State private var showMemberList = false
-   @State private var exportedFileURL: URL?
-   @State private var showShareSheet = false
 
    var isAdmin: Bool {
        currentUser?.role == "admin"
@@ -287,14 +285,7 @@ var body: some View {
             }
         }
     }
-    .sheet(isPresented: $showMemberList, onDismiss: {
-        // See TrainingDetailView's identical onDismiss comment — presenting
-        // the share sheet only after MemberListView has fully dismissed
-        // avoids a sheet-on-sheet freeze under VoiceOver.
-        if exportedFileURL != nil {
-            showShareSheet = true
-        }
-    }) {
+    .sheet(isPresented: $showMemberList) {
         MemberListView(
             itemName: tournament.name,
             teams: tournament.teams,
@@ -304,14 +295,8 @@ var body: some View {
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
                 attendedMemberships: attendedMemberships
-            ),
-            onExported: { url in exportedFileURL = url }
+            )
         )
-    }
-    .sheet(isPresented: $showShareSheet) {
-        if let exportedFileURL {
-            ActivityView(activityItems: [exportedFileURL])
-        }
     }
     .onDisappear {
         try? modelContext.save()

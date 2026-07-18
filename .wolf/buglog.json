@@ -1206,6 +1206,111 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-07-18T08:15:00Z"
+    },
+    {
+      "id": "bug-074",
+      "timestamp": "2026-07-18T06:23:38.814Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/MemberListView.swift",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 13\u21926 lines (8 removed) | Also: Button {; exportTeilnehmerliste(exportContext)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-18T06:23:47.373Z"
+    },
+    {
+      "id": "bug-075",
+      "timestamp": "2026-07-18T06:23:56.325Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/MemberListView.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T06:23:56.325Z"
+    },
+    {
+      "id": "bug-076",
+      "timestamp": "2026-07-18T06:24:15.929Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "15 lines replaced/restructured",
+      "fix": "Rewrote 30\u219214 lines (15 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T06:24:15.929Z"
+    },
+    {
+      "id": "bug-077",
+      "timestamp": "2026-07-18T06:24:29.696Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 21\u219213 lines (9 removed) | Also: .sheet(isPresented: $showShareSheet) {; if let exportedFileURL {",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-18T06:24:40.073Z"
+    },
+    {
+      "id": "bug-078",
+      "timestamp": "2026-07-18T06:25:00.981Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
+      "root_cause": "16 lines replaced/restructured",
+      "fix": "Rewrote 17\u21927 lines (16 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T06:25:00.981Z"
+    },
+    {
+      "id": "bug-079",
+      "timestamp": "2026-07-18T08:26:00Z",
+      "error_message": "User confirmed: plain text ShareLink works fine under VoiceOver on this same screen; only the custom Excel-export UIActivityViewController path freezes",
+      "file": "BlindensportGraz/MemberListView.swift, TeilnehmerlisteExport.swift, TrainingsViews.swift, TournamentsViews.swift",
+      "root_cause": "Isolated to UIActivityViewController presentation (via a hand-rolled ActivityView UIViewControllerRepresentable, shown through .sheet) specifically under VoiceOver -- proven NOT to be TeilnehmerlisteExporter.export() itself (unit-tested, always fast) and NOT explained by the ZIPFoundation compression theory (disproven, see bug-073). SwiftUI native ShareLink, used elsewhere in the exact same view for plain text, works reliably under this users VoiceOver setup, while the custom UIActivityViewController wrapper for a file URL does not -- most likely VoiceOver-driven document preview/QuickLook generation for a real file getting stuck, exact UIKit-internal mechanism not further isolated since a clean fix was available.",
+      "fix": "Replaced the entire custom ActivityView/onExported-callback/parent-onDismiss apparatus with SwiftUI native ShareLink(item: url), the exact mechanism already proven to work for this user. MemberListView now eagerly generates the export file into @State via .task(id:) as soon as exportContext is available (proven near-instant) and shows ShareLink(item: exportedFileURL) once ready, replacing the old tap-a-button-then-wait flow. Deleted the now-dead ActivityView struct and unused UIKit/SwiftUI imports from TeilnehmerlisteExport.swift. TrainingDetailView/TournamentDetailView reverted to a single plain .sheet(isPresented: ) with no onDismiss/exportedFileURL/showShareSheet coordination, since the parent no longer needs to present a second sheet at all. Verified: xcodebuild build succeeded, BlindensportGrazTests all pass, simulator install+launch stays alive. NOT YET re-confirmed by user on the physical device with VoiceOver -- awaiting their retest.",
+      "tags": [
+        "user-reported",
+        "freeze",
+        "hang",
+        "voiceover",
+        "accessibility",
+        "sharelink",
+        "uiactivityviewcontroller",
+        "fix"
+      ],
+      "related_bugs": [
+        "bug-070",
+        "bug-072",
+        "bug-073"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T08:26:00Z"
     }
   ]
 }

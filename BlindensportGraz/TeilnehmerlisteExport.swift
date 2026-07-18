@@ -1,6 +1,4 @@
 import Foundation
-import UIKit
-import SwiftUI
 import ZIPFoundation
 
 /// One row of the exported TeilnehmerInnenliste.
@@ -75,22 +73,12 @@ enum TeilnehmerlisteExporter {
                 data = Data(patched.utf8)
             }
 
-            // Always .none (stored, uncompressed) — never .deflate. ZIPFoundation
-            // 0.9.20's deflate writer (Data.process in Data+Compression.swift)
-            // only sends COMPRESSION_STREAM_FINALIZE when the final chunk it
-            // reads is *smaller* than its 16KB buffer. If an entry's byte size
-            // is an exact multiple of 16384, the last real chunk fills the
-            // buffer exactly, FINALIZE never gets sent, the compression stream
-            // never reaches COMPRESSION_STATUS_END, and the write loop spins
-            // forever re-requesting empty 0-byte chunks — a genuine infinite
-            // loop, 100% CPU, no crash/watchdog report, that hit this app
-            // reliably because xl/worksheets/sheet1.xml is rewritten with
-            // real attendee data every export and its patched byte length
-            // varies per training/tournament — some of the time it lands
-            // exactly on a 16384-byte boundary. Storing entries uncompressed
-            // sidesteps this ZIPFoundation code path entirely; the archive
-            // stays a handful of KB either way since this is a small form
-            // template, not worth chasing further upstream.
+            // .none (stored, uncompressed) rather than .deflate — a defensive
+            // simplification to avoid depending on ZIPFoundation's compression
+            // write path at all. (A specific theory that .deflate caused a
+            // real hang here was investigated and disproven by direct testing
+            // — see .wolf/cerebrum.md 2026-07-18 — but stored is just as
+            // correct and simpler for a form template this small, so it stays.)
             try outputArchive.addEntry(
                 with: entry.path,
                 type: entry.type,
@@ -187,32 +175,4 @@ enum TeilnehmerlisteExporter {
             .replacingOccurrences(of: "<", with: "&lt;")
             .replacingOccurrences(of: ">", with: "&gt;")
     }
-}
-
-/// Wraps UIActivityViewController so the exported .xlsx can go through the
-/// standard iOS share sheet (Mail, Files, AirDrop, …) — SwiftUI's ShareLink
-/// can't be used here since the file is generated on demand when the export
-/// button is tapped, not available up front when the view is built.
-struct ActivityView: UIViewControllerRepresentable {
-    let activityItems: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
-        // On iPad, UIActivityViewController presents as a popover and UIKit
-        // hard-crashes (NSInvalidArgumentException) if its
-        // popoverPresentationController has no sourceView/sourceRect anchor —
-        // this app supports iPad (TARGETED_DEVICE_FAMILY 1,2), so this must
-        // always be set even though iPhone never needs it.
-        if let popover = controller.popoverPresentationController {
-            let rootView = UIApplication.shared.connectedScenes
-                .compactMap { ($0 as? UIWindowScene)?.keyWindow }
-                .first?.rootViewController?.view
-            popover.sourceView = rootView
-            popover.sourceRect = CGRect(x: (rootView?.bounds.midX ?? 0), y: (rootView?.bounds.midY ?? 0), width: 0, height: 0)
-            popover.permittedArrowDirections = []
-        }
-        return controller
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

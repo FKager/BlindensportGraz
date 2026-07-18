@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 1823115,
-    "total_reads": 733,
-    "total_writes": 2028,
+    "total_tokens_estimated": 1848647,
+    "total_reads": 745,
+    "total_writes": 2040,
     "total_sessions": 12,
-    "anatomy_hits": 702,
-    "anatomy_misses": 31,
-    "repeated_reads_blocked": 459,
-    "estimated_savings_vs_bare_cli": 1497881
+    "anatomy_hits": 711,
+    "anatomy_misses": 34,
+    "repeated_reads_blocked": 465,
+    "estimated_savings_vs_bare_cli": 1512826
   },
   "sessions": [
     {
@@ -16106,6 +16106,155 @@
         "writes_count": 8,
         "repeated_reads_blocked": 2,
         "anatomy_lookups": 6
+      }
+    },
+    {
+      "id": "session-2026-07-18-0711",
+      "started": "2026-07-18T05:11:44.213Z",
+      "ended": "2026-07-18T06:21:45.974Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeilnehmerlisteExport.swift",
+          "tokens_estimated": 2438,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 4195,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 1247,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 2426,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/RootView.swift",
+          "tokens_estimated": 2432,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 4018,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/Library/Developer/Xcode/DerivedData/BlindensportGraz-arwtjbakglbyprddpegyopducxsy/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Writing.swift",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/Library/Developer/Xcode/DerivedData/BlindensportGraz-arwtjbakglbyprddpegyopducxsy/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Archive+Helpers.swift",
+          "tokens_estimated": 0,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/Library/Developer/Xcode/DerivedData/BlindensportGraz-arwtjbakglbyprddpegyopducxsy/SourcePackages/checkouts/ZIPFoundation/Sources/ZIPFoundation/Data+Compression.swift",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/project.yml",
+          "tokens_estimated": 461,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/Models.swift",
+          "tokens_estimated": 3756,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/BlindensportGrazApp.swift",
+          "tokens_estimated": 743,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeilnehmerlisteExport.swift",
+          "tokens_estimated": 352,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 251,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 19,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 88,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 52,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 374,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 50,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 284,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeilnehmerlisteExport.swift",
+          "tokens_estimated": 442,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/project.yml",
+          "tokens_estimated": 119,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 1754,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 31,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 21716,
+        "output_tokens_estimated": 3816,
+        "reads_count": 12,
+        "writes_count": 12,
+        "repeated_reads_blocked": 6,
+        "anatomy_lookups": 9
       }
     }
   ],
