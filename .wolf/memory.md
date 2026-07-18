@@ -448,3 +448,5 @@
 | 08:46 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 1→3 lines | ~43 |
 | 08:46 | Edited RootCLI/members.example.json | 1→3 lines | ~20 |
 | 08:49 | Split ClubMember.address into street/zip/city across Models, views, CloudKitSync, export, tests, RootCLI | Models.swift, ClubMembersViews.swift, CloudKitSync.swift, TeilnehmerlisteExport.swift, RootCLI | build + unit tests + simulator launch all verified | ~6000 |
+| 08:51 | Session end: 36 writes across 12 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 18 reads | ~42217 tok |
+| 08:53 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | inline fix | ~16 |

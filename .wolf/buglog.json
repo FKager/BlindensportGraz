@@ -1407,6 +1407,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-18T06:46:29.558Z"
+    },
+    {
+      "id": "bug-086",
+      "timestamp": "2026-07-18T06:53:02.134Z",
+      "error_message": "Wrong reference: fullAddress should be city",
+      "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
+      "root_cause": "Used \"fullAddress\" instead of \"city\"",
+      "fix": "Changed fullAddress → city",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T06:53:02.134Z"
     }
   ]
 }

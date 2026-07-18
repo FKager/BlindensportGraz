@@ -100,7 +100,7 @@ enum TeilnehmerlisteExporter {
         return context.attendedMemberships.map { membership in
             TeilnehmerlisteEntry(
                 name: formattedName(for: membership),
-                wohnort: membership.clubMember?.fullAddress ?? "",
+                wohnort: membership.clubMember?.city ?? "",
                 tage: dayCount
             )
         }
