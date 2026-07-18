@@ -1182,6 +1182,30 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-07-18T07:57:00Z"
+    },
+    {
+      "id": "bug-073",
+      "timestamp": "2026-07-18T08:15:00Z",
+      "error_message": "User-reported (second follow-up): export still freezes after the nested-sheet fix, clarified as freezing immediately on tapping the export button itself, before the member-list sheet ever closes",
+      "file": "BlindensportGraz/TeilnehmerlisteExport.swift, BlindensportGrazTests/TeilnehmerlisteExportTests.swift (new)",
+      "root_cause": "UNKNOWN (not yet found). Ruled out two hypotheses via direct testing: (1) a suspected ZIPFoundation 0.9.20 infinite loop in Data.compress when a file size is an exact multiple of the 16384-byte write-chunk size -- disproven with a standalone SPM test harness exercising the real ZIPFoundation addEntry() across boundary sizes with a semaphore timeout, all completed instantly; (2) that TeilnehmerlisteExporter.export() itself hangs on some realistic input -- disproven with a new BlindensportGrazTests unit test target calling the real in-app export function against realistic German/Austrian names (umlauts, ss, hyphens) across 0-30 attendees, all completed in single-digit milliseconds. The freeze is very likely a live-UI/VoiceOver-runtime issue that cannot be reproduced headlessly -- next step is Simulator reproduction with VoiceOver actually enabled, not further static reasoning about the export function.",
+      "fix": "No fix yet -- root cause still open. Kept the earlier compressionMethod .deflate -> .none change (reasonable defensive simplification, not proven necessary). Added permanent regression-test infrastructure: BlindensportGrazTests target (project.yml) + TeilnehmerlisteExportTests.swift, runnable via xcodebuild test -scheme BlindensportGrazTests -sdk iphonesimulator -- keep this test updated as a first check for any future export-related bug report before assuming the export logic itself is at fault.",
+      "tags": [
+        "user-reported",
+        "freeze",
+        "hang",
+        "voiceover",
+        "accessibility",
+        "unresolved",
+        "zipfoundation",
+        "testing"
+      ],
+      "related_bugs": [
+        "bug-070",
+        "bug-072"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T08:15:00Z"
     }
   ]
 }

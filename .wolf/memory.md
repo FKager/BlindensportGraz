@@ -413,3 +413,9 @@
 | 07:56 | Edited BlindensportGraz/TournamentsViews.swift | 2→4 lines | ~46 |
 | 07:57 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~265 |
 | 07:58 | Fixed VoiceOver freeze on TeilnehmerInnenliste export (nested sheet-on-sheet -> onDismiss handoff) | MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift | build succeeded, simulator launch verified | ~9500 |
+| 07:59 | Session end: 8 writes across 4 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift) | 6 reads | ~17810 tok |
+| 08:01 | Session end: 8 writes across 4 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift) | 6 reads | ~17810 tok |
+| 08:08 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | expanded (+16 lines) | ~412 |
+| 08:10 | Edited project.yml | expanded (+13 lines) | ~119 |
+| 08:11 | Created BlindensportGrazTests/TeilnehmerlisteExportTests.swift | — | ~1637 |
+| 08:13 | Edited BlindensportGrazTests/TeilnehmerlisteExportTests.swift | inline fix | ~29 |

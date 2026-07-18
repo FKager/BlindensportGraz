@@ -75,11 +75,27 @@ enum TeilnehmerlisteExporter {
                 data = Data(patched.utf8)
             }
 
+            // Always .none (stored, uncompressed) — never .deflate. ZIPFoundation
+            // 0.9.20's deflate writer (Data.process in Data+Compression.swift)
+            // only sends COMPRESSION_STREAM_FINALIZE when the final chunk it
+            // reads is *smaller* than its 16KB buffer. If an entry's byte size
+            // is an exact multiple of 16384, the last real chunk fills the
+            // buffer exactly, FINALIZE never gets sent, the compression stream
+            // never reaches COMPRESSION_STATUS_END, and the write loop spins
+            // forever re-requesting empty 0-byte chunks — a genuine infinite
+            // loop, 100% CPU, no crash/watchdog report, that hit this app
+            // reliably because xl/worksheets/sheet1.xml is rewritten with
+            // real attendee data every export and its patched byte length
+            // varies per training/tournament — some of the time it lands
+            // exactly on a 16384-byte boundary. Storing entries uncompressed
+            // sidesteps this ZIPFoundation code path entirely; the archive
+            // stays a handful of KB either way since this is a small form
+            // template, not worth chasing further upstream.
             try outputArchive.addEntry(
                 with: entry.path,
                 type: entry.type,
                 uncompressedSize: Int64(data.count),
-                compressionMethod: entry.type == .file ? .deflate : .none
+                compressionMethod: .none
             ) { position, size in
                 data.subdata(in: Int(position)..<(Int(position) + size))
             }

@@ -23,11 +23,22 @@
 		9D5A272133D57838C1CDDA2A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23F4A5BEF09AA11041EF66B /* Models.swift */; };
 		B16C319D2DF6B4CF7A06C80E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D151B782788860EBA6A7728 /* AccountView.swift */; };
 		B2C39A4AA849017CA2257263 /* TournamentsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88E9971005663999F4668F45 /* TournamentsViews.swift */; };
+		C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */; };
 		DD7024922AB81E5ECA5B4331 /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D658D11752C2F382D2950CC4 /* MemberListView.swift */; };
 		E70BA7534735B83C9AB54A4F /* TeilnehmerlisteExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67CC5BCE3EE5934D74787F2 /* TeilnehmerlisteExport.swift */; };
 		F307DACC2CA8BAD596E2ACB7 /* EventImagesViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207463624BA5593411638F49 /* EventImagesViews.swift */; };
 		FCDFE2E417B840FFCEDC3C46 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40551CD48F48617AB9E75979 /* DashboardView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E9D7C778A45DA922CD38A9ED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 39AFC65C63FD3FCFB6AF0752 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FD918BB36AAA34E94A92C14B;
+			remoteInfo = BlindensportGraz;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		02746C61B9A7503128EDC23F /* EventsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsViews.swift; sourceTree = "<group>"; };
@@ -44,6 +55,8 @@
 		88E9971005663999F4668F45 /* TournamentsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentsViews.swift; sourceTree = "<group>"; };
 		9D151B782788860EBA6A7728 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		9D94F0C24E1AD32118BF8127 /* BlindensportGrazApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindensportGrazApp.swift; sourceTree = "<group>"; };
+		9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeilnehmerlisteExportTests.swift; sourceTree = "<group>"; };
+		B552A78FD57F90E1B967EF64 /* BlindensportGrazTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BlindensportGrazTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B624DF0AE87AB21129137E98 /* TeamsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamsViews.swift; sourceTree = "<group>"; };
 		C67CC5BCE3EE5934D74787F2 /* TeilnehmerlisteExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeilnehmerlisteExport.swift; sourceTree = "<group>"; };
 		D658D11752C2F382D2950CC4 /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
@@ -64,6 +77,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3237A39CC43E35FAD349A115 /* BlindensportGrazTests */ = {
+			isa = PBXGroup;
+			children = (
+				9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */,
+			);
+			path = BlindensportGrazTests;
+			sourceTree = "<group>";
+		};
 		4065556F76DB7C33C3AFCFC8 /* BlindensportGraz */ = {
 			isa = PBXGroup;
 			children = (
@@ -94,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				4065556F76DB7C33C3AFCFC8 /* BlindensportGraz */,
+				3237A39CC43E35FAD349A115 /* BlindensportGrazTests */,
 				7F516426A6BE19C600538AB0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -102,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				72DD020ECDC368BEE589A742 /* BlindensportGraz.app */,
+				B552A78FD57F90E1B967EF64 /* BlindensportGrazTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -117,6 +140,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AC49152E6BEEE5932F92B280 /* BlindensportGrazTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4D68E81AD073A4B456D7BD7A /* Build configuration list for PBXNativeTarget "BlindensportGrazTests" */;
+			buildPhases = (
+				74C34216A3BCAD1B629EEEB4 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A9921C4E09ECAAE35B4A0B72 /* PBXTargetDependency */,
+			);
+			name = BlindensportGrazTests;
+			packageProductDependencies = (
+			);
+			productName = BlindensportGrazTests;
+			productReference = B552A78FD57F90E1B967EF64 /* BlindensportGrazTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		FD918BB36AAA34E94A92C14B /* BlindensportGraz */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8739C88C2A1D7597EF18D1E5 /* Build configuration list for PBXNativeTarget "BlindensportGraz" */;
@@ -146,6 +187,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					AC49152E6BEEE5932F92B280 = {
+						DevelopmentTeam = 5Q57Y9YT8J;
+						ProvisioningStyle = Automatic;
+					};
 					FD918BB36AAA34E94A92C14B = {
 						DevelopmentTeam = 5Q57Y9YT8J;
 						ProvisioningStyle = Automatic;
@@ -171,6 +216,7 @@
 			projectRoot = "";
 			targets = (
 				FD918BB36AAA34E94A92C14B /* BlindensportGraz */,
+				AC49152E6BEEE5932F92B280 /* BlindensportGrazTests */,
 			);
 		};
 /* End PBXProject section */
@@ -212,9 +258,45 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		74C34216A3BCAD1B629EEEB4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		A9921C4E09ECAAE35B4A0B72 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FD918BB36AAA34E94A92C14B /* BlindensportGraz */;
+			targetProxy = E9D7C778A45DA922CD38A9ED /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		14F28381DC1B32B7620C4A06 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5Q57Y9YT8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = it.a11y.BlindensportGrazTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlindensportGraz.app/BlindensportGraz";
+			};
+			name = Debug;
+		};
 		2D82D9DAA9CB03702D3F0A36 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -402,9 +484,38 @@
 			};
 			name = Release;
 		};
+		FAD1CE457FE1AD03DDEF815C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5Q57Y9YT8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = it.a11y.BlindensportGrazTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BlindensportGraz.app/BlindensportGraz";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		4D68E81AD073A4B456D7BD7A /* Build configuration list for PBXNativeTarget "BlindensportGrazTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				14F28381DC1B32B7620C4A06 /* Debug */,
+				FAD1CE457FE1AD03DDEF815C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		8739C88C2A1D7597EF18D1E5 /* Build configuration list for PBXNativeTarget "BlindensportGraz" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

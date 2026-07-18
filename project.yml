@@ -45,3 +45,16 @@ targets:
         CODE_SIGNING_REQUIRED: "YES"
         CODE_SIGNING_ALLOWED: "YES"
         CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGraz.entitlements
+  BlindensportGrazTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: BlindensportGrazTests
+    dependencies:
+      - target: BlindensportGraz
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: "5Q57Y9YT8J"
