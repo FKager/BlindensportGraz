@@ -181,7 +181,21 @@ struct ActivityView: UIViewControllerRepresentable {
     let activityItems: [Any]
 
     func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
+        // On iPad, UIActivityViewController presents as a popover and UIKit
+        // hard-crashes (NSInvalidArgumentException) if its
+        // popoverPresentationController has no sourceView/sourceRect anchor —
+        // this app supports iPad (TARGETED_DEVICE_FAMILY 1,2), so this must
+        // always be set even though iPhone never needs it.
+        if let popover = controller.popoverPresentationController {
+            let rootView = UIApplication.shared.connectedScenes
+                .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+                .first?.rootViewController?.view
+            popover.sourceView = rootView
+            popover.sourceRect = CGRect(x: (rootView?.bounds.midX ?? 0), y: (rootView?.bounds.midY ?? 0), width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+        return controller
     }
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}

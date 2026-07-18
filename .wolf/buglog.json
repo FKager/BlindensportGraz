@@ -1104,6 +1104,42 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-17T20:54:56.889Z"
+    },
+    {
+      "id": "bug-069",
+      "timestamp": "2026-07-18T05:15:45.932Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T05:15:45.932Z"
+    },
+    {
+      "id": "bug-070",
+      "timestamp": "2026-07-18T07:17:00Z",
+      "error_message": "User-reported: 'the export of members of a training is not possible. The app crashes.'",
+      "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
+      "root_cause": "ActivityView (UIViewControllerRepresentable wrapping UIActivityViewController, used by MemberListView.exportTeilnehmerliste to share the generated .xlsx via a second .sheet) never configured popoverPresentationController.sourceView/sourceRect. UIActivityViewController defaults to popover presentation style on iPad (this app supports iPad via TARGETED_DEVICE_FAMILY '1,2' in project.yml) — with no popover anchor, UIKit throws an uncaught NSInvalidArgumentException at presentation time and the app hard-crashes. This is a UIKit-level fatal exception, not a thrown Swift Error, so MemberListView.exportTeilnehmerliste's existing do/catch (bug-066) could never have caught it — the export/zip-generation logic itself was already verified correct (see cerebrum 2026-07-17 TeilnehmerInnenliste entry).",
+      "fix": "ActivityView.makeUIViewController now sets popover.sourceView (to the key window's root view) and popover.sourceRect (centered) whenever controller.popoverPresentationController is non-nil, with permittedArrowDirections = [] since there's no specific anchor button to point at. Verified: clean xcodebuild for iphonesimulator (BUILD SUCCEEDED, 0 errors), then installed + launched on an iPad Air (M4) simulator and confirmed the process stays alive (no immediate crash). Could not drive the full export flow end-to-end in-session since the app requires real Apple ID / CloudKit sign-in, not automatable from a coding sandbox.",
+      "tags": [
+        "user-reported",
+        "crash",
+        "uikit",
+        "ipad",
+        "popover",
+        "share-sheet",
+        "uiactivityviewcontroller"
+      ],
+      "related_bugs": ["bug-066"],
+      "occurrences": 1,
+      "last_seen": "2026-07-18T07:17:00Z"
     }
   ]
 }

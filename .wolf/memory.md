@@ -366,3 +366,12 @@
 | 22:54 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~59 |
 | 22:55 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~122 |
 | 22:56 | Created ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/main.swift | — | ~843 |
+| 23:00 | Session end: 26 writes across 11 files (download_certificate.sh, ios-device-deploy.yml, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift) | 9 reads | ~33801 tok |
+
+## Session: 2026-07-18 07:11
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 07:15 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | added optional chaining | ~329 |
+| 07:17 | Fixed TeilnehmerInnenliste export crash (ActivityView popover sourceView) | BlindensportGraz/TeilnehmerlisteExport.swift | build succeeded, iPad simulator launch verified crash-free | ~4200 |
+| 07:18 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 3 reads | ~7696 tok |

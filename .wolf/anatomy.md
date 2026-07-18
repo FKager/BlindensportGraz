@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-17T20:56:55.322Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-18T05:15:45.926Z
 > Files: 47 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -65,7 +65,7 @@
 - `Models.swift` — Class: User (~3756 tok)
 - `RootView.swift` — SwiftUI view: RootView (~2432 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
-- `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2206 tok)
+- `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2438 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4018 tok)
 - `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~3962 tok)
 
