@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-18T05:15:45.926Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-18T05:57:00.872Z
 > Files: 47 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -61,13 +61,13 @@
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1548 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3424 tok)
 - `Info.plist` (~414 tok)
-- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1176 tok)
+- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1247 tok)
 - `Models.swift` — Class: User (~3756 tok)
 - `RootView.swift` — SwiftUI view: RootView (~2432 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2438 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4018 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~3962 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4180 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~4195 tok)
 
 ## BlindensportGraz/.claude/
 

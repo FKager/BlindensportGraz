@@ -375,3 +375,41 @@
 | 07:15 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | added optional chaining | ~329 |
 | 07:17 | Fixed TeilnehmerInnenliste export crash (ActivityView popover sourceView) | BlindensportGraz/TeilnehmerlisteExport.swift | build succeeded, iPad simulator launch verified crash-free | ~4200 |
 | 07:18 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 3 reads | ~7696 tok |
+| 07:24 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 4 reads | ~10122 tok |
+| 07:38 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:38 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:46 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:46 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:47 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:47 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:47 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:47 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:48 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:48 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:48 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:49 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:49 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:49 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:49 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:50 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:50 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:50 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:50 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:51 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:51 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:51 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:52 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:52 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:52 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:52 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:53 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:53 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:53 | Session end: 1 writes across 1 files (TeilnehmerlisteExport.swift) | 5 reads | ~12554 tok |
+| 07:56 | Edited BlindensportGraz/MemberListView.swift | expanded (+6 lines) | ~235 |
+| 07:56 | Edited BlindensportGraz/MemberListView.swift | 6→1 lines | ~18 |
+| 07:56 | Edited BlindensportGraz/MemberListView.swift | modified exportTeilnehmerliste() | ~82 |
+| 07:56 | Edited BlindensportGraz/TrainingsViews.swift | 2→4 lines | ~48 |
+| 07:56 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~349 |
+| 07:56 | Edited BlindensportGraz/TournamentsViews.swift | 2→4 lines | ~46 |
+| 07:57 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~265 |
+| 07:58 | Fixed VoiceOver freeze on TeilnehmerInnenliste export (nested sheet-on-sheet -> onDismiss handoff) | MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift | build succeeded, simulator launch verified | ~9500 |

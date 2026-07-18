@@ -8,9 +8,15 @@ struct MemberListView: View {
     // Only set for Training/Tournament, which track per-member attendance —
     // nil for SportEvent, which has no such concept, so no export button shows.
     var exportContext: TeilnehmerlisteContext? = nil
+    // Called with the generated file once export succeeds; the caller is
+    // responsible for presenting the share sheet itself, after this view has
+    // been dismissed (see onExported below) — presenting a second .sheet
+    // directly on top of this one froze the app under VoiceOver (nested
+    // modal presentation + VoiceOver's synchronous accessibility-tree
+    // recompute don't mix), even though it worked fine with VoiceOver off.
+    var onExported: (URL) -> Void = { _ in }
 
-    @State private var exportedFileURL: URL?
-    @State private var showShareSheet = false
+    @Environment(\.dismiss) private var dismiss
     @State private var exportErrorMessage: String?
 
     private var exportText: String {
@@ -73,11 +79,6 @@ struct MemberListView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showShareSheet) {
-                if let exportedFileURL {
-                    ActivityView(activityItems: [exportedFileURL])
-                }
-            }
             .alert("Export fehlgeschlagen", isPresented: Binding(
                 get: { exportErrorMessage != nil },
                 set: { if !$0 { exportErrorMessage = nil } }
@@ -91,8 +92,9 @@ struct MemberListView: View {
 
     private func exportTeilnehmerliste(_ context: TeilnehmerlisteContext) {
         do {
-            exportedFileURL = try TeilnehmerlisteExporter.export(context: context)
-            showShareSheet = true
+            let url = try TeilnehmerlisteExporter.export(context: context)
+            dismiss()
+            onExported(url)
         } catch {
             exportErrorMessage = error.localizedDescription
         }
