@@ -13,7 +13,9 @@ struct ClubMemberInput: Decodable {
     // whole file's decode, which is what a non-optional String would do.
     var firstName: String?
     var lastName: String?
-    var address: String?
+    var street: String?
+    var zip: String?
+    var city: String?
     var email: String?
     var phone: String?
     var memberNumber: String?

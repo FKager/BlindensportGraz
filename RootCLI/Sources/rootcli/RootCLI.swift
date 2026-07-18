@@ -127,7 +127,9 @@ struct RootCLI {
             let fields: [String: Any] = [
                 "firstName": ["value": firstName],
                 "lastName": ["value": lastName],
-                "address": ["value": input.address ?? ""],
+                "street": ["value": input.street ?? ""],
+                "zip": ["value": input.zip ?? ""],
+                "city": ["value": input.city ?? ""],
                 "email": ["value": input.email ?? ""],
                 "phone": ["value": input.phone ?? ""],
                 "memberNumber": ["value": input.memberNumber ?? ""],

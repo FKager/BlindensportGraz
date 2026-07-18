@@ -52,7 +52,9 @@ final class ClubMember {
     @Attribute(.unique) var id: UUID = UUID()
     var firstName: String = ""
     var lastName: String = ""
-    var address: String = ""
+    var street: String = ""
+    var zip: String = ""
+    var city: String = ""
     var email: String = ""
     var phone: String = ""
     var memberNumber: String = ""
@@ -65,7 +67,9 @@ final class ClubMember {
     init(id: UUID = UUID(),
          firstName: String,
          lastName: String,
-         address: String = "",
+         street: String = "",
+         zip: String = "",
+         city: String = "",
          email: String = "",
          phone: String = "",
          memberNumber: String = "",
@@ -74,7 +78,9 @@ final class ClubMember {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
-        self.address = address
+        self.street = street
+        self.zip = zip
+        self.city = city
         self.email = email
         self.phone = phone
         self.memberNumber = memberNumber
@@ -88,6 +94,13 @@ extension ClubMember {
     /// can't be used as a @Query sort key path — sort by lastName/firstName instead.
     var fullName: String {
         [firstName, lastName].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
+    }
+
+    /// Combines street/zip/city into one display line, e.g. "Hauptstraße 12, 8010 Graz".
+    /// Not stored, mirrors fullName's pattern — can't be used as a @Query sort key.
+    var fullAddress: String {
+        let zipCity = [zip, city].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
+        return [street, zipCity].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
     }
 }
 

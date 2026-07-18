@@ -65,8 +65,8 @@ struct ClubMemberRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(member.fullName)
                     .font(.headline)
-                if !member.address.isEmpty {
-                    Text(member.address)
+                if !member.fullAddress.isEmpty {
+                    Text(member.fullAddress)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -91,8 +91,10 @@ struct ClubMemberDetailView: View {
             Section("Mitglied") {
                 TextField("Vorname", text: $member.firstName)
                 TextField("Nachname", text: $member.lastName)
-                TextField("Adresse", text: $member.address, axis: .vertical)
-                    .lineLimit(2...4)
+                TextField("Straße", text: $member.street)
+                TextField("PLZ", text: $member.zip)
+                    .keyboardType(.numberPad)
+                TextField("Ort", text: $member.city)
             }
             Section("Kontakt") {
                 TextField("E-Mail", text: $member.email)
@@ -126,7 +128,9 @@ struct AddClubMemberView: View {
 
     @State private var firstName = ""
     @State private var lastName = ""
-    @State private var address = ""
+    @State private var street = ""
+    @State private var zip = ""
+    @State private var city = ""
     @State private var email = ""
     @State private var phone = ""
     @State private var memberNumber = ""
@@ -139,8 +143,10 @@ struct AddClubMemberView: View {
                 Section("Mitglied") {
                     TextField("Vorname", text: $firstName)
                     TextField("Nachname", text: $lastName)
-                    TextField("Adresse", text: $address, axis: .vertical)
-                        .lineLimit(2...4)
+                    TextField("Straße", text: $street)
+                    TextField("PLZ", text: $zip)
+                        .keyboardType(.numberPad)
+                    TextField("Ort", text: $city)
                 }
                 Section("Kontakt") {
                     TextField("E-Mail", text: $email)
@@ -167,9 +173,9 @@ struct AddClubMemberView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
-                        let member = ClubMember(firstName: firstName, lastName: lastName, address: address,
-                                                 email: email, phone: phone, memberNumber: memberNumber,
-                                                 joinedAt: joinedAt, notes: notes)
+                        let member = ClubMember(firstName: firstName, lastName: lastName, street: street,
+                                                 zip: zip, city: city, email: email, phone: phone,
+                                                 memberNumber: memberNumber, joinedAt: joinedAt, notes: notes)
                         modelContext.insert(member)
                         try? modelContext.save()
                         CloudKitSync.shared.pushClubMember(member)

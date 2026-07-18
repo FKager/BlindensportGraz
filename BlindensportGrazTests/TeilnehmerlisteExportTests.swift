@@ -41,7 +41,7 @@ final class TeilnehmerlisteExportTests: XCTestCase {
 
     private func makeMemberships(_ context: ModelContext, team: Team, names: [(String, String, String)]) -> [TeamMembership] {
         names.map { first, last, address in
-            let member = ClubMember(firstName: first, lastName: last, address: address)
+            let member = ClubMember(firstName: first, lastName: last, street: address)
             context.insert(member)
             let membership = TeamMembership(clubMember: member, team: team)
             context.insert(membership)

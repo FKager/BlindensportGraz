@@ -130,7 +130,9 @@ final class CloudKitSync {
         let record = CKRecord(recordType: "ClubMember", recordID: recordID(member.id))
         record["firstName"] = member.firstName
         record["lastName"] = member.lastName
-        record["address"] = member.address
+        record["street"] = member.street
+        record["zip"] = member.zip
+        record["city"] = member.city
         record["email"] = member.email
         record["phone"] = member.phone
         record["memberNumber"] = member.memberNumber
@@ -326,7 +328,9 @@ final class CloudKitSync {
             guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
             let firstName = record["firstName"] as? String ?? ""
             let lastName = record["lastName"] as? String ?? ""
-            let address = record["address"] as? String ?? ""
+            let street = record["street"] as? String ?? ""
+            let zip = record["zip"] as? String ?? ""
+            let city = record["city"] as? String ?? ""
             let email = record["email"] as? String ?? ""
             let phone = record["phone"] as? String ?? ""
             let memberNumber = record["memberNumber"] as? String ?? ""
@@ -338,15 +342,17 @@ final class CloudKitSync {
             if let existing = try? modelContext.fetch(descriptor).first {
                 existing.firstName = firstName
                 existing.lastName = lastName
-                existing.address = address
+                existing.street = street
+                existing.zip = zip
+                existing.city = city
                 existing.email = email
                 existing.phone = phone
                 existing.memberNumber = memberNumber
                 existing.notes = notes
             } else {
-                let member = ClubMember(id: id, firstName: firstName, lastName: lastName, address: address,
-                                         email: email, phone: phone, memberNumber: memberNumber,
-                                         joinedAt: joinedAt, notes: notes)
+                let member = ClubMember(id: id, firstName: firstName, lastName: lastName, street: street,
+                                         zip: zip, city: city, email: email, phone: phone,
+                                         memberNumber: memberNumber, joinedAt: joinedAt, notes: notes)
                 modelContext.insert(member)
             }
         }

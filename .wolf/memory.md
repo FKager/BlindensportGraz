@@ -431,3 +431,20 @@
 | 08:24 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | 4→2 lines | ~11 |
 | 08:25 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | reduced (-10 lines) | ~136 |
 | 08:25 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | removed 29 lines | ~1 |
+| 08:27 | Session end: 23 writes across 6 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 12 reads | ~27201 tok |
+| 08:33 | Session end: 23 writes across 6 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 12 reads | ~27201 tok |
+| 08:40 | Session end: 23 writes across 6 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 13 reads | ~29072 tok |
+| 08:44 | Edited BlindensportGraz/Models.swift | expanded (+13 lines) | ~494 |
+| 08:44 | Edited BlindensportGraz/ClubMembersViews.swift | 5→5 lines | ~55 |
+| 08:45 | Edited BlindensportGraz/ClubMembersViews.swift | lineLimit() → keyboardType() | ~117 |
+| 08:45 | Edited BlindensportGraz/ClubMembersViews.swift | 4→6 lines | ~56 |
+| 08:45 | Edited BlindensportGraz/ClubMembersViews.swift | lineLimit() → keyboardType() | ~91 |
+| 08:45 | Edited BlindensportGraz/ClubMembersViews.swift | 3→3 lines | ~84 |
+| 08:45 | Edited BlindensportGraz/CloudKitSync.swift | 4→6 lines | ~65 |
+| 08:45 | Edited BlindensportGraz/CloudKitSync.swift | 25→29 lines | ~417 |
+| 08:45 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | inline fix | ~18 |
+| 08:46 | Edited BlindensportGrazTests/TeilnehmerlisteExportTests.swift | 2→2 lines | ~35 |
+| 08:46 | Edited RootCLI/Sources/rootcli/ClubMemberImport.swift | 4→6 lines | ~38 |
+| 08:46 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 1→3 lines | ~43 |
+| 08:46 | Edited RootCLI/members.example.json | 1→3 lines | ~20 |
+| 08:49 | Split ClubMember.address into street/zip/city across Models, views, CloudKitSync, export, tests, RootCLI | Models.swift, ClubMembersViews.swift, CloudKitSync.swift, TeilnehmerlisteExport.swift, RootCLI | build + unit tests + simulator launch all verified | ~6000 |

@@ -2,7 +2,9 @@
   {
     "firstName": "Anna",
     "lastName": "Muster",
-    "address": "Musterstraße 1, 8010 Graz",
+    "street": "Musterstraße 1",
+    "zip": "8010",
+    "city": "Graz",
     "email": "anna@example.com",
     "phone": "+43 660 1234567",
     "memberNumber": "1001",
