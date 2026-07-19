@@ -186,17 +186,6 @@
         }
       }
     },
-    "Benutzername" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Username"
-          }
-        }
-      }
-    },
     "Beschreibung" : {
       "extractionState" : "manual",
       "localizations" : {

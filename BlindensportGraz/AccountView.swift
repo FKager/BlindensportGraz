@@ -31,7 +31,7 @@ struct AccountView: View {
                             Text(user.displayName)
                                 .font(.title3)
                                 .bold()
-                            Text("@\(user.username)")
+                            Text(user.email)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                             Text(roleLabel(user.role))
@@ -158,22 +158,17 @@ struct UserListView: View {
             List {
                 ForEach(users) { user in
                     HStack {
-                        VStack(alignment: .leading) {
-                            HStack(spacing: 6) {
-                                Text(user.displayName)
-                                if user.isRoot {
-                                    Text("ROOT")
-                                        .font(.caption2)
-                                        .bold()
-                                        .padding(.horizontal, 6)
-                                        .padding(.vertical, 1)
-                                        .background(.orange.opacity(0.2), in: Capsule())
-                                        .foregroundStyle(.orange)
-                                }
+                        HStack(spacing: 6) {
+                            Text(user.displayName)
+                            if user.isRoot {
+                                Text("ROOT")
+                                    .font(.caption2)
+                                    .bold()
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 1)
+                                    .background(.orange.opacity(0.2), in: Capsule())
+                                    .foregroundStyle(.orange)
                             }
-                            Text("@\(user.username)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
                         }
                         Spacer()
                         if currentUser.isRoot && user.id != currentUser.id {

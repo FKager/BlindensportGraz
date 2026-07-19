@@ -79,20 +79,20 @@ export CLOUDKIT_ENVIRONMENT=development   # or production
 # CLOUDKIT_CONTAINER defaults to iCloud.it.a11y.BlindensportGraz
 
 rootcli list
-rootcli set-role someuser admin
-rootcli set-root someuser true
+rootcli set-role "Jane Doe" admin
+rootcli set-root "Jane Doe" true
 rootcli import-members members.json
 ```
 
-`list` prints every `UserIdentity` record as a table — name, username, role,
-whether it's root, and an explicit note that email is *not* included, because
-it's never synced to CloudKit (see the top of `CloudKitS2SClient.swift`). If
-you need email addresses too, that requires deliberately publishing them
+`list` prints every `UserIdentity` record as a table — name, role, whether
+it's root, and an explicit note that email is *not* included, because it's
+never synced to CloudKit (see the top of `CloudKitS2SClient.swift`). If you
+need email addresses too, that requires deliberately publishing them
 (currently not done, on purpose — ask before changing this, it's a privacy
 tradeoff, not just a missing feature).
 
-`set-role`/`set-root` match by username, full name (first + last), or record
-id (case-insensitive) and refuse to guess if more than one account matches —
+`set-role`/`set-root` match by full name (first + last) or record id
+(case-insensitive) and refuse to guess if more than one account matches —
 re-run with the exact id from `list` in that case.
 
 `import-members <file.json>` reads a JSON array of club members and creates

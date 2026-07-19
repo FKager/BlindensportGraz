@@ -77,10 +77,8 @@ struct RootView: View {
             firstName = "Neues"
             lastName = "Mitglied"
         }
-        let username = !emailPrefix.isEmpty ? emailPrefix.lowercased() : "mitglied\(Int.random(in: 1000...9999))"
 
-        let user = User(username: username,
-                         email: result.email ?? "",
+        let user = User(email: result.email ?? "",
                          firstName: firstName,
                          lastName: lastName,
                          appleUserIdentifier: result.userIdentifier)
@@ -164,13 +162,8 @@ struct LoginView: View {
                             Button {
                                 onLogin(user)
                             } label: {
-                                VStack(alignment: .leading) {
-                                    Text(user.displayName)
-                                        .foregroundStyle(.primary)
-                                    Text("@\(user.username)")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
+                                Text(user.displayName)
+                                    .foregroundStyle(.primary)
                             }
                         }
                     }
@@ -198,7 +191,6 @@ struct RegisterView: View {
     @Environment(\.dismiss) private var dismiss
     @Query private var users: [User]
 
-    @State private var username = ""
     @State private var email = ""
     @State private var firstName = ""
     @State private var lastName = ""
@@ -210,9 +202,6 @@ struct RegisterView: View {
                 Section("Konto") {
                     TextField("Vorname", text: $firstName)
                     TextField("Nachname", text: $lastName)
-                    TextField("Benutzername", text: $username)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
                     TextField("E-Mail", text: $email)
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
@@ -229,7 +218,7 @@ struct RegisterView: View {
                     Button("Erstellen") {
                         isCreating = true
                         Task {
-                            let user = User(username: username, email: email, firstName: firstName, lastName: lastName)
+                            let user = User(email: email, firstName: firstName, lastName: lastName)
                             // The very first account ever created (locally and in CloudKit) becomes
                             // root and admin — otherwise it'd be locked out of the admin features
                             // it needs to set up the club in the first place.
@@ -246,7 +235,6 @@ struct RegisterView: View {
                         }
                     }
                     .disabled(isCreating ||
-                              username.trimmingCharacters(in: .whitespaces).isEmpty ||
                               firstName.trimmingCharacters(in: .whitespaces).isEmpty ||
                               lastName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }

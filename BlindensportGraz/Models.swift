@@ -4,7 +4,6 @@ import SwiftData
 @Model
 final class User {
     @Attribute(.unique) var id: UUID = UUID()
-    var username: String = ""
     var email: String = ""
     var firstName: String = ""
     var lastName: String = ""
@@ -26,7 +25,6 @@ final class User {
     var participations: [EventParticipation] = []
 
     init(id: UUID = UUID(),
-         username: String,
          email: String,
          firstName: String,
          lastName: String,
@@ -36,7 +34,6 @@ final class User {
          isGrazerVSCMember: Bool = false,
          isRoot: Bool = false) {
         self.id = id
-        self.username = username
         self.email = email
         self.firstName = firstName
         self.lastName = lastName
@@ -217,10 +214,14 @@ extension TeamMembership {
         user?.displayName ?? clubMember?.fullName ?? "?"
     }
 
-    /// Secondary line under the name in member lists: "@username" for a
-    /// registered account, or a note that this roster entry has none yet.
+    /// Secondary line under the name in member lists: indicates whether this
+    /// roster entry is linked to a registered app account, or is roster-only
+    /// (no account yet). Used to be "@username", but User no longer has a
+    /// username field — email can't be shown here instead since it's
+    /// deliberately never synced to CloudKit (see CloudKitSync's doc
+    /// comment), so a `user` pulled from another device would show blank.
     var subtitle: String {
-        if let user { return "@\(user.username)" }
+        if user != nil { return "Konto vorhanden" }
         return "Grazer VSC – kein Konto"
     }
 }

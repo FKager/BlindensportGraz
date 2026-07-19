@@ -51,13 +51,12 @@ struct RootCLI {
             text.count >= width ? String(text.prefix(width - 1)) + " " : text.padding(toLength: width, withPad: " ", startingAt: 0)
         }
 
-        print(pad("Name", 28) + pad("Username", 20) + pad("Role", 9) + pad("Root", 6) + "Email")
+        print(pad("Name", 28) + pad("Role", 9) + pad("Root", 6) + "Email")
         for user in sorted {
             let name = fullName(user)
-            let username = "@" + (user.stringField("username") ?? "?")
             let role = user.stringField("role") ?? "member"
             let root = user.boolField("isRoot") ? "yes" : ""
-            print(pad(name, 28) + pad(username, 20) + pad(role, 9) + pad(root, 6) + "n/a — email is never synced to CloudKit, see RootCLI/README.md")
+            print(pad(name, 28) + pad(role, 9) + pad(root, 6) + "n/a — email is never synced to CloudKit, see RootCLI/README.md")
         }
     }
 
@@ -72,7 +71,7 @@ struct RootCLI {
 
     private static func runSetRole(_ args: [String]) async throws {
         guard args.count == 2 else {
-            throw CLIError.message("Usage: rootcli set-role <username|full name|id> <member|coach|admin>")
+            throw CLIError.message("Usage: rootcli set-role <full name|id> <member|coach|admin>")
         }
         let identifier = args[0]
         let role = args[1]
@@ -82,18 +81,18 @@ struct RootCLI {
         let client = try makeClient()
         let user = try await client.findUser(matching: identifier)
         try await client.updateRecord(user, fields: ["role": ["value": role]])
-        print("Updated @\(user.stringField("username") ?? identifier): role -> \(role)")
+        print("Updated \(fullName(user)): role -> \(role)")
     }
 
     private static func runSetRoot(_ args: [String]) async throws {
         guard args.count == 2, let flag = Bool(args[1].lowercased()) else {
-            throw CLIError.message("Usage: rootcli set-root <username|full name|id> <true|false>")
+            throw CLIError.message("Usage: rootcli set-root <full name|id> <true|false>")
         }
         let identifier = args[0]
         let client = try makeClient()
         let user = try await client.findUser(matching: identifier)
         try await client.updateRecord(user, fields: ["isRoot": ["value": flag ? 1 : 0, "type": "INT64"]])
-        print("Updated @\(user.stringField("username") ?? identifier): isRoot -> \(flag)")
+        print("Updated \(fullName(user)): isRoot -> \(flag)")
     }
 
     private static func runImportMembers(_ args: [String]) async throws {
@@ -167,8 +166,8 @@ struct RootCLI {
 
         USAGE:
           rootcli list
-          rootcli set-role <username|full name|id> <member|coach|admin>
-          rootcli set-root <username|full name|id> <true|false>
+          rootcli set-role <full name|id> <member|coach|admin>
+          rootcli set-root <full name|id> <true|false>
           rootcli import-members <file.json>
 
         import-members reads a JSON array of club members and creates/updates

@@ -516,3 +516,27 @@
 | 12:04 | Edited BlindensportGraz/Localizable.xcstrings | removed 12 lines | ~6 |
 | 12:07 | Session summary: split User.displayName into firstName/lastName (mirrors ClubMember pattern); ClubMember.matches now compares firstName/lastName directly instead of joined display-name strings; updated RegisterView/EditAccountView forms, CloudKitSync UserIdentity push/pull, RootCLI matching+list, README | Models.swift, RootView.swift, AccountView.swift, ClubMembersViews.swift, CloudKitSync.swift, RootCLI.swift, CloudKitS2SClient.swift, README.md, Localizable.xcstrings | app + RootCLI build clean, all 7 tests pass | ~4200 |
 | 12:07 | Session end: 19 writes across 9 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 10 reads | ~27565 tok |
+| 12:09 | Session end: 19 writes across 9 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 10 reads | ~27565 tok |
+| 12:09 | Session end: 19 writes across 9 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 10 reads | ~27565 tok |
+| 12:14 | Edited BlindensportGraz/Models.swift | 5→4 lines | ~27 |
+| 12:14 | Edited BlindensportGraz/Models.swift | 13→11 lines | ~91 |
+| 12:14 | Edited BlindensportGraz/Models.swift | 6→10 lines | ~153 |
+| 12:14 | Edited BlindensportGraz/RootView.swift | 22→20 lines | ~237 |
+| 12:14 | Edited BlindensportGraz/RootView.swift | modified Section() | ~111 |
+| 12:14 | Edited BlindensportGraz/RootView.swift | modified Section() | ~115 |
+| 12:14 | Edited BlindensportGraz/RootView.swift | 3→3 lines | ~46 |
+| 12:14 | Edited BlindensportGraz/RootView.swift | 4→3 lines | ~58 |
+| 12:14 | Edited BlindensportGraz/AccountView.swift | 6→6 lines | ~79 |
+| 12:14 | Edited BlindensportGraz/AccountView.swift | modified HStack() | ~178 |
+| 12:15 | Edited BlindensportGraz/EventImagesViews.swift | modified canDelete() | ~54 |
+| 12:16 | Edited BlindensportGraz/CloudKitSync.swift | modified pushUserIdentity() | ~47 |
+| 12:16 | Edited BlindensportGraz/CloudKitSync.swift | 23→21 lines | ~327 |
+| 12:16 | Edited BlindensportGraz/CloudKitSync.swift | 5→5 lines | ~93 |
+| 12:16 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 8→7 lines | ~108 |
+| 12:16 | Edited RootCLI/Sources/rootcli/RootCLI.swift | stringField() → fullName() | ~330 |
+| 12:16 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 4→4 lines | ~50 |
+| 12:16 | Edited RootCLI/Sources/rootcli/CloudKitS2SClient.swift | modified findUser() | ~187 |
+| 12:17 | Edited RootCLI/README.md | 16→16 lines | ~194 |
+| 12:17 | Edited BlindensportGraz/Localizable.xcstrings | — | ~0 |
+| 12:19 | Session summary: removed User.username entirely; createdBy/uploadedBy now store id.uuidString (not name-based, survives renames); dropped "@username" UI lines; TeamMembership.subtitle now "Konto vorhanden"; RootCLI/README updated in lockstep | Models.swift, RootView.swift, AccountView.swift, EventImagesViews.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, CloudKitSync.swift, RootCLI.swift, CloudKitS2SClient.swift, README.md, Localizable.xcstrings | app + RootCLI build clean, all 7 tests pass (needed simulator erase first, unrelated Busy/preflight error) | ~5100 |
+| 12:20 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |

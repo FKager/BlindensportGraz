@@ -91,7 +91,7 @@ final class CloudKitS2SClient {
         return records.compactMap(CKRecordDTO.init)
     }
 
-    /// Matches by record id, username, or full name (firstName + lastName,
+    /// Matches by record id or full name (firstName + lastName,
     /// case-insensitively). Errors out on zero or multiple matches rather
     /// than guessing.
     func findUser(matching identifier: String) async throws -> CKRecordDTO {
@@ -102,7 +102,6 @@ final class CloudKitS2SClient {
                 .filter { !$0.isEmpty }
                 .joined(separator: " ")
             return user.recordName.lowercased() == needle ||
-                user.stringField("username")?.lowercased() == needle ||
                 fullName.lowercased() == needle
         }
         guard let match = matches.first else {

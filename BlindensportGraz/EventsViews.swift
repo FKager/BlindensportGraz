@@ -91,7 +91,7 @@ struct AddEventView: View {
                             startDate: startDate,
                             endDate: endDate,
                             notes: notes,
-                            createdBy: currentUser?.username ?? "",
+                            createdBy: currentUser?.id.uuidString ?? "",
                             teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
                             )
                         modelContext.insert(event)
@@ -315,7 +315,7 @@ struct EventDetailView: View {
     }
 
     private func addImage(_ data: Data) {
-        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", event: event)
+        let image = EventImage(imageData: data, uploadedBy: currentUser?.id.uuidString ?? "", event: event)
         modelContext.insert(image)
         try? modelContext.save()
         CloudKitSync.shared.pushEventImage(image)

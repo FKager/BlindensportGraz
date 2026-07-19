@@ -10,7 +10,7 @@ import Foundation
 /// instead, matching local SwiftData objects by their stable `id` (used as
 /// the CKRecord name).
 ///
-/// Only non-sensitive identity fields (username, firstName, lastName, role,
+/// Only non-sensitive identity fields (firstName, lastName, role,
 /// isGrazerVSCMember) are ever published for a User — email and the Apple
 /// identifier stay device-local. The ClubMember roster (name/address/contact
 /// details) is admin-managed data, synced so every admin's device and the
@@ -124,7 +124,6 @@ final class CloudKitSync {
 
     func pushUserIdentity(_ user: User) {
         let record = CKRecord(recordType: "UserIdentity", recordID: recordID(user.id))
-        record["username"] = user.username
         record["firstName"] = user.firstName
         record["lastName"] = user.lastName
         record["role"] = user.role
@@ -295,7 +294,6 @@ final class CloudKitSync {
     private func pullUserIdentities(modelContext: ModelContext) async {
         for record in await fetchAll(recordType: "UserIdentity") {
             guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
-            let username = record["username"] as? String ?? ""
             let firstName = record["firstName"] as? String ?? ""
             let lastName = record["lastName"] as? String ?? ""
             let role = record["role"] as? String ?? "member"
@@ -306,14 +304,13 @@ final class CloudKitSync {
             descriptor.fetchLimit = 1
             if let existing = try? modelContext.fetch(descriptor).first {
                 // Local email/appleUserIdentifier are never published, so never overwritten here.
-                existing.username = username
                 existing.firstName = firstName
                 existing.lastName = lastName
                 existing.role = role
                 existing.isGrazerVSCMember = isGrazerVSCMember
                 existing.isRoot = isRoot
             } else {
-                let user = User(id: id, username: username, email: "", firstName: firstName, lastName: lastName,
+                let user = User(id: id, email: "", firstName: firstName, lastName: lastName,
                                  role: role, isGrazerVSCMember: isGrazerVSCMember, isRoot: isRoot)
                 modelContext.insert(user)
             }

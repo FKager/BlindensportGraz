@@ -95,7 +95,7 @@ struct AddTrainingView: View {
                             durationMinutes: durationMinutes,
                             focusArea: focusArea,
                             notes: notes,
-                            createdBy: currentUser?.username ?? "",
+                            createdBy: currentUser?.id.uuidString ?? "",
                             teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
                         )
                         modelContext.insert(training)
@@ -301,7 +301,7 @@ struct TrainingDetailView: View {
     }
 
     private func addImage(_ data: Data) {
-        let image = EventImage(imageData: data, uploadedBy: currentUser?.username ?? "", event: training)
+        let image = EventImage(imageData: data, uploadedBy: currentUser?.id.uuidString ?? "", event: training)
         modelContext.insert(image)
         try? modelContext.save()
         CloudKitSync.shared.pushEventImage(image)
