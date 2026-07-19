@@ -1727,6 +1727,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-19T11:55:56.589Z"
+    },
+    {
+      "id": "bug-106",
+      "timestamp": "2026-07-19T12:05:40.372Z",
+      "error_message": "Wrong reference: currentUser should be elevateIfTestAdmin",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Used \"currentUser\" instead of \"elevateIfTestAdmin\"",
+      "fix": "Changed currentUser → elevateIfTestAdmin",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T12:05:40.372Z"
     }
   ]
 }
