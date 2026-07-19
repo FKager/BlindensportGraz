@@ -601,3 +601,11 @@
 | 14:22 | Edited BlindensportGraz/RootView.swift | 5→6 lines | ~91 |
 | 14:23 | Edited BlindensportGraz/AccountView.swift | added error handling | ~475 |
 | 14:24 | Fixed test-admin grant not applying to manually-registered/relay-email accounts | Models.swift, RootView.swift, AccountView.swift | build succeeded | ~1800 |
+| 14:24 | Session end: 31 writes across 6 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md, CloudKitSync.swift) | 7 reads | ~25993 tok |
+| 14:27 | Session end: 31 writes across 6 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md, CloudKitSync.swift) | 7 reads | ~25993 tok |
+| 14:32 | Edited BlindensportGraz/RootView.swift | ClubMembersListView() → TabView() | ~230 |
+| 14:32 | Edited BlindensportGraz/AccountView.swift | 2→3 lines | ~35 |
+| 14:32 | Edited BlindensportGraz/AccountView.swift | expanded (+6 lines) | ~152 |
+| 14:32 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~68 |
+| 14:32 | Edited BlindensportGraz/ClubMembersViews.swift | modified ForEach() | ~624 |
+| 14:33 | Fixed Grazer VSC tab hidden in iOS auto-More overflow; moved to Account sheet | RootView.swift, AccountView.swift, ClubMembersViews.swift | build succeeded | ~2100 |

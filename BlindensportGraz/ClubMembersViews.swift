@@ -3,42 +3,53 @@ import SwiftData
 
 /// Admin-only management of the "Grazer VSC" club membership roster. New app
 /// accounts are auto-flagged as club members by matching against this roster
-/// (see ClubMember.checkMembership in Models.swift).
+/// (see ClubMember.checkMembership in Models.swift). Presented as a sheet from
+/// AccountView's "Grazer VSC verwalten" button, not as its own tab (see
+/// MainTabView's comment for why -- too many top-level tabs pushed it into
+/// iOS's auto-collapsed "More" screen), so it's self-contained with its own
+/// NavigationStack and a dismiss button, unlike a tab-hosted view.
 struct ClubMembersListView: View {
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @Query(sort: [SortDescriptor(\ClubMember.lastName), SortDescriptor(\ClubMember.firstName)])
     private var members: [ClubMember]
     @Query private var users: [User]
     @State private var showAdd = false
 
     var body: some View {
-        List {
-            if members.isEmpty {
-                ContentUnavailableView("Keine Vereinsmitglieder",
-                                       systemImage: "building.columns",
-                                       description: Text("Lege ein neues Mitglied des Grazer VSC an."))
-            } else {
-                ForEach(members) { member in
-                    NavigationLink {
-                        ClubMemberDetailView(member: member)
-                    } label: {
-                        ClubMemberRow(member: member, isLinked: hasMatchingAccount(member))
+        NavigationStack {
+            List {
+                if members.isEmpty {
+                    ContentUnavailableView("Keine Vereinsmitglieder",
+                                           systemImage: "building.columns",
+                                           description: Text("Lege ein neues Mitglied des Grazer VSC an."))
+                } else {
+                    ForEach(members) { member in
+                        NavigationLink {
+                            ClubMemberDetailView(member: member)
+                        } label: {
+                            ClubMemberRow(member: member, isLinked: hasMatchingAccount(member))
+                        }
                     }
+                    .onDelete(perform: deleteMembers)
                 }
-                .onDelete(perform: deleteMembers)
             }
-        }
-        .navigationTitle("Grazer VSC")
-        .refreshable {
-            await CloudKitSync.shared.syncAll(modelContext: modelContext)
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button { showAdd = true } label: { Image(systemName: "plus") }
+            .navigationTitle("Grazer VSC")
+            .navigationBarTitleDisplayMode(.inline)
+            .refreshable {
+                await CloudKitSync.shared.syncAll(modelContext: modelContext)
             }
-        }
-        .sheet(isPresented: $showAdd) {
-            AddClubMemberView()
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Fertig") { dismiss() }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showAdd = true } label: { Image(systemName: "plus") }
+                }
+            }
+            .sheet(isPresented: $showAdd) {
+                AddClubMemberView()
+            }
         }
     }
 

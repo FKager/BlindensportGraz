@@ -9,6 +9,7 @@ struct AccountView: View {
 
     @State private var showEdit = false
     @State private var showUserList = false
+    @State private var showClubMembers = false
 
     var body: some View {
         Form {
@@ -70,6 +71,12 @@ struct AccountView: View {
                         } label: {
                             Label("Benutzer verwalten", systemImage: "person.2.fill")
                         }
+
+                        Button {
+                            showClubMembers = true
+                        } label: {
+                            Label("Grazer VSC verwalten", systemImage: "building.columns.fill")
+                        }
                     }
                 }
 
@@ -94,6 +101,9 @@ struct AccountView: View {
             if let user = currentUser {
                 UserListView(currentUser: user)
             }
+        }
+        .sheet(isPresented: $showClubMembers) {
+            ClubMembersListView()
         }
     }
 
