@@ -239,6 +239,17 @@ struct LoginView: View {
                                     .foregroundStyle(.primary)
                             }
                         }
+                        .onDelete { offsets in
+                            // Local-only, same as UserListView's delete (AccountView.swift) --
+                            // there's no CloudKit UserIdentity delete counterpart, so a
+                            // synced account reappears here on the next pull-to-refresh/
+                            // syncAll(). Fine for this picker's purpose (clearing out
+                            // stale/test accounts on this device), not a real account-
+                            // deletion feature.
+                            for index in offsets {
+                                modelContext.delete(users[index])
+                            }
+                        }
                     }
                 }
             }
