@@ -43,7 +43,7 @@ struct ClubMembersListView: View {
     }
 
     private func hasMatchingAccount(_ member: ClubMember) -> Bool {
-        users.contains { ClubMember.matches(email: $0.email, displayName: $0.displayName, in: [member]) }
+        users.contains { ClubMember.matches(email: $0.email, firstName: $0.firstName, lastName: $0.lastName, in: [member]) }
     }
 
     private func deleteMembers(at offsets: IndexSet) {

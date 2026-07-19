@@ -45,7 +45,7 @@ struct RootCLI {
             print("No UserIdentity records found.")
             return
         }
-        let sorted = users.sorted { ($0.stringField("displayName") ?? "") < ($1.stringField("displayName") ?? "") }
+        let sorted = users.sorted { fullName($0) < fullName($1) }
 
         func pad(_ text: String, _ width: Int) -> String {
             text.count >= width ? String(text.prefix(width - 1)) + " " : text.padding(toLength: width, withPad: " ", startingAt: 0)
@@ -53,7 +53,7 @@ struct RootCLI {
 
         print(pad("Name", 28) + pad("Username", 20) + pad("Role", 9) + pad("Root", 6) + "Email")
         for user in sorted {
-            let name = user.stringField("displayName") ?? "?"
+            let name = fullName(user)
             let username = "@" + (user.stringField("username") ?? "?")
             let role = user.stringField("role") ?? "member"
             let root = user.boolField("isRoot") ? "yes" : ""
@@ -61,9 +61,18 @@ struct RootCLI {
         }
     }
 
+    /// Joins a UserIdentity record's firstName/lastName fields, matching
+    /// User.displayName's own formatting in the app (Models.swift).
+    private static func fullName(_ user: CKRecordDTO) -> String {
+        let name = [user.stringField("firstName") ?? "", user.stringField("lastName") ?? ""]
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+        return name.isEmpty ? "?" : name
+    }
+
     private static func runSetRole(_ args: [String]) async throws {
         guard args.count == 2 else {
-            throw CLIError.message("Usage: rootcli set-role <username|displayName|id> <member|coach|admin>")
+            throw CLIError.message("Usage: rootcli set-role <username|full name|id> <member|coach|admin>")
         }
         let identifier = args[0]
         let role = args[1]
@@ -78,7 +87,7 @@ struct RootCLI {
 
     private static func runSetRoot(_ args: [String]) async throws {
         guard args.count == 2, let flag = Bool(args[1].lowercased()) else {
-            throw CLIError.message("Usage: rootcli set-root <username|displayName|id> <true|false>")
+            throw CLIError.message("Usage: rootcli set-root <username|full name|id> <true|false>")
         }
         let identifier = args[0]
         let client = try makeClient()
@@ -158,8 +167,8 @@ struct RootCLI {
 
         USAGE:
           rootcli list
-          rootcli set-role <username|displayName|id> <member|coach|admin>
-          rootcli set-root <username|displayName|id> <true|false>
+          rootcli set-role <username|full name|id> <member|coach|admin>
+          rootcli set-root <username|full name|id> <true|false>
           rootcli import-members <file.json>
 
         import-members reads a JSON array of club members and creates/updates

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-18T07:48:48.292Z
-> Files: 50 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-19T10:04:36.574Z
+> Files: 51 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -54,20 +54,21 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~2237 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~2252 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1119 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~7736 tok)
-- `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~1944 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~7779 tok)
+- `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~1949 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1548 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3506 tok)
 - `Info.plist` (~414 tok)
+- `Localizable.xcstrings` (~6208 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1378 tok)
-- `Models.swift` — Class: User (~3731 tok)
-- `RootView.swift` — SwiftUI view: RootView (~2690 tok)
+- `Models.swift` — Class: User (~4023 tok)
+- `RootView.swift` — SwiftUI view: RootView (~2836 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2138 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4032 tok)
@@ -86,15 +87,15 @@
 
 - `members.example.json` (~110 tok)
 - `Package.swift` — swift-tools-version:5.9 (~59 tok)
-- `README.md` — Project documentation (~1362 tok)
+- `README.md` — Project documentation (~1365 tok)
 
 ## RootCLI/Sources/rootcli/
 
 - `CKRecordDTO.swift` — / Minimal read-only view over a CloudKit Web Services JSON record — just (~312 tok)
-- `CloudKitS2SClient.swift` — / Talks to CloudKit Web Services' public database directly over HTTPS using (~1912 tok)
+- `CloudKitS2SClient.swift` — / Talks to CloudKit Web Services' public database directly over HTTPS using (~1969 tok)
 - `ClubMemberImport.swift` — / Mirrors the app's `ClubMember` model (Models.swift) field-for-field. `id` is (~577 tok)
 - `Config.swift` — Struct: Config (~350 tok)
-- `RootCLI.swift` — Struct: RootCLI (~2000 tok)
+- `RootCLI.swift` — Struct: RootCLI (~2091 tok)
 
 ## fastlane/
 

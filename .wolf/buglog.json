@@ -1567,6 +1567,86 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-18T07:48:48.299Z"
+    },
+    {
+      "id": "bug-096",
+      "timestamp": "2026-07-19T10:02:56.090Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 20→33 lines (2 removed) | Also: /// Checks a newly created (or edited) account's e; /// local ClubMember roster and updates its `isGra",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-07-19T10:03:07.351Z"
+    },
+    {
+      "id": "bug-097",
+      "timestamp": "2026-07-19T10:03:19.780Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 12→22 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T10:03:19.780Z"
+    },
+    {
+      "id": "bug-098",
+      "timestamp": "2026-07-19T10:04:05.287Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T10:04:05.287Z"
+    },
+    {
+      "id": "bug-099",
+      "timestamp": "2026-07-19T10:04:07.087Z",
+      "error_message": "Incorrect value in code",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Had \"Usage: rootcli set-root <username|displayName|id>",
+      "fix": "Changed to \"Usage: rootcli set-root <username|full name|id> <",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T10:04:07.087Z"
+    },
+    {
+      "id": "bug-100",
+      "timestamp": "2026-07-19T10:04:12.270Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/rootcli/CloudKitS2SClient.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T10:04:12.270Z"
     }
   ]
 }

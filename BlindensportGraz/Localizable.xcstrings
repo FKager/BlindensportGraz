@@ -128,17 +128,6 @@
         }
       }
     },
-    "Anzeigename" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Display Name"
-          }
-        }
-      }
-    },
     "Assistent:in" : {
       "extractionState" : "manual",
       "localizations" : {

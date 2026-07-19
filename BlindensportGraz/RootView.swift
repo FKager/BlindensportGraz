@@ -62,17 +62,27 @@ struct RootView: View {
             return
         }
 
-        let formattedName = result.fullName.map {
-            PersonNameComponentsFormatter.localizedString(from: $0, style: .default)
-        }?.trimmingCharacters(in: .whitespaces) ?? ""
+        let appleFirstName = result.fullName?.givenName?.trimmingCharacters(in: .whitespaces) ?? ""
+        let appleLastName = result.fullName?.familyName?.trimmingCharacters(in: .whitespaces) ?? ""
         let emailPrefix = result.email?.components(separatedBy: "@").first ?? ""
-        let displayName = !formattedName.isEmpty ? formattedName
-            : (!emailPrefix.isEmpty ? emailPrefix : "Neues Mitglied")
+        let firstName: String
+        let lastName: String
+        if !appleFirstName.isEmpty || !appleLastName.isEmpty {
+            firstName = appleFirstName
+            lastName = appleLastName
+        } else if !emailPrefix.isEmpty {
+            firstName = emailPrefix
+            lastName = ""
+        } else {
+            firstName = "Neues"
+            lastName = "Mitglied"
+        }
         let username = !emailPrefix.isEmpty ? emailPrefix.lowercased() : "mitglied\(Int.random(in: 1000...9999))"
 
         let user = User(username: username,
                          email: result.email ?? "",
-                         displayName: displayName,
+                         firstName: firstName,
+                         lastName: lastName,
                          appleUserIdentifier: result.userIdentifier)
         // The very first account ever created (locally and in CloudKit) becomes root,
         // and admin too — otherwise it'd be locked out of the admin features it needs
@@ -137,7 +147,7 @@ struct LoginView: View {
     let onLogin: (User) -> Void
 
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \User.displayName) private var users: [User]
+    @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var users: [User]
 
     @State private var showRegister = false
 
@@ -190,14 +200,16 @@ struct RegisterView: View {
 
     @State private var username = ""
     @State private var email = ""
-    @State private var displayName = ""
+    @State private var firstName = ""
+    @State private var lastName = ""
     @State private var isCreating = false
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Konto") {
-                    TextField("Anzeigename", text: $displayName)
+                    TextField("Vorname", text: $firstName)
+                    TextField("Nachname", text: $lastName)
                     TextField("Benutzername", text: $username)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
@@ -217,7 +229,7 @@ struct RegisterView: View {
                     Button("Erstellen") {
                         isCreating = true
                         Task {
-                            let user = User(username: username, email: email, displayName: displayName)
+                            let user = User(username: username, email: email, firstName: firstName, lastName: lastName)
                             // The very first account ever created (locally and in CloudKit) becomes
                             // root and admin — otherwise it'd be locked out of the admin features
                             // it needs to set up the club in the first place.
@@ -235,7 +247,8 @@ struct RegisterView: View {
                     }
                     .disabled(isCreating ||
                               username.trimmingCharacters(in: .whitespaces).isEmpty ||
-                              displayName.trimmingCharacters(in: .whitespaces).isEmpty)
+                              firstName.trimmingCharacters(in: .whitespaces).isEmpty ||
+                              lastName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }

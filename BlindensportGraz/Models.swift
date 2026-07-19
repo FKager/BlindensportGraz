@@ -6,7 +6,8 @@ final class User {
     @Attribute(.unique) var id: UUID = UUID()
     var username: String = ""
     var email: String = ""
-    var displayName: String = ""
+    var firstName: String = ""
+    var lastName: String = ""
     var role: String = "member" // "member", "coach", "admin"
     var appleUserIdentifier: String = ""
     var createdAt: Date = Date.now
@@ -27,7 +28,8 @@ final class User {
     init(id: UUID = UUID(),
          username: String,
          email: String,
-         displayName: String,
+         firstName: String,
+         lastName: String,
          role: String = "member",
          appleUserIdentifier: String = "",
          createdAt: Date = .now,
@@ -36,12 +38,24 @@ final class User {
         self.id = id
         self.username = username
         self.email = email
-        self.displayName = displayName
+        self.firstName = firstName
+        self.lastName = lastName
         self.role = role
         self.appleUserIdentifier = appleUserIdentifier
         self.createdAt = createdAt
         self.isGrazerVSCMember = isGrazerVSCMember
         self.isRoot = isRoot
+    }
+}
+
+extension User {
+    /// Combines firstName/lastName for display; not stored, so it can't be
+    /// used as a @Query sort key path — sort by lastName/firstName instead.
+    /// Mirrors ClubMember.fullName's pattern so existing display call sites
+    /// (avatar initial, headers, member pickers) didn't need their own
+    /// formatting logic.
+    var displayName: String {
+        [firstName, lastName].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
     }
 }
 
@@ -105,27 +119,34 @@ extension ClubMember {
 }
 
 extension ClubMember {
-    /// Checks a newly created (or edited) account's email/display name against the
-    /// local ClubMember roster and updates its `isGrazerVSCMember` flag accordingly.
+    /// Checks a newly created (or edited) account's email/first+last name against
+    /// the local ClubMember roster and updates its `isGrazerVSCMember` flag
+    /// accordingly.
     static func checkMembership(for user: User, modelContext: ModelContext) {
         let roster = (try? modelContext.fetch(FetchDescriptor<ClubMember>())) ?? []
-        user.isGrazerVSCMember = matches(email: user.email, displayName: user.displayName, in: roster)
+        user.isGrazerVSCMember = matches(email: user.email, firstName: user.firstName,
+                                          lastName: user.lastName, in: roster)
     }
 
-    /// Matches a new account's email/display name against the roster, case- and
-    /// whitespace-insensitively. Email match takes priority since names can collide.
-    static func matches(email: String, displayName: String, in roster: [ClubMember]) -> Bool {
+    /// Matches a new account's email or first+last name against the roster, case-
+    /// and whitespace-insensitively. Email match takes priority since names can
+    /// collide; first/last name are compared as separate fields (not a joined
+    /// full-name string) since that's how both User and ClubMember store them.
+    static func matches(email: String, firstName: String, lastName: String, in roster: [ClubMember]) -> Bool {
         let normalizedEmail = email.trimmingCharacters(in: .whitespaces).lowercased()
-        let normalizedName = displayName.trimmingCharacters(in: .whitespaces).lowercased()
-        guard !normalizedEmail.isEmpty || !normalizedName.isEmpty else { return false }
+        let normalizedFirst = firstName.trimmingCharacters(in: .whitespaces).lowercased()
+        let normalizedLast = lastName.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !normalizedEmail.isEmpty || (!normalizedFirst.isEmpty && !normalizedLast.isEmpty) else { return false }
 
         return roster.contains { member in
             let memberEmail = member.email.trimmingCharacters(in: .whitespaces).lowercased()
             if !normalizedEmail.isEmpty, !memberEmail.isEmpty, memberEmail == normalizedEmail {
                 return true
             }
-            let memberName = member.fullName.trimmingCharacters(in: .whitespaces).lowercased()
-            return !normalizedName.isEmpty && !memberName.isEmpty && memberName == normalizedName
+            let memberFirst = member.firstName.trimmingCharacters(in: .whitespaces).lowercased()
+            let memberLast = member.lastName.trimmingCharacters(in: .whitespaces).lowercased()
+            return !normalizedFirst.isEmpty && !normalizedLast.isEmpty &&
+                   memberFirst == normalizedFirst && memberLast == normalizedLast
         }
     }
 }

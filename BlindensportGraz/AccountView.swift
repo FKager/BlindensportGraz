@@ -114,7 +114,8 @@ struct EditAccountView: View {
         NavigationStack {
             Form {
                 Section("Profil") {
-                    TextField("Anzeigename", text: $user.displayName)
+                    TextField("Vorname", text: $user.firstName)
+                    TextField("Nachname", text: $user.lastName)
                     TextField("E-Mail", text: $user.email)
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)

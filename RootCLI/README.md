@@ -91,8 +91,8 @@ you need email addresses too, that requires deliberately publishing them
 (currently not done, on purpose — ask before changing this, it's a privacy
 tradeoff, not just a missing feature).
 
-`set-role`/`set-root` match by username, display name, or record id
-(case-insensitive) and refuse to guess if more than one account matches —
+`set-role`/`set-root` match by username, full name (first + last), or record
+id (case-insensitive) and refuse to guess if more than one account matches —
 re-run with the exact id from `list` in that case.
 
 `import-members <file.json>` reads a JSON array of club members and creates

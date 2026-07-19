@@ -488,3 +488,31 @@
 | 09:48 | Edited BlindensportGraz/CloudKitSync.swift | 2→3 lines | ~55 |
 | 09:48 | Edited BlindensportGrazTests/InheritanceQueryTests.swift | inline fix | ~19 |
 | 09:52 | Made SportEvent a real SwiftData base class (Tournament/Training subclass it); bumped deployment target to iOS 26; unified Attendance/EventImage; added local-store-wipe migration fallback | Models.swift, CloudKitSync.swift, BlindensportGrazApp.swift, RootView.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, DashboardView.swift, project.yml | build + all 7 tests pass, simulator install/launch verified | ~45000 |
+| 09:59 | Session end: 73 writes across 18 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 27 reads | ~71236 tok |
+| 10:01 | Session end: 73 writes across 18 files (TeilnehmerlisteExport.swift, MemberListView.swift, TrainingsViews.swift, TournamentsViews.swift, project.yml) | 27 reads | ~71236 tok |
+
+## Session: 2026-07-19 11:54
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:02 | Edited BlindensportGraz/Models.swift | 7→8 lines | ~67 |
+| 12:02 | Edited BlindensportGraz/Models.swift | expanded (+13 lines) | ~312 |
+| 12:03 | Edited BlindensportGraz/Models.swift | modified checkMembership() | ~532 |
+| 12:03 | Edited BlindensportGraz/ClubMembersViews.swift | modified hasMatchingAccount() | ~53 |
+| 12:03 | Edited BlindensportGraz/RootView.swift | modified lowercased() | ~279 |
+| 12:03 | Edited BlindensportGraz/RootView.swift | 4→4 lines | ~57 |
+| 12:03 | Edited BlindensportGraz/RootView.swift | modified Section() | ~223 |
+| 12:03 | Edited BlindensportGraz/RootView.swift | 21→22 lines | ~376 |
+| 12:03 | Edited BlindensportGraz/AccountView.swift | modified Section() | ~60 |
+| 12:03 | Edited BlindensportGraz/CloudKitSync.swift | 5→5 lines | ~96 |
+| 12:03 | Edited BlindensportGraz/CloudKitSync.swift | modified pushUserIdentity() | ~113 |
+| 12:03 | Edited BlindensportGraz/CloudKitSync.swift | 20→22 lines | ~337 |
+| 12:04 | Edited RootCLI/Sources/rootcli/RootCLI.swift | modified pad() | ~135 |
+| 12:04 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added nullish coalescing | ~172 |
+| 12:04 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 3→3 lines | ~50 |
+| 12:04 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 4→4 lines | ~55 |
+| 12:04 | Edited RootCLI/Sources/rootcli/CloudKitS2SClient.swift | added nullish coalescing | ~209 |
+| 12:04 | Edited RootCLI/README.md | 3→3 lines | ~55 |
+| 12:04 | Edited BlindensportGraz/Localizable.xcstrings | removed 12 lines | ~6 |
+| 12:07 | Session summary: split User.displayName into firstName/lastName (mirrors ClubMember pattern); ClubMember.matches now compares firstName/lastName directly instead of joined display-name strings; updated RegisterView/EditAccountView forms, CloudKitSync UserIdentity push/pull, RootCLI matching+list, README | Models.swift, RootView.swift, AccountView.swift, ClubMembersViews.swift, CloudKitSync.swift, RootCLI.swift, CloudKitS2SClient.swift, README.md, Localizable.xcstrings | app + RootCLI build clean, all 7 tests pass | ~4200 |
+| 12:07 | Session end: 19 writes across 9 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 10 reads | ~27565 tok |
