@@ -28,12 +28,6 @@ struct RootView: View {
     // manual RegisterView form, which is deliberately NOT covered by this check.
     private let designatedRootEmail = "blindensport.gvsc@gmail.com"
 
-    // TEST-ONLY: grants `role = "admin"` (not root — no CloudKit role-editing
-    // power over other accounts) so admin-only screens can be tested without
-    // going through the root escalation flow above. Requested 2026-07-19
-    // "only needed for test issues" — remove this block once testing is done.
-    private let testAdminEmail = "franz.kager@gmx.net"
-
     var body: some View {
         Group {
             if isResolvingAccount {
@@ -47,7 +41,7 @@ struct RootView: View {
                     // all — see elevateIfDesignatedRoot's doc comment for why this is
                     // still safe to check unconditionally here.
                     elevateIfDesignatedRoot(user)
-                    elevateIfTestAdmin(user)
+                    applyTestAdminGrant(user)
                     currentUser = user
                 })
             }
@@ -67,12 +61,12 @@ struct RootView: View {
                 currentUser = match
                 storedUserID = match.id.uuidString
                 elevateIfDesignatedRoot(match)
-                elevateIfTestAdmin(match)
+                applyTestAdminGrant(match)
             } else if !storedUserID.isEmpty, let id = UUID(uuidString: storedUserID) {
                 currentUser = users.first { $0.id == id }
                 if let resumed = currentUser {
                     elevateIfDesignatedRoot(resumed)
-                    elevateIfTestAdmin(resumed)
+                    applyTestAdminGrant(resumed)
                 }
             }
             triggerBackgroundSync()
@@ -86,7 +80,7 @@ struct RootView: View {
             storedUserID = existing.id.uuidString
             currentUser = existing
             elevateIfDesignatedRoot(existing)
-            elevateIfTestAdmin(existing)
+            applyTestAdminGrant(existing)
             triggerBackgroundSync()
             return
         }
@@ -122,9 +116,7 @@ struct RootView: View {
             user.isRoot = true
             user.role = "admin"
         }
-        if isTestAdminEmail(result.email) {
-            user.role = "admin"
-        }
+        user.elevateIfTestAdmin()
         modelContext.insert(user)
         ClubMember.checkMembership(for: user, modelContext: modelContext)
         try? modelContext.save()
@@ -158,17 +150,11 @@ struct RootView: View {
         CloudKitSync.shared.pushUserIdentity(user)
     }
 
-    private func isTestAdminEmail(_ email: String?) -> Bool {
-        guard let email else { return false }
-        return email.trimmingCharacters(in: .whitespaces).lowercased() == testAdminEmail
-    }
-
-    /// TEST-ONLY grant of `role = "admin"` (see testAdminEmail's doc comment) —
-    /// same Apple-verified-email safety gate and idempotence as
-    /// elevateIfDesignatedRoot, just without touching `isRoot`.
-    private func elevateIfTestAdmin(_ user: User) {
-        guard !user.appleUserIdentifier.isEmpty, isTestAdminEmail(user.email), user.role != "admin" else { return }
-        user.role = "admin"
+    /// Saves/pushes only if User.elevateIfTestAdmin() actually changed something —
+    /// see that method's doc comment (Models.swift) for why this one, unlike
+    /// elevateIfDesignatedRoot, has no Apple-verification gate of its own.
+    private func applyTestAdminGrant(_ user: User) {
+        guard user.elevateIfTestAdmin() else { return }
         try? modelContext.save()
         CloudKitSync.shared.pushUserIdentity(user)
     }
@@ -306,6 +292,7 @@ struct RegisterView: View {
                                 user.isRoot = true
                                 user.role = "admin"
                             }
+                            user.elevateIfTestAdmin()
                             modelContext.insert(user)
                             ClubMember.checkMembership(for: user, modelContext: modelContext)
                             try? modelContext.save()

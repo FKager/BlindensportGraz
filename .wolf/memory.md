@@ -588,3 +588,16 @@
 | 14:14 | Edited BlindensportGraz/RootView.swift | 11→7 lines | ~93 |
 | 14:14 | Edited BlindensportGraz/AccountView.swift | 5→7 lines | ~78 |
 | 14:15 | Added CloudKitSync.deleteUserIdentity, wired into LoginView + UserListView deletes | CloudKitSync.swift, RootView.swift, AccountView.swift | build succeeded | ~1300 |
+| 14:15 | Session end: 22 writes across 6 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md, CloudKitSync.swift) | 7 reads | ~24133 tok |
+| 14:18 | Session end: 22 writes across 6 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md, CloudKitSync.swift) | 7 reads | ~24133 tok |
+| 14:19 | Session end: 22 writes across 6 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md, CloudKitSync.swift) | 7 reads | ~24133 tok |
+| 14:22 | Edited BlindensportGraz/Models.swift | modified elevateIfTestAdmin() | ~367 |
+| 14:22 | Edited BlindensportGraz/RootView.swift | removed 7 lines | ~4 |
+| 14:22 | Edited BlindensportGraz/RootView.swift | elevateIfTestAdmin() → applyTestAdminGrant() | ~36 |
+| 14:22 | Edited BlindensportGraz/RootView.swift | elevateIfTestAdmin() → applyTestAdminGrant() | ~107 |
+| 14:22 | Edited BlindensportGraz/RootView.swift | elevateIfTestAdmin() → applyTestAdminGrant() | ~41 |
+| 14:22 | Edited BlindensportGraz/RootView.swift | isTestAdminEmail() → elevateIfTestAdmin() | ~18 |
+| 14:22 | Edited BlindensportGraz/RootView.swift | modified applyTestAdminGrant() | ~117 |
+| 14:22 | Edited BlindensportGraz/RootView.swift | 5→6 lines | ~91 |
+| 14:23 | Edited BlindensportGraz/AccountView.swift | added error handling | ~475 |
+| 14:24 | Fixed test-admin grant not applying to manually-registered/relay-email accounts | Models.swift, RootView.swift, AccountView.swift | build succeeded | ~1800 |

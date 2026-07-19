@@ -1775,6 +1775,71 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-19T12:14:26.986Z"
+    },
+    {
+      "id": "bug-109",
+      "timestamp": "2026-07-19T12:22:31.433Z",
+      "error_message": "Wrong reference: elevateIfTestAdmin should be applyTestAdminGrant",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Used \"elevateIfTestAdmin\" instead of \"applyTestAdminGrant\"",
+      "fix": "Changed elevateIfTestAdmin → applyTestAdminGrant",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T12:22:31.433Z"
+    },
+    {
+      "id": "bug-110",
+      "timestamp": "2026-07-19T12:22:50.486Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 14→8 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T12:22:50.486Z"
+    },
+    {
+      "id": "bug-111",
+      "timestamp": "2026-07-19T12:23:11.222Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T12:23:11.222Z"
+    },
+    {
+      "id": "bug-112",
+      "timestamp": "2026-07-19T14:23:00.000Z",
+      "error_message": "User reported: role of account franz.kager@gmx.net does not have the admin role, despite the TEST-ONLY auto-admin grant added earlier this session",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "elevateIfTestAdmin was gated on user.appleUserIdentifier being non-empty (copied from the stricter, intentionally Apple-verified elevateIfDesignatedRoot gate). An account created via RegisterView's manual form (or one whose real email was later corrected in EditAccountView after Apple's Hide My Email substituted a relay address) never has that field set, so the check could never pass regardless of relaunches.",
+      "fix": "Moved the check into a shared User.elevateIfTestAdmin() extension (Models.swift) with no appleUserIdentifier gate (deliberately, since this grant is explicitly test-only/low-stakes per the user, unlike the root grant which keeps its strict gate). Called it from RootView's three resolveAccount() paths, the post-logout picker, RegisterView's manual creation (previously not covered at all), and a new EditAccountView.onChange(of: user.email) hook so correcting the email after account creation also retroactively grants it.",
+      "tags": [
+        "user-reported",
+        "role",
+        "admin-grant",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T14:23:00.000Z"
     }
   ]
 }

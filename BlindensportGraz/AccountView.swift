@@ -109,6 +109,7 @@ struct AccountView: View {
 struct EditAccountView: View {
     @Bindable var user: User
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         NavigationStack {
@@ -133,6 +134,16 @@ struct EditAccountView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Fertig") { dismiss() }
+                }
+            }
+            // TEST-ONLY: catches the case where testAdminEmail (Models.swift) is
+            // typed in here after the fact -- e.g. an account auto-created via
+            // Apple's "Hide My Email" got a relay address instead of the real
+            // one. See User.elevateIfTestAdmin's doc comment.
+            .onChange(of: user.email) { _, _ in
+                if user.elevateIfTestAdmin() {
+                    try? modelContext.save()
+                    CloudKitSync.shared.pushUserIdentity(user)
                 }
             }
         }

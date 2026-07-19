@@ -56,6 +56,28 @@ extension User {
     var displayName: String {
         [firstName, lastName].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
     }
+
+    // TEST-ONLY: temporarily promotes this one account to `role = "admin"`
+    // (not root — see RootView's designatedRootEmail/isRoot for the real,
+    // production escalation mechanism) so admin-only screens can be tested.
+    // Deliberately matched by email alone with NO Apple-verification/
+    // appleUserIdentifier gate — unlike the root grant, the user explicitly
+    // scoped this as "only needed for test issues", and a stricter gate was
+    // actively preventing it from firing for a manually-registered (or
+    // Apple hide-my-email-affected) test account. Called from every place a
+    // User's email could become this value: RootView's account-resolution/
+    // login paths, RegisterView's manual creation, and EditAccountView
+    // whenever the email field changes. Requested 2026-07-19 — remove this
+    // whole block, and its call sites, once testing is done.
+    static let testAdminEmail = "franz.kager@gmx.net"
+
+    @discardableResult
+    func elevateIfTestAdmin() -> Bool {
+        let normalized = email.trimmingCharacters(in: .whitespaces).lowercased()
+        guard normalized == User.testAdminEmail, role != "admin" else { return false }
+        role = "admin"
+        return true
+    }
 }
 
 /// Membership roster for the sports club "Grazer VSC", administered by admins.
