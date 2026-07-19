@@ -96,6 +96,7 @@ struct ClubMemberRow: View {
 struct ClubMemberDetailView: View {
     @Bindable var member: ClubMember
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         Form {
@@ -126,9 +127,60 @@ struct ClubMemberDetailView: View {
         }
         .navigationTitle(member.fullName)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Fertig") { dismiss() }
+            }
+        }
         .onDisappear {
             try? modelContext.save()
             CloudKitSync.shared.pushClubMember(member)
+        }
+    }
+}
+
+/// Self-service editing of a member's own Grazer VSC roster entry — reachable
+/// from AccountView's "Vereinsdaten bearbeiten" button for any account with
+/// isGrazerVSCMember == true. Deliberately narrower than admin's
+/// ClubMemberDetailView above: no "Mitgliedschaft" (memberNumber/joinedAt are
+/// admin-assigned) and no "Notizen" (may hold private admin remarks about the
+/// member) — only personal/contact fields are self-editable.
+struct MyClubMemberView: View {
+    @Bindable var member: ClubMember
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Mitglied") {
+                    TextField("Vorname", text: $member.firstName)
+                    TextField("Nachname", text: $member.lastName)
+                    TextField("Straße", text: $member.street)
+                    TextField("PLZ", text: $member.zip)
+                        .keyboardType(.numberPad)
+                    TextField("Ort", text: $member.city)
+                }
+                Section("Kontakt") {
+                    TextField("E-Mail", text: $member.email)
+                        .keyboardType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                    TextField("Telefon", text: $member.phone)
+                        .keyboardType(.phonePad)
+                }
+            }
+            .navigationTitle("Vereinsdaten")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Fertig") { dismiss() }
+                }
+            }
+            .onDisappear {
+                try? modelContext.save()
+                CloudKitSync.shared.pushClubMember(member)
+            }
         }
     }
 }

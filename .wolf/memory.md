@@ -609,3 +609,11 @@
 | 14:32 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~68 |
 | 14:32 | Edited BlindensportGraz/ClubMembersViews.swift | modified ForEach() | ~624 |
 | 14:33 | Fixed Grazer VSC tab hidden in iOS auto-More overflow; moved to Account sheet | RootView.swift, AccountView.swift, ClubMembersViews.swift | build succeeded | ~2100 |
+| 14:34 | Session end: 36 writes across 7 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md, CloudKitSync.swift) | 8 reads | ~29126 tok |
+| 14:41 | Edited BlindensportGraz/Models.swift | modified matches() | ~581 |
+| 14:41 | Edited BlindensportGraz/ClubMembersViews.swift | 6→7 lines | ~59 |
+| 14:41 | Edited BlindensportGraz/ClubMembersViews.swift | modified ToolbarItem() | ~614 |
+| 14:42 | Edited BlindensportGraz/AccountView.swift | 6→8 lines | ~87 |
+| 14:42 | Edited BlindensportGraz/AccountView.swift | expanded (+8 lines) | ~159 |
+| 14:42 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~176 |
+| 14:42 | Added Grazer VSC member self-service edit (address/contact) | Models.swift, ClubMembersViews.swift, AccountView.swift | build succeeded | ~1900 |

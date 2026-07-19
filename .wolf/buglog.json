@@ -1874,6 +1874,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-19T14:33:00.000Z"
+    },
+    {
+      "id": "bug-115",
+      "timestamp": "2026-07-19T12:41:27.656Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 21→33 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T12:41:27.656Z"
     }
   ]
 }

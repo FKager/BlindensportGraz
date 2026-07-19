@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-19T12:32:48.458Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-19T12:42:10.261Z
 > Files: 53 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -59,20 +59,20 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~2463 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~2680 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1119 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
 - `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~7806 tok)
-- `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~2136 tok)
+- `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~2703 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3506 tok)
 - `Info.plist` (~414 tok)
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1378 tok)
-- `Models.swift` — Class: User (~4442 tok)
+- `Models.swift` — Class: User (~4635 tok)
 - `RootView.swift` — SwiftUI view: RootView (~3687 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2138 tok)

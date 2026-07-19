@@ -6,10 +6,12 @@ struct AccountView: View {
     let onLogout: () -> Void
     @Environment(\.modelContext) private var modelContext
     @Query private var allUsers: [User]
+    @Query private var clubMembers: [ClubMember]
 
     @State private var showEdit = false
     @State private var showUserList = false
     @State private var showClubMembers = false
+    @State private var showMyClubMember = false
 
     var body: some View {
         Form {
@@ -65,6 +67,14 @@ struct AccountView: View {
                         Label("Profil bearbeiten", systemImage: "pencil")
                     }
 
+                    if user.isGrazerVSCMember {
+                        Button {
+                            showMyClubMember = true
+                        } label: {
+                            Label("Vereinsdaten bearbeiten", systemImage: "square.and.pencil")
+                        }
+                    }
+
                     if user.role == "admin" || user.isRoot {
                         Button {
                             showUserList = true
@@ -104,6 +114,14 @@ struct AccountView: View {
         }
         .sheet(isPresented: $showClubMembers) {
             ClubMembersListView()
+        }
+        .sheet(isPresented: $showMyClubMember) {
+            if let user = currentUser, let member = ClubMember.first(matching: user, in: clubMembers) {
+                MyClubMemberView(member: member)
+            } else {
+                ContentUnavailableView("Kein Vereinsdateneintrag gefunden",
+                                       systemImage: "exclamationmark.triangle")
+            }
         }
     }
 

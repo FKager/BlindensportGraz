@@ -154,12 +154,24 @@ extension ClubMember {
     /// collide; first/last name are compared as separate fields (not a joined
     /// full-name string) since that's how both User and ClubMember store them.
     static func matches(email: String, firstName: String, lastName: String, in roster: [ClubMember]) -> Bool {
+        firstMatch(email: email, firstName: firstName, lastName: lastName, in: roster) != nil
+    }
+
+    /// Finds the specific roster entry a `User` matches, using the same rules as
+    /// `matches` — used by AccountView to let a Grazer VSC member (isGrazerVSCMember
+    /// == true) edit their own roster data (address, phone, ...) directly, without
+    /// needing admin access to ClubMembersListView.
+    static func first(matching user: User, in roster: [ClubMember]) -> ClubMember? {
+        firstMatch(email: user.email, firstName: user.firstName, lastName: user.lastName, in: roster)
+    }
+
+    private static func firstMatch(email: String, firstName: String, lastName: String, in roster: [ClubMember]) -> ClubMember? {
         let normalizedEmail = email.trimmingCharacters(in: .whitespaces).lowercased()
         let normalizedFirst = firstName.trimmingCharacters(in: .whitespaces).lowercased()
         let normalizedLast = lastName.trimmingCharacters(in: .whitespaces).lowercased()
-        guard !normalizedEmail.isEmpty || (!normalizedFirst.isEmpty && !normalizedLast.isEmpty) else { return false }
+        guard !normalizedEmail.isEmpty || (!normalizedFirst.isEmpty && !normalizedLast.isEmpty) else { return nil }
 
-        return roster.contains { member in
+        return roster.first { member in
             let memberEmail = member.email.trimmingCharacters(in: .whitespaces).lowercased()
             if !normalizedEmail.isEmpty, !memberEmail.isEmpty, memberEmail == normalizedEmail {
                 return true
