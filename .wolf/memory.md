@@ -582,3 +582,9 @@
 | 14:08 | Session end: 18 writes across 4 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md) | 6 reads | ~15800 tok |
 | 14:10 | Edited BlindensportGraz/RootView.swift | modified Section() | ~303 |
 | 14:12 | Added swipe-to-delete for LoginView account picker | RootView.swift | build succeeded | ~800 |
+| 14:12 | Session end: 19 writes across 4 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md) | 6 reads | ~16124 tok |
+| 14:14 | Session end: 19 writes across 4 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md) | 6 reads | ~16124 tok |
+| 14:14 | Edited BlindensportGraz/CloudKitSync.swift | added error handling | ~88 |
+| 14:14 | Edited BlindensportGraz/RootView.swift | 11→7 lines | ~93 |
+| 14:14 | Edited BlindensportGraz/AccountView.swift | 5→7 lines | ~78 |
+| 14:15 | Added CloudKitSync.deleteUserIdentity, wired into LoginView + UserListView deletes | CloudKitSync.swift, RootView.swift, AccountView.swift | build succeeded | ~1300 |

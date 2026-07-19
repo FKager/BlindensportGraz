@@ -187,7 +187,9 @@ struct UserListView: View {
                 }
                 .onDelete { offsets in
                     for index in offsets {
-                        modelContext.delete(users[index])
+                        let user = users[index]
+                        CloudKitSync.shared.deleteUserIdentity(user.id)
+                        modelContext.delete(user)
                     }
                 }
             }

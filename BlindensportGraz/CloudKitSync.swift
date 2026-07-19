@@ -132,6 +132,16 @@ final class CloudKitSync {
         save(record)
     }
 
+    func deleteUserIdentity(_ id: UUID) {
+        Task {
+            do {
+                try await publicDB.deleteRecord(withID: recordID(id))
+            } catch {
+                print("CloudKitSync delete failed for UserIdentity \(id): \(error)")
+            }
+        }
+    }
+
     func pushClubMember(_ member: ClubMember) {
         let record = CKRecord(recordType: "ClubMember", recordID: recordID(member.id))
         record["firstName"] = member.firstName

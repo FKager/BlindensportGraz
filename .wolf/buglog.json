@@ -1743,6 +1743,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-19T12:05:40.372Z"
+    },
+    {
+      "id": "bug-107",
+      "timestamp": "2026-07-19T12:14:21.789Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T12:14:21.789Z"
+    },
+    {
+      "id": "bug-108",
+      "timestamp": "2026-07-19T12:14:26.986Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 11→7 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-19T12:14:26.986Z"
     }
   ]
 }
