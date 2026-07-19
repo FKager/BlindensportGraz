@@ -35,7 +35,14 @@ struct RootView: View {
             } else if let user = currentUser {
                 MainTabView(currentUser: user, onLogout: { currentUser = nil })
             } else {
-                LoginView(onLogin: { user in currentUser = user })
+                LoginView(onLogin: { user in
+                    // Covers logout -> pick-an-existing-account-from-the-list login,
+                    // which (unlike resolveAccount()) doesn't touch Apple Sign-In at
+                    // all — see elevateIfDesignatedRoot's doc comment for why this is
+                    // still safe to check unconditionally here.
+                    elevateIfDesignatedRoot(user)
+                    currentUser = user
+                })
             }
         }
         .task {
@@ -52,11 +59,11 @@ struct RootView: View {
             if let match = users.first(where: { $0.appleUserIdentifier == storedAppleUserIdentifier }) {
                 currentUser = match
                 storedUserID = match.id.uuidString
-                elevateIfDesignatedRoot(match, verifiedEmail: match.email)
+                elevateIfDesignatedRoot(match)
             } else if !storedUserID.isEmpty, let id = UUID(uuidString: storedUserID) {
                 currentUser = users.first { $0.id == id }
                 if let resumed = currentUser {
-                    elevateIfDesignatedRoot(resumed, verifiedEmail: resumed.email)
+                    elevateIfDesignatedRoot(resumed)
                 }
             }
             triggerBackgroundSync()
@@ -69,7 +76,7 @@ struct RootView: View {
             storedAppleUserIdentifier = result.userIdentifier
             storedUserID = existing.id.uuidString
             currentUser = existing
-            elevateIfDesignatedRoot(existing, verifiedEmail: result.email)
+            elevateIfDesignatedRoot(existing)
             triggerBackgroundSync()
             return
         }
@@ -121,12 +128,17 @@ struct RootView: View {
         return email.trimmingCharacters(in: .whitespaces).lowercased() == designatedRootEmail
     }
 
-    /// Grants root/admin to the club's designated account if it isn't already root,
-    /// matching solely on the Apple-verified email (see designatedRootEmail's doc
-    /// comment for why manual registration is deliberately excluded). Idempotent
-    /// and safe to call on every sign-in — a no-op once the account is already root.
-    private func elevateIfDesignatedRoot(_ user: User, verifiedEmail: String?) {
-        guard isDesignatedRootEmail(verifiedEmail), !user.isRoot else { return }
+    /// Grants root/admin to the club's designated account if it isn't already root.
+    /// Gated on `appleUserIdentifier` being non-empty — i.e. this `User` row was
+    /// created via Apple Sign-In, where Apple (not this app) vouched for the email
+    /// at creation time — rather than trusting `user.email` on its own. A manually
+    /// registered account (RegisterView's free-text form) always has an empty
+    /// `appleUserIdentifier`, so typing the designated email into that form can
+    /// never qualify here either, even later via the post-logout account-picker
+    /// (RootView.body's LoginView(onLogin:)), which calls this same helper without
+    /// any fresh Apple round-trip. Idempotent — a no-op once the account is root.
+    private func elevateIfDesignatedRoot(_ user: User) {
+        guard !user.appleUserIdentifier.isEmpty, isDesignatedRootEmail(user.email), !user.isRoot else { return }
         user.isRoot = true
         user.role = "admin"
         try? modelContext.save()

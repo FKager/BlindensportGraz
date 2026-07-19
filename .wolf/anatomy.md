@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-19T11:42:49.148Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-19T11:56:03.288Z
 > Files: 53 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -73,7 +73,7 @@
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1378 tok)
 - `Models.swift` — Class: User (~4116 tok)
-- `RootView.swift` — SwiftUI view: RootView (~3098 tok)
+- `RootView.swift` — SwiftUI view: RootView (~3295 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2138 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4032 tok)
