@@ -14,8 +14,10 @@ final class User {
     var isGrazerVSCMember: Bool = false
     // Super-user flag, distinct from `role`. Only a root account can change another
     // account's `role`; nobody (including root) can change their own via the app —
-    // see EditAccountView/UserListView. Set only by RootView on first-ever account
-    // creation, or externally via the RootCLI tool talking directly to CloudKit.
+    // see EditAccountView/UserListView. Set by RootView on first-ever account
+    // creation, automatically for the club's designated account (RootView's
+    // designatedRootEmail, matched only via verified Apple Sign-In email), or
+    // externally via the RootCLI tool talking directly to CloudKit.
     var isRoot: Bool = false
 
     @Relationship(deleteRule: .cascade, inverse: \TeamMembership.user)

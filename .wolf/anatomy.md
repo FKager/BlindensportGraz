@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-19T10:17:13.932Z
-> Files: 51 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-19T11:42:49.148Z
+> Files: 53 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -10,6 +10,11 @@
 ## ../../.claude/plans/
 
 - `functional-inventing-dream.md` — Make SportEvent the base class for Training and Tournament (~3676 tok)
+
+## ../../.claude/projects/-Users-franz-dev-claude/memory/
+
+- `feedback_no_clarifying_questions.md` (~384 tok)
+- `MEMORY.md` — Memory (~39 tok)
 
 ## ./
 
@@ -67,8 +72,8 @@
 - `Info.plist` (~414 tok)
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1378 tok)
-- `Models.swift` — Class: User (~4079 tok)
-- `RootView.swift` — SwiftUI view: RootView (~2631 tok)
+- `Models.swift` — Class: User (~4116 tok)
+- `RootView.swift` — SwiftUI view: RootView (~3098 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2138 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4032 tok)

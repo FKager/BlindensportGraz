@@ -21,6 +21,13 @@ struct RootView: View {
 
     private let appleSignIn = AppleSignInCoordinator()
 
+    // The club's official account is always granted root/admin automatically,
+    // regardless of signup order — see resolveAccount()'s elevateIfDesignatedRoot.
+    // Matched by email only (not first/last name): Apple Sign-In verifies the
+    // email on its end, so it's the one field that can't be spoofed through the
+    // manual RegisterView form, which is deliberately NOT covered by this check.
+    private let designatedRootEmail = "blindensport.gvsc@gmail.com"
+
     var body: some View {
         Group {
             if isResolvingAccount {
@@ -45,8 +52,12 @@ struct RootView: View {
             if let match = users.first(where: { $0.appleUserIdentifier == storedAppleUserIdentifier }) {
                 currentUser = match
                 storedUserID = match.id.uuidString
+                elevateIfDesignatedRoot(match, verifiedEmail: match.email)
             } else if !storedUserID.isEmpty, let id = UUID(uuidString: storedUserID) {
                 currentUser = users.first { $0.id == id }
+                if let resumed = currentUser {
+                    elevateIfDesignatedRoot(resumed, verifiedEmail: resumed.email)
+                }
             }
             triggerBackgroundSync()
             return
@@ -58,6 +69,7 @@ struct RootView: View {
             storedAppleUserIdentifier = result.userIdentifier
             storedUserID = existing.id.uuidString
             currentUser = existing
+            elevateIfDesignatedRoot(existing, verifiedEmail: result.email)
             triggerBackgroundSync()
             return
         }
@@ -89,6 +101,10 @@ struct RootView: View {
             user.isRoot = true
             user.role = "admin"
         }
+        if isDesignatedRootEmail(result.email) {
+            user.isRoot = true
+            user.role = "admin"
+        }
         modelContext.insert(user)
         ClubMember.checkMembership(for: user, modelContext: modelContext)
         try? modelContext.save()
@@ -98,6 +114,23 @@ struct RootView: View {
         storedUserID = user.id.uuidString
         currentUser = user
         triggerBackgroundSync()
+    }
+
+    private func isDesignatedRootEmail(_ email: String?) -> Bool {
+        guard let email else { return false }
+        return email.trimmingCharacters(in: .whitespaces).lowercased() == designatedRootEmail
+    }
+
+    /// Grants root/admin to the club's designated account if it isn't already root,
+    /// matching solely on the Apple-verified email (see designatedRootEmail's doc
+    /// comment for why manual registration is deliberately excluded). Idempotent
+    /// and safe to call on every sign-in — a no-op once the account is already root.
+    private func elevateIfDesignatedRoot(_ user: User, verifiedEmail: String?) {
+        guard isDesignatedRootEmail(verifiedEmail), !user.isRoot else { return }
+        user.isRoot = true
+        user.role = "admin"
+        try? modelContext.save()
+        CloudKitSync.shared.pushUserIdentity(user)
     }
 
     /// Pulls team/event/training/tournament data other users have shared, without

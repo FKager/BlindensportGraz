@@ -540,3 +540,25 @@
 | 12:17 | Edited BlindensportGraz/Localizable.xcstrings | — | ~0 |
 | 12:19 | Session summary: removed User.username entirely; createdBy/uploadedBy now store id.uuidString (not name-based, survives renames); dropped "@username" UI lines; TeamMembership.subtitle now "Konto vorhanden"; RootCLI/README updated in lockstep | Models.swift, RootView.swift, AccountView.swift, EventImagesViews.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, CloudKitSync.swift, RootCLI.swift, CloudKitS2SClient.swift, README.md, Localizable.xcstrings | app + RootCLI build clean, all 7 tests pass (needed simulator erase first, unrelated Busy/preflight error) | ~5100 |
 | 12:20 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |
+| 12:24 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |
+| 12:28 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |
+| 12:28 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |
+| 12:32 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |
+| 12:48 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |
+| 12:54 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |
+| 12:57 | Session end: 39 writes across 10 files (Models.swift, ClubMembersViews.swift, RootView.swift, AccountView.swift, CloudKitSync.swift) | 11 reads | ~38627 tok |
+
+## Session: 2026-07-19 13:32
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:37 | Edited BlindensportGraz/RootView.swift | modified only() | ~167 |
+| 13:38 | Edited BlindensportGraz/RootView.swift | modified first() | ~103 |
+| 13:39 | Edited BlindensportGraz/RootView.swift | modified first() | ~183 |
+| 13:39 | Edited BlindensportGraz/RootView.swift | modified isDesignatedRootEmail() | ~235 |
+| 13:40 | Edited BlindensportGraz/RootView.swift | modified isDesignatedRootEmail() | ~277 |
+| 13:41 | Edited BlindensportGraz/Models.swift | 5→7 lines | ~134 |
+| 13:42 | Added auto-root grant for club account (blindensport.gvsc@gmail.com) via verified Apple Sign-In email | RootView.swift, Models.swift | build succeeded | ~1200 |
+| 13:42 | Created ../../.claude/projects/-Users-franz-dev-claude/memory/feedback_no_clarifying_questions.md | — | ~379 |
+| 13:42 | Created ../../.claude/projects/-Users-franz-dev-claude/memory/MEMORY.md | — | ~42 |
+| 13:42 | Session end: 8 writes across 4 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md) | 5 reads | ~12201 tok |
