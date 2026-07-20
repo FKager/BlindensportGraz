@@ -38,7 +38,27 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+        # macos-15 runners default /Applications/Xcode.app to Xcode 16.4,
+        # which tops out at the iOS 18.5 SDK. This project's SwiftData
+        # @Model class hierarchy (SportEvent/Training/Tournament) needs the
+        # iOS 26 SDK's SwiftData macro to support class inheritance at all
+        # (see .wolf/cerebrum.md's 2026-07-18 entry) — Xcode 16.4's older
+        # macro expands a subclassed @Model into broken/duplicate code
+        # ("redundant conformance...", "required initializer... must be
+        # provided by subclass") instead of a clean compiler error, which is
+        # what actually failed here. Pick the newest installed Xcode 26.x
+        # dynamically rather than hardcoding a patch version, since GitHub
+        # periodically changes which exact 26.x builds ship on this image.
+        run: |
+          set -euo pipefail
+          XCODE_PATH=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -z "$XCODE_PATH" ]; then
+            echo "::error::No Xcode 26.x found on this runner (only found: $(ls -d /Applications/Xcode*.app 2>/dev/null | tr '\n' ' ')). This project's SwiftData @Model class hierarchy requires an iOS 26 SDK Xcode — see .wolf/cerebrum.md."
+            exit 1
+          fi
+          echo "Selecting $XCODE_PATH"
+          sudo xcode-select -s "$XCODE_PATH"
+          xcodebuild -version
 
       - name: Install XcodeGen
         run: brew install xcodegen
@@ -67,7 +87,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+        # See the identical step in the build job above for why this can't
+        # just be /Applications/Xcode.app.
+        run: |
+          set -euo pipefail
+          XCODE_PATH=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -z "$XCODE_PATH" ]; then
+            echo "::error::No Xcode 26.x found on this runner (only found: $(ls -d /Applications/Xcode*.app 2>/dev/null | tr '\n' ' ')). This project's SwiftData @Model class hierarchy requires an iOS 26 SDK Xcode — see .wolf/cerebrum.md."
+            exit 1
+          fi
+          echo "Selecting $XCODE_PATH"
+          sudo xcode-select -s "$XCODE_PATH"
+          xcodebuild -version
 
       - name: Install XcodeGen
         run: brew install xcodegen
