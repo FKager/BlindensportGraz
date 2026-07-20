@@ -1890,6 +1890,110 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-19T12:41:27.656Z"
+    },
+    {
+      "id": "bug-116",
+      "timestamp": "2026-07-20T14:03:37.448Z",
+      "error_message": "Wrong reference: Crypto should be CryptoKit",
+      "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
+      "root_cause": "Used \"Crypto\" instead of \"CryptoKit\"",
+      "fix": "Changed Crypto → CryptoKit",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-20T14:03:37.448Z"
+    },
+    {
+      "id": "bug-117",
+      "timestamp": "2026-07-20T14:13:26.927Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/README.md",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 8→19 lines (6 removed) | Also: This exists because the app itself deliberately ha; their own role, and no in-app way to grant the fir | Also: `ClubMember` if you want `import-members` to be th; get written — the app itself only ever needs to re",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-07-20T14:13:51.826Z"
+    },
+    {
+      "id": "bug-118",
+      "timestamp": "2026-07-20T16:05:00.000Z",
+      "error_message": "GET / returned 404 instead of serving Public/index.html",
+      "file": "RootCLI/Sources/clubmembersapi/Configure.swift",
+      "root_cause": "Vapor's FileMiddleware(publicDirectory:) does not serve an index file at a directory root by default; requires an explicit defaultFile: parameter.",
+      "fix": "Changed to FileMiddleware(publicDirectory: app.directory.publicDirectory, defaultFile: \"index.html\")",
+      "tags": [
+        "vapor",
+        "static-files",
+        "swift",
+        "clubmembersapi"
+      ],
+      "related_bugs": [
+        "bug-119"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-07-20T16:05:00.000Z"
+    },
+    {
+      "id": "bug-119",
+      "timestamp": "2026-07-20T15:50:00.000Z",
+      "error_message": "GET / returned 404 even before the defaultFile fix, because Public/index.html was not found at app.directory.publicDirectory at all",
+      "file": "RootCLI/Package.swift",
+      "root_cause": "SPM's resources: [.copy(\"Public\")] on the clubmembersapi executable target copies the folder into a <target>_<target>.bundle next to the built binary, not to <workingDirectory>/Public/ where Vapor's DirectoryConfiguration.detect() (plain getcwd()) looks for it.",
+      "fix": "Moved Public/ out of Sources/clubmembersapi and up to the RootCLI package root (sibling of Package.swift), removed the resources: declaration entirely — matches Vapor's standard project layout.",
+      "tags": [
+        "vapor",
+        "spm",
+        "resources",
+        "swift",
+        "clubmembersapi"
+      ],
+      "related_bugs": [
+        "bug-118"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-07-20T15:50:00.000Z"
+    },
+    {
+      "id": "bug-120",
+      "timestamp": "2026-07-20T15:40:00.000Z",
+      "error_message": "Fatal error: Error raised at top level: Missing required environment variable CLOUDKIT_KEY_ID (hard crash instead of a clean error message)",
+      "file": "RootCLI/Sources/clubmembersapi/Entrypoint.swift",
+      "root_cause": "@main entrypoint's main() was declared async throws and let the startup error propagate out of Swift's top-level entrypoint, which triggers a runtime fatalError rather than a normal non-zero exit.",
+      "fix": "Changed main() to plain async, wrapped the body in do/catch, and print to stderr + exit(1) on failure — same pattern already used by RootCLI.swift's own main().",
+      "tags": [
+        "swift",
+        "error-handling",
+        "clubmembersapi",
+        "startup"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-20T15:40:00.000Z"
+    },
+    {
+      "id": "bug-121",
+      "timestamp": "2026-07-20T14:23:06.274Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/ClubMembersViews.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-20T14:23:06.274Z"
     }
   ]
 }

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-19T12:42:10.261Z
-> Files: 53 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-20T14:24:57.954Z
+> Files: 61 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -65,7 +65,8 @@
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1119 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
 - `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~7806 tok)
-- `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~2703 tok)
+- `ClubMemberImportExport.swift` — / JSON shape for one club member, shared by export and import. Field names (~2125 tok)
+- `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~3390 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3506 tok)
@@ -85,22 +86,38 @@
 
 ## BlindensportGrazTests/
 
+- `ClubMemberImportExportTests.swift` — Class: ClubMemberImportExportTests (~1586 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~1626 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
 
 ## RootCLI/
 
 - `members.example.json` (~110 tok)
-- `Package.swift` — swift-tools-version:5.9 (~59 tok)
-- `README.md` — Project documentation (~1361 tok)
+- `Package.swift` — swift-tools-version:5.9; targets CloudKitS2SCore (lib), rootcli + clubmembersapi (exe, Vapor) (~196 tok)
+- `README.md` — Project documentation: rootcli + clubmembersapi setup/usage (~2400 tok)
+
+## RootCLI/Public/
+
+- `index.html` — Basic vanilla HTML/JS admin page for club member CRUD, served by clubmembersapi's FileMiddleware (~1599 tok)
+
+## RootCLI/Sources/CloudKitS2SCore/
+
+- `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
+- `CloudKitS2SClient.swift` — Public S2S-authenticated CloudKit HTTP client: queryRecords/lookupRecord/findUser/updateRecord/createOrReplaceRecord/deleteRecord (~2360 tok)
+- `ClubMemberRecord.swift` — Shared ClubMember <-> CKRecord field mapping (single source of truth for rootcli + clubmembersapi) (~749 tok)
+- `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
+
+## RootCLI/Sources/clubmembersapi/
+
+- `Auth.swift` — HTTP Basic Auth middleware, constant-time SHA256 compare, API_USERNAME/API_PASSWORD (~315 tok)
+- `Configure.swift` — Vapor app config: requires API_USERNAME/PASSWORD (fails fast if missing), auth+guard+FileMiddleware(defaultFile: "index.html"), PORT/HOSTNAME (~423 tok)
+- `Entrypoint.swift` — @main entrypoint — deliberately NOT named main.swift (SPM special-cases that filename, see cerebrum Do-Not-Repeat 2026-07-16); wraps startup throw in do/catch for clean exit(1) instead of fatalError (~200 tok)
+- `Routes.swift` — REST CRUD routes (GET/POST/PUT/DELETE) for ClubMember via CloudKitS2SClient + ClubMemberRecord (~1079 tok)
 
 ## RootCLI/Sources/rootcli/
 
-- `CKRecordDTO.swift` — / Minimal read-only view over a CloudKit Web Services JSON record — just (~312 tok)
-- `CloudKitS2SClient.swift` — / Talks to CloudKit Web Services' public database directly over HTTPS using (~1947 tok)
-- `ClubMemberImport.swift` — / Mirrors the app's `ClubMember` model (Models.swift) field-for-field. `id` is (~577 tok)
-- `Config.swift` — Struct: Config (~350 tok)
-- `RootCLI.swift` — Struct: RootCLI (~2035 tok)
+- `ClubMemberImport.swift` — JSON file -> ClubMemberInput decode for import-members (~583 tok)
+- `RootCLI.swift` — CLI entrypoint: list/set-role/set-root/import-members, builds ClubMemberRecord.ckFields instead of a hand-rolled dict (~1993 tok)
 
 ## fastlane/
 

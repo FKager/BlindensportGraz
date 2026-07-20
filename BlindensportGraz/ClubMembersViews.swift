@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 /// Admin-only management of the "Grazer VSC" club membership roster. New app
 /// accounts are auto-flagged as club members by matching against this roster
@@ -15,6 +16,15 @@ struct ClubMembersListView: View {
     private var members: [ClubMember]
     @Query private var users: [User]
     @State private var showAdd = false
+    // Eagerly (re)generated whenever the roster changes, mirroring the
+    // ShareLink pattern established for TeilnehmerlisteExport (see
+    // MemberListView/cerebrum.md) — this user relies on VoiceOver, and a
+    // hand-rolled "generate on tap, then show a share sheet" flow is the
+    // specific pattern that previously froze the app under VoiceOver.
+    // ShareLink itself, pointed at an already-ready file, is the safe path.
+    @State private var exportURL: URL?
+    @State private var showImporter = false
+    @State private var importResultMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -46,9 +56,50 @@ struct ClubMembersListView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showAdd = true } label: { Image(systemName: "plus") }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showImporter = true } label: { Image(systemName: "square.and.arrow.down") }
+                        .accessibilityLabel("Mitglieder importieren")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    if let exportURL {
+                        ShareLink(item: exportURL) { Image(systemName: "square.and.arrow.up") }
+                            .accessibilityLabel("Mitglieder exportieren")
+                    }
+                }
             }
             .sheet(isPresented: $showAdd) {
                 AddClubMemberView()
+            }
+            .task(id: members.map(\.id)) {
+                exportURL = try? ClubMemberImportExport.exportFile(members: members)
+            }
+            .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
+                handleImport(result)
+            }
+            .alert("Import", isPresented: Binding(
+                get: { importResultMessage != nil },
+                set: { if !$0 { importResultMessage = nil } }
+            )) {
+                Button("OK") { importResultMessage = nil }
+            } message: {
+                Text(importResultMessage ?? "")
+            }
+        }
+    }
+
+    private func handleImport(_ result: Result<URL, Error>) {
+        switch result {
+        case .failure(let error):
+            importResultMessage = "Import fehlgeschlagen: \(error.localizedDescription)"
+        case .success(let url):
+            let didAccess = url.startAccessingSecurityScopedResource()
+            defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
+            do {
+                let data = try Data(contentsOf: url)
+                let outcome = ClubMemberImportExport.importMembers(from: data, into: members, modelContext: modelContext)
+                importResultMessage = outcome.summary
+            } catch {
+                importResultMessage = "Datei konnte nicht gelesen werden: \(error.localizedDescription)"
             }
         }
     }

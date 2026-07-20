@@ -617,3 +617,44 @@
 | 14:42 | Edited BlindensportGraz/AccountView.swift | expanded (+8 lines) | ~159 |
 | 14:42 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~176 |
 | 14:42 | Added Grazer VSC member self-service edit (address/contact) | Models.swift, ClubMembersViews.swift, AccountView.swift | build succeeded | ~1900 |
+| 14:42 | Session end: 42 writes across 7 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md, CloudKitSync.swift) | 8 reads | ~31548 tok |
+| 14:45 | Session end: 42 writes across 7 files (RootView.swift, Models.swift, feedback_no_clarifying_questions.md, MEMORY.md, CloudKitSync.swift) | 8 reads | ~31548 tok |
+
+## Session: 2026-07-20 15:52
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:59 | Created RootCLI/Sources/CloudKitS2SCore/Config.swift | — | ~433 |
+| 15:59 | Created RootCLI/Sources/CloudKitS2SCore/CKRecordDTO.swift | — | ~420 |
+| 16:00 | Created RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift | — | ~2360 |
+| 16:00 | Created RootCLI/Sources/CloudKitS2SCore/ClubMemberRecord.swift | — | ~747 |
+| 16:00 | Created RootCLI/Package.swift | — | ~207 |
+| 16:00 | Edited RootCLI/Sources/rootcli/ClubMemberImport.swift | added 1 import(s) | ~22 |
+| 16:00 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added 1 import(s) | ~13 |
+| 16:01 | Edited RootCLI/Sources/rootcli/RootCLI.swift | Int64() → ClubMemberRecord() | ~186 |
+| 16:02 | Created RootCLI/Sources/clubmembersapi/main.swift | — | ~128 |
+| 16:03 | Created RootCLI/Sources/clubmembersapi/Configure.swift | — | ~415 |
+| 16:03 | Created RootCLI/Sources/clubmembersapi/Auth.swift | — | ~179 |
+| 16:03 | Edited RootCLI/Sources/clubmembersapi/Auth.swift | modified authenticate() | ~314 |
+| 16:03 | Edited RootCLI/Sources/clubmembersapi/Auth.swift | 2→2 lines | ~8 |
+| 16:03 | Created RootCLI/Sources/clubmembersapi/Routes.swift | — | ~1079 |
+| 16:04 | Edited RootCLI/Sources/CloudKitS2SCore/ClubMemberRecord.swift | inline fix | ~17 |
+| 16:05 | Created RootCLI/Sources/clubmembersapi/Public/index.html | — | ~1599 |
+| 16:06 | Edited RootCLI/Sources/clubmembersapi/Entrypoint.swift | modified main() | ~178 |
+| 16:06 | Edited RootCLI/Sources/clubmembersapi/Entrypoint.swift | added 1 import(s) | ~10 |
+| 16:08 | Edited RootCLI/Package.swift | 9→8 lines | ~67 |
+| 16:12 | Edited RootCLI/Sources/clubmembersapi/Configure.swift | inline fix | ~31 |
+| 16:13 | Edited RootCLI/README.md | modified authentication() | ~266 |
+| 16:13 | Edited RootCLI/README.md | expanded (+6 lines) | ~206 |
+| 16:13 | Edited RootCLI/README.md | expanded (+7 lines) | ~302 |
+| 16:13 | Edited RootCLI/README.md | 10→10 lines | ~42 |
+| 16:14 | Edited RootCLI/README.md | expanded (+47 lines) | ~775 |
+| 16:20 | Added clubmembersapi (Vapor REST API + basic HTML admin page) for ClubMember CRUD; extracted CloudKitS2SCore lib shared with rootcli | RootCLI/Package.swift, Sources/CloudKitS2SCore/*, Sources/clubmembersapi/*, Public/index.html, Sources/rootcli/* | swift build clean for both targets; smoke-tested auth/static-page/validation with a throwaway S2S key (real CloudKit call unverifiable, needs live container) | ~9200 |
+| 16:17 | Session end: 25 writes across 14 files (Config.swift, CKRecordDTO.swift, CloudKitS2SClient.swift, ClubMemberRecord.swift, Package.swift) | 13 reads | ~17562 tok |
+| 16:22 | Created BlindensportGraz/ClubMemberImportExport.swift | — | ~2121 |
+| 16:23 | Edited BlindensportGraz/ClubMembersViews.swift | added error handling | ~1124 |
+| 16:23 | Edited BlindensportGraz/ClubMembersViews.swift | added 1 import(s) | ~17 |
+| 16:23 | Edited BlindensportGraz/ClubMemberImportExport.swift | modified importMembers() | ~36 |
+| 16:24 | Created BlindensportGrazTests/ClubMemberImportExportTests.swift | — | ~1586 |
+| 16:27 | Added in-app import/export of Grazer VSC roster (ShareLink JSON export, fileImporter JSON import, id/email/name match-or-create) | BlindensportGraz/ClubMemberImportExport.swift, ClubMembersViews.swift, BlindensportGrazTests/ClubMemberImportExportTests.swift, project.yml (xcodegen regenerate) | xcodebuild build + test succeeded (13/13 tests, incl. 6 new); simulator needed simctl erase (known transient issue) | ~4800 |
+| 16:27 | Session end: 30 writes across 17 files (Config.swift, CKRecordDTO.swift, CloudKitS2SClient.swift, ClubMemberRecord.swift, Package.swift) | 18 reads | ~35495 tok |
