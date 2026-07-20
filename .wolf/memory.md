@@ -658,3 +658,7 @@
 | 16:24 | Created BlindensportGrazTests/ClubMemberImportExportTests.swift | — | ~1586 |
 | 16:27 | Added in-app import/export of Grazer VSC roster (ShareLink JSON export, fileImporter JSON import, id/email/name match-or-create) | BlindensportGraz/ClubMemberImportExport.swift, ClubMembersViews.swift, BlindensportGrazTests/ClubMemberImportExportTests.swift, project.yml (xcodegen regenerate) | xcodebuild build + test succeeded (13/13 tests, incl. 6 new); simulator needed simctl erase (known transient issue) | ~4800 |
 | 16:27 | Session end: 30 writes across 17 files (Config.swift, CKRecordDTO.swift, CloudKitS2SClient.swift, ClubMemberRecord.swift, Package.swift) | 18 reads | ~35495 tok |
+| 16:32 | Session end: 30 writes across 17 files (Config.swift, CKRecordDTO.swift, CloudKitS2SClient.swift, ClubMemberRecord.swift, Package.swift) | 19 reads | ~37921 tok |
+| 16:35 | Edited .github/workflows/ios-build-deploy.yml | expanded (+20 lines) | ~466 |
+| 16:35 | Edited .github/workflows/ios-build-deploy.yml | expanded (+11 lines) | ~276 |
+| 16:37 | Fixed TestFlight CI build failure (macos-15 default Xcode 16.4 lacks iOS 26 SDK needed for @Model class inheritance); dynamically select newest Xcode 26.x instead | .github/workflows/ios-build-deploy.yml | Pushed, watched run 29751336773: build job succeeded (was failing on 3 prior commits) | ~1200 |
