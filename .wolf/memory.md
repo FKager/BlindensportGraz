@@ -662,3 +662,4 @@
 | 16:35 | Edited .github/workflows/ios-build-deploy.yml | expanded (+20 lines) | ~466 |
 | 16:35 | Edited .github/workflows/ios-build-deploy.yml | expanded (+11 lines) | ~276 |
 | 16:37 | Fixed TestFlight CI build failure (macos-15 default Xcode 16.4 lacks iOS 26 SDK needed for @Model class inheritance); dynamically select newest Xcode 26.x instead | .github/workflows/ios-build-deploy.yml | Pushed, watched run 29751336773: build job succeeded (was failing on 3 prior commits) | ~1200 |
+| 16:38 | Session end: 32 writes across 18 files (Config.swift, CKRecordDTO.swift, CloudKitS2SClient.swift, ClubMemberRecord.swift, Package.swift) | 20 reads | ~40557 tok |
