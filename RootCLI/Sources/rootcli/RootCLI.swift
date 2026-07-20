@@ -1,4 +1,5 @@
 import Foundation
+import CloudKitS2SCore
 
 @main
 struct RootCLI {
@@ -131,22 +132,22 @@ struct RootCLI {
                 recordName = UUID().uuidString
             }
 
-            let joinedAt = ClubMemberImport.parseJoinedAt(input.joinedAt) ?? Date()
-            let fields: [String: Any] = [
-                "firstName": ["value": firstName],
-                "lastName": ["value": lastName],
-                "street": ["value": input.street ?? ""],
-                "zip": ["value": input.zip ?? ""],
-                "city": ["value": input.city ?? ""],
-                "email": ["value": input.email ?? ""],
-                "phone": ["value": input.phone ?? ""],
-                "memberNumber": ["value": input.memberNumber ?? ""],
-                "notes": ["value": input.notes ?? ""],
-                "joinedAt": ["value": Int64(joinedAt.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
-            ]
+            let record = ClubMemberRecord(
+                id: recordName,
+                firstName: firstName,
+                lastName: lastName,
+                street: input.street ?? "",
+                zip: input.zip ?? "",
+                city: input.city ?? "",
+                email: input.email ?? "",
+                phone: input.phone ?? "",
+                memberNumber: input.memberNumber ?? "",
+                joinedAt: ClubMemberImport.parseJoinedAt(input.joinedAt) ?? Date(),
+                notes: input.notes ?? ""
+            )
 
             do {
-                try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: fields)
+                try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
                 print("Imported \(fullName) (\(recordName))")
                 succeeded += 1
             } catch {

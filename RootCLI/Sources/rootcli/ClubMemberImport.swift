@@ -1,4 +1,5 @@
 import Foundation
+import CloudKitS2SCore
 
 /// Mirrors the app's `ClubMember` model (Models.swift) field-for-field. `id` is
 /// optional and, when given, must be a UUID string — it becomes the CKRecord

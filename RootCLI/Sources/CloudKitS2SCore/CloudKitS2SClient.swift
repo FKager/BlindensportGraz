@@ -13,7 +13,7 @@ import CryptoKit
 /// `date : base64(SHA256(body)) : path` and ECDSA-signing that string with the
 /// registered private key; CryptoKit's `signature(for:)` already does the
 /// SHA-256-then-sign step internally, so we hand it the raw message string.
-final class CloudKitS2SClient {
+public final class CloudKitS2SClient {
     private let config: Config
     private let privateKey: P256.Signing.PrivateKey
     private let host = "https://api.apple-cloudkit.com"
@@ -24,7 +24,7 @@ final class CloudKitS2SClient {
         return formatter
     }()
 
-    init(config: Config) throws {
+    public init(config: Config) throws {
         self.config = config
         let pem: String
         do {
@@ -84,17 +84,30 @@ final class CloudKitS2SClient {
         return json
     }
 
-    func queryRecords(recordType: String) async throws -> [CKRecordDTO] {
+    public func queryRecords(recordType: String) async throws -> [CKRecordDTO] {
         let body: [String: Any] = ["query": ["recordType": recordType]]
         let json = try await send(endpoint: "records/query", body: body)
         let records = json["records"] as? [[String: Any]] ?? []
         return records.compactMap(CKRecordDTO.init)
     }
 
+    /// Fetches a single record by its exact record name (id). More targeted
+    /// than `queryRecords` + filter — used wherever the caller already knows
+    /// the id, e.g. GET/PUT/DELETE /api/members/:id. Returns nil if no record
+    /// exists at that name (CloudKit's lookup endpoint reports a per-record
+    /// "NOT_FOUND" error object instead of the full record in that case,
+    /// which simply fails `CKRecordDTO.init`'s required-fields check).
+    public func lookupRecord(recordType: String, recordName: String) async throws -> CKRecordDTO? {
+        let body: [String: Any] = ["records": [["recordName": recordName]]]
+        let json = try await send(endpoint: "records/lookup", body: body)
+        let records = json["records"] as? [[String: Any]] ?? []
+        return records.first.flatMap(CKRecordDTO.init)
+    }
+
     /// Matches by record id or full name (firstName + lastName,
     /// case-insensitively). Errors out on zero or multiple matches rather
     /// than guessing.
-    func findUser(matching identifier: String) async throws -> CKRecordDTO {
+    public func findUser(matching identifier: String) async throws -> CKRecordDTO {
         let users = try await queryRecords(recordType: "UserIdentity")
         let needle = identifier.lowercased()
         let matches = users.filter { user in
@@ -114,7 +127,7 @@ final class CloudKitS2SClient {
     }
 
     @discardableResult
-    func updateRecord(_ record: CKRecordDTO, fields: [String: Any]) async throws -> [String: Any] {
+    public func updateRecord(_ record: CKRecordDTO, fields: [String: Any]) async throws -> [String: Any] {
         let body: [String: Any] = [
             "operations": [[
                 "operationType": "update",
@@ -136,7 +149,7 @@ final class CloudKitS2SClient {
     /// own push semantics (CloudKitSync's `save(_:)` doesn't check for conflicts
     /// either), so this stays consistent with what the app itself would do.
     @discardableResult
-    func createOrReplaceRecord(recordType: String, recordName: String, fields: [String: Any]) async throws -> [String: Any] {
+    public func createOrReplaceRecord(recordType: String, recordName: String, fields: [String: Any]) async throws -> [String: Any] {
         let body: [String: Any] = [
             "operations": [[
                 "operationType": "forceReplace",
@@ -144,6 +157,23 @@ final class CloudKitS2SClient {
                     "recordName": recordName,
                     "recordType": recordType,
                     "fields": fields
+                ] as [String: Any]
+            ]]
+        ]
+        return try await send(endpoint: "records/modify", body: body)
+    }
+
+    /// Deletes unconditionally (no recordChangeTag check), matching this
+    /// file's other "operator tooling doesn't need optimistic-concurrency
+    /// safety" conventions above.
+    @discardableResult
+    public func deleteRecord(recordType: String, recordName: String) async throws -> [String: Any] {
+        let body: [String: Any] = [
+            "operations": [[
+                "operationType": "forceDelete",
+                "record": [
+                    "recordName": recordName,
+                    "recordType": recordType
                 ] as [String: Any]
             ]]
         ]

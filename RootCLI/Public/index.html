@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grazer VSC – Mitgliederverwaltung</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.4rem; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #8884; vertical-align: top; }
+  th { font-weight: 600; }
+  button { cursor: pointer; }
+  form#editForm { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 1rem; margin-top: 1rem; padding: 1rem; border: 1px solid #8884; border-radius: 8px; }
+  form#editForm label { display: flex; flex-direction: column; font-size: 0.85rem; gap: 0.25rem; }
+  form#editForm input, form#editForm textarea { font: inherit; padding: 0.4rem; }
+  .full { grid-column: 1 / -1; }
+  .actions { grid-column: 1 / -1; display: flex; gap: 0.5rem; }
+  #status { min-height: 1.2rem; font-size: 0.9rem; }
+  #status.error { color: #c0392b; }
+  .row-actions button { margin-right: 0.4rem; }
+</style>
+</head>
+<body>
+<h1>Grazer VSC – Mitgliederverwaltung</h1>
+<p id="status"></p>
+
+<table id="membersTable">
+  <thead>
+    <tr><th>Name</th><th>Adresse</th><th>Kontakt</th><th>Mitgl.-Nr.</th><th></th></tr>
+  </thead>
+  <tbody id="membersBody"></tbody>
+</table>
+
+<h2 id="formTitle">Neues Mitglied</h2>
+<form id="editForm">
+  <input type="hidden" id="memberId">
+  <label>Vorname <input id="firstName" required></label>
+  <label>Nachname <input id="lastName" required></label>
+  <label>Straße <input id="street"></label>
+  <label>PLZ <input id="zip"></label>
+  <label>Ort <input id="city"></label>
+  <label>E-Mail <input id="email" type="email"></label>
+  <label>Telefon <input id="phone"></label>
+  <label>Mitgliedsnummer <input id="memberNumber"></label>
+  <label class="full">Notizen <textarea id="notes" rows="2"></textarea></label>
+  <div class="actions">
+    <button type="submit">Speichern</button>
+    <button type="button" id="cancelEdit">Abbrechen</button>
+  </div>
+</form>
+
+<script>
+const api = '/api/members';
+const statusEl = document.getElementById('status');
+const body = document.getElementById('membersBody');
+const form = document.getElementById('editForm');
+const formTitle = document.getElementById('formTitle');
+const fields = ['firstName','lastName','street','zip','city','email','phone','memberNumber','notes'];
+
+function setStatus(text, isError) {
+  statusEl.textContent = text;
+  statusEl.className = isError ? 'error' : '';
+}
+
+async function api_request(path, options) {
+  const res = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options));
+  if (res.status === 401) {
+    setStatus('Anmeldung erforderlich oder falsch.', true);
+    throw new Error('unauthorized');
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.reason || body.error || ('HTTP ' + res.status));
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+function resetForm() {
+  form.reset();
+  document.getElementById('memberId').value = '';
+  formTitle.textContent = 'Neues Mitglied';
+}
+
+function fillForm(member) {
+  document.getElementById('memberId').value = member.id;
+  for (const f of fields) document.getElementById(f).value = member[f] || '';
+  formTitle.textContent = 'Mitglied bearbeiten: ' + member.firstName + ' ' + member.lastName;
+}
+
+function renderRow(member) {
+  const tr = document.createElement('tr');
+  const address = [member.street, [member.zip, member.city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+  const contact = [member.email, member.phone].filter(Boolean).join(' / ');
+  tr.innerHTML =
+    '<td>' + escapeHtml(member.firstName + ' ' + member.lastName) + '</td>' +
+    '<td>' + escapeHtml(address) + '</td>' +
+    '<td>' + escapeHtml(contact) + '</td>' +
+    '<td>' + escapeHtml(member.memberNumber || '') + '</td>' +
+    '<td class="row-actions"><button data-action="edit">Bearbeiten</button><button data-action="delete">Löschen</button></td>';
+  tr.querySelector('[data-action="edit"]').addEventListener('click', () => fillForm(member));
+  tr.querySelector('[data-action="delete"]').addEventListener('click', () => deleteMember(member));
+  return tr;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+async function loadMembers() {
+  try {
+    const members = await api_request(api);
+    body.innerHTML = '';
+    members.forEach(m => body.appendChild(renderRow(m)));
+    setStatus(members.length + ' Mitglieder geladen.', false);
+  } catch (e) {
+    setStatus('Fehler beim Laden: ' + e.message, true);
+  }
+}
+
+async function deleteMember(member) {
+  if (!confirm('„' + member.firstName + ' ' + member.lastName + '“ wirklich löschen?')) return;
+  try {
+    await api_request(api + '/' + encodeURIComponent(member.id), { method: 'DELETE' });
+    setStatus('Gelöscht.', false);
+    await loadMembers();
+  } catch (e) {
+    setStatus('Fehler beim Löschen: ' + e.message, true);
+  }
+}
+
+form.addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const id = document.getElementById('memberId').value;
+  const payload = {};
+  for (const f of fields) payload[f] = document.getElementById(f).value;
+  try {
+    if (id) {
+      await api_request(api + '/' + encodeURIComponent(id), { method: 'PUT', body: JSON.stringify(payload) });
+      setStatus('Gespeichert.', false);
+    } else {
+      await api_request(api, { method: 'POST', body: JSON.stringify(payload) });
+      setStatus('Angelegt.', false);
+    }
+    resetForm();
+    await loadMembers();
+  } catch (e) {
+    setStatus('Fehler beim Speichern: ' + e.message, true);
+  }
+});
+
+document.getElementById('cancelEdit').addEventListener('click', resetForm);
+
+loadMembers();
+</script>
+</body>
+</html>

@@ -1,9 +1,9 @@
 import Foundation
 
-enum CLIError: Error, CustomStringConvertible {
+public enum CLIError: Error, CustomStringConvertible {
     case message(String)
 
-    var description: String {
+    public var description: String {
         switch self {
         case .message(let text): return text
         }
@@ -13,13 +13,20 @@ enum CLIError: Error, CustomStringConvertible {
 /// Connection settings for the CloudKit Web Services Server-to-Server API.
 /// Read from the environment so the private key path and key ID never end up
 /// hardcoded or committed — see RootCLI/README.md for how to provision these.
-struct Config {
-    let containerID: String
-    let environment: String // "development" or "production"
-    let keyID: String
-    let privateKeyPath: String
+public struct Config {
+    public let containerID: String
+    public let environment: String // "development" or "production"
+    public let keyID: String
+    public let privateKeyPath: String
 
-    static func fromEnvironment() throws -> Config {
+    public init(containerID: String, environment: String, keyID: String, privateKeyPath: String) {
+        self.containerID = containerID
+        self.environment = environment
+        self.keyID = keyID
+        self.privateKeyPath = privateKeyPath
+    }
+
+    public static func fromEnvironment() throws -> Config {
         let env = ProcessInfo.processInfo.environment
         func require(_ name: String) throws -> String {
             guard let value = env[name], !value.isEmpty else {
