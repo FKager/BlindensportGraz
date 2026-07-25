@@ -1,5 +1,12 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking // URLSession/URLRequest live here on Linux/Windows, not in Foundation itself.
+#endif
+#if canImport(CryptoKit)
 import CryptoKit
+#else
+import Crypto // swift-crypto: API-compatible drop-in for CryptoKit on non-Apple platforms.
+#endif
 
 /// Talks to CloudKit Web Services' public database directly over HTTPS using
 /// Server-to-Server authentication (an ECDSA P-256 key registered in CloudKit

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudKit – Datensatzverwaltung (generisch)</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.4rem; }
+  p.hint { opacity: 0.75; font-size: 0.9rem; }
+  .toolbar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin: 1rem 0; }
+  .toolbar input, .toolbar select { font: inherit; padding: 0.4rem; }
+  table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #8884; vertical-align: top; font-size: 0.85rem; }
+  th { font-weight: 600; }
+  td.fields { max-width: 480px; overflow-wrap: anywhere; font-family: ui-monospace, monospace; white-space: pre-wrap; }
+  button { cursor: pointer; }
+  .row-actions button { margin-right: 0.4rem; }
+  #editor { margin-top: 1.5rem; padding: 1rem; border: 1px solid #8884; border-radius: 8px; }
+  #editor label { display: flex; flex-direction: column; font-size: 0.85rem; gap: 0.25rem; margin-bottom: 0.5rem; }
+  #editor input, #editor textarea { font: inherit; padding: 0.4rem; }
+  #editor textarea { font-family: ui-monospace, monospace; min-height: 10rem; }
+  #status { min-height: 1.2rem; font-size: 0.9rem; }
+  #status.error { color: #c0392b; }
+</style>
+</head>
+<body>
+<h1>CloudKit – Datensatzverwaltung (generisch)</h1>
+<p class="hint">
+  Bearbeitet beliebige Datensatztypen direkt in CloudKit (nicht nur Grazer-VSC-Mitglieder) —
+  siehe <a href="/">Mitgliederverwaltung</a> für ein geführteres Formular speziell für
+  ClubMember. Felder ohne bekannten Typ werden als STRING gespeichert; für Zahlen/Datum/Listen
+  im JSON-Editor die passenden JSON-Typen verwenden (Zahl, true/false, ["a","b"]) oder ISO8601
+  für Datumsfelder ("2026-07-24T00:00:00Z").
+</p>
+<p id="status"></p>
+
+<div class="toolbar">
+  <label>Typ
+    <select id="typeSelect"></select>
+  </label>
+  <input id="typeCustom" placeholder="oder eigener Typ-Name">
+  <button id="loadBtn">Laden</button>
+  <button id="newBtn">Neuer Datensatz</button>
+</div>
+
+<table id="recordsTable">
+  <thead><tr><th>ID</th><th>Felder</th><th></th></tr></thead>
+  <tbody id="recordsBody"></tbody>
+</table>
+
+<div id="editor" hidden>
+  <h2 id="editorTitle">Datensatz bearbeiten</h2>
+  <label>ID <input id="recordId"></label>
+  <label>Felder (JSON) <textarea id="recordFields" spellcheck="false"></textarea></label>
+  <div>
+    <button id="saveBtn">Speichern (anlegen oder aktualisieren)</button>
+    <button id="cancelBtn" type="button">Abbrechen</button>
+  </div>
+</div>
+
+<script>
+const knownTypes = ["UserIdentity","ClubMember","Team","TeamMembership","SportEvent","Training","Tournament","TrainingAttendance","TournamentAttendance","EventParticipation"];
+const statusEl = document.getElementById('status');
+const typeSelect = document.getElementById('typeSelect');
+const typeCustom = document.getElementById('typeCustom');
+const body = document.getElementById('recordsBody');
+const editor = document.getElementById('editor');
+const editorTitle = document.getElementById('editorTitle');
+const recordIdInput = document.getElementById('recordId');
+const recordFieldsInput = document.getElementById('recordFields');
+
+for (const t of knownTypes) {
+  const opt = document.createElement('option');
+  opt.value = t; opt.textContent = t;
+  typeSelect.appendChild(opt);
+}
+
+function setStatus(text, isError) {
+  statusEl.textContent = text;
+  statusEl.className = isError ? 'error' : '';
+}
+
+function currentType() {
+  return typeCustom.value.trim() || typeSelect.value;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+async function api_request(path, options) {
+  const res = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options));
+  if (res.status === 401) {
+    setStatus('Anmeldung erforderlich oder falsch.', true);
+    throw new Error('unauthorized');
+  }
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.reason || errBody.error || ('HTTP ' + res.status));
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+function renderRow(record) {
+  const tr = document.createElement('tr');
+  const { id, ...fields } = record;
+  tr.innerHTML =
+    '<td>' + escapeHtml(id) + '</td>' +
+    '<td class="fields">' + escapeHtml(JSON.stringify(fields, null, 2)) + '</td>' +
+    '<td class="row-actions"><button data-action="edit">Bearbeiten</button><button data-action="delete">Löschen</button></td>';
+  tr.querySelector('[data-action="edit"]').addEventListener('click', () => openEditor(record));
+  tr.querySelector('[data-action="delete"]').addEventListener('click', () => deleteRecord(record));
+  return tr;
+}
+
+async function loadRecords() {
+  const type = currentType();
+  if (!type) { setStatus('Bitte einen Typ wählen oder eingeben.', true); return; }
+  try {
+    const records = await api_request('/api/records/' + encodeURIComponent(type));
+    body.innerHTML = '';
+    records.forEach(r => body.appendChild(renderRow(r)));
+    setStatus(records.length + ' ' + type + '-Datensätze geladen.', false);
+  } catch (e) {
+    setStatus('Fehler beim Laden: ' + e.message, true);
+  }
+}
+
+function openEditor(record) {
+  const { id, ...fields } = record || {};
+  editorTitle.textContent = record ? ('Bearbeiten: ' + id) : 'Neuer Datensatz';
+  recordIdInput.value = id || (crypto.randomUUID ? crypto.randomUUID() : '');
+  recordFieldsInput.value = JSON.stringify(fields, null, 2);
+  editor.hidden = false;
+}
+
+function closeEditor() {
+  editor.hidden = true;
+}
+
+async function deleteRecord(record) {
+  const type = currentType();
+  if (!confirm(type + ' „' + record.id + '“ wirklich löschen?')) return;
+  try {
+    await api_request('/api/records/' + encodeURIComponent(type) + '/' + encodeURIComponent(record.id), { method: 'DELETE' });
+    setStatus('Gelöscht.', false);
+    await loadRecords();
+  } catch (e) {
+    setStatus('Fehler beim Löschen: ' + e.message, true);
+  }
+}
+
+document.getElementById('loadBtn').addEventListener('click', loadRecords);
+document.getElementById('newBtn').addEventListener('click', () => openEditor(null));
+document.getElementById('cancelBtn').addEventListener('click', closeEditor);
+
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  const type = currentType();
+  const id = recordIdInput.value.trim();
+  if (!type || !id) { setStatus('Typ und ID sind erforderlich.', true); return; }
+  let fields;
+  try {
+    fields = JSON.parse(recordFieldsInput.value || '{}');
+  } catch (e) {
+    setStatus('Felder sind kein gültiges JSON: ' + e.message, true);
+    return;
+  }
+  try {
+    await api_request('/api/records/' + encodeURIComponent(type) + '/' + encodeURIComponent(id), {
+      method: 'PUT',
+      body: JSON.stringify(fields)
+    });
+    setStatus('Gespeichert (angelegt oder aktualisiert).', false);
+    closeEditor();
+    await loadRecords();
+  } catch (e) {
+    setStatus('Fehler beim Speichern: ' + e.message, true);
+  }
+});
+</script>
+</body>
+</html>

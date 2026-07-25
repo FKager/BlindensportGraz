@@ -189,7 +189,7 @@ final class CloudKitSync {
         Task {
             defer { try? FileManager.default.removeItem(at: tmpURL) }
             do {
-                _ = try await publicDB.save(record)
+                try await upsert(record)
             } catch {
                 print("CloudKitSync push failed for EventImage \(record.recordID.recordName): \(error)")
             }
@@ -213,10 +213,31 @@ final class CloudKitSync {
     private func save(_ record: CKRecord) {
         Task {
             do {
-                _ = try await publicDB.save(record)
+                try await upsert(record)
             } catch {
                 print("CloudKitSync push failed for \(record.recordType) \(record.recordID.recordName): \(error)")
             }
+        }
+    }
+
+    /// Every push here builds a brand-new `CKRecord` instance rather than
+    /// fetching the existing one first, so it never carries a
+    /// `recordChangeTag`. `CKDatabase.save(_:)`'s default save policy
+    /// (`.ifServerRecordUnchanged`) treats that as an unverifiable conflict
+    /// and throws `CKError.serverRecordChanged` on any push after the first
+    /// (i.e. inserts work, updates silently fail). Using
+    /// `CKModifyRecordsOperation` with `.changedKeys` instead makes this a
+    /// true insert-or-update: it always writes the fields present on the
+    /// record, whether or not a server copy already exists.
+    private func upsert(_ record: CKRecord) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            let operation = CKModifyRecordsOperation(recordsToSave: [record], recordIDsToDelete: nil)
+            operation.savePolicy = .changedKeys
+            operation.qualityOfService = .userInitiated
+            operation.modifyRecordsResultBlock = { result in
+                continuation.resume(with: result)
+            }
+            publicDB.add(operation)
         }
     }
 

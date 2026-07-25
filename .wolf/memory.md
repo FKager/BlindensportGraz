@@ -663,3 +663,37 @@
 | 16:35 | Edited .github/workflows/ios-build-deploy.yml | expanded (+11 lines) | ~276 |
 | 16:37 | Fixed TestFlight CI build failure (macos-15 default Xcode 16.4 lacks iOS 26 SDK needed for @Model class inheritance); dynamically select newest Xcode 26.x instead | .github/workflows/ios-build-deploy.yml | Pushed, watched run 29751336773: build job succeeded (was failing on 3 prior commits) | ~1200 |
 | 16:38 | Session end: 32 writes across 18 files (Config.swift, CKRecordDTO.swift, CloudKitS2SClient.swift, ClubMemberRecord.swift, Package.swift) | 20 reads | ~40557 tok |
+| 16:39 | Session end: 32 writes across 18 files (Config.swift, CKRecordDTO.swift, CloudKitS2SClient.swift, ClubMemberRecord.swift, Package.swift) | 20 reads | ~40557 tok |
+
+## Session: 2026-07-24 10:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:03 | Edited BlindensportGraz/CloudKitSync.swift | modified save() | ~381 |
+| 11:04 | Edited BlindensportGraz/CloudKitSync.swift | save() → upsert() | ~79 |
+| 11:07 | Session end: 2 writes across 1 files (CloudKitSync.swift) | 1 reads | ~8298 tok |
+| 11:10 | Created RootCLI/Sources/CloudKitS2SCore/CKFieldCoding.swift | — | ~1693 |
+| 11:19 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 3→5 lines | ~47 |
+| 11:19 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added nullish coalescing | ~948 |
+| 11:19 | Edited RootCLI/Sources/rootcli/RootCLI.swift | expanded (+15 lines) | ~374 |
+| 11:19 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | modified jsonResponse() | ~1086 |
+| 11:20 | Created RootCLI/Public/records.html | — | ~1943 |
+| 11:20 | Edited RootCLI/Public/records.html | 4→4 lines | ~86 |
+| 11:20 | Edited RootCLI/Public/records.html | "Felder sind kein gĂĽltige" → "Felder sind kein gültiges" | ~19 |
+| 11:20 | Edited RootCLI/Public/index.html | 2→3 lines | ~42 |
+
+## Session: 2026-07-25 11:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:51 | Edited RootCLI/README.md | expanded (+26 lines) | ~402 |
+| 11:51 | Edited RootCLI/README.md | expanded (+23 lines) | ~470 |
+| 11:51 | Documented already-built generic CloudKit record editor (rootcli record subcommand, /api/records REST, records.html UI) in README, work was uncommitted from prior session | RootCLI/README.md | swift build clean; verified records.html/Routes.swift/RootCLI.swift/CKFieldCoding.swift already functional from 2026-07-24 session | ~1800 |
+| 11:51 | Session end: 2 writes across 1 files (README.md) | 3 reads | ~6970 tok |
+| 11:54 | Session end: 2 writes across 1 files (README.md) | 3 reads | ~6970 tok |
+| 11:57 | Edited RootCLI/Package.swift | expanded (+11 lines) | ~211 |
+| 11:57 | Edited RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift | expanded (+7 lines) | ~84 |
+| 11:58 | Session end: 4 writes across 3 files (README.md, Package.swift, CloudKitS2SClient.swift) | 7 reads | ~10590 tok |
+| 12:01 | Session end: 4 writes across 3 files (README.md, Package.swift, CloudKitS2SClient.swift) | 7 reads | ~10590 tok |
+| 12:07 | Session end: 4 writes across 3 files (README.md, Package.swift, CloudKitS2SClient.swift) | 9 reads | ~15462 tok |
+| 12:08 | Session end: 4 writes across 3 files (README.md, Package.swift, CloudKitS2SClient.swift) | 9 reads | ~15462 tok |

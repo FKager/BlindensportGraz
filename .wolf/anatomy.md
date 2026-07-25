@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-20T14:35:25.322Z
-> Files: 61 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-25T09:57:25.681Z
+> Files: 63 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -64,7 +64,7 @@
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1119 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~7806 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~8105 tok)
 - `ClubMemberImportExport.swift` — / JSON shape for one club member, shared by export and import. Field names (~2125 tok)
 - `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~3390 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
@@ -93,17 +93,19 @@
 ## RootCLI/
 
 - `members.example.json` (~110 tok)
-- `Package.swift` — swift-tools-version:5.9; targets CloudKitS2SCore (lib), rootcli + clubmembersapi (exe, Vapor) (~196 tok)
-- `README.md` — Project documentation: rootcli + clubmembersapi setup/usage (~2400 tok)
+- `Package.swift` — swift-tools-version:5.9 (~355 tok)
+- `README.md` — Project documentation (~2944 tok)
 
 ## RootCLI/Public/
 
-- `index.html` — Basic vanilla HTML/JS admin page for club member CRUD, served by clubmembersapi's FileMiddleware (~1599 tok)
+- `index.html` — Grazer VSC – Mitgliederverwaltung (~1624 tok)
+- `records.html` — CloudKit – Datensatzverwaltung (generisch) (~1942 tok)
 
 ## RootCLI/Sources/CloudKitS2SCore/
 
+- `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1693 tok)
 - `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
-- `CloudKitS2SClient.swift` — Public S2S-authenticated CloudKit HTTP client: queryRecords/lookupRecord/findUser/updateRecord/createOrReplaceRecord/deleteRecord (~2360 tok)
+- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~2435 tok)
 - `ClubMemberRecord.swift` — Shared ClubMember <-> CKRecord field mapping (single source of truth for rootcli + clubmembersapi) (~749 tok)
 - `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
 
@@ -112,12 +114,12 @@
 - `Auth.swift` — HTTP Basic Auth middleware, constant-time SHA256 compare, API_USERNAME/API_PASSWORD (~315 tok)
 - `Configure.swift` — Vapor app config: requires API_USERNAME/PASSWORD (fails fast if missing), auth+guard+FileMiddleware(defaultFile: "index.html"), PORT/HOSTNAME (~423 tok)
 - `Entrypoint.swift` — @main entrypoint — deliberately NOT named main.swift (SPM special-cases that filename, see cerebrum Do-Not-Repeat 2026-07-16); wraps startup throw in do/catch for clean exit(1) instead of fatalError (~200 tok)
-- `Routes.swift` — REST CRUD routes (GET/POST/PUT/DELETE) for ClubMember via CloudKitS2SClient + ClubMemberRecord (~1079 tok)
+- `Routes.swift` — Struct: ClubMemberInput (~2056 tok)
 
 ## RootCLI/Sources/rootcli/
 
 - `ClubMemberImport.swift` — JSON file -> ClubMemberInput decode for import-members (~583 tok)
-- `RootCLI.swift` — CLI entrypoint: list/set-role/set-root/import-members, builds ClubMemberRecord.ckFields instead of a hand-rolled dict (~1993 tok)
+- `RootCLI.swift` — Struct: RootCLI (~3199 tok)
 
 ## fastlane/
 

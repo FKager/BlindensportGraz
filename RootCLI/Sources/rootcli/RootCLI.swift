@@ -28,6 +28,8 @@ struct RootCLI {
             try await runSetRoot(rest)
         case "import-members":
             try await runImportMembers(rest)
+        case "record":
+            try await runRecord(rest)
         case "-h", "--help", "help":
             printUsage()
         default:
@@ -159,6 +161,77 @@ struct RootCLI {
         print("Done: \(succeeded) imported, \(failed) failed, out of \(inputs.count).")
     }
 
+    /// Generic insert/update/read/delete for ANY CloudKit record type this
+    /// app publishes — not just ClubMember. Unlike `set-role`/`set-root`
+    /// (which hand-decode specific fields of one specific type) or
+    /// `import-members` (which mirrors `ClubMemberRecord`), this works
+    /// against raw record types and field names via `CKFieldCoding`, so
+    /// adding support for a new model never requires touching this file.
+    /// `set` always upserts (`createOrReplaceRecord`), matching the app's own
+    /// "insert or update, no conflict handling" push semantics.
+    private static func runRecord(_ args: [String]) async throws {
+        guard let sub = args.first else {
+            throw CLIError.message("Usage: rootcli record <list|get|set|delete> ... Run `rootcli help` for details.")
+        }
+        let rest = Array(args.dropFirst())
+        let client = try makeClient()
+
+        switch sub {
+        case "list":
+            guard rest.count == 1 else {
+                throw CLIError.message("Usage: rootcli record list <type>")
+            }
+            let records = try await client.queryRecords(recordType: rest[0])
+            guard !records.isEmpty else {
+                print("No \(rest[0]) records found.")
+                return
+            }
+            for record in records {
+                print(try recordJSON(id: record.recordName, fields: record.fields))
+            }
+
+        case "get":
+            guard rest.count == 2 else {
+                throw CLIError.message("Usage: rootcli record get <type> <id>")
+            }
+            guard let dto = try await client.lookupRecord(recordType: rest[0], recordName: rest[1]) else {
+                throw CLIError.message("No \(rest[0]) record found with id \(rest[1]).")
+            }
+            print(try recordJSON(id: dto.recordName, fields: dto.fields))
+
+        case "set":
+            guard rest.count >= 3 else {
+                throw CLIError.message("Usage: rootcli record set <type> <id> field=value [field:TYPE=value ...]\nTYPE is one of INT64, DOUBLE, TIMESTAMP, STRING_LIST, STRING (default STRING when omitted).")
+            }
+            let recordType = rest[0]
+            let id = rest[1]
+            let assignments = Array(rest.dropFirst(2))
+            let fields = CKFieldCoding.parseCLIAssignments(assignments)
+            guard !fields.isEmpty else {
+                throw CLIError.message("No valid field=value assignments given.")
+            }
+            try await client.createOrReplaceRecord(recordType: recordType, recordName: id, fields: fields)
+            print("Upserted \(recordType) \(id): \(assignments.joined(separator: ", "))")
+
+        case "delete":
+            guard rest.count == 2 else {
+                throw CLIError.message("Usage: rootcli record delete <type> <id>")
+            }
+            try await client.deleteRecord(recordType: rest[0], recordName: rest[1])
+            print("Deleted \(rest[0]) \(rest[1]).")
+
+        default:
+            throw CLIError.message("Unknown record subcommand '\(sub)'. Use list, get, set, or delete.")
+        }
+    }
+
+    private static func recordJSON(id: String, fields: [String: Any]) throws -> String {
+        var obj: [String: Any] = ["id": id]
+        for (key, value) in CKFieldCoding.decode(fields) { obj[key] = value }
+        let data = try JSONSerialization.data(withJSONObject: obj, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes])
+        return String(data: data, encoding: .utf8) ?? "{}"
+    }
+
     private static func printUsage() {
         print("""
         rootcli — manage BlindensportGraz user roles and the Grazer VSC roster
@@ -170,11 +243,26 @@ struct RootCLI {
           rootcli set-role <full name|id> <member|coach|admin>
           rootcli set-root <full name|id> <true|false>
           rootcli import-members <file.json>
+          rootcli record list <type>
+          rootcli record get <type> <id>
+          rootcli record set <type> <id> field=value [field:TYPE=value ...]
+          rootcli record delete <type> <id>
 
         import-members reads a JSON array of club members and creates/updates
         matching ClubMember records in CloudKit. "firstName" and "lastName" are
         required; see RootCLI/README.md and RootCLI/members.example.json for
         the schema.
+
+        `record` is a generic insert/update/read/delete for ANY CloudKit record
+        type this app publishes (UserIdentity, ClubMember, Team, TeamMembership,
+        SportEvent, Training, Tournament, TrainingAttendance,
+        TournamentAttendance, EventParticipation — not EventImage, which needs
+        binary asset upload). `record set` always creates-or-updates (no
+        conflict/change-tag handling, matching the app's own sync semantics).
+        Field values default to STRING; use field:TYPE=value for INT64, DOUBLE,
+        TIMESTAMP (ISO8601), or STRING_LIST (comma-separated). Example:
+          rootcli record set Team 3F2504E0-... name="Herren A" sport=Torball
+          rootcli record set UserIdentity 3F25... isRoot:INT64=1
 
         ENVIRONMENT:
           CLOUDKIT_CONTAINER          default: iCloud.it.a11y.BlindensportGraz

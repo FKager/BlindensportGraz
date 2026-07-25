@@ -137,6 +137,32 @@ creates an app account — but not against *existing* accounts, since
 `ClubMember.checkMembership` only ever runs at account-creation time (see
 `cerebrum.md`'s 2026-07-16 entry on the Grazer VSC feature).
 
+### Generic record insert/update (any type, not just ClubMember)
+
+`rootcli record` reads/writes **any** CKRecord type this app publishes —
+`UserIdentity`, `ClubMember`, `Team`, `TeamMembership`, `SportEvent`,
+`Training`, `Tournament`, `TrainingAttendance`, `TournamentAttendance`,
+`EventParticipation` — not just the ones with a dedicated subcommand above.
+`EventImage` is excluded; it carries a binary `CKAsset`, which this text/JSON
+field editor doesn't handle.
+
+```bash
+rootcli record list <type>
+rootcli record get <type> <id>
+rootcli record set <type> <id> field=value [field:TYPE=value ...]
+rootcli record delete <type> <id>
+```
+
+`set` always upserts (`createOrReplaceRecord`) — no change-tag/conflict
+handling, matching the app's own push semantics. Field values default to
+`STRING`; use `field:TYPE=value` for `INT64`, `DOUBLE`, `TIMESTAMP` (ISO8601
+input), or `STRING_LIST` (comma-separated). Example:
+
+```bash
+rootcli record set Team 3F2504E0-4F89-11D3-9A0C-0305E82C3301 name="Herren A" sport=Torball
+rootcli record set UserIdentity 3F2504E0-... isRoot:INT64=1
+```
+
 ## Web API & admin page
 
 `clubmembersapi` is a [Vapor](https://vapor.codes) server exposing a REST API
@@ -183,3 +209,26 @@ This server does **not** run `xcrun cktool` schema setup for you — it assumes
 the `ClubMember` record type and Security Roles are already configured per
 the setup steps above (the app itself, or a prior `rootcli import-members`
 run, will already have created the schema in Development).
+
+### Generic record editor (any type, not just ClubMember)
+
+`/api/members` above is a typed, validated CRUD layer specific to
+`ClubMember` — the one record type worth hand-modeling. For everything else
+(`Team`, `SportEvent`, `Training`, `Tournament`, `TeamMembership`,
+`EventParticipation`, `TrainingAttendance`, `TournamentAttendance`,
+`UserIdentity`), the server also exposes a generic REST layer plus a matching
+admin page at `/records.html` (linked from the main page), so you don't have
+to hand-write a typed route per model to insert or update data.
+
+| Method | Path                       | Body                     | Notes |
+|--------|----------------------------|---------------------------|-------|
+| GET    | `/api/records/:type`       | —                          | List all records of `:type` |
+| GET    | `/api/records/:type/:id`   | —                          | 404 if not found |
+| PUT    | `/api/records/:type/:id`   | JSON object of field:value | Upserts — creates if `:id` is new, updates if it exists |
+| DELETE | `/api/records/:type/:id`   | —                          | 204, 404 if not found |
+
+Field values are inferred from JSON type (number → `DOUBLE`/`INT64`, boolean,
+array of strings → `STRING_LIST`, string). There's no per-type validation
+here — this is deliberately a thin pass-through to CloudKit for admin/debug
+use, not a replacement for the app's own field constraints. `EventImage` is
+excluded (binary `CKAsset`, not representable as JSON).
