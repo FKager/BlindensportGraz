@@ -109,56 +109,9 @@ struct RootCLI {
         }
 
         let client = try makeClient()
-        var succeeded = 0
-        var failed = 0
-
-        for input in inputs {
-            let firstName = (input.firstName ?? "").trimmingCharacters(in: .whitespaces)
-            let lastName = (input.lastName ?? "").trimmingCharacters(in: .whitespaces)
-            let fullName = [firstName, lastName].filter { !$0.isEmpty }.joined(separator: " ")
-            guard !firstName.isEmpty, !lastName.isEmpty else {
-                print("Skipped an entry with an empty firstName or lastName.")
-                failed += 1
-                continue
-            }
-
-            let recordName: String
-            if let providedID = input.id {
-                guard UUID(uuidString: providedID) != nil else {
-                    print("Skipped \(fullName): id '\(providedID)' is not a valid UUID (the app only reads UUID record names).")
-                    failed += 1
-                    continue
-                }
-                recordName = providedID
-            } else {
-                recordName = UUID().uuidString
-            }
-
-            let record = ClubMemberRecord(
-                id: recordName,
-                firstName: firstName,
-                lastName: lastName,
-                street: input.street ?? "",
-                zip: input.zip ?? "",
-                city: input.city ?? "",
-                email: input.email ?? "",
-                phone: input.phone ?? "",
-                memberNumber: input.memberNumber ?? "",
-                joinedAt: ClubMemberImport.parseJoinedAt(input.joinedAt) ?? Date(),
-                notes: input.notes ?? ""
-            )
-
-            do {
-                try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
-                print("Imported \(fullName) (\(recordName))")
-                succeeded += 1
-            } catch {
-                print("Failed to import \(fullName): \(error)")
-                failed += 1
-            }
-        }
-
-        print("Done: \(succeeded) imported, \(failed) failed, out of \(inputs.count).")
+        let result = await ClubMemberBulkImport.run(inputs, client: client)
+        for message in result.messages { print(message) }
+        print("Done: \(result.succeeded) imported, \(result.failed) failed, out of \(inputs.count).")
     }
 
     /// Generic insert/update/read/delete for ANY CloudKit record type this

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-25T09:57:25.681Z
-> Files: 63 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-25T10:25:06.941Z
+> Files: 64 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -94,7 +94,7 @@
 
 - `members.example.json` (~110 tok)
 - `Package.swift` — swift-tools-version:5.9 (~355 tok)
-- `README.md` — Project documentation (~2944 tok)
+- `README.md` — Project documentation (~3185 tok)
 
 ## RootCLI/Public/
 
@@ -106,6 +106,7 @@
 - `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1693 tok)
 - `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
 - `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~2435 tok)
+- `ClubMemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk ClubMember import — shared by (~1380 tok)
 - `ClubMemberRecord.swift` — Shared ClubMember <-> CKRecord field mapping (single source of truth for rootcli + clubmembersapi) (~749 tok)
 - `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
 
@@ -114,12 +115,12 @@
 - `Auth.swift` — HTTP Basic Auth middleware, constant-time SHA256 compare, API_USERNAME/API_PASSWORD (~315 tok)
 - `Configure.swift` — Vapor app config: requires API_USERNAME/PASSWORD (fails fast if missing), auth+guard+FileMiddleware(defaultFile: "index.html"), PORT/HOSTNAME (~423 tok)
 - `Entrypoint.swift` — @main entrypoint — deliberately NOT named main.swift (SPM special-cases that filename, see cerebrum Do-Not-Repeat 2026-07-16); wraps startup throw in do/catch for clean exit(1) instead of fatalError (~200 tok)
-- `Routes.swift` — Struct: ClubMemberInput (~2056 tok)
+- `Routes.swift` — Struct: ClubMemberInput (~2390 tok)
 
 ## RootCLI/Sources/rootcli/
 
-- `ClubMemberImport.swift` — JSON file -> ClubMemberInput decode for import-members (~583 tok)
-- `RootCLI.swift` — Struct: RootCLI (~3199 tok)
+- `ClubMemberImport.swift` — / File-loading half of `import-members` — the per-row decode shape and the (~240 tok)
+- `RootCLI.swift` — Struct: RootCLI (~2715 tok)
 
 ## fastlane/
 

@@ -93,6 +93,32 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
         return .noContent
     }
 
+    /// Bulk create-or-update from a JSON array — the same shape the app's own
+    /// export produces and `rootcli import-members` reads, so a roster file
+    /// can be posted straight from `curl` without any per-record scripting.
+    /// Shares its per-row logic (skip-invalid-rows-not-whole-batch, id/UUID
+    /// handling) with `rootcli import-members` via `ClubMemberBulkImport`
+    /// rather than reimplementing it a third time.
+    api.post("import") { req async throws -> Response in
+        guard let buffer = req.body.data else {
+            throw Abort(.badRequest, reason: "Body must be a JSON array of club members.")
+        }
+        let inputs: [ClubMemberBulkInput]
+        do {
+            inputs = try JSONDecoder().decode([ClubMemberBulkInput].self, from: Data(buffer: buffer))
+        } catch {
+            throw Abort(.badRequest, reason: "Body must be a JSON array of club members: \(error)")
+        }
+        let result = await ClubMemberBulkImport.run(inputs, client: client)
+        let body: [String: Any] = [
+            "succeeded": result.succeeded,
+            "failed": result.failed,
+            "total": result.total,
+            "messages": result.messages
+        ]
+        return try jsonResponse(body)
+    }
+
     // MARK: - Generic records (any type, not just ClubMember)
     //
     // The routes above give ClubMember a typed, validated form because it's

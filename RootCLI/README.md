@@ -200,10 +200,29 @@ credentials above) for the admin page, or call the REST API directly:
 | POST   | `/api/members`      | `ClubMember` fields, `firstName`/`lastName` required | 201, returns the created record with its new `id` |
 | PUT    | `/api/members/:id`  | Same fields                         | 404 if not found |
 | DELETE | `/api/members/:id`  | —                                   | 204, 404 if not found |
+| POST   | `/api/members/import` | JSON array of `ClubMember`-shaped objects | 200, returns `{succeeded, failed, total, messages}` |
 
 Field names match `members.example.json` (`firstName`, `lastName`, `street`,
 `zip`, `city`, `email`, `phone`, `memberNumber`, `joinedAt`, `notes`); `id` is
 assigned server-side on create and is otherwise read-only.
+
+`/api/members/import` accepts exactly the same array-of-objects shape as
+`rootcli import-members`/the app's own JSON export (a file on iCloud Drive,
+say) — no per-record scripting needed, just post the whole file:
+
+```bash
+curl -u admin:<password> \
+  -X POST https://your-host:8080/api/members/import \
+  -H "Content-Type: application/json" \
+  --data-binary @roster.json
+```
+
+Same rules as `rootcli import-members`: a row's `id` (if given) must be a
+valid UUID and becomes the CKRecord name — re-posting a file with the same
+`id`s updates those records in place, omitting `id` creates a new one every
+time. `firstName`/`lastName` are required per row; rows missing them (or with
+an invalid `id`) are skipped individually and reported in `messages`, not
+aborted — one bad row in a spreadsheet-exported file won't sink the batch.
 
 This server does **not** run `xcrun cktool` schema setup for you — it assumes
 the `ClubMember` record type and Security Roles are already configured per

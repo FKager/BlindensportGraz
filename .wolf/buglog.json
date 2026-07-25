@@ -2112,6 +2112,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-25T09:57:20.318Z"
+    },
+    {
+      "id": "bug-129",
+      "timestamp": "2026-07-25T10:22:40.463Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "40 lines replaced/restructured",
+      "fix": "Rewrote 52→5 lines (40 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-25T10:22:40.463Z"
+    },
+    {
+      "id": "bug-130",
+      "timestamp": "2026-07-25T10:22:48.832Z",
+      "error_message": "Missing error handling in throws",
+      "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-25T10:22:48.832Z"
     }
   ]
 }
