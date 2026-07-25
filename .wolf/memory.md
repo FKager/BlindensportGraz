@@ -706,3 +706,33 @@
 | 12:22 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | added error handling | ~442 |
 | 12:25 | Edited RootCLI/README.md | expanded (+19 lines) | ~455 |
 | 12:25 | Session end: 9 writes across 7 files (README.md, Package.swift, CloudKitS2SClient.swift, ClubMemberBulkImport.swift, ClubMemberImport.swift) | 17 reads | ~30906 tok |
+| 12:27 | Session end: 9 writes across 7 files (README.md, Package.swift, CloudKitS2SClient.swift, ClubMemberBulkImport.swift, ClubMemberImport.swift) | 17 reads | ~30906 tok |
+| 12:27 | Session end: 9 writes across 7 files (README.md, Package.swift, CloudKitS2SClient.swift, ClubMemberBulkImport.swift, ClubMemberImport.swift) | 17 reads | ~30906 tok |
+| 12:29 | Session end: 9 writes across 7 files (README.md, Package.swift, CloudKitS2SClient.swift, ClubMemberBulkImport.swift, ClubMemberImport.swift) | 17 reads | ~30906 tok |
+| 12:52 | Edited BlindensportGraz/Models.swift | expanded (+12 lines) | ~344 |
+| 12:52 | Edited BlindensportGraz/CloudKitSync.swift | 5→6 lines | ~67 |
+| 12:52 | Edited BlindensportGraz/CloudKitSync.swift | 13→15 lines | ~236 |
+| 12:53 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~427 |
+| 12:53 | Edited BlindensportGraz/TrainingsViews.swift | added nullish coalescing | ~126 |
+| 12:53 | Edited BlindensportGraz/TrainingsViews.swift | modified setPraeAmount() | ~115 |
+| 12:53 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~404 |
+| 12:53 | Edited BlindensportGraz/TournamentsViews.swift | modified setPraeAmount() | ~115 |
+| 12:54 | Created BlindensportGraz/PraeCalculation.swift | — | ~1342 |
+| 12:54 | Edited BlindensportGraz/PraeCalculation.swift | modified summary() | ~219 |
+| 12:55 | Edited BlindensportGraz/PraeCalculation.swift | modified hash() | ~164 |
+| 12:55 | Edited BlindensportGraz/PraeCalculation.swift | modified eligiblePeople() | ~230 |
+| 12:55 | Created BlindensportGraz/XLSXCellPatch.swift | — | ~547 |
+| 12:56 | Created BlindensportGraz/PraeExport.swift | — | ~3190 |
+| 12:56 | Edited BlindensportGraz/AccountView.swift | 4→5 lines | ~62 |
+| 12:56 | Edited BlindensportGraz/AccountView.swift | expanded (+6 lines) | ~139 |
+| 12:56 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~135 |
+| 12:57 | Created BlindensportGraz/PraeViews.swift | — | ~1945 |
+| 12:57 | Edited BlindensportGraz/PraeViews.swift | 5→6 lines | ~88 |
+| 12:57 | Edited BlindensportGraz/PraeViews.swift | added optional chaining | ~853 |
+| 13:03 | Created BlindensportGrazTests/PraeCalculationTests.swift | — | ~3125 |
+| 13:09 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 2→3 lines | ~66 |
+| 13:09 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 2→3 lines | ~64 |
+| 13:10 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 3→2 lines | ~36 |
+| 13:11 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 3→2 lines | ~35 |
+| 13:14 | Built PRAE (Sport Austria helper/coach reimbursement) calculation feature: Attendance.praeAmount field, PraeCalculator day/month aggregation, dual xlsx export (safe Darstellung full-fill + main-form name/address-only patch), admin UI. 21/21 tests pass (8 new). Verified both exports open correctly in openpyxl. | Models.swift, CloudKitSync.swift, TrainingsViews.swift, TournamentsViews.swift, AccountView.swift, PraeCalculation.swift, PraeExport.swift, PraeViews.swift, XLSXCellPatch.swift, PRAE_Formular.xlsx, BlindensportGrazTests/PraeCalculationTests.swift | xcodebuild build + test succeeded; not yet committed | ~45000 |
+| 13:14 | Session end: 34 writes across 17 files (README.md, Package.swift, CloudKitS2SClient.swift, ClubMemberBulkImport.swift, ClubMemberImport.swift) | 27 reads | ~76551 tok |

@@ -12,6 +12,7 @@ struct AccountView: View {
     @State private var showUserList = false
     @State private var showClubMembers = false
     @State private var showMyClubMember = false
+    @State private var showPraeCalculation = false
 
     var body: some View {
         Form {
@@ -87,6 +88,12 @@ struct AccountView: View {
                         } label: {
                             Label("Grazer VSC verwalten", systemImage: "building.columns.fill")
                         }
+
+                        Button {
+                            showPraeCalculation = true
+                        } label: {
+                            Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
+                        }
                     }
                 }
 
@@ -122,6 +129,9 @@ struct AccountView: View {
                 ContentUnavailableView("Kein Vereinsdateneintrag gefunden",
                                        systemImage: "exclamationmark.triangle")
             }
+        }
+        .sheet(isPresented: $showPraeCalculation) {
+            PraeCalculationView()
         }
     }
 

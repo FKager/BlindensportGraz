@@ -265,6 +265,24 @@ var body: some View {
                     )) {
                         Text(membership.displayName)
                     }
+                    // PRAE amount only for helpers/coaches (role "assistant"/
+                    // "coach") who were actually present — see Attendance.praeAmount.
+                    if ["coach", "assistant"].contains(membership.role),
+                       attendance(for: membership)?.attended == true {
+                        HStack {
+                            Text("PRAE (€)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            TextField("0", value: Binding(
+                                get: { attendance(for: membership)?.praeAmount ?? 0 },
+                                set: { newValue in setPraeAmount(newValue, for: membership) }
+                            ), format: .number)
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(width: 80)
+                        }
+                    }
                 }
             }
         }
@@ -318,6 +336,13 @@ var body: some View {
             record = Attendance(event: tournament, membership: membership, attended: attended)
             modelContext.insert(record)
         }
+        try? modelContext.save()
+        CloudKitSync.shared.pushAttendance(record)
+    }
+
+    private func setPraeAmount(_ amount: Double, for membership: TeamMembership) {
+        guard let record = attendance(for: membership) else { return }
+        record.praeAmount = amount > 0 ? amount : nil
         try? modelContext.save()
         CloudKitSync.shared.pushAttendance(record)
     }

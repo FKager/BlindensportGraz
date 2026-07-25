@@ -89,6 +89,7 @@ final class CloudKitSync {
         record["membershipID"] = attendance.membership.id.uuidString
         record["attended"] = attendance.attended
         record["recordedAt"] = attendance.recordedAt
+        record["praeAmount"] = attendance.praeAmount
         save(record)
     }
 
@@ -514,15 +515,17 @@ final class CloudKitSync {
                       let membership = findMembership(membershipID, modelContext: modelContext) else { continue }
                 let attended = record["attended"] as? Bool ?? false
                 let recordedAt = record["recordedAt"] as? Date ?? .now
+                let praeAmount = record["praeAmount"] as? Double
 
                 var descriptor = FetchDescriptor<Attendance>(predicate: #Predicate { $0.id == id })
                 descriptor.fetchLimit = 1
                 if let existing = try? modelContext.fetch(descriptor).first {
                     existing.attended = attended
                     existing.recordedAt = recordedAt
+                    existing.praeAmount = praeAmount
                 } else {
                     let attendance = Attendance(id: id, event: event, membership: membership,
-                                                 attended: attended, recordedAt: recordedAt)
+                                                 attended: attended, recordedAt: recordedAt, praeAmount: praeAmount)
                     modelContext.insert(attendance)
                 }
             }

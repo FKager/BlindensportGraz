@@ -2144,6 +2144,72 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-07-25T10:22:48.832Z"
+    },
+    {
+      "id": "bug-131",
+      "timestamp": "2026-07-25T10:53:17.151Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-25T10:53:17.151Z"
+    },
+    {
+      "id": "bug-132",
+      "timestamp": "2026-07-25T10:54:33.237Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/PraeCalculation.swift",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 12→13 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-25T10:54:33.237Z"
+    },
+    {
+      "id": "bug-133",
+      "timestamp": "2026-07-25T10:57:41.696Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/PraeViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-25T10:57:41.696Z"
+    },
+    {
+      "id": "bug-134",
+      "timestamp": "2026-07-25T13:11:00Z",
+      "error_message": "xcodebuild test: Simulator device failed to launch it.a11y.BlindensportGraz. The request was denied by service delegate (SBMainWorkspace) for reason: Busy (\"Application failed preflight checks\")",
+      "file": "N/A (simulator/tooling state, not app code)",
+      "root_cause": "Transient CoreSimulator/launchd state on a specific simulator device (this recurrence: iPhone 17, 9BE30824-E947-475E-9A22-777FD4309637) that xcrun simctl shutdown alone does not clear. Not caused by any code change - happens intermittently across unrelated xcodebuild test runs on this same device. Documented in cerebrum.md under the 2026-07-19 and 2026-07-20 entries but never logged as its own buglog entry until now; this is at least the third occurrence.",
+      "fix": "xcrun simctl erase <device-id> (full erase, not just shutdown) on the specific simulator UDID clears it every time it has been tried. Always try this FIRST the instant this exact error string appears, before any other debugging - do not assume it is a real test/build regression.",
+      "tags": [
+        "simulator",
+        "xcodebuild-test",
+        "transient",
+        "tooling",
+        "recurring"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-07-25T13:11:00Z"
     }
   ]
 }

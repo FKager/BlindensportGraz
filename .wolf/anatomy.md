@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-25T10:25:06.941Z
-> Files: 64 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-25T11:11:01.427Z
+> Files: 69 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -59,12 +59,12 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~2680 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~2783 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1119 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~8105 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~8157 tok)
 - `ClubMemberImportExport.swift` — / JSON shape for one club member, shared by export and import. Field names (~2125 tok)
 - `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~3390 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
@@ -73,12 +73,16 @@
 - `Info.plist` (~414 tok)
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1378 tok)
-- `Models.swift` — Class: User (~4635 tok)
+- `Models.swift` — Class: User (~4837 tok)
+- `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~1516 tok)
+- `PraeExport.swift` — Declares PraeExportError (~3190 tok)
+- `PraeViews.swift` — / Admin-only screen (see AccountView's "PRAE-Berechnung" button) that picks (~2191 tok)
 - `RootView.swift` — SwiftUI view: RootView (~3687 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2807 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2138 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4032 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~3998 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4390 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~4371 tok)
+- `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~547 tok)
 
 ## BlindensportGraz/.claude/
 
@@ -88,6 +92,7 @@
 
 - `ClubMemberImportExportTests.swift` — Class: ClubMemberImportExportTests (~1586 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~1626 tok)
+- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~3125 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
 
 ## RootCLI/
