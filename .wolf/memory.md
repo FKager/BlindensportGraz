@@ -736,3 +736,19 @@
 | 13:11 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 3→2 lines | ~35 |
 | 13:14 | Built PRAE (Sport Austria helper/coach reimbursement) calculation feature: Attendance.praeAmount field, PraeCalculator day/month aggregation, dual xlsx export (safe Darstellung full-fill + main-form name/address-only patch), admin UI. 21/21 tests pass (8 new). Verified both exports open correctly in openpyxl. | Models.swift, CloudKitSync.swift, TrainingsViews.swift, TournamentsViews.swift, AccountView.swift, PraeCalculation.swift, PraeExport.swift, PraeViews.swift, XLSXCellPatch.swift, PRAE_Formular.xlsx, BlindensportGrazTests/PraeCalculationTests.swift | xcodebuild build + test succeeded; not yet committed | ~45000 |
 | 13:14 | Session end: 34 writes across 17 files (README.md, Package.swift, CloudKitS2SClient.swift, ClubMemberBulkImport.swift, ClubMemberImport.swift) | 27 reads | ~76551 tok |
+| 13:18 | Session end: 34 writes across 17 files (README.md, Package.swift, CloudKitS2SClient.swift, ClubMemberBulkImport.swift, ClubMemberImport.swift) | 27 reads | ~76551 tok |
+| 13:19 | Session end: 34 writes across 17 files (README.md, Package.swift, CloudKitS2SClient.swift, ClubMemberBulkImport.swift, ClubMemberImport.swift) | 27 reads | ~76551 tok |
+
+## Session: 2026-07-25 17:30
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:38 | Created BlindensportGraz/KostZCalculation.swift | — | ~982 |
+| 17:38 | Created BlindensportGraz/KostZExport.swift | — | ~1077 |
+| 17:38 | Created BlindensportGraz/KostZViews.swift | — | ~1343 |
+| 17:39 | Edited BlindensportGraz/AccountView.swift | 1→2 lines | ~28 |
+| 17:39 | Edited BlindensportGraz/AccountView.swift | expanded (+6 lines) | ~137 |
+| 17:39 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~54 |
+| 17:39 | Created BlindensportGrazTests/KostZCalculationTests.swift | — | ~2524 |
+| 17:41 | Built KostZ (Sport Austria "Kostenzusammenstellung") export: found+downloaded official template, reverse-engineered 12-category cost-summary layout, KostZCalculator (club-wide monthly sum of Attendance.praeAmount across coach/assistant roles, no new schema needed), KostZExporter patches only HONORARE/VERGÜTUNGEN row + ZEITRAUM/ANZAHL DER PERSONEN, admin UI wired into AccountView. 28/28 tests pass (7 new). Verified export round-trip in openpyxl (48 merges intact, SUM formula untouched). | KostZCalculation.swift, KostZExport.swift, KostZViews.swift, KostZ_Kostenzusammenstellung.xlsx, AccountView.swift, BlindensportGrazTests/KostZCalculationTests.swift | xcodebuild build + test succeeded; not yet committed | ~28000 |
+| 17:41 | Session end: 7 writes across 5 files (KostZCalculation.swift, KostZExport.swift, KostZViews.swift, AccountView.swift, KostZCalculationTests.swift) | 10 reads | ~27466 tok |

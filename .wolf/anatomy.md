@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-25T11:11:01.427Z
-> Files: 69 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-07-25T15:39:39.877Z
+> Files: 73 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -59,7 +59,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~2783 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~2886 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1119 tok)
@@ -71,6 +71,10 @@
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3506 tok)
 - `Info.plist` (~414 tok)
+- `KostZ_Kostenzusammenstellung.xlsx` — Sport Austria "KostZ" cost-summary template, downloaded from sportaustria.at (binary, ~24.7KB)
+- `KostZCalculation.swift` — / One eligible person's summed amount for the requested month — see (~982 tok)
+- `KostZExport.swift` — Declares KostZExportError (~1077 tok)
+- `KostZViews.swift` — / Admin-only screen (see AccountView's "KostZ-Berechnung" button) that (~1343 tok)
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1378 tok)
 - `Models.swift` — Class: User (~4837 tok)
@@ -92,6 +96,7 @@
 
 - `ClubMemberImportExportTests.swift` — Class: ClubMemberImportExportTests (~1586 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~1626 tok)
+- `KostZCalculationTests.swift` — Class: KostZCalculationTests (~2524 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~3125 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
 

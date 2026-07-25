@@ -13,6 +13,7 @@ struct AccountView: View {
     @State private var showClubMembers = false
     @State private var showMyClubMember = false
     @State private var showPraeCalculation = false
+    @State private var showKostZCalculation = false
 
     var body: some View {
         Form {
@@ -94,6 +95,12 @@ struct AccountView: View {
                         } label: {
                             Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
                         }
+
+                        Button {
+                            showKostZCalculation = true
+                        } label: {
+                            Label("KostZ-Berechnung", systemImage: "doc.text.fill")
+                        }
                     }
                 }
 
@@ -132,6 +139,9 @@ struct AccountView: View {
         }
         .sheet(isPresented: $showPraeCalculation) {
             PraeCalculationView()
+        }
+        .sheet(isPresented: $showKostZCalculation) {
+            KostZCalculationView()
         }
     }
 
