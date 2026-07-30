@@ -14,6 +14,7 @@ struct AccountView: View {
     @State private var showMyClubMember = false
     @State private var showPraeCalculation = false
     @State private var showKostZCalculation = false
+    @State private var showTrainingsfrequenzliste = false
 
     var body: some View {
         Form {
@@ -101,6 +102,12 @@ struct AccountView: View {
                         } label: {
                             Label("KostZ-Berechnung", systemImage: "doc.text.fill")
                         }
+
+                        Button {
+                            showTrainingsfrequenzliste = true
+                        } label: {
+                            Label("Trainingsfrequenzliste", systemImage: "calendar.badge.checkmark")
+                        }
                     }
                 }
 
@@ -142,6 +149,9 @@ struct AccountView: View {
         }
         .sheet(isPresented: $showKostZCalculation) {
             KostZCalculationView()
+        }
+        .sheet(isPresented: $showTrainingsfrequenzliste) {
+            TrainingsfrequenzlisteView()
         }
     }
 
