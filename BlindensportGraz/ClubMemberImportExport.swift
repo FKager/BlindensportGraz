@@ -5,8 +5,11 @@ import SwiftData
 /// intentionally match RootCLI's `ClubMemberInput`/`members.example.json` and
 /// `clubmembersapi`'s REST payloads exactly, so a file exported here can be
 /// fed to `rootcli import-members` (or vice versa) with no conversion.
-/// `joinedAt` is a plain string (not a native JSON date) accepting either
-/// "yyyy-MM-dd" or full ISO8601, matching RootCLI's `ClubMemberImport.parseJoinedAt`.
+/// `joinedAt`/`birthDate`/`lastMedicalExamination` are plain strings (not
+/// native JSON dates) accepting ISO8601, "yyyy-MM-dd", or "dd.MM.yyyy" —
+/// see `ClubMemberImportExport.parseFlexibleDate`. `zip` also accepts the
+/// German "plz" (Postleitzahl) as an alias key, since the club's source
+/// roster files (data/Person-*.json) use that spelling in a few places.
 struct ClubMemberIO: Codable {
     var id: String?
     var firstName: String?
@@ -19,6 +22,97 @@ struct ClubMemberIO: Codable {
     var memberNumber: String?
     var joinedAt: String?
     var notes: String?
+    var gender: String?
+    var title: String?
+    var birthDate: String?
+    var sportId: String?
+    var svnr: String?
+    var iban: String?
+    var lastMedicalExamination: String?
+    var defaultFunction: String?
+
+    private enum CodingKeys: String, CodingKey {
+        case id, firstName, lastName, street, zip, plz, city, email, phone, memberNumber, joinedAt, notes,
+             gender, title, birthDate, sportId, svnr, iban, lastMedicalExamination, defaultFunction
+    }
+
+    init(id: String? = nil, firstName: String? = nil, lastName: String? = nil, street: String? = nil,
+         zip: String? = nil, city: String? = nil, email: String? = nil, phone: String? = nil,
+         memberNumber: String? = nil, joinedAt: String? = nil, notes: String? = nil,
+         gender: String? = nil, title: String? = nil, birthDate: String? = nil, sportId: String? = nil,
+         svnr: String? = nil, iban: String? = nil, lastMedicalExamination: String? = nil,
+         defaultFunction: String? = nil) {
+        self.id = id
+        self.firstName = firstName
+        self.lastName = lastName
+        self.street = street
+        self.zip = zip
+        self.city = city
+        self.email = email
+        self.phone = phone
+        self.memberNumber = memberNumber
+        self.joinedAt = joinedAt
+        self.notes = notes
+        self.gender = gender
+        self.title = title
+        self.birthDate = birthDate
+        self.sportId = sportId
+        self.svnr = svnr
+        self.iban = iban
+        self.lastMedicalExamination = lastMedicalExamination
+        self.defaultFunction = defaultFunction
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decodeIfPresent(String.self, forKey: .id)
+        firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
+        lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
+        street = try container.decodeIfPresent(String.self, forKey: .street)
+        zip = try container.decodeIfPresent(String.self, forKey: .zip)
+            ?? container.decodeIfPresent(String.self, forKey: .plz)
+        city = try container.decodeIfPresent(String.self, forKey: .city)
+        email = try container.decodeIfPresent(String.self, forKey: .email)
+        phone = try container.decodeIfPresent(String.self, forKey: .phone)
+        memberNumber = try container.decodeIfPresent(String.self, forKey: .memberNumber)
+        joinedAt = try container.decodeIfPresent(String.self, forKey: .joinedAt)
+        notes = try container.decodeIfPresent(String.self, forKey: .notes)
+        gender = try container.decodeIfPresent(String.self, forKey: .gender)
+        title = try container.decodeIfPresent(String.self, forKey: .title)
+        birthDate = try container.decodeIfPresent(String.self, forKey: .birthDate)
+        sportId = try container.decodeIfPresent(String.self, forKey: .sportId)
+        svnr = try container.decodeIfPresent(String.self, forKey: .svnr)
+        iban = try container.decodeIfPresent(String.self, forKey: .iban)
+        lastMedicalExamination = try container.decodeIfPresent(String.self, forKey: .lastMedicalExamination)
+        defaultFunction = try container.decodeIfPresent(String.self, forKey: .defaultFunction)
+    }
+
+    // Written explicitly (rather than relying on synthesis) because the
+    // `plz` alias case in CodingKeys has no backing stored property, which
+    // blocks Swift's automatic Encodable synthesis for this type. Always
+    // writes `zip`, never `plz` — the alias only matters for decoding.
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(firstName, forKey: .firstName)
+        try container.encodeIfPresent(lastName, forKey: .lastName)
+        try container.encodeIfPresent(street, forKey: .street)
+        try container.encodeIfPresent(zip, forKey: .zip)
+        try container.encodeIfPresent(city, forKey: .city)
+        try container.encodeIfPresent(email, forKey: .email)
+        try container.encodeIfPresent(phone, forKey: .phone)
+        try container.encodeIfPresent(memberNumber, forKey: .memberNumber)
+        try container.encodeIfPresent(joinedAt, forKey: .joinedAt)
+        try container.encodeIfPresent(notes, forKey: .notes)
+        try container.encodeIfPresent(gender, forKey: .gender)
+        try container.encodeIfPresent(title, forKey: .title)
+        try container.encodeIfPresent(birthDate, forKey: .birthDate)
+        try container.encodeIfPresent(sportId, forKey: .sportId)
+        try container.encodeIfPresent(svnr, forKey: .svnr)
+        try container.encodeIfPresent(iban, forKey: .iban)
+        try container.encodeIfPresent(lastMedicalExamination, forKey: .lastMedicalExamination)
+        try container.encodeIfPresent(defaultFunction, forKey: .defaultFunction)
+    }
 }
 
 enum ClubMemberImportExport {
@@ -43,7 +137,15 @@ enum ClubMemberImportExport {
                     phone: member.phone,
                     memberNumber: member.memberNumber,
                     joinedAt: isoFormatter.string(from: member.joinedAt),
-                    notes: member.notes
+                    notes: member.notes,
+                    gender: member.gender,
+                    title: member.title,
+                    birthDate: member.birthDate.map(isoFormatter.string(from:)),
+                    sportId: member.sportId,
+                    svnr: member.svnr,
+                    iban: member.iban,
+                    lastMedicalExamination: member.lastMedicalExamination.map(isoFormatter.string(from:)),
+                    defaultFunction: member.defaultFunction
                 )
             }
         let encoder = JSONEncoder()
@@ -116,6 +218,9 @@ enum ClubMemberImportExport {
             let joinedAt = parseJoinedAt(row.joinedAt) ?? Date()
             let existing = findExisting(row: row, firstName: firstName, lastName: lastName, in: workingRoster)
 
+            let birthDate = parseFlexibleDate(row.birthDate)
+            let lastMedicalExamination = parseFlexibleDate(row.lastMedicalExamination)
+
             if let existing {
                 existing.firstName = firstName
                 existing.lastName = lastName
@@ -127,6 +232,14 @@ enum ClubMemberImportExport {
                 existing.memberNumber = row.memberNumber ?? existing.memberNumber
                 existing.notes = row.notes ?? existing.notes
                 if row.joinedAt != nil { existing.joinedAt = joinedAt }
+                existing.gender = row.gender ?? existing.gender
+                existing.title = row.title ?? existing.title
+                if row.birthDate != nil { existing.birthDate = birthDate }
+                existing.sportId = row.sportId ?? existing.sportId
+                existing.svnr = row.svnr ?? existing.svnr
+                existing.iban = row.iban ?? existing.iban
+                if row.lastMedicalExamination != nil { existing.lastMedicalExamination = lastMedicalExamination }
+                existing.defaultFunction = row.defaultFunction ?? existing.defaultFunction
                 touched.append(existing)
                 result.updated += 1
             } else {
@@ -142,7 +255,15 @@ enum ClubMemberImportExport {
                     phone: row.phone ?? "",
                     memberNumber: row.memberNumber ?? "",
                     joinedAt: joinedAt,
-                    notes: row.notes ?? ""
+                    notes: row.notes ?? "",
+                    gender: row.gender ?? "",
+                    title: row.title ?? "",
+                    birthDate: birthDate,
+                    sportId: row.sportId ?? "",
+                    svnr: row.svnr ?? "",
+                    iban: row.iban ?? "",
+                    lastMedicalExamination: lastMedicalExamination,
+                    defaultFunction: row.defaultFunction ?? ""
                 )
                 modelContext.insert(member)
                 workingRoster.append(member)
@@ -187,5 +308,19 @@ enum ClubMemberImportExport {
         dayFormatter.timeZone = TimeZone(identifier: "UTC")
         dayFormatter.locale = Locale(identifier: "en_US_POSIX")
         return dayFormatter.date(from: raw)
+    }
+
+    /// Accepts ISO8601, "yyyy-MM-dd", or "dd.MM.yyyy" — used for
+    /// `birthDate`/`lastMedicalExamination`, which (unlike `joinedAt`) show
+    /// up in the club's real-world source roster files (data/Person-*.json)
+    /// in the German "dd.MM.yyyy" convention, mixed with a few ISO dates.
+    static func parseFlexibleDate(_ raw: String?) -> Date? {
+        guard let raw, !raw.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }
+        if let date = parseJoinedAt(raw) { return date }
+        let dotFormatter = DateFormatter()
+        dotFormatter.dateFormat = "dd.MM.yyyy"
+        dotFormatter.timeZone = TimeZone(identifier: "UTC")
+        dotFormatter.locale = Locale(identifier: "en_US_POSIX")
+        return dotFormatter.date(from: raw)
     }
 }

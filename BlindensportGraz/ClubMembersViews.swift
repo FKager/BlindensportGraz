@@ -154,6 +154,13 @@ struct ClubMemberDetailView: View {
             Section("Mitglied") {
                 TextField("Vorname", text: $member.firstName)
                 TextField("Nachname", text: $member.lastName)
+                TextField("Titel", text: $member.title)
+                Picker("Geschlecht", selection: $member.gender) {
+                    Text("–").tag("")
+                    Text("weiblich").tag("f")
+                    Text("männlich").tag("m")
+                }
+                OptionalDatePicker(label: "Geburtsdatum", date: $member.birthDate)
                 TextField("Straße", text: $member.street)
                 TextField("PLZ", text: $member.zip)
                     .keyboardType(.numberPad)
@@ -170,6 +177,13 @@ struct ClubMemberDetailView: View {
             Section("Mitgliedschaft") {
                 TextField("Mitgliedsnummer", text: $member.memberNumber)
                 DatePicker("Beigetreten", selection: $member.joinedAt, displayedComponents: .date)
+                TextField("Sport-ID", text: $member.sportId)
+                TextField("SVNR", text: $member.svnr)
+                TextField("IBAN", text: $member.iban)
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
+                OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $member.lastMedicalExamination)
+                TextField("Standardfunktion", text: $member.defaultFunction)
             }
             Section("Notizen") {
                 TextField("Notizen", text: $member.notes, axis: .vertical)
@@ -186,6 +200,29 @@ struct ClubMemberDetailView: View {
         .onDisappear {
             try? modelContext.save()
             CloudKitSync.shared.pushClubMember(member)
+        }
+    }
+}
+
+/// A DatePicker that can represent "no date set" via a toggle — SwiftUI's
+/// DatePicker has no built-in nil state, and `birthDate`/
+/// `lastMedicalExamination` are optional since much of the club's real
+/// roster data omits them (see ClubMember's doc comment in Models.swift).
+struct OptionalDatePicker: View {
+    let label: String
+    @Binding var date: Date?
+
+    var body: some View {
+        Toggle(label, isOn: Binding(
+            get: { date != nil },
+            set: { date = $0 ? (date ?? Date()) : nil }
+        ))
+        if date != nil {
+            DatePicker(label, selection: Binding(
+                get: { date ?? Date() },
+                set: { date = $0 }
+            ), displayedComponents: .date)
+            .labelsHidden()
         }
     }
 }
@@ -207,6 +244,13 @@ struct MyClubMemberView: View {
                 Section("Mitglied") {
                     TextField("Vorname", text: $member.firstName)
                     TextField("Nachname", text: $member.lastName)
+                    TextField("Titel", text: $member.title)
+                    Picker("Geschlecht", selection: $member.gender) {
+                        Text("–").tag("")
+                        Text("weiblich").tag("f")
+                        Text("männlich").tag("m")
+                    }
+                    OptionalDatePicker(label: "Geburtsdatum", date: $member.birthDate)
                     TextField("Straße", text: $member.street)
                     TextField("PLZ", text: $member.zip)
                         .keyboardType(.numberPad)
@@ -250,6 +294,14 @@ struct AddClubMemberView: View {
     @State private var memberNumber = ""
     @State private var joinedAt = Date()
     @State private var notes = ""
+    @State private var gender = ""
+    @State private var title = ""
+    @State private var birthDate: Date?
+    @State private var sportId = ""
+    @State private var svnr = ""
+    @State private var iban = ""
+    @State private var lastMedicalExamination: Date?
+    @State private var defaultFunction = ""
 
     var body: some View {
         NavigationStack {
@@ -257,6 +309,13 @@ struct AddClubMemberView: View {
                 Section("Mitglied") {
                     TextField("Vorname", text: $firstName)
                     TextField("Nachname", text: $lastName)
+                    TextField("Titel", text: $title)
+                    Picker("Geschlecht", selection: $gender) {
+                        Text("–").tag("")
+                        Text("weiblich").tag("f")
+                        Text("männlich").tag("m")
+                    }
+                    OptionalDatePicker(label: "Geburtsdatum", date: $birthDate)
                     TextField("Straße", text: $street)
                     TextField("PLZ", text: $zip)
                         .keyboardType(.numberPad)
@@ -273,6 +332,13 @@ struct AddClubMemberView: View {
                 Section("Mitgliedschaft") {
                     TextField("Mitgliedsnummer", text: $memberNumber)
                     DatePicker("Beigetreten", selection: $joinedAt, displayedComponents: .date)
+                    TextField("Sport-ID", text: $sportId)
+                    TextField("SVNR", text: $svnr)
+                    TextField("IBAN", text: $iban)
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
+                    OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $lastMedicalExamination)
+                    TextField("Standardfunktion", text: $defaultFunction)
                 }
                 Section("Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
@@ -289,7 +355,11 @@ struct AddClubMemberView: View {
                     Button("Speichern") {
                         let member = ClubMember(firstName: firstName, lastName: lastName, street: street,
                                                  zip: zip, city: city, email: email, phone: phone,
-                                                 memberNumber: memberNumber, joinedAt: joinedAt, notes: notes)
+                                                 memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
+                                                 gender: gender, title: title, birthDate: birthDate,
+                                                 sportId: sportId, svnr: svnr, iban: iban,
+                                                 lastMedicalExamination: lastMedicalExamination,
+                                                 defaultFunction: defaultFunction)
                         modelContext.insert(member)
                         try? modelContext.save()
                         CloudKitSync.shared.pushClubMember(member)

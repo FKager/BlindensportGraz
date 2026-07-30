@@ -16,6 +16,14 @@ struct ClubMemberInput: Content {
     var memberNumber: String?
     var joinedAt: Date?
     var notes: String?
+    var gender: String?
+    var title: String?
+    var birthDate: Date?
+    var sportId: String?
+    var svnr: String?
+    var iban: String?
+    var lastMedicalExamination: Date?
+    var defaultFunction: String?
 }
 
 struct APIErrorBody: Content {
@@ -53,7 +61,15 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
             phone: input.phone ?? "",
             memberNumber: input.memberNumber ?? "",
             joinedAt: input.joinedAt ?? Date(),
-            notes: input.notes ?? ""
+            notes: input.notes ?? "",
+            gender: input.gender ?? "",
+            title: input.title ?? "",
+            birthDate: input.birthDate,
+            sportId: input.sportId ?? "",
+            svnr: input.svnr ?? "",
+            iban: input.iban ?? "",
+            lastMedicalExamination: input.lastMedicalExamination,
+            defaultFunction: input.defaultFunction ?? ""
         )
         try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: record.id, fields: record.ckFields)
         let response = try await record.encodeResponse(status: .created, for: req)
@@ -67,6 +83,7 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
         }
         let input = try req.content.decode(ClubMemberInput.self)
         try validate(input)
+        let existingRecord = ClubMemberRecord(dto: existingDTO)
         let record = ClubMemberRecord(
             id: id,
             firstName: input.firstName.trimmingCharacters(in: .whitespaces),
@@ -77,8 +94,16 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
             email: input.email ?? "",
             phone: input.phone ?? "",
             memberNumber: input.memberNumber ?? "",
-            joinedAt: input.joinedAt ?? ClubMemberRecord(dto: existingDTO)?.joinedAt ?? Date(),
-            notes: input.notes ?? ""
+            joinedAt: input.joinedAt ?? existingRecord?.joinedAt ?? Date(),
+            notes: input.notes ?? "",
+            gender: input.gender ?? existingRecord?.gender ?? "",
+            title: input.title ?? existingRecord?.title ?? "",
+            birthDate: input.birthDate ?? existingRecord?.birthDate,
+            sportId: input.sportId ?? existingRecord?.sportId ?? "",
+            svnr: input.svnr ?? existingRecord?.svnr ?? "",
+            iban: input.iban ?? existingRecord?.iban ?? "",
+            lastMedicalExamination: input.lastMedicalExamination ?? existingRecord?.lastMedicalExamination,
+            defaultFunction: input.defaultFunction ?? existingRecord?.defaultFunction ?? ""
         )
         try await client.updateRecord(existingDTO, fields: record.ckFields)
         return record

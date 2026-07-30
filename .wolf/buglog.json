@@ -2210,6 +2210,135 @@
       "related_bugs": [],
       "occurrences": 3,
       "last_seen": "2026-07-25T13:11:00Z"
+    },
+    {
+      "id": "bug-135",
+      "timestamp": "2026-07-25T16:49:10.089Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-25T16:49:10.089Z"
+    },
+    {
+      "id": "bug-136",
+      "timestamp": "2026-07-30T20:02:34.628Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/ClubMemberImportExport.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T20:02:34.628Z"
+    },
+    {
+      "id": "bug-137",
+      "timestamp": "2026-07-30T20:03:25.137Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/ClubMemberRecord.swift",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 71→120 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T20:03:25.137Z"
+    },
+    {
+      "id": "bug-138",
+      "timestamp": "2026-07-30T20:04:52.029Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/ClubMemberBulkImport.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T20:04:52.029Z"
+    },
+    {
+      "id": "bug-139",
+      "timestamp": "2026-07-30T20:05:32.055Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 16→25 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T20:05:32.055Z"
+    },
+    {
+      "id": "bug-140",
+      "timestamp": "2026-07-30T20:06:17.970Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/ClubMembersViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T20:06:17.970Z"
+    },
+    {
+      "id": "bug-141",
+      "timestamp": "2026-07-30T20:07:03.091Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGrazTests/ClubMemberImportExportTests.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T20:07:03.091Z"
+    },
+    {
+      "id": "bug-142",
+      "timestamp": "2026-07-30T22:00:00.000Z",
+      "error_message": "json.load: Invalid control character at: line 75 column 16 (char 1810) in data/Person-Others.json",
+      "file": "data/Person-Others.json",
+      "root_cause": "Werner Pfatschbacher entry had an unclosed \"street\" string value (literal tabs/CRLF plus \"Judenburg Judenburg\" text) that ran straight into the following \"zip\" key with no closing quote/comma, making the file invalid JSON.",
+      "fix": "Closed the street string as empty (\"street\": \"\") rather than guessing intended content, applied via an exact byte match (not the line-based Edit tool, since the value contained literal tab/CRLF bytes) so it round-tripped precisely.",
+      "tags": [
+        "data-integrity",
+        "json",
+        "malformed-json",
+        "club-member-import"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-07-30T22:00:00.000Z"
     }
   ]
 }

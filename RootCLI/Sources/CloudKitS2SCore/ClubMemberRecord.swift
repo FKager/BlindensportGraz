@@ -17,6 +17,14 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
     public var memberNumber: String
     public var joinedAt: Date
     public var notes: String
+    public var gender: String
+    public var title: String
+    public var birthDate: Date?
+    public var sportId: String
+    public var svnr: String
+    public var iban: String
+    public var lastMedicalExamination: Date?
+    public var defaultFunction: String
 
     public init(
         id: String = UUID().uuidString,
@@ -29,7 +37,15 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
         phone: String = "",
         memberNumber: String = "",
         joinedAt: Date = Date(),
-        notes: String = ""
+        notes: String = "",
+        gender: String = "",
+        title: String = "",
+        birthDate: Date? = nil,
+        sportId: String = "",
+        svnr: String = "",
+        iban: String = "",
+        lastMedicalExamination: Date? = nil,
+        defaultFunction: String = ""
     ) {
         self.id = id
         self.firstName = firstName
@@ -42,6 +58,14 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
         self.memberNumber = memberNumber
         self.joinedAt = joinedAt
         self.notes = notes
+        self.gender = gender
+        self.title = title
+        self.birthDate = birthDate
+        self.sportId = sportId
+        self.svnr = svnr
+        self.iban = iban
+        self.lastMedicalExamination = lastMedicalExamination
+        self.defaultFunction = defaultFunction
     }
 
     public init?(dto: CKRecordDTO) {
@@ -57,12 +81,24 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
         memberNumber = dto.stringField("memberNumber") ?? ""
         joinedAt = dto.dateField("joinedAt") ?? Date()
         notes = dto.stringField("notes") ?? ""
+        gender = dto.stringField("gender") ?? ""
+        title = dto.stringField("title") ?? ""
+        birthDate = dto.dateField("birthDate")
+        sportId = dto.stringField("sportId") ?? ""
+        svnr = dto.stringField("svnr") ?? ""
+        iban = dto.stringField("iban") ?? ""
+        lastMedicalExamination = dto.dateField("lastMedicalExamination")
+        defaultFunction = dto.stringField("defaultFunction") ?? ""
     }
 
     /// Field dict as CloudKit Web Services expects it for a create/update
-    /// (`records/modify`). Excludes `id`, which is the CKRecord name, not a field.
+    /// (`records/modify`). Excludes `id`, which is the CKRecord name, not a
+    /// field. `birthDate`/`lastMedicalExamination` are omitted entirely when
+    /// nil, rather than sent as a null/placeholder value — CloudKit Web
+    /// Services treats an absent key as "leave unset", matching `dateField`'s
+    /// read-side handling of a missing key as nil.
     public var ckFields: [String: Any] {
-        [
+        var fields: [String: Any] = [
             "firstName": ["value": firstName],
             "lastName": ["value": lastName],
             "street": ["value": street],
@@ -72,7 +108,20 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
             "phone": ["value": phone],
             "memberNumber": ["value": memberNumber],
             "notes": ["value": notes],
-            "joinedAt": ["value": Int64(joinedAt.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
+            "joinedAt": ["value": Int64(joinedAt.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"],
+            "gender": ["value": gender],
+            "title": ["value": title],
+            "sportId": ["value": sportId],
+            "svnr": ["value": svnr],
+            "iban": ["value": iban],
+            "defaultFunction": ["value": defaultFunction]
         ]
+        if let birthDate {
+            fields["birthDate"] = ["value": Int64(birthDate.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
+        }
+        if let lastMedicalExamination {
+            fields["lastMedicalExamination"] = ["value": Int64(lastMedicalExamination.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
+        }
+        return fields
     }
 }

@@ -155,6 +155,14 @@ final class CloudKitSync {
         record["memberNumber"] = member.memberNumber
         record["joinedAt"] = member.joinedAt
         record["notes"] = member.notes
+        record["gender"] = member.gender
+        record["title"] = member.title
+        record["birthDate"] = member.birthDate
+        record["sportId"] = member.sportId
+        record["svnr"] = member.svnr
+        record["iban"] = member.iban
+        record["lastMedicalExamination"] = member.lastMedicalExamination
+        record["defaultFunction"] = member.defaultFunction
         save(record)
     }
 
@@ -362,6 +370,14 @@ final class CloudKitSync {
             let memberNumber = record["memberNumber"] as? String ?? ""
             let joinedAt = record["joinedAt"] as? Date ?? .now
             let notes = record["notes"] as? String ?? ""
+            let gender = record["gender"] as? String ?? ""
+            let title = record["title"] as? String ?? ""
+            let birthDate = record["birthDate"] as? Date
+            let sportId = record["sportId"] as? String ?? ""
+            let svnr = record["svnr"] as? String ?? ""
+            let iban = record["iban"] as? String ?? ""
+            let lastMedicalExamination = record["lastMedicalExamination"] as? Date
+            let defaultFunction = record["defaultFunction"] as? String ?? ""
 
             var descriptor = FetchDescriptor<ClubMember>(predicate: #Predicate { $0.id == id })
             descriptor.fetchLimit = 1
@@ -375,10 +391,21 @@ final class CloudKitSync {
                 existing.phone = phone
                 existing.memberNumber = memberNumber
                 existing.notes = notes
+                existing.gender = gender
+                existing.title = title
+                existing.birthDate = birthDate
+                existing.sportId = sportId
+                existing.svnr = svnr
+                existing.iban = iban
+                existing.lastMedicalExamination = lastMedicalExamination
+                existing.defaultFunction = defaultFunction
             } else {
                 let member = ClubMember(id: id, firstName: firstName, lastName: lastName, street: street,
                                          zip: zip, city: city, email: email, phone: phone,
-                                         memberNumber: memberNumber, joinedAt: joinedAt, notes: notes)
+                                         memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
+                                         gender: gender, title: title, birthDate: birthDate, sportId: sportId,
+                                         svnr: svnr, iban: iban, lastMedicalExamination: lastMedicalExamination,
+                                         defaultFunction: defaultFunction)
                 modelContext.insert(member)
             }
         }

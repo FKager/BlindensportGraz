@@ -95,6 +95,24 @@ final class ClubMember {
     var memberNumber: String = ""
     var joinedAt: Date = Date.now
     var notes: String = ""
+    // Fields below mirror the attributes found in the club's source-of-truth
+    // roster JSON files (data/Person-Sport.json, data/Person-Others.json) so
+    // that data can be imported without loss. gender/title/sportId/svnr/iban/
+    // defaultFunction are free-form strings (source data isn't consistently
+    // formatted enough to validate/typecheck further); birthDate and
+    // lastMedicalExamination are optional since many roster entries omit them.
+    var gender: String = ""
+    var title: String = ""
+    var birthDate: Date?
+    // Sport Austria federation ID (e.g. "St-0046"), distinct from the club's
+    // own internal memberNumber.
+    var sportId: String = ""
+    var svnr: String = ""
+    var iban: String = ""
+    var lastMedicalExamination: Date?
+    // Default TeamMembership.role ("COACH", etc.) for this person, e.g. to
+    // pre-fill role when assigning them to a team. Not otherwise enforced.
+    var defaultFunction: String = ""
 
     @Relationship(deleteRule: .cascade, inverse: \TeamMembership.clubMember)
     var teamMemberships: [TeamMembership] = []
@@ -109,7 +127,15 @@ final class ClubMember {
          phone: String = "",
          memberNumber: String = "",
          joinedAt: Date = .now,
-         notes: String = "") {
+         notes: String = "",
+         gender: String = "",
+         title: String = "",
+         birthDate: Date? = nil,
+         sportId: String = "",
+         svnr: String = "",
+         iban: String = "",
+         lastMedicalExamination: Date? = nil,
+         defaultFunction: String = "") {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
@@ -121,6 +147,14 @@ final class ClubMember {
         self.memberNumber = memberNumber
         self.joinedAt = joinedAt
         self.notes = notes
+        self.gender = gender
+        self.title = title
+        self.birthDate = birthDate
+        self.sportId = sportId
+        self.svnr = svnr
+        self.iban = iban
+        self.lastMedicalExamination = lastMedicalExamination
+        self.defaultFunction = defaultFunction
     }
 }
 

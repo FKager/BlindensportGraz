@@ -752,3 +752,50 @@
 | 17:39 | Created BlindensportGrazTests/KostZCalculationTests.swift | — | ~2524 |
 | 17:41 | Built KostZ (Sport Austria "Kostenzusammenstellung") export: found+downloaded official template, reverse-engineered 12-category cost-summary layout, KostZCalculator (club-wide monthly sum of Attendance.praeAmount across coach/assistant roles, no new schema needed), KostZExporter patches only HONORARE/VERGÜTUNGEN row + ZEITRAUM/ANZAHL DER PERSONEN, admin UI wired into AccountView. 28/28 tests pass (7 new). Verified export round-trip in openpyxl (48 merges intact, SUM formula untouched). | KostZCalculation.swift, KostZExport.swift, KostZViews.swift, KostZ_Kostenzusammenstellung.xlsx, AccountView.swift, BlindensportGrazTests/KostZCalculationTests.swift | xcodebuild build + test succeeded; not yet committed | ~28000 |
 | 17:41 | Session end: 7 writes across 5 files (KostZCalculation.swift, KostZExport.swift, KostZViews.swift, AccountView.swift, KostZCalculationTests.swift) | 10 reads | ~27466 tok |
+| 17:45 | Session end: 7 writes across 5 files (KostZCalculation.swift, KostZExport.swift, KostZViews.swift, AccountView.swift, KostZCalculationTests.swift) | 10 reads | ~27466 tok |
+
+## Session: 2026-07-25 18:39
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:44 | Web research: found real ÖBSV "Trainingsfrequenzliste" xls template (attendance list per training session, j/n marking, monthly totals) | scratchpad/Trainingsfrequenzliste.xls | Downloaded & parsed structure, no code changes | ~1200 |
+| 18:48 | Created BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | — | ~1116 |
+| 18:49 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | added optional chaining | ~147 |
+| 18:49 | Created BlindensportGraz/TrainingsfrequenzlisteExport.swift | — | ~2546 |
+| 18:50 | Created BlindensportGraz/TrainingsfrequenzlisteViews.swift | — | ~1392 |
+| 18:50 | Edited BlindensportGraz/AccountView.swift | 2→3 lines | ~43 |
+| 18:50 | Edited BlindensportGraz/AccountView.swift | expanded (+6 lines) | ~137 |
+| 18:50 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~56 |
+| 18:50 | Created BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | — | ~2226 |
+
+## Session: 2026-07-26 20:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-07-30 21:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:01 | Edited BlindensportGraz/Models.swift | expanded (+34 lines) | ~708 |
+| 22:02 | Edited BlindensportGraz/ClubMemberImportExport.swift | added nullish coalescing | ~1141 |
+| 22:02 | Edited BlindensportGraz/ClubMemberImportExport.swift | expanded (+8 lines) | ~271 |
+| 22:02 | Edited BlindensportGraz/ClubMemberImportExport.swift | expanded (+19 lines) | ~702 |
+| 22:03 | Edited BlindensportGraz/ClubMemberImportExport.swift | modified parseJoinedAt() | ~382 |
+| 22:03 | Edited RootCLI/Sources/CloudKitS2SCore/ClubMemberRecord.swift | expanded (+49 lines) | ~1215 |
+| 22:04 | Edited BlindensportGraz/ClubMemberImportExport.swift | modified encode() | ~500 |
+| 22:04 | Edited RootCLI/Sources/CloudKitS2SCore/ClubMemberBulkImport.swift | added nullish coalescing | ~1720 |
+| 22:04 | Edited RootCLI/Sources/CloudKitS2SCore/ClubMemberBulkImport.swift | expanded (+8 lines) | ~256 |
+| 22:05 | Edited RootCLI/Sources/CloudKitS2SCore/ClubMemberBulkImport.swift | modified parseJoinedAt() | ~369 |
+| 22:05 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | expanded (+8 lines) | ~131 |
+| 22:05 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | expanded (+8 lines) | ~297 |
+| 22:05 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | expanded (+9 lines) | ~354 |
+| 22:05 | Edited BlindensportGraz/CloudKitSync.swift | modified pushClubMember() | ~256 |
+| 22:05 | Edited BlindensportGraz/CloudKitSync.swift | expanded (+19 lines) | ~608 |
+| 22:06 | Edited BlindensportGraz/ClubMembersViews.swift | added nullish coalescing | ~831 |
+| 22:06 | Edited BlindensportGraz/ClubMembersViews.swift | modified Section() | ~337 |
+| 22:06 | Edited BlindensportGraz/ClubMembersViews.swift | modified Section() | ~1126 |
+| 22:07 | Edited BlindensportGrazTests/ClubMemberImportExportTests.swift | added optional chaining | ~772 |
+| 22:13 | Session end: 19 writes across 8 files (Models.swift, ClubMemberImportExport.swift, ClubMemberRecord.swift, ClubMemberBulkImport.swift, Routes.swift) | 19 reads | ~48973 tok |
+| 22:15 | Session end: 19 writes across 8 files (Models.swift, ClubMemberImportExport.swift, ClubMemberRecord.swift, ClubMemberBulkImport.swift, Routes.swift) | 19 reads | ~48973 tok |
+| 22:19 | Session end: 19 writes across 8 files (Models.swift, ClubMemberImportExport.swift, ClubMemberRecord.swift, ClubMemberBulkImport.swift, Routes.swift) | 19 reads | ~48973 tok |

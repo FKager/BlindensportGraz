@@ -134,4 +134,54 @@ final class ClubMemberImportExportTests: XCTestCase {
         XCTAssertEqual(result.skipped, 1)
         XCTAssertFalse(result.skippedDetails.isEmpty)
     }
+
+    /// The club's real source roster files (data/Person-*.json) carry these
+    /// extra attributes and use "plz" as a zip alias in a few entries —
+    /// covers both landing correctly on the imported ClubMember.
+    func testImportReadsExtendedFieldsAndPlzAlias() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        let json = """
+        [{"firstName":"Franz","lastName":"Kager","gender":"m","title":"Dipl.-Ing.",
+          "birthDate":"28.11.1977","sportId":"St-0414","svnr":"3727",
+          "iban":"AT77 6000 0000 7936 0867","lastMedicalExamination":"20.06.2022",
+          "defaultFunction":"COACH","plz":"8020"}]
+        """
+        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
+
+        XCTAssertEqual(result.created, 1)
+        let member = try context.fetch(FetchDescriptor<ClubMember>()).first
+        XCTAssertEqual(member?.gender, "m")
+        XCTAssertEqual(member?.title, "Dipl.-Ing.")
+        XCTAssertEqual(member?.sportId, "St-0414")
+        XCTAssertEqual(member?.svnr, "3727")
+        XCTAssertEqual(member?.iban, "AT77 6000 0000 7936 0867")
+        XCTAssertEqual(member?.defaultFunction, "COACH")
+        XCTAssertEqual(member?.zip, "8020", "\"plz\" must be accepted as an alias for \"zip\"")
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        XCTAssertEqual(member?.birthDate.map { formatter.string(from: $0) }, "1977-11-28")
+        XCTAssertEqual(member?.lastMedicalExamination.map { formatter.string(from: $0) }, "2022-06-20")
+    }
+
+    /// Entries with no birthDate/lastMedicalExamination (common in the real
+    /// roster data) must import cleanly with those fields left nil, not
+    /// defaulted to some placeholder date.
+    func testImportLeavesOptionalDatesNilWhenAbsent() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        let json = """
+        [{"firstName":"Anna","lastName":"Muster"}]
+        """
+        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
+
+        XCTAssertEqual(result.created, 1)
+        let member = try context.fetch(FetchDescriptor<ClubMember>()).first
+        XCTAssertNil(member?.birthDate)
+        XCTAssertNil(member?.lastMedicalExamination)
+    }
 }
