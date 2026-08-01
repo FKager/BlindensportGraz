@@ -8,7 +8,7 @@ final class KostZCalculationTests: XCTestCase {
     private func makeContainer() throws -> ModelContainer {
         let schema = Schema([
             User.self, SportEvent.self, Tournament.self, Training.self, Team.self,
-            TeamMembership.self, EventParticipation.self, ClubMember.self,
+            TeamMembership.self, EventParticipation.self, Member.self,
             EventImage.self, Attendance.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
@@ -35,12 +35,12 @@ final class KostZCalculationTests: XCTestCase {
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
 
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
-        let helper = ClubMember(firstName: "Bernd", lastName: "Helfer")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let helper = Member(firstName: "Bernd", lastName: "Helfer")
         context.insert(coach)
         context.insert(helper)
-        let coachMembership = TeamMembership(clubMember: coach, team: team, role: "coach")
-        let helperMembership = TeamMembership(clubMember: helper, team: team, role: "assistant")
+        let coachMembership = TeamMembership(member: coach, team: team, role: "coach")
+        let helperMembership = TeamMembership(member: helper, team: team, role: "assistant")
         context.insert(coachMembership)
         context.insert(helperMembership)
 
@@ -65,9 +65,9 @@ final class KostZCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
         context.insert(membership)
 
         let julyTraining = makeTraining(context, title: "Juli-Training", day: 5, month: 7)
@@ -86,9 +86,9 @@ final class KostZCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
         context.insert(membership)
 
         let notAttended = makeTraining(context, title: "Abgesagt", day: 3)
@@ -108,9 +108,9 @@ final class KostZCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let player = ClubMember(firstName: "Carla", lastName: "Spielerin")
+        let player = Member(firstName: "Carla", lastName: "Spielerin")
         context.insert(player)
-        let membership = TeamMembership(clubMember: player, team: team, role: "player")
+        let membership = TeamMembership(member: player, team: team, role: "player")
         context.insert(membership)
 
         let training = makeTraining(context, title: "Training", day: 5)
@@ -133,9 +133,9 @@ final class KostZCalculationTests: XCTestCase {
 
     func testExportProducesValidReadableZipWithExpectedValues() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
-        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], clubMember: coach)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
         let summary = KostZMonthSummary(
             month: 7, year: 2026,
             personAmounts: [KostZPersonAmount(person: person, amount: 150)]

@@ -172,14 +172,14 @@ struct TrainingDetailView: View {
     }
 
     // Every roster entry across all assigned teams, deduped by the underlying
-    // person (a user/clubMember could otherwise show twice if they're in two
+    // person (a user/member could otherwise show twice if they're in two
     // teams both assigned to this training).
     var allMemberships: [TeamMembership] {
         var seenKeys = Set<UUID>()
         var result: [TeamMembership] = []
         for team in training.teams {
             for membership in team.memberships {
-                let key = membership.user?.id ?? membership.clubMember?.id ?? membership.id
+                let key = membership.user?.id ?? membership.member?.id ?? membership.id
                 if seenKeys.insert(key).inserted {
                     result.append(membership)
                 }

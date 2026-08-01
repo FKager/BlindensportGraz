@@ -196,7 +196,7 @@ struct TournamentDetailView: View {
         var result: [TeamMembership] = []
         for team in tournament.teams {
             for membership in team.memberships {
-                let key = membership.user?.id ?? membership.clubMember?.id ?? membership.id
+                let key = membership.user?.id ?? membership.member?.id ?? membership.id
                 if seenKeys.insert(key).inserted {
                     result.append(membership)
                 }

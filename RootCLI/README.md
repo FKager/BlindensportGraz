@@ -13,10 +13,17 @@ documents for backend integrations):
   [Web API & admin page](#web-api--admin-page) below.
 
 Both share the S2S auth/request-signing code (`Sources/CloudKitS2SCore`) and
-the `ClubMember` field mapping (`ClubMemberRecord`), so the two stay in sync
+the `Member` field mapping (`MemberRecord`), so the two stay in sync
 instead of drifting apart the way the app's own hand-mirrored CLI input
 struct historically had to be kept in lockstep with `Models.swift` on every
 field change.
+
+> The app's roster model was renamed `ClubMember` -> `Member` (2026-08-01,
+> alongside a new `memberOfGVSC` flag — see cerebrum.md). The underlying
+> CloudKit **record type stays "ClubMember"** everywhere in this package (CLI
+> help text, `rootcli record list ClubMember`, Dashboard schema/Security
+> Roles) for compatibility with already-synced production data — only
+> Swift-level type names (`MemberRecord`, `MemberBulkInput`, etc.) changed.
 
 `rootcli` exists because the app itself deliberately has no way for a user to
 change their own role, and no in-app way to grant the first `admin`/root
@@ -119,7 +126,7 @@ tradeoff, not just a missing feature).
 (case-insensitive) and refuse to guess if more than one account matches —
 re-run with the exact id from `list` in that case.
 
-`import-members <file.json>` reads a JSON array of club members and creates
+`import-members <file.json>` reads a JSON array of members and creates
 (or, if you re-run it with the same `id`, updates) matching `ClubMember`
 records — see `members.example.json` for the shape. `firstName` and
 `lastName` are both required; everything else defaults the way the app's own
@@ -134,7 +141,7 @@ Changes made this way reach app instances the same way any other cross-device
 change does: on next login or pull-to-refresh, via `CloudKitSync.syncAll`.
 Newly-imported members are also matched retroactively the next time someone
 creates an app account — but not against *existing* accounts, since
-`ClubMember.checkMembership` only ever runs at account-creation time (see
+`Member.checkMembership` only ever runs at account-creation time (see
 `cerebrum.md`'s 2026-07-16 entry on the Grazer VSC feature).
 
 `update-members <file.json>` reads the same file shape as `import-members`
@@ -145,7 +152,7 @@ existing name match are created fresh, same as `import-members`. Use this
 instead of `import-members` when re-importing an updated/extended roster file
 where some people already exist with data you don't want clobbered.
 
-### Generic record insert/update (any type, not just ClubMember)
+### Generic record insert/update (any type, not just Member)
 
 `rootcli record` reads/writes **any** CKRecord type this app publishes —
 `UserIdentity`, `ClubMember`, `Team`, `TeamMembership`, `SportEvent`,
@@ -175,7 +182,8 @@ rootcli record set UserIdentity 3F2504E0-... isRoot:INT64=1
 
 `clubmembersapi` is a [Vapor](https://vapor.codes) server exposing a REST API
 plus a single static HTML/JS page for CRUD on the Grazer VSC roster
-(`ClubMember` records), built on the same `CloudKitS2SClient` as `rootcli`.
+(`Member` records, CKRecord type `ClubMember`), built on the same
+`CloudKitS2SClient` as `rootcli`.
 
 **Every request requires HTTP Basic Auth — there is no unauthenticated mode.**
 This server holds an S2S key that can read/write every member's address,
@@ -205,14 +213,16 @@ credentials above) for the admin page, or call the REST API directly:
 |--------|---------------------|------------------------------------|-------|
 | GET    | `/api/members`      | —                                   | List all, sorted by last/first name |
 | GET    | `/api/members/:id`  | —                                   | 404 if not found |
-| POST   | `/api/members`      | `ClubMember` fields, `firstName`/`lastName` required | 201, returns the created record with its new `id` |
+| POST   | `/api/members`      | `Member` fields, `firstName`/`lastName` required | 201, returns the created record with its new `id` |
 | PUT    | `/api/members/:id`  | Same fields                         | 404 if not found |
 | DELETE | `/api/members/:id`  | —                                   | 204, 404 if not found |
-| POST   | `/api/members/import` | JSON array of `ClubMember`-shaped objects | 200, returns `{succeeded, failed, total, messages}` |
+| POST   | `/api/members/import` | JSON array of `Member`-shaped objects | 200, returns `{succeeded, failed, total, messages}` |
 
 Field names match `members.example.json` (`firstName`, `lastName`, `street`,
-`zip`, `city`, `email`, `phone`, `memberNumber`, `joinedAt`, `notes`); `id` is
-assigned server-side on create and is otherwise read-only.
+`zip`, `city`, `email`, `phone`, `memberNumber`, `joinedAt`, `notes`), plus
+`gender`/`title`/`birthDate`/`sportId`/`svnr`/`iban`/`lastMedicalExamination`/
+`defaultFunction`/`memberOfGVSC` (the last defaults to `true` when omitted);
+`id` is assigned server-side on create and is otherwise read-only.
 
 `/api/members/import` accepts exactly the same array-of-objects shape as
 `rootcli import-members`/the app's own JSON export (a file on iCloud Drive,
@@ -237,10 +247,10 @@ the `ClubMember` record type and Security Roles are already configured per
 the setup steps above (the app itself, or a prior `rootcli import-members`
 run, will already have created the schema in Development).
 
-### Generic record editor (any type, not just ClubMember)
+### Generic record editor (any type, not just Member)
 
 `/api/members` above is a typed, validated CRUD layer specific to
-`ClubMember` — the one record type worth hand-modeling. For everything else
+`Member` — the one record type worth hand-modeling. For everything else
 (`Team`, `SportEvent`, `Training`, `Tournament`, `TeamMembership`,
 `EventParticipation`, `TrainingAttendance`, `TournamentAttendance`,
 `UserIdentity`), the server also exposes a generic REST layer plus a matching

@@ -93,7 +93,7 @@ enum PraeExporter {
 
             if entry.path == "xl/worksheets/sheet1.xml", let xml = String(data: data, encoding: .utf8) {
                 var patched = XLSXCellPatch.setText(in: xml, ref: "D4", value: person.displayName)
-                patched = XLSXCellPatch.setText(in: patched, ref: "D7", value: person.clubMember?.fullAddress ?? "")
+                patched = XLSXCellPatch.setText(in: patched, ref: "D7", value: person.member?.fullAddress ?? "")
                 data = Data(patched.utf8)
             }
 

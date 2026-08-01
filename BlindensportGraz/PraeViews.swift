@@ -6,7 +6,7 @@ import SwiftData
 /// days computed from Attendance.praeAmount entries — see
 /// PraeCalculation.swift for the underlying logic and PraeExport.swift for
 /// the two export options. Self-contained NavigationStack + dismiss button
-/// since it's sheet-presented, not tab-hosted (matches ClubMembersListView).
+/// since it's sheet-presented, not tab-hosted (matches MembersListView).
 struct PraeCalculationView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext

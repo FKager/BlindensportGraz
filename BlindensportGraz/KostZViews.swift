@@ -9,7 +9,7 @@ import SwiftData
 /// person at a time), this is inherently club-wide — KostZ is a single
 /// funding-accounting document per accounting period, not per recipient.
 /// Self-contained NavigationStack + dismiss button since it's sheet-
-/// presented, matching PraeCalculationView/ClubMembersListView.
+/// presented, matching PraeCalculationView/MembersListView.
 struct KostZCalculationView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext

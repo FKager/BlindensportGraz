@@ -88,7 +88,7 @@ struct TeamDetailView: View {
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
     @Query private var users: [User]
-    @Query private var clubMembers: [ClubMember]
+    @Query private var members: [Member]
     @State private var showAddMember = false
 
     var availableUsers: [User] {
@@ -96,9 +96,9 @@ struct TeamDetailView: View {
         return users.filter { !memberIDs.contains($0.id) }
     }
 
-    var availableClubMembers: [ClubMember] {
-        let memberIDs = Set(team.memberships.compactMap { $0.clubMember?.id })
-        return clubMembers.filter { !memberIDs.contains($0.id) }
+    var availableMembers: [Member] {
+        let memberIDs = Set(team.memberships.compactMap { $0.member?.id })
+        return members.filter { !memberIDs.contains($0.id) }
     }
 
     var canManageTeams: Bool {
@@ -148,26 +148,30 @@ struct TeamDetailView: View {
                 } label: {
                     Label("Mitglied hinzufügen", systemImage: "person.badge.plus")
                 }
-                .disabled((availableUsers.isEmpty && availableClubMembers.isEmpty) || !canManageTeams)
+                .disabled((availableUsers.isEmpty && availableMembers.isEmpty) || !canManageTeams)
             }
         }
         .navigationTitle(team.name)
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showAddMember) {
-            AddMemberView(team: team, availableUsers: availableUsers, availableClubMembers: availableClubMembers)
+            AddTeamMemberView(team: team, availableUsers: availableUsers, availableMembers: availableMembers)
         }
     }
 }
 
 private enum MemberSelection: Hashable {
     case user(UUID)
-    case clubMember(UUID)
+    case member(UUID)
 }
 
-struct AddMemberView: View {
+/// Assigns an existing `User` (registered app account) or roster `Member` to
+/// a `Team` via a new `TeamMembership` — named distinctly from `Member`'s own
+/// creation view (`AddMemberView` in MembersViews.swift) since this doesn't
+/// create a `Member`, it links one that already exists.
+struct AddTeamMemberView: View {
     let team: Team
     let availableUsers: [User]
-    let availableClubMembers: [ClubMember]
+    let availableMembers: [Member]
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -187,10 +191,10 @@ struct AddMemberView: View {
                                 }
                             }
                         }
-                        if !availableClubMembers.isEmpty {
-                            Section("Grazer VSC Mitglieder ohne Konto") {
-                                ForEach(availableClubMembers) { member in
-                                    Text(member.fullName).tag(MemberSelection?.some(.clubMember(member.id)))
+                        if !availableMembers.isEmpty {
+                            Section("Mitglieder ohne Konto") {
+                                ForEach(availableMembers) { member in
+                                    Text(member.fullName).tag(MemberSelection?.some(.member(member.id)))
                                 }
                             }
                         }
@@ -218,9 +222,9 @@ struct AddMemberView: View {
                         case .user(let id):
                             guard let user = availableUsers.first(where: { $0.id == id }) else { membership = nil; break }
                             membership = TeamMembership(user: user, team: team, role: role)
-                        case .clubMember(let id):
-                            guard let member = availableClubMembers.first(where: { $0.id == id }) else { membership = nil; break }
-                            membership = TeamMembership(clubMember: member, team: team, role: role)
+                        case .member(let id):
+                            guard let member = availableMembers.first(where: { $0.id == id }) else { membership = nil; break }
+                            membership = TeamMembership(member: member, team: team, role: role)
                         case nil:
                             membership = nil
                         }

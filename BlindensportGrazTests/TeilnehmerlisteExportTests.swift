@@ -32,7 +32,7 @@ final class TeilnehmerlisteExportTests: XCTestCase {
     private func makeContainer() throws -> ModelContainer {
         let schema = Schema([
             User.self, SportEvent.self, Tournament.self, Training.self, Team.self,
-            TeamMembership.self, EventParticipation.self, ClubMember.self,
+            TeamMembership.self, EventParticipation.self, Member.self,
             EventImage.self, Attendance.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
@@ -41,9 +41,9 @@ final class TeilnehmerlisteExportTests: XCTestCase {
 
     private func makeMemberships(_ context: ModelContext, team: Team, names: [(String, String, String)]) -> [TeamMembership] {
         names.map { first, last, address in
-            let member = ClubMember(firstName: first, lastName: last, street: address)
+            let member = Member(firstName: first, lastName: last, street: address)
             context.insert(member)
-            let membership = TeamMembership(clubMember: member, team: team)
+            let membership = TeamMembership(member: member, team: team)
             context.insert(membership)
             return membership
         }

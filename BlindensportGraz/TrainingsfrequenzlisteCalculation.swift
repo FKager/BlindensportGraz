@@ -20,8 +20,8 @@ struct TrainingsfrequenzlistePerson: Identifiable {
     // Vorname/Nachname as two separate columns, matching the original
     // template's layout (TeamMembership.displayName combines them into one
     // string for every other use site in the app, which doesn't fit here).
-    var firstName: String { membership.user?.firstName ?? membership.clubMember?.firstName ?? "" }
-    var lastName: String { membership.user?.lastName ?? membership.clubMember?.lastName ?? "" }
+    var firstName: String { membership.user?.firstName ?? membership.member?.firstName ?? "" }
+    var lastName: String { membership.user?.lastName ?? membership.member?.lastName ?? "" }
 }
 
 /// One calendar month's Trainingsfrequenzliste for one team — mirrors the

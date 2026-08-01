@@ -6,12 +6,12 @@ struct AccountView: View {
     let onLogout: () -> Void
     @Environment(\.modelContext) private var modelContext
     @Query private var allUsers: [User]
-    @Query private var clubMembers: [ClubMember]
+    @Query private var members: [Member]
 
     @State private var showEdit = false
     @State private var showUserList = false
-    @State private var showClubMembers = false
-    @State private var showMyClubMember = false
+    @State private var showMembers = false
+    @State private var showMyMember = false
     @State private var showPraeCalculation = false
     @State private var showKostZCalculation = false
     @State private var showTrainingsfrequenzliste = false
@@ -72,7 +72,7 @@ struct AccountView: View {
 
                     if user.isGrazerVSCMember {
                         Button {
-                            showMyClubMember = true
+                            showMyMember = true
                         } label: {
                             Label("Vereinsdaten bearbeiten", systemImage: "square.and.pencil")
                         }
@@ -86,9 +86,9 @@ struct AccountView: View {
                         }
 
                         Button {
-                            showClubMembers = true
+                            showMembers = true
                         } label: {
-                            Label("Grazer VSC verwalten", systemImage: "building.columns.fill")
+                            Label("Benutzerverwaltung", systemImage: "building.columns.fill")
                         }
 
                         Button {
@@ -133,12 +133,12 @@ struct AccountView: View {
                 UserListView(currentUser: user)
             }
         }
-        .sheet(isPresented: $showClubMembers) {
-            ClubMembersListView()
+        .sheet(isPresented: $showMembers) {
+            MembersListView()
         }
-        .sheet(isPresented: $showMyClubMember) {
-            if let user = currentUser, let member = ClubMember.first(matching: user, in: clubMembers) {
-                MyClubMemberView(member: member)
+        .sheet(isPresented: $showMyMember) {
+            if let user = currentUser, let member = Member.first(matching: user, in: members) {
+                MyMemberView(member: member)
             } else {
                 ContentUnavailableView("Kein Vereinsdateneintrag gefunden",
                                        systemImage: "exclamationmark.triangle")

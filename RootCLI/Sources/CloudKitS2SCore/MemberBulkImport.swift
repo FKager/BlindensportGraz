@@ -1,6 +1,6 @@
 import Foundation
 
-/// Loose, per-row-tolerant input shape for bulk ClubMember import — shared by
+/// Loose, per-row-tolerant input shape for bulk Member import — shared by
 /// `rootcli import-members` and clubmembersapi's `POST /api/members/import`,
 /// so both accept exactly the same file/body shape (a JSON array, same as
 /// what the app's own export produces) and apply exactly the same per-row
@@ -15,7 +15,7 @@ import Foundation
 /// defaultFunction, plus `plz` as an alias for `zip` (German Postleitzahl,
 /// used inconsistently in that source data) — decoded via a custom
 /// `init(from:)` since `Codable` synthesis has no built-in alias-key support.
-public struct ClubMemberBulkInput: Codable, Sendable {
+public struct MemberBulkInput: Codable, Sendable {
     public var id: String?
     public var firstName: String?
     public var lastName: String?
@@ -35,10 +35,11 @@ public struct ClubMemberBulkInput: Codable, Sendable {
     public var iban: String?
     public var lastMedicalExamination: String?
     public var defaultFunction: String?
+    public var memberOfGVSC: Bool?
 
     private enum CodingKeys: String, CodingKey {
         case id, firstName, lastName, street, zip, plz, city, email, phone, memberNumber, joinedAt, notes,
-             gender, title, birthDate, sportId, svnr, iban, lastMedicalExamination, defaultFunction
+             gender, title, birthDate, sportId, svnr, iban, lastMedicalExamination, defaultFunction, memberOfGVSC
     }
 
     public init(
@@ -48,7 +49,8 @@ public struct ClubMemberBulkInput: Codable, Sendable {
         joinedAt: String? = nil, notes: String? = nil,
         gender: String? = nil, title: String? = nil, birthDate: String? = nil,
         sportId: String? = nil, svnr: String? = nil, iban: String? = nil,
-        lastMedicalExamination: String? = nil, defaultFunction: String? = nil
+        lastMedicalExamination: String? = nil, defaultFunction: String? = nil,
+        memberOfGVSC: Bool? = nil
     ) {
         self.id = id
         self.firstName = firstName
@@ -69,6 +71,7 @@ public struct ClubMemberBulkInput: Codable, Sendable {
         self.iban = iban
         self.lastMedicalExamination = lastMedicalExamination
         self.defaultFunction = defaultFunction
+        self.memberOfGVSC = memberOfGVSC
     }
 
     public init(from decoder: Decoder) throws {
@@ -93,11 +96,12 @@ public struct ClubMemberBulkInput: Codable, Sendable {
         iban = try container.decodeIfPresent(String.self, forKey: .iban)
         lastMedicalExamination = try container.decodeIfPresent(String.self, forKey: .lastMedicalExamination)
         defaultFunction = try container.decodeIfPresent(String.self, forKey: .defaultFunction)
+        memberOfGVSC = try container.decodeIfPresent(Bool.self, forKey: .memberOfGVSC)
     }
 
     // Written explicitly because the `plz` alias case in CodingKeys has no
     // backing stored property, which blocks Encodable synthesis — same
-    // reasoning as ClubMemberIO in the app target. Always writes `zip`, never
+    // reasoning as MemberIO in the app target. Always writes `zip`, never
     // `plz`.
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
@@ -120,25 +124,26 @@ public struct ClubMemberBulkInput: Codable, Sendable {
         try container.encodeIfPresent(iban, forKey: .iban)
         try container.encodeIfPresent(lastMedicalExamination, forKey: .lastMedicalExamination)
         try container.encodeIfPresent(defaultFunction, forKey: .defaultFunction)
+        try container.encodeIfPresent(memberOfGVSC, forKey: .memberOfGVSC)
     }
 }
 
-public struct ClubMemberBulkImportResult: Sendable {
+public struct MemberBulkImportResult: Sendable {
     public var succeeded = 0
     public var failed = 0
     public var messages: [String] = []
     public var total: Int { succeeded + failed }
 }
 
-public enum ClubMemberBulkImport {
+public enum MemberBulkImport {
     /// Creates-or-replaces (via `createOrReplaceRecord`, no change-tag needed)
-    /// one `ClubMember` per input. A provided `id` must be a valid UUID string
+    /// one `Member` per input. A provided `id` must be a valid UUID string
     /// (it becomes the CKRecord name) — re-running with the same `id`s updates
     /// those records in place; omitting `id` mints a fresh UUID each time, so
     /// re-importing an id-less file duplicates rather than updates. Bad rows
     /// (empty name, non-UUID id) are skipped individually, never abort the batch.
-    public static func run(_ inputs: [ClubMemberBulkInput], client: CloudKitS2SClient) async -> ClubMemberBulkImportResult {
-        var result = ClubMemberBulkImportResult()
+    public static func run(_ inputs: [MemberBulkInput], client: CloudKitS2SClient) async -> MemberBulkImportResult {
+        var result = MemberBulkImportResult()
         for input in inputs {
             let firstName = (input.firstName ?? "").trimmingCharacters(in: .whitespaces)
             let lastName = (input.lastName ?? "").trimmingCharacters(in: .whitespaces)
@@ -161,7 +166,7 @@ public enum ClubMemberBulkImport {
                 recordName = UUID().uuidString
             }
 
-            let record = ClubMemberRecord(
+            let record = MemberRecord(
                 id: recordName,
                 firstName: firstName,
                 lastName: lastName,
@@ -180,7 +185,8 @@ public enum ClubMemberBulkImport {
                 svnr: input.svnr ?? "",
                 iban: input.iban ?? "",
                 lastMedicalExamination: parseFlexibleDate(input.lastMedicalExamination),
-                defaultFunction: input.defaultFunction ?? ""
+                defaultFunction: input.defaultFunction ?? "",
+                memberOfGVSC: input.memberOfGVSC ?? true
             )
 
             do {

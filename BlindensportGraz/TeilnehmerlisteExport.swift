@@ -100,7 +100,7 @@ enum TeilnehmerlisteExporter {
         return context.attendedMemberships.map { membership in
             TeilnehmerlisteEntry(
                 name: formattedName(for: membership),
-                wohnort: membership.clubMember?.city ?? "",
+                wohnort: membership.member?.city ?? "",
                 tage: dayCount
             )
         }
@@ -108,10 +108,10 @@ enum TeilnehmerlisteExporter {
 
     private static func formattedName(for membership: TeamMembership) -> String {
         // Column header is "FAMILIEN- und VORNAME" (family name first) — only
-        // ClubMember has separate first/last name fields to format that way;
+        // Member has separate first/last name fields to format that way;
         // a registered User only has a single displayName.
-        if let clubMember = membership.clubMember {
-            return "\(clubMember.lastName) \(clubMember.firstName)"
+        if let member = membership.member {
+            return "\(member.lastName) \(member.firstName)"
         }
         return membership.displayName
     }

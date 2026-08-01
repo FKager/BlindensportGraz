@@ -2,7 +2,7 @@ import CloudKit
 import SwiftData
 import Foundation
 
-/// Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/
+/// Shares Team/Event/Training/Tournament/Membership/Participation/Member/
 /// EventImage data across different users' Apple IDs via CloudKit's public
 /// database.
 /// SwiftData's own CloudKit integration only mirrors the private, per-user
@@ -12,9 +12,12 @@ import Foundation
 ///
 /// Only non-sensitive identity fields (firstName, lastName, role,
 /// isGrazerVSCMember) are ever published for a User — email and the Apple
-/// identifier stay device-local. The ClubMember roster (name/address/contact
+/// identifier stay device-local. The Member roster (name/address/contact
 /// details) is admin-managed data, synced so every admin's device and the
-/// account-creation match check see the same roster.
+/// account-creation match check see the same roster. The CKRecord type
+/// stays the historical "ClubMember" string (not renamed to "Member")
+/// so already-synced production data keeps resolving after this
+/// app-side rename — see cerebrum.md 2026-08-01.
 @MainActor
 final class CloudKitSync {
     static let shared = CloudKitSync()
@@ -38,7 +41,9 @@ final class CloudKitSync {
     func pushMembership(_ membership: TeamMembership) {
         let record = CKRecord(recordType: "TeamMembership", recordID: recordID(membership.id))
         record["userID"] = membership.user?.id.uuidString
-        record["clubMemberID"] = membership.clubMember?.id.uuidString
+        // Field key stays "clubMemberID" (not renamed) for wire compatibility
+        // with already-synced production data — see the Member rename note above.
+        record["clubMemberID"] = membership.member?.id.uuidString
         record["teamID"] = membership.team.id.uuidString
         record["role"] = membership.role
         record["joinedAt"] = membership.joinedAt
@@ -143,7 +148,9 @@ final class CloudKitSync {
         }
     }
 
-    func pushClubMember(_ member: ClubMember) {
+    func pushMember(_ member: Member) {
+        // recordType stays the historical "ClubMember" string — see the
+        // Member rename note in this file's top doc comment.
         let record = CKRecord(recordType: "ClubMember", recordID: recordID(member.id))
         record["firstName"] = member.firstName
         record["lastName"] = member.lastName
@@ -163,15 +170,16 @@ final class CloudKitSync {
         record["iban"] = member.iban
         record["lastMedicalExamination"] = member.lastMedicalExamination
         record["defaultFunction"] = member.defaultFunction
+        record["memberOfGVSC"] = member.memberOfGVSC
         save(record)
     }
 
-    func deleteClubMember(_ id: UUID) {
+    func deleteMember(_ id: UUID) {
         Task {
             do {
                 try await publicDB.deleteRecord(withID: recordID(id))
             } catch {
-                print("CloudKitSync delete failed for ClubMember \(id): \(error)")
+                print("CloudKitSync delete failed for Member \(id): \(error)")
             }
         }
     }
@@ -269,7 +277,7 @@ final class CloudKitSync {
 
     func syncAll(modelContext: ModelContext) async {
         await pullUserIdentities(modelContext: modelContext)
-        await pullClubMembers(modelContext: modelContext)
+        await pullMembers(modelContext: modelContext)
         await pullTeams(modelContext: modelContext)
         await pullMemberships(modelContext: modelContext)
         await pullEvents(modelContext: modelContext)
@@ -310,8 +318,8 @@ final class CloudKitSync {
         return try? modelContext.fetch(descriptor).first
     }
 
-    private func findClubMember(_ id: UUID, modelContext: ModelContext) -> ClubMember? {
-        var descriptor = FetchDescriptor<ClubMember>(predicate: #Predicate { $0.id == id })
+    private func findMember(_ id: UUID, modelContext: ModelContext) -> Member? {
+        var descriptor = FetchDescriptor<Member>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
         return try? modelContext.fetch(descriptor).first
     }
@@ -357,7 +365,9 @@ final class CloudKitSync {
         }
     }
 
-    private func pullClubMembers(modelContext: ModelContext) async {
+    private func pullMembers(modelContext: ModelContext) async {
+        // recordType stays the historical "ClubMember" string — see this
+        // file's top doc comment.
         for record in await fetchAll(recordType: "ClubMember") {
             guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
             let firstName = record["firstName"] as? String ?? ""
@@ -378,8 +388,11 @@ final class CloudKitSync {
             let iban = record["iban"] as? String ?? ""
             let lastMedicalExamination = record["lastMedicalExamination"] as? Date
             let defaultFunction = record["defaultFunction"] as? String ?? ""
+            // Missing on records pushed before this flag existed — default true,
+            // matching every pre-existing roster entry's implicit membership.
+            let memberOfGVSC = record["memberOfGVSC"] as? Bool ?? true
 
-            var descriptor = FetchDescriptor<ClubMember>(predicate: #Predicate { $0.id == id })
+            var descriptor = FetchDescriptor<Member>(predicate: #Predicate { $0.id == id })
             descriptor.fetchLimit = 1
             if let existing = try? modelContext.fetch(descriptor).first {
                 existing.firstName = firstName
@@ -399,13 +412,14 @@ final class CloudKitSync {
                 existing.iban = iban
                 existing.lastMedicalExamination = lastMedicalExamination
                 existing.defaultFunction = defaultFunction
+                existing.memberOfGVSC = memberOfGVSC
             } else {
-                let member = ClubMember(id: id, firstName: firstName, lastName: lastName, street: street,
-                                         zip: zip, city: city, email: email, phone: phone,
-                                         memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
-                                         gender: gender, title: title, birthDate: birthDate, sportId: sportId,
-                                         svnr: svnr, iban: iban, lastMedicalExamination: lastMedicalExamination,
-                                         defaultFunction: defaultFunction)
+                let member = Member(id: id, firstName: firstName, lastName: lastName, street: street,
+                                     zip: zip, city: city, email: email, phone: phone,
+                                     memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
+                                     gender: gender, title: title, birthDate: birthDate, sportId: sportId,
+                                     svnr: svnr, iban: iban, lastMedicalExamination: lastMedicalExamination,
+                                     defaultFunction: defaultFunction, memberOfGVSC: memberOfGVSC)
                 modelContext.insert(member)
             }
         }
@@ -439,10 +453,11 @@ final class CloudKitSync {
                   let team = findTeam(teamID, modelContext: modelContext) else { continue }
             let user = (record["userID"] as? String).flatMap { UUID(uuidString: $0) }
                 .flatMap { findUser($0, modelContext: modelContext) }
-            let clubMember = (record["clubMemberID"] as? String).flatMap { UUID(uuidString: $0) }
-                .flatMap { findClubMember($0, modelContext: modelContext) }
+            // Field key stays "clubMemberID" on the wire — see this file's top doc comment.
+            let member = (record["clubMemberID"] as? String).flatMap { UUID(uuidString: $0) }
+                .flatMap { findMember($0, modelContext: modelContext) }
             // Exactly one side must resolve — a membership with neither is orphaned data.
-            guard user != nil || clubMember != nil else { continue }
+            guard user != nil || member != nil else { continue }
             let role = record["role"] as? String ?? "player"
             let joinedAt = record["joinedAt"] as? Date ?? .now
 
@@ -451,7 +466,7 @@ final class CloudKitSync {
             if let existing = try? modelContext.fetch(descriptor).first {
                 existing.role = role
             } else {
-                let membership = TeamMembership(id: id, user: user, clubMember: clubMember, team: team, role: role, joinedAt: joinedAt)
+                let membership = TeamMembership(id: id, user: user, member: member, team: team, role: role, joinedAt: joinedAt)
                 modelContext.insert(membership)
             }
         }

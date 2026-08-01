@@ -3,12 +3,12 @@ import SwiftData
 @testable import BlindensportGraz
 
 @MainActor
-final class ClubMemberImportExportTests: XCTestCase {
+final class MemberImportExportTests: XCTestCase {
 
     private func makeContainer() throws -> ModelContainer {
         let schema = Schema([
             User.self, SportEvent.self, Tournament.self, Training.self, Team.self,
-            TeamMembership.self, EventParticipation.self, ClubMember.self,
+            TeamMembership.self, EventParticipation.self, Member.self,
             EventImage.self, Attendance.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
@@ -22,20 +22,20 @@ final class ClubMemberImportExportTests: XCTestCase {
     func testExportThenReimportIsIdempotent() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
-        let member = ClubMember(firstName: "Anna", lastName: "Muster", street: "Hauptstraße 1",
+        let member = Member(firstName: "Anna", lastName: "Muster", street: "Hauptstraße 1",
                                  zip: "8010", city: "Graz", email: "anna@example.com")
         context.insert(member)
         try context.save()
 
-        let url = try ClubMemberImportExport.exportFile(members: [member])
+        let url = try MemberImportExport.exportFile(members: [member])
         defer { try? FileManager.default.removeItem(at: url) }
         let data = try Data(contentsOf: url)
 
-        let result = ClubMemberImportExport.importMembers(from: data, into: [member], modelContext: context)
+        let result = MemberImportExport.importMembers(from: data, into: [member], modelContext: context)
 
         XCTAssertEqual(result.created, 0)
         XCTAssertEqual(result.updated, 1)
-        let all = try context.fetch(FetchDescriptor<ClubMember>())
+        let all = try context.fetch(FetchDescriptor<Member>())
         XCTAssertEqual(all.count, 1, "re-importing the same exported file must not duplicate the entry")
         XCTAssertEqual(all.first?.city, "Graz")
     }
@@ -49,12 +49,12 @@ final class ClubMemberImportExportTests: XCTestCase {
         let json = """
         [{"firstName":"Peter","lastName":"Huber","email":"peter@example.com"}]
         """
-        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
 
         XCTAssertEqual(result.created, 1)
         XCTAssertEqual(result.updated, 0)
         XCTAssertEqual(result.skipped, 0)
-        let all = try context.fetch(FetchDescriptor<ClubMember>())
+        let all = try context.fetch(FetchDescriptor<Member>())
         XCTAssertEqual(all.count, 1)
         XCTAssertEqual(all.first?.email, "peter@example.com")
     }
@@ -66,18 +66,18 @@ final class ClubMemberImportExportTests: XCTestCase {
     func testImportMatchesExistingByEmailWhenNoID() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
-        let existing = ClubMember(firstName: "Anna", lastName: "Muster", email: "anna@example.com")
+        let existing = Member(firstName: "Anna", lastName: "Muster", email: "anna@example.com")
         context.insert(existing)
         try context.save()
 
         let json = """
         [{"firstName":"Anna","lastName":"Muster","email":"anna@example.com","city":"Graz"}]
         """
-        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [existing], modelContext: context)
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [existing], modelContext: context)
 
         XCTAssertEqual(result.created, 0)
         XCTAssertEqual(result.updated, 1)
-        let all = try context.fetch(FetchDescriptor<ClubMember>())
+        let all = try context.fetch(FetchDescriptor<Member>())
         XCTAssertEqual(all.count, 1)
         XCTAssertEqual(all.first?.city, "Graz")
     }
@@ -95,11 +95,11 @@ final class ClubMemberImportExportTests: XCTestCase {
           {"firstName":"Peter","lastName":"Huber"}
         ]
         """
-        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
 
         XCTAssertEqual(result.created, 1)
         XCTAssertEqual(result.skipped, 1)
-        let all = try context.fetch(FetchDescriptor<ClubMember>())
+        let all = try context.fetch(FetchDescriptor<Member>())
         XCTAssertEqual(all.count, 1)
         XCTAssertEqual(all.first?.firstName, "Peter")
     }
@@ -113,10 +113,10 @@ final class ClubMemberImportExportTests: XCTestCase {
         let json = """
         [{"firstName":"Anna","lastName":"Muster","joinedAt":"2020-05-01"}]
         """
-        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
 
         XCTAssertEqual(result.created, 1)
-        let all = try context.fetch(FetchDescriptor<ClubMember>())
+        let all = try context.fetch(FetchDescriptor<Member>())
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = TimeZone(identifier: "UTC")
@@ -127,7 +127,7 @@ final class ClubMemberImportExportTests: XCTestCase {
         let container = try makeContainer()
         let context = ModelContext(container)
 
-        let result = ClubMemberImportExport.importMembers(from: Data("not json".utf8), into: [], modelContext: context)
+        let result = MemberImportExport.importMembers(from: Data("not json".utf8), into: [], modelContext: context)
 
         XCTAssertEqual(result.created, 0)
         XCTAssertEqual(result.updated, 0)
@@ -137,7 +137,7 @@ final class ClubMemberImportExportTests: XCTestCase {
 
     /// The club's real source roster files (data/Person-*.json) carry these
     /// extra attributes and use "plz" as a zip alias in a few entries —
-    /// covers both landing correctly on the imported ClubMember.
+    /// covers both landing correctly on the imported Member.
     func testImportReadsExtendedFieldsAndPlzAlias() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
@@ -148,10 +148,10 @@ final class ClubMemberImportExportTests: XCTestCase {
           "iban":"AT77 6000 0000 7936 0867","lastMedicalExamination":"20.06.2022",
           "defaultFunction":"COACH","plz":"8020"}]
         """
-        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
 
         XCTAssertEqual(result.created, 1)
-        let member = try context.fetch(FetchDescriptor<ClubMember>()).first
+        let member = try context.fetch(FetchDescriptor<Member>()).first
         XCTAssertEqual(member?.gender, "m")
         XCTAssertEqual(member?.title, "Dipl.-Ing.")
         XCTAssertEqual(member?.sportId, "St-0414")
@@ -177,19 +177,59 @@ final class ClubMemberImportExportTests: XCTestCase {
     func testImportNeverOverwritesAlreadySetFields() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
-        let existing = ClubMember(firstName: "Anna", lastName: "Muster", city: "Graz", phone: "0316 123456")
+        let existing = Member(firstName: "Anna", lastName: "Muster", city: "Graz", phone: "0316 123456")
         context.insert(existing)
         try context.save()
 
         let json = """
         [{"firstName":"Anna","lastName":"Muster","city":"Wien","phone":"","email":"anna@example.com"}]
         """
-        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [existing], modelContext: context)
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [existing], modelContext: context)
 
         XCTAssertEqual(result.updated, 1)
         XCTAssertEqual(existing.city, "Graz", "must not overwrite an already-set field with a different value")
         XCTAssertEqual(existing.phone, "0316 123456", "an empty value in the file must not blank out existing data")
         XCTAssertEqual(existing.email, "anna@example.com", "a currently-blank field must still be filled from the file")
+    }
+
+    /// `memberOfGVSC` defaults to true for a brand-new member created via
+    /// import (matching the historical "every roster entry is a club member"
+    /// behavior), but an explicit `false` in the file is honored.
+    func testImportDefaultsMemberOfGVSCTrueButHonorsExplicitFalse() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        let json = """
+        [
+          {"firstName":"Anna","lastName":"Muster"},
+          {"firstName":"Bernd","lastName":"Helfer","memberOfGVSC":false}
+        ]
+        """
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
+
+        XCTAssertEqual(result.created, 2)
+        let all = try context.fetch(FetchDescriptor<Member>())
+        XCTAssertEqual(all.first { $0.firstName == "Anna" }?.memberOfGVSC, true)
+        XCTAssertEqual(all.first { $0.firstName == "Bernd" }?.memberOfGVSC, false)
+    }
+
+    /// `memberOfGVSC` is a Bool with no "blank" state, so re-importing must
+    /// never flip it on an existing member — it's admin-set-once, not
+    /// fillable like the string fields above.
+    func testImportNeverTouchesMemberOfGVSCOnExistingEntry() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let existing = Member(firstName: "Anna", lastName: "Muster", memberOfGVSC: false)
+        context.insert(existing)
+        try context.save()
+
+        let json = """
+        [{"firstName":"Anna","lastName":"Muster","memberOfGVSC":true}]
+        """
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [existing], modelContext: context)
+
+        XCTAssertEqual(result.updated, 1)
+        XCTAssertEqual(existing.memberOfGVSC, false, "existing memberOfGVSC must not be changed by re-importing")
     }
 
     /// Entries with no birthDate/lastMedicalExamination (common in the real
@@ -202,10 +242,10 @@ final class ClubMemberImportExportTests: XCTestCase {
         let json = """
         [{"firstName":"Anna","lastName":"Muster"}]
         """
-        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
+        let result = MemberImportExport.importMembers(from: Data(json.utf8), into: [], modelContext: context)
 
         XCTAssertEqual(result.created, 1)
-        let member = try context.fetch(FetchDescriptor<ClubMember>()).first
+        let member = try context.fetch(FetchDescriptor<Member>()).first
         XCTAssertNil(member?.birthDate)
         XCTAssertNil(member?.lastMedicalExamination)
     }

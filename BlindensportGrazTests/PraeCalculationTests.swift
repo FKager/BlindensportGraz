@@ -8,7 +8,7 @@ final class PraeCalculationTests: XCTestCase {
     private func makeContainer() throws -> ModelContainer {
         let schema = Schema([
             User.self, SportEvent.self, Tournament.self, Training.self, Team.self,
-            TeamMembership.self, EventParticipation.self, ClubMember.self,
+            TeamMembership.self, EventParticipation.self, Member.self,
             EventImage.self, Attendance.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
@@ -35,14 +35,14 @@ final class PraeCalculationTests: XCTestCase {
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
 
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
-        let helper = ClubMember(firstName: "Bernd", lastName: "Helfer")
-        let player = ClubMember(firstName: "Carla", lastName: "Spielerin")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let helper = Member(firstName: "Bernd", lastName: "Helfer")
+        let player = Member(firstName: "Carla", lastName: "Spielerin")
         [coach, helper, player].forEach(context.insert)
 
-        context.insert(TeamMembership(clubMember: coach, team: team, role: "coach"))
-        context.insert(TeamMembership(clubMember: helper, team: team, role: "assistant"))
-        context.insert(TeamMembership(clubMember: player, team: team, role: "player"))
+        context.insert(TeamMembership(member: coach, team: team, role: "coach"))
+        context.insert(TeamMembership(member: helper, team: team, role: "assistant"))
+        context.insert(TeamMembership(member: player, team: team, role: "player"))
 
         let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
         let eligible = PraeCalculator.eligiblePeople(from: allMemberships)
@@ -58,10 +58,10 @@ final class PraeCalculationTests: XCTestCase {
         context.insert(teamA)
         context.insert(teamB)
 
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        context.insert(TeamMembership(clubMember: coach, team: teamA, role: "coach"))
-        context.insert(TeamMembership(clubMember: coach, team: teamB, role: "coach"))
+        context.insert(TeamMembership(member: coach, team: teamA, role: "coach"))
+        context.insert(TeamMembership(member: coach, team: teamB, role: "coach"))
 
         let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
         let eligible = PraeCalculator.eligiblePeople(from: allMemberships)
@@ -77,9 +77,9 @@ final class PraeCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
         context.insert(membership)
 
         let julyTraining = makeTraining(context, title: "Juli-Training", day: 5, month: 7)
@@ -105,9 +105,9 @@ final class PraeCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
         context.insert(membership)
 
         let morning = makeTraining(context, title: "Vormittag", day: 10)
@@ -128,9 +128,9 @@ final class PraeCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
         context.insert(membership)
 
         for day in [1, 5, 10, 15, 20, 25] {
@@ -156,9 +156,9 @@ final class PraeCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
         context.insert(membership)
 
         let training = makeTraining(context, title: "Ohne Betrag", day: 3)
@@ -174,9 +174,9 @@ final class PraeCalculationTests: XCTestCase {
 
     func testExportDarstellungProducesValidReadableZip() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer")
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
-        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], clubMember: coach)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
         let summary = PraeMonthSummary(
             person: person, month: 7, year: 2026,
             entries: [
@@ -213,9 +213,9 @@ final class PraeCalculationTests: XCTestCase {
 
     func testExportMainFormPatchesNameAndAddressOnly() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
-        let coach = ClubMember(firstName: "Anna", lastName: "Trainer", street: "Hauptstraße 1", zip: "8010", city: "Graz")
-        let membership = TeamMembership(clubMember: coach, team: team, role: "coach")
-        let person = PraeEligiblePerson(id: coach.id, displayName: "Trainer Anna", membershipIDs: [membership.id], clubMember: coach)
+        let coach = Member(firstName: "Anna", lastName: "Trainer", street: "Hauptstraße 1", zip: "8010", city: "Graz")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Trainer Anna", membershipIDs: [membership.id], member: coach)
 
         let url = try PraeExporter.exportMainForm(person: person)
         defer { try? FileManager.default.removeItem(at: url) }

@@ -3,9 +3,13 @@ import Foundation
 /// Single source of truth for the `ClubMember` CKRecord field mapping,
 /// shared by `rootcli import-members` and `clubmembersapi`'s REST routes so
 /// the two tools can't silently drift apart the way the app's own
-/// hand-mirrored `ClubMemberInput` struct already has to be kept in lockstep
-/// with `Models.swift`'s `ClubMember` on every field change (see cerebrum.md).
-public struct ClubMemberRecord: Codable, Equatable, Sendable {
+/// hand-mirrored `MemberInput` struct already has to be kept in lockstep
+/// with `Models.swift`'s `Member` on every field change (see cerebrum.md).
+/// Named `MemberRecord` after the app-side `ClubMember` -> `Member` rename
+/// (2026-08-01), but `dto.recordType`/CKRecord's `recordType` stay the
+/// historical "ClubMember" string, since that's what already-synced
+/// production data is stored under — only the Swift-level name changed.
+public struct MemberRecord: Codable, Equatable, Sendable {
     public var id: String
     public var firstName: String
     public var lastName: String
@@ -25,6 +29,7 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
     public var iban: String
     public var lastMedicalExamination: Date?
     public var defaultFunction: String
+    public var memberOfGVSC: Bool
 
     public init(
         id: String = UUID().uuidString,
@@ -45,7 +50,8 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
         svnr: String = "",
         iban: String = "",
         lastMedicalExamination: Date? = nil,
-        defaultFunction: String = ""
+        defaultFunction: String = "",
+        memberOfGVSC: Bool = true
     ) {
         self.id = id
         self.firstName = firstName
@@ -66,6 +72,7 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
         self.iban = iban
         self.lastMedicalExamination = lastMedicalExamination
         self.defaultFunction = defaultFunction
+        self.memberOfGVSC = memberOfGVSC
     }
 
     public init?(dto: CKRecordDTO) {
@@ -89,6 +96,15 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
         iban = dto.stringField("iban") ?? ""
         lastMedicalExamination = dto.dateField("lastMedicalExamination")
         defaultFunction = dto.stringField("defaultFunction") ?? ""
+        // Missing on records written before this flag existed — default true,
+        // matching every pre-existing roster entry's implicit membership.
+        // (Can't use `dto.boolField` here: it defaults absent fields to
+        // `false`, which is the wrong default for this particular flag.)
+        if let raw = (dto.fields["memberOfGVSC"] as? [String: Any])?["value"] as? NSNumber {
+            memberOfGVSC = raw.boolValue
+        } else {
+            memberOfGVSC = true
+        }
     }
 
     /// Field dict as CloudKit Web Services expects it for a create/update
@@ -114,7 +130,8 @@ public struct ClubMemberRecord: Codable, Equatable, Sendable {
             "sportId": ["value": sportId],
             "svnr": ["value": svnr],
             "iban": ["value": iban],
-            "defaultFunction": ["value": defaultFunction]
+            "defaultFunction": ["value": defaultFunction],
+            "memberOfGVSC": ["value": memberOfGVSC ? 1 : 0, "type": "INT64"]
         ]
         if let birthDate {
             fields["birthDate"] = ["value": Int64(birthDate.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]

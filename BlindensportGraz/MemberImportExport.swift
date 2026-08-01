@@ -1,16 +1,16 @@
 import Foundation
 import SwiftData
 
-/// JSON shape for one club member, shared by export and import. Field names
-/// intentionally match RootCLI's `ClubMemberInput`/`members.example.json` and
+/// JSON shape for one roster member, shared by export and import. Field names
+/// intentionally match RootCLI's `MemberBulkInput`/`members.example.json` and
 /// `clubmembersapi`'s REST payloads exactly, so a file exported here can be
 /// fed to `rootcli import-members` (or vice versa) with no conversion.
 /// `joinedAt`/`birthDate`/`lastMedicalExamination` are plain strings (not
 /// native JSON dates) accepting ISO8601, "yyyy-MM-dd", or "dd.MM.yyyy" —
-/// see `ClubMemberImportExport.parseFlexibleDate`. `zip` also accepts the
+/// see `MemberImportExport.parseFlexibleDate`. `zip` also accepts the
 /// German "plz" (Postleitzahl) as an alias key, since the club's source
 /// roster files (data/Person-*.json) use that spelling in a few places.
-struct ClubMemberIO: Codable {
+struct MemberIO: Codable {
     var id: String?
     var firstName: String?
     var lastName: String?
@@ -30,10 +30,11 @@ struct ClubMemberIO: Codable {
     var iban: String?
     var lastMedicalExamination: String?
     var defaultFunction: String?
+    var memberOfGVSC: Bool?
 
     private enum CodingKeys: String, CodingKey {
         case id, firstName, lastName, street, zip, plz, city, email, phone, memberNumber, joinedAt, notes,
-             gender, title, birthDate, sportId, svnr, iban, lastMedicalExamination, defaultFunction
+             gender, title, birthDate, sportId, svnr, iban, lastMedicalExamination, defaultFunction, memberOfGVSC
     }
 
     init(id: String? = nil, firstName: String? = nil, lastName: String? = nil, street: String? = nil,
@@ -41,7 +42,7 @@ struct ClubMemberIO: Codable {
          memberNumber: String? = nil, joinedAt: String? = nil, notes: String? = nil,
          gender: String? = nil, title: String? = nil, birthDate: String? = nil, sportId: String? = nil,
          svnr: String? = nil, iban: String? = nil, lastMedicalExamination: String? = nil,
-         defaultFunction: String? = nil) {
+         defaultFunction: String? = nil, memberOfGVSC: Bool? = nil) {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
@@ -61,6 +62,7 @@ struct ClubMemberIO: Codable {
         self.iban = iban
         self.lastMedicalExamination = lastMedicalExamination
         self.defaultFunction = defaultFunction
+        self.memberOfGVSC = memberOfGVSC
     }
 
     init(from decoder: Decoder) throws {
@@ -85,6 +87,7 @@ struct ClubMemberIO: Codable {
         iban = try container.decodeIfPresent(String.self, forKey: .iban)
         lastMedicalExamination = try container.decodeIfPresent(String.self, forKey: .lastMedicalExamination)
         defaultFunction = try container.decodeIfPresent(String.self, forKey: .defaultFunction)
+        memberOfGVSC = try container.decodeIfPresent(Bool.self, forKey: .memberOfGVSC)
     }
 
     // Written explicitly (rather than relying on synthesis) because the
@@ -112,21 +115,22 @@ struct ClubMemberIO: Codable {
         try container.encodeIfPresent(iban, forKey: .iban)
         try container.encodeIfPresent(lastMedicalExamination, forKey: .lastMedicalExamination)
         try container.encodeIfPresent(defaultFunction, forKey: .defaultFunction)
+        try container.encodeIfPresent(memberOfGVSC, forKey: .memberOfGVSC)
     }
 }
 
-enum ClubMemberImportExport {
+enum MemberImportExport {
     private static let isoFormatter = ISO8601DateFormatter()
 
     // MARK: - Export
 
     /// Encodes the given roster to pretty-printed, sorted-key JSON and writes
     /// it to a fresh temp file, ready for `ShareLink`.
-    static func exportFile(members: [ClubMember]) throws -> URL {
+    static func exportFile(members: [Member]) throws -> URL {
         let rows = members
             .sorted { ($0.lastName, $0.firstName) < ($1.lastName, $1.firstName) }
             .map { member in
-                ClubMemberIO(
+                MemberIO(
                     id: member.id.uuidString,
                     firstName: member.firstName,
                     lastName: member.lastName,
@@ -145,7 +149,8 @@ enum ClubMemberImportExport {
                     svnr: member.svnr,
                     iban: member.iban,
                     lastMedicalExamination: member.lastMedicalExamination.map(isoFormatter.string(from:)),
-                    defaultFunction: member.defaultFunction
+                    defaultFunction: member.defaultFunction,
+                    memberOfGVSC: member.memberOfGVSC
                 )
             }
         let encoder = JSONEncoder()
@@ -183,12 +188,12 @@ enum ClubMemberImportExport {
         }
     }
 
-    /// Parses `data` as a JSON array of `ClubMemberIO`, then for each entry:
+    /// Parses `data` as a JSON array of `MemberIO`, then for each entry:
     /// matches an existing roster entry by `id` first (if given and valid —
     /// this is what makes re-importing a previously exported file idempotent),
     /// falling back to email or first+last name (same rule as
-    /// `ClubMember.checkMembership`'s account matching), and either updates
-    /// that entry in place or inserts a new `ClubMember`. Entries missing
+    /// `Member.checkMembership`'s account matching), and either updates
+    /// that entry in place or inserts a new `Member`. Entries missing
     /// firstName/lastName are skipped, matching RootCLI's import-members
     /// behavior, so one bad row doesn't abort the whole file.
     ///
@@ -196,22 +201,25 @@ enum ClubMemberImportExport {
     /// in when it's currently blank on the existing record AND the incoming
     /// row has a non-empty value for it — existing data is never overwritten
     /// or blanked out by an empty/absent value in the file. This mirrors
-    /// RootCLI's `ClubMemberFillUpdate` (see cerebrum.md 2026-08-01), so
+    /// RootCLI's `MemberFillUpdate` (see cerebrum.md 2026-08-01), so
     /// re-importing an updated/extended roster export in-app behaves the same
-    /// way the CLI's `update-members` does.
+    /// way the CLI's `update-members` does. `memberOfGVSC` is a Bool with no
+    /// "blank" state, so it's only set on creation (defaulting true), never
+    /// touched by an update to an existing entry — flip it explicitly via the
+    /// admin UI instead.
     @MainActor
-    static func importMembers(from data: Data, into roster: [ClubMember], modelContext: ModelContext) -> ImportResult {
+    static func importMembers(from data: Data, into roster: [Member], modelContext: ModelContext) -> ImportResult {
         var result = ImportResult()
-        let rows: [ClubMemberIO]
+        let rows: [MemberIO]
         do {
-            rows = try JSONDecoder().decode([ClubMemberIO].self, from: data)
+            rows = try JSONDecoder().decode([MemberIO].self, from: data)
         } catch {
             result.skipped = 1
             result.skippedDetails = ["Datei konnte nicht gelesen werden: \(error.localizedDescription)"]
             return result
         }
 
-        var touched: [ClubMember] = []
+        var touched: [Member] = []
         var workingRoster = roster
 
         for row in rows {
@@ -253,7 +261,7 @@ enum ClubMemberImportExport {
                 result.updated += 1
             } else {
                 let id = row.id.flatMap(UUID.init) ?? UUID()
-                let member = ClubMember(
+                let member = Member(
                     id: id,
                     firstName: firstName,
                     lastName: lastName,
@@ -272,7 +280,8 @@ enum ClubMemberImportExport {
                     svnr: row.svnr ?? "",
                     iban: row.iban ?? "",
                     lastMedicalExamination: lastMedicalExamination,
-                    defaultFunction: row.defaultFunction ?? ""
+                    defaultFunction: row.defaultFunction ?? "",
+                    memberOfGVSC: row.memberOfGVSC ?? true
                 )
                 modelContext.insert(member)
                 workingRoster.append(member)
@@ -283,7 +292,7 @@ enum ClubMemberImportExport {
 
         try? modelContext.save()
         for member in touched {
-            CloudKitSync.shared.pushClubMember(member)
+            CloudKitSync.shared.pushMember(member)
         }
         return result
     }
@@ -298,7 +307,7 @@ enum ClubMemberImportExport {
         existing = newValue
     }
 
-    private static func findExisting(row: ClubMemberIO, firstName: String, lastName: String, in roster: [ClubMember]) -> ClubMember? {
+    private static func findExisting(row: MemberIO, firstName: String, lastName: String, in roster: [Member]) -> Member? {
         if let idString = row.id, let id = UUID(uuidString: idString),
            let byID = roster.first(where: { $0.id == id }) {
             return byID
@@ -317,7 +326,7 @@ enum ClubMemberImportExport {
     }
 
     /// Accepts "yyyy-MM-dd" or full ISO8601; mirrors RootCLI's
-    /// `ClubMemberImport.parseJoinedAt` exactly so both tools parse the same
+    /// `MemberImport.parseJoinedAt` exactly so both tools parse the same
     /// files identically.
     private static func parseJoinedAt(_ raw: String?) -> Date? {
         guard let raw, !raw.trimmingCharacters(in: .whitespaces).isEmpty else { return nil }

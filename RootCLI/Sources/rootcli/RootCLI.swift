@@ -104,42 +104,42 @@ struct RootCLI {
         guard args.count == 1 else {
             throw CLIError.message("Usage: rootcli import-members <file.json>")
         }
-        let inputs = try ClubMemberImport.loadRecords(from: args[0])
+        let inputs = try MemberImport.loadRecords(from: args[0])
         guard !inputs.isEmpty else {
             print("No members found in \(args[0]).")
             return
         }
 
         let client = try makeClient()
-        let result = await ClubMemberBulkImport.run(inputs, client: client)
+        let result = await MemberBulkImport.run(inputs, client: client)
         for message in result.messages { print(message) }
         print("Done: \(result.succeeded) imported, \(result.failed) failed, out of \(inputs.count).")
     }
 
     /// Unlike `import-members` (blind create-or-replace of the whole record),
     /// this only fills fields that are currently blank on an existing
-    /// ClubMember (matched by firstName+lastName) — existing data is never
+    /// Member (matched by firstName+lastName) — existing data is never
     /// overwritten. Rows with no existing match are still created fresh.
     private static func runUpdateMembers(_ args: [String]) async throws {
         guard args.count == 1 else {
             throw CLIError.message("Usage: rootcli update-members <file.json>")
         }
-        let inputs = try ClubMemberImport.loadRecords(from: args[0])
+        let inputs = try MemberImport.loadRecords(from: args[0])
         guard !inputs.isEmpty else {
             print("No members found in \(args[0]).")
             return
         }
 
         let client = try makeClient()
-        let result = await ClubMemberFillUpdate.run(inputs, client: client)
+        let result = await MemberFillUpdate.run(inputs, client: client)
         for message in result.messages { print(message) }
         print("Done: \(result.succeeded) updated/created, \(result.failed) failed, out of \(inputs.count).")
     }
 
     /// Generic insert/update/read/delete for ANY CloudKit record type this
-    /// app publishes — not just ClubMember. Unlike `set-role`/`set-root`
+    /// app publishes — not just Member. Unlike `set-role`/`set-root`
     /// (which hand-decode specific fields of one specific type) or
-    /// `import-members` (which mirrors `ClubMemberRecord`), this works
+    /// `import-members` (which mirrors `MemberRecord`), this works
     /// against raw record types and field names via `CKFieldCoding`, so
     /// adding support for a new model never requires touching this file.
     /// `set` always upserts (`createOrReplaceRecord`), matching the app's own
@@ -224,8 +224,10 @@ struct RootCLI {
           rootcli record set <type> <id> field=value [field:TYPE=value ...]
           rootcli record delete <type> <id>
 
-        import-members reads a JSON array of club members and creates/updates
-        matching ClubMember records in CloudKit. "firstName" and "lastName" are
+        import-members reads a JSON array of members and creates/updates
+        matching records in CloudKit (CKRecord type "ClubMember", the
+        historical name kept for compatibility with already-synced data —
+        see the app's Member model). "firstName" and "lastName" are
         required; see RootCLI/README.md and RootCLI/members.example.json for
         the schema. Matching existing records are fully overwritten with the
         file's data (blank fields in the file blank out the existing value too).

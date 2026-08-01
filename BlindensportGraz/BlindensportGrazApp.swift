@@ -14,7 +14,7 @@ struct BlindensportGrazApp: App {
             Team.self,
             TeamMembership.self,
             EventParticipation.self,
-            ClubMember.self,
+            Member.self,
             EventImage.self,
             Attendance.self
                ])

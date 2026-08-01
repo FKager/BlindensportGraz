@@ -1,25 +1,27 @@
 import Foundation
 
-/// Non-destructive counterpart to `ClubMemberBulkImport.run` — fills in fields
-/// that are currently blank on an existing `ClubMember` record instead of
+/// Non-destructive counterpart to `MemberBulkImport.run` — fills in fields
+/// that are currently blank on an existing `Member` record instead of
 /// overwriting the whole record (`createOrReplaceRecord`/forceReplace, which
-/// `ClubMemberBulkImport` uses, always clobbers every field regardless of
+/// `MemberBulkImport` uses, always clobbers every field regardless of
 /// whether the incoming value is empty). Matching is by firstName+lastName
-/// (case/whitespace-insensitive), the same identity rule `ClubMember.matches`
+/// (case/whitespace-insensitive), the same identity rule `Member.matches`
 /// uses in the app (Models.swift) — this package has no access to `svnr`/
 /// `sportId` as a more precise key since not every existing record carries one.
 /// An input row with no matching existing record is created fresh (same as
-/// `ClubMemberBulkImport`), since there's nothing to preserve.
-public enum ClubMemberFillUpdate {
-    public static func run(_ inputs: [ClubMemberBulkInput], client: CloudKitS2SClient) async -> ClubMemberBulkImportResult {
-        var result = ClubMemberBulkImportResult()
+/// `MemberBulkImport`), since there's nothing to preserve. `memberOfGVSC` is a
+/// Bool with no "blank" state, so it's only ever set on creation (defaulting
+/// true) — never touched by the fill-update path for an existing match.
+public enum MemberFillUpdate {
+    public static func run(_ inputs: [MemberBulkInput], client: CloudKitS2SClient) async -> MemberBulkImportResult {
+        var result = MemberBulkImportResult()
 
         let existingRecords: [CKRecordDTO]
         do {
             existingRecords = try await client.queryRecords(recordType: "ClubMember")
         } catch {
             result.failed = inputs.count
-            result.messages.append("Could not fetch existing ClubMember records, aborting: \(error)")
+            result.messages.append("Could not fetch existing Member records, aborting: \(error)")
             return result
         }
 
@@ -79,8 +81,8 @@ public enum ClubMemberFillUpdate {
             fillString("svnr", input.svnr)
             fillString("iban", input.iban)
             fillString("defaultFunction", input.defaultFunction)
-            fillDate("birthDate", ClubMemberBulkImport.parseFlexibleDate(input.birthDate))
-            fillDate("lastMedicalExamination", ClubMemberBulkImport.parseFlexibleDate(input.lastMedicalExamination))
+            fillDate("birthDate", MemberBulkImport.parseFlexibleDate(input.birthDate))
+            fillDate("lastMedicalExamination", MemberBulkImport.parseFlexibleDate(input.lastMedicalExamination))
 
             guard !fieldsToSet.isEmpty else {
                 result.messages.append("No blank fields to fill for \(fullName) — already up to date.")
@@ -100,11 +102,11 @@ public enum ClubMemberFillUpdate {
     }
 
     private static func create(
-        _ input: ClubMemberBulkInput, firstName: String, lastName: String, fullName: String,
-        client: CloudKitS2SClient, result: inout ClubMemberBulkImportResult
+        _ input: MemberBulkInput, firstName: String, lastName: String, fullName: String,
+        client: CloudKitS2SClient, result: inout MemberBulkImportResult
     ) async {
         let recordName = UUID().uuidString
-        let record = ClubMemberRecord(
+        let record = MemberRecord(
             id: recordName,
             firstName: firstName,
             lastName: lastName,
@@ -114,16 +116,17 @@ public enum ClubMemberFillUpdate {
             email: input.email ?? "",
             phone: input.phone ?? "",
             memberNumber: input.memberNumber ?? "",
-            joinedAt: ClubMemberBulkImport.parseJoinedAt(input.joinedAt) ?? Date(),
+            joinedAt: MemberBulkImport.parseJoinedAt(input.joinedAt) ?? Date(),
             notes: input.notes ?? "",
             gender: input.gender ?? "",
             title: input.title ?? "",
-            birthDate: ClubMemberBulkImport.parseFlexibleDate(input.birthDate),
+            birthDate: MemberBulkImport.parseFlexibleDate(input.birthDate),
             sportId: input.sportId ?? "",
             svnr: input.svnr ?? "",
             iban: input.iban ?? "",
-            lastMedicalExamination: ClubMemberBulkImport.parseFlexibleDate(input.lastMedicalExamination),
-            defaultFunction: input.defaultFunction ?? ""
+            lastMedicalExamination: MemberBulkImport.parseFlexibleDate(input.lastMedicalExamination),
+            defaultFunction: input.defaultFunction ?? "",
+            memberOfGVSC: input.memberOfGVSC ?? true
         )
         do {
             try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)

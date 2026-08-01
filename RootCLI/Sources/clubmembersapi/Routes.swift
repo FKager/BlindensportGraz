@@ -1,11 +1,11 @@
 import Vapor
 import CloudKitS2SCore
 
-extension ClubMemberRecord: Content {}
+extension MemberRecord: Content {}
 
-/// Body shape for POST/PUT — same fields as `ClubMemberRecord` minus `id`
+/// Body shape for POST/PUT — same fields as `MemberRecord` minus `id`
 /// (assigned server-side on create, taken from the URL path on update).
-struct ClubMemberInput: Content {
+struct MemberInput: Content {
     var firstName: String
     var lastName: String
     var street: String?
@@ -24,6 +24,7 @@ struct ClubMemberInput: Content {
     var iban: String?
     var lastMedicalExamination: Date?
     var defaultFunction: String?
+    var memberOfGVSC: Bool?
 }
 
 struct APIErrorBody: Content {
@@ -33,25 +34,25 @@ struct APIErrorBody: Content {
 func routes(_ app: Application, client: CloudKitS2SClient) throws {
     let api = app.grouped("api", "members")
 
-    api.get { req async throws -> [ClubMemberRecord] in
+    api.get { req async throws -> [MemberRecord] in
         let records = try await client.queryRecords(recordType: "ClubMember")
-        return records.compactMap(ClubMemberRecord.init(dto:))
+        return records.compactMap(MemberRecord.init(dto:))
             .sorted { ($0.lastName, $0.firstName) < ($1.lastName, $1.firstName) }
     }
 
-    api.get(":id") { req async throws -> ClubMemberRecord in
+    api.get(":id") { req async throws -> MemberRecord in
         let id = try req.parameters.require("id")
         guard let dto = try await client.lookupRecord(recordType: "ClubMember", recordName: id),
-              let record = ClubMemberRecord(dto: dto) else {
-            throw Abort(.notFound, reason: "No club member with id \(id).")
+              let record = MemberRecord(dto: dto) else {
+            throw Abort(.notFound, reason: "No member with id \(id).")
         }
         return record
     }
 
     api.post { req async throws -> Response in
-        let input = try req.content.decode(ClubMemberInput.self)
+        let input = try req.content.decode(MemberInput.self)
         try validate(input)
-        let record = ClubMemberRecord(
+        let record = MemberRecord(
             firstName: input.firstName.trimmingCharacters(in: .whitespaces),
             lastName: input.lastName.trimmingCharacters(in: .whitespaces),
             street: input.street ?? "",
@@ -69,22 +70,23 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
             svnr: input.svnr ?? "",
             iban: input.iban ?? "",
             lastMedicalExamination: input.lastMedicalExamination,
-            defaultFunction: input.defaultFunction ?? ""
+            defaultFunction: input.defaultFunction ?? "",
+            memberOfGVSC: input.memberOfGVSC ?? true
         )
         try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: record.id, fields: record.ckFields)
         let response = try await record.encodeResponse(status: .created, for: req)
         return response
     }
 
-    api.put(":id") { req async throws -> ClubMemberRecord in
+    api.put(":id") { req async throws -> MemberRecord in
         let id = try req.parameters.require("id")
         guard let existingDTO = try await client.lookupRecord(recordType: "ClubMember", recordName: id) else {
-            throw Abort(.notFound, reason: "No club member with id \(id).")
+            throw Abort(.notFound, reason: "No member with id \(id).")
         }
-        let input = try req.content.decode(ClubMemberInput.self)
+        let input = try req.content.decode(MemberInput.self)
         try validate(input)
-        let existingRecord = ClubMemberRecord(dto: existingDTO)
-        let record = ClubMemberRecord(
+        let existingRecord = MemberRecord(dto: existingDTO)
+        let record = MemberRecord(
             id: id,
             firstName: input.firstName.trimmingCharacters(in: .whitespaces),
             lastName: input.lastName.trimmingCharacters(in: .whitespaces),
@@ -103,7 +105,8 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
             svnr: input.svnr ?? existingRecord?.svnr ?? "",
             iban: input.iban ?? existingRecord?.iban ?? "",
             lastMedicalExamination: input.lastMedicalExamination ?? existingRecord?.lastMedicalExamination,
-            defaultFunction: input.defaultFunction ?? existingRecord?.defaultFunction ?? ""
+            defaultFunction: input.defaultFunction ?? existingRecord?.defaultFunction ?? "",
+            memberOfGVSC: input.memberOfGVSC ?? existingRecord?.memberOfGVSC ?? true
         )
         try await client.updateRecord(existingDTO, fields: record.ckFields)
         return record
@@ -112,7 +115,7 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
     api.delete(":id") { req async throws -> HTTPStatus in
         let id = try req.parameters.require("id")
         guard try await client.lookupRecord(recordType: "ClubMember", recordName: id) != nil else {
-            throw Abort(.notFound, reason: "No club member with id \(id).")
+            throw Abort(.notFound, reason: "No member with id \(id).")
         }
         try await client.deleteRecord(recordType: "ClubMember", recordName: id)
         return .noContent
@@ -122,19 +125,19 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
     /// export produces and `rootcli import-members` reads, so a roster file
     /// can be posted straight from `curl` without any per-record scripting.
     /// Shares its per-row logic (skip-invalid-rows-not-whole-batch, id/UUID
-    /// handling) with `rootcli import-members` via `ClubMemberBulkImport`
+    /// handling) with `rootcli import-members` via `MemberBulkImport`
     /// rather than reimplementing it a third time.
     api.post("import") { req async throws -> Response in
         guard let buffer = req.body.data else {
-            throw Abort(.badRequest, reason: "Body must be a JSON array of club members.")
+            throw Abort(.badRequest, reason: "Body must be a JSON array of members.")
         }
-        let inputs: [ClubMemberBulkInput]
+        let inputs: [MemberBulkInput]
         do {
-            inputs = try JSONDecoder().decode([ClubMemberBulkInput].self, from: Data(buffer: buffer))
+            inputs = try JSONDecoder().decode([MemberBulkInput].self, from: Data(buffer: buffer))
         } catch {
-            throw Abort(.badRequest, reason: "Body must be a JSON array of club members: \(error)")
+            throw Abort(.badRequest, reason: "Body must be a JSON array of members: \(error)")
         }
-        let result = await ClubMemberBulkImport.run(inputs, client: client)
+        let result = await MemberBulkImport.run(inputs, client: client)
         let body: [String: Any] = [
             "succeeded": result.succeeded,
             "failed": result.failed,
@@ -144,10 +147,10 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
         return try jsonResponse(body)
     }
 
-    // MARK: - Generic records (any type, not just ClubMember)
+    // MARK: - Generic records (any type, not just Member)
     //
-    // The routes above give ClubMember a typed, validated form because it's
-    // this app's one deliberately-modeled record type (see ClubMemberRecord).
+    // The routes above give Member a typed, validated form because it's
+    // this app's one deliberately-modeled record type (see MemberRecord).
     // Hand-writing that same typed layer for Team/SportEvent/Training/
     // Tournament/TeamMembership/EventParticipation/Attendance/UserIdentity
     // would be ten times the boilerplate for no real validation benefit on an
@@ -218,7 +221,7 @@ private func jsonResponse(_ object: Any) throws -> Response {
     return Response(status: .ok, headers: headers, body: .init(data: data))
 }
 
-private func validate(_ input: ClubMemberInput) throws {
+private func validate(_ input: MemberInput) throws {
     guard !input.firstName.trimmingCharacters(in: .whitespaces).isEmpty,
           !input.lastName.trimmingCharacters(in: .whitespaces).isEmpty else {
         throw Abort(.badRequest, reason: "firstName and lastName are required.")

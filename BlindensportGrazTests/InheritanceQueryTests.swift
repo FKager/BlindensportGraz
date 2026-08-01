@@ -12,7 +12,7 @@ final class InheritanceQueryTests: XCTestCase {
     private func makeContainer() throws -> ModelContainer {
         let schema = Schema([
             User.self, SportEvent.self, Tournament.self, Training.self, Team.self,
-            TeamMembership.self, EventParticipation.self, ClubMember.self,
+            TeamMembership.self, EventParticipation.self, Member.self,
             EventImage.self, Attendance.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)

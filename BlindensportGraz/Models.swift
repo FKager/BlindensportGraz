@@ -10,7 +10,7 @@ final class User {
     var role: String = "member" // "member", "coach", "admin"
     var appleUserIdentifier: String = ""
     var createdAt: Date = Date.now
-    // Set automatically on account creation by matching against the ClubMember roster.
+    // Set automatically on account creation by matching against the Member roster.
     var isGrazerVSCMember: Bool = false
     // Super-user flag, distinct from `role`. Only a root account can change another
     // account's `role`; nobody (including root) can change their own via the app —
@@ -50,7 +50,7 @@ final class User {
 extension User {
     /// Combines firstName/lastName for display; not stored, so it can't be
     /// used as a @Query sort key path — sort by lastName/firstName instead.
-    /// Mirrors ClubMember.fullName's pattern so existing display call sites
+    /// Mirrors Member.fullName's pattern so existing display call sites
     /// (avatar initial, headers, member pickers) didn't need their own
     /// formatting logic.
     var displayName: String {
@@ -80,10 +80,16 @@ extension User {
     }
 }
 
-/// Membership roster for the sports club "Grazer VSC", administered by admins.
-/// Used to automatically flag matching app accounts as club members on creation.
+/// Roster administered by admins under "Benutzerverwaltung" (user management).
+/// Formerly named `ClubMember` and implicitly always a Grazer VSC member by
+/// virtue of being on the roster at all; `memberOfGVSC` now makes that an
+/// explicit, editable flag instead, since this roster also carries
+/// helpers/coaches (`defaultFunction`) who aren't necessarily formal club
+/// members. Used to automatically flag matching app accounts as club members
+/// on creation (see `User.isGrazerVSCMember`) — that account-level flag is
+/// distinct from this per-roster-entry `memberOfGVSC` flag.
 @Model
-final class ClubMember {
+final class Member {
     @Attribute(.unique) var id: UUID = UUID()
     var firstName: String = ""
     var lastName: String = ""
@@ -113,8 +119,12 @@ final class ClubMember {
     // Default TeamMembership.role ("COACH", etc.) for this person, e.g. to
     // pre-fill role when assigning them to a team. Not otherwise enforced.
     var defaultFunction: String = ""
+    // Whether this roster entry is an actual Grazer VSC club member, as
+    // opposed to e.g. an external helper/coach tracked here without formal
+    // membership. Defaults true since every entry historically was one.
+    var memberOfGVSC: Bool = true
 
-    @Relationship(deleteRule: .cascade, inverse: \TeamMembership.clubMember)
+    @Relationship(deleteRule: .cascade, inverse: \TeamMembership.member)
     var teamMemberships: [TeamMembership] = []
 
     init(id: UUID = UUID(),
@@ -135,7 +145,8 @@ final class ClubMember {
          svnr: String = "",
          iban: String = "",
          lastMedicalExamination: Date? = nil,
-         defaultFunction: String = "") {
+         defaultFunction: String = "",
+         memberOfGVSC: Bool = true) {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
@@ -155,10 +166,11 @@ final class ClubMember {
         self.iban = iban
         self.lastMedicalExamination = lastMedicalExamination
         self.defaultFunction = defaultFunction
+        self.memberOfGVSC = memberOfGVSC
     }
 }
 
-extension ClubMember {
+extension Member {
     /// Combines firstName/lastName for display and matching; not stored, so it
     /// can't be used as a @Query sort key path — sort by lastName/firstName instead.
     var fullName: String {
@@ -173,12 +185,12 @@ extension ClubMember {
     }
 }
 
-extension ClubMember {
+extension Member {
     /// Checks a newly created (or edited) account's email/first+last name against
-    /// the local ClubMember roster and updates its `isGrazerVSCMember` flag
+    /// the local Member roster and updates its `isGrazerVSCMember` flag
     /// accordingly.
     static func checkMembership(for user: User, modelContext: ModelContext) {
-        let roster = (try? modelContext.fetch(FetchDescriptor<ClubMember>())) ?? []
+        let roster = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
         user.isGrazerVSCMember = matches(email: user.email, firstName: user.firstName,
                                           lastName: user.lastName, in: roster)
     }
@@ -186,20 +198,20 @@ extension ClubMember {
     /// Matches a new account's email or first+last name against the roster, case-
     /// and whitespace-insensitively. Email match takes priority since names can
     /// collide; first/last name are compared as separate fields (not a joined
-    /// full-name string) since that's how both User and ClubMember store them.
-    static func matches(email: String, firstName: String, lastName: String, in roster: [ClubMember]) -> Bool {
+    /// full-name string) since that's how both User and Member store them.
+    static func matches(email: String, firstName: String, lastName: String, in roster: [Member]) -> Bool {
         firstMatch(email: email, firstName: firstName, lastName: lastName, in: roster) != nil
     }
 
     /// Finds the specific roster entry a `User` matches, using the same rules as
     /// `matches` — used by AccountView to let a Grazer VSC member (isGrazerVSCMember
     /// == true) edit their own roster data (address, phone, ...) directly, without
-    /// needing admin access to ClubMembersListView.
-    static func first(matching user: User, in roster: [ClubMember]) -> ClubMember? {
+    /// needing admin access to MembersListView.
+    static func first(matching user: User, in roster: [Member]) -> Member? {
         firstMatch(email: user.email, firstName: user.firstName, lastName: user.lastName, in: roster)
     }
 
-    private static func firstMatch(email: String, firstName: String, lastName: String, in roster: [ClubMember]) -> ClubMember? {
+    private static func firstMatch(email: String, firstName: String, lastName: String, in roster: [Member]) -> Member? {
         let normalizedEmail = email.trimmingCharacters(in: .whitespaces).lowercased()
         let normalizedFirst = firstName.trimmingCharacters(in: .whitespaces).lowercased()
         let normalizedLast = lastName.trimmingCharacters(in: .whitespaces).lowercased()
@@ -251,28 +263,28 @@ final class Team {
     }
 }
 
-/// Exactly one of `user`/`clubMember` is set, never both/neither. `user` covers
-/// people with a registered app account; `clubMember` covers Grazer VSC roster
+/// Exactly one of `user`/`member` is set, never both/neither. `user` covers
+/// people with a registered app account; `member` covers Grazer VSC roster
 /// entries who haven't signed into the app yet — teams routinely include both,
 /// since real club rosters aren't 1:1 with app installs.
 @Model
 final class TeamMembership {
     @Attribute(.unique) var id: UUID = UUID()
     var user: User?
-    var clubMember: ClubMember?
+    var member: Member?
     var team: Team
     var role: String = "player" // "player", "coach", "assistant"
     var joinedAt: Date = Date.now
 
     init(id: UUID = UUID(),
          user: User? = nil,
-         clubMember: ClubMember? = nil,
+         member: Member? = nil,
          team: Team,
          role: String = "player",
          joinedAt: Date = .now) {
         self.id = id
         self.user = user
-        self.clubMember = clubMember
+        self.member = member
         self.team = team
         self.role = role
         self.joinedAt = joinedAt
@@ -281,7 +293,7 @@ final class TeamMembership {
 
 extension TeamMembership {
     var displayName: String {
-        user?.displayName ?? clubMember?.fullName ?? "?"
+        user?.displayName ?? member?.fullName ?? "?"
     }
 
     /// Secondary line under the name in member lists: indicates whether this

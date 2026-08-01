@@ -829,3 +829,51 @@
 | 14:30 | Created ../../.claude/projects/-Users-franz-dev-claude/memory/feedback_test_on_physical_device.md | — | ~398 |
 | 14:30 | Edited ../../.claude/projects/-Users-franz-dev-claude/memory/MEMORY.md | 1→2 lines | ~77 |
 | 14:32 | Session end: 12 writes across 7 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 14 reads | ~30646 tok |
+| 14:36 | Deployed non-destructive import fix to physical device via GitHub Actions self-hosted runner (git push main -> ios-device-deploy.yml, not local osascript/Xcode GUI which failed on Accessibility permission) | ClubMemberImportExport.swift, ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExportTests.swift, data/person.new.json | committed f64f9c1, pushed, workflow run 30699972977 succeeded, app confirmed running on iPhone (PID 47400) | ~2500 |
+| 14:37 | Session end: 12 writes across 7 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 14 reads | ~30646 tok |
+| 15:47 | Edited BlindensportGraz/Models.swift | 5→5 lines | ~70 |
+| 15:48 | Edited BlindensportGraz/Models.swift | modified checkMembership() | ~1875 |
+| 15:48 | Edited BlindensportGraz/Models.swift | 32→32 lines | ~266 |
+| 15:48 | Edited BlindensportGraz/CloudKitSync.swift | 13→16 lines | ~259 |
+| 15:48 | Edited BlindensportGraz/CloudKitSync.swift | 2→4 lines | ~76 |
+| 15:49 | Edited BlindensportGraz/CloudKitSync.swift | modified pushMember() | ~376 |
+| 15:49 | Edited BlindensportGraz/CloudKitSync.swift | pullClubMembers() → pullMembers() | ~31 |
+| 15:49 | Edited BlindensportGraz/CloudKitSync.swift | findClubMember() → findMember() | ~71 |
+| 15:49 | Edited BlindensportGraz/CloudKitSync.swift | modified pullMembers() | ~899 |
+| 15:49 | Edited BlindensportGraz/CloudKitSync.swift | findClubMember() → findMember() | ~308 |
+| 15:50 | Created BlindensportGraz/MembersViews.swift | — | ~4415 |
+| 15:50 | Edited BlindensportGraz/AccountView.swift | 7→7 lines | ~68 |
+| 15:51 | Edited BlindensportGraz/AccountView.swift | 20→20 lines | ~222 |
+| 15:51 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~78 |
+| 15:51 | Edited BlindensportGraz/BlindensportGrazApp.swift | 3→3 lines | ~24 |
+| 15:52 | Edited BlindensportGraz/RootView.swift | 2→2 lines | ~43 |
+| 15:53 | Edited BlindensportGraz/TeamsViews.swift | 13→13 lines | ~127 |
+| 15:53 | Edited BlindensportGraz/TeamsViews.swift | modified sheet() | ~954 |
+| 15:57 | Edited BlindensportGraz/PraeCalculation.swift | 5→5 lines | ~83 |
+| 15:57 | Edited BlindensportGraz/PraeCalculation.swift | modified contains() | ~196 |
+| 15:58 | Edited BlindensportGraz/PraeExport.swift | inline fix | ~30 |
+| 15:59 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 2→2 lines | ~50 |
+| 15:59 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | modified formattedName() | ~141 |
+| 16:00 | Created BlindensportGraz/MemberImportExport.swift | — | ~4551 |
+| 16:00 | Edited BlindensportGraz/Models.swift | inline fix | ~20 |
+| 16:01 | Created RootCLI/Sources/clubmembersapi/Routes.swift | — | ~2726 |
+| 16:02 | Created RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | — | ~1499 |
+| 16:02 | Edited RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | expanded (+6 lines) | ~132 |
+| 16:03 | Created RootCLI/Sources/CloudKitS2SCore/MemberBulkImport.swift | — | ~3055 |
+| 16:03 | Created RootCLI/Sources/CloudKitS2SCore/MemberFillUpdate.swift | — | ~1784 |
+| 16:03 | Created RootCLI/Sources/rootcli/MemberImport.swift | — | ~246 |
+| 16:04 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 5→7 lines | ~139 |
+| 16:04 | Edited RootCLI/Sources/rootcli/RootCLI.swift | ClubMember() → Member() | ~79 |
+| 16:04 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 4→4 lines | ~75 |
+| 16:05 | Edited RootCLI/Sources/CloudKitS2SCore/CKFieldCoding.swift | 10→11 lines | ~206 |
+| 16:06 | Edited RootCLI/README.md | expanded (+7 lines) | ~201 |
+| 16:06 | Edited RootCLI/README.md | 3→3 lines | ~57 |
+| 16:06 | Edited RootCLI/README.md | 2→2 lines | ~37 |
+| 16:06 | Edited RootCLI/README.md | 3→3 lines | ~36 |
+| 16:06 | Edited RootCLI/README.md | 3→4 lines | ~66 |
+| 16:06 | Edited RootCLI/README.md | 4→4 lines | ~120 |
+| 16:06 | Edited RootCLI/README.md | 4→4 lines | ~52 |
+| 16:07 | Edited RootCLI/README.md | 3→5 lines | ~100 |
+| 16:16 | Edited BlindensportGrazTests/MemberImportExportTests.swift | added optional chaining | ~548 |
+| 16:22 | Renamed ClubMember -> Member across app/RootCLI (SwiftData model, CloudKitSync, REST API, tests, UI); added memberOfGVSC: Bool flag; kept CKRecord type "ClubMember" for wire compat | Models.swift, CloudKitSync.swift, MembersViews.swift (renamed), MemberImportExport.swift (renamed), TeamsViews.swift (AddTeamMemberView split out), RootCLI Member*.swift (renamed), Routes.swift, README.md, tests | xcodegen generate + xcodebuild build/test green (39 tests), swift build green | ~25000 |
+| 16:22 | Session end: 56 writes across 26 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 33 reads | ~93633 tok |

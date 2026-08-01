@@ -118,7 +118,7 @@ struct RootView: View {
         }
         user.elevateIfTestAdmin()
         modelContext.insert(user)
-        ClubMember.checkMembership(for: user, modelContext: modelContext)
+        Member.checkMembership(for: user, modelContext: modelContext)
         try? modelContext.save()
         CloudKitSync.shared.pushUserIdentity(user)
 
@@ -189,8 +189,8 @@ struct MainTabView: View {
             NavigationStack { TeamsListView(currentUser: currentUser) }
                 .tabItem { Label("Teams", systemImage: "person.3.fill") }
 
-            // Grazer VSC management moved to a button inside AccountView (see
-            // "Grazer VSC verwalten") instead of being its own tab -- with this
+            // Member/roster management moved to a button inside AccountView (see
+            // "Benutzerverwaltung") instead of being its own tab -- with this
             // plus Account that would be 7 top-level tabs for an admin, and
             // iOS's TabView (backed by UITabBarController on iPhone) silently
             // collapses everything from the 5th tab onward into an auto-added
@@ -297,7 +297,7 @@ struct RegisterView: View {
                             }
                             user.elevateIfTestAdmin()
                             modelContext.insert(user)
-                            ClubMember.checkMembership(for: user, modelContext: modelContext)
+                            Member.checkMembership(for: user, modelContext: modelContext)
                             try? modelContext.save()
                             CloudKitSync.shared.pushUserIdentity(user)
                             dismiss()

@@ -11,10 +11,10 @@ struct PraeEligiblePerson: Identifiable, Hashable {
     let displayName: String
     let membershipIDs: [UUID]
     // Carried through from the representative membership so exporters can
-    // fill in name/address without a second lookup — only ClubMember has an
+    // fill in name/address without a second lookup — only Member has an
     // address (User doesn't), so a person backed only by a registered
     // account exports with a blank Wohnanschrift on the PRAE form.
-    let clubMember: ClubMember?
+    let member: Member?
 
     static func == (lhs: PraeEligiblePerson, rhs: PraeEligiblePerson) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
@@ -57,18 +57,18 @@ enum PraeCalculator {
     /// Dedupes coach/assistant TeamMemberships (across every team, app-wide)
     /// down to one entry per underlying person, sorted by display name.
     static func eligiblePeople(from allMemberships: [TeamMembership]) -> [PraeEligiblePerson] {
-        var byKey: [UUID: (name: String, ids: [UUID], clubMember: ClubMember?)] = [:]
+        var byKey: [UUID: (name: String, ids: [UUID], member: Member?)] = [:]
         for membership in allMemberships where ["coach", "assistant"].contains(membership.role) {
-            let key = membership.user?.id ?? membership.clubMember?.id ?? membership.id
+            let key = membership.user?.id ?? membership.member?.id ?? membership.id
             if var existing = byKey[key] {
                 existing.ids.append(membership.id)
                 byKey[key] = existing
             } else {
-                byKey[key] = (membership.displayName, [membership.id], membership.clubMember)
+                byKey[key] = (membership.displayName, [membership.id], membership.member)
             }
         }
         return byKey.map { key, value in
-            PraeEligiblePerson(id: key, displayName: value.name, membershipIDs: value.ids, clubMember: value.clubMember)
+            PraeEligiblePerson(id: key, displayName: value.name, membershipIDs: value.ids, member: value.member)
         }.sorted { $0.displayName < $1.displayName }
     }
 

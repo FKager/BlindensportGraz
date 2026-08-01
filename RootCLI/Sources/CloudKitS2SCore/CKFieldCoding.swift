@@ -2,14 +2,15 @@ import Foundation
 
 /// Generic bridge between plain JSON/Swift values and CloudKit Web Services'
 /// field wire format (`{"value": ..., "type": ...}`). Every existing tool in
-/// this package (`ClubMemberRecord`, `rootcli set-role`/`set-root`) hand-rolls
+/// this package (`MemberRecord`, `rootcli set-role`/`set-root`) hand-rolls
 /// this encoding per field, which only scales because there's exactly one
-/// modeled record type (`ClubMember`) plus two one-off fields. A generic
-/// record editor that covers every type in the app (Team, SportEvent,
-/// Training, Tournament, TeamMembership, EventParticipation, Attendance,
-/// UserIdentity, ClubMember) can't reasonably hand-write a mirror struct per
-/// type — that's the same "silently drifts from Models.swift" problem
-/// `ClubMemberRecord` was built to solve, just multiplied by ten. This lets
+/// modeled record type (`Member`, CKRecord type "ClubMember") plus two
+/// one-off fields. A generic record editor that covers every type in the app
+/// (Team, SportEvent, Training, Tournament, TeamMembership,
+/// EventParticipation, Attendance, UserIdentity, Member) can't reasonably
+/// hand-write a mirror struct per type — that's the same "silently drifts
+/// from Models.swift" problem `MemberRecord` was built to solve, just
+/// multiplied by ten. This lets
 /// the CLI's `record` subcommand and clubmembersapi's `/api/records` routes
 /// share one place that knows CloudKit's wire types instead.
 public enum CKFieldCoding {

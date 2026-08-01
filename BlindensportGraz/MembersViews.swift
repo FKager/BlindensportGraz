@@ -2,18 +2,22 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-/// Admin-only management of the "Grazer VSC" club membership roster. New app
-/// accounts are auto-flagged as club members by matching against this roster
-/// (see ClubMember.checkMembership in Models.swift). Presented as a sheet from
-/// AccountView's "Grazer VSC verwalten" button, not as its own tab (see
-/// MainTabView's comment for why -- too many top-level tabs pushed it into
-/// iOS's auto-collapsed "More" screen), so it's self-contained with its own
-/// NavigationStack and a dismiss button, unlike a tab-hosted view.
-struct ClubMembersListView: View {
+/// "Benutzerverwaltung" (user/member administration), formerly the
+/// admin-only "Grazer VSC" club roster screen. New app accounts are
+/// auto-flagged as club members by matching against this roster (see
+/// Member.checkMembership in Models.swift). `Member.memberOfGVSC` makes
+/// club membership an explicit per-entry flag rather than something implied
+/// by mere presence on the roster, since this list also carries
+/// helpers/coaches who aren't necessarily formal members. Presented as a
+/// sheet from AccountView's "Benutzerverwaltung" button, not as its own tab
+/// (see MainTabView's comment for why -- too many top-level tabs pushed it
+/// into iOS's auto-collapsed "More" screen), so it's self-contained with its
+/// own NavigationStack and a dismiss button, unlike a tab-hosted view.
+struct MembersListView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: [SortDescriptor(\ClubMember.lastName), SortDescriptor(\ClubMember.firstName)])
-    private var members: [ClubMember]
+    @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)])
+    private var members: [Member]
     @Query private var users: [User]
     @State private var showAdd = false
     // Eagerly (re)generated whenever the roster changes, mirroring the
@@ -30,21 +34,21 @@ struct ClubMembersListView: View {
         NavigationStack {
             List {
                 if members.isEmpty {
-                    ContentUnavailableView("Keine Vereinsmitglieder",
+                    ContentUnavailableView("Keine Mitglieder",
                                            systemImage: "building.columns",
-                                           description: Text("Lege ein neues Mitglied des Grazer VSC an."))
+                                           description: Text("Lege ein neues Mitglied an."))
                 } else {
                     ForEach(members) { member in
                         NavigationLink {
-                            ClubMemberDetailView(member: member)
+                            MemberDetailView(member: member)
                         } label: {
-                            ClubMemberRow(member: member, isLinked: hasMatchingAccount(member))
+                            MemberRow(member: member, isLinked: hasMatchingAccount(member))
                         }
                     }
                     .onDelete(perform: deleteMembers)
                 }
             }
-            .navigationTitle("Grazer VSC")
+            .navigationTitle("Benutzerverwaltung")
             .navigationBarTitleDisplayMode(.inline)
             .refreshable {
                 await CloudKitSync.shared.syncAll(modelContext: modelContext)
@@ -68,10 +72,10 @@ struct ClubMembersListView: View {
                 }
             }
             .sheet(isPresented: $showAdd) {
-                AddClubMemberView()
+                AddMemberView()
             }
             .task(id: members.map(\.id)) {
-                exportURL = try? ClubMemberImportExport.exportFile(members: members)
+                exportURL = try? MemberImportExport.exportFile(members: members)
             }
             .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
                 handleImport(result)
@@ -96,7 +100,7 @@ struct ClubMembersListView: View {
             defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
             do {
                 let data = try Data(contentsOf: url)
-                let outcome = ClubMemberImportExport.importMembers(from: data, into: members, modelContext: modelContext)
+                let outcome = MemberImportExport.importMembers(from: data, into: members, modelContext: modelContext)
                 importResultMessage = outcome.summary
             } catch {
                 importResultMessage = "Datei konnte nicht gelesen werden: \(error.localizedDescription)"
@@ -104,22 +108,22 @@ struct ClubMembersListView: View {
         }
     }
 
-    private func hasMatchingAccount(_ member: ClubMember) -> Bool {
-        users.contains { ClubMember.matches(email: $0.email, firstName: $0.firstName, lastName: $0.lastName, in: [member]) }
+    private func hasMatchingAccount(_ member: Member) -> Bool {
+        users.contains { Member.matches(email: $0.email, firstName: $0.firstName, lastName: $0.lastName, in: [member]) }
     }
 
     private func deleteMembers(at offsets: IndexSet) {
         for index in offsets {
             let member = members[index]
-            CloudKitSync.shared.deleteClubMember(member.id)
+            CloudKitSync.shared.deleteMember(member.id)
             modelContext.delete(member)
         }
         try? modelContext.save()
     }
 }
 
-struct ClubMemberRow: View {
-    let member: ClubMember
+struct MemberRow: View {
+    let member: Member
     let isLinked: Bool
 
     var body: some View {
@@ -144,8 +148,8 @@ struct ClubMemberRow: View {
     }
 }
 
-struct ClubMemberDetailView: View {
-    @Bindable var member: ClubMember
+struct MemberDetailView: View {
+    @Bindable var member: Member
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -175,6 +179,7 @@ struct ClubMemberDetailView: View {
                     .keyboardType(.phonePad)
             }
             Section("Mitgliedschaft") {
+                Toggle("Mitglied des Grazer VSC", isOn: $member.memberOfGVSC)
                 TextField("Mitgliedsnummer", text: $member.memberNumber)
                 DatePicker("Beigetreten", selection: $member.joinedAt, displayedComponents: .date)
                 TextField("Sport-ID", text: $member.sportId)
@@ -199,7 +204,7 @@ struct ClubMemberDetailView: View {
         }
         .onDisappear {
             try? modelContext.save()
-            CloudKitSync.shared.pushClubMember(member)
+            CloudKitSync.shared.pushMember(member)
         }
     }
 }
@@ -207,7 +212,7 @@ struct ClubMemberDetailView: View {
 /// A DatePicker that can represent "no date set" via a toggle — SwiftUI's
 /// DatePicker has no built-in nil state, and `birthDate`/
 /// `lastMedicalExamination` are optional since much of the club's real
-/// roster data omits them (see ClubMember's doc comment in Models.swift).
+/// roster data omits them (see Member's doc comment in Models.swift).
 struct OptionalDatePicker: View {
     let label: String
     @Binding var date: Date?
@@ -230,11 +235,11 @@ struct OptionalDatePicker: View {
 /// Self-service editing of a member's own Grazer VSC roster entry — reachable
 /// from AccountView's "Vereinsdaten bearbeiten" button for any account with
 /// isGrazerVSCMember == true. Deliberately narrower than admin's
-/// ClubMemberDetailView above: no "Mitgliedschaft" (memberNumber/joinedAt are
-/// admin-assigned) and no "Notizen" (may hold private admin remarks about the
-/// member) — only personal/contact fields are self-editable.
-struct MyClubMemberView: View {
-    @Bindable var member: ClubMember
+/// MemberDetailView above: no "Mitgliedschaft" (memberNumber/joinedAt/
+/// memberOfGVSC are admin-assigned) and no "Notizen" (may hold private admin
+/// remarks about the member) — only personal/contact fields are self-editable.
+struct MyMemberView: View {
+    @Bindable var member: Member
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -274,13 +279,13 @@ struct MyClubMemberView: View {
             }
             .onDisappear {
                 try? modelContext.save()
-                CloudKitSync.shared.pushClubMember(member)
+                CloudKitSync.shared.pushMember(member)
             }
         }
     }
 }
 
-struct AddClubMemberView: View {
+struct AddMemberView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
@@ -302,6 +307,7 @@ struct AddClubMemberView: View {
     @State private var iban = ""
     @State private var lastMedicalExamination: Date?
     @State private var defaultFunction = ""
+    @State private var memberOfGVSC = true
 
     var body: some View {
         NavigationStack {
@@ -330,6 +336,7 @@ struct AddClubMemberView: View {
                         .keyboardType(.phonePad)
                 }
                 Section("Mitgliedschaft") {
+                    Toggle("Mitglied des Grazer VSC", isOn: $memberOfGVSC)
                     TextField("Mitgliedsnummer", text: $memberNumber)
                     DatePicker("Beigetreten", selection: $joinedAt, displayedComponents: .date)
                     TextField("Sport-ID", text: $sportId)
@@ -353,16 +360,16 @@ struct AddClubMemberView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
-                        let member = ClubMember(firstName: firstName, lastName: lastName, street: street,
-                                                 zip: zip, city: city, email: email, phone: phone,
-                                                 memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
-                                                 gender: gender, title: title, birthDate: birthDate,
-                                                 sportId: sportId, svnr: svnr, iban: iban,
-                                                 lastMedicalExamination: lastMedicalExamination,
-                                                 defaultFunction: defaultFunction)
+                        let member = Member(firstName: firstName, lastName: lastName, street: street,
+                                             zip: zip, city: city, email: email, phone: phone,
+                                             memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
+                                             gender: gender, title: title, birthDate: birthDate,
+                                             sportId: sportId, svnr: svnr, iban: iban,
+                                             lastMedicalExamination: lastMedicalExamination,
+                                             defaultFunction: defaultFunction, memberOfGVSC: memberOfGVSC)
                         modelContext.insert(member)
                         try? modelContext.save()
-                        CloudKitSync.shared.pushClubMember(member)
+                        CloudKitSync.shared.pushMember(member)
                         dismiss()
                     }
                     .disabled(firstName.trimmingCharacters(in: .whitespaces).isEmpty ||

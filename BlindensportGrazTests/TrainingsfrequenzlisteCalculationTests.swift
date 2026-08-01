@@ -8,7 +8,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
     private func makeContainer() throws -> ModelContainer {
         let schema = Schema([
             User.self, SportEvent.self, Tournament.self, Training.self, Team.self,
-            TeamMembership.self, EventParticipation.self, ClubMember.self,
+            TeamMembership.self, EventParticipation.self, Member.self,
             EventImage.self, Attendance.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)
@@ -34,9 +34,9 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let member = ClubMember(firstName: "Anna", lastName: "Sportlerin")
+        let member = Member(firstName: "Anna", lastName: "Sportlerin")
         context.insert(member)
-        let membership = TeamMembership(clubMember: member, team: team, role: "player")
+        let membership = TeamMembership(member: member, team: team, role: "player")
         context.insert(membership)
 
         let training1 = makeTraining(context, team: team, day: 5)
@@ -62,9 +62,9 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let member = ClubMember(firstName: "Bernd", lastName: "Neu")
+        let member = Member(firstName: "Bernd", lastName: "Neu")
         context.insert(member)
-        let membership = TeamMembership(clubMember: member, team: team, role: "player")
+        let membership = TeamMembership(member: member, team: team, role: "player")
         context.insert(membership)
         let training = makeTraining(context, team: team, day: 5)
         // No Attendance row inserted at all — matches the app's "created lazily
@@ -97,9 +97,9 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
         for i in 0..<30 {
-            let member = ClubMember(firstName: "Person", lastName: String(format: "%02d", i))
+            let member = Member(firstName: "Person", lastName: String(format: "%02d", i))
             context.insert(member)
-            context.insert(TeamMembership(clubMember: member, team: team, role: "player"))
+            context.insert(TeamMembership(member: member, team: team, role: "player"))
         }
 
         let summary = TrainingsfrequenzlisteCalculator.summary(team: team, month: 7, year: 2026, in: context)
@@ -114,9 +114,9 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
-        let member = ClubMember(firstName: "Anna", lastName: "Sportlerin")
+        let member = Member(firstName: "Anna", lastName: "Sportlerin")
         context.insert(member)
-        let membership = TeamMembership(clubMember: member, team: team, role: "player")
+        let membership = TeamMembership(member: member, team: team, role: "player")
         context.insert(membership)
         let training = makeTraining(context, team: team, day: 5)
         context.insert(Attendance(event: training, membership: membership, attended: true))
