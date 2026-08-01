@@ -344,10 +344,17 @@ struct TrainingsListView: View {
         @Environment(\.modelContext) private var modelContext
         @Query(sort: \Training.startDate) private var trainings: [Training]
         @State private var showAdd = false
+        @State private var showTrainingsfrequenzliste = false
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
         return user.role == "admin" || user.role == "coach"
+       }
+
+    // Matches the gating the Trainingsfrequenzliste button used in AccountView
+    // before it moved here (see TrainingsfrequenzlisteView's doc comment).
+    var isAdmin: Bool {
+        currentUser?.role == "admin" || (currentUser?.isRoot ?? false)
        }
 
     var visibleTrainings: [Training] {
@@ -377,6 +384,14 @@ struct TrainingsListView: View {
             await CloudKitSync.shared.syncAll(modelContext: modelContext)
         }
         .toolbar {
+            if isAdmin {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showTrainingsfrequenzliste = true } label: {
+                        Image(systemName: "calendar.badge.checkmark")
+                    }
+                    .accessibilityLabel("Trainingsfrequenzliste")
+                }
+            }
             if canManageEvents {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showAdd = true } label: {
@@ -387,6 +402,9 @@ struct TrainingsListView: View {
         }
         .sheet(isPresented: $showAdd) {
             AddTrainingView(currentUser: currentUser)
+        }
+        .sheet(isPresented: $showTrainingsfrequenzliste) {
+            TrainingsfrequenzlisteView()
         }
     }
 

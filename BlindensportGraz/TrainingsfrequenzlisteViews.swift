@@ -1,14 +1,17 @@
 import SwiftUI
 import SwiftData
 
-/// Admin-only screen (see AccountView's "Trainingsfrequenzliste" button)
+/// Admin-only screen (see TrainingsListView's calendar-badge toolbar button)
 /// that exports one team's monthly training attendance register. Unlike
 /// KostZCalculationView (club-wide, no team picker), the Trainingsfrequenz-
 /// liste is inherently per-team — the original form has one "Verein/LV" +
 /// "Sportart" line, i.e. one homogenous group per sheet — so this adds a
 /// Team picker on top of the Monat/Jahr picker KostZ/PRAE already use.
-/// Self-contained NavigationStack + dismiss button since it's sheet-
-/// presented, matching KostZCalculationView/PraeCalculationView.
+/// Deliberately reachable only from the Trainings tab (not AccountView, where
+/// PRAE/KostZ still live) since it's specifically about training attendance,
+/// unlike PRAE/KostZ which cover all deployment types. Self-contained
+/// NavigationStack + dismiss button since it's sheet-presented, matching
+/// KostZCalculationView/PraeCalculationView.
 struct TrainingsfrequenzlisteView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext

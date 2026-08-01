@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T14:16:05.878Z
-> Files: 90 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T14:34:06.910Z
+> Files: 79 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -60,7 +60,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~2986 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~2872 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1118 tok)
@@ -87,8 +87,8 @@
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4390 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~1226 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2546 tok)
-- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see AccountView's "Trainingsfrequenzliste" button) (~1392 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~4371 tok)
+- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's calendar-badge toolbar button) (~1450 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~4577 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~547 tok)
 
 ## BlindensportGraz/.claude/
@@ -121,9 +121,6 @@
 - `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
 - `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~2435 tok)
 - `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
-- `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3055 tok); formerly ClubMemberBulkImport.swift
-- `MemberFillUpdate.swift` — / Non-destructive counterpart to `MemberBulkImport.run` — fills in fields (~1784 tok); formerly ClubMemberFillUpdate.swift
-- `MemberRecord.swift` — / Single source of truth for the `ClubMember` CKRecord field mapping (name kept for wire compat), Swift type renamed Member->MemberRecord, +memberOfGVSC (~1576 tok); formerly ClubMemberRecord.swift
 
 ## RootCLI/Sources/clubmembersapi/
 
@@ -134,7 +131,6 @@
 
 ## RootCLI/Sources/rootcli/
 
-- `MemberImport.swift` — / File-loading half of `import-members`/`update-members` — the per-row (~246 tok); formerly ClubMemberImport.swift
 - `RootCLI.swift` — Struct: RootCLI — list/set-role/set-root/import-members/update-members/record subcommands (~3154 tok)
 
 ## data/

@@ -877,3 +877,13 @@
 | 16:16 | Edited BlindensportGrazTests/MemberImportExportTests.swift | added optional chaining | ~548 |
 | 16:22 | Renamed ClubMember -> Member across app/RootCLI (SwiftData model, CloudKitSync, REST API, tests, UI); added memberOfGVSC: Bool flag; kept CKRecord type "ClubMember" for wire compat | Models.swift, CloudKitSync.swift, MembersViews.swift (renamed), MemberImportExport.swift (renamed), TeamsViews.swift (AddTeamMemberView split out), RootCLI Member*.swift (renamed), Routes.swift, README.md, tests | xcodegen generate + xcodebuild build/test green (39 tests), swift build green | ~25000 |
 | 16:22 | Session end: 56 writes across 26 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 33 reads | ~93633 tok |
+| 16:28 | Deployed ClubMember->Member rename + memberOfGVSC flag to physical device via git push main -> ios-device-deploy.yml | (see prior entry for file list) | committed 82ba46f, pushed, workflow run 30703798104 succeeded, app confirmed running on iPhone (PID 48165, fresh container UUID) | ~1000 |
+| 16:28 | Session end: 56 writes across 26 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 33 reads | ~93633 tok |
+| 16:33 | Edited BlindensportGraz/AccountView.swift | 3→2 lines | ~28 |
+| 16:33 | Edited BlindensportGraz/AccountView.swift | reduced (-6 lines) | ~68 |
+| 16:33 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~28 |
+| 16:33 | Edited BlindensportGraz/TrainingsViews.swift | added optional chaining | ~194 |
+| 16:33 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~226 |
+| 16:34 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | 8→11 lines | ~213 |
+| 16:35 | Refactored Trainingsfrequenzliste access: removed from AccountView admin menu, added as toolbar button (calendar.badge.checkmark icon) in TrainingsListView, admin-gated | AccountView.swift, TrainingsViews.swift, TrainingsfrequenzlisteViews.swift | xcodebuild build + test green (39 tests, iPhone 17 Pro Max after transient sim busy error on Pro) | ~2000 |
+| 16:36 | Session end: 62 writes across 28 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 35 reads | ~100194 tok |
