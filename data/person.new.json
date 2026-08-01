@@ -1,0 +1,503 @@
+[
+ {
+  "gender": "f",
+  "firstName": "Margaritha",
+  "lastName": "Appenroth",
+  "birthDate": "06.06.1942",
+  "city": "Graz",
+  "sportId": "St-0046",
+  "phone": "0316 68 31 51"
+ },
+ {
+  "gender": "f",
+  "firstName": "Elisabeth",
+  "lastName": "Asabere"
+ },
+ {
+  "gender": "m",
+  "firstName": "Rupert",
+  "lastName": "Bauer",
+  "birthDate": "01.04.1964",
+  "city": "Graz",
+  "sportId": "St-0148",
+  "phone": "+43 660 270 98 80",
+  "email": "rupert3@drei.at"
+ },
+ {
+  "gender": "f",
+  "firstName": "Ulrike",
+  "lastName": "Brombauer",
+  "birthDate": "23.05.1954",
+  "street": "Berthold-Linder-Weg 2213",
+  "zip": "8047",
+  "city": "Graz",
+  "sportId": "St-0598",
+  "phone": "+43 316 38 22 85",
+  "email": "ulrike.brombauer@gmail.com",
+  "svnr": "4366",
+  "iban": "AT41 3800 0000 0560 4269"
+ },
+ {
+  "gender": "f",
+  "firstName": "Maja",
+  "lastName": "Buchegger"
+ },
+ {
+  "gender": "m",
+  "firstName": "Franz",
+  "lastName": "Czuk",
+  "birthDate": "27.11.1960",
+  "street": "Grasbergerstraße 75",
+  "zip": "8020",
+  "city": "Graz",
+  "phone": "+43 316 58 33 87",
+  "sportId": "St-0056",
+  "lastMedicalExamination": "28.11.2022",
+  "svnr": "1661",
+  "iban": "AT77 3800 0000 0560 5076"
+ },
+ {
+  "gender": "f",
+  "firstName": "Daniela",
+  "lastName": "Dold",
+  "birthDate": "19.01.1990",
+  "street": "Vinzenzgasse 58/1/6",
+  "city": "Graz",
+  "phone": "0699 11 23 61 66",
+  "email": "daniela.dold@icloud.com"
+ },
+ {
+  "gender": "f",
+  "firstName": "Hermine",
+  "lastName": "Dornauer",
+  "birthDate": "25.08.1948",
+  "city": "Graz",
+  "phone": "0681 10 73 16 11",
+  "email": "hermine.dornauer@chello.at"
+ },
+ {
+  "gender": "m",
+  "firstName": "Florian",
+  "lastName": "Eder"
+ },
+ {
+  "gender": "m",
+  "firstName": "Mario",
+  "lastName": "Faltl",
+  "birthDate": "22.11.1977",
+  "city": "Mürzzuschlag",
+  "sportId": "St-0145",
+  "phone": "0680 111 56 65",
+  "email": "mario.faltl@gmx.at"
+ },
+ {
+  "gender": "m",
+  "firstName": "Konrad",
+  "lastName": "Gallistl"
+ },
+ {
+  "gender": "f",
+  "firstName": "Rosa",
+  "lastName": "Gallistl"
+ },
+ {
+  "gender": "f",
+  "firstName": "Monika",
+  "lastName": "Gert"
+ },
+ {
+  "gender": "m",
+  "firstName": "Julian",
+  "lastName": "Gimplinger",
+  "birthDate": "10.03.2002",
+  "city": "Gratwein",
+  "email": "julian.gimplinger@gmx.at"
+ },
+ {
+  "gender": "f",
+  "firstName": "Liza",
+  "lastName": "Grabner"
+ },
+ {
+  "gender": "m",
+  "firstName": "Franz",
+  "lastName": "Griesbacher",
+  "birthDate": "19.11.1946",
+  "street": "Ragnitzstraße 175/6",
+  "zip": "8047",
+  "city": "Graz",
+  "sportId": "St-0047",
+  "phone": "0316 30 10 15",
+  "email": "franz.griesbacher@aon.at",
+  "svnr": "3019",
+  "iban": "AT77 2081 5030 0142 0862"
+ },
+ {
+  "gender": "m",
+  "firstName": "Gerhard",
+  "lastName": "Gschaider",
+  "birthDate": "18.08.1963",
+  "city": "Graz",
+  "sportId": "St-0065"
+ },
+ {
+  "gender": "m",
+  "firstName": "Ulrich",
+  "lastName": "Jahrmann",
+  "birthDate": "20.10.1984",
+  "city": "Graz",
+  "phone": "0316 27 5 10",
+  "email": "ulrich.jahrmann@gmail.com"
+ },
+ {
+  "gender": "f",
+  "firstName": "Anna-Maria",
+  "lastName": "Javornik",
+  "birthDate": "06.05.2001",
+  "street": "Eggenberger Allee 31",
+  "zip": "8020",
+  "city": "Graz",
+  "phone": "+43 664 15 111 59",
+  "email": "annamariaj@hotmail.de",
+  "svnr": "4341",
+  "iban": "AT34 2081 5000 0655 7888"
+ },
+ {
+  "gender": "m",
+  "title": "Dipl.-Ing.",
+  "firstName": "Franz",
+  "lastName": "Kager",
+  "birthDate": "28.11.1977",
+  "street": "Mühlgasse 61/4/55",
+  "zip": "8020",
+  "city": "Graz",
+  "sportId": "St-0414",
+  "lastMedicalExamination": "20.06.2022",
+  "phone": "+43 664 91 00 131",
+  "email": "franz.kager@gmx.net",
+  "svnr": "3727",
+  "iban": "AT77 6000 0000 7936 0867"
+ },
+ {
+  "gender": "f",
+  "firstName": "Hermine",
+  "lastName": "Kreisler",
+  "birthDate": "28.10.1933",
+  "city": "Graz",
+  "sportId": "St-0054",
+  "phone": "0316 58 37 59"
+ },
+ {
+  "gender": "m",
+  "firstName": "Stefan",
+  "lastName": "Krenn"
+ },
+ {
+  "gender": "f",
+  "firstName": "Christian",
+  "lastName": "Kriechbaum",
+  "birthDate": "09.09.1981",
+  "city": "Vordernberg",
+  "sportId": "St-0627",
+  "phone": "+43 664 341 40 61",
+  "email": "ckriechbaum@me.com",
+  "iban": "AT67 3846 0000 0502 2314"
+ },
+ {
+  "gender": "m",
+  "firstName": "Michael",
+  "lastName": "Kriechbaum"
+ },
+ {
+  "gender": "m",
+  "firstName": "Franz",
+  "lastName": "Kueschnig"
+ },
+ {
+  "gender": "m",
+  "firstName": "Jonas",
+  "lastName": "Lazarus",
+  "birthDate": "09.01.2003",
+  "street": "Langegg 20",
+  "zip": "8511",
+  "city": "St. Stefan",
+  "svnr": "4611",
+  "iban": "AT50 3804 3000 0264 2288"
+ },
+ {
+  "gender": "f",
+  "firstName": "Alexandra",
+  "lastName": "Lukas",
+  "birthDate": "25.08.2000",
+  "street": "Karlauplatz 1/5",
+  "zip": "8020",
+  "city": "Graz",
+  "email": "alexandra-lukas@gmx.at",
+  "svnr": "5370250800",
+  "iban": "AT81 1420 0200 1278 1335"
+ },
+ {
+  "gender": "f",
+  "firstName": "Angelika",
+  "lastName": "Maier",
+  "birthDate": "08.05.1995",
+  "city": "Liezen",
+  "sportId": "St-0144",
+  "phone": "03612 250 16"
+ },
+ {
+  "gender": "f",
+  "firstName": "Alina",
+  "lastName": "Marauli"
+ },
+ {
+  "gender": "f",
+  "firstName": "Monika",
+  "lastName": "Marcelo Salvador",
+  "birthDate": "04.02.1942",
+  "city": "Graz",
+  "phone": "0680 21 75 268",
+  "email": "monika.marcelosalvador@chello.at"
+ },
+ {
+  "gender": "f",
+  "firstName": "Helga",
+  "lastName": "Mayer",
+  "birthDate": "30.12.1965"
+ },
+ {
+  "gender": "f",
+  "firstName": "Solomilija",
+  "lastName": "Melnyk"
+ },
+ {
+  "gender": "f",
+  "firstName": "Klara",
+  "lastName": "Messner"
+ },
+ {
+  "gender": "m",
+  "title": "Dipl.-Ing.",
+  "firstName": "Erwin",
+  "lastName": "Moser",
+  "birthDate": "29.01.1966",
+  "street": "Grasbergerstraße 75",
+  "zip": "8020",
+  "city": "Graz",
+  "sportId": "St-0055",
+  "phone": "+43 699 8110 80 79",
+  "email": "erwin.moser@stmk.gv.at",
+  "svnr": "",
+  "iban": "AT11 6000 0000 0144 8939",
+  "lastMedicalExamination": "17.01.2023"
+ },
+ {
+  "gender": "f",
+  "firstName": "Edith",
+  "lastName": "Müllner - Puchas"
+ },
+ {
+  "gender": "m",
+  "title": "Mag.",
+  "firstName": "Helmut",
+  "lastName": "Müllner",
+  "birthDate": "25.01.1981",
+  "city": "Graz",
+  "phone": "+43 650 38 00 470",
+  "email": "mag.muellner@gmail.com"
+ },
+ {
+  "gender": "f",
+  "firstName": "Maria",
+  "lastName": "Neubauer"
+ },
+ {
+  "gender": "m",
+  "firstName": "Wolfgang",
+  "lastName": "Niegelhell",
+  "birthDate": "23.02.1966",
+  "city": "Ilztal",
+  "sportId": "St-0437",
+  "phone": "0664 450 21 71",
+  "email": "wolfgangniegelhell@gmx.at"
+ },
+ {
+  "gender": "f",
+  "firstName": "Claudia",
+  "lastName": "Pemmer",
+  "birthDate": "22.04.1976",
+  "city": "Leoben Leitendorf",
+  "phone": "0664 139 43 42"
+ },
+ {
+  "gender": "f",
+  "firstName": "Karin",
+  "lastName": "Pfatschbacher",
+  "birthDate": "29.08.1958",
+  "street": "Dobisbachsiedlung 3",
+  "zip": "8775",
+  "city": "Kalwang",
+  "phone": "0650 601 32 23",
+  "sportId": "St-0060",
+  "lastMedicalExamination": "06.12.2023",
+  "svnr": "1334",
+  "iban": "AT77 1912 0000 3787 6510"
+ },
+ {
+  "gender": "m",
+  "firstName": "Leo",
+  "lastName": "Pfeiffenberger",
+  "birthDate": "08.07.1964",
+  "city": "Graz",
+  "sportId": "St-0296",
+  "phone": "0664 13 44 543"
+ },
+ {
+  "gender": "m",
+  "firstName": "Edmund",
+  "lastName": "Rath",
+  "birthDate": "11.07.1961",
+  "city": "Hirnsdorf",
+  "sportId": "St-0438",
+  "phone": "0650 207 78 88",
+  "email": "e.rath@nusurs.at"
+ },
+ {
+  "gender": "f",
+  "firstName": "Claudia",
+  "lastName": "Rauch",
+  "birthDate": "17.04.1970",
+  "city": "Wien",
+  "sportId": "St-0435",
+  "phone": "0699 135 67 890",
+  "email": "claudia_rauch@chello.at"
+ },
+ {
+  "gender": "m",
+  "firstName": "Jens",
+  "lastName": "Sakelsek"
+ },
+ {
+  "gender": "m",
+  "firstName": "Hans-Peter",
+  "lastName": "Schaar",
+  "birthDate": "07.04.1978",
+  "city": "Kammern",
+  "sportId": "St-0594",
+  "phone": "0676 650 32 94",
+  "email": "hanspeter.schaar@gmx.at"
+ },
+ {
+  "gender": "f",
+  "firstName": "Nadine",
+  "lastName": "Schmid",
+  "birthDate": "21.05.1992",
+  "city": "Graz",
+  "sportId": "ST-0703",
+  "phone": "0660 70 88 637",
+  "email": "nadineschmid@aon.at"
+ },
+ {
+  "gender": "m",
+  "firstName": "Rainer",
+  "lastName": "Schuch",
+  "birthDate": "12.04.1956",
+  "street": "Pichlhofen 21",
+  "zip": "8756",
+  "city": "St. Georgen ob Judenburg",
+  "email": "rainer.schuch2@gmail.com",
+  "svnr": "1808120456",
+  "iban": "AT23 3312 5000 0240 5173"
+ },
+ {
+  "gender": "f",
+  "firstName": "Anja",
+  "lastName": "Siegwart",
+  "birthDate": "19.11.2009",
+  "city": "Graz",
+  "phone": "0670 60 67 378"
+ },
+ {
+  "gender": "m",
+  "title": "Mag.",
+  "firstName": "Manfred",
+  "lastName": "Sonnleitner",
+  "birthDate": "25.06.1970",
+  "city": "Graz",
+  "sportId": "St-0293",
+  "phone": "0316 58 26 78"
+ },
+ {
+  "gender": "f",
+  "firstName": "Sabrina",
+  "lastName": "Spitaler"
+ },
+ {
+  "gender": "f",
+  "firstName": "Birgit",
+  "lastName": "Tieber",
+  "birthDate": "08.05.1977",
+  "street": "Göstinger Straße 32b",
+  "zip": "8020",
+  "city": "Graz",
+  "sportId": "St-0064",
+  "phone": "+43 699 11199290",
+  "svnr": "",
+  "iban": "AT97 4481 0316 7681 0000",
+  "email": "tieber@aon.at"
+ },
+ {
+  "gender": "f",
+  "firstName": "Katharina",
+  "lastName": "Todt",
+  "birthDate": "03.11.1985",
+  "city": "Graz",
+  "sportId": "St-0515",
+  "phone": "0316 81 45 64"
+ },
+ {
+  "gender": "f",
+  "firstName": "Gerlinde",
+  "lastName": "Unterkofler",
+  "birthDate": "02.10.1974",
+  "city": "Graz",
+  "sportId": "St-0291",
+  "phone": "0660 57 80 403",
+  "email": "gerlinde.unterkofler@aon.at"
+ },
+ {
+  "gender": "f",
+  "firstName": "Martha",
+  "lastName": "Verboschek",
+  "birthDate": "04.10.1959",
+  "street": "Brunnenweg 14",
+  "zip": "8410",
+  "city": "Wildon",
+  "sportId": "St-0536",
+  "phone": "+43 664 54 84 381",
+  "email": "martha.verboschek@gmx.at",
+  "svnr": "1907",
+  "iban": "AT90 3849 9000 0001 5438"
+ },
+ {
+  "gender": "m",
+  "firstName": "Blazhe",
+  "lastName": "Zafirov",
+  "street": "Eggenberger Allee 31",
+  "zip": "8020",
+  "city": "Graz",
+  "email": "blaze@zafirov.dev",
+  "sportId": "ST-0744",
+  "svnr": "2005002484004",
+  "iban": "AT89 2081 5000 4479 2067"
+ },
+ {
+  "gender": "f",
+  "firstName": "Marina",
+  "lastName": "Zugschwert",
+  "birthDate": "16.11.1964",
+  "city": "Graz",
+  "phone": "0664 15 111 59",
+  "email": "marina.zugschwert@gmx.at"
+ }
+]

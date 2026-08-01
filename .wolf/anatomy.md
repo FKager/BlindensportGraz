@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-07-30T20:07:03.085Z
-> Files: 77 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T12:30:34.760Z
+> Files: 83 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -14,7 +14,8 @@
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
 - `feedback_no_clarifying_questions.md` (~384 tok)
-- `MEMORY.md` — Memory (~39 tok)
+- `feedback_test_on_physical_device.md` (~402 tok)
+- `MEMORY.md` — Memory (~75 tok)
 
 ## ./
 
@@ -65,7 +66,7 @@
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1119 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
 - `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/ClubMember/ (~8572 tok)
-- `ClubMemberImportExport.swift` — / JSON shape for one club member, shared by export and import. Field names (~4135 tok)
+- `ClubMemberImportExport.swift` — / JSON shape for one club member, shared by export and import. Field names (~4410 tok)
 - `ClubMembersViews.swift` — / Admin-only management of the "Grazer VSC" club membership roster. New app (~4317 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
@@ -96,7 +97,7 @@
 
 ## BlindensportGrazTests/
 
-- `ClubMemberImportExportTests.swift` — Class: ClubMemberImportExportTests (~2238 tok)
+- `ClubMemberImportExportTests.swift` — Class: ClubMemberImportExportTests (~2636 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~1626 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests (~2524 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~3125 tok)
@@ -107,7 +108,7 @@
 
 - `members.example.json` (~110 tok)
 - `Package.swift` — swift-tools-version:5.9 (~355 tok)
-- `README.md` — Project documentation (~3185 tok)
+- `README.md` — Project documentation (~3314 tok)
 
 ## RootCLI/Public/
 
@@ -120,6 +121,7 @@
 - `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
 - `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~2435 tok)
 - `ClubMemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk ClubMember import — shared by (~2974 tok)
+- `ClubMemberFillUpdate.swift` — / Non-destructive counterpart to `ClubMemberBulkImport.run` — fills in fields (~1743 tok)
 - `ClubMemberRecord.swift` — / Single source of truth for the `ClubMember` CKRecord field mapping, (~1320 tok)
 - `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
 
@@ -133,13 +135,14 @@
 ## RootCLI/Sources/rootcli/
 
 - `ClubMemberImport.swift` — / File-loading half of `import-members` — the per-row decode shape and the (~240 tok)
-- `RootCLI.swift` — Struct: RootCLI (~2715 tok)
+- `RootCLI.swift` — Struct: RootCLI (~3128 tok)
 
 ## data/
 
-- `Person-Sport.json` — Source roster: 43 Grazer VSC athlete records (gender/title/firstName/lastName/birthDate/street/zip/city/phone/email/sportId/svnr/iban/lastMedicalExamination) (~2800 tok)
-- `Person-Others.json` — Source roster: 7 coach/helper records, same shape as Person-Sport.json plus defaultFunction="COACH" (~750 tok)
 - `club-members-import.json` — Merged Person-Sport.json + Person-Others.json (50 records), ready for `rootcli import-members` (~2900 tok)
+- `Person-Others.json` — Source roster: 7 coach/helper records, same shape as Person-Sport.json plus defaultFunction="COACH" (~750 tok)
+- `Person-Sport.json` — Source roster: 43 Grazer VSC athlete records (gender/title/firstName/lastName/birthDate/street/zip/city/phone/email/sportId/svnr/iban/lastMedicalExamination) (~2800 tok)
+- `person.new.json` — Updated/extended roster, 58 records, same ClubMemberBulkInput-compatible shape as Person-Sport/Others.json; some entries overlap by name with club-members-import.json — use `rootcli update-members` (fill-blanks-only), not `import-members`, to avoid clobbering/duplicating existing data (~2900 tok)
 
 ## fastlane/
 

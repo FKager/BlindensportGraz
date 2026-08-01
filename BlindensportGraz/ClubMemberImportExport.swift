@@ -191,6 +191,14 @@ enum ClubMemberImportExport {
     /// that entry in place or inserts a new `ClubMember`. Entries missing
     /// firstName/lastName are skipped, matching RootCLI's import-members
     /// behavior, so one bad row doesn't abort the whole file.
+    ///
+    /// Updating an existing entry is non-destructive: a field is only filled
+    /// in when it's currently blank on the existing record AND the incoming
+    /// row has a non-empty value for it — existing data is never overwritten
+    /// or blanked out by an empty/absent value in the file. This mirrors
+    /// RootCLI's `ClubMemberFillUpdate` (see cerebrum.md 2026-08-01), so
+    /// re-importing an updated/extended roster export in-app behaves the same
+    /// way the CLI's `update-members` does.
     @MainActor
     static func importMembers(from data: Data, into roster: [ClubMember], modelContext: ModelContext) -> ImportResult {
         var result = ImportResult()
@@ -224,22 +232,23 @@ enum ClubMemberImportExport {
             if let existing {
                 existing.firstName = firstName
                 existing.lastName = lastName
-                existing.street = row.street ?? existing.street
-                existing.zip = row.zip ?? existing.zip
-                existing.city = row.city ?? existing.city
-                existing.email = row.email ?? existing.email
-                existing.phone = row.phone ?? existing.phone
-                existing.memberNumber = row.memberNumber ?? existing.memberNumber
-                existing.notes = row.notes ?? existing.notes
-                if row.joinedAt != nil { existing.joinedAt = joinedAt }
-                existing.gender = row.gender ?? existing.gender
-                existing.title = row.title ?? existing.title
-                if row.birthDate != nil { existing.birthDate = birthDate }
-                existing.sportId = row.sportId ?? existing.sportId
-                existing.svnr = row.svnr ?? existing.svnr
-                existing.iban = row.iban ?? existing.iban
-                if row.lastMedicalExamination != nil { existing.lastMedicalExamination = lastMedicalExamination }
-                existing.defaultFunction = row.defaultFunction ?? existing.defaultFunction
+                fillIfBlank(&existing.street, row.street)
+                fillIfBlank(&existing.zip, row.zip)
+                fillIfBlank(&existing.city, row.city)
+                fillIfBlank(&existing.email, row.email)
+                fillIfBlank(&existing.phone, row.phone)
+                fillIfBlank(&existing.memberNumber, row.memberNumber)
+                fillIfBlank(&existing.notes, row.notes)
+                fillIfBlank(&existing.gender, row.gender)
+                fillIfBlank(&existing.title, row.title)
+                fillIfBlank(&existing.sportId, row.sportId)
+                fillIfBlank(&existing.svnr, row.svnr)
+                fillIfBlank(&existing.iban, row.iban)
+                fillIfBlank(&existing.defaultFunction, row.defaultFunction)
+                if existing.birthDate == nil, let birthDate { existing.birthDate = birthDate }
+                if existing.lastMedicalExamination == nil, let lastMedicalExamination {
+                    existing.lastMedicalExamination = lastMedicalExamination
+                }
                 touched.append(existing)
                 result.updated += 1
             } else {
@@ -277,6 +286,16 @@ enum ClubMemberImportExport {
             CloudKitSync.shared.pushClubMember(member)
         }
         return result
+    }
+
+    /// Sets `existing` to `newValue` only if `existing` is currently blank
+    /// and `newValue` is non-empty — leaves already-set data untouched rather
+    /// than overwriting or blanking it, per the "only fill what wasn't set
+    /// before" import semantics (see cerebrum.md 2026-08-01).
+    private static func fillIfBlank(_ existing: inout String, _ newValue: String?) {
+        guard existing.trimmingCharacters(in: .whitespaces).isEmpty,
+              let newValue, !newValue.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        existing = newValue
     }
 
     private static func findExisting(row: ClubMemberIO, firstName: String, lastName: String, in roster: [ClubMember]) -> ClubMember? {

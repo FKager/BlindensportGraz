@@ -28,6 +28,8 @@ struct RootCLI {
             try await runSetRoot(rest)
         case "import-members":
             try await runImportMembers(rest)
+        case "update-members":
+            try await runUpdateMembers(rest)
         case "record":
             try await runRecord(rest)
         case "-h", "--help", "help":
@@ -114,6 +116,26 @@ struct RootCLI {
         print("Done: \(result.succeeded) imported, \(result.failed) failed, out of \(inputs.count).")
     }
 
+    /// Unlike `import-members` (blind create-or-replace of the whole record),
+    /// this only fills fields that are currently blank on an existing
+    /// ClubMember (matched by firstName+lastName) — existing data is never
+    /// overwritten. Rows with no existing match are still created fresh.
+    private static func runUpdateMembers(_ args: [String]) async throws {
+        guard args.count == 1 else {
+            throw CLIError.message("Usage: rootcli update-members <file.json>")
+        }
+        let inputs = try ClubMemberImport.loadRecords(from: args[0])
+        guard !inputs.isEmpty else {
+            print("No members found in \(args[0]).")
+            return
+        }
+
+        let client = try makeClient()
+        let result = await ClubMemberFillUpdate.run(inputs, client: client)
+        for message in result.messages { print(message) }
+        print("Done: \(result.succeeded) updated/created, \(result.failed) failed, out of \(inputs.count).")
+    }
+
     /// Generic insert/update/read/delete for ANY CloudKit record type this
     /// app publishes — not just ClubMember. Unlike `set-role`/`set-root`
     /// (which hand-decode specific fields of one specific type) or
@@ -196,6 +218,7 @@ struct RootCLI {
           rootcli set-role <full name|id> <member|coach|admin>
           rootcli set-root <full name|id> <true|false>
           rootcli import-members <file.json>
+          rootcli update-members <file.json>
           rootcli record list <type>
           rootcli record get <type> <id>
           rootcli record set <type> <id> field=value [field:TYPE=value ...]
@@ -204,7 +227,13 @@ struct RootCLI {
         import-members reads a JSON array of club members and creates/updates
         matching ClubMember records in CloudKit. "firstName" and "lastName" are
         required; see RootCLI/README.md and RootCLI/members.example.json for
-        the schema.
+        the schema. Matching existing records are fully overwritten with the
+        file's data (blank fields in the file blank out the existing value too).
+
+        update-members reads the same file shape but is non-destructive: for a
+        person already in the roster (matched by firstName+lastName), it only
+        fills fields that are currently blank and leaves existing data alone;
+        people not yet in the roster are created as new ClubMember records.
 
         `record` is a generic insert/update/read/delete for ANY CloudKit record
         type this app publishes (UserIdentity, ClubMember, Team, TeamMembership,

@@ -800,3 +800,32 @@
 | 22:15 | Session end: 19 writes across 8 files (Models.swift, ClubMemberImportExport.swift, ClubMemberRecord.swift, ClubMemberBulkImport.swift, Routes.swift) | 19 reads | ~48973 tok |
 | 22:19 | Session end: 19 writes across 8 files (Models.swift, ClubMemberImportExport.swift, ClubMemberRecord.swift, ClubMemberBulkImport.swift, Routes.swift) | 19 reads | ~48973 tok |
 | 22:21 | Session end: 19 writes across 8 files (Models.swift, ClubMemberImportExport.swift, ClubMemberRecord.swift, ClubMemberBulkImport.swift, Routes.swift) | 19 reads | ~48973 tok |
+| 22:28 | Session end: 19 writes across 8 files (Models.swift, ClubMemberImportExport.swift, ClubMemberRecord.swift, ClubMemberBulkImport.swift, Routes.swift) | 19 reads | ~48973 tok |
+| 22:30 | Session end: 19 writes across 8 files (Models.swift, ClubMemberImportExport.swift, ClubMemberRecord.swift, ClubMemberBulkImport.swift, Routes.swift) | 19 reads | ~48973 tok |
+
+## Session: 2026-08-01 12:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-01 14:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:15 | Created RootCLI/Sources/CloudKitS2SCore/ClubMemberFillUpdate.swift | — | ~1743 |
+| 14:15 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 2→4 lines | ~41 |
+| 14:15 | Edited RootCLI/Sources/rootcli/RootCLI.swift | modified runUpdateMembers() | ~336 |
+| 14:16 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 2→3 lines | ~34 |
+| 14:16 | Edited RootCLI/Sources/rootcli/RootCLI.swift | expanded (+6 lines) | ~188 |
+| 14:16 | Edited RootCLI/README.md | expanded (+8 lines) | ~254 |
+| 14:17 | Added rootcli update-members: non-destructive fill-only counterpart to import-members, matches ClubMember by firstName+lastName, only sets currently-blank fields, creates new records for unmatched people | RootCLI/Sources/CloudKitS2SCore/ClubMemberFillUpdate.swift (new), RootCLI/Sources/rootcli/RootCLI.swift, RootCLI/README.md | build green, dry-run parse verified against data/person.new.json (58 records) | ~3500 |
+| 14:18 | Session end: 6 writes across 3 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md) | 10 reads | ~18119 tok |
+| 14:19 | Session end: 6 writes across 3 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md) | 10 reads | ~18119 tok |
+| 14:21 | Session end: 6 writes across 3 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md) | 10 reads | ~18119 tok |
+| 14:24 | Edited BlindensportGraz/ClubMemberImportExport.swift | expanded (+8 lines) | ~294 |
+| 14:24 | Edited BlindensportGraz/ClubMemberImportExport.swift | 22→23 lines | ~336 |
+| 14:25 | Edited BlindensportGraz/ClubMemberImportExport.swift | modified fillIfBlank() | ~191 |
+| 14:25 | Edited BlindensportGrazTests/ClubMemberImportExportTests.swift | modified testImportNeverOverwritesAlreadySetFields() | ~420 |
+| 14:30 | Created ../../.claude/projects/-Users-franz-dev-claude/memory/feedback_test_on_physical_device.md | — | ~398 |
+| 14:30 | Edited ../../.claude/projects/-Users-franz-dev-claude/memory/MEMORY.md | 1→2 lines | ~77 |
+| 14:32 | Session end: 12 writes across 7 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 14 reads | ~30646 tok |

@@ -167,6 +167,31 @@ final class ClubMemberImportExportTests: XCTestCase {
         XCTAssertEqual(member?.lastMedicalExamination.map { formatter.string(from: $0) }, "2022-06-20")
     }
 
+    /// Updating an existing entry must never overwrite an already-set field
+    /// with a different value from the import file, and an empty value in
+    /// the file must not blank out existing data — only currently-blank
+    /// fields get filled in. This is the actual behavior requested when
+    /// re-importing an updated/extended roster file (see cerebrum.md
+    /// 2026-08-01): admins' hand-entered data must survive re-importing a
+    /// newer source export that happens to omit or blank some fields.
+    func testImportNeverOverwritesAlreadySetFields() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let existing = ClubMember(firstName: "Anna", lastName: "Muster", city: "Graz", phone: "0316 123456")
+        context.insert(existing)
+        try context.save()
+
+        let json = """
+        [{"firstName":"Anna","lastName":"Muster","city":"Wien","phone":"","email":"anna@example.com"}]
+        """
+        let result = ClubMemberImportExport.importMembers(from: Data(json.utf8), into: [existing], modelContext: context)
+
+        XCTAssertEqual(result.updated, 1)
+        XCTAssertEqual(existing.city, "Graz", "must not overwrite an already-set field with a different value")
+        XCTAssertEqual(existing.phone, "0316 123456", "an empty value in the file must not blank out existing data")
+        XCTAssertEqual(existing.email, "anna@example.com", "a currently-blank field must still be filled from the file")
+    }
+
     /// Entries with no birthDate/lastMedicalExamination (common in the real
     /// roster data) must import cleanly with those fields left nil, not
     /// defaulted to some placeholder date.

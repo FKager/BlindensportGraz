@@ -137,6 +137,14 @@ creates an app account — but not against *existing* accounts, since
 `ClubMember.checkMembership` only ever runs at account-creation time (see
 `cerebrum.md`'s 2026-07-16 entry on the Grazer VSC feature).
 
+`update-members <file.json>` reads the same file shape as `import-members`
+but never overwrites existing data: it matches each row against existing
+`ClubMember` records by firstName+lastName and only fills fields that are
+currently blank there, leaving anything already set untouched. Rows with no
+existing name match are created fresh, same as `import-members`. Use this
+instead of `import-members` when re-importing an updated/extended roster file
+where some people already exist with data you don't want clobbered.
+
 ### Generic record insert/update (any type, not just ClubMember)
 
 `rootcli record` reads/writes **any** CKRecord type this app publishes —
