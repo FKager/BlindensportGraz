@@ -171,11 +171,18 @@ struct EditAccountView: View {
             // name-entry point in the app (RegisterView, AddMemberView),
             // which already disable their save action the same way.
             .interactiveDismissDisabled(nameIsBlank)
+            // Catches the case where firstName/lastName/email are edited into a
+            // match for the club's designated root account (Models.swift's
+            // elevateIfDesignatedRoot) -- that account is always created manually,
+            // so this is the only place besides creation where the grant can fire.
+            .onChange(of: user.firstName) { _, _ in applyDesignatedRootGrantIfNeeded() }
+            .onChange(of: user.lastName) { _, _ in applyDesignatedRootGrantIfNeeded() }
             // TEST-ONLY: catches the case where testAdminEmail (Models.swift) is
             // typed in here after the fact -- e.g. an account auto-created via
             // Apple's "Hide My Email" got a relay address instead of the real
             // one. See User.elevateIfTestAdmin's doc comment.
             .onChange(of: user.email) { _, _ in
+                applyDesignatedRootGrantIfNeeded()
                 if user.elevateIfTestAdmin() {
                     try? modelContext.save()
                     CloudKitSync.shared.pushUserIdentity(user)
@@ -185,6 +192,13 @@ struct EditAccountView: View {
                 try? modelContext.save()
                 CloudKitSync.shared.pushUserIdentity(user)
             }
+        }
+    }
+
+    private func applyDesignatedRootGrantIfNeeded() {
+        if user.elevateIfDesignatedRoot() {
+            try? modelContext.save()
+            CloudKitSync.shared.pushUserIdentity(user)
         }
     }
 

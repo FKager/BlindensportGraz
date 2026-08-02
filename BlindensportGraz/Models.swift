@@ -15,9 +15,9 @@ final class User {
     // Super-user flag, distinct from `role`. Only a root account can change another
     // account's `role`; nobody (including root) can change their own via the app —
     // see EditAccountView/UserListView. Set by RootView on first-ever account
-    // creation, automatically for the club's designated account (RootView's
-    // designatedRootEmail, matched only via verified Apple Sign-In email), or
-    // externally via the RootCLI tool talking directly to CloudKit.
+    // creation, automatically for the club's designated account (see
+    // elevateIfDesignatedRoot below), or externally via the RootCLI tool talking
+    // directly to CloudKit.
     var isRoot: Bool = false
 
     @Relationship(deleteRule: .cascade, inverse: \TeamMembership.user)
@@ -57,9 +57,36 @@ extension User {
         [firstName, lastName].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
     }
 
+    // Grants root/admin automatically to the club's designated account, matched
+    // by firstName + lastName + email together — no Apple Sign-In/
+    // appleUserIdentifier gate. Originally gated on a verified Apple email
+    // (see RootView's old designatedRootEmail), but that account has no real
+    // Apple ID and is always created via RegisterView's manual form, so an
+    // Apple-verification requirement could never fire. Requiring all three
+    // fields (not email alone) keeps the bar for typing your way to root
+    // reasonably high even without Apple's server-side verification. Called
+    // from every place these three fields can be set/edited: RootView's
+    // account-resolution/login paths, RegisterView's manual creation, and
+    // EditAccountView whenever firstName/lastName/email change — same call
+    // sites as elevateIfTestAdmin below.
+    static let designatedRootFirstName = "Blindensport"
+    static let designatedRootLastName = "Graz"
+    static let designatedRootEmail = "blindensport.gvsc@gmail.com"
+
+    @discardableResult
+    func elevateIfDesignatedRoot() -> Bool {
+        guard firstName.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(User.designatedRootFirstName) == .orderedSame,
+              lastName.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(User.designatedRootLastName) == .orderedSame,
+              email.trimmingCharacters(in: .whitespaces).lowercased() == User.designatedRootEmail,
+              !isRoot else { return false }
+        isRoot = true
+        role = "admin"
+        return true
+    }
+
     // TEST-ONLY: temporarily promotes this one account to `role = "admin"`
-    // (not root — see RootView's designatedRootEmail/isRoot for the real,
-    // production escalation mechanism) so admin-only screens can be tested.
+    // (not root — see elevateIfDesignatedRoot above for the real, production
+    // escalation mechanism) so admin-only screens can be tested.
     // Deliberately matched by email alone with NO Apple-verification/
     // appleUserIdentifier gate — unlike the root grant, the user explicitly
     // scoped this as "only needed for test issues", and a stricter gate was

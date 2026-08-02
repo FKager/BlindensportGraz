@@ -956,3 +956,30 @@
 | 14:15 | Edited BlindensportGraz/EventsViews.swift | inline fix | ~39 |
 | 14:16 | Edited BlindensportGraz/PraeCalculation.swift | modified hash() | ~350 |
 | 14:15 | Refactor: sort all member/user/participant lists by lastName (TeamMembership got shared lastName/firstName + sortedByLastName() helper) instead of displayName/createdAt/insertion order | Models.swift, TeamsViews.swift, TrainingsViews.swift, TournamentsViews.swift, MemberListView.swift, TrainingsfrequenzlisteCalculation.swift, PraeCalculation.swift, KostZCalculation.swift, AccountView.swift, EventsViews.swift | success, build + build-for-testing green (no simulator per user correction) | ~16000 |
+| 14:40 | Session end: 42 writes across 20 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, AccountView.swift) | 26 reads | ~77120 tok |
+| 14:42 | Session end: 42 writes across 20 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, AccountView.swift) | 26 reads | ~77120 tok |
+
+## Session: 2026-08-02 16:50
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:52 | Verified Blindensport/Graz account auto-gets isRoot+admin, and root can assign admin to others | RootView.swift, AccountView.swift, Models.swift | Confirmed working, no code change needed | ~4500 |
+| 16:56 | Edited BlindensportGraz/Models.swift | modified elevateIfDesignatedRoot() | ~443 |
+
+## Session: 2026-08-02 22:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:47 | Edited BlindensportGraz/Models.swift | 6→6 lines | ~115 |
+| 22:49 | Edited BlindensportGraz/RootView.swift | removed 10 lines | ~22 |
+| 22:49 | Edited BlindensportGraz/RootView.swift | 9→5 lines | ~54 |
+| 22:50 | Edited BlindensportGraz/RootView.swift | elevateIfDesignatedRoot() → applyDesignatedRootGrant() | ~163 |
+| 22:50 | Edited BlindensportGraz/RootView.swift | elevateIfDesignatedRoot() → applyDesignatedRootGrant() | ~63 |
+| 22:51 | Edited BlindensportGraz/RootView.swift | isDesignatedRootEmail() → elevateIfDesignatedRoot() | ~60 |
+| 22:52 | Edited BlindensportGraz/RootView.swift | modified applyDesignatedRootGrant() | ~170 |
+| 22:53 | Edited BlindensportGraz/RootView.swift | 5→6 lines | ~92 |
+| 22:54 | Edited BlindensportGraz/AccountView.swift | modified onChange() | ~291 |
+| 22:55 | Edited BlindensportGraz/AccountView.swift | modified applyDesignatedRootGrantIfNeeded() | ~65 |
+| 22:57 | Finished designated-root-account fix: removed RootView's Apple-verification-gated elevateIfDesignatedRoot (could never fire — no real Apple ID exists for blindensport.gvsc@gmail.com), wired the gate-free User.elevateIfDesignatedRoot() (firstName+lastName+email match) into all resolveAccount() paths, LoginView(onLogin:), RegisterView, and AccountView's EditAccountView | RootView.swift, Models.swift, AccountView.swift | xcodebuild build succeeded (CODE_SIGNING_ALLOWED=NO, codesign step itself hits known sandbox errSecInternalComponent wall unrelated to this change); logged bug-173, updated cerebrum | ~9000 |
+| 22:58 | Session end: 10 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 3 reads | ~14046 tok |
+| 23:01 | Edited BlindensportGraz/Models.swift | 3→3 lines | ~59 |

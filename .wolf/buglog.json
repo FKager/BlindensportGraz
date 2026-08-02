@@ -2812,6 +2812,42 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-02T12:16:37.768Z"
+    },
+    {
+      "id": "bug-172",
+      "timestamp": "2026-08-02T20:49:12.758Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 10→3 lines (6 removed) | Also: // Covers logout -> pick-an-existing-account-from-; // which (unlike resolveAccount()) doesn't touch A | Also: private func isDesignatedRootEmail(_ email: String; guard let email else { return false }",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-08-02T20:52:32.989Z"
+    },
+    {
+      "id": "bug-173",
+      "timestamp": "2026-08-02T22:56:00.000Z",
+      "error_message": "Designated club root account (blindensport.gvsc@gmail.com) never actually gets isRoot/admin — user clarified there is no real Apple ID for that address",
+      "file": "RootView.swift, Models.swift, AccountView.swift",
+      "root_cause": "elevateIfDesignatedRoot in RootView.swift was gated on user.appleUserIdentifier being non-empty (i.e. only fires for an account created via Sign in with Apple with that verified email). But the designated account has no real Apple ID and can only ever be created via RegisterView's manual form, which always leaves appleUserIdentifier empty — so the gate could never be satisfied and the account could never become root. A prior session (2026-08-02 16:56) had already added a gate-free User.elevateIfDesignatedRoot() instance method (Models.swift, matches firstName+lastName+email together instead of email+Apple-verification) but never finished wiring it into RootView/AccountView before the session ended.",
+      "fix": "Removed RootView's old designatedRootEmail/isDesignatedRootEmail/Apple-gated elevateIfDesignatedRoot. Replaced every call site (resolveAccount()'s three account-resolution paths, the new-account creation branch, LoginView(onLogin:), RegisterView's manual creation) with calls to the new User.elevateIfDesignatedRoot() instance method via a thin applyDesignatedRootGrant(_:) save/push wrapper. Also added the same check to AccountView's EditAccountView (.onChange of firstName/lastName/email) since editing an existing profile into a match is another place the grant needs to fire, per Models.swift's doc comment listing that as a required call site.",
+      "tags": [
+        "auth",
+        "root-account",
+        "apple-sign-in",
+        "RootView",
+        "Models",
+        "AccountView",
+        "incomplete-prior-session"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-02T22:56:00.000Z"
     }
   ]
 }
