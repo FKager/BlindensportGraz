@@ -50,6 +50,35 @@ final class CloudKitSync {
         save(record)
     }
 
+    // Was missing entirely until bug-163: TeamsViews' roster swipe-to-delete
+    // called modelContext.delete(membership) with no CloudKit counterpart, so
+    // a "deleted" membership silently reappeared on the next pullMemberships
+    // (find-or-create by id, see pullMemberships below) — and, combined with
+    // TeamMembership lacking a cascade rule for its Attendance records at the
+    // time, corrupted the local store outright (see the TeamMembership.
+    // attendances doc comment in Models.swift).
+    func deleteMembership(_ id: UUID) {
+        Task {
+            do {
+                try await publicDB.deleteRecord(withID: recordID(id))
+            } catch {
+                print("CloudKitSync delete failed for TeamMembership \(id): \(error)")
+            }
+        }
+    }
+
+    // Same gap as deleteMembership above, for Team's own delete path
+    // (TeamsListView.deleteTeams) — was also never pushed.
+    func deleteTeam(_ id: UUID) {
+        Task {
+            do {
+                try await publicDB.deleteRecord(withID: recordID(id))
+            } catch {
+                print("CloudKitSync delete failed for Team \(id): \(error)")
+            }
+        }
+    }
+
     func pushEvent(_ event: SportEvent) {
         let record = CKRecord(recordType: "SportEvent", recordID: recordID(event.id))
         record["title"] = event.title

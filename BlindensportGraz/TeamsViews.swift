@@ -45,8 +45,11 @@ struct TeamsListView: View {
     private func deleteTeams(at offsets: IndexSet) {
         if canManageTeams {
             for index in offsets {
-                modelContext.delete(teams[index])
+                let team = teams[index]
+                CloudKitSync.shared.deleteTeam(team.id)
+                modelContext.delete(team)
             }
+            try? modelContext.save()
         }
     }
 }
@@ -138,8 +141,11 @@ struct TeamDetailView: View {
                     }
                     .onDelete { offsets in
                         for index in offsets {
-                            modelContext.delete(team.memberships[index])
+                            let membership = team.memberships[index]
+                            CloudKitSync.shared.deleteMembership(membership.id)
+                            modelContext.delete(membership)
                         }
+                        try? modelContext.save()
                     }
                 }
 

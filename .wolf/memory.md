@@ -924,3 +924,11 @@
 | 13:33 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~190 |
 | 13:33 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~330 |
 | 13:33 | Refactor: moved PRAE/KostZ execution from AccountView admin section into a "Berichte" toolbar menu on TrainingsListView + TournamentsListView (both, since PRAE deployments happen at trainings and tournaments) | AccountView.swift, TrainingsViews.swift, TournamentsViews.swift, PraeViews.swift, KostZViews.swift | success, build + PRAE/KostZ tests green | ~7000 |
+| 13:34 | Session end: 19 writes across 9 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, AccountView.swift) | 11 reads | ~30734 tok |
+| 13:36 | Session end: 19 writes across 9 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, AccountView.swift) | 11 reads | ~30734 tok |
+| 13:40 | Edited BlindensportGraz/Models.swift | expanded (+11 lines) | ~259 |
+| 13:40 | Edited BlindensportGraz/CloudKitSync.swift | added error handling | ~481 |
+| 13:41 | Edited BlindensportGraz/TeamsViews.swift | modified deleteTeams() | ~86 |
+| 13:41 | Edited BlindensportGraz/TeamsViews.swift | 5→8 lines | ~106 |
+| 13:41 | Edited BlindensportGrazTests/InheritanceQueryTests.swift | modified testDeletingTeamMembershipCascadeDeletesItsAttendanceWithoutCrashing() | ~618 |
+| 13:46 | Fixed crash opening a training: TeamMembership deletion corrupted dependent Attendance rows (non-optional relationship, no cascade rule); added cascade + CloudKit delete + regression test | Models.swift, CloudKitSync.swift, TeamsViews.swift, InheritanceQueryTests.swift, buglog.json (bug-163) | success, 42/42 tests pass | ~15000 |

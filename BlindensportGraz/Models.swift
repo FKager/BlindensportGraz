@@ -276,6 +276,17 @@ final class TeamMembership {
     var role: String = "player" // "player", "coach", "assistant"
     var joinedAt: Date = Date.now
 
+    // Attendance.membership is a non-optional to-one relationship — without
+    // this explicit cascade+inverse, deleting a TeamMembership (TeamsViews'
+    // roster swipe-to-delete, or via Team's own cascade delete) leaves
+    // SwiftData trying to nullify a non-optional property on any dependent
+    // Attendance, which corrupts that Attendance's backing row instead of
+    // failing cleanly — any later access to `attendance.membership.id`
+    // (TrainingDetailView/TournamentDetailView.attendance(for:)) then
+    // crashes with a fatal SwiftData assertion. See bug-163.
+    @Relationship(deleteRule: .cascade, inverse: \Attendance.membership)
+    var attendances: [Attendance] = []
+
     init(id: UUID = UUID(),
          user: User? = nil,
          member: Member? = nil,

@@ -120,4 +120,41 @@ final class InheritanceQueryTests: XCTestCase {
         XCTAssertEqual(survivingEvents.count, 1)
         XCTAssertTrue(survivingEvents.first?.teams.isEmpty ?? false, "expected the deleted team to be nullified out, not left dangling")
     }
+
+    /// Regression test for bug-163: deleting a TeamMembership that has an
+    /// Attendance record used to leave a corrupted local row, since
+    /// Attendance.membership is a non-optional to-one relationship and, with
+    /// no explicit cascade rule, SwiftData's default nullify can't null a
+    /// non-optional property — any later access to the dangling Attendance's
+    /// `.membership.id` (exactly what TrainingDetailView.attendance(for:)
+    /// does) then crashed with a fatal SwiftData assertion. TeamMembership.
+    /// attendances' cascade rule must delete the Attendance instead.
+    func testDeletingTeamMembershipCascadeDeletesItsAttendanceWithoutCrashing() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let member = Member(firstName: "Anna", lastName: "Sportlerin")
+        context.insert(member)
+        let membership = TeamMembership(member: member, team: team, role: "player")
+        context.insert(membership)
+        let training = Training(title: "Torball Training", sport: "Torball", location: "Graz",
+                                 startDate: .now, teams: [team])
+        context.insert(training)
+        let attendance = Attendance(event: training, membership: membership, attended: true)
+        context.insert(attendance)
+        try context.save()
+
+        context.delete(membership)
+        try context.save()
+
+        XCTAssertTrue(try context.fetch(FetchDescriptor<Attendance>()).isEmpty,
+                       "expected the dependent Attendance to be cascade-deleted, not left dangling")
+
+        // The real crash site: iterating the training's remaining attendances
+        // and comparing membership ids must not touch a corrupted row.
+        let survivingTraining = try XCTUnwrap(try context.fetch(FetchDescriptor<Training>()).first)
+        XCTAssertNoThrow(_ = survivingTraining.attendances.first { $0.membership.id == membership.id })
+    }
 }
