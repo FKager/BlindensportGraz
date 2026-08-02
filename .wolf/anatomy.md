@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-01T14:34:06.910Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T11:20:53.785Z
 > Files: 79 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -60,7 +60,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~2872 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~3084 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1118 tok)
@@ -85,9 +85,9 @@
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2865 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4390 tok)
-- `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~1226 tok)
-- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2546 tok)
-- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's calendar-badge toolbar button) (~1450 tok)
+- `TrainingsfrequenzlisteCalculation.swift` — / HalfYear enum (1./2. Halbjahr) + one roster row/summary of the Trainingsfrequenzliste per half-year period (~1500 tok)
+- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" per half-year period (~2424 tok)
+- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's calendar-badge toolbar button); Team + Halbjahr/Jahr picker (~1448 tok)
 - `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~4577 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~547 tok)
 
@@ -102,7 +102,7 @@
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~3125 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
-- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~2226 tok)
+- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~3514 tok)
 
 ## RootCLI/
 

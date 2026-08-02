@@ -2,15 +2,17 @@ import SwiftUI
 import SwiftData
 
 /// Admin-only screen (see TrainingsListView's calendar-badge toolbar button)
-/// that exports one team's monthly training attendance register. Unlike
-/// KostZCalculationView (club-wide, no team picker), the Trainingsfrequenz-
-/// liste is inherently per-team — the original form has one "Verein/LV" +
-/// "Sportart" line, i.e. one homogenous group per sheet — so this adds a
-/// Team picker on top of the Monat/Jahr picker KostZ/PRAE already use.
-/// Deliberately reachable only from the Trainings tab (not AccountView, where
-/// PRAE/KostZ still live) since it's specifically about training attendance,
-/// unlike PRAE/KostZ which cover all deployment types. Self-contained
-/// NavigationStack + dismiss button since it's sheet-presented, matching
+/// that exports one team's half-year training attendance register — Sport
+/// Austria's Trainingsfrequenzliste is filed per federal reporting period
+/// (1. Halbjahr Jänner–Juni, 2. Halbjahr Juli–Dezember), not per calendar
+/// month. Unlike KostZCalculationView (club-wide, no team picker), the
+/// Trainingsfrequenzliste is inherently per-team — the original form has one
+/// "Verein/LV" + "Sportart" line, i.e. one homogenous group per sheet — so
+/// this adds a Team picker on top of the Halbjahr/Jahr picker. Deliberately
+/// reachable only from the Trainings tab (not AccountView, where PRAE/KostZ
+/// still live) since it's specifically about training attendance, unlike
+/// PRAE/KostZ which cover all deployment types. Self-contained NavigationStack
+/// + dismiss button since it's sheet-presented, matching
 /// KostZCalculationView/PraeCalculationView.
 struct TrainingsfrequenzlisteView: View {
     @Environment(\.dismiss) private var dismiss
@@ -18,7 +20,7 @@ struct TrainingsfrequenzlisteView: View {
     @Query(sort: \Team.name) private var teams: [Team]
 
     @State private var selectedTeamID: UUID?
-    @State private var month = Calendar.current.component(.month, from: .now)
+    @State private var halfYear: HalfYear = Calendar.current.component(.month, from: .now) <= 6 ? .first : .second
     @State private var year = Calendar.current.component(.year, from: .now)
     @State private var exportURL: URL?
     @State private var exportError: String?
@@ -29,7 +31,7 @@ struct TrainingsfrequenzlisteView: View {
 
     private var summary: TrainingsfrequenzlisteSummary? {
         guard let team = selectedTeam else { return nil }
-        return TrainingsfrequenzlisteCalculator.summary(team: team, month: month, year: year, in: modelContext)
+        return TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: halfYear, year: year, in: modelContext)
     }
 
     var body: some View {
@@ -45,9 +47,9 @@ struct TrainingsfrequenzlisteView: View {
                                 Text(team.name).tag(Optional(team.id))
                             }
                         }
-                        Picker("Monat", selection: $month) {
-                            ForEach(1...12, id: \.self) { m in
-                                Text(monthName(m)).tag(m)
+                        Picker("Zeitraum", selection: $halfYear) {
+                            ForEach(HalfYear.allCases) { half in
+                                Text(half.label).tag(half)
                             }
                         }
                         Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
@@ -57,7 +59,7 @@ struct TrainingsfrequenzlisteView: View {
                 if let summary {
                     Section("Trainingstage") {
                         if summary.trainingDates.isEmpty {
-                            Text("Keine Trainings in diesem Monat für dieses Team.")
+                            Text("Keine Trainings in diesem Zeitraum für dieses Team.")
                                 .foregroundStyle(.secondary)
                         } else {
                             LabeledContent("Anzahl Trainingstage", value: "\(summary.trainingDates.count)")
@@ -94,7 +96,7 @@ struct TrainingsfrequenzlisteView: View {
             } message: {
                 Text(exportError ?? "")
             }
-            .task(id: "\(selectedTeam?.id.uuidString ?? "")-\(month)-\(year)") {
+            .task(id: "\(selectedTeam?.id.uuidString ?? "")-\(halfYear.rawValue)-\(year)") {
                 exportURL = nil
                 guard let summary else { return }
                 do {
@@ -104,11 +106,5 @@ struct TrainingsfrequenzlisteView: View {
                 }
             }
         }
-    }
-
-    private func monthName(_ month: Int) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "de_AT")
-        return formatter.monthSymbols[month - 1].capitalized
     }
 }

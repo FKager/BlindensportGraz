@@ -24,7 +24,20 @@ struct TrainingsfrequenzlistePerson: Identifiable {
     var lastName: String { membership.user?.lastName ?? membership.member?.lastName ?? "" }
 }
 
-/// One calendar month's Trainingsfrequenzliste for one team — mirrors the
+/// The two federal reporting periods Sport Austria's Trainingsfrequenzliste
+/// is filed for — half-year, not calendar-month, matching the original
+/// form's own "Zeitraum" field and its 33-date-column capacity (33 dates
+/// fits a half-year's worth of training days, not a single month's).
+enum HalfYear: Int, CaseIterable, Identifiable, Hashable {
+    case first = 1  // Jänner–Juni
+    case second = 2 // Juli–Dezember
+
+    var id: Int { rawValue }
+    var months: ClosedRange<Int> { self == .first ? 1...6 : 7...12 }
+    var label: String { self == .first ? "1. Halbjahr (Jänner–Juni)" : "2. Halbjahr (Juli–Dezember)" }
+}
+
+/// One half-year's Trainingsfrequenzliste for one team — mirrors the
 /// real ÖBSV "Trainingsfrequenzliste" paper form (reverse-engineered from
 /// the official .xls, see TrainingsfrequenzlisteExporter's doc comment):
 /// one row per roster member (capped at 23, the original template's row
@@ -33,7 +46,7 @@ struct TrainingsfrequenzlistePerson: Identifiable {
 /// ("ges. TL").
 struct TrainingsfrequenzlisteSummary {
     let team: Team
-    let month: Int
+    let halfYear: HalfYear
     let year: Int
     let trainingDates: [Date] // sorted ascending, capped at maxDateColumns
     let people: [TrainingsfrequenzlistePerson] // sorted by displayName, capped at maxPersonRows
@@ -50,35 +63,40 @@ enum TrainingsfrequenzlisteCalculator {
     static let maxDateColumns = 33
     static let maxPersonRows = 23
 
-    static func summary(team: Team, month: Int, year: Int, in context: ModelContext) -> TrainingsfrequenzlisteSummary {
+    static func summary(team: Team, halfYear: HalfYear, year: Int, in context: ModelContext) -> TrainingsfrequenzlisteSummary {
         let calendar = Calendar.current
 
         // Fetch-all-then-filter-in-Swift, matching KostZCalculator/
         // PraeCalculator's established convention rather than a #Predicate
         // with relationship-path traversal (training.teams.contains(...)).
         let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
-        let monthTrainings = allTrainings.filter { training in
+        let periodTrainings = allTrainings.filter { training in
             guard training.teams.contains(where: { $0.id == team.id }) else { return false }
             let components = calendar.dateComponents([.month, .year], from: training.startDate)
-            return components.month == month && components.year == year
+            guard let month = components.month else { return false }
+            return halfYear.months.contains(month) && components.year == year
         }
 
         let trainingDates = Array(
-            Set(monthTrainings.map { calendar.startOfDay(for: $0.startDate) })
+            Set(periodTrainings.map { calendar.startOfDay(for: $0.startDate) })
                 .sorted()
                 .prefix(maxDateColumns)
         )
-        let monthTrainingIDs = Set(monthTrainings.map(\.id))
+        let periodTrainingIDs = Set(periodTrainings.map(\.id))
 
         let allAttendances = (try? context.fetch(FetchDescriptor<Attendance>())) ?? []
         var attendedDatesByMembershipID: [UUID: [Date: Bool]] = [:]
         for attendance in allAttendances {
-            guard attendance.attended, monthTrainingIDs.contains(attendance.event.id) else { continue }
+            guard attendance.attended, periodTrainingIDs.contains(attendance.event.id) else { continue }
             let day = calendar.startOfDay(for: attendance.event.startDate)
             guard trainingDates.contains(day) else { continue }
             attendedDatesByMembershipID[attendance.membership.id, default: [:]][day] = true
         }
 
+        // Every roster member appears (an admin needs the full assigned
+        // roster to file the report), regardless of whether they attended
+        // anything in this period — only the per-date "j"/"n" cell reflects
+        // actual attendance, via TrainingsfrequenzlistePerson.attended(on:).
         let people = team.memberships
             .sorted { $0.displayName < $1.displayName }
             .prefix(maxPersonRows)
@@ -89,7 +107,7 @@ enum TrainingsfrequenzlisteCalculator {
                 )
             }
 
-        return TrainingsfrequenzlisteSummary(team: team, month: month, year: year,
+        return TrainingsfrequenzlisteSummary(team: team, halfYear: halfYear, year: year,
                                               trainingDates: trainingDates, people: Array(people))
     }
 }

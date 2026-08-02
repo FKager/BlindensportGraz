@@ -182,8 +182,15 @@ struct EditAccountView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Fertig") { dismiss() }
+                        .disabled(nameIsBlank)
                 }
             }
+            // Blocks swipe-to-dismiss too, not just the toolbar button — a
+            // blank name here silently drops from every export that shows
+            // this person (e.g. Trainingsfrequenzliste), unlike every other
+            // name-entry point in the app (RegisterView, AddMemberView),
+            // which already disable their save action the same way.
+            .interactiveDismissDisabled(nameIsBlank)
             // TEST-ONLY: catches the case where testAdminEmail (Models.swift) is
             // typed in here after the fact -- e.g. an account auto-created via
             // Apple's "Hide My Email" got a relay address instead of the real
@@ -194,7 +201,16 @@ struct EditAccountView: View {
                     CloudKitSync.shared.pushUserIdentity(user)
                 }
             }
+            .onDisappear {
+                try? modelContext.save()
+                CloudKitSync.shared.pushUserIdentity(user)
+            }
         }
+    }
+
+    private var nameIsBlank: Bool {
+        user.firstName.trimmingCharacters(in: .whitespaces).isEmpty ||
+        user.lastName.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
     private func roleLabel(_ role: String) -> String {

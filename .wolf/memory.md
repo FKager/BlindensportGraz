@@ -887,3 +887,28 @@
 | 16:34 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | 8→11 lines | ~213 |
 | 16:35 | Refactored Trainingsfrequenzliste access: removed from AccountView admin menu, added as toolbar button (calendar.badge.checkmark icon) in TrainingsListView, admin-gated | AccountView.swift, TrainingsViews.swift, TrainingsfrequenzlisteViews.swift | xcodebuild build + test green (39 tests, iPhone 17 Pro Max after transient sim busy error on Pro) | ~2000 |
 | 16:36 | Session end: 62 writes across 28 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 35 reads | ~100194 tok |
+| 16:39 | Session end: 62 writes across 28 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 35 reads | ~100194 tok |
+| 16:46 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | 4→6 lines | ~119 |
+| 16:46 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportIncludesNameForUserBackedAttendedMember() | ~508 |
+| 16:47 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | 9→12 lines | ~235 |
+| 16:50 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportDiagnosticMultiPersonDump() | ~582 |
+| 16:53 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | added optional chaining | ~1188 |
+| 17:06 | Session end: 67 writes across 29 files (ClubMemberFillUpdate.swift, RootCLI.swift, README.md, ClubMemberImportExport.swift, ClubMemberImportExportTests.swift) | 37 reads | ~108950 tok |
+| 17:22 | Edited BlindensportGraz/AccountView.swift | modified ToolbarItem() | ~432 |
+
+## Session: 2026-08-02 13:15
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:19 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | modified totalPresent() | ~1149 |
+| 13:19 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | 14→11 lines | ~157 |
+| 13:20 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | reduced (-8 lines) | ~32 |
+| 13:20 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | 30→32 lines | ~484 |
+| 13:20 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | modified Picker() | ~90 |
+| 13:20 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | 2→2 lines | ~39 |
+| 13:20 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | inline fix | ~25 |
+| 13:20 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | removed 8 lines | ~2 |
+| 13:20 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | inline fix | ~26 |
+| 13:20 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testSummaryFiltersToRequestedTeamHalfYearAndYear() | ~270 |
+| 13:21 | Changed Trainingsfrequenzliste from monthly to half-year periods (1. Halbjahr Jan-Jun / 2. Halbjahr Jul-Dez); confirmed roster-all-members + attendance-only-j + trainings-only-dates already correct | TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift | success, 8/8 tests pass | ~9000 |
+| 13:22 | Session end: 10 writes across 4 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift) | 4 reads | ~11119 tok |

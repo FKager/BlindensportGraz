@@ -44,7 +44,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         context.insert(Attendance(event: training1, membership: membership, attended: true))
         context.insert(Attendance(event: training2, membership: membership, attended: false))
 
-        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, month: 7, year: 2026, in: context)
+        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: .second, year: 2026, in: context)
 
         XCTAssertEqual(summary.trainingDates.count, 2)
         XCTAssertEqual(summary.people.count, 1)
@@ -70,12 +70,12 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         // No Attendance row inserted at all — matches the app's "created lazily
         // on first toggle" convention, must still resolve to "n", not crash/blank.
 
-        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, month: 7, year: 2026, in: context)
+        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: .second, year: 2026, in: context)
         let person = try XCTUnwrap(summary.people.first)
         XCTAssertFalse(person.attended(on: Calendar.current.startOfDay(for: training.startDate)))
     }
 
-    func testSummaryFiltersToRequestedTeamMonthAndYear() throws {
+    func testSummaryFiltersToRequestedTeamHalfYearAndYear() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
@@ -83,12 +83,14 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         context.insert(team)
         context.insert(otherTeam)
 
-        _ = makeTraining(context, team: team, day: 5, month: 7, year: 2026)
-        _ = makeTraining(context, team: team, day: 5, month: 8, year: 2026) // wrong month
+        _ = makeTraining(context, team: team, day: 5, month: 7, year: 2026) // in 2. Halbjahr
+        _ = makeTraining(context, team: team, day: 5, month: 9, year: 2026) // also in 2. Halbjahr
+        _ = makeTraining(context, team: team, day: 5, month: 1, year: 2026) // wrong half (1. Halbjahr)
+        _ = makeTraining(context, team: team, day: 5, month: 7, year: 2025) // wrong year
         _ = makeTraining(context, team: otherTeam, day: 6, month: 7, year: 2026) // wrong team
 
-        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, month: 7, year: 2026, in: context)
-        XCTAssertEqual(summary.trainingDates.count, 1)
+        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: .second, year: 2026, in: context)
+        XCTAssertEqual(summary.trainingDates.count, 2)
     }
 
     func testSummarySortsPeopleByDisplayNameAndCapsAtMaxPersonRows() throws {
@@ -102,7 +104,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
             context.insert(TeamMembership(member: member, team: team, role: "player"))
         }
 
-        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, month: 7, year: 2026, in: context)
+        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: .second, year: 2026, in: context)
         XCTAssertEqual(summary.people.count, TrainingsfrequenzlisteCalculator.maxPersonRows)
         XCTAssertEqual(summary.people.map(\.displayName), summary.people.map(\.displayName).sorted())
     }
@@ -121,7 +123,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         let training = makeTraining(context, team: team, day: 5)
         context.insert(Attendance(event: training, membership: membership, attended: true))
 
-        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, month: 7, year: 2026, in: context)
+        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: .second, year: 2026, in: context)
         let url = try TrainingsfrequenzlisteExporter.export(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
 
@@ -147,6 +149,8 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertTrue(sheetXML.contains("Nr."))
         XCTAssertTrue(sheetXML.contains("Vorname"))
         XCTAssertTrue(sheetXML.contains("Nachname"))
+        XCTAssertTrue(sheetXML.contains("<t>Anna</t>"))
+        XCTAssertTrue(sheetXML.contains("<t>Sportlerin</t>"))
         XCTAssertTrue(sheetXML.contains("05.07."))
         XCTAssertTrue(sheetXML.contains(">j<") || sheetXML.contains("<t>j</t>"))
         XCTAssertTrue(sheetXML.contains("ges. TL"))
@@ -155,13 +159,92 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertFalse(sheetXML.contains("Gesamt"))
     }
 
+    /// Every other test in this file uses a Member-backed membership; this
+    /// covers a User-backed one (a registered app account) too, since the two
+    /// take different paths through `TrainingsfrequenzlistePerson.firstName`/
+    /// `lastName`'s `membership.user?... ?? membership.member?...` fallback.
+    func testExportIncludesNameForUserBackedAttendedMember() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let user = User(email: "franz@example.com", firstName: "Franz", lastName: "Kager")
+        context.insert(user)
+        let membership = TeamMembership(user: user, team: team, role: "player")
+        context.insert(membership)
+        let training = makeTraining(context, team: team, day: 5)
+        context.insert(Attendance(event: training, membership: membership, attended: true))
+
+        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: .second, year: 2026, in: context)
+        let person = try XCTUnwrap(summary.people.first)
+        XCTAssertEqual(person.firstName, "Franz")
+        XCTAssertEqual(person.lastName, "Kager")
+
+        let url = try TrainingsfrequenzlisteExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+        XCTAssertTrue(sheetXML.contains("<t>Franz</t>"))
+        XCTAssertTrue(sheetXML.contains("<t>Kager</t>"))
+    }
+
+    /// Multi-person, multi-date, mixed User/Member-backed roster with mixed
+    /// attendance — closer to a real team than the single-person tests
+    /// above. Asserts on actual name/attendance values, not just presence of
+    /// header labels, which the original round-trip test above did not.
+    func testExportWithMultiplePeopleKeepsNamesAlignedWithAttendance() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+
+        let user = User(email: "franz@example.com", firstName: "Franz", lastName: "Kager")
+        context.insert(user)
+        let userMembership = TeamMembership(user: user, team: team, role: "player")
+        context.insert(userMembership)
+
+        let member1 = Member(firstName: "Anna", lastName: "Sportlerin")
+        context.insert(member1)
+        let memberMembership1 = TeamMembership(member: member1, team: team, role: "player")
+        context.insert(memberMembership1)
+
+        let member2 = Member(firstName: "Bernd", lastName: "Helfer")
+        context.insert(member2)
+        let memberMembership2 = TeamMembership(member: member2, team: team, role: "coach")
+        context.insert(memberMembership2)
+
+        let training1 = makeTraining(context, team: team, day: 5)
+        let training2 = makeTraining(context, team: team, day: 12)
+        // Franz attends both, Anna attends only the first, Bernd never attends.
+        context.insert(Attendance(event: training1, membership: userMembership, attended: true))
+        context.insert(Attendance(event: training2, membership: userMembership, attended: true))
+        context.insert(Attendance(event: training1, membership: memberMembership1, attended: true))
+
+        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: .second, year: 2026, in: context)
+        XCTAssertEqual(summary.people.map(\.firstName).sorted(), ["Anna", "Bernd", "Franz"])
+
+        let day5 = Calendar.current.startOfDay(for: training1.startDate)
+        let day12 = Calendar.current.startOfDay(for: training2.startDate)
+        let anna = try XCTUnwrap(summary.people.first { $0.firstName == "Anna" })
+        let bernd = try XCTUnwrap(summary.people.first { $0.firstName == "Bernd" })
+        let franz = try XCTUnwrap(summary.people.first { $0.firstName == "Franz" })
+        XCTAssertTrue(anna.attended(on: day5))
+        XCTAssertFalse(anna.attended(on: day12))
+        XCTAssertFalse(bernd.attended(on: day5))
+        XCTAssertFalse(bernd.attended(on: day12))
+        XCTAssertTrue(franz.attended(on: day5))
+        XCTAssertTrue(franz.attended(on: day12))
+    }
+
     func testExportWithNoTrainingsStillProducesValidFile() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
         context.insert(team)
 
-        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, month: 7, year: 2026, in: context)
+        let summary = TrainingsfrequenzlisteCalculator.summary(team: team, halfYear: .second, year: 2026, in: context)
         XCTAssertTrue(summary.trainingDates.isEmpty)
 
         let url = try TrainingsfrequenzlisteExporter.export(summary: summary)

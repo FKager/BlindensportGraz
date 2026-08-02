@@ -2199,7 +2199,7 @@
       "error_message": "xcodebuild test: Simulator device failed to launch it.a11y.BlindensportGraz. The request was denied by service delegate (SBMainWorkspace) for reason: Busy (\"Application failed preflight checks\")",
       "file": "N/A (simulator/tooling state, not app code)",
       "root_cause": "Transient CoreSimulator/launchd state on a specific simulator device (this recurrence: iPhone 17, 9BE30824-E947-475E-9A22-777FD4309637) that xcrun simctl shutdown alone does not clear. Not caused by any code change - happens intermittently across unrelated xcodebuild test runs on this same device. Documented in cerebrum.md under the 2026-07-19 and 2026-07-20 entries but never logged as its own buglog entry until now; this is at least the third occurrence.",
-      "fix": "xcrun simctl erase <device-id> (full erase, not just shutdown) on the specific simulator UDID clears it every time it has been tried. Always try this FIRST the instant this exact error string appears, before any other debugging - do not assume it is a real test/build regression.",
+      "fix": "xcrun simctl erase <device-id> (full erase, not just shutdown) on the specific simulator UDID clears it every time it has been tried. Always try this FIRST the instant this exact error string appears, before any other debugging - do not assume it is a real test/build regression. UPDATE 2026-08-01: recurred as an ALL-simulators-affected variant (every device, not just one) — killall CoreSimulatorService + retry did NOT clear it this time, unlike the single-device cases. Did not try simctl erase per standing user preference to avoid touching simulator state; fell back to verifying via physical-device deploy (git push -> ios-device-deploy.yml) instead, which uses a separate CI runner unaffected by this Macs local CoreSimulator state.",
       "tags": [
         "simulator",
         "xcodebuild-test",
@@ -2208,8 +2208,8 @@
         "recurring"
       ],
       "related_bugs": [],
-      "occurrences": 4,
-      "last_seen": "2026-08-01T14:19:00.000Z"
+      "occurrences": 5,
+      "last_seen": "2026-08-01T15:30:00.000Z"
     },
     {
       "id": "bug-135",
@@ -2595,6 +2595,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-01T14:34:06.917Z"
+    },
+    {
+      "id": "bug-159",
+      "timestamp": "2026-08-01T14:53:08.440Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-01T14:53:08.440Z"
+    },
+    {
+      "id": "bug-160",
+      "timestamp": "2026-08-02T11:19:44.319Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 69→87 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-02T11:19:44.319Z"
+    },
+    {
+      "id": "bug-161",
+      "timestamp": "2026-08-02T11:20:02.130Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 12→4 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-02T11:20:02.130Z"
+    },
+    {
+      "id": "bug-162",
+      "timestamp": "2026-08-02T11:20:24.564Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+      "root_cause": "Had \"Keine Trainings in diesem Monat für dieses Team.\"",
+      "fix": "Changed to \"Keine Trainings in diesem Zeitraum für dieses Tea",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-08-02T11:20:27.763Z"
     }
   ]
 }

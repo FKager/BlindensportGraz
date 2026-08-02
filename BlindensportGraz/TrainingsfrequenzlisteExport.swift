@@ -25,16 +25,13 @@ enum TrainingsfrequenzlisteExporter {
         dateFormatter.locale = Locale(identifier: "de_AT")
         dateFormatter.dateFormat = "dd.MM."
 
-        let monthFormatter = DateFormatter()
-        monthFormatter.locale = Locale(identifier: "de_AT")
-        monthFormatter.dateFormat = "LLLL yyyy"
-        let monthLabel = monthFormatter.string(from: dateFor(month: summary.month, year: summary.year))
+        let periodLabel = "\(summary.halfYear.label) \(summary.year)"
 
         var rows: [[XLSXGridCell]] = []
         rows.append([.text("T R A I N I N G S F R E Q U E N Z L I S T E", bold: true)])
         rows.append([])
         rows.append([.text("Verein/LV:", bold: true), .text(vereinName), .text(""), .text("Sportart:", bold: true), .text(summary.team.sport)])
-        rows.append([.text("Zeitraum:", bold: true), .text(monthLabel)])
+        rows.append([.text("Zeitraum:", bold: true), .text(periodLabel)])
         rows.append([])
         rows.append([.text("Trainingstage (Datum):", bold: true)])
 
@@ -60,14 +57,6 @@ enum TrainingsfrequenzlisteExporter {
             .appendingPathComponent("Trainingsfrequenzliste-\(UUID().uuidString).xlsx")
         try writeMinimalXLSX(rows: rows, sheetName: "Trainingsteiln", to: outputURL)
         return outputURL
-    }
-
-    private static func dateFor(month: Int, year: Int) -> Date {
-        var components = DateComponents()
-        components.year = year
-        components.month = month
-        components.day = 1
-        return Calendar.current.date(from: components) ?? Date()
     }
 }
 
