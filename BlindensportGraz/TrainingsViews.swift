@@ -345,6 +345,8 @@ struct TrainingsListView: View {
         @Query(sort: \Training.startDate) private var trainings: [Training]
         @State private var showAdd = false
         @State private var showTrainingsfrequenzliste = false
+        @State private var showPraeCalculation = false
+        @State private var showKostZCalculation = false
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
@@ -391,6 +393,19 @@ struct TrainingsListView: View {
                     }
                     .accessibilityLabel("Trainingsfrequenzliste")
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button { showPraeCalculation = true } label: {
+                            Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
+                        }
+                        Button { showKostZCalculation = true } label: {
+                            Label("KostZ-Berechnung", systemImage: "doc.text.fill")
+                        }
+                    } label: {
+                        Image(systemName: "chart.bar.doc.horizontal")
+                    }
+                    .accessibilityLabel("Berichte")
+                }
             }
             if canManageEvents {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -405,6 +420,12 @@ struct TrainingsListView: View {
         }
         .sheet(isPresented: $showTrainingsfrequenzliste) {
             TrainingsfrequenzlisteView()
+        }
+        .sheet(isPresented: $showPraeCalculation) {
+            PraeCalculationView()
+        }
+        .sheet(isPresented: $showKostZCalculation) {
+            KostZCalculationView()
         }
     }
 

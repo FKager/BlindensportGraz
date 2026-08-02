@@ -12,8 +12,6 @@ struct AccountView: View {
     @State private var showUserList = false
     @State private var showMembers = false
     @State private var showMyMember = false
-    @State private var showPraeCalculation = false
-    @State private var showKostZCalculation = false
 
     var body: some View {
         Form {
@@ -89,18 +87,6 @@ struct AccountView: View {
                         } label: {
                             Label("Benutzerverwaltung", systemImage: "building.columns.fill")
                         }
-
-                        Button {
-                            showPraeCalculation = true
-                        } label: {
-                            Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
-                        }
-
-                        Button {
-                            showKostZCalculation = true
-                        } label: {
-                            Label("KostZ-Berechnung", systemImage: "doc.text.fill")
-                        }
                     }
                 }
 
@@ -136,12 +122,6 @@ struct AccountView: View {
                 ContentUnavailableView("Kein Vereinsdateneintrag gefunden",
                                        systemImage: "exclamationmark.triangle")
             }
-        }
-        .sheet(isPresented: $showPraeCalculation) {
-            PraeCalculationView()
-        }
-        .sheet(isPresented: $showKostZCalculation) {
-            KostZCalculationView()
         }
     }
 

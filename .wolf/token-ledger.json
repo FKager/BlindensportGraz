@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 4538195,
-    "total_reads": 1786,
-    "total_writes": 3875,
+    "total_tokens_estimated": 4560433,
+    "total_reads": 1794,
+    "total_writes": 3895,
     "total_sessions": 24,
-    "anatomy_hits": 1616,
+    "anatomy_hits": 1624,
     "anatomy_misses": 164,
-    "repeated_reads_blocked": 1066,
-    "estimated_savings_vs_bare_cli": 3815206
+    "repeated_reads_blocked": 1074,
+    "estimated_savings_vs_bare_cli": 3834732
   },
   "sessions": [
     {
@@ -32931,6 +32931,188 @@
       "id": "session-2026-08-02-1315",
       "started": "2026-08-02T11:15:21.274Z",
       "ended": "2026-08-02T11:22:16.591Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1226,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 1506,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 2496,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 3455,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1231,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 168,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 518,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 96,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 42,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 290,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 8683,
+        "output_tokens_estimated": 2436,
+        "reads_count": 4,
+        "writes_count": 10,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-08-02-1315",
+      "started": "2026-08-02T11:15:21.274Z",
+      "ended": "2026-08-02T11:24:19.716Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1226,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 1506,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 2496,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 3455,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1231,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 168,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 518,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 96,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 42,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 290,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 8683,
+        "output_tokens_estimated": 2436,
+        "reads_count": 4,
+        "writes_count": 10,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-08-02-1315",
+      "started": "2026-08-02T11:15:21.274Z",
+      "ended": "2026-08-02T11:26:05.808Z",
       "reads": [
         {
           "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",

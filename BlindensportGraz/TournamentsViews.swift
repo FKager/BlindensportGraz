@@ -366,10 +366,19 @@ struct TournamentsListView: View {
       @Environment(\.modelContext) private var modelContext
        @Query(sort: \Tournament.startDate) private var tournaments: [Tournament]
         @State private var showAdd = false
+        @State private var showPraeCalculation = false
+        @State private var showKostZCalculation = false
 
   var canManageEvents: Bool {
       guard let user = currentUser else { return false }
       return user.role == "admin" || user.role == "coach"
+       }
+
+    // Matches TrainingsListView.isAdmin — gates the PRAE/KostZ "Berichte" menu,
+    // same admin condition the AccountView buttons used before PRAE/KostZ
+    // moved here (see PraeCalculationView's doc comment).
+    var isAdmin: Bool {
+        currentUser?.role == "admin" || (currentUser?.isRoot ?? false)
        }
 
     var visibleTournaments: [Tournament] {
@@ -399,6 +408,21 @@ struct TournamentsListView: View {
            await CloudKitSync.shared.syncAll(modelContext: modelContext)
        }
        .toolbar {
+           if isAdmin {
+               ToolbarItem(placement: .topBarTrailing) {
+                   Menu {
+                       Button { showPraeCalculation = true } label: {
+                           Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
+                       }
+                       Button { showKostZCalculation = true } label: {
+                           Label("KostZ-Berechnung", systemImage: "doc.text.fill")
+                       }
+                   } label: {
+                       Image(systemName: "chart.bar.doc.horizontal")
+                   }
+                   .accessibilityLabel("Berichte")
+               }
+           }
            if canManageEvents {
                ToolbarItem(placement: .topBarTrailing) {
                    Button { showAdd = true } label: {
@@ -409,6 +433,12 @@ struct TournamentsListView: View {
        }
        .sheet(isPresented: $showAdd) {
            AddTournamentView(currentUser: currentUser)
+       }
+       .sheet(isPresented: $showPraeCalculation) {
+           PraeCalculationView()
+       }
+       .sheet(isPresented: $showKostZCalculation) {
+           KostZCalculationView()
        }
     }
 

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T11:20:53.785Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T11:33:08.388Z
 > Files: 79 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -60,7 +60,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~3084 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~2878 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1118 tok)
@@ -72,7 +72,7 @@
 - `Info.plist` (~414 tok)
 - `KostZCalculation.swift` — / One eligible person's summed amount for the requested month — see (~982 tok)
 - `KostZExport.swift` — Declares KostZExportError (~1077 tok)
-- `KostZViews.swift` — / Admin-only screen (see AccountView's "KostZ-Berechnung" button) that (~1343 tok)
+- `KostZViews.swift` — / Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte" (~1388 tok)
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names; struct MemberIO, enum MemberImportExport (fill-blanks-only import) (~4551 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1378 tok)
@@ -80,15 +80,15 @@
 - `Models.swift` — Class: User, Member (formerly ClubMember, +memberOfGVSC: Bool), TeamMembership (.member, formerly .clubMember), Team, SportEvent/Tournament/Training, Attendance, EventImage, EventParticipation (~5416 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~1506 tok)
 - `PraeExport.swift` — Declares PraeExportError (~3189 tok)
-- `PraeViews.swift` — / Admin-only screen (see AccountView's "PRAE-Berechnung" button) that picks (~2191 tok)
+- `PraeViews.swift` — / Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte" (~2274 tok)
 - `RootView.swift` — SwiftUI view: RootView (~3685 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2865 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4390 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4733 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / HalfYear enum (1./2. Halbjahr) + one roster row/summary of the Trainingsfrequenzliste per half-year period (~1500 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" per half-year period (~2424 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's calendar-badge toolbar button); Team + Halbjahr/Jahr picker (~1448 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~4577 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~4831 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~547 tok)
 
 ## BlindensportGraz/.claude/

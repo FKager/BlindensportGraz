@@ -2659,6 +2659,54 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-08-02T11:20:27.763Z"
+    },
+    {
+      "id": "bug-163",
+      "timestamp": "2026-08-02T11:32:08.436Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6→4 lines (2 removed) | Also: showPraeCalculation = true; Label(\"PRAE-Berechnung\", systemImage: \"eurosign.ci",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-08-02T11:32:17.399Z"
+    },
+    {
+      "id": "bug-164",
+      "timestamp": "2026-08-02T11:32:30.143Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/PraeViews.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 6→10 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-02T11:32:30.143Z"
+    },
+    {
+      "id": "bug-165",
+      "timestamp": "2026-08-02T11:33:01.167Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-02T11:33:01.167Z"
     }
   ]
 }

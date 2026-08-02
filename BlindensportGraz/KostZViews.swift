@@ -1,13 +1,15 @@
 import SwiftUI
 import SwiftData
 
-/// Admin-only screen (see AccountView's "KostZ-Berechnung" button) that
-/// totals every coach/assistant Attendance.praeAmount across ALL
-/// Trainings/Tournaments for a chosen calendar month and exports the Sport
-/// Austria "KostZ" (Kostenzusammenstellung) cost-summary form with the
-/// HONORARE/VERGÜTUNGEN line filled in. Unlike PraeCalculationView (one
+/// Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte"
+/// toolbar menu) that totals every coach/assistant Attendance.praeAmount
+/// across ALL Trainings/Tournaments for a chosen calendar month and exports
+/// the Sport Austria "KostZ" (Kostenzusammenstellung) cost-summary form with
+/// the HONORARE/VERGÜTUNGEN line filled in. Unlike PraeCalculationView (one
 /// person at a time), this is inherently club-wide — KostZ is a single
-/// funding-accounting document per accounting period, not per recipient.
+/// funding-accounting document per accounting period, not per recipient —
+/// but reachable from either list (same reasoning as PraeCalculationView:
+/// the underlying deployments happen at both trainings and tournaments).
 /// Self-contained NavigationStack + dismiss button since it's sheet-
 /// presented, matching PraeCalculationView/MembersListView.
 struct KostZCalculationView: View {

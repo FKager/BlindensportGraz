@@ -1,12 +1,16 @@
 import SwiftUI
 import SwiftData
 
-/// Admin-only screen (see AccountView's "PRAE-Berechnung" button) that picks
-/// a helper/coach + calendar month and shows the resulting PRAE deployment
-/// days computed from Attendance.praeAmount entries — see
-/// PraeCalculation.swift for the underlying logic and PraeExport.swift for
-/// the two export options. Self-contained NavigationStack + dismiss button
-/// since it's sheet-presented, not tab-hosted (matches MembersListView).
+/// Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte"
+/// toolbar menu) that picks a helper/coach + calendar month and shows the
+/// resulting PRAE deployment days computed from Attendance.praeAmount
+/// entries — see PraeCalculation.swift for the underlying logic and
+/// PraeExport.swift for the two export options. PRAE deployments happen at
+/// both trainings and tournaments (coach/assistant Attendance.praeAmount is
+/// entered in both TrainingDetailView and TournamentDetailView), so this is
+/// reachable from either list, not just one — unlike Trainingsfrequenzliste,
+/// which is training-specific. Self-contained NavigationStack + dismiss
+/// button since it's sheet-presented, not tab-hosted (matches MembersListView).
 struct PraeCalculationView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext

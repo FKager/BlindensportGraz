@@ -912,3 +912,15 @@
 | 13:20 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testSummaryFiltersToRequestedTeamHalfYearAndYear() | ~270 |
 | 13:21 | Changed Trainingsfrequenzliste from monthly to half-year periods (1. Halbjahr Jan-Jun / 2. Halbjahr Jul-Dez); confirmed roster-all-members + attendance-only-j + trainings-only-dates already correct | TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift | success, 8/8 tests pass | ~9000 |
 | 13:22 | Session end: 10 writes across 4 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift) | 4 reads | ~11119 tok |
+| 13:24 | Session end: 10 writes across 4 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift) | 4 reads | ~11119 tok |
+| 13:26 | Session end: 10 writes across 4 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift) | 4 reads | ~11119 tok |
+| 13:32 | Edited BlindensportGraz/AccountView.swift | 6→4 lines | ~46 |
+| 13:32 | Edited BlindensportGraz/AccountView.swift | reduced (-12 lines) | ~69 |
+| 13:32 | Edited BlindensportGraz/AccountView.swift | removed 7 lines | ~2 |
+| 13:32 | Edited BlindensportGraz/PraeViews.swift | 6→10 lines | ~202 |
+| 13:32 | Edited BlindensportGraz/KostZViews.swift | 9→11 lines | ~216 |
+| 13:32 | Edited BlindensportGraz/TrainingsViews.swift | 3→5 lines | ~78 |
+| 13:32 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~450 |
+| 13:33 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~190 |
+| 13:33 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~330 |
+| 13:33 | Refactor: moved PRAE/KostZ execution from AccountView admin section into a "Berichte" toolbar menu on TrainingsListView + TournamentsListView (both, since PRAE deployments happen at trainings and tournaments) | AccountView.swift, TrainingsViews.swift, TournamentsViews.swift, PraeViews.swift, KostZViews.swift | success, build + PRAE/KostZ tests green | ~7000 |
