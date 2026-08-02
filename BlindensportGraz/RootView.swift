@@ -85,6 +85,25 @@ struct RootView: View {
             return
         }
 
+        // Apple only sends a real email/fullName on the very first grant for
+        // this Apple ID + bundle/team combo — never again, not even after an
+        // app uninstall+reinstall (see cerebrum's 2026-07-15 Apple Sign-In
+        // note). A blank result here, with no local storedAppleUserIdentifier/
+        // storedUserID match either (both @AppStorage, wiped by the same
+        // uninstall that wipes the local SwiftData store — see bug-164),
+        // means this device almost certainly already has a real account
+        // somewhere in CloudKit, we just lost every local pointer to it.
+        // appleUserIdentifier is deliberately never synced to CloudKit (see
+        // this struct's doc comment above), so there is no remote field left
+        // to match against — silently minting a blank "Neues Mitglied"
+        // account here would orphan the real one instead of asking. Sync
+        // first so the real account is pulled in, then bail out to
+        // LoginView's account picker instead of guessing.
+        if result.fullName == nil && (result.email?.isEmpty ?? true) {
+            await CloudKitSync.shared.syncAll(modelContext: modelContext)
+            return
+        }
+
         let appleFirstName = result.fullName?.givenName?.trimmingCharacters(in: .whitespaces) ?? ""
         let appleLastName = result.fullName?.familyName?.trimmingCharacters(in: .whitespaces) ?? ""
         let emailPrefix = result.email?.components(separatedBy: "@").first ?? ""

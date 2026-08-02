@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 4621901,
-    "total_reads": 1816,
-    "total_writes": 3933,
+    "total_tokens_estimated": 4724671,
+    "total_reads": 1848,
+    "total_writes": 3981,
     "total_sessions": 24,
-    "anatomy_hits": 1646,
-    "anatomy_misses": 164,
-    "repeated_reads_blocked": 1086,
-    "estimated_savings_vs_bare_cli": 3868778
+    "anatomy_hits": 1676,
+    "anatomy_misses": 166,
+    "repeated_reads_blocked": 1106,
+    "estimated_savings_vs_bare_cli": 3948310
   },
   "sessions": [
     {
@@ -33554,6 +33554,472 @@
         "writes_count": 19,
         "repeated_reads_blocked": 6,
         "anatomy_lookups": 11
+      }
+    },
+    {
+      "id": "session-2026-08-02-1315",
+      "started": "2026-08-02T11:15:21.274Z",
+      "ended": "2026-08-02T11:49:07.289Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1226,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 1506,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 2496,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 3455,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/PraeViews.swift",
+          "tokens_estimated": 2191,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/KostZViews.swift",
+          "tokens_estimated": 1343,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/PraeCalculation.swift",
+          "tokens_estimated": 1506,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/KostZCalculation.swift",
+          "tokens_estimated": 982,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/AccountView.swift",
+          "tokens_estimated": 2930,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 4831,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 4390,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-claude/594e8b32-8f17-4c25-9fe6-e1d433580d5c/scratchpad/crashlogs/latest.ips",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/Models.swift",
+          "tokens_estimated": 5416,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 2865,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 8831,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/InheritanceQueryTests.swift",
+          "tokens_estimated": 1626,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1231,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 168,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 518,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 96,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 42,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 290,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/AccountView.swift",
+          "tokens_estimated": 49,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/AccountView.swift",
+          "tokens_estimated": 74,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/AccountView.swift",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/PraeViews.swift",
+          "tokens_estimated": 216,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/KostZViews.swift",
+          "tokens_estimated": 232,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 84,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 482,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 203,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 354,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/Models.swift",
+          "tokens_estimated": 277,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 515,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 113,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/InheritanceQueryTests.swift",
+          "tokens_estimated": 662,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 45594,
+        "output_tokens_estimated": 5791,
+        "reads_count": 16,
+        "writes_count": 24,
+        "repeated_reads_blocked": 10,
+        "anatomy_lookups": 15
+      }
+    },
+    {
+      "id": "session-2026-08-02-1315",
+      "started": "2026-08-02T11:15:21.274Z",
+      "ended": "2026-08-02T11:51:07.285Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1226,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 1506,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 2496,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 3455,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/PraeViews.swift",
+          "tokens_estimated": 2191,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/KostZViews.swift",
+          "tokens_estimated": 1343,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/PraeCalculation.swift",
+          "tokens_estimated": 1506,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/KostZCalculation.swift",
+          "tokens_estimated": 982,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/AccountView.swift",
+          "tokens_estimated": 2930,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 4831,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 4390,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-claude/594e8b32-8f17-4c25-9fe6-e1d433580d5c/scratchpad/crashlogs/latest.ips",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/Models.swift",
+          "tokens_estimated": 5416,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 2865,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 8831,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/InheritanceQueryTests.swift",
+          "tokens_estimated": 1626,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1231,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 168,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 518,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 96,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 42,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 27,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 290,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/AccountView.swift",
+          "tokens_estimated": 49,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/AccountView.swift",
+          "tokens_estimated": 74,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/AccountView.swift",
+          "tokens_estimated": 2,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/PraeViews.swift",
+          "tokens_estimated": 216,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/KostZViews.swift",
+          "tokens_estimated": 232,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 84,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 482,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 203,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 354,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/Models.swift",
+          "tokens_estimated": 277,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 515,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 92,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 113,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/claude/BlindensportGrazTests/InheritanceQueryTests.swift",
+          "tokens_estimated": 662,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 45594,
+        "output_tokens_estimated": 5791,
+        "reads_count": 16,
+        "writes_count": 24,
+        "repeated_reads_blocked": 10,
+        "anatomy_lookups": 15
       }
     }
   ],

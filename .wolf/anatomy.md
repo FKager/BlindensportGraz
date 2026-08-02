@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T11:41:50.249Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T12:03:53.532Z
 > Files: 79 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -14,8 +14,8 @@
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
 - `feedback_no_clarifying_questions.md` (~384 tok)
-- `feedback_test_on_physical_device.md` (~402 tok)
-- `MEMORY.md` — Memory (~75 tok)
+- `feedback_test_on_physical_device.md` (~580 tok)
+- `MEMORY.md` — Memory (~85 tok)
 
 ## ./
 
@@ -81,7 +81,7 @@
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~1506 tok)
 - `PraeExport.swift` — Declares PraeExportError (~3189 tok)
 - `PraeViews.swift` — / Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte" (~2274 tok)
-- `RootView.swift` — SwiftUI view: RootView (~3685 tok)
+- `RootView.swift` — SwiftUI view: RootView (~4008 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~2947 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4733 tok)

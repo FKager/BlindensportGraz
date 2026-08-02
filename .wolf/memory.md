@@ -932,3 +932,9 @@
 | 13:41 | Edited BlindensportGraz/TeamsViews.swift | 5→8 lines | ~106 |
 | 13:41 | Edited BlindensportGrazTests/InheritanceQueryTests.swift | modified testDeletingTeamMembershipCascadeDeletesItsAttendanceWithoutCrashing() | ~618 |
 | 13:46 | Fixed crash opening a training: TeamMembership deletion corrupted dependent Attendance rows (non-optional relationship, no cascade rule); added cascade + CloudKit delete + regression test | Models.swift, CloudKitSync.swift, TeamsViews.swift, InheritanceQueryTests.swift, buglog.json (bug-163) | success, 42/42 tests pass | ~15000 |
+| 13:49 | Session end: 24 writes across 13 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, AccountView.swift) | 16 reads | ~51385 tok |
+| 13:51 | Session end: 24 writes across 13 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, AccountView.swift) | 16 reads | ~51385 tok |
+| 13:54 | Edited BlindensportGraz/RootView.swift | modified first() | ~479 |
+| 14:03 | Edited ../../.claude/projects/-Users-franz-dev-claude/memory/feedback_test_on_physical_device.md | 15→15 lines | ~619 |
+| 14:03 | Edited ../../.claude/projects/-Users-franz-dev-claude/memory/MEMORY.md | inline fix | ~48 |
+| 13:57 | Fixed account-resolution bug caused by prior uninstall: blank duplicate account created instead of recognizing returning user; sync-first-then-picker fallback added | RootView.swift, buglog.json (bug-164), cerebrum.md | success, build only (no simulator per user correction) | ~12000 |

@@ -2743,6 +2743,43 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-02T13:37:00.000Z"
+    },
+    {
+      "id": "bug-168",
+      "timestamp": "2026-08-02T12:03:46.747Z",
+      "error_message": "Significant refactor of ",
+      "file": "../../.claude/projects/-Users-franz-dev-claude/memory/feedback_test_on_physical_device.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 15\u219215 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-02T12:03:46.747Z"
+    },
+    {
+      "id": "bug-164",
+      "timestamp": "2026-08-02T13:53:00.000Z",
+      "error_message": "User-reported: 'all data were deleted. and where is the Benutzerverwaltung?' \u2014 after this agent uninstalled+reinstalled the app on the physical device to fix bug-163's corrupted local store.",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "RootView.resolveAccount()'s account-matching relies on two things that a full app UNINSTALL wipes simultaneously: the local SwiftData store (so the local `users.first(where: appleUserIdentifier ==)` lookup finds nothing) AND the @AppStorage-backed storedAppleUserIdentifier/storedUserID (UserDefaults is also cleared on uninstall, so the compensating id-based re-link path is gone too). Apple Sign-In only sends a real email/fullName on the very first-ever grant for an Apple ID + bundle/team combo, never again \u2014 not even after reinstall \u2014 so the post-reinstall sign-in returned a userIdentifier with nil email/fullName. With no local match and no identifying info from Apple, resolveAccount()'s final fallback branch silently created a brand-new blank 'Neues Mitglied' User (role: member, isRoot: false) instead of recognizing this was a returning user. The real account's data was never actually deleted \u2014 CloudKit still has it \u2014 but the user was now logged into a disconnected, empty, non-admin account, which explained both symptoms: apparently-empty Teams/Trainings/Tournaments lists (filtered by the new blank account's empty memberships) and the missing 'Benutzerverwaltung'/'Benutzer verwalten' buttons (gated on role==admin||isRoot, which the new account has neither).",
+      "fix": "Added a check in resolveAccount(): when Apple Sign-In returns both nil fullName and empty/nil email (the documented signature of a repeat, non-first grant) and no local account matched, the code now awaits CloudKitSync.shared.syncAll() to pull down existing accounts and then returns without creating a new user, falling through to LoginView's account picker instead of guessing. This lets the user pick their real (now locally re-synced) account, or the accidentally-created blank duplicate can be deleted via the existing swipe-to-delete on LoginView/UserListView. Recovery for the user's current device: log out (Account tab -> Abmelden) and pick the real account from the list \u2014 CloudKitSync's background sync (triggered even on the blank-account creation path) should already have pulled the real UserIdentity record back down locally.",
+      "tags": [
+        "apple-sign-in",
+        "account-resolution",
+        "cloudkit-sync",
+        "regression-from-bug-163-fix",
+        "uninstall",
+        "userdefaults"
+      ],
+      "related_bugs": [
+        "bug-163"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-02T13:53:00.000Z"
     }
   ]
 }
