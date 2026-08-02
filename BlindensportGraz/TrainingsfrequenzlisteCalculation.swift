@@ -98,7 +98,7 @@ enum TrainingsfrequenzlisteCalculator {
         // anything in this period — only the per-date "j"/"n" cell reflects
         // actual attendance, via TrainingsfrequenzlistePerson.attended(on:).
         let people = team.memberships
-            .sorted { $0.displayName < $1.displayName }
+            .sortedByLastName()
             .prefix(maxPersonRows)
             .map { membership in
                 TrainingsfrequenzlistePerson(

@@ -55,7 +55,7 @@ enum KostZCalculator {
         let personAmounts = eligible.compactMap { person -> KostZPersonAmount? in
             guard let amount = amountByPersonID[person.id], amount > 0 else { return nil }
             return KostZPersonAmount(person: person, amount: amount)
-        }.sorted { $0.person.displayName < $1.person.displayName }
+        }.sorted { ($0.person.lastName, $0.person.firstName) < ($1.person.lastName, $1.person.firstName) }
 
         return KostZMonthSummary(month: month, year: year, personAmounts: personAmounts)
     }

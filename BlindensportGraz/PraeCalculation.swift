@@ -9,12 +9,28 @@ import SwiftData
 struct PraeEligiblePerson: Identifiable, Hashable {
     let id: UUID
     let displayName: String
+    let lastName: String
+    let firstName: String
     let membershipIDs: [UUID]
     // Carried through from the representative membership so exporters can
     // fill in name/address without a second lookup — only Member has an
     // address (User doesn't), so a person backed only by a registered
     // account exports with a blank Wohnanschrift on the PRAE form.
     let member: Member?
+
+    // Explicit init (rather than relying on the synthesized memberwise one)
+    // so lastName/firstName can default to "" — existing test fixtures that
+    // only need displayName (export round-trip tests, not sort-order tests)
+    // don't need updating; real callers (eligiblePeople below) always pass both.
+    init(id: UUID, displayName: String, lastName: String = "", firstName: String = "",
+         membershipIDs: [UUID], member: Member?) {
+        self.id = id
+        self.displayName = displayName
+        self.lastName = lastName
+        self.firstName = firstName
+        self.membershipIDs = membershipIDs
+        self.member = member
+    }
 
     static func == (lhs: PraeEligiblePerson, rhs: PraeEligiblePerson) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
@@ -55,21 +71,22 @@ enum PraeCalculator {
     static let monthlyCap = 720.0
 
     /// Dedupes coach/assistant TeamMemberships (across every team, app-wide)
-    /// down to one entry per underlying person, sorted by display name.
+    /// down to one entry per underlying person, sorted by lastName.
     static func eligiblePeople(from allMemberships: [TeamMembership]) -> [PraeEligiblePerson] {
-        var byKey: [UUID: (name: String, ids: [UUID], member: Member?)] = [:]
+        var byKey: [UUID: (name: String, lastName: String, firstName: String, ids: [UUID], member: Member?)] = [:]
         for membership in allMemberships where ["coach", "assistant"].contains(membership.role) {
             let key = membership.user?.id ?? membership.member?.id ?? membership.id
             if var existing = byKey[key] {
                 existing.ids.append(membership.id)
                 byKey[key] = existing
             } else {
-                byKey[key] = (membership.displayName, [membership.id], membership.member)
+                byKey[key] = (membership.displayName, membership.lastName, membership.firstName, [membership.id], membership.member)
             }
         }
         return byKey.map { key, value in
-            PraeEligiblePerson(id: key, displayName: value.name, membershipIDs: value.ids, member: value.member)
-        }.sorted { $0.displayName < $1.displayName }
+            PraeEligiblePerson(id: key, displayName: value.name, lastName: value.lastName, firstName: value.firstName,
+                                membershipIDs: value.ids, member: value.member)
+        }.sorted { ($0.lastName, $0.firstName) < ($1.lastName, $1.firstName) }
     }
 
     /// Fetches every attended, PRAE-amount-set Attendance across the given

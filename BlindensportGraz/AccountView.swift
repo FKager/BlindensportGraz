@@ -205,7 +205,7 @@ struct EditAccountView: View {
 struct UserListView: View {
     let currentUser: User
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \User.createdAt) private var users: [User]
+    @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var users: [User]
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {

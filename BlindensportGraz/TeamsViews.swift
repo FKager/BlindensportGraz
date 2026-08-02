@@ -90,8 +90,8 @@ struct TeamDetailView: View {
     @Bindable var team: Team
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
-    @Query private var users: [User]
-    @Query private var members: [Member]
+    @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var users: [User]
+    @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)]) private var members: [Member]
     @State private var showAddMember = false
 
     var availableUsers: [User] {
@@ -123,7 +123,8 @@ struct TeamDetailView: View {
                     Text("Keine Mitglieder")
                         .foregroundStyle(.secondary)
                 } else {
-                    ForEach(team.memberships) { m in
+                    let sortedMemberships = team.memberships.sortedByLastName()
+                    ForEach(sortedMemberships) { m in
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(m.displayName)
@@ -139,9 +140,15 @@ struct TeamDetailView: View {
                                 .background(.blue.opacity(0.15), in: Capsule())
                         }
                     }
+                    // Indexes into sortedMemberships, NOT team.memberships — a
+                    // ForEach over a re-sorted copy needs onDelete's offsets
+                    // resolved against that same sorted array, or swiping row
+                    // N would delete whoever happens to sit at raw index N in
+                    // the unsorted relationship instead of the person actually
+                    // shown at that row.
                     .onDelete { offsets in
                         for index in offsets {
-                            let membership = team.memberships[index]
+                            let membership = sortedMemberships[index]
                             CloudKitSync.shared.deleteMembership(membership.id)
                             modelContext.delete(membership)
                         }

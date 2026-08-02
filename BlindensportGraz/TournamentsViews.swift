@@ -202,7 +202,7 @@ struct TournamentDetailView: View {
                 }
             }
         }
-        return result.sorted { $0.displayName < $1.displayName }
+        return result.sortedByLastName()
     }
 
     var attendedMemberships: [TeamMembership] {

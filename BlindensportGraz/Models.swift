@@ -307,6 +307,12 @@ extension TeamMembership {
         user?.displayName ?? member?.fullName ?? "?"
     }
 
+    // Same user/member fallback chain as displayName — TeamMembership has no
+    // stored lastName/firstName of its own, only via whichever of user/member
+    // is set.
+    var lastName: String { user?.lastName ?? member?.lastName ?? "" }
+    var firstName: String { user?.firstName ?? member?.firstName ?? "" }
+
     /// Secondary line under the name in member lists: indicates whether this
     /// roster entry is linked to a registered app account, or is roster-only
     /// (no account yet). Used to be "@username", but User no longer has a
@@ -316,6 +322,15 @@ extension TeamMembership {
     var subtitle: String {
         if user != nil { return "Konto vorhanden" }
         return "Grazer VSC – kein Konto"
+    }
+}
+
+extension Sequence where Element == TeamMembership {
+    /// Standard sort order for every member list in the app: lastName, then
+    /// firstName as a tiebreaker — matches how User/Member rosters are
+    /// already sorted (RootView.LoginView, MembersListView).
+    func sortedByLastName() -> [TeamMembership] {
+        sorted { ($0.lastName, $0.firstName) < ($1.lastName, $1.firstName) }
     }
 }
 

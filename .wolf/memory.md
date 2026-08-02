@@ -938,3 +938,21 @@
 | 14:03 | Edited ../../.claude/projects/-Users-franz-dev-claude/memory/feedback_test_on_physical_device.md | 15→15 lines | ~619 |
 | 14:03 | Edited ../../.claude/projects/-Users-franz-dev-claude/memory/MEMORY.md | inline fix | ~48 |
 | 13:57 | Fixed account-resolution bug caused by prior uninstall: blank duplicate account created instead of recognizing returning user; sync-first-then-picker fallback added | RootView.swift, buglog.json (bug-164), cerebrum.md | success, build only (no simulator per user correction) | ~12000 |
+| 14:05 | Session end: 27 writes across 16 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, AccountView.swift) | 21 reads | ~57904 tok |
+| 14:07 | Session end: 27 writes across 16 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, AccountView.swift) | 21 reads | ~57904 tok |
+| 14:13 | Edited BlindensportGraz/Models.swift | modified sortedByLastName() | ~222 |
+| 14:13 | Edited BlindensportGraz/Models.swift | modified sortedByLastName() | ~375 |
+| 14:13 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 3→3 lines | ~28 |
+| 14:14 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~100 |
+| 14:14 | Edited BlindensportGraz/TournamentsViews.swift | 8→8 lines | ~53 |
+| 14:14 | Edited BlindensportGraz/MemberListView.swift | sorted() → sortedByLastName() | ~46 |
+| 14:14 | Edited BlindensportGraz/MemberListView.swift | inline fix | ~25 |
+| 14:14 | Edited BlindensportGraz/TeamsViews.swift | 3→3 lines | ~73 |
+| 14:14 | Edited BlindensportGraz/TeamsViews.swift | modified ForEach() | ~514 |
+| 14:14 | Edited BlindensportGraz/PraeCalculation.swift | 9→14 lines | ~190 |
+| 14:15 | Edited BlindensportGraz/PraeCalculation.swift | modified eligiblePeople() | ~312 |
+| 14:15 | Edited BlindensportGraz/KostZCalculation.swift | 4→4 lines | ~93 |
+| 14:15 | Edited BlindensportGraz/AccountView.swift | inline fix | ~30 |
+| 14:15 | Edited BlindensportGraz/EventsViews.swift | inline fix | ~39 |
+| 14:16 | Edited BlindensportGraz/PraeCalculation.swift | modified hash() | ~350 |
+| 14:15 | Refactor: sort all member/user/participant lists by lastName (TeamMembership got shared lastName/firstName + sortedByLastName() helper) instead of displayName/createdAt/insertion order | Models.swift, TeamsViews.swift, TrainingsViews.swift, TournamentsViews.swift, MemberListView.swift, TrainingsfrequenzlisteCalculation.swift, PraeCalculation.swift, KostZCalculation.swift, AccountView.swift, EventsViews.swift | success, build + build-for-testing green (no simulator per user correction) | ~16000 |

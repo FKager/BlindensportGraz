@@ -271,7 +271,7 @@ struct EventDetailView: View {
                     Text("Noch keine Teilnehmer")
                           .foregroundColor(.secondary)
                   } else {
-                     ForEach(event.participations) { p in
+                     ForEach(event.participations.sorted { ($0.user.lastName, $0.user.firstName) < ($1.user.lastName, $1.user.firstName) }) { p in
                         HStack {
                             Text(p.user.displayName)
                             Spacer()
