@@ -2848,6 +2848,106 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-02T22:56:00.000Z"
+    },
+    {
+      "id": "bug-174",
+      "timestamp": "2026-08-03T07:30:00.000Z",
+      "error_message": "User reported Person-Others.json import not working on physical iPhone; separately observed on relaunch: CloudKitSync pull failed for UserIdentity/ClubMember/Team/TeamMembership/Training/TrainingAttendance (CKError Invalid Arguments 12/2015, \"Field recordName is not marked queryable\") and for SportEvent/Tournament/EventImage/EventParticipation/TournamentAttendance (CKError Unknown Item 11/2003, \"Did not find record type\")",
+      "file": "BlindensportGraz/MemberImportExport.swift, BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Import itself: no code defect found in MemberImportExport.importMembers or data/Person-Others.json (the latter was already fixed for a malformed-string bug on 2026-07-30, bug-142, and is valid JSON now). The import succeeded once the app was freshly relaunched on the device (via devicectl --terminate-existing) after the device was unlocked -- first relaunch attempt failed outright with CoreDeviceError 10002 because the device was locked, not because of the import logic. Root cause of the original failure was never conclusively isolated to app code; most likely a stale/suspended prior app instance on the device, resolved by the forced relaunch. Separately (unrelated to the import, caught live on the console during this session): the on-device CloudKit container is missing production schema setup -- several record types (SportEvent, Tournament, EventImage, EventParticipation, TournamentAttendance) do not exist server-side at all, and several existing types (UserIdentity, ClubMember, Team, TeamMembership, Training, TrainingAttendance) have their recordName field not marked Queryable, both of which make CloudKitSync.pull* silently fail (errors only reach the console, never surfaced in-app) for those record types.",
+      "fix": "No code fix required for the reported import failure -- resolved by force-relaunching the app fresh on the unlocked device. The CloudKit schema gaps (missing record types + non-queryable recordName index) were NOT fixed in this session -- need the CloudKit Dashboard schema for the Production environment reviewed/deployed (Development schema likely has these record types/indexes already from local testing, Production does not), otherwise cross-device sync of Sport events/Tournaments/EventImages/Participations/Attendance silently fails for every user.",
+      "tags": [
+        "import",
+        "MemberImportExport",
+        "device-trace",
+        "cloudkit",
+        "schema",
+        "queryable-index",
+        "unresolved"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T07:30:00.000Z"
+    },
+    {
+      "id": "bug-175",
+      "timestamp": "2026-08-03T05:33:33.512Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 13→7 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T05:33:33.512Z"
+    },
+    {
+      "id": "bug-176",
+      "timestamp": "2026-08-03T05:39:35.407Z",
+      "error_message": "Wrong reference: showMembers should be showMyMember",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "Used \"showMembers\" instead of \"showMyMember\"",
+      "fix": "Changed showMembers → showMyMember",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T05:39:35.407Z"
+    },
+    {
+      "id": "bug-177",
+      "timestamp": "2026-08-03T05:40:12.212Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 13→10 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T05:40:12.212Z"
+    },
+    {
+      "id": "bug-178",
+      "timestamp": "2026-08-03T05:46:37.890Z",
+      "error_message": "Wrong reference: showUserList should be showMyMember",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "Used \"showUserList\" instead of \"showMyMember\"",
+      "fix": "Changed showUserList → showMyMember",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T05:46:37.890Z"
+    },
+    {
+      "id": "bug-179",
+      "timestamp": "2026-08-03T05:47:08.553Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 10→3 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T05:47:08.553Z"
     }
   ]
 }

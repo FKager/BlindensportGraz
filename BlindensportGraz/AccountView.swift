@@ -9,8 +9,6 @@ struct AccountView: View {
     @Query private var members: [Member]
 
     @State private var showEdit = false
-    @State private var showUserList = false
-    @State private var showMembers = false
     @State private var showMyMember = false
 
     var body: some View {
@@ -75,19 +73,6 @@ struct AccountView: View {
                         }
                     }
 
-                    if user.role == "admin" || user.isRoot {
-                        Button {
-                            showUserList = true
-                        } label: {
-                            Label("Benutzer verwalten", systemImage: "person.2.fill")
-                        }
-
-                        Button {
-                            showMembers = true
-                        } label: {
-                            Label("Benutzerverwaltung", systemImage: "building.columns.fill")
-                        }
-                    }
                 }
 
                 Section {
@@ -106,14 +91,6 @@ struct AccountView: View {
             if let user = currentUser {
                 EditAccountView(user: user)
             }
-        }
-        .sheet(isPresented: $showUserList) {
-            if let user = currentUser {
-                UserListView(currentUser: user)
-            }
-        }
-        .sheet(isPresented: $showMembers) {
-            MembersListView()
         }
         .sheet(isPresented: $showMyMember) {
             if let user = currentUser, let member = Member.first(matching: user, in: members) {

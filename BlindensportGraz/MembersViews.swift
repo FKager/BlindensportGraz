@@ -8,18 +8,22 @@ import UniformTypeIdentifiers
 /// Member.checkMembership in Models.swift). `Member.memberOfGVSC` makes
 /// club membership an explicit per-entry flag rather than something implied
 /// by mere presence on the roster, since this list also carries
-/// helpers/coaches who aren't necessarily formal members. Presented as a
-/// sheet from AccountView's "Benutzerverwaltung" button, not as its own tab
-/// (see MainTabView's comment for why -- too many top-level tabs pushed it
-/// into iOS's auto-collapsed "More" screen), so it's self-contained with its
-/// own NavigationStack and a dismiss button, unlike a tab-hosted view.
+/// helpers/coaches who aren't necessarily formal members. Its own top-level
+/// tab (admin/root only, see MainTabView), retained as a self-contained
+/// NavigationStack with a "Fertig" dismiss button since it's also still
+/// presentable as a sheet elsewhere. Also hosts access to `UserListView`
+/// (account/role administration, "Benutzer verwalten" toolbar button) --
+/// both admin-facing user-management screens live under this one tab now
+/// instead of being split between here and AccountView.
 struct MembersListView: View {
+    let currentUser: User
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)])
     private var members: [Member]
     @Query private var users: [User]
     @State private var showAdd = false
+    @State private var showUserList = false
     // Eagerly (re)generated whenever the roster changes, mirroring the
     // ShareLink pattern established for TeilnehmerlisteExport (see
     // MemberListView/cerebrum.md) — this user relies on VoiceOver, and a
@@ -61,6 +65,10 @@ struct MembersListView: View {
                     Button { showAdd = true } label: { Image(systemName: "plus") }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
+                    Button { showUserList = true } label: { Image(systemName: "person.2.fill") }
+                        .accessibilityLabel("Benutzer verwalten")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button { showImporter = true } label: { Image(systemName: "square.and.arrow.down") }
                         .accessibilityLabel("Mitglieder importieren")
                 }
@@ -73,6 +81,9 @@ struct MembersListView: View {
             }
             .sheet(isPresented: $showAdd) {
                 AddMemberView()
+            }
+            .sheet(isPresented: $showUserList) {
+                UserListView(currentUser: currentUser)
             }
             .task(id: members.map(\.id)) {
                 exportURL = try? MemberImportExport.exportFile(members: members)

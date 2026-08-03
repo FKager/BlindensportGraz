@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "de",
   "strings" : {
+    "–" : {
+
+    },
     "@%@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -44,6 +47,12 @@
           }
         }
       }
+    },
+    "%lld." : {
+
+    },
+    "0" : {
+
     },
     "Abbrechen" : {
       "extractionState" : "manual",
@@ -100,9 +109,6 @@
         }
       }
     },
-    "Adresse" : {
-
-    },
     "Aktive Turniere" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -127,6 +133,18 @@
           }
         }
       }
+    },
+    "Anwesenheit" : {
+
+    },
+    "Anzahl Mitglieder" : {
+
+    },
+    "Anzahl Personen" : {
+
+    },
+    "Anzahl Trainingstage" : {
+
     },
     "Assistent:in" : {
       "extractionState" : "manual",
@@ -186,6 +204,12 @@
         }
       }
     },
+    "Benutzerverwaltung" : {
+
+    },
+    "Berichte" : {
+
+    },
     "Beschreibung" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -212,6 +236,31 @@
 
     },
     "Bilder (%lld)" : {
+
+    },
+    "Bildet die Original-Trainingsfrequenzliste (Nr./Vorname/Nachname/Verein je Zeile, ein Trainingstag je Spalte, „j“/„n“ je Zelle, Zeilensumme „ges. TL“) mit den erfassten Anwesenheiten nach — ohne zusätzliche Spalten gegenüber dem Original." : {
+
+    },
+    "Bitte wählen" : {
+
+    },
+    "Darstellung der Verwendungszwecke exportieren" : {
+
+    },
+    "Darstellung wird vorbereitet …" : {
+
+    },
+    "Das Formular fasst nur %lld Personen — es werden nur die ersten %lld von %lld exportiert." : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Das Formular fasst nur %1$lld Personen — es werden nur die ersten %2$lld von %3$lld exportiert."
+          }
+        }
+      }
+    },
+    "Das offizielle Hauptformular (Name/Adresse vorausgefüllt) muss weiterhin von Hand um Monat/Jahr, Tagesbeträge und die persönliche Unterschrift ergänzt werden — siehe Einsatztage oben." : {
 
     },
     "Dauer: %lld min" : {
@@ -260,6 +309,9 @@
           }
         }
       }
+    },
+    "Einsatztage" : {
+
     },
     "Ende" : {
       "extractionState" : "manual",
@@ -316,6 +368,12 @@
         }
       }
     },
+    "Export" : {
+
+    },
+    "Export fehlgeschlagen" : {
+
+    },
     "Fertig" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -349,10 +407,16 @@
         }
       }
     },
+    "Gesamt" : {
+
+    },
+    "Geschlecht" : {
+
+    },
     "Grazer VSC" : {
 
     },
-    "Grazer VSC Mitglieder ohne Konto" : {
+    "Helfer:in / Trainer:in" : {
 
     },
     "Hier ist dein Überblick" : {
@@ -377,6 +441,18 @@
         }
       }
     },
+    "Honorare Trainer:innen / Helfer:innen" : {
+
+    },
+    "IBAN" : {
+
+    },
+    "Import" : {
+
+    },
+    "Jahr: %@" : {
+
+    },
     "Kein Mitglied" : {
 
     },
@@ -391,6 +467,9 @@
         }
       }
     },
+    "Kein Vereinsdateneintrag gefunden" : {
+
+    },
     "Keine Auswahl = für alle sichtbar" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -403,6 +482,12 @@
       }
     },
     "Keine Bilder" : {
+
+    },
+    "Keine Einsätze mit hinterlegtem Betrag in diesem Monat." : {
+
+    },
+    "Keine Einsatztage mit hinterlegtem PRAE-Betrag in diesem Monat." : {
 
     },
     "Keine Events" : {
@@ -427,6 +512,9 @@
         }
       }
     },
+    "Keine Teammitglieder mit Rolle „Trainer:in“ oder „Helfer:in“ gefunden." : {
+
+    },
     "Keine Teams" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -449,6 +537,9 @@
         }
       }
     },
+    "Keine Trainings in diesem Zeitraum für dieses Team." : {
+
+    },
     "Keine Turniere" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -459,9 +550,6 @@
           }
         }
       }
-    },
-    "Keine Vereinsmitglieder" : {
-
     },
     "Kommende Trainings" : {
       "extractionState" : "manual",
@@ -510,6 +598,15 @@
         }
       }
     },
+    "KostZ-Berechnung" : {
+
+    },
+    "KostZ-Formular exportieren" : {
+
+    },
+    "KostZ-Formular wird vorbereitet …" : {
+
+    },
     "Laufend" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -532,7 +629,7 @@
         }
       }
     },
-    "Lege ein neues Mitglied des Grazer VSC an." : {
+    "Lege ein neues Mitglied an." : {
 
     },
     "Lege ein neues Team an." : {
@@ -568,6 +665,9 @@
         }
       }
     },
+    "männlich" : {
+
+    },
     "Max. Teams: %lld" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -592,6 +692,9 @@
           }
         }
       }
+    },
+    "Mitglied des Grazer VSC" : {
+
     },
     "Mitglied hinzufügen" : {
       "extractionState" : "manual",
@@ -637,6 +740,15 @@
         }
       }
     },
+    "Mitglieder exportieren" : {
+
+    },
+    "Mitglieder importieren" : {
+
+    },
+    "Mitglieder ohne Konto" : {
+
+    },
     "Mitgliederliste" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -652,6 +764,12 @@
 
     },
     "Mitgliedsnummer" : {
+
+    },
+    "Monat" : {
+
+    },
+    "Monatliche Höchstgrenze von € 720,- überschritten." : {
 
     },
     "Nachname" : {
@@ -737,6 +855,9 @@
         }
       }
     },
+    "Noch kein Team angelegt." : {
+
+    },
     "Noch keine Bilder" : {
 
     },
@@ -773,6 +894,12 @@
         }
       }
     },
+    "Nur die Zeile „HONORARE / VERGÜTUNGEN“ sowie Zeitraum und Personenanzahl werden vorausgefüllt — alle übrigen Kostenarten, Beilagen-Nummern und der Ort müssen weiterhin von Hand ergänzt werden." : {
+
+    },
+    "OK" : {
+
+    },
     "Ort" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -784,6 +911,9 @@
         }
       }
     },
+    "Person" : {
+
+    },
     "Planung" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -794,6 +924,21 @@
           }
         }
       }
+    },
+    "PLZ" : {
+
+    },
+    "PRAE (€)" : {
+
+    },
+    "PRAE-Berechnung" : {
+
+    },
+    "PRAE-Formular exportieren" : {
+
+    },
+    "PRAE-Formular wird vorbereitet …" : {
+
     },
     "Profil" : {
       "extractionState" : "manual",
@@ -878,6 +1023,9 @@
         }
       }
     },
+    "Sport-ID" : {
+
+    },
     "Sportart" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -899,6 +1047,9 @@
           }
         }
       }
+    },
+    "Standardfunktion" : {
+
     },
     "Start" : {
       "extractionState" : "manual",
@@ -922,6 +1073,15 @@
         }
       }
     },
+    "Straße" : {
+
+    },
+    "SVNR" : {
+
+    },
+    "Tageshöchstsatz von € 120,- überschritten an Tag(en): %@." : {
+
+    },
     "Team" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -932,6 +1092,9 @@
           }
         }
       }
+    },
+    "Team & Zeitraum" : {
+
     },
     "Teams" : {
       "extractionState" : "manual",
@@ -965,6 +1128,12 @@
           }
         }
       }
+    },
+    "TeilnehmerInnenliste exportieren (Sport Austria)" : {
+
+    },
+    "TeilnehmerInnenliste wird vorbereitet …" : {
+
     },
     "Telefon" : {
 
@@ -1004,6 +1173,18 @@
           }
         }
       }
+    },
+    "Trainingsfrequenzliste" : {
+
+    },
+    "Trainingsfrequenzliste exportieren" : {
+
+    },
+    "Trainingsfrequenzliste wird vorbereitet …" : {
+
+    },
+    "Trainingstage" : {
+
     },
     "Turnier" : {
       "extractionState" : "manual",
@@ -1060,7 +1241,16 @@
         }
       }
     },
+    "Vereinsdaten" : {
+
+    },
+    "Vereinsdaten bearbeiten" : {
+
+    },
     "Vorname" : {
+
+    },
+    "weiblich" : {
 
     },
     "Willkommen, %@" : {

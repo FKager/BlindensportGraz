@@ -184,14 +184,11 @@ struct MainTabView: View {
             NavigationStack { TeamsListView(currentUser: currentUser) }
                 .tabItem { Label("Teams", systemImage: "person.3.fill") }
 
-            // Member/roster management moved to a button inside AccountView (see
-            // "Benutzerverwaltung") instead of being its own tab -- with this
-            // plus Account that would be 7 top-level tabs for an admin, and
-            // iOS's TabView (backed by UITabBarController on iPhone) silently
-            // collapses everything from the 5th tab onward into an auto-added
-            // "More" screen once there are more than 5. That's exactly what was
-            // making this tab unreachable-looking: it was never gone, just
-            // buried inside "More" with no visual hint it existed there.
+            if currentUser.role == "admin" || currentUser.isRoot {
+                NavigationStack { MembersListView(currentUser: currentUser) }
+                    .tabItem { Label("Benutzerverwaltung", systemImage: "building.columns.fill") }
+            }
+
             NavigationStack { AccountView(currentUser: currentUser, onLogout: onLogout) }
                 .tabItem { Label("Account", systemImage: "person.crop.circle") }
         }

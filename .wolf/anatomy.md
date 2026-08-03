@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-02T21:01:49.066Z
-> Files: 79 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T06:02:38.341Z
+> Files: 82 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -13,9 +13,10 @@
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
+- `feedback_deploy_via_github_actions.md` (~571 tok)
 - `feedback_no_clarifying_questions.md` (~384 tok)
 - `feedback_test_on_physical_device.md` (~580 tok)
-- `MEMORY.md` — Memory (~85 tok)
+- `MEMORY.md` — Memory (~135 tok)
 
 ## ./
 
@@ -25,6 +26,7 @@
 - `CLAUDE.md` — OpenWolf (~129 tok)
 - `CLAUDE.mdes` — Requirements (~91 tok)
 - `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
+- `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
 - `profile.plist` (~0 tok)
 - `project.yml` (~557 tok)
 
@@ -32,6 +34,10 @@
 
 - `settings.json` (~441 tok)
 - `settings.local.json` (~380 tok)
+
+## .claude/commands/
+
+- `deploy.md` (~465 tok)
 
 ## .claude/rules/
 
@@ -60,7 +66,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~3094 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~2860 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1118 tok)
@@ -76,12 +82,12 @@
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names; struct MemberIO, enum MemberImportExport (fill-blanks-only import) (~4551 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1374 tok)
-- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration) — MembersListView/MemberRow/MemberDetailView/MyMemberView/AddMemberView, formerly ClubMembersViews.swift (~4415 tok)
+- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4562 tok)
 - `Models.swift` — Class: User (~6202 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~1746 tok)
 - `PraeExport.swift` — Declares PraeExportError (~3189 tok)
 - `PraeViews.swift` — / Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte" (~2274 tok)
-- `RootView.swift` — SwiftUI view: RootView (~3620 tok)
+- `RootView.swift` — SwiftUI view: RootView (~3522 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~3126 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4727 tok)

@@ -983,3 +983,37 @@
 | 22:57 | Finished designated-root-account fix: removed RootView's Apple-verification-gated elevateIfDesignatedRoot (could never fire — no real Apple ID exists for blindensport.gvsc@gmail.com), wired the gate-free User.elevateIfDesignatedRoot() (firstName+lastName+email match) into all resolveAccount() paths, LoginView(onLogin:), RegisterView, and AccountView's EditAccountView | RootView.swift, Models.swift, AccountView.swift | xcodebuild build succeeded (CODE_SIGNING_ALLOWED=NO, codesign step itself hits known sandbox errSecInternalComponent wall unrelated to this change); logged bug-173, updated cerebrum | ~9000 |
 | 22:58 | Session end: 10 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 3 reads | ~14046 tok |
 | 23:01 | Edited BlindensportGraz/Models.swift | 3→3 lines | ~59 |
+| 23:02 | Session end: 11 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 3 reads | ~14098 tok |
+| 23:04 | Session end: 11 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 3 reads | ~14098 tok |
+| 23:07 | Session end: 11 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 5 reads | ~18970 tok |
+| 23:13 | Session end: 11 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 5 reads | ~18970 tok |
+| 23:18 | Session end: 11 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 8 reads | ~19720 tok |
+| 23:24 | Session end: 11 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 9 reads | ~22874 tok |
+| 23:29 | Session end: 11 writes across 3 files (Models.swift, RootView.swift, AccountView.swift) | 10 reads | ~26337 tok |
+| 23:33 | Created kloudkit.md | — | ~683 |
+| 23:34 | Session end: 12 writes across 4 files (Models.swift, RootView.swift, AccountView.swift, kloudkit.md) | 10 reads | ~27069 tok |
+
+## Session: 2026-08-03 07:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 07:33 | Edited BlindensportGraz/AccountView.swift | reduced (-6 lines) | ~83 |
+| 07:39 | Edited BlindensportGraz/AccountView.swift | 3→2 lines | ~24 |
+| 07:39 | Edited BlindensportGraz/AccountView.swift | modified sheet() | ~12 |
+| 07:40 | Edited BlindensportGraz/RootView.swift | TabView() → MembersListView() | ~148 |
+| 07:40 | Session end: 4 writes across 2 files (AccountView.swift, RootView.swift) | 8 reads | ~16715 tok |
+| 07:43 | Edited BlindensportGraz/MembersViews.swift | 7→9 lines | ~108 |
+| 07:43 | Edited BlindensportGraz/MembersViews.swift | modified ToolbarItem() | ~173 |
+| 07:44 | Edited BlindensportGraz/MembersViews.swift | modified sheet() | ~56 |
+| 07:45 | Edited BlindensportGraz/MembersViews.swift | 11→13 lines | ~247 |
+| 07:45 | Edited BlindensportGraz/RootView.swift | 4→4 lines | ~69 |
+| 07:46 | Edited BlindensportGraz/AccountView.swift | 3→2 lines | ~23 |
+| 07:47 | Edited BlindensportGraz/AccountView.swift | removed 10 lines | ~12 |
+| 07:47 | Edited BlindensportGraz/AccountView.swift | removed 6 lines | ~12 |
+| 07:47 | Session end: 12 writes across 3 files (AccountView.swift, RootView.swift, MembersViews.swift) | 8 reads | ~17368 tok |
+| 07:56 | Session end: 12 writes across 3 files (AccountView.swift, RootView.swift, MembersViews.swift) | 8 reads | ~17368 tok |
+| 08:02 | Created .claude/commands/deploy.md | — | ~496 |
+| 08:02 | Created ../../.claude/projects/-Users-franz-dev-claude/memory/feedback_deploy_via_github_actions.md | — | ~578 |
+| 08:02 | Edited ../../.claude/projects/-Users-franz-dev-claude/memory/MEMORY.md | 1→2 lines | ~102 |
+| 08:02 | Session end: 15 writes across 6 files (AccountView.swift, RootView.swift, MembersViews.swift, deploy.md, feedback_deploy_via_github_actions.md) | 10 reads | ~21054 tok |
+| 08:03 | Session end: 15 writes across 6 files (AccountView.swift, RootView.swift, MembersViews.swift, deploy.md, feedback_deploy_via_github_actions.md) | 10 reads | ~21054 tok |
