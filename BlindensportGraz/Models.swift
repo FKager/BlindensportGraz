@@ -311,13 +311,17 @@ extension Team {
         ("Blindenfußball Helfer", "Blindenfußball"),
     ]
 
-    /// Teams automatically assigned to any new Torball training or
-    /// tournament, regardless of who creates it or which teams they
-    /// personally belong to — see AddTrainingView/AddTournamentView's save
-    /// actions. Names must match `defaultTeams` above exactly
-    /// (case-insensitive lookup), since that's what actually creates these
-    /// teams in the first place.
-    static let torballTeamNames = ["Grazer VSC Damen", "Grazer VSC Herren", "Torball Helfer"]
+    /// Maps a SportEvent's `sport` string to the teams automatically
+    /// assigned to any new training/tournament of that sport, regardless of
+    /// who creates it or which teams they personally belong to — see
+    /// AddTrainingView/AddTournamentView's save actions. Names must match
+    /// `defaultTeams` above exactly (case-insensitive lookup), since that's
+    /// what actually creates these teams in the first place. Sports not
+    /// listed here get no automatic assignment.
+    static let autoAssignTeamNames: [String: [String]] = [
+        "Torball": ["Grazer VSC Damen", "Grazer VSC Herren", "Torball Helfer"],
+        "Blindenfußball": ["Blindenfußball", "Blindenfußball Helfer"],
+    ]
 }
 
 /// Exactly one of `user`/`member` is set, never both/neither. `user` covers

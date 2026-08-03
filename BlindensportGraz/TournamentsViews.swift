@@ -74,8 +74,8 @@ struct AddTournamentView: View {
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        if sport == "Torball" {
-                            Text("Bei Torball werden \(Team.torballTeamNames.joined(separator: ", ")) automatisch zugewiesen.")
+                        if let autoTeamNames = Team.autoAssignTeamNames[sport] {
+                            Text("Bei \(sport) werden \(autoTeamNames.joined(separator: ", ")) automatisch zugewiesen.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -96,11 +96,12 @@ struct AddTournamentView: View {
                     Button("Speichern") {
                         var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
                         // Same business rule as AddTrainingView: applies to
-                        // ANY Torball tournament regardless of who created it,
-                        // so this looks at the full `allTeams` query, not the
-                        // role-filtered `myTeams` the checkboxes above use.
-                        if sport == "Torball" {
-                            let autoNames = Set(Team.torballTeamNames.map { $0.lowercased() })
+                        // ANY tournament of a mapped sport regardless of who
+                        // created it, so this looks at the full `allTeams`
+                        // query, not the role-filtered `myTeams` the
+                        // checkboxes above use.
+                        if let autoTeamNames = Team.autoAssignTeamNames[sport] {
+                            let autoNames = Set(autoTeamNames.map { $0.lowercased() })
                             for team in allTeams where autoNames.contains(team.name.lowercased()) {
                                 if !teams.contains(where: { $0.id == team.id }) {
                                     teams.append(team)
