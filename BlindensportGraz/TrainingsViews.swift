@@ -72,6 +72,11 @@ struct AddTrainingView: View {
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                        if sport == "Torball" {
+                            Text("Bei Torball werden \(Team.torballTrainingTeamNames.joined(separator: ", ")) automatisch zugewiesen.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
                 Section("Notizen") {
@@ -87,6 +92,20 @@ struct AddTrainingView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
+                        var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
+                        // Business rule, not a UI convenience: applies to
+                        // ANY Torball training regardless of who created it
+                        // or which teams they personally belong to, so this
+                        // looks at the full `allTeams` query, not the
+                        // role-filtered `myTeams` the checkboxes above use.
+                        if sport == "Torball" {
+                            let autoNames = Set(Team.torballTrainingTeamNames.map { $0.lowercased() })
+                            for team in allTeams where autoNames.contains(team.name.lowercased()) {
+                                if !teams.contains(where: { $0.id == team.id }) {
+                                    teams.append(team)
+                                }
+                            }
+                        }
                         let training = Training(
                             title: title,
                             sport: sport,
@@ -96,7 +115,7 @@ struct AddTrainingView: View {
                             focusArea: focusArea,
                             notes: notes,
                             createdBy: currentUser?.id.uuidString ?? "",
-                            teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
+                            teams: teams
                         )
                         modelContext.insert(training)
                         try? modelContext.save()

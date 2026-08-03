@@ -12,6 +12,7 @@
 | 13:25 | User confirmed: default teams now appear on-device after bug-187 fix | — | Confirmed working | ~500 |
 | 13:32 | Renamed default "Helfer" team to "Torball Helfer" (in-place migration, preserves id/memberships) + added new "Blindenfußball Helfer" default team | Models.swift, CloudKitSync.swift | xcodebuild build succeeded | ~8000 |
 | 15:41 | Added automatic Member roster backups on create/delete: timestamped JSON snapshots to Documents/MemberBackups (Files-app visible), capped at 30, wired into 4 create/delete call sites | MemberBackup.swift (new), MemberImportExport.swift, MembersViews.swift, TeamImportExport.swift, Info.plist | xcodebuild build + build-for-testing succeeded | ~18000 |
+| 15:55 | New Torball training auto-assigns Grazer VSC Damen/Herren/Torball Helfer (looks up allTeams, not role-filtered myTeams) | Models.swift, TrainingsViews.swift | xcodebuild build + build-for-testing succeeded | ~9000 |
 
 ## Session: 2026-07-12 20:59
 
@@ -1062,3 +1063,7 @@
 | 15:40 | Edited BlindensportGraz/MembersViews.swift | added nullish coalescing | ~154 |
 | 15:41 | Edited BlindensportGraz/MemberImportExport.swift | 6→11 lines | ~106 |
 | 15:41 | Edited BlindensportGraz/TeamImportExport.swift | modified findExistingTeam() | ~122 |
+| 15:43 | Session end: 20 writes across 9 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 8 reads | ~45425 tok |
+| 15:47 | Edited BlindensportGraz/Models.swift | expanded (+7 lines) | ~146 |
+| 15:47 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~419 |
+| 15:47 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~419 |
