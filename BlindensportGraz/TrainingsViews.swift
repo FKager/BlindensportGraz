@@ -73,7 +73,7 @@ struct AddTrainingView: View {
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         if sport == "Torball" {
-                            Text("Bei Torball werden \(Team.torballTrainingTeamNames.joined(separator: ", ")) automatisch zugewiesen.")
+                            Text("Bei Torball werden \(Team.torballTeamNames.joined(separator: ", ")) automatisch zugewiesen.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -99,7 +99,7 @@ struct AddTrainingView: View {
                         // looks at the full `allTeams` query, not the
                         // role-filtered `myTeams` the checkboxes above use.
                         if sport == "Torball" {
-                            let autoNames = Set(Team.torballTrainingTeamNames.map { $0.lowercased() })
+                            let autoNames = Set(Team.torballTeamNames.map { $0.lowercased() })
                             for team in allTeams where autoNames.contains(team.name.lowercased()) {
                                 if !teams.contains(where: { $0.id == team.id }) {
                                     teams.append(team)

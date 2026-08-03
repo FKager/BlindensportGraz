@@ -13,6 +13,7 @@
 | 13:32 | Renamed default "Helfer" team to "Torball Helfer" (in-place migration, preserves id/memberships) + added new "Blindenfußball Helfer" default team | Models.swift, CloudKitSync.swift | xcodebuild build succeeded | ~8000 |
 | 15:41 | Added automatic Member roster backups on create/delete: timestamped JSON snapshots to Documents/MemberBackups (Files-app visible), capped at 30, wired into 4 create/delete call sites | MemberBackup.swift (new), MemberImportExport.swift, MembersViews.swift, TeamImportExport.swift, Info.plist | xcodebuild build + build-for-testing succeeded | ~18000 |
 | 15:55 | New Torball training auto-assigns Grazer VSC Damen/Herren/Torball Helfer (looks up allTeams, not role-filtered myTeams) | Models.swift, TrainingsViews.swift | xcodebuild build + build-for-testing succeeded | ~9000 |
+| 16:02 | Same auto-assign behavior extended to Torball tournaments; renamed torballTrainingTeamNames -> torballTeamNames | Models.swift, TrainingsViews.swift, TournamentsViews.swift | xcodebuild build + build-for-testing succeeded | ~6000 |
 
 ## Session: 2026-07-12 20:59
 
@@ -1067,3 +1068,6 @@
 | 15:47 | Edited BlindensportGraz/Models.swift | expanded (+7 lines) | ~146 |
 | 15:47 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~419 |
 | 15:47 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~419 |
+| 15:49 | Session end: 23 writes across 10 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 9 reads | ~51377 tok |
+| 15:50 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~655 |
+| 15:51 | Edited BlindensportGraz/Models.swift | 6→7 lines | ~128 |

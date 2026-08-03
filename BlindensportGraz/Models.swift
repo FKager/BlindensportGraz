@@ -311,12 +311,13 @@ extension Team {
         ("Blindenfußball Helfer", "Blindenfußball"),
     ]
 
-    /// Teams automatically assigned to any new Torball training, regardless
-    /// of who creates it or which teams they personally belong to — see
-    /// AddTrainingView's save action. Names must match `defaultTeams` above
-    /// exactly (case-insensitive lookup), since that's what actually creates
-    /// these teams in the first place.
-    static let torballTrainingTeamNames = ["Grazer VSC Damen", "Grazer VSC Herren", "Torball Helfer"]
+    /// Teams automatically assigned to any new Torball training or
+    /// tournament, regardless of who creates it or which teams they
+    /// personally belong to — see AddTrainingView/AddTournamentView's save
+    /// actions. Names must match `defaultTeams` above exactly
+    /// (case-insensitive lookup), since that's what actually creates these
+    /// teams in the first place.
+    static let torballTeamNames = ["Grazer VSC Damen", "Grazer VSC Herren", "Torball Helfer"]
 }
 
 /// Exactly one of `user`/`member` is set, never both/neither. `user` covers
