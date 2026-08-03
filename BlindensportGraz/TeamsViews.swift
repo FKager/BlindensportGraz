@@ -37,6 +37,10 @@ struct TeamsListView: View {
             }
         }
         .navigationTitle("Teams")
+        .refreshable {
+            await CloudKitSync.shared.syncAll(modelContext: modelContext)
+            await CloudKitSync.shared.ensureDefaultTeams(modelContext: modelContext)
+        }
         .toolbar {
             if canManageTeams {
                 ToolbarItem(placement: .topBarTrailing) {

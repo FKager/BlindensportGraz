@@ -6,6 +6,7 @@
 | 14:44 | Added Team+members JSON import/export (ShareLink/.fileImporter in TeamsListView toolbar) | TeamImportExport.swift (new), TeamsViews.swift | xcodebuild build + build-for-testing succeeded | ~28000 |
 | 14:50 | Auto-seed 3 default teams (Damen/Herren Torball, Blindenfußball) on launch via CloudKit existence check | Models.swift, CloudKitSync.swift, RootView.swift | xcodebuild build + build-for-testing succeeded | ~15000 |
 | 15:02 | Added 4th default team "Helfer" (no sport, cross-team helpers/coaches) | Models.swift | xcodebuild build succeeded | ~3000 |
+| 15:01 | Fixed bug-184: default teams silently not created (cold-launch CloudKit transient + no retry) — added 3x retry + TeamsListView .refreshable fallback | CloudKitSync.swift, TeamsViews.swift | xcodebuild build succeeded | ~9000 |
 
 ## Session: 2026-07-12 20:59
 
@@ -1037,3 +1038,6 @@
 | 14:51 | Session end: 6 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~36177 tok |
 | 14:52 | Edited BlindensportGraz/Models.swift | 5→9 lines | ~114 |
 | 14:53 | Session end: 7 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~36299 tok |
+| 14:57 | Session end: 7 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~36299 tok |
+| 15:00 | Edited BlindensportGraz/CloudKitSync.swift | modified ensureDefaultTeams() | ~354 |
+| 15:00 | Edited BlindensportGraz/TeamsViews.swift | 2→6 lines | ~66 |

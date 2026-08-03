@@ -324,9 +324,24 @@ final class CloudKitSync {
     /// (case-insensitive name match), so the club's standing teams exist
     /// automatically on every device without an admin having to create them
     /// by hand — a no-op once all three exist. Called once per launch from
-    /// RootView.triggerBackgroundSync, right after syncAll.
+    /// RootView.triggerBackgroundSync (right after syncAll) and again from
+    /// TeamsListView's pull-to-refresh.
+    ///
+    /// Retries the existence check up to 3 times (2s apart) before giving up —
+    /// the very first CloudKit request right after a cold launch is prone to a
+    /// transient failure while the container/account is still becoming ready,
+    /// and since this is exactly the moment this feature is expected to fire
+    /// for the first time, a single failed attempt here would otherwise look
+    /// like the feature silently doesn't work at all for that whole session
+    /// (bug reported 2026-08-03 — see cerebrum.md).
     func ensureDefaultTeams(modelContext: ModelContext) async {
-        guard let existingNames = await existingTeamNames() else { return }
+        var existingNames: Set<String>?
+        for attempt in 0..<3 {
+            existingNames = await existingTeamNames()
+            if existingNames != nil { break }
+            if attempt < 2 { try? await Task.sleep(nanoseconds: 2_000_000_000) }
+        }
+        guard let existingNames else { return }
         for (name, sport) in Team.defaultTeams {
             guard !existingNames.contains(name.trimmingCharacters(in: .whitespaces).lowercased()) else { continue }
             let team = Team(name: name, sport: sport)
