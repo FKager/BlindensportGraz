@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T13:00:58.159Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T13:07:12.495Z
 > Files: 83 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -87,7 +87,7 @@
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~1746 tok)
 - `PraeExport.swift` — Declares PraeExportError (~3189 tok)
 - `PraeViews.swift` — / Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte" (~2274 tok)
-- `RootView.swift` — SwiftUI view: RootView (~3544 tok)
+- `RootView.swift` — SwiftUI view: RootView (~3738 tok)
 - `TeamImportExport.swift` — JSON import/export of Teams with their full membership roster (TeamIO/TeamMembershipIO), mirrors MemberImportExport.swift's ShareLink/.fileImporter/fill-blanks conventions (~2927 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~3776 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)

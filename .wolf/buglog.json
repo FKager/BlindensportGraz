@@ -3030,6 +3030,26 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-03T13:05:00.000Z"
+    },
+    {
+      "id": "bug-185",
+      "timestamp": "2026-08-03T13:10:00.000Z",
+      "error_message": "Default teams (and likely other CloudKit-synced data) still not appearing automatically even after adding retry + pull-to-refresh",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "triggerBackgroundSync() (syncAll + ensureDefaultTeams) was only ever called from the 3 Apple-Sign-In-driven branches inside resolveAccount(). The plain LoginView(onLogin:) closure -- used whenever an account is picked from the login list, or after RegisterView.onRegister -- set currentUser directly and never called it. Any user whose session lands on that path (e.g. no working Apple ID sign-in state on this device) never synced at all, regardless of retries, since the sync call itself never happened.",
+      "fix": "Added triggerBackgroundSync() to the onLogin closure in RootView.body, so every path that lands on a currentUser (Apple-driven or manual picker/register) now triggers the same background sync + default-team ensure.",
+      "tags": [
+        "cloudkit",
+        "sync",
+        "login",
+        "root-cause",
+        "swift"
+      ],
+      "related_bugs": [
+        "bug-184"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T13:10:00.000Z"
     }
   ]
 }

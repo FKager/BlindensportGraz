@@ -32,6 +32,16 @@ struct RootView: View {
                     applyDesignatedRootGrant(user)
                     applyTestAdminGrant(user)
                     currentUser = user
+                    // Picking an existing account from LoginView's list, or
+                    // finishing RegisterView's manual form, never went through
+                    // resolveAccount()'s Apple-Sign-In branches below — those
+                    // are the only ones that called triggerBackgroundSync, so
+                    // a user who always logs in this way (e.g. no working
+                    // Apple ID sign-in state on this device — see bug-184 in
+                    // buglog.json) never synced at all, and never got the
+                    // default teams. Every path that lands on a currentUser
+                    // now triggers the same background sync.
+                    triggerBackgroundSync()
                 })
             }
         }

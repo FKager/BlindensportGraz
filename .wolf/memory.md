@@ -7,6 +7,7 @@
 | 14:50 | Auto-seed 3 default teams (Damen/Herren Torball, Blindenfußball) on launch via CloudKit existence check | Models.swift, CloudKitSync.swift, RootView.swift | xcodebuild build + build-for-testing succeeded | ~15000 |
 | 15:02 | Added 4th default team "Helfer" (no sport, cross-team helpers/coaches) | Models.swift | xcodebuild build succeeded | ~3000 |
 | 15:01 | Fixed bug-184: default teams silently not created (cold-launch CloudKit transient + no retry) — added 3x retry + TeamsListView .refreshable fallback | CloudKitSync.swift, TeamsViews.swift | xcodebuild build succeeded | ~9000 |
+| 15:10 | Fixed bug-185 (real root cause): LoginView(onLogin:) picker/register path never called triggerBackgroundSync at all | RootView.swift | xcodebuild build succeeded | ~6000 |
 
 ## Session: 2026-07-12 20:59
 
@@ -1041,3 +1042,5 @@
 | 14:57 | Session end: 7 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~36299 tok |
 | 15:00 | Edited BlindensportGraz/CloudKitSync.swift | modified ensureDefaultTeams() | ~354 |
 | 15:00 | Edited BlindensportGraz/TeamsViews.swift | 2→6 lines | ~66 |
+| 15:02 | Session end: 9 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~37817 tok |
+| 15:07 | Edited BlindensportGraz/RootView.swift | expanded (+10 lines) | ~256 |
