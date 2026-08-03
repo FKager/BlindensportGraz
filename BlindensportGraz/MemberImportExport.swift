@@ -127,6 +127,19 @@ enum MemberImportExport {
     /// Encodes the given roster to pretty-printed, sorted-key JSON and writes
     /// it to a fresh temp file, ready for `ShareLink`.
     static func exportFile(members: [Member]) throws -> URL {
+        let data = try encodedJSON(for: members)
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("grazer-vsc-mitglieder-\(dateStamp()).json")
+        try data.write(to: url, options: .atomic)
+        return url
+    }
+
+    /// Same pretty-printed, sorted-key JSON `MemberIO` encoding used by
+    /// `exportFile` — pulled out so `MemberBackup`'s automatic snapshots use
+    /// the exact same serialization instead of a second, hand-maintained copy
+    /// of the field-by-field `MemberIO` construction that could silently
+    /// drift out of sync with it.
+    static func encodedJSON(for members: [Member]) throws -> Data {
         let rows = members
             .sorted { ($0.lastName, $0.firstName) < ($1.lastName, $1.firstName) }
             .map { member in
@@ -155,12 +168,7 @@ enum MemberImportExport {
             }
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        let data = try encoder.encode(rows)
-
-        let url = FileManager.default.temporaryDirectory
-            .appendingPathComponent("grazer-vsc-mitglieder-\(dateStamp()).json")
-        try data.write(to: url, options: .atomic)
-        return url
+        return try encoder.encode(rows)
     }
 
     private static func dateStamp() -> String {
@@ -293,6 +301,11 @@ enum MemberImportExport {
         try? modelContext.save()
         for member in touched {
             CloudKitSync.shared.pushMember(member)
+        }
+        // One snapshot for the whole batch, not per row — importing a real
+        // club spreadsheet can create dozens of entries at once.
+        if result.created > 0 {
+            MemberBackup.snapshot(members: workingRoster)
         }
         return result
     }

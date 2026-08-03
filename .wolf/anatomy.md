@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T13:27:09.824Z
-> Files: 83 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T13:41:20.569Z
+> Files: 84 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -75,20 +75,21 @@
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3532 tok)
-- `Info.plist` (~414 tok)
+- `Info.plist` (~443 tok)
 - `KostZCalculation.swift` — / One eligible person's summed amount for the requested month — see (~992 tok)
 - `KostZExport.swift` — Declares KostZExportError (~1077 tok)
 - `KostZViews.swift` — / Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte" (~1388 tok)
 - `Localizable.xcstrings` (~6145 tok)
-- `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names; struct MemberIO, enum MemberImportExport (fill-blanks-only import) (~4551 tok)
+- `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
+- `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4738 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1374 tok)
-- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4562 tok)
+- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4724 tok)
 - `Models.swift` — Class: User (~6508 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~1746 tok)
 - `PraeExport.swift` — Declares PraeExportError (~3189 tok)
 - `PraeViews.swift` — / Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte" (~2274 tok)
 - `RootView.swift` — SwiftUI view: RootView (~3738 tok)
-- `TeamImportExport.swift` — JSON import/export of Teams with their full membership roster (TeamIO/TeamMembershipIO), mirrors MemberImportExport.swift's ShareLink/.fileImporter/fill-blanks conventions (~2927 tok)
+- `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3021 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~3776 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~4727 tok)

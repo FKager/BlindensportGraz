@@ -11,6 +11,7 @@
 | 15:14 | Fixed bug-187 (actual blocker): ensureDefaultTeams gated ALL local team creation behind a live CKQuery — switched to a local-store existence check so local insert no longer depends on CloudKit reachability | CloudKitSync.swift | xcodebuild build + build-for-testing succeeded | ~12000 |
 | 13:25 | User confirmed: default teams now appear on-device after bug-187 fix | — | Confirmed working | ~500 |
 | 13:32 | Renamed default "Helfer" team to "Torball Helfer" (in-place migration, preserves id/memberships) + added new "Blindenfußball Helfer" default team | Models.swift, CloudKitSync.swift | xcodebuild build succeeded | ~8000 |
+| 15:41 | Added automatic Member roster backups on create/delete: timestamped JSON snapshots to Documents/MemberBackups (Files-app visible), capped at 30, wired into 4 create/delete call sites | MemberBackup.swift (new), MemberImportExport.swift, MembersViews.swift, TeamImportExport.swift, Info.plist | xcodebuild build + build-for-testing succeeded | ~18000 |
 
 ## Session: 2026-07-12 20:59
 
@@ -1053,3 +1054,11 @@
 | 15:23 | Session end: 11 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~38918 tok |
 | 15:26 | Edited BlindensportGraz/Models.swift | 10→14 lines | ~188 |
 | 15:27 | Edited BlindensportGraz/CloudKitSync.swift | modified ensureDefaultTeams() | ~338 |
+| 15:28 | Session end: 13 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~39570 tok |
+| 15:40 | Edited BlindensportGraz/MemberImportExport.swift | modified exportFile() | ~661 |
+| 15:40 | Created BlindensportGraz/MemberBackup.swift | — | ~851 |
+| 15:40 | Edited BlindensportGraz/Info.plist | 2→6 lines | ~42 |
+| 15:40 | Edited BlindensportGraz/MembersViews.swift | added nullish coalescing | ~190 |
+| 15:40 | Edited BlindensportGraz/MembersViews.swift | added nullish coalescing | ~154 |
+| 15:41 | Edited BlindensportGraz/MemberImportExport.swift | 6→11 lines | ~106 |
+| 15:41 | Edited BlindensportGraz/TeamImportExport.swift | modified findExistingTeam() | ~122 |

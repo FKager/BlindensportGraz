@@ -130,6 +130,12 @@ struct MembersListView: View {
             modelContext.delete(member)
         }
         try? modelContext.save()
+        // Re-fetched rather than using the `members` @Query array directly —
+        // SwiftUI's @Query refresh isn't guaranteed to have landed yet at
+        // this exact point, so a fresh fetch is the only way to be sure the
+        // backup reflects the roster with these entries actually removed.
+        let remaining = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
+        MemberBackup.snapshot(members: remaining)
     }
 }
 
@@ -381,6 +387,8 @@ struct AddMemberView: View {
                         modelContext.insert(member)
                         try? modelContext.save()
                         CloudKitSync.shared.pushMember(member)
+                        let allMembers = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
+                        MemberBackup.snapshot(members: allMembers)
                         dismiss()
                     }
                     .disabled(firstName.trimmingCharacters(in: .whitespaces).isEmpty ||

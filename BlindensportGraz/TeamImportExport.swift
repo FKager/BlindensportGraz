@@ -160,6 +160,13 @@ enum TeamImportExport {
         }
 
         try? modelContext.save()
+        // A team import can fall back to creating brand-new Member roster
+        // entries (see importMembership below) — one snapshot for the whole
+        // batch if that happened, same convention as
+        // MemberImportExport.importMembers.
+        if result.membersCreated > 0 {
+            MemberBackup.snapshot(members: members)
+        }
         return result
     }
 

@@ -3119,6 +3119,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-03T13:27:09.832Z"
+    },
+    {
+      "id": "bug-190",
+      "timestamp": "2026-08-03T13:40:38.159Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/MembersViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: let allMembers = (try? modelContext.fetch(FetchDescriptor<Me; MemberBackup.snapshot(members: allMembers)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-08-03T13:40:47.692Z"
     }
   ]
 }
