@@ -301,10 +301,14 @@ extension Team {
         ("Grazer VSC Damen", "Torball"),
         ("Grazer VSC Herren", "Torball"),
         ("Blindenfußball", "Blindenfußball"),
-        // Not tied to one sport — groups helpers/coaches (TeamMembership.role
-        // "assistant"/"coach") who support across multiple teams, so this one
-        // deliberately has no sport value.
-        ("Helfer", ""),
+        // Originally a single sport-agnostic "Helfer" team; split into two
+        // sport-specific ones per user request 2026-08-03 — see
+        // CloudKitSync.ensureDefaultTeams' one-time rename of any
+        // already-created "Helfer" team into "Torball Helfer" in place
+        // (same id/memberships), so existing devices don't end up with a
+        // duplicate/orphaned team under the old name.
+        ("Torball Helfer", "Torball"),
+        ("Blindenfußball Helfer", "Blindenfußball"),
     ]
 }
 

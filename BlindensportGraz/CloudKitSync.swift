@@ -324,8 +324,23 @@ final class CloudKitSync {
     /// better tradeoff than a feature that doesn't reliably work at all for
     /// this single-club, at-most-a-few-admin-devices app.
     func ensureDefaultTeams(modelContext: ModelContext) async {
-        let existingNames = Set(((try? modelContext.fetch(FetchDescriptor<Team>())) ?? [])
-            .map { $0.name.trimmingCharacters(in: .whitespaces).lowercased() })
+        let existingTeams = (try? modelContext.fetch(FetchDescriptor<Team>())) ?? []
+
+        // One-time rename: the original sport-agnostic "Helfer" default team
+        // was split into "Torball Helfer"/"Blindenfußball Helfer" (see
+        // Team.defaultTeams). Renaming any already-created "Helfer" team in
+        // place (same id, same memberships, still pushed under the same
+        // CKRecord name) rather than leaving it orphaned and creating a
+        // brand-new "Torball Helfer" team alongside it.
+        if let legacyHelfer = existingTeams.first(where: {
+            $0.name.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare("Helfer") == .orderedSame
+        }) {
+            legacyHelfer.name = "Torball Helfer"
+            legacyHelfer.sport = "Torball"
+            pushTeam(legacyHelfer)
+        }
+
+        let existingNames = Set(existingTeams.map { $0.name.trimmingCharacters(in: .whitespaces).lowercased() })
         for (name, sport) in Team.defaultTeams {
             guard !existingNames.contains(name.trimmingCharacters(in: .whitespaces).lowercased()) else { continue }
             let team = Team(name: name, sport: sport)
