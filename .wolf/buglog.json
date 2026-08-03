@@ -2948,6 +2948,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-03T05:47:08.553Z"
+    },
+    {
+      "id": "bug-180",
+      "timestamp": "2026-08-03T12:44:12.690Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T12:44:12.690Z"
+    },
+    {
+      "id": "bug-181",
+      "timestamp": "2026-08-03T12:50:26.008Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T12:50:26.008Z"
     }
   ]
 }

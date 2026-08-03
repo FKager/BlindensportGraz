@@ -302,6 +302,40 @@ final class CloudKitSync {
         }
     }
 
+    /// Returns the lowercased names of every `Team` record currently in
+    /// CloudKit, or `nil` if the query itself failed (offline, etc.) — `nil`
+    /// is deliberately distinct from "genuinely zero teams", mirroring
+    /// `hasAnyUserIdentity`'s conservative on-failure handling, so
+    /// `ensureDefaultTeams` never creates a team it merely failed to see.
+    private func existingTeamNames() async -> Set<String>? {
+        let query = CKQuery(recordType: "Team", predicate: NSPredicate(value: true))
+        do {
+            let (results, _) = try await publicDB.records(matching: query)
+            return Set(results.compactMap { try? $1.get() }
+                .compactMap { $0["name"] as? String }
+                .map { $0.trimmingCharacters(in: .whitespaces).lowercased() })
+        } catch {
+            print("CloudKitSync existence check failed for Team: \(error)")
+            return nil
+        }
+    }
+
+    /// Creates and pushes any of `Team.defaultTeams` not already present
+    /// (case-insensitive name match), so the club's standing teams exist
+    /// automatically on every device without an admin having to create them
+    /// by hand — a no-op once all three exist. Called once per launch from
+    /// RootView.triggerBackgroundSync, right after syncAll.
+    func ensureDefaultTeams(modelContext: ModelContext) async {
+        guard let existingNames = await existingTeamNames() else { return }
+        for (name, sport) in Team.defaultTeams {
+            guard !existingNames.contains(name.trimmingCharacters(in: .whitespaces).lowercased()) else { continue }
+            let team = Team(name: name, sport: sport)
+            modelContext.insert(team)
+            pushTeam(team)
+        }
+        try? modelContext.save()
+    }
+
     // MARK: - Pull
 
     func syncAll(modelContext: ModelContext) async {

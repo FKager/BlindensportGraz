@@ -290,6 +290,24 @@ final class Team {
     }
 }
 
+extension Team {
+    /// The club's standing teams, expected to always exist — recreated
+    /// automatically by `CloudKitSync.ensureDefaultTeams` on every launch if
+    /// missing (e.g. very first launch ever, or a local store rebuilt from a
+    /// ModelContainer migration reset — see the 2026-08-01 rename entry in
+    /// cerebrum.md). Kept as a plain data constant next to the model, same
+    /// convention as `User.designatedRootEmail`.
+    static let defaultTeams: [(name: String, sport: String)] = [
+        ("Grazer VSC Damen", "Torball"),
+        ("Grazer VSC Herren", "Torball"),
+        ("Blindenfußball", "Blindenfußball"),
+        // Not tied to one sport — groups helpers/coaches (TeamMembership.role
+        // "assistant"/"coach") who support across multiple teams, so this one
+        // deliberately has no sport value.
+        ("Helfer", ""),
+    ]
+}
+
 /// Exactly one of `user`/`member` is set, never both/neither. `user` covers
 /// people with a registered app account; `member` covers Grazer VSC roster
 /// entries who haven't signed into the app yet — teams routinely include both,

@@ -159,6 +159,7 @@ struct RootView: View {
     private func triggerBackgroundSync() {
         Task {
             await CloudKitSync.shared.syncAll(modelContext: modelContext)
+            await CloudKitSync.shared.ensureDefaultTeams(modelContext: modelContext)
         }
     }
 }

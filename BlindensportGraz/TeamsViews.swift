@@ -1,11 +1,18 @@
 import SwiftUI
 import SwiftData
+import UniformTypeIdentifiers
 
 struct TeamsListView: View {
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Team.name) private var teams: [Team]
     @State private var showAdd = false
+    // Eager-generation + ShareLink/.fileImporter, not a custom
+    // generate-on-tap-then-sheet flow — see MembersListView's identical
+    // pattern and cerebrum.md's VoiceOver share-sheet-freeze history.
+    @State private var exportURL: URL?
+    @State private var showImporter = false
+    @State private var importResultMessage: String?
 
     var canManageTeams: Bool {
         guard let user = currentUser else { return false }
@@ -35,10 +42,51 @@ struct TeamsListView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showAdd = true } label: { Image(systemName: "plus") }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showImporter = true } label: { Image(systemName: "square.and.arrow.down") }
+                        .accessibilityLabel("Teams importieren")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    if let exportURL {
+                        ShareLink(item: exportURL) { Image(systemName: "square.and.arrow.up") }
+                            .accessibilityLabel("Teams exportieren")
+                    }
+                }
             }
         }
         .sheet(isPresented: $showAdd) {
             AddTeamView()
+        }
+        .task(id: teams.map(\.id)) {
+            exportURL = try? TeamImportExport.exportFile(teams: teams)
+        }
+        .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
+            handleImport(result)
+        }
+        .alert("Import", isPresented: Binding(
+            get: { importResultMessage != nil },
+            set: { if !$0 { importResultMessage = nil } }
+        )) {
+            Button("OK") { importResultMessage = nil }
+        } message: {
+            Text(importResultMessage ?? "")
+        }
+    }
+
+    private func handleImport(_ result: Result<URL, Error>) {
+        switch result {
+        case .failure(let error):
+            importResultMessage = "Import fehlgeschlagen: \(error.localizedDescription)"
+        case .success(let url):
+            let didAccess = url.startAccessingSecurityScopedResource()
+            defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
+            do {
+                let data = try Data(contentsOf: url)
+                let outcome = TeamImportExport.importTeams(from: data, modelContext: modelContext)
+                importResultMessage = outcome.summary
+            } catch {
+                importResultMessage = "Datei konnte nicht gelesen werden: \(error.localizedDescription)"
+            }
         }
     }
 

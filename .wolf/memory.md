@@ -3,6 +3,10 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 14:44 | Added Team+members JSON import/export (ShareLink/.fileImporter in TeamsListView toolbar) | TeamImportExport.swift (new), TeamsViews.swift | xcodebuild build + build-for-testing succeeded | ~28000 |
+| 14:50 | Auto-seed 3 default teams (Damen/Herren Torball, Blindenfußball) on launch via CloudKit existence check | Models.swift, CloudKitSync.swift, RootView.swift | xcodebuild build + build-for-testing succeeded | ~15000 |
+| 15:02 | Added 4th default team "Helfer" (no sport, cross-team helpers/coaches) | Models.swift | xcodebuild build succeeded | ~3000 |
+
 ## Session: 2026-07-12 20:59
 
 | Time | Action | File(s) | Outcome | ~Tokens |
@@ -1017,3 +1021,19 @@
 | 08:02 | Edited ../../.claude/projects/-Users-franz-dev-claude/memory/MEMORY.md | 1→2 lines | ~102 |
 | 08:02 | Session end: 15 writes across 6 files (AccountView.swift, RootView.swift, MembersViews.swift, deploy.md, feedback_deploy_via_github_actions.md) | 10 reads | ~21054 tok |
 | 08:03 | Session end: 15 writes across 6 files (AccountView.swift, RootView.swift, MembersViews.swift, deploy.md, feedback_deploy_via_github_actions.md) | 10 reads | ~21054 tok |
+| 08:06 | Session end: 15 writes across 6 files (AccountView.swift, RootView.swift, MembersViews.swift, deploy.md, feedback_deploy_via_github_actions.md) | 10 reads | ~21054 tok |
+
+## Session: 2026-08-03 14:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:43 | Created BlindensportGraz/TeamImportExport.swift | — | ~2923 |
+| 14:44 | Edited BlindensportGraz/TeamsViews.swift | added error handling | ~969 |
+| 14:44 | Edited BlindensportGraz/TeamImportExport.swift | modified importMembership() | ~26 |
+| 14:45 | Session end: 3 writes across 2 files (TeamImportExport.swift, TeamsViews.swift) | 4 reads | ~22639 tok |
+| 14:50 | Edited BlindensportGraz/Models.swift | expanded (+14 lines) | ~257 |
+| 14:50 | Edited BlindensportGraz/CloudKitSync.swift | added error handling | ~490 |
+| 14:50 | Edited BlindensportGraz/RootView.swift | modified triggerBackgroundSync() | ~62 |
+| 14:51 | Session end: 6 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~36177 tok |
+| 14:52 | Edited BlindensportGraz/Models.swift | 5→9 lines | ~114 |
+| 14:53 | Session end: 7 writes across 5 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 6 reads | ~36299 tok |
