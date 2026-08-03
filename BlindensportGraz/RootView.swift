@@ -170,7 +170,17 @@ struct RootView: View {
         Task {
             await CloudKitSync.shared.syncAll(modelContext: modelContext)
             await CloudKitSync.shared.ensureDefaultTeams(modelContext: modelContext)
+            // `currentUser` is already set by every call site of
+            // triggerBackgroundSync before it's called, and `syncAll` above
+            // may have just pulled in new/changed TeamMembership rows for
+            // this same user (same ModelContext instance, so the
+            // relationship updates in place) — re-subscribing here keeps
+            // push notifications in sync with the user's current teams.
+            if let currentUser {
+                await CloudKitSync.shared.ensureTrainingTournamentSubscriptions(for: currentUser)
+            }
         }
+        PushNotifications.requestAuthorizationIfNeeded()
     }
 }
 

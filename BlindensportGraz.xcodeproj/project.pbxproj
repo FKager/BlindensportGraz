@@ -31,6 +31,7 @@
 		883A941D130AF6840F6283D0 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9DE238BBE5A6E6B45BA118 /* RootView.swift */; };
 		886B320C465DDB5914963E23 /* TeamImportExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A2DB7023E996844A07A644 /* TeamImportExport.swift */; };
 		937EFC9FEE0E714A0122B6B7 /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = 83D9A0D3FAB093A5FAE4A12C /* settings.local.json */; };
+		97907563300E01BD768E6653 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F8F037A745E0C9808BCA181 /* PushNotifications.swift */; };
 		9D5A272133D57838C1CDDA2A /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23F4A5BEF09AA11041EF66B /* Models.swift */; };
 		A1B274AD320B87FADE58C57C /* XLSXCellPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFF4EF0C96BC5384667E50 /* XLSXCellPatch.swift */; };
 		B16C319D2DF6B4CF7A06C80E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D151B782788860EBA6A7728 /* AccountView.swift */; };
@@ -68,6 +69,7 @@
 		20BB191BC0FAABBA7206E135 /* CloudKitSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSync.swift; sourceTree = "<group>"; };
 		223C350376AFCF7359D1B95B /* PraeExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PraeExport.swift; sourceTree = "<group>"; };
 		2C9DE238BBE5A6E6B45BA118 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		2F8F037A745E0C9808BCA181 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
 		33BBA744C5DE3AA5F9F0DE54 /* PraeCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PraeCalculationTests.swift; sourceTree = "<group>"; };
 		37A780E3E7EC0B3F11675D05 /* TrainingsfrequenzlisteCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsfrequenzlisteCalculation.swift; sourceTree = "<group>"; };
 		38F3AB4D1AEF1ADED71FFBFC /* KostZCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KostZCalculation.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				D15C672FD868BD79242BCDA2 /* PraeCalculation.swift */,
 				223C350376AFCF7359D1B95B /* PraeExport.swift */,
 				D863B0A68F55B79E025BBBB5 /* PraeViews.swift */,
+				2F8F037A745E0C9808BCA181 /* PushNotifications.swift */,
 				2C9DE238BBE5A6E6B45BA118 /* RootView.swift */,
 				B9A2DB7023E996844A07A644 /* TeamImportExport.swift */,
 				B624DF0AE87AB21129137E98 /* TeamsViews.swift */,
@@ -320,6 +323,7 @@
 				C27B01BE24EB920C70B12B68 /* PraeCalculation.swift in Sources */,
 				EF64D94AF393691E63643445 /* PraeExport.swift in Sources */,
 				4E800EA4DA42A4A593B6132F /* PraeViews.swift in Sources */,
+				97907563300E01BD768E6653 /* PushNotifications.swift in Sources */,
 				883A941D130AF6840F6283D0 /* RootView.swift in Sources */,
 				886B320C465DDB5914963E23 /* TeamImportExport.swift in Sources */,
 				50D5828C877DB7411A16D9E5 /* TeamsViews.swift in Sources */,

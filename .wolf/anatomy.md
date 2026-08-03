@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T13:55:19.889Z
-> Files: 84 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T14:05:15.312Z
+> Files: 85 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -68,10 +68,10 @@
 
 - `AccountView.swift` — SwiftUI view: AccountView (~2860 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
-- `BlindensportGraz.entitlements` (~147 tok)
+- `BlindensportGraz.entitlements` (~164 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1118 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~9901 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~10934 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3532 tok)
@@ -88,7 +88,8 @@
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~1746 tok)
 - `PraeExport.swift` — Declares PraeExportError (~3189 tok)
 - `PraeViews.swift` — / Admin-only screen (see TrainingsListView/TournamentsListView's "Berichte" (~2274 tok)
-- `RootView.swift` — SwiftUI view: RootView (~3738 tok)
+- `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
+- `RootView.swift` — SwiftUI view: RootView (~3907 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3021 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~3776 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)

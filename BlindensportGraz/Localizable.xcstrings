@@ -1,1291 +1,1167 @@
 {
-  "sourceLanguage" : "de",
-  "strings" : {
-    "–" : {
-
-    },
-    "@%@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "@%@"
+  "sourceLanguage": "de",
+  "strings": {
+    "–": {},
+    "@%@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "@%@"
           }
         }
       }
     },
-    "%lld min" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld min"
+    "%lld min": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
           }
         }
       }
     },
-    "%lld Mitglieder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Members"
+    "%lld Mitglieder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Members"
           }
         }
       }
     },
-    "%lld Teams" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Teams"
+    "%lld Teams": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld Teams"
           }
         }
       }
-    },
-    "%lld." : {
-
     },
-    "0" : {
-
-    },
-    "Abbrechen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cancel"
+    "%lld.": {},
+    "0": {},
+    "Abbrechen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
           }
         }
       }
     },
-    "Abmelden" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Log Out"
+    "Abmelden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log Out"
           }
         }
       }
     },
-    "Account" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Account"
+    "Account": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
           }
         }
       }
     },
-    "Admin" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Admin"
+    "Admin": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Admin"
           }
         }
       }
     },
-    "Administrator" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Administrator"
+    "Administrator": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Administrator"
           }
         }
       }
     },
-    "Aktive Turniere" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active Tournaments"
+    "Aktive Turniere": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Active Tournaments"
           }
         }
       }
     },
-    "Alle anzeigen" : {
-
-    },
-    "Anmelden" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Log In"
+    "Alle anzeigen": {},
+    "Anmelden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Log In"
           }
         }
       }
-    },
-    "Anwesenheit" : {
-
     },
-    "Anzahl Mitglieder" : {
-
-    },
-    "Anzahl Personen" : {
-
-    },
-    "Anzahl Trainingstage" : {
-
-    },
-    "Assistent:in" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Assistant"
+    "Anwesenheit": {},
+    "Anzahl Mitglieder": {},
+    "Anzahl Personen": {},
+    "Anzahl Trainingstage": {},
+    "Assistent:in": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistant"
           }
         }
       }
     },
-    "Auswählen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select"
+    "Auswählen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select"
           }
         }
       }
     },
-    "Beendet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finished"
+    "Beendet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finished"
           }
         }
       }
     },
-    "Beigetreten" : {
-
-    },
-    "Benutzer" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Users"
+    "Beigetreten": {},
+    "Benutzer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Users"
           }
         }
       }
     },
-    "Benutzer verwalten" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manage Users"
+    "Benutzer verwalten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage Users"
           }
         }
       }
-    },
-    "Benutzerverwaltung" : {
-
-    },
-    "Berichte" : {
-
     },
-    "Beschreibung" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Description"
+    "Benutzerverwaltung": {},
+    "Berichte": {},
+    "Beschreibung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Description"
           }
         }
       }
     },
-    "Beteiligte Teams" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Participating Teams"
+    "Beteiligte Teams": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Participating Teams"
           }
         }
       }
     },
-    "Bilder" : {
-
-    },
-    "Bilder (%lld)" : {
-
-    },
-    "Bildet die Original-Trainingsfrequenzliste (Nr./Vorname/Nachname/Verein je Zeile, ein Trainingstag je Spalte, „j“/„n“ je Zelle, Zeilensumme „ges. TL“) mit den erfassten Anwesenheiten nach — ohne zusätzliche Spalten gegenüber dem Original." : {
-
-    },
-    "Bitte wählen" : {
-
-    },
-    "Darstellung der Verwendungszwecke exportieren" : {
-
-    },
-    "Darstellung wird vorbereitet …" : {
-
-    },
-    "Das Formular fasst nur %lld Personen — es werden nur die ersten %lld von %lld exportiert." : {
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Das Formular fasst nur %1$lld Personen — es werden nur die ersten %2$lld von %3$lld exportiert."
+    "Bilder": {},
+    "Bilder (%lld)": {},
+    "Bildet die Original-Trainingsfrequenzliste (Nr./Vorname/Nachname/Verein je Zeile, ein Trainingstag je Spalte, „j“/„n“ je Zelle, Zeilensumme „ges. TL“) mit den erfassten Anwesenheiten nach — ohne zusätzliche Spalten gegenüber dem Original.": {},
+    "Bitte wählen": {},
+    "Darstellung der Verwendungszwecke exportieren": {},
+    "Darstellung wird vorbereitet …": {},
+    "Das Formular fasst nur %lld Personen — es werden nur die ersten %lld von %lld exportiert.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "new",
+            "value": "Das Formular fasst nur %1$lld Personen — es werden nur die ersten %2$lld von %3$lld exportiert."
           }
         }
       }
     },
-    "Das offizielle Hauptformular (Name/Adresse vorausgefüllt) muss weiterhin von Hand um Monat/Jahr, Tagesbeträge und die persönliche Unterschrift ergänzt werden — siehe Einsatztage oben." : {
-
-    },
-    "Dauer: %lld min" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Duration: %lld min"
+    "Das offizielle Hauptformular (Name/Adresse vorausgefüllt) muss weiterhin von Hand um Monat/Jahr, Tagesbeträge und die persönliche Unterschrift ergänzt werden — siehe Einsatztage oben.": {},
+    "Dauer: %lld min": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duration: %lld min"
           }
         }
       }
     },
-    "Details" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Details"
+    "Details": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Details"
           }
         }
       }
     },
-    "Die Rolle kann nur von einem Root-Benutzer geändert werden." : {
-
-    },
-    "Diesem Eintrag ist kein Team zugewiesen." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "This entry has no team assigned."
+    "Die Rolle kann nur von einem Root-Benutzer geändert werden.": {},
+    "Diesem Eintrag ist kein Team zugewiesen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This entry has no team assigned."
           }
         }
       }
     },
-    "E-Mail" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Email"
+    "E-Mail": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Email"
           }
         }
       }
-    },
-    "Einsatztage" : {
-
     },
-    "Ende" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "End"
+    "Einsatztage": {},
+    "Ende": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "End"
           }
         }
       }
     },
-    "Erstelle das erste Benutzerkonto." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create the first user account."
+    "Erstelle das erste Benutzerkonto.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create the first user account."
           }
         }
       }
     },
-    "Erstellen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create"
+    "Erstellen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create"
           }
         }
       }
     },
-    "Event" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Event"
+    "Event": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Event"
           }
         }
       }
     },
-    "Events" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Events"
+    "Events": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Events"
           }
         }
       }
     },
-    "Export" : {
-
-    },
-    "Export fehlgeschlagen" : {
-
-    },
-    "Fertig" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Done"
+    "Export": {},
+    "Export fehlgeschlagen": {},
+    "Fertig": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
           }
         }
       }
     },
-    "Für alle sichtbar" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visible to Everyone"
+    "Für alle sichtbar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Visible to Everyone"
           }
         }
       }
     },
-    "Geplant" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Planned"
+    "Geplant": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planned"
           }
         }
       }
-    },
-    "Gesamt" : {
-
     },
-    "Geschlecht" : {
-
-    },
-    "Grazer VSC" : {
-
-    },
-    "Helfer:in / Trainer:in" : {
-
-    },
-    "Hier ist dein Überblick" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Here's your overview"
+    "Gesamt": {},
+    "Geschlecht": {},
+    "Grazer VSC": {},
+    "Helfer:in / Trainer:in": {},
+    "Hier ist dein Überblick": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Here's your overview"
           }
         }
       }
     },
-    "Hinzufügen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add"
+    "Hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add"
           }
         }
       }
-    },
-    "Honorare Trainer:innen / Helfer:innen" : {
-
-    },
-    "IBAN" : {
-
     },
-    "Import" : {
-
-    },
-    "Jahr: %@" : {
-
-    },
-    "Kein Mitglied" : {
-
-    },
-    "Kein Team zugeordnet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Team Assigned"
+    "Honorare Trainer:innen / Helfer:innen": {},
+    "IBAN": {},
+    "Import": {},
+    "Jahr: %@": {},
+    "Kein Mitglied": {},
+    "Kein Team zugeordnet": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Team Assigned"
           }
         }
       }
     },
-    "Kein Vereinsdateneintrag gefunden" : {
-
-    },
-    "Keine Auswahl = für alle sichtbar" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No selection = visible to everyone"
+    "Kein Vereinsdateneintrag gefunden": {},
+    "Keine Auswahl = für alle sichtbar": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No selection = visible to everyone"
           }
         }
       }
-    },
-    "Keine Bilder" : {
-
-    },
-    "Keine Einsätze mit hinterlegtem Betrag in diesem Monat." : {
-
     },
-    "Keine Einsatztage mit hinterlegtem PRAE-Betrag in diesem Monat." : {
-
-    },
-    "Keine Events" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Events"
+    "Keine Bilder": {},
+    "Keine Einsätze mit hinterlegtem Betrag in diesem Monat.": {},
+    "Keine Einsatztage mit hinterlegtem PRAE-Betrag in diesem Monat.": {},
+    "Keine Events": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Events"
           }
         }
       }
     },
-    "Keine Mitglieder" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Members"
+    "Keine Mitglieder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Members"
           }
         }
       }
     },
-    "Keine Teammitglieder mit Rolle „Trainer:in“ oder „Helfer:in“ gefunden." : {
-
-    },
-    "Keine Teams" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Teams"
+    "Keine Teammitglieder mit Rolle „Trainer:in“ oder „Helfer:in“ gefunden.": {},
+    "Keine Teams": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Teams"
           }
         }
       }
     },
-    "Keine Trainings" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Training"
+    "Keine Trainings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Training"
           }
         }
       }
-    },
-    "Keine Trainings in diesem Zeitraum für dieses Team." : {
-
     },
-    "Keine Turniere" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Tournaments"
+    "Keine Trainings in diesem Zeitraum für dieses Team.": {},
+    "Keine Turniere": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Tournaments"
           }
         }
       }
     },
-    "Kommende Trainings" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Upcoming Training"
+    "Kommende Trainings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upcoming Training"
           }
         }
       }
     },
-    "Kontakt" : {
-
-    },
-    "Konto" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Account"
+    "Kontakt": {},
+    "Konto": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
           }
         }
       }
     },
-    "Konto auswählen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select Account"
+    "Konto auswählen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Select Account"
           }
         }
       }
     },
-    "Kontoinformationen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Account Information"
+    "Kontoinformationen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account Information"
           }
         }
       }
-    },
-    "KostZ-Berechnung" : {
-
-    },
-    "KostZ-Formular exportieren" : {
-
     },
-    "KostZ-Formular wird vorbereitet …" : {
-
-    },
-    "Laufend" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ongoing"
+    "KostZ-Berechnung": {},
+    "KostZ-Formular exportieren": {},
+    "KostZ-Formular wird vorbereitet …": {},
+    "Laufend": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ongoing"
           }
         }
       }
     },
-    "Lege ein neues Event an." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a new event."
+    "Lege ein neues Event an.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a new event."
           }
         }
       }
     },
-    "Lege ein neues Mitglied an." : {
-
-    },
-    "Lege ein neues Team an." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a new team."
+    "Lege ein neues Mitglied an.": {},
+    "Lege ein neues Team an.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a new team."
           }
         }
       }
     },
-    "Lege ein neues Training an." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a new training."
+    "Lege ein neues Training an.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a new training."
           }
         }
       }
     },
-    "Lege ein neues Turnier an." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Create a new tournament."
+    "Lege ein neues Turnier an.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Create a new tournament."
           }
         }
       }
-    },
-    "männlich" : {
-
     },
-    "Max. Teams: %lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Max Teams: %lld"
+    "männlich": {},
+    "Max. Teams: %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Max Teams: %lld"
           }
         }
       }
     },
-    "Mit einem Benutzerkonto verknüpft" : {
-
-    },
-    "Mitglied" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Member"
+    "Mit einem Benutzerkonto verknüpft": {},
+    "Mitglied": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Member"
           }
         }
       }
     },
-    "Mitglied des Grazer VSC" : {
-
-    },
-    "Mitglied hinzufügen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Member"
+    "Mitglied des Grazer VSC": {},
+    "Mitglied hinzufügen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add Member"
           }
         }
       }
     },
-    "Mitglied seit" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Member Since"
+    "Mitglied seit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Member Since"
           }
         }
       }
     },
-    "Mitglieder – %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Members – %@"
+    "Mitglieder – %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Members – %@"
           }
         }
       }
     },
-    "Mitglieder (%lld)" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Members (%lld)"
+    "Mitglieder (%lld)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Members (%lld)"
           }
         }
       }
-    },
-    "Mitglieder exportieren" : {
-
     },
-    "Mitglieder importieren" : {
-
-    },
-    "Mitglieder ohne Konto" : {
-
-    },
-    "Mitgliederliste" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Member List"
+    "Mitglieder exportieren": {},
+    "Mitglieder importieren": {},
+    "Mitglieder ohne Konto": {},
+    "Mitgliederliste": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Member List"
           }
         }
       }
-    },
-    "Mitgliedschaft" : {
-
-    },
-    "Mitgliedsnummer" : {
-
-    },
-    "Monat" : {
-
     },
-    "Monatliche Höchstgrenze von € 720,- überschritten." : {
-
-    },
-    "Nachname" : {
-
-    },
-    "Nächste Events" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Upcoming Events"
+    "Mitgliedschaft": {},
+    "Mitgliedsnummer": {},
+    "Monat": {},
+    "Monatliche Höchstgrenze von € 720,- überschritten.": {},
+    "Nachname": {},
+    "Nächste Events": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upcoming Events"
           }
         }
       }
     },
-    "Name" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Name"
+    "Name": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name"
           }
         }
       }
     },
-    "Neues Event" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Event"
+    "Neues Event": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Event"
           }
         }
       }
     },
-    "Neues Konto" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Account"
+    "Neues Konto": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Account"
           }
         }
       }
-    },
-    "Neues Mitglied" : {
-
     },
-    "Neues Team" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Team"
+    "Neues Mitglied": {},
+    "Neues Team": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Team"
           }
         }
       }
     },
-    "Neues Training" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Training"
+    "Neues Training": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Training"
           }
         }
       }
     },
-    "Neues Turnier" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Tournament"
+    "Neues Turnier": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New Tournament"
           }
         }
       }
     },
-    "Noch kein Team angelegt." : {
-
-    },
-    "Noch keine Bilder" : {
-
-    },
-    "Noch keine Konten" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Accounts Yet"
+    "Noch kein Team angelegt.": {},
+    "Noch keine Bilder": {},
+    "Noch keine Konten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No Accounts Yet"
           }
         }
       }
     },
-    "Noch keine Teilnehmer" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No participants yet"
+    "Noch keine Teilnehmer": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No participants yet"
           }
         }
       }
     },
-    "Notizen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notes"
+    "Notizen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notes"
           }
         }
       }
-    },
-    "Nur die Zeile „HONORARE / VERGÜTUNGEN“ sowie Zeitraum und Personenanzahl werden vorausgefüllt — alle übrigen Kostenarten, Beilagen-Nummern und der Ort müssen weiterhin von Hand ergänzt werden." : {
-
     },
-    "OK" : {
-
-    },
-    "Ort" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Location"
+    "Nur die Zeile „HONORARE / VERGÜTUNGEN“ sowie Zeitraum und Personenanzahl werden vorausgefüllt — alle übrigen Kostenarten, Beilagen-Nummern und der Ort müssen weiterhin von Hand ergänzt werden.": {},
+    "OK": {},
+    "Ort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Location"
           }
         }
       }
     },
-    "Person" : {
-
-    },
-    "Planung" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Planning"
+    "Person": {},
+    "Planung": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planning"
           }
         }
       }
-    },
-    "PLZ" : {
-
-    },
-    "PRAE (€)" : {
-
-    },
-    "PRAE-Berechnung" : {
-
-    },
-    "PRAE-Formular exportieren" : {
-
     },
-    "PRAE-Formular wird vorbereitet …" : {
-
-    },
-    "Profil" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Profile"
+    "PLZ": {},
+    "PRAE (€)": {},
+    "PRAE-Berechnung": {},
+    "PRAE-Formular exportieren": {},
+    "PRAE-Formular wird vorbereitet …": {},
+    "Profil": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profile"
           }
         }
       }
     },
-    "Profil bearbeiten" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit Profile"
+    "Profil bearbeiten": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit Profile"
           }
         }
       }
     },
-    "Registrierte Benutzer" : {
-
-    },
-    "Rolle" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Role"
+    "Registrierte Benutzer": {},
+    "Rolle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Role"
           }
         }
       }
-    },
-    "ROOT" : {
-
     },
-    "Schwerpunkt" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Focus"
+    "ROOT": {},
+    "Schwerpunkt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus"
           }
         }
       }
     },
-    "Selbst anmelden" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Register Myself"
+    "Selbst anmelden": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Register Myself"
           }
         }
       }
     },
-    "Speichern" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save"
+    "Speichern": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
           }
         }
       }
     },
-    "Spieler:in" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Player"
+    "Spieler:in": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Player"
           }
         }
       }
     },
-    "Sport-ID" : {
-
-    },
-    "Sportart" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sport"
+    "Sport-ID": {},
+    "Sportart": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sport"
           }
         }
       }
     },
-    "Sportler" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Athlete"
+    "Sportler": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Athlete"
           }
         }
       }
     },
-    "Standardfunktion" : {
-
-    },
-    "Start" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start"
+    "Standardfunktion": {},
+    "Start": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start"
           }
         }
       }
     },
-    "Status" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Status"
+    "Status": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
           }
         }
       }
-    },
-    "Straße" : {
-
     },
-    "SVNR" : {
-
-    },
-    "Tageshöchstsatz von € 120,- überschritten an Tag(en): %@." : {
-
-    },
-    "Team" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Team"
+    "Straße": {},
+    "SVNR": {},
+    "Tageshöchstsatz von € 120,- überschritten an Tag(en): %@.": {},
+    "Team": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Team"
           }
         }
       }
     },
-    "Team & Zeitraum" : {
-
-    },
-    "Teams" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teams"
+    "Team & Zeitraum": {},
+    "Teams": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teams"
           }
         }
       }
     },
-    "Teilnahmen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Participations"
+    "Teilnahmen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Participations"
           }
         }
       }
     },
-    "Teilnehmer (%lld)" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Participants (%lld)"
+    "Teilnehmer (%lld)": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Participants (%lld)"
           }
         }
       }
-    },
-    "TeilnehmerInnenliste exportieren (Sport Austria)" : {
-
-    },
-    "TeilnehmerInnenliste wird vorbereitet …" : {
-
     },
-    "Telefon" : {
-
-    },
-    "Titel" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Title"
+    "TeilnehmerInnenliste exportieren (Sport Austria)": {},
+    "TeilnehmerInnenliste wird vorbereitet …": {},
+    "Telefon": {},
+    "Titel": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title"
           }
         }
       }
     },
-    "Trainer:in" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coach"
+    "Trainer:in": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coach"
           }
         }
       }
     },
-    "Training" : {
-
-    },
-    "Trainings" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Training"
+    "Training": {},
+    "Trainings": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Training"
           }
         }
       }
-    },
-    "Trainingsfrequenzliste" : {
-
-    },
-    "Trainingsfrequenzliste exportieren" : {
-
-    },
-    "Trainingsfrequenzliste wird vorbereitet …" : {
-
-    },
-    "Trainingstage" : {
-
     },
-    "Turnier" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tournament"
+    "Trainingsfrequenzliste": {},
+    "Trainingsfrequenzliste exportieren": {},
+    "Trainingsfrequenzliste wird vorbereitet …": {},
+    "Trainingstage": {},
+    "Turnier": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tournament"
           }
         }
       }
     },
-    "Turniere" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tournaments"
+    "Turniere": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tournaments"
           }
         }
       }
     },
-    "Übersicht" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Overview"
+    "Übersicht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overview"
           }
         }
       }
     },
-    "Uhrzeit festlegen" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Set Time"
+    "Uhrzeit festlegen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set Time"
           }
         }
       }
     },
-    "Veranstaltungsort" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Venue"
+    "Veranstaltungsort": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Venue"
           }
         }
       }
     },
-    "Vereinsdaten" : {
-
+    "Vereinsdaten": {},
+    "Vereinsdaten bearbeiten": {},
+    "Vorname": {},
+    "weiblich": {},
+    "Willkommen, %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome, %@"
+          }
+        }
+      }
     },
-    "Vereinsdaten bearbeiten" : {
-
+    "Zeit": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time"
+          }
+        }
+      }
     },
-    "Vorname" : {
-
+    "Zeitraum": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time Period"
+          }
+        }
+      }
     },
-    "weiblich" : {
-
+    "training_created_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neues Training"
+          }
+        }
+      }
     },
-    "Willkommen, %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welcome, %@"
+    "training_created_body": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ in %2$@"
           }
         }
       }
     },
-    "Zeit" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time"
+    "tournament_created_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neues Turnier"
           }
         }
       }
     },
-    "Zeitraum" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Time Period"
+    "tournament_created_body": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ in %2$@"
           }
         }
       }
     }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }

@@ -15,6 +15,7 @@
 | 15:55 | New Torball training auto-assigns Grazer VSC Damen/Herren/Torball Helfer (looks up allTeams, not role-filtered myTeams) | Models.swift, TrainingsViews.swift | xcodebuild build + build-for-testing succeeded | ~9000 |
 | 16:02 | Same auto-assign behavior extended to Torball tournaments; renamed torballTrainingTeamNames -> torballTeamNames | Models.swift, TrainingsViews.swift, TournamentsViews.swift | xcodebuild build + build-for-testing succeeded | ~6000 |
 | 16:08 | Generalized auto-assign to a sport-keyed dictionary (Team.autoAssignTeamNames) and added Blindenfußball -> Blindenfußball/Blindenfußball Helfer | Models.swift, TrainingsViews.swift, TournamentsViews.swift | xcodebuild build + build-for-testing succeeded | ~6000 |
+| 16:20 | Added push notifications for Training/Tournament creation via CKQuerySubscription (alert-only, per-user+recordType, teamIDs-based predicate) + UN authorization request | PushNotifications.swift (new), CloudKitSync.swift, RootView.swift, BlindensportGraz.entitlements, Localizable.xcstrings | xcodebuild build + build-for-testing succeeded; NOT verified end-to-end (needs live device+CloudKit) | ~26000 |
 
 ## Session: 2026-07-12 20:59
 
@@ -1078,3 +1079,8 @@
 | 15:55 | Edited BlindensportGraz/TrainingsViews.swift | modified contains() | ~279 |
 | 15:55 | Edited BlindensportGraz/TournamentsViews.swift | 10→10 lines | ~145 |
 | 15:55 | Edited BlindensportGraz/TournamentsViews.swift | modified contains() | ~263 |
+| 15:57 | Session end: 30 writes across 11 files (TeamImportExport.swift, TeamsViews.swift, Models.swift, CloudKitSync.swift, RootView.swift) | 10 reads | ~58798 tok |
+| 16:04 | Edited BlindensportGraz/BlindensportGraz.entitlements | 4→6 lines | ~45 |
+| 16:04 | Created BlindensportGraz/PushNotifications.swift | — | ~488 |
+| 16:04 | Edited BlindensportGraz/CloudKitSync.swift | added error handling | ~1095 |
+| 16:05 | Edited BlindensportGraz/RootView.swift | modified triggerBackgroundSync() | ~267 |

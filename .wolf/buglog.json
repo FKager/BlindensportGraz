@@ -3151,6 +3151,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-03T13:54:36.983Z"
+    },
+    {
+      "id": "bug-192",
+      "timestamp": "2026-08-03T14:04:43.165Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T14:04:43.165Z"
     }
   ]
 }
