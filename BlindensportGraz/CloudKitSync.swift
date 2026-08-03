@@ -302,46 +302,30 @@ final class CloudKitSync {
         }
     }
 
-    /// Returns the lowercased names of every `Team` record currently in
-    /// CloudKit, or `nil` if the query itself failed (offline, etc.) — `nil`
-    /// is deliberately distinct from "genuinely zero teams", mirroring
-    /// `hasAnyUserIdentity`'s conservative on-failure handling, so
-    /// `ensureDefaultTeams` never creates a team it merely failed to see.
-    private func existingTeamNames() async -> Set<String>? {
-        let query = CKQuery(recordType: "Team", predicate: NSPredicate(value: true))
-        do {
-            let (results, _) = try await publicDB.records(matching: query)
-            return Set(results.compactMap { try? $1.get() }
-                .compactMap { $0["name"] as? String }
-                .map { $0.trimmingCharacters(in: .whitespaces).lowercased() })
-        } catch {
-            print("CloudKitSync existence check failed for Team: \(error)")
-            return nil
-        }
-    }
-
-    /// Creates and pushes any of `Team.defaultTeams` not already present
-    /// (case-insensitive name match), so the club's standing teams exist
-    /// automatically on every device without an admin having to create them
-    /// by hand — a no-op once all three exist. Called once per launch from
-    /// RootView.triggerBackgroundSync (right after syncAll) and again from
-    /// TeamsListView's pull-to-refresh.
+    /// Creates and pushes any of `Team.defaultTeams` not already present in
+    /// the LOCAL store (case-insensitive name match), so the club's standing
+    /// teams exist automatically — a no-op once all four exist. Called once
+    /// per launch from RootView.triggerBackgroundSync (right after syncAll)
+    /// and again from TeamsListView's pull-to-refresh.
     ///
-    /// Retries the existence check up to 3 times (2s apart) before giving up —
-    /// the very first CloudKit request right after a cold launch is prone to a
-    /// transient failure while the container/account is still becoming ready,
-    /// and since this is exactly the moment this feature is expected to fire
-    /// for the first time, a single failed attempt here would otherwise look
-    /// like the feature silently doesn't work at all for that whole session
-    /// (bug reported 2026-08-03 — see cerebrum.md).
+    /// Deliberately checks the local store, NOT a live CloudKit query —
+    /// `syncAll` just ran immediately before every call site, so the local
+    /// store already reflects the latest known remote state. An earlier
+    /// version gated local creation behind its own live CKQuery and bailed
+    /// out entirely (creating nothing, not even locally) if that query
+    /// failed — which meant the whole feature silently never worked if
+    /// CloudKit was unreachable/unauthenticated for any reason on a given
+    /// device, regardless of retries (see bug-186 in buglog.json). Local
+    /// team creation doesn't actually need CloudKit at all; only `pushTeam`
+    /// below does, and it already fails silently/independently like every
+    /// other push in this app if the network isn't there. The tradeoff is a
+    /// narrow re-opened race (two devices seeding simultaneously, before
+    /// either has pushed, could each create a duplicate) — accepted as a
+    /// better tradeoff than a feature that doesn't reliably work at all for
+    /// this single-club, at-most-a-few-admin-devices app.
     func ensureDefaultTeams(modelContext: ModelContext) async {
-        var existingNames: Set<String>?
-        for attempt in 0..<3 {
-            existingNames = await existingTeamNames()
-            if existingNames != nil { break }
-            if attempt < 2 { try? await Task.sleep(nanoseconds: 2_000_000_000) }
-        }
-        guard let existingNames else { return }
+        let existingNames = Set(((try? modelContext.fetch(FetchDescriptor<Team>())) ?? [])
+            .map { $0.name.trimmingCharacters(in: .whitespaces).lowercased() })
         for (name, sport) in Team.defaultTeams {
             guard !existingNames.contains(name.trimmingCharacters(in: .whitespaces).lowercased()) else { continue }
             let team = Team(name: name, sport: sport)

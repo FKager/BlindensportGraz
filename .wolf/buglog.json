@@ -3050,6 +3050,43 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-03T13:10:00.000Z"
+    },
+    {
+      "id": "bug-186",
+      "timestamp": "2026-08-03T13:13:05.590Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T13:13:05.590Z"
+    },
+    {
+      "id": "bug-187",
+      "timestamp": "2026-08-03T13:14:00.000Z",
+      "error_message": "Default teams still not appearing at all (not even locally) after fixing both the retry gap (bug-184) and the missing sync trigger on the manual login path (bug-185)",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "ensureDefaultTeams gated ALL local team creation behind a live CKQuery existence check (guard let existingNames = await existingTeamNames() else return), on the theory that this avoids a cross-device duplicate-team race. But local SwiftData team creation does not actually need CloudKit at all -- only pushTeam does. If CloudKit was unreachable/unauthenticated on this device for any reason, that guard silently blocked EVERYTHING, including the purely-local insert, no matter how many times ensureDefaultTeams was retried or from which call site it was triggered. This is why bug-184s retry fix and bug-185s missing-trigger fix both failed to resolve the symptom -- neither addressed the real blocker.",
+      "fix": "Removed the live CKQuery gate entirely. ensureDefaultTeams now checks the LOCAL store for existing team names (syncAll already ran immediately before every call site, so local state already reflects the latest known remote data) and always creates+inserts any missing default teams locally, regardless of CloudKit reachability. pushTeam is still called per new team for eventual cross-device sync, but its success is no longer a precondition for local visibility.",
+      "tags": [
+        "cloudkit",
+        "seeding",
+        "teams",
+        "root-cause",
+        "swift"
+      ],
+      "related_bugs": [
+        "bug-184",
+        "bug-185"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-03T13:14:00.000Z"
     }
   ]
 }

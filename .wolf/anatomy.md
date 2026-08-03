@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T13:07:12.495Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-03T13:13:05.584Z
 > Files: 83 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -71,7 +71,7 @@
 - `BlindensportGraz.entitlements` (~147 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1118 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~9839 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~9695 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
 - `EventsViews.swift` — SwiftUI view: AddEventView (~3532 tok)
