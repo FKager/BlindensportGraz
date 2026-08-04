@@ -3247,6 +3247,26 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-04T17:17:29.908Z"
+    },
+    {
+      "id": "bug-198",
+      "timestamp": "2026-08-04T17:44:45.885062Z",
+      "error_message": "iOS Device Deploy workflow failed: \"Provisioning profile 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' doesn't include the Push Notifications capability\" / \"doesn't include the aps-environment entitlement\"",
+      "file": ".github/workflows/ios-device-deploy.yml (secrets.IOS_CI_PROVISIONING_PROFILE_BASE64)",
+      "root_cause": "The app's entitlements file gained aps-environment (Push Notifications) in an earlier commit (8d3e500, \"Push notifications for team members when a Training/Tournament is created\"), which requires the App ID's Push Notifications capability to be enabled in the Apple Developer portal and a matching provisioning profile. The CI workflow's provisioning profile is a static, pre-harvested .mobileprovision stored as the IOS_CI_PROVISIONING_PROFILE_BASE64 GitHub secret (see the 2026-07-17 self-hosted-runner cerebrum entry) -- it predates the push-notification feature and was never regenerated/re-uploaded, so it lacks the aps-environment entitlement xcodebuild now requires to match BlindensportGraz.entitlements.",
+      "fix": "NOT YET FIXED -- requires interactive Apple Developer Portal access this session does not have: (1) enable Push Notifications capability on the it.a11y.BlindensportGraz App ID in the portal (if not already on from the app-side entitlements-only change), (2) regenerate/download a Development provisioning profile for that App ID + the registered test device, (3) base64-encode it and update the IOS_CI_PROVISIONING_PROFILE_BASE64 GitHub secret. Local `xcodebuild build` for iphonesimulator still succeeds since simulator builds don't enforce provisioning-profile capability matching -- this only surfaces on the device-signed CI path. Until the secret is refreshed, iOS Device Deploy will keep failing at the 'Build for device' step for ANY future change, not just this session's.",
+      "tags": [
+        "ci",
+        "provisioning-profile",
+        "push-notifications",
+        "aps-environment",
+        "code-signing",
+        "device-deploy",
+        "unresolved"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-04T17:44:45.885062Z"
     }
   ]
 }
