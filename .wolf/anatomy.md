@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T18:45:12.396Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T18:55:22.629Z
 > Files: 86 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -47,7 +47,7 @@
 ## .github/workflows/
 
 - `ios-build-deploy.yml` — CI: iOS Build and Deploy (~2446 tok)
-- `ios-device-deploy.yml` — CI: iOS Device Deploy (~2426 tok)
+- `ios-device-deploy.yml` — CI: iOS Device Deploy (~2829 tok)
 
 ## BlindensportGraz.xcodeproj/
 

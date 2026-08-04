@@ -1115,3 +1115,5 @@
 | 20:30 | Session end: 9 writes across 5 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, ci_cert.md) | 5 reads | ~20074 tok |
 | 20:45 | Edited ci_cert.md | breaks() → attempt() | ~315 |
 | 20:45 | Session end: 10 writes across 5 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, ci_cert.md) | 6 reads | ~21297 tok |
+| 20:55 | Edited .github/workflows/ios-device-deploy.yml | modified 04() | ~723 |
+| 20:55 | Root-caused bug-198 by inspecting the runner Mac directly: two provisioning profiles for same bundle id, Automatic signing picked the stale pre-push one; fixed by deleting same-bundle-id profiles before install | .github/workflows/ios-device-deploy.yml, .wolf/buglog.json, .wolf/cerebrum.md | success, logic verified against real profiles dir before trusting in CI | ~1600 |

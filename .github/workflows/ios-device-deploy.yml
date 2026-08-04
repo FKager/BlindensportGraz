@@ -121,9 +121,32 @@ jobs:
           # pipeline like this reliably avoids it.
           security cms -D -i "$PP_PATH" > "$RUNNER_TEMP/decoded_profile.plist"
 
-          mkdir -p ~/Library/MobileDevice/"Provisioning Profiles"
+          PROFILES_DIR=~/Library/MobileDevice/"Provisioning Profiles"
+          mkdir -p "$PROFILES_DIR"
+
+          # This is a persistent Mac, not an ephemeral VM — profiles from past
+          # runs (or from local Xcode use) never get cleaned up here, unlike
+          # the CI keychain below which is rebuilt fresh every run. With
+          # CODE_SIGN_STYLE=Automatic and no explicit profile pin, xcodebuild's
+          # automatic resolver can silently pick a STALE profile for this
+          # bundle id over the one we're about to install if more than one is
+          # present — confirmed live 2026-08-04 (bug-198): a fresh profile with
+          # the Push Notifications/aps-environment entitlement was installed,
+          # but the build still failed against a leftover profile from
+          # 2026-07-15 that predated that capability. Delete every existing
+          # profile for this bundle id first so ours is always the only match;
+          # profiles for any OTHER app on this Mac are left untouched.
+          for existing in "$PROFILES_DIR"/*.mobileprovision; do
+            [ -e "$existing" ] || continue
+            security cms -D -i "$existing" > "$RUNNER_TEMP/existing_profile.plist" 2>/dev/null || continue
+            app_id=$(/usr/libexec/PlistBuddy -c "Print :Entitlements:application-identifier" "$RUNNER_TEMP/existing_profile.plist" 2>/dev/null || echo "")
+            if [[ "$app_id" == *".$BUNDLE_ID" ]]; then
+              rm -f "$existing"
+            fi
+          done
+
           PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" "$RUNNER_TEMP/decoded_profile.plist")
-          cp "$PP_PATH" ~/Library/MobileDevice/"Provisioning Profiles"/"$PROFILE_UUID.mobileprovision"
+          cp "$PP_PATH" "$PROFILES_DIR/$PROFILE_UUID.mobileprovision"
           echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
 
       - name: Build for device

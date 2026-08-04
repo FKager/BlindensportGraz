@@ -3254,7 +3254,7 @@
       "error_message": "iOS Device Deploy workflow failed: \"Provisioning profile 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' doesn't include the Push Notifications capability\" / \"doesn't include the aps-environment entitlement\"",
       "file": ".github/workflows/ios-device-deploy.yml (secrets.IOS_CI_PROVISIONING_PROFILE_BASE64)",
       "root_cause": "The app's entitlements file gained aps-environment (Push Notifications) in an earlier commit (8d3e500, \"Push notifications for team members when a Training/Tournament is created\"), which requires the App ID's Push Notifications capability to be enabled in the Apple Developer portal and a matching provisioning profile. The CI workflow's provisioning profile is a static, pre-harvested .mobileprovision stored as the IOS_CI_PROVISIONING_PROFILE_BASE64 GitHub secret (see the 2026-07-17 self-hosted-runner cerebrum entry) -- it predates the push-notification feature and was never regenerated/re-uploaded, so it lacks the aps-environment entitlement xcodebuild now requires to match BlindensportGraz.entitlements.",
-      "fix": "Portal steps (App ID Push Notifications capability + regenerated Development provisioning profile) done by the user on 2026-08-04 via a Windows terminal — confirmed by `gh secret list` showing IOS_CI_PROVISIONING_PROFILE_BASE64 updated at 18:30:08Z. This surfaced two NEW Windows-specific gotchas documented in ci_cert.md, both now fixed there: (1) `gh secret set` has no `--body-file` flag (only `-b/--body <string>` or stdin) — the first version of ci_cert.md's guidance wrongly assumed one existed. (2) PowerShell's `Set-Content` defaults to UTF-8 WITH A BOM; those 3 extra bytes at the start of the base64 file aren't valid base64 and made macOS's `base64 --decode` (used by ios-device-deploy.yml's 'Install provisioning profile' step) fail immediately with 'base64: stdin: (null): error decoding base64 input stream' — this was the SECOND deploy attempt's failure, one step earlier than the original 'Build for device' capability error, confirming the portal-side fix itself worked. Corrected approach: pipe `[Convert]::ToBase64String($bytes)` directly into `gh secret set NAME`'s stdin, never writing an intermediate file at all — sidesteps both gotchas. Re-deploy not yet re-attempted with the corrected command as of this log entry.",
+      "fix": "Third attempt root-caused via direct inspection of this Mac (it IS the self-hosted runner) — `ls ~/Library/MobileDevice/Provisioning Profiles/` showed TWO profiles for it.a11y.BlindensportGraz: the original 2026-07-15 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' (aps-environment: empty) AND the correctly-regenerated 2026-08-04 'BlindensportGraz CI Development' (aps-environment: development) that the user's Portal + corrected-PowerShell-upload steps had produced. The user's fix WAS correct — but this runner is a persistent Mac, not an ephemeral VM, and nothing ever cleaned the Provisioning Profiles directory between runs. With CODE_SIGN_STYLE=Automatic and no explicit profile pin, xcodebuild's automatic resolver picked the stale profile over the fresh one, reproducing the exact same 'doesn't include the Push Notifications capability' error as the very first attempt even though a valid profile was sitting right next to it. Fixed in ios-device-deploy.yml's 'Install provisioning profile' step: before copying in the newly-decoded profile, loop over every existing .mobileprovision in that directory, decode each with `security cms -D`, check its Entitlements:application-identifier against BUNDLE_ID, and delete any match — guarantees at most one candidate profile for this app ever exists locally, so Automatic signing can't pick a stale one again. Profiles for any OTHER app on this Mac are left untouched (only bundle-id matches are removed). Verified the matching logic directly against the real (pre-fix) profiles directory on this Mac before trusting it in CI — correctly flagged both same-bundle-id profiles for deletion, left nothing else affected.",
       "tags": [
         "aps-environment",
         "base64",
@@ -3262,15 +3262,18 @@
         "code-signing",
         "device-deploy",
         "gh-cli",
+        "persistent-state",
         "powershell",
         "provisioning-profile",
         "push-notifications",
+        "self-hosted-runner",
+        "stale-provisioning-profile",
         "unresolved",
         "utf8-bom"
       ],
       "related_bugs": [],
-      "occurrences": 3,
-      "last_seen": "2026-08-04T18:45:42.294872Z"
+      "occurrences": 4,
+      "last_seen": "2026-08-04T18:56:33.270183Z"
     },
     {
       "id": "bug-199",
@@ -3287,6 +3290,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-04T18:45:12.402Z"
+    },
+    {
+      "id": "bug-200",
+      "timestamp": "2026-08-04T18:55:22.635Z",
+      "error_message": "Significant refactor of ",
+      "file": ".github/workflows/ios-device-deploy.yml",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 19→42 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-04T18:55:22.635Z"
     }
   ]
 }
