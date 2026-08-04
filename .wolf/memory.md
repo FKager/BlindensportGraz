@@ -1108,3 +1108,8 @@
 | 19:25 | Logged Do-Not-Repeat: violated standing "no simulator" instruction while verifying refactor (partial cerebrum.md read missed it) | .wolf/cerebrum.md | corrected, noted for future sessions | ~350 |
 | 19:38 | Session end: 8 writes across 4 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift) | 5 reads | ~19063 tok |
 | 19:40 | Session end: 8 writes across 4 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift) | 5 reads | ~19063 tok |
+| 19:44 | Session end: 8 writes across 4 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift) | 5 reads | ~19063 tok |
+| 19:49 | Session end: 8 writes across 4 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift) | 5 reads | ~19063 tok |
+| 19:53 | Created ci_cert.md | — | ~944 |
+| 19:35 | Wrote ci_cert.md documenting the CI provisioning-profile fix (Portal steps + Windows PowerShell gh secret set commands) for bug-198 | ci_cert.md | success, ready for user to follow on Windows | ~900 |
+| 20:30 | Session end: 9 writes across 5 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, ci_cert.md) | 5 reads | ~20074 tok |
