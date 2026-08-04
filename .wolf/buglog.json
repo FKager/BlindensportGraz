@@ -3254,19 +3254,39 @@
       "error_message": "iOS Device Deploy workflow failed: \"Provisioning profile 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' doesn't include the Push Notifications capability\" / \"doesn't include the aps-environment entitlement\"",
       "file": ".github/workflows/ios-device-deploy.yml (secrets.IOS_CI_PROVISIONING_PROFILE_BASE64)",
       "root_cause": "The app's entitlements file gained aps-environment (Push Notifications) in an earlier commit (8d3e500, \"Push notifications for team members when a Training/Tournament is created\"), which requires the App ID's Push Notifications capability to be enabled in the Apple Developer portal and a matching provisioning profile. The CI workflow's provisioning profile is a static, pre-harvested .mobileprovision stored as the IOS_CI_PROVISIONING_PROFILE_BASE64 GitHub secret (see the 2026-07-17 self-hosted-runner cerebrum entry) -- it predates the push-notification feature and was never regenerated/re-uploaded, so it lacks the aps-environment entitlement xcodebuild now requires to match BlindensportGraz.entitlements.",
-      "fix": "NOT YET FIXED -- requires interactive Apple Developer Portal access this session does not have: (1) enable Push Notifications capability on the it.a11y.BlindensportGraz App ID in the portal (if not already on from the app-side entitlements-only change), (2) regenerate/download a Development provisioning profile for that App ID + the registered test device, (3) base64-encode it and update the IOS_CI_PROVISIONING_PROFILE_BASE64 GitHub secret. Local `xcodebuild build` for iphonesimulator still succeeds since simulator builds don't enforce provisioning-profile capability matching -- this only surfaces on the device-signed CI path. Until the secret is refreshed, iOS Device Deploy will keep failing at the 'Build for device' step for ANY future change, not just this session's.",
+      "fix": "Portal steps (App ID Push Notifications capability + regenerated Development provisioning profile) done by the user on 2026-08-04 via a Windows terminal — confirmed by `gh secret list` showing IOS_CI_PROVISIONING_PROFILE_BASE64 updated at 18:30:08Z. This surfaced two NEW Windows-specific gotchas documented in ci_cert.md, both now fixed there: (1) `gh secret set` has no `--body-file` flag (only `-b/--body <string>` or stdin) — the first version of ci_cert.md's guidance wrongly assumed one existed. (2) PowerShell's `Set-Content` defaults to UTF-8 WITH A BOM; those 3 extra bytes at the start of the base64 file aren't valid base64 and made macOS's `base64 --decode` (used by ios-device-deploy.yml's 'Install provisioning profile' step) fail immediately with 'base64: stdin: (null): error decoding base64 input stream' — this was the SECOND deploy attempt's failure, one step earlier than the original 'Build for device' capability error, confirming the portal-side fix itself worked. Corrected approach: pipe `[Convert]::ToBase64String($bytes)` directly into `gh secret set NAME`'s stdin, never writing an intermediate file at all — sidesteps both gotchas. Re-deploy not yet re-attempted with the corrected command as of this log entry.",
       "tags": [
-        "ci",
-        "provisioning-profile",
-        "push-notifications",
         "aps-environment",
+        "base64",
+        "ci",
         "code-signing",
         "device-deploy",
-        "unresolved"
+        "gh-cli",
+        "powershell",
+        "provisioning-profile",
+        "push-notifications",
+        "unresolved",
+        "utf8-bom"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-08-04T18:45:42.294872Z"
+    },
+    {
+      "id": "bug-199",
+      "timestamp": "2026-08-04T18:45:12.402Z",
+      "error_message": "Significant refactor of ",
+      "file": "ci_cert.md",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 14→23 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-08-04T17:44:45.885062Z"
+      "last_seen": "2026-08-04T18:45:12.402Z"
     }
   ]
 }

@@ -1113,3 +1113,5 @@
 | 19:53 | Created ci_cert.md | — | ~944 |
 | 19:35 | Wrote ci_cert.md documenting the CI provisioning-profile fix (Portal steps + Windows PowerShell gh secret set commands) for bug-198 | ci_cert.md | success, ready for user to follow on Windows | ~900 |
 | 20:30 | Session end: 9 writes across 5 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, ci_cert.md) | 5 reads | ~20074 tok |
+| 20:45 | Edited ci_cert.md | breaks() → attempt() | ~315 |
+| 20:45 | Session end: 10 writes across 5 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteViews.swift, TrainingsfrequenzlisteCalculationTests.swift, ci_cert.md) | 6 reads | ~21297 tok |

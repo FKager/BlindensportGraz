@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T17:53:54.127Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T18:45:12.396Z
 > Files: 86 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -23,7 +23,7 @@
 - `.DS_Store` (~2186 tok)
 - `.gitignore` — Git ignore rules (~41 tok)
 - `.mcp.json` (~58 tok)
-- `ci_cert.md` — Fixing the CI provisioning profile (Push Notifications capability) (~885 tok)
+- `ci_cert.md` — Fixing the CI provisioning profile (Push Notifications capability) (~1016 tok)
 - `CLAUDE.md` — OpenWolf (~129 tok)
 - `CLAUDE.mdes` — Requirements (~91 tok)
 - `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
