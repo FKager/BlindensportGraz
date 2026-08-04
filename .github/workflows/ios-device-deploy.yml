@@ -152,22 +152,38 @@ jobs:
       - name: Build for device
         run: |
           set -o pipefail
-          # The installed profile is an Xcode-managed "Team Provisioning Profile" —
-          # those are only usable under Automatic signing (project.yml's default);
-          # forcing CODE_SIGN_STYLE=Manual against one fails with "is Xcode managed,
-          # but signing settings require a manually managed profile." Automatic
-          # signing resolves it locally here without any network/Apple ID calls
-          # since a valid, non-expired profile for this exact bundle id + device is
-          # already installed and the matching identity is on the keychain search
-          # list — no -allowProvisioningUpdates needed.
+          # NOTE (2026-07): the profile installed at that time was an
+          # Xcode-managed "Team Provisioning Profile", only usable under
+          # Automatic signing — forcing Manual against it failed with "is
+          # Xcode managed, but signing settings require a manually managed
+          # profile."
+          #
+          # UPDATE (2026-08-04, bug-198): switched back to Manual + an
+          # explicit PROVISIONING_PROFILE_SPECIFIER. The profile is now one
+          # explicitly created via "+" in the Developer Portal (not an
+          # Xcode-auto-managed one), so the above restriction no longer
+          # applies. This switch was needed because Automatic signing turned
+          # out to resolve capabilities from Xcode's own cached/synthesized
+          # notion of this App ID — not from the actual installed .mobile-
+          # provision's entitlements — so it kept rejecting a *correct*,
+          # freshly-regenerated profile (confirmed by inspecting the profile
+          # file directly on this runner: aps-environment was present) with
+          # the same stale "doesn't include the Push Notifications
+          # capability" error, and no network call happens here to refresh
+          # that cache (deliberately, to avoid an interactive
+          # -allowProvisioningUpdates Apple-ID prompt). Manual + an explicit
+          # profile UUID makes xcodebuild read that file's real entitlements
+          # directly instead.
           xcodebuild build \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -configuration Debug \
             -destination "id=$DEVICE_ID" \
             -derivedDataPath "$RUNNER_TEMP/build" \
+            CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Development" \
             DEVELOPMENT_TEAM="5Q57Y9YT8J" \
+            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" \
             OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH"
 
       - name: Install and launch on device
