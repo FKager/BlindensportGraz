@@ -149,48 +149,76 @@ jobs:
           cp "$PP_PATH" "$PROFILES_DIR/$PROFILE_UUID.mobileprovision"
           echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
 
-      - name: Build for device
+      - name: Configure Manual signing on the app target
         run: |
-          set -o pipefail
+          set -euo pipefail
           # NOTE (2026-07): the profile installed at that time was an
           # Xcode-managed "Team Provisioning Profile", only usable under
           # Automatic signing — forcing Manual against it failed with "is
           # Xcode managed, but signing settings require a manually managed
           # profile."
           #
-          # UPDATE (2026-08-04, bug-198): switched back to Manual + an
-          # explicit PROVISIONING_PROFILE_SPECIFIER. The profile is now one
-          # explicitly created via "+" in the Developer Portal (not an
-          # Xcode-auto-managed one), so the above restriction no longer
-          # applies. This switch was needed because Automatic signing turned
-          # out to resolve capabilities from Xcode's own cached/synthesized
-          # notion of this App ID — not from the actual installed .mobile-
-          # provision's entitlements — so it kept rejecting a *correct*,
-          # freshly-regenerated profile (confirmed by inspecting the profile
-          # file directly on this runner: aps-environment was present) with
-          # the same stale "doesn't include the Push Notifications
-          # capability" error, and no network call happens here to refresh
-          # that cache (deliberately, to avoid an interactive
-          # -allowProvisioningUpdates Apple-ID prompt). Manual + an explicit
-          # profile UUID makes xcodebuild read that file's real entitlements
-          # directly instead.
+          # UPDATE (2026-08-04, bug-198): switched to Manual + an explicit
+          # PROVISIONING_PROFILE_SPECIFIER. The profile is now one explicitly
+          # created via "+" in the Developer Portal (not Xcode-auto-managed),
+          # so the above restriction no longer applies. This was needed
+          # because Automatic signing turned out to resolve capabilities from
+          # Xcode's own cached/synthesized notion of this App ID — not from
+          # the actual installed .mobileprovision's entitlements — so it kept
+          # rejecting a *correct*, freshly-regenerated profile (confirmed by
+          # inspecting the file directly on this runner: aps-environment was
+          # present) with the same stale "doesn't include the Push
+          # Notifications capability" error, and no network call happens here
+          # to refresh that cache (deliberately, to avoid an interactive
+          # -allowProvisioningUpdates Apple-ID prompt).
           #
-          # CODE_SIGN_STYLE/PROVISIONING_PROFILE_SPECIFIER are scoped to just
-          # the $SCHEME target ("BlindensportGraz:SETTING=value") rather than
-          # passed globally — a global override also lands on the ZIPFoundation
-          # SPM dependency's resource-bundle target, which errors with "does
-          # not support provisioning profiles ... Set the provisioning profile
-          # value to 'Automatic'" since bundle-only targets aren't profile-
-          # eligible at all. CODE_SIGN_IDENTITY/DEVELOPMENT_TEAM stay global —
-          # those never caused that error in any prior run.
+          # A first attempt tried scoping CODE_SIGN_STYLE/
+          # PROVISIONING_PROFILE_SPECIFIER to just the app target via
+          # "$SCHEME:SETTING=value" on the xcodebuild command line — that
+          # turned out to be a fabricated syntax with no real per-target
+          # effect (xcodebuild just echoes it back as a literal, unrecognized
+          # key without applying it), so it silently left CODE_SIGN_STYLE at
+          # project.yml's Automatic default and reproduced the exact same
+          # error. A plain global override does work but also lands on the
+          # ZIPFoundation SPM dependency's resource-bundle target, which
+          # errors with "does not support provisioning profiles ... Set the
+          # provisioning profile value to 'Automatic'" since bundle-only
+          # targets aren't profile-eligible at all — and there is no real
+          # xcodebuild CLI syntax to scope a setting to one target only.
+          #
+          # The only genuine way to scope this to just the BlindensportGraz
+          # target is to edit that target's OWN build settings in the
+          # generated .xcodeproj directly (project.yml can't hardcode this —
+          # PROFILE_UUID is a fresh value every time the profile is
+          # regenerated, and project.yml must stay Automatic for local Xcode
+          # use). Verified this exact script against a real `xcodegen
+          # generate` output before trusting it here: patches only the
+          # BlindensportGraz target's Debug configuration, confirmed
+          # untouched elsewhere (BlindensportGrazTests, Release, and the SPM
+          # package are structurally separate and never touched by this).
+          gem install xcodeproj --no-document
+          ruby -e '
+            require "xcodeproj"
+            project = Xcodeproj::Project.open(ENV.fetch("PROJECT"))
+            target = project.targets.find { |t| t.name == ENV.fetch("SCHEME") }
+            abort "target #{ENV["SCHEME"]} not found" unless target
+            target.build_configurations.each do |config|
+              next unless config.name == "Debug"
+              config.build_settings["CODE_SIGN_STYLE"] = "Manual"
+              config.build_settings["PROVISIONING_PROFILE_SPECIFIER"] = ENV.fetch("PROFILE_UUID")
+            end
+            project.save
+          '
+
+      - name: Build for device
+        run: |
+          set -o pipefail
           xcodebuild build \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -configuration Debug \
             -destination "id=$DEVICE_ID" \
             -derivedDataPath "$RUNNER_TEMP/build" \
-            "$SCHEME:CODE_SIGN_STYLE=Manual" \
-            "$SCHEME:PROVISIONING_PROFILE_SPECIFIER=$PROFILE_UUID" \
             CODE_SIGN_IDENTITY="Apple Development" \
             DEVELOPMENT_TEAM="5Q57Y9YT8J" \
             OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH"

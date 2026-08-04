@@ -3254,7 +3254,7 @@
       "error_message": "iOS Device Deploy workflow failed: \"Provisioning profile 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' doesn't include the Push Notifications capability\" / \"doesn't include the aps-environment entitlement\"",
       "file": ".github/workflows/ios-device-deploy.yml (secrets.IOS_CI_PROVISIONING_PROFILE_BASE64)",
       "root_cause": "The app's entitlements file gained aps-environment (Push Notifications) in an earlier commit (8d3e500, \"Push notifications for team members when a Training/Tournament is created\"), which requires the App ID's Push Notifications capability to be enabled in the Apple Developer portal and a matching provisioning profile. The CI workflow's provisioning profile is a static, pre-harvested .mobileprovision stored as the IOS_CI_PROVISIONING_PROFILE_BASE64 GitHub secret (see the 2026-07-17 self-hosted-runner cerebrum entry) -- it predates the push-notification feature and was never regenerated/re-uploaded, so it lacks the aps-environment entitlement xcodebuild now requires to match BlindensportGraz.entitlements.",
-      "fix": "Third attempt root-caused via direct inspection of this Mac (it IS the self-hosted runner) — `ls ~/Library/MobileDevice/Provisioning Profiles/` showed TWO profiles for it.a11y.BlindensportGraz: the original 2026-07-15 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' (aps-environment: empty) AND the correctly-regenerated 2026-08-04 'BlindensportGraz CI Development' (aps-environment: development) that the user's Portal + corrected-PowerShell-upload steps had produced. The user's fix WAS correct — but this runner is a persistent Mac, not an ephemeral VM, and nothing ever cleaned the Provisioning Profiles directory between runs. With CODE_SIGN_STYLE=Automatic and no explicit profile pin, xcodebuild's automatic resolver picked the stale profile over the fresh one, reproducing the exact same 'doesn't include the Push Notifications capability' error as the very first attempt even though a valid profile was sitting right next to it. Fixed in ios-device-deploy.yml's 'Install provisioning profile' step: before copying in the newly-decoded profile, loop over every existing .mobileprovision in that directory, decode each with `security cms -D`, check its Entitlements:application-identifier against BUNDLE_ID, and delete any match — guarantees at most one candidate profile for this app ever exists locally, so Automatic signing can't pick a stale one again. Profiles for any OTHER app on this Mac are left untouched (only bundle-id matches are removed). Verified the matching logic directly against the real (pre-fix) profiles directory on this Mac before trusting it in CI — correctly flagged both same-bundle-id profiles for deletion, left nothing else affected.",
+      "fix": "Final root cause and fix, after 5 CI attempts: (1) Portal capability + fresh profile — user-side, correct. (2) stale-profile cleanup in 'Install provisioning profile' — correct, verified only one profile remains. (3) attempted CODE_SIGN_STYLE=Manual + PROVISIONING_PROFILE_SPECIFIER scoped via a '$SCHEME:SETTING=value' xcodebuild CLI prefix — this syntax does NOT exist; xcodebuild just echoes it back as an unrecognized literal key without applying it, so CODE_SIGN_STYLE silently stayed at project.yml's Automatic default and reproduced the exact original error (confirmed by the byte-identical placeholder profile name 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' in the error, which doesn't even match the real installed profile's Name field 'BlindensportGraz CI Development'). (4) a plain global CODE_SIGN_STYLE=Manual + PROVISIONING_PROFILE_SPECIFIER override DOES apply, but also lands on the ZIPFoundation SPM dependency's resource-bundle target ('ZIPFoundation_ZIPFoundation does not support provisioning profiles ... Set the provisioning profile value to Automatic') since xcodebuild command-line overrides are never actually target-scoped — there is no real per-target CLI syntax. FIX: added a new 'Configure Manual signing on the app target' step that installs the `xcodeproj` Ruby gem and directly edits the generated .xcodeproj's BlindensportGraz-target-only Debug build configuration (CODE_SIGN_STYLE=Manual, PROVISIONING_PROFILE_SPECIFIER=$PROFILE_UUID) — genuinely per-target since it edits the actual pbxproj structure rather than relying on any CLI scoping mechanism; the SPM package is a structurally separate project XCBuild resolves independently, never touched by this edit. 'Build for device' no longer passes CODE_SIGN_STYLE/PROVISIONING_PROFILE_SPECIFIER on the command line at all (baked into the project already), keeping only CODE_SIGN_IDENTITY/DEVELOPMENT_TEAM/OTHER_CODE_SIGN_FLAGS as before. Verified end-to-end on this Mac (which IS the runner) before trusting it in CI: xcodegen generate -> ruby patch -> confirmed single, correctly-scoped pbxproj occurrence -> real `xcodebuild build` against the physical device destination got all the way past provisioning/capability validation with zero Push-Notifications or ZIPFoundation errors, only failing at the unrelated, already-documented errSecInternalComponent sandboxed-codesign limitation (bug-008) specific to this coding session's own shell — the real CI workflow's ephemeral, non-interactively-unlocked keychain doesn't hit that wall. Reverted the local test mutation to BlindensportGraz.xcodeproj/project.pbxproj before committing (it's tracked, not gitignored).",
       "tags": [
         "aps-environment",
         "base64",
@@ -3262,18 +3262,22 @@
         "code-signing",
         "device-deploy",
         "gh-cli",
+        "per-target-build-settings",
         "persistent-state",
         "powershell",
         "provisioning-profile",
         "push-notifications",
         "self-hosted-runner",
+        "spm-package-signing",
         "stale-provisioning-profile",
         "unresolved",
-        "utf8-bom"
+        "utf8-bom",
+        "xcodebuild",
+        "xcodeproj-gem"
       ],
       "related_bugs": [],
-      "occurrences": 4,
-      "last_seen": "2026-08-04T18:56:33.270183Z"
+      "occurrences": 5,
+      "last_seen": "2026-08-04T19:10:16.181773Z"
     },
     {
       "id": "bug-199",
@@ -3297,7 +3301,23 @@
       "error_message": "Significant refactor of ",
       "file": ".github/workflows/ios-device-deploy.yml",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 19→42 lines (2 removed)",
+      "fix": "Rewrote 19→42 lines (2 removed) | Also: # The installed profile is an Xcode-managed \"Team ; # those are only usable under Automatic signing (p | Also: CODE_SIGN_STYLE=Manual \\; PROVISIONING_PROFILE_SPECIFIER=\"$PROFILE_UUID\" \\",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-08-04T19:02:09.440Z"
+    },
+    {
+      "id": "bug-201",
+      "timestamp": "2026-08-04T19:09:00.505Z",
+      "error_message": "Significant refactor of ",
+      "file": ".github/workflows/ios-device-deploy.yml",
+      "root_cause": "26 lines replaced/restructured",
+      "fix": "Rewrote 49→77 lines (26 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3305,7 +3325,7 @@
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-08-04T18:55:22.635Z"
+      "last_seen": "2026-08-04T19:09:00.505Z"
     }
   ]
 }
