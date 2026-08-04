@@ -174,16 +174,25 @@ jobs:
           # -allowProvisioningUpdates Apple-ID prompt). Manual + an explicit
           # profile UUID makes xcodebuild read that file's real entitlements
           # directly instead.
+          #
+          # CODE_SIGN_STYLE/PROVISIONING_PROFILE_SPECIFIER are scoped to just
+          # the $SCHEME target ("BlindensportGraz:SETTING=value") rather than
+          # passed globally — a global override also lands on the ZIPFoundation
+          # SPM dependency's resource-bundle target, which errors with "does
+          # not support provisioning profiles ... Set the provisioning profile
+          # value to 'Automatic'" since bundle-only targets aren't profile-
+          # eligible at all. CODE_SIGN_IDENTITY/DEVELOPMENT_TEAM stay global —
+          # those never caused that error in any prior run.
           xcodebuild build \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -configuration Debug \
             -destination "id=$DEVICE_ID" \
             -derivedDataPath "$RUNNER_TEMP/build" \
-            CODE_SIGN_STYLE=Manual \
+            "$SCHEME:CODE_SIGN_STYLE=Manual" \
+            "$SCHEME:PROVISIONING_PROFILE_SPECIFIER=$PROFILE_UUID" \
             CODE_SIGN_IDENTITY="Apple Development" \
             DEVELOPMENT_TEAM="5Q57Y9YT8J" \
-            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" \
             OTHER_CODE_SIGN_FLAGS="--keychain $KEYCHAIN_PATH"
 
       - name: Install and launch on device
