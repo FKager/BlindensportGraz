@@ -3167,6 +3167,86 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-03T14:04:43.165Z"
+    },
+    {
+      "id": "bug-193",
+      "timestamp": "2026-08-04T17:03:09.081Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-04T17:03:09.081Z"
+    },
+    {
+      "id": "bug-194",
+      "timestamp": "2026-08-04T17:04:00.773Z",
+      "error_message": "Wrong reference: team should be sport",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+      "root_cause": "Used \"team\" instead of \"sport\"",
+      "fix": "Changed team → sport",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-04T17:04:00.773Z"
+    },
+    {
+      "id": "bug-195",
+      "timestamp": "2026-08-04T17:04:51.975Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+      "root_cause": "15 lines replaced/restructured",
+      "fix": "Rewrote 32→41 lines (15 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-04T17:04:51.975Z"
+    },
+    {
+      "id": "bug-196",
+      "timestamp": "2026-08-04T17:05:45.911Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+      "root_cause": "Had \"\\(selectedTeam?.id.uuidString ?? \"",
+      "fix": "Changed to \"\\(sport ?? \"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-04T17:05:45.911Z"
+    },
+    {
+      "id": "bug-197",
+      "timestamp": "2026-08-04T17:17:29.908Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 17→61 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-04T17:17:29.908Z"
     }
   ]
 }

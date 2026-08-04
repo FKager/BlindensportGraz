@@ -37,19 +37,27 @@ enum HalfYear: Int, CaseIterable, Identifiable, Hashable {
     var label: String { self == .first ? "1. Halbjahr (Jänner–Juni)" : "2. Halbjahr (Juli–Dezember)" }
 }
 
-/// One half-year's Trainingsfrequenzliste for one team — mirrors the
-/// real ÖBSV "Trainingsfrequenzliste" paper form (reverse-engineered from
-/// the official .xls, see TrainingsfrequenzlisteExporter's doc comment):
-/// one row per roster member (capped at 23, the original template's row
-/// count), one column per training date (capped at 33, the original's date-
-/// column count), "j"/"n" attendance per cell, and a per-date total row
-/// ("ges. TL").
+/// One half-year's Trainingsfrequenzliste for one training sport (e.g.
+/// "Torball", "Blindenfußball") — mirrors the real ÖBSV
+/// "Trainingsfrequenzliste" paper form (reverse-engineered from the official
+/// .xls, see TrainingsfrequenzlisteExporter's doc comment): one row per
+/// roster member (capped at 23, the original template's row count), one
+/// column per training date (capped at 33, the original's date-column
+/// count), "j"/"n" attendance per cell, and a per-date total row ("ges. TL").
+///
+/// Scoped by `Training.sport`, not by a hand-picked team — the original form
+/// files one homogenous sheet per "Sportart", and a sport can be trained by
+/// several teams (e.g. "Torball" has both a Damen and a Herren team). The
+/// roster itself still comes from whichever teams were actually assigned to
+/// this period's trainings (`teams`), same as before — only the *selection*
+/// moved from team to sport, per user request.
 struct TrainingsfrequenzlisteSummary {
-    let team: Team
+    let sport: String
     let halfYear: HalfYear
     let year: Int
     let trainingDates: [Date] // sorted ascending, capped at maxDateColumns
     let people: [TrainingsfrequenzlistePerson] // sorted by displayName, capped at maxPersonRows
+    let teams: [Team] // every team assigned to a training in this period, in first-seen order
 
     func totalPresent(on date: Date) -> Int {
         people.reduce(0) { $0 + ($1.attended(on: date) ? 1 : 0) }
@@ -63,15 +71,15 @@ enum TrainingsfrequenzlisteCalculator {
     static let maxDateColumns = 33
     static let maxPersonRows = 23
 
-    static func summary(team: Team, halfYear: HalfYear, year: Int, in context: ModelContext) -> TrainingsfrequenzlisteSummary {
+    static func summary(sport: String, halfYear: HalfYear, year: Int, in context: ModelContext) -> TrainingsfrequenzlisteSummary {
         let calendar = Calendar.current
 
         // Fetch-all-then-filter-in-Swift, matching KostZCalculator/
         // PraeCalculator's established convention rather than a #Predicate
-        // with relationship-path traversal (training.teams.contains(...)).
+        // with relationship-path traversal.
         let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
         let periodTrainings = allTrainings.filter { training in
-            guard training.teams.contains(where: { $0.id == team.id }) else { return false }
+            guard training.sport == sport else { return false }
             let components = calendar.dateComponents([.month, .year], from: training.startDate)
             guard let month = components.month else { return false }
             return halfYear.months.contains(month) && components.year == year
@@ -84,6 +92,18 @@ enum TrainingsfrequenzlisteCalculator {
         )
         let periodTrainingIDs = Set(periodTrainings.map(\.id))
 
+        // Every team assigned to any of this period's trainings — the report
+        // still belongs to the assigned teams and their attendees, just
+        // unioned across however many teams train this sport in the period
+        // (mirrors TrainingDetailView.allMemberships' team-union approach).
+        var seenTeamIDs = Set<UUID>()
+        var assignedTeams: [Team] = []
+        for training in periodTrainings {
+            for team in training.teams where seenTeamIDs.insert(team.id).inserted {
+                assignedTeams.append(team)
+            }
+        }
+
         let allAttendances = (try? context.fetch(FetchDescriptor<Attendance>())) ?? []
         var attendedDatesByMembershipID: [UUID: [Date: Bool]] = [:]
         for attendance in allAttendances {
@@ -93,11 +113,26 @@ enum TrainingsfrequenzlisteCalculator {
             attendedDatesByMembershipID[attendance.membership.id, default: [:]][day] = true
         }
 
-        // Every roster member appears (an admin needs the full assigned
-        // roster to file the report), regardless of whether they attended
-        // anything in this period — only the per-date "j"/"n" cell reflects
-        // actual attendance, via TrainingsfrequenzlistePerson.attended(on:).
-        let people = team.memberships
+        // Every roster member across all assigned teams appears (an admin
+        // needs the full assigned roster to file the report), regardless of
+        // whether they attended anything in this period — only the per-date
+        // "j"/"n" cell reflects actual attendance, via
+        // TrainingsfrequenzlistePerson.attended(on:). Deduped by the
+        // underlying person, same as TrainingDetailView.allMemberships — the
+        // same person could otherwise appear twice if they're in two teams
+        // both assigned to trainings of this sport in this period.
+        var seenPersonKeys = Set<UUID>()
+        var memberships: [TeamMembership] = []
+        for team in assignedTeams {
+            for membership in team.memberships {
+                let key = membership.user?.id ?? membership.member?.id ?? membership.id
+                if seenPersonKeys.insert(key).inserted {
+                    memberships.append(membership)
+                }
+            }
+        }
+
+        let people = memberships
             .sortedByLastName()
             .prefix(maxPersonRows)
             .map { membership in
@@ -107,7 +142,8 @@ enum TrainingsfrequenzlisteCalculator {
                 )
             }
 
-        return TrainingsfrequenzlisteSummary(team: team, halfYear: halfYear, year: year,
-                                              trainingDates: trainingDates, people: Array(people))
+        return TrainingsfrequenzlisteSummary(sport: sport, halfYear: halfYear, year: year,
+                                              trainingDates: trainingDates, people: Array(people),
+                                              teams: assignedTeams)
     }
 }

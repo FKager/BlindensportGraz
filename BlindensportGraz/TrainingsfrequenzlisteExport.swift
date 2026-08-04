@@ -30,7 +30,7 @@ enum TrainingsfrequenzlisteExporter {
         var rows: [[XLSXGridCell]] = []
         rows.append([.text("T R A I N I N G S F R E Q U E N Z L I S T E", bold: true)])
         rows.append([])
-        rows.append([.text("Verein/LV:", bold: true), .text(vereinName), .text(""), .text("Sportart:", bold: true), .text(summary.team.sport)])
+        rows.append([.text("Verein/LV:", bold: true), .text(vereinName), .text(""), .text("Sportart:", bold: true), .text(summary.sport)])
         rows.append([.text("Zeitraum:", bold: true), .text(periodLabel)])
         rows.append([])
         rows.append([.text("Trainingstage (Datum):", bold: true)])
