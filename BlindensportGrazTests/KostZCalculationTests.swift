@@ -27,6 +27,19 @@ final class KostZCalculationTests: XCTestCase {
         return training
     }
 
+    private func makeTournament(_ context: ModelContext, title: String, day: Int, month: Int = 7, year: Int = 2026) -> Tournament {
+        var startComponents = DateComponents()
+        startComponents.year = year
+        startComponents.month = month
+        startComponents.day = day
+        startComponents.hour = 9
+        let start = Calendar.current.date(from: startComponents)!
+        let end = Calendar.current.date(byAdding: .day, value: 1, to: start)!
+        let tournament = Tournament(title: title, sport: "Torball", location: "Graz", startDate: start, endDate: end)
+        context.insert(tournament)
+        return tournament
+    }
+
     // MARK: - summary
 
     func testSummaryAggregatesAcrossMultiplePeopleAndEvents() throws {
@@ -122,6 +135,81 @@ final class KostZCalculationTests: XCTestCase {
         XCTAssertTrue(summary.personAmounts.isEmpty)
     }
 
+    func testSummaryExcludesTournamentAttendances() throws {
+        // Tournaments file their own KostZ (see summary(for tournament:))
+        // instead — the monthly summary must only ever count Trainings, or
+        // a tournament's honoraria would be double-counted.
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        context.insert(membership)
+
+        let training = makeTraining(context, title: "Montagstraining", day: 5)
+        let tournament = makeTournament(context, title: "Landesmeisterschaft", day: 12)
+        context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 40))
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 60))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let summary = KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context)
+
+        XCTAssertEqual(summary.total, 40)
+    }
+
+    // MARK: - summary(for tournament:)
+
+    func testTournamentSummaryAggregatesOnlyThatTournamentsAttendances() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let helper = Member(firstName: "Bernd", lastName: "Helfer")
+        context.insert(coach)
+        context.insert(helper)
+        let coachMembership = TeamMembership(member: coach, team: team, role: "coach")
+        let helperMembership = TeamMembership(member: helper, team: team, role: "assistant")
+        context.insert(coachMembership)
+        context.insert(helperMembership)
+
+        let tournament = makeTournament(context, title: "Landesmeisterschaft", day: 12)
+        let otherTournament = makeTournament(context, title: "Anderes Turnier", day: 20)
+        let training = makeTraining(context, title: "Montagstraining", day: 5)
+        context.insert(Attendance(event: tournament, membership: coachMembership, attended: true, praeAmount: 60))
+        context.insert(Attendance(event: tournament, membership: helperMembership, attended: true, praeAmount: 30))
+        context.insert(Attendance(event: otherTournament, membership: coachMembership, attended: true, praeAmount: 999))
+        context.insert(Attendance(event: training, membership: coachMembership, attended: true, praeAmount: 999))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let summary = KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
+
+        XCTAssertEqual(summary.personCount, 2)
+        XCTAssertEqual(summary.total, 90)
+    }
+
+    func testTournamentSummaryIgnoresNonAttendedAndMissingAmount() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        context.insert(membership)
+
+        let tournament = makeTournament(context, title: "Landesmeisterschaft", day: 12)
+        context.insert(Attendance(event: tournament, membership: membership, attended: false, praeAmount: 40))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let summary = KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
+
+        XCTAssertTrue(summary.personAmounts.isEmpty)
+        XCTAssertEqual(summary.total, 0)
+    }
+
     func testMonthBoundsComputesCorrectDayCount() {
         let bounds = KostZCalculator.monthBounds(month: 7, year: 2026)
         XCTAssertEqual(bounds.dayCount, 31)
@@ -169,6 +257,38 @@ final class KostZCalculationTests: XCTestCase {
         XCTAssertTrue(sheetXML.contains("SUM(I10:I25)"))
         // An untouched category label (this app has no data for it) must still be present.
         XCTAssertTrue(sheetXML.contains("<c r=\"F10\""))
+    }
+
+    func testTournamentExportProducesValidReadableZipWithExpectedValues() throws {
+        let team = Team(name: "Torball 1", sport: "Torball")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        var startComponents = DateComponents()
+        startComponents.year = 2026
+        startComponents.month = 7
+        startComponents.day = 10
+        let start = Calendar.current.date(from: startComponents)!
+        let end = Calendar.current.date(byAdding: .day, value: 2, to: start)! // 3-day tournament
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz", startDate: start, endDate: end)
+        let summary = KostZTournamentSummary(
+            tournament: tournament,
+            personAmounts: [KostZPersonAmount(person: person, amount: 90)]
+        )
+
+        let url = try KostZExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("Trainer:innen- und Helfer:innenhonorare Landesmeisterschaft"))
+        XCTAssertTrue(sheetXML.contains("10.07.2026"))
+        XCTAssertTrue(sheetXML.contains("12.07.2026"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"I5\"><v>3.0</v></c>") || sheetXML.contains("<c r=\"I5\"><v>3</v></c>") || sheetXML.contains(">3<"))
+        XCTAssertTrue(sheetXML.contains("90"))
     }
 
     func testExportZeroTotalLeavesAmountCellBlank() throws {

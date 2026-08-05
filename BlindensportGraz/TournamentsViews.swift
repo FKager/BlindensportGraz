@@ -194,6 +194,8 @@ struct TournamentDetailView: View {
    @Environment(\.modelContext) private var modelContext
    @Query private var allTeams: [Team]
    @State private var showMemberList = false
+   @State private var showKostZCalculation = false
+   @State private var showPraeCalculation = false
 
    var isAdmin: Bool {
        currentUser?.role == "admin"
@@ -321,6 +323,27 @@ var body: some View {
                     Label("Mitgliederliste", systemImage: "list.bullet.clipboard")
                 }
             }
+            // Per-tournament PRAE + KostZ. Both used to live on
+            // TournamentsListView's list-level "Berichte" menu; moved here
+            // since each is scoped to one specific tournament's own PRAE
+            // entries (PraeTournamentCalculationView/
+            // KostZTournamentCalculationView), which the list view can't
+            // supply — TrainingsListView's "Berichte" menu is unaffected and
+            // stays month-wide/list-level, since Trainings' PRAE/KostZ are
+            // still summed across a whole month, not per-event.
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Button { showPraeCalculation = true } label: {
+                        Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
+                    }
+                    Button { showKostZCalculation = true } label: {
+                        Label("KostZ-Berechnung", systemImage: "doc.text.fill")
+                    }
+                } label: {
+                    Image(systemName: "chart.bar.doc.horizontal")
+                }
+                .accessibilityLabel("Berichte")
+            }
         }
     }
     .sheet(isPresented: $showMemberList) {
@@ -335,6 +358,12 @@ var body: some View {
                 attendedMemberships: attendedMemberships
             )
         )
+    }
+    .sheet(isPresented: $showKostZCalculation) {
+        KostZTournamentCalculationView(tournament: tournament)
+    }
+    .sheet(isPresented: $showPraeCalculation) {
+        PraeTournamentCalculationView(tournament: tournament)
     }
     .onDisappear {
         try? modelContext.save()
@@ -385,19 +414,10 @@ struct TournamentsListView: View {
       @Environment(\.modelContext) private var modelContext
        @Query(sort: \Tournament.startDate) private var tournaments: [Tournament]
         @State private var showAdd = false
-        @State private var showPraeCalculation = false
-        @State private var showKostZCalculation = false
 
   var canManageEvents: Bool {
       guard let user = currentUser else { return false }
       return user.role == "admin" || user.role == "coach"
-       }
-
-    // Matches TrainingsListView.isAdmin — gates the PRAE/KostZ "Berichte" menu,
-    // same admin condition the AccountView buttons used before PRAE/KostZ
-    // moved here (see PraeCalculationView's doc comment).
-    var isAdmin: Bool {
-        currentUser?.role == "admin" || (currentUser?.isRoot ?? false)
        }
 
     var visibleTournaments: [Tournament] {
@@ -427,21 +447,9 @@ struct TournamentsListView: View {
            await CloudKitSync.shared.syncAll(modelContext: modelContext)
        }
        .toolbar {
-           if isAdmin {
-               ToolbarItem(placement: .topBarTrailing) {
-                   Menu {
-                       Button { showPraeCalculation = true } label: {
-                           Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
-                       }
-                       Button { showKostZCalculation = true } label: {
-                           Label("KostZ-Berechnung", systemImage: "doc.text.fill")
-                       }
-                   } label: {
-                       Image(systemName: "chart.bar.doc.horizontal")
-                   }
-                   .accessibilityLabel("Berichte")
-               }
-           }
+           // Neither PRAE nor KostZ have a "Berichte" menu here anymore —
+           // both are per-tournament now (see TournamentDetailView's
+           // toolbar), since each needs one specific tournament to scope to.
            if canManageEvents {
                ToolbarItem(placement: .topBarTrailing) {
                    Button { showAdd = true } label: {
@@ -452,12 +460,6 @@ struct TournamentsListView: View {
        }
        .sheet(isPresented: $showAdd) {
            AddTournamentView(currentUser: currentUser)
-       }
-       .sheet(isPresented: $showPraeCalculation) {
-           PraeCalculationView()
-       }
-       .sheet(isPresented: $showKostZCalculation) {
-           KostZCalculationView()
        }
     }
 

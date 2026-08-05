@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 6102698,
-    "total_reads": 2214,
-    "total_writes": 4585,
+    "total_tokens_estimated": 6130473,
+    "total_reads": 2221,
+    "total_writes": 4599,
     "total_sessions": 30,
-    "anatomy_hits": 1996,
+    "anatomy_hits": 2003,
     "anatomy_misses": 212,
-    "repeated_reads_blocked": 1403,
-    "estimated_savings_vs_bare_cli": 5388225
+    "repeated_reads_blocked": 1413,
+    "estimated_savings_vs_bare_cli": 5423527
   },
   "sessions": [
     {
@@ -39980,6 +39980,135 @@
         "writes_count": 10,
         "repeated_reads_blocked": 4,
         "anatomy_lookups": 6
+      }
+    },
+    {
+      "id": "session-2026-08-04-1857",
+      "started": "2026-08-04T16:57:51.122Z",
+      "ended": "2026-08-04T19:11:58.819Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1494,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 1661,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 2424,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 5168,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 4199,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/ci_cert.md",
+          "tokens_estimated": 885,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 3274,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 1572,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 40,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 680,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 486,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 20,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 36,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 1010,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 273,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/ci_cert.md",
+          "tokens_estimated": 1011,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/ci_cert.md",
+          "tokens_estimated": 338,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 723,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 575,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 643,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-device-deploy.yml",
+          "tokens_estimated": 1263,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 19105,
+        "output_tokens_estimated": 8670,
+        "reads_count": 7,
+        "writes_count": 14,
+        "repeated_reads_blocked": 10,
+        "anatomy_lookups": 7
       }
     }
   ],

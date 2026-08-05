@@ -58,6 +58,20 @@ struct PraeMonthSummary {
     var daysExceedingDailyCap: [Int] { entries.filter { $0.amount > PraeCalculator.dailyCap }.map(\.day) }
 }
 
+/// One tournament's PRAE deployment days for one helper/coach, scoped to
+/// just that tournament's own Attendance.praeAmount records — the
+/// per-tournament counterpart to PraeMonthSummary, same relationship as
+/// KostZTournamentSummary/KostZMonthSummary in KostZCalculation.swift.
+struct PraeTournamentSummary {
+    let person: PraeEligiblePerson
+    let tournament: Tournament
+    let entries: [PraeDayEntry] // sorted by day
+
+    var total: Double { entries.reduce(0) { $0 + $1.amount } }
+    var exceedsMonthlyCap: Bool { total > PraeCalculator.monthlyCap }
+    var daysExceedingDailyCap: [Int] { entries.filter { $0.amount > PraeCalculator.dailyCap }.map(\.day) }
+}
+
 /// Computes PRAE ("Pauschale Reiseaufwandsentschädigung") deployment days
 /// and amounts for one helper/coach from this app's existing Attendance
 /// records — see Attendance.praeAmount. Legal caps per Sport Austria's
@@ -66,6 +80,13 @@ struct PraeMonthSummary {
 /// These are flagged, not enforced — the admin can still exceed them
 /// (e.g. genuinely paying above the tax-free threshold makes the excess
 /// taxable, which is a legitimate choice, not necessarily a data-entry bug).
+///
+/// PRAE is now filed from two different places with two different scopes
+/// (same split as KostZ, same reason): a tournament's own PRAE (see
+/// summary(for:tournament:)) is filed per event, so the monthly summary
+/// below is restricted to Training attendances only — otherwise a
+/// tournament's deployment days would be recorded on both the tournament's
+/// own PRAE paperwork and again on that month's Training one.
 enum PraeCalculator {
     static let dailyCap = 120.0
     static let monthlyCap = 720.0
@@ -103,7 +124,7 @@ enum PraeCalculator {
         // small enough (one club) that a client-side filter costs nothing.
         let allAttendances = (try? context.fetch(FetchDescriptor<Attendance>())) ?? []
         let attendances = allAttendances.filter {
-            $0.attended && $0.praeAmount != nil && membershipIDs.contains($0.membership.id)
+            $0.attended && $0.praeAmount != nil && $0.event.kind == "training" && membershipIDs.contains($0.membership.id)
         }
 
         let calendar = Calendar.current
@@ -125,5 +146,35 @@ enum PraeCalculator {
             return PraeDayEntry(day: day, amount: value.amount, purpose: value.purposes.joined(separator: ", "))
         }
         return PraeMonthSummary(person: person, month: month, year: year, entries: entries)
+    }
+
+    /// A single tournament's PRAE deployment days for one person, read
+    /// straight from `tournament.attendances` — no ModelContext fetch or
+    /// month/year filtering needed, mirroring
+    /// KostZCalculator.summary(for tournament:).
+    static func summary(for person: PraeEligiblePerson, tournament: Tournament) -> PraeTournamentSummary {
+        let membershipIDs = Set(person.membershipIDs)
+        let attendances = tournament.attendances.filter {
+            $0.attended && $0.praeAmount != nil && membershipIDs.contains($0.membership.id)
+        }
+
+        let calendar = Calendar.current
+        var byDay: [Int: (amount: Double, purposes: [String])] = [:]
+        for attendance in attendances {
+            guard let day = calendar.dateComponents([.day], from: attendance.event.startDate).day,
+                  let amount = attendance.praeAmount else { continue }
+            var entry = byDay[day] ?? (0, [])
+            entry.amount += amount
+            if !entry.purposes.contains(attendance.event.title) {
+                entry.purposes.append(attendance.event.title)
+            }
+            byDay[day] = entry
+        }
+
+        let entries = byDay.keys.sorted().map { day -> PraeDayEntry in
+            let value = byDay[day]!
+            return PraeDayEntry(day: day, amount: value.amount, purpose: value.purposes.joined(separator: ", "))
+        }
+        return PraeTournamentSummary(person: person, tournament: tournament, entries: entries)
     }
 }

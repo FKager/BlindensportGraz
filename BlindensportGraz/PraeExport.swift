@@ -52,18 +52,31 @@ enum PraeExporter {
         monthFormatter.locale = Locale(identifier: "de_AT")
         monthFormatter.dateFormat = "LLLL yyyy"
         let monthLabel = monthFormatter.string(from: dateFor(month: summary.month, year: summary.year))
+        return try exportDarstellung(person: summary.person, periodFieldLabel: "Monat und Jahr:", periodValue: monthLabel,
+                                      entries: summary.entries, total: summary.total, vereinName: vereinName)
+    }
 
+    /// Same appendix, filled from a single tournament's deployment days
+    /// instead of a calendar month — the "Monat und Jahr" field becomes
+    /// "Turnier" naming the tournament, since a tournament isn't a month.
+    static func exportDarstellung(summary: PraeTournamentSummary, vereinName: String = "Grazer VSC") throws -> URL {
+        try exportDarstellung(person: summary.person, periodFieldLabel: "Turnier:", periodValue: summary.tournament.title,
+                               entries: summary.entries, total: summary.total, vereinName: vereinName)
+    }
+
+    private static func exportDarstellung(person: PraeEligiblePerson, periodFieldLabel: String, periodValue: String,
+                                           entries: [PraeDayEntry], total: Double, vereinName: String) throws -> URL {
         var rows: [[XLSXCell]] = []
         rows.append([.text("Darstellung der Verwendungszwecke von pauschalen Reiseaufwandsentschädigungen zur Abrechnung von Fördermitteln im Sport", bold: true)])
         rows.append([.text("Name des Vereins/Verbands:"), .text(vereinName)])
-        rows.append([.text("Name des Empfängers / der Empfängerin:"), .text(summary.person.displayName)])
-        rows.append([.text("Monat und Jahr:"), .text(monthLabel)])
+        rows.append([.text("Name des Empfängers / der Empfängerin:"), .text(person.displayName)])
+        rows.append([.text(periodFieldLabel), .text(periodValue)])
         rows.append([])
         rows.append([.text("Kalendertag", bold: true), .text("Entschädigungshöhe", bold: true), .text("Verwendungszweck", bold: true)])
-        for entry in summary.entries {
+        for entry in entries {
             rows.append([.number(Double(entry.day)), .number(entry.amount), .text(entry.purpose)])
         }
-        rows.append([.text("Gesamt:", bold: true), .number(summary.total)])
+        rows.append([.text("Gesamt:", bold: true), .number(total)])
         rows.append([])
         rows.append([.text("Der abrechnende Verein/Verband bestätigt die Richtigkeit und Vollständigkeit obiger Angaben.")])
         rows.append([.text("Gegenständliche Liste ist eine Beilage zum Formular \"Aufzeichnung über Einsätze und Bestätigung über den Erhalt von pauschalen Reiseaufwandsentschädigungen\" und dient ausschließlich zur Abrechnung von Fördermitteln im Sport.")])

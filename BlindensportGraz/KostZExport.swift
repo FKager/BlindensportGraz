@@ -25,15 +25,41 @@ enum KostZExportError: LocalizedError {
 /// it's exactly what KostZCalculator sums from Attendance.praeAmount. Every
 /// other category, every BEILAGE column (including HONORARE/VERGÜTUNGEN's
 /// own — attachment/receipt numbering is manual bookkeeping this app has no
-/// data for), and ORT (no single canonical location for a month that can
-/// span many trainings at different venues) are deliberately left blank for
-/// the treasurer to fill by hand — same conservative "only fill what we
-/// actually know" approach as PraeExporter.exportMainForm. I26's SUM(I10:I25)
-/// formula is left untouched in the template XML and recalculates on open
-/// once I15 has a value, same as how TeilnehmerlisteExporter/PraeExporter
-/// never need to touch formula cells themselves.
+/// data for), and ORT (no single canonical location for a month/tournament
+/// that can span many venues) are deliberately left blank for the treasurer
+/// to fill by hand — same conservative "only fill what we actually know"
+/// approach as PraeExporter.exportMainForm. I26's SUM(I10:I25) formula is
+/// left untouched in the template XML and recalculates on open once I15 has
+/// a value, same as how TeilnehmerlisteExporter/PraeExporter never need to
+/// touch formula cells themselves.
 enum KostZExporter {
     static func export(summary: KostZMonthSummary) throws -> URL {
+        let monthFormatter = DateFormatter()
+        monthFormatter.locale = Locale(identifier: "de_AT")
+        monthFormatter.dateFormat = "LLLL yyyy"
+        let bounds = KostZCalculator.monthBounds(month: summary.month, year: summary.year)
+        let betrifft = "Trainer:innen- und Helfer:innenhonorare \(monthFormatter.string(from: bounds.start))"
+        return try export(betrifft: betrifft, periodStart: bounds.start, periodEnd: bounds.end,
+                           dayCount: bounds.dayCount, personCount: summary.personCount, total: summary.total)
+    }
+
+    /// Same template, filled from a single tournament instead of a calendar
+    /// month — ZEITRAUM becomes the tournament's own start/end dates (day
+    /// count computed inclusively, same convention as monthBounds' dayCount)
+    /// and BETRIFFT names the tournament instead of "<Month> <Year>".
+    static func export(summary: KostZTournamentSummary) throws -> URL {
+        let tournament = summary.tournament
+        let betrifft = "Trainer:innen- und Helfer:innenhonorare \(tournament.title)"
+        let calendar = Calendar.current
+        let dayCount = (calendar.dateComponents([.day],
+                                                  from: calendar.startOfDay(for: tournament.startDate),
+                                                  to: calendar.startOfDay(for: tournament.endDate)).day ?? 0) + 1
+        return try export(betrifft: betrifft, periodStart: tournament.startDate, periodEnd: tournament.endDate,
+                           dayCount: max(dayCount, 1), personCount: summary.personCount, total: summary.total)
+    }
+
+    private static func export(betrifft: String, periodStart: Date, periodEnd: Date,
+                                dayCount: Int, personCount: Int, total: Double) throws -> URL {
         guard let templateURL = Bundle.main.url(forResource: "KostZ_Kostenzusammenstellung", withExtension: "xlsx") else {
             throw KostZExportError.templateNotFound
         }
@@ -42,13 +68,8 @@ enum KostZExporter {
             .appendingPathComponent("KostZ-\(UUID().uuidString).xlsx")
         let outputArchive = try Archive(url: outputURL, accessMode: .create)
 
-        let monthFormatter = DateFormatter()
-        monthFormatter.locale = Locale(identifier: "de_AT")
-        monthFormatter.dateFormat = "LLLL yyyy"
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy"
-        let bounds = KostZCalculator.monthBounds(month: summary.month, year: summary.year)
-        let betrifft = "Trainer:innen- und Helfer:innenhonorare \(monthFormatter.string(from: bounds.start))"
 
         for entry in sourceArchive {
             var data = Data()
@@ -56,12 +77,12 @@ enum KostZExporter {
 
             if entry.path == "xl/worksheets/sheet1.xml", let xml = String(data: data, encoding: .utf8) {
                 var patched = XLSXCellPatch.setText(in: xml, ref: "C3", value: betrifft)
-                patched = XLSXCellPatch.setText(in: patched, ref: "D5", value: dateFormatter.string(from: bounds.start))
-                patched = XLSXCellPatch.setText(in: patched, ref: "G5", value: dateFormatter.string(from: bounds.end))
-                patched = XLSXCellPatch.setNumber(in: patched, ref: "I5", value: Double(bounds.dayCount))
-                patched = XLSXCellPatch.setNumber(in: patched, ref: "E7", value: Double(summary.personCount))
-                if summary.total > 0 {
-                    patched = XLSXCellPatch.setNumber(in: patched, ref: "I15", value: summary.total)
+                patched = XLSXCellPatch.setText(in: patched, ref: "D5", value: dateFormatter.string(from: periodStart))
+                patched = XLSXCellPatch.setText(in: patched, ref: "G5", value: dateFormatter.string(from: periodEnd))
+                patched = XLSXCellPatch.setNumber(in: patched, ref: "I5", value: Double(dayCount))
+                patched = XLSXCellPatch.setNumber(in: patched, ref: "E7", value: Double(personCount))
+                if total > 0 {
+                    patched = XLSXCellPatch.setNumber(in: patched, ref: "I15", value: total)
                 }
                 data = Data(patched.utf8)
             }
