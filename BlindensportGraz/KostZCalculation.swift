@@ -20,6 +20,13 @@ struct KostZMonthSummary {
     let month: Int
     let year: Int
     let personAmounts: [KostZPersonAmount] // sorted by displayName; amount > 0 only
+    // Every Training's startDate falling in this month, sorted ascending —
+    // regardless of whether that particular training had any PRAE amount
+    // entered. Feeds the export's ZEITRAUM (first/last training instead of
+    // the 1st/last calendar day) and TAGE (count of trainings instead of
+    // count of calendar days) fields — a training only happens on some days
+    // of the month, so the plain calendar month bounds overstated both.
+    let trainingDates: [Date]
 
     var total: Double { personAmounts.reduce(0) { $0 + $1.amount } }
     var personCount: Int { personAmounts.count }
@@ -77,7 +84,19 @@ enum KostZCalculator {
             return KostZPersonAmount(person: person, amount: amount)
         }.sorted { ($0.person.lastName, $0.person.firstName) < ($1.person.lastName, $1.person.firstName) }
 
-        return KostZMonthSummary(month: month, year: year, personAmounts: personAmounts)
+        // Every Training (not Tournament — matches the honoraria filter
+        // above) held in this month, independent of whether it has any
+        // PRAE amount entered — see KostZMonthSummary.trainingDates.
+        let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
+        let trainingDates = allTrainings
+            .map(\.startDate)
+            .filter {
+                let components = calendar.dateComponents([.month, .year], from: $0)
+                return components.month == month && components.year == year
+            }
+            .sorted()
+
+        return KostZMonthSummary(month: month, year: year, personAmounts: personAmounts, trainingDates: trainingDates)
     }
 
     /// A single tournament's HONORARE total, read straight from its own

@@ -210,6 +210,38 @@ final class KostZCalculationTests: XCTestCase {
         XCTAssertEqual(summary.total, 0)
     }
 
+    // MARK: - trainingDates
+
+    func testTrainingDatesCoversEveryTrainingThatMonthRegardlessOfPraeAmount() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        context.insert(membership)
+
+        // Three trainings in July, one of them with no PRAE amount at all —
+        // trainingDates must still include it (it's a count of trainings,
+        // not a count of PRAE-amounted attendances).
+        let t1 = makeTraining(context, title: "Training 1", day: 3)
+        let t2 = makeTraining(context, title: "Training 2", day: 10, month: 7)
+        let t3 = makeTraining(context, title: "Training 3", day: 24)
+        _ = makeTraining(context, title: "August-Training", day: 2, month: 8) // different month, excluded
+        context.insert(Attendance(event: t1, membership: membership, attended: true, praeAmount: 40))
+        context.insert(Attendance(event: t3, membership: membership, attended: true, praeAmount: 40))
+        // t2 deliberately has no Attendance at all.
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let summary = KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context)
+
+        XCTAssertEqual(summary.trainingDates.count, 3)
+        XCTAssertEqual(summary.trainingDates.first, t1.startDate)
+        XCTAssertEqual(summary.trainingDates.last, t3.startDate)
+        _ = t2
+    }
+
     func testMonthBoundsComputesCorrectDayCount() {
         let bounds = KostZCalculator.monthBounds(month: 7, year: 2026)
         XCTAssertEqual(bounds.dayCount, 31)
@@ -219,14 +251,25 @@ final class KostZCalculationTests: XCTestCase {
 
     // MARK: - Export round-trip (structural integrity, not visual layout)
 
+    private func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
+        var components = DateComponents()
+        components.year = year
+        components.month = month
+        components.day = day
+        return Calendar.current.date(from: components)!
+    }
+
     func testExportProducesValidReadableZipWithExpectedValues() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         let membership = TeamMembership(member: coach, team: team, role: "coach")
         let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        // 4 trainings that month, on the 3rd/10th/17th/24th — ZEITRAUM/TAGE
+        // must come from these, not the calendar month's 1st/31st/31 days.
         let summary = KostZMonthSummary(
             month: 7, year: 2026,
-            personAmounts: [KostZPersonAmount(person: person, amount: 150)]
+            personAmounts: [KostZPersonAmount(person: person, amount: 150)],
+            trainingDates: [date(2026, 7, 3), date(2026, 7, 10), date(2026, 7, 17), date(2026, 7, 24)]
         )
 
         let url = try KostZExporter.export(summary: summary)
@@ -247,9 +290,12 @@ final class KostZCalculationTests: XCTestCase {
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
         XCTAssertTrue(sheetXML.contains("Trainer:innen- und Helfer:innenhonorare Juli 2026"))
-        XCTAssertTrue(sheetXML.contains("01.07.2026"))
-        XCTAssertTrue(sheetXML.contains("31.07.2026"))
-        XCTAssertTrue(sheetXML.contains("<c r=\"I5\"><v>31.0</v></c>") || sheetXML.contains("<c r=\"I5\"><v>31</v></c>") || sheetXML.contains(">31<"))
+        XCTAssertTrue(sheetXML.contains("Graz")) // ORT (H3)
+        XCTAssertTrue(sheetXML.contains("03.07.2026")) // first training, not the 1st
+        XCTAssertTrue(sheetXML.contains("24.07.2026")) // last training, not the 31st
+        XCTAssertFalse(sheetXML.contains("01.07.2026"))
+        XCTAssertFalse(sheetXML.contains("31.07.2026"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"I5\"><v>4.0</v></c>") || sheetXML.contains("<c r=\"I5\"><v>4</v></c>") || sheetXML.contains(">4<"))
         XCTAssertTrue(sheetXML.contains("<c r=\"E7\""))
         XCTAssertTrue(sheetXML.contains("<c r=\"I15\""))
         XCTAssertTrue(sheetXML.contains("150"))
@@ -257,6 +303,25 @@ final class KostZCalculationTests: XCTestCase {
         XCTAssertTrue(sheetXML.contains("SUM(I10:I25)"))
         // An untouched category label (this app has no data for it) must still be present.
         XCTAssertTrue(sheetXML.contains("<c r=\"F10\""))
+    }
+
+    func testExportWithNoTrainingsThatMonthFallsBackToCalendarBounds() throws {
+        // No training held at all in the requested month (e.g. summer
+        // break) — ZEITRAUM falls back to the plain calendar month and
+        // TAGE is 0, rather than crashing or leaving the fields blank.
+        let summary = KostZMonthSummary(month: 7, year: 2026, personAmounts: [], trainingDates: [])
+
+        let url = try KostZExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("01.07.2026"))
+        XCTAssertTrue(sheetXML.contains("31.07.2026"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"I5\"><v>0.0</v></c>") || sheetXML.contains("<c r=\"I5\"><v>0</v></c>") || sheetXML.contains(">0<"))
     }
 
     func testTournamentExportProducesValidReadableZipWithExpectedValues() throws {
@@ -270,7 +335,11 @@ final class KostZCalculationTests: XCTestCase {
         startComponents.day = 10
         let start = Calendar.current.date(from: startComponents)!
         let end = Calendar.current.date(byAdding: .day, value: 2, to: start)! // 3-day tournament
-        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz", startDate: start, endDate: end)
+        // Deliberately a different city than the Training export's
+        // hardcoded "Graz" (and a different venue name than city, to prove
+        // ORT reads `city` specifically, not `location`).
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Stadthalle",
+                                     city: "Wien", startDate: start, endDate: end)
         let summary = KostZTournamentSummary(
             tournament: tournament,
             personAmounts: [KostZPersonAmount(person: person, amount: 90)]
@@ -285,14 +354,42 @@ final class KostZCalculationTests: XCTestCase {
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
         XCTAssertTrue(sheetXML.contains("Trainer:innen- und Helfer:innenhonorare Landesmeisterschaft"))
+        XCTAssertTrue(sheetXML.contains("Wien")) // ORT (H3), from tournament.city
+        XCTAssertFalse(sheetXML.contains("Stadthalle")) // location is NOT what ORT reads
         XCTAssertTrue(sheetXML.contains("10.07.2026"))
         XCTAssertTrue(sheetXML.contains("12.07.2026"))
         XCTAssertTrue(sheetXML.contains("<c r=\"I5\"><v>3.0</v></c>") || sheetXML.contains("<c r=\"I5\"><v>3</v></c>") || sheetXML.contains(">3<"))
         XCTAssertTrue(sheetXML.contains("90"))
     }
 
+    func testTournamentExportLeavesOrtBlankWhenCityIsEmpty() throws {
+        let team = Team(name: "Torball 1", sport: "Torball")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        // location IS set here — must not leak into ORT as a fallback.
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Stadthalle",
+                                     startDate: .now, endDate: .now)
+        let summary = KostZTournamentSummary(
+            tournament: tournament,
+            personAmounts: [KostZPersonAmount(person: person, amount: 90)]
+        )
+
+        let url = try KostZExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        // H3 should remain a blank cell (no inline string content) when the
+        // tournament has no location set.
+        XCTAssertFalse(sheetXML.range(of: "<c r=\"H3\"[^>]*><is>", options: .regularExpression) != nil)
+    }
+
     func testExportZeroTotalLeavesAmountCellBlank() throws {
-        let summary = KostZMonthSummary(month: 7, year: 2026, personAmounts: [])
+        let summary = KostZMonthSummary(month: 7, year: 2026, personAmounts: [], trainingDates: [date(2026, 7, 5)])
 
         let url = try KostZExporter.export(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }

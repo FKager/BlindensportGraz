@@ -23,15 +23,18 @@ enum KostZExportError: LocalizedError {
 /// "HONORARE / VERGÜTUNGEN" (lfd. Nr. 6, row 15) — since that's the line
 /// Sport Austria's own guidance uses for trainer/helper compensation, and
 /// it's exactly what KostZCalculator sums from Attendance.praeAmount. Every
-/// other category, every BEILAGE column (including HONORARE/VERGÜTUNGEN's
+/// other category and every BEILAGE column (including HONORARE/VERGÜTUNGEN's
 /// own — attachment/receipt numbering is manual bookkeeping this app has no
-/// data for), and ORT (no single canonical location for a month/tournament
-/// that can span many venues) are deliberately left blank for the treasurer
-/// to fill by hand — same conservative "only fill what we actually know"
-/// approach as PraeExporter.exportMainForm. I26's SUM(I10:I25) formula is
-/// left untouched in the template XML and recalculates on open once I15 has
-/// a value, same as how TeilnehmerlisteExporter/PraeExporter never need to
-/// touch formula cells themselves.
+/// data for) are deliberately left blank for the treasurer to fill by hand —
+/// same conservative "only fill what we actually know" approach as
+/// PraeExporter.exportMainForm. ORT (H3) is filled with "Graz" on the
+/// Training/month export, since Grazer VSC trainings are always there; the
+/// tournament export instead uses that tournament's own `city` field (see
+/// SportEvent.city in Models.swift — added specifically for this, since a
+/// tournament can be anywhere, unlike a training). I26's SUM(I10:I25)
+/// formula is left untouched in the template XML and recalculates on open
+/// once I15 has a value, same as how TeilnehmerlisteExporter/PraeExporter
+/// never need to touch formula cells themselves.
 enum KostZExporter {
     static func export(summary: KostZMonthSummary) throws -> URL {
         let monthFormatter = DateFormatter()
@@ -39,14 +42,25 @@ enum KostZExporter {
         monthFormatter.dateFormat = "LLLL yyyy"
         let bounds = KostZCalculator.monthBounds(month: summary.month, year: summary.year)
         let betrifft = "Trainer:innen- und Helfer:innenhonorare \(monthFormatter.string(from: bounds.start))"
-        return try export(betrifft: betrifft, periodStart: bounds.start, periodEnd: bounds.end,
-                           dayCount: bounds.dayCount, personCount: summary.personCount, total: summary.total)
+        // ZEITRAUM/TAGE come from the actual training dates in this month,
+        // not the plain calendar bounds — a training only happens some days
+        // of the month, so "1st to last calendar day, N calendar days"
+        // overstated both. Falls back to the calendar month bounds (with a
+        // 0 day count) only if no training was held that month at all.
+        let periodStart = summary.trainingDates.first ?? bounds.start
+        let periodEnd = summary.trainingDates.last ?? bounds.end
+        return try export(betrifft: betrifft, periodStart: periodStart, periodEnd: periodEnd,
+                           dayCount: summary.trainingDates.count, personCount: summary.personCount,
+                           total: summary.total, ort: "Graz")
     }
 
     /// Same template, filled from a single tournament instead of a calendar
     /// month — ZEITRAUM becomes the tournament's own start/end dates (day
     /// count computed inclusively, same convention as monthBounds' dayCount)
-    /// and BETRIFFT names the tournament instead of "<Month> <Year>".
+    /// and BETRIFFT names the tournament instead of "<Month> <Year>". ORT
+    /// comes from the tournament's own `city` — unlike a training, a
+    /// tournament isn't always in Graz — left blank only if that field was
+    /// never filled in.
     static func export(summary: KostZTournamentSummary) throws -> URL {
         let tournament = summary.tournament
         let betrifft = "Trainer:innen- und Helfer:innenhonorare \(tournament.title)"
@@ -55,11 +69,12 @@ enum KostZExporter {
                                                   from: calendar.startOfDay(for: tournament.startDate),
                                                   to: calendar.startOfDay(for: tournament.endDate)).day ?? 0) + 1
         return try export(betrifft: betrifft, periodStart: tournament.startDate, periodEnd: tournament.endDate,
-                           dayCount: max(dayCount, 1), personCount: summary.personCount, total: summary.total)
+                           dayCount: max(dayCount, 1), personCount: summary.personCount, total: summary.total,
+                           ort: tournament.city.isEmpty ? nil : tournament.city)
     }
 
     private static func export(betrifft: String, periodStart: Date, periodEnd: Date,
-                                dayCount: Int, personCount: Int, total: Double) throws -> URL {
+                                dayCount: Int, personCount: Int, total: Double, ort: String?) throws -> URL {
         guard let templateURL = Bundle.main.url(forResource: "KostZ_Kostenzusammenstellung", withExtension: "xlsx") else {
             throw KostZExportError.templateNotFound
         }
@@ -77,6 +92,9 @@ enum KostZExporter {
 
             if entry.path == "xl/worksheets/sheet1.xml", let xml = String(data: data, encoding: .utf8) {
                 var patched = XLSXCellPatch.setText(in: xml, ref: "C3", value: betrifft)
+                if let ort {
+                    patched = XLSXCellPatch.setText(in: patched, ref: "H3", value: ort)
+                }
                 patched = XLSXCellPatch.setText(in: patched, ref: "D5", value: dateFormatter.string(from: periodStart))
                 patched = XLSXCellPatch.setText(in: patched, ref: "G5", value: dateFormatter.string(from: periodEnd))
                 patched = XLSXCellPatch.setNumber(in: patched, ref: "I5", value: Double(dayCount))

@@ -84,6 +84,9 @@ final class CloudKitSync {
         record["title"] = event.title
         record["sport"] = event.sport
         record["location"] = event.location
+        record["street"] = event.street
+        record["zip"] = event.zip
+        record["city"] = event.city
         record["startDate"] = event.startDate
         record["endDate"] = event.endDate
         record["notes"] = event.notes
@@ -98,6 +101,9 @@ final class CloudKitSync {
         record["title"] = training.title
         record["sport"] = training.sport
         record["location"] = training.location
+        record["street"] = training.street
+        record["zip"] = training.zip
+        record["city"] = training.city
         record["startDate"] = training.startDate
         record["endDate"] = training.endDate
         record["durationMinutes"] = training.durationMinutes
@@ -137,6 +143,9 @@ final class CloudKitSync {
         record["sport"] = tournament.sport
         record["location"] = tournament.location
         record["venue"] = tournament.location
+        record["street"] = tournament.street
+        record["zip"] = tournament.zip
+        record["city"] = tournament.city
         record["startDate"] = tournament.startDate
         record["endDate"] = tournament.endDate
         record["maxTeams"] = tournament.maxTeams
@@ -615,6 +624,9 @@ final class CloudKitSync {
             let title = record["title"] as? String ?? ""
             let sport = record["sport"] as? String ?? ""
             let location = record["location"] as? String ?? ""
+            let street = record["street"] as? String ?? ""
+            let zip = record["zip"] as? String ?? ""
+            let city = record["city"] as? String ?? ""
             let startDate = record["startDate"] as? Date ?? .now
             let endDate = record["endDate"] as? Date ?? .now
             let notes = record["notes"] as? String ?? ""
@@ -628,12 +640,16 @@ final class CloudKitSync {
                 existing.title = title
                 existing.sport = sport
                 existing.location = location
+                existing.street = street
+                existing.zip = zip
+                existing.city = city
                 existing.startDate = startDate
                 existing.endDate = endDate
                 existing.notes = notes
                 existing.teams = teams
             } else {
                 let event = SportEvent(id: id, title: title, sport: sport, location: location,
+                                       street: street, zip: zip, city: city,
                                        startDate: startDate, endDate: endDate, notes: notes,
                                        createdBy: createdBy, createdAt: createdAt, teams: teams)
                 modelContext.insert(event)
@@ -647,6 +663,9 @@ final class CloudKitSync {
             let title = record["title"] as? String ?? ""
             let sport = record["sport"] as? String ?? ""
             let location = record["location"] as? String ?? ""
+            let street = record["street"] as? String ?? ""
+            let zip = record["zip"] as? String ?? ""
+            let city = record["city"] as? String ?? ""
             let startDate = record["startDate"] as? Date ?? .now
             let endDate = record["endDate"] as? Date ?? startDate
             let durationMinutes = record["durationMinutes"] as? Int ?? 90
@@ -662,6 +681,9 @@ final class CloudKitSync {
                 existing.title = title
                 existing.sport = sport
                 existing.location = location
+                existing.street = street
+                existing.zip = zip
+                existing.city = city
                 existing.startDate = startDate
                 existing.endDate = endDate
                 existing.durationMinutes = durationMinutes
@@ -670,6 +692,7 @@ final class CloudKitSync {
                 existing.teams = teams
             } else {
                 let training = Training(id: id, title: title, sport: sport, location: location,
+                                         street: street, zip: zip, city: city,
                                          startDate: startDate, durationMinutes: durationMinutes,
                                          focusArea: focusArea, notes: notes, createdBy: createdBy,
                                          createdAt: createdAt, teams: teams)
@@ -717,6 +740,9 @@ final class CloudKitSync {
             let title = (record["title"] as? String) ?? (record["name"] as? String) ?? ""
             let sport = record["sport"] as? String ?? ""
             let location = (record["location"] as? String) ?? (record["venue"] as? String) ?? ""
+            let street = record["street"] as? String ?? ""
+            let zip = record["zip"] as? String ?? ""
+            let city = record["city"] as? String ?? ""
             let startDate = record["startDate"] as? Date ?? .now
             let endDate = record["endDate"] as? Date ?? .now
             let maxTeams = record["maxTeams"] as? Int ?? 8
@@ -732,6 +758,9 @@ final class CloudKitSync {
                 existing.title = title
                 existing.sport = sport
                 existing.location = location
+                existing.street = street
+                existing.zip = zip
+                existing.city = city
                 existing.startDate = startDate
                 existing.endDate = endDate
                 existing.maxTeams = maxTeams
@@ -740,6 +769,7 @@ final class CloudKitSync {
                 existing.teams = teams
             } else {
                 let tournament = Tournament(id: id, title: title, sport: sport, location: location,
+                                             street: street, zip: zip, city: city,
                                              startDate: startDate, endDate: endDate, maxTeams: maxTeams,
                                              status: status, notes: notes, createdBy: createdBy,
                                              createdAt: createdAt, teams: teams)

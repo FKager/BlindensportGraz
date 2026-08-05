@@ -11,6 +11,9 @@ struct AddTournamentView: View {
         @State private var title = ""
         @State private var sport = "Torball"
         @State private var location = "Graz"
+        @State private var street = ""
+        @State private var zip = ""
+        @State private var city = ""
         @State private var startDate = Date()
         @State private var endDate = Date().addingTimeInterval(86400)
         @State private var maxTeams = 8
@@ -40,6 +43,11 @@ struct AddTournamentView: View {
                           }
                     TextField("Veranstaltungsort", text: $location)
                      }
+                Section("Adresse") {
+                    TextField("Straße", text: $street)
+                    TextField("PLZ", text: $zip)
+                    TextField("Ort", text: $city)
+                }
                 Section("Zeitraum") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
                     DatePicker("Start", selection: $startDate,
@@ -112,6 +120,9 @@ struct AddTournamentView: View {
                             title: title,
                             sport: sport,
                             location: location,
+                            street: street,
+                            zip: zip,
+                            city: city,
                             startDate: startDate,
                             endDate: endDate,
                             maxTeams: maxTeams,
@@ -238,6 +249,11 @@ var body: some View {
             TextField("Name", text: $tournament.title)
             TextField("Sportart", text: $tournament.sport)
             TextField("Veranstaltungsort", text: $tournament.location)
+        }
+        Section("Adresse") {
+            TextField("Straße", text: $tournament.street)
+            TextField("PLZ", text: $tournament.zip)
+            TextField("Ort", text: $tournament.city)
         }
         Section("Zeitraum") {
             DatePicker("Start", selection: $tournament.startDate)

@@ -12,6 +12,9 @@ struct AddTrainingView: View {
        @State private var title = ""
        @State private var sport = "Torball"
        @State private var location = "Graz"
+       @State private var street = ""
+       @State private var zip = ""
+       @State private var city = ""
        @State private var startDate = Date()
        @State private var durationMinutes = 90
        @State private var focusArea = ""
@@ -39,8 +42,15 @@ struct AddTrainingView: View {
                     Picker("Sportart", selection: $sport) {
                         ForEach(sports, id: \.self) { Text($0) }
                        }
-                    TextField("Ort", text: $location)
+                    // Relabeled from "Ort" to "Veranstaltungsort" — see
+                    // EventsViews.AddEventView's identical comment.
+                    TextField("Veranstaltungsort", text: $location)
                    }
+                Section("Adresse") {
+                    TextField("Straße", text: $street)
+                    TextField("PLZ", text: $zip)
+                    TextField("Ort", text: $city)
+                }
                 Section("Planung") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
                     DatePicker("Start", selection: $startDate,
@@ -111,6 +121,9 @@ struct AddTrainingView: View {
                             title: title,
                             sport: sport,
                             location: location,
+                            street: street,
+                            zip: zip,
+                            city: city,
                             startDate: startDate,
                             durationMinutes: durationMinutes,
                             focusArea: focusArea,
@@ -219,8 +232,13 @@ struct TrainingDetailView: View {
             Section("Training") {
                 TextField("Titel", text: $training.title)
                 TextField("Sportart", text: $training.sport)
-                TextField("Ort", text: $training.location)
+                TextField("Veranstaltungsort", text: $training.location)
                }
+           Section("Adresse") {
+               TextField("Straße", text: $training.street)
+               TextField("PLZ", text: $training.zip)
+               TextField("Ort", text: $training.city)
+           }
            Section("Planung") {
                DatePicker("Start", selection: $training.startDate)
                    .onChange(of: training.startDate) { training.recomputeEndDate() }

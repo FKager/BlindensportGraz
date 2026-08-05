@@ -409,7 +409,10 @@ class SportEvent {
     var kind: String = "event" // "event", "training", "tournament"
     var title: String = ""
     var sport: String = ""
-    var location: String = ""
+    var location: String = "" // venue name, e.g. "Sporthalle Eggenberg" — see street/zip/city below for the postal address
+    var street: String = ""
+    var zip: String = ""
+    var city: String = ""
     var startDate: Date = Date.now
     var endDate: Date = Date.now
     var notes: String = ""
@@ -431,6 +434,9 @@ class SportEvent {
          title: String,
          sport: String,
          location: String,
+         street: String = "",
+         zip: String = "",
+         city: String = "",
          startDate: Date,
          endDate: Date,
          notes: String = "",
@@ -441,12 +447,25 @@ class SportEvent {
         self.title = title
         self.sport = sport
         self.location = location
+        self.street = street
+        self.zip = zip
+        self.city = city
         self.startDate = startDate
         self.endDate = endDate
         self.notes = notes
         self.createdBy = createdBy
         self.createdAt = createdAt
         self.teams = teams
+    }
+}
+
+extension SportEvent {
+    /// Combines street/zip/city into one display line, e.g. "Hauptstraße 12,
+    /// 8010 Graz" — mirrors Member.fullAddress exactly (same join logic).
+    /// Not stored, so it can't be used as a @Query sort key.
+    var fullAddress: String {
+        let zipCity = [zip, city].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
+        return [street, zipCity].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
     }
 }
 
@@ -460,6 +479,9 @@ final class Tournament: SportEvent {
          title: String,
          sport: String,
          location: String,
+         street: String = "",
+         zip: String = "",
+         city: String = "",
          startDate: Date,
          endDate: Date,
          maxTeams: Int = 8,
@@ -470,8 +492,8 @@ final class Tournament: SportEvent {
          teams: [Team] = []) {
         self.maxTeams = maxTeams
         self.status = status
-        super.init(id: id, title: title, sport: sport, location: location, startDate: startDate,
-                   endDate: endDate, notes: notes, createdBy: createdBy, createdAt: createdAt, teams: teams)
+        super.init(id: id, title: title, sport: sport, location: location, street: street, zip: zip, city: city,
+                   startDate: startDate, endDate: endDate, notes: notes, createdBy: createdBy, createdAt: createdAt, teams: teams)
         self.kind = "tournament"
     }
 }
@@ -486,6 +508,9 @@ final class Training: SportEvent {
          title: String,
          sport: String,
          location: String,
+         street: String = "",
+         zip: String = "",
+         city: String = "",
          startDate: Date,
          durationMinutes: Int = 90,
          focusArea: String = "",
@@ -496,8 +521,8 @@ final class Training: SportEvent {
         self.durationMinutes = durationMinutes
         self.focusArea = focusArea
         let endDate = startDate.addingTimeInterval(TimeInterval(durationMinutes) * 60)
-        super.init(id: id, title: title, sport: sport, location: location, startDate: startDate,
-                   endDate: endDate, notes: notes, createdBy: createdBy, createdAt: createdAt, teams: teams)
+        super.init(id: id, title: title, sport: sport, location: location, street: street, zip: zip, city: city,
+                   startDate: startDate, endDate: endDate, notes: notes, createdBy: createdBy, createdAt: createdAt, teams: teams)
         self.kind = "training"
     }
 

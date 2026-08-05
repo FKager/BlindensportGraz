@@ -10,6 +10,9 @@ struct AddEventView: View {
        @State private var title = ""
        @State private var sport = "Torball"
        @State private var location = "Graz"
+       @State private var street = ""
+       @State private var zip = ""
+       @State private var city = ""
        @State private var startDate = Date()
        @State private var endDate = Date().addingTimeInterval(3600)
        @State private var notes = ""
@@ -36,8 +39,17 @@ struct AddEventView: View {
                     Picker("Sportart", selection: $sport) {
                         ForEach(sports, id: \.self) { Text($0) }
                       }
-                    TextField("Ort", text: $location)
+                    // Relabeled from "Ort" to "Veranstaltungsort" (matches
+                    // TournamentsViews' existing wording) so it doesn't
+                    // collide with the new address section's "Ort" (city)
+                    // field below.
+                    TextField("Veranstaltungsort", text: $location)
                  }
+                Section("Adresse") {
+                    TextField("Straße", text: $street)
+                    TextField("PLZ", text: $zip)
+                    TextField("Ort", text: $city)
+                }
                 Section("Zeit") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
                     DatePicker("Start", selection: $startDate,
@@ -88,6 +100,9 @@ struct AddEventView: View {
                             title: title,
                             sport: sport,
                             location: location,
+                            street: street,
+                            zip: zip,
+                            city: city,
                             startDate: startDate,
                             endDate: endDate,
                             notes: notes,
@@ -228,7 +243,10 @@ struct EventDetailView: View {
 
             Section("Details") {
                 LabeledContent("Sportart", value: event.sport)
-                LabeledContent("Ort", value: event.location)
+                LabeledContent("Veranstaltungsort", value: event.location)
+                if !event.fullAddress.isEmpty {
+                    LabeledContent("Adresse", value: event.fullAddress)
+                }
                 LabeledContent("Start", value: event.startDate.formatted(date: .long, time: .shortened))
                 LabeledContent("Ende", value: event.endDate.formatted(date: .long, time: .shortened))
               }
