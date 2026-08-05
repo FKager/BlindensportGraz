@@ -321,9 +321,15 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertTrue(sheetXML.contains("60"))
     }
 
-    func testExportMainFormPatchesNameAndAddressOnly() throws {
+    func testExportMainFormPatchesPersonalDataFromMember() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
-        let coach = Member(firstName: "Anna", lastName: "Trainer", street: "Hauptstraße 1", zip: "8010", city: "Graz")
+        var birthComponents = DateComponents()
+        birthComponents.year = 1990
+        birthComponents.month = 3
+        birthComponents.day = 21
+        let birthDate = Calendar.current.date(from: birthComponents)!
+        let coach = Member(firstName: "Anna", lastName: "Trainer", street: "Hauptstraße 1", zip: "8010", city: "Graz",
+                            birthDate: birthDate, svnr: "1234210390", iban: "AT611904300234573201")
         let membership = TeamMembership(member: coach, team: team, role: "coach")
         let person = PraeEligiblePerson(id: coach.id, displayName: "Trainer Anna", membershipIDs: [membership.id], member: coach)
 
@@ -337,6 +343,9 @@ final class PraeCalculationTests: XCTestCase {
 
         XCTAssertTrue(sheetXML.contains("Trainer Anna"))
         XCTAssertTrue(sheetXML.contains("Hauptstraße 1, 8010 Graz"))
+        XCTAssertTrue(sheetXML.contains("1234210390")) // SVNR (D5)
+        XCTAssertTrue(sheetXML.contains("21.03.1990")) // Geburtsdatum (L5)
+        XCTAssertTrue(sheetXML.contains("AT611904300234573201")) // IBAN (D33)
 
         // Every other entry from the template must still be present/readable —
         // confirms the patch didn't corrupt the archive or drop unrelated parts.
@@ -347,5 +356,79 @@ final class PraeCalculationTests: XCTestCase {
             extractedCount += 1
         }
         XCTAssertGreaterThan(extractedCount, 5)
+    }
+
+    func testExportMainFormLeavesPersonalDataBlankWithoutMember() throws {
+        // A person backed only by a User account (no roster entry) has
+        // person.member == nil — must not crash, and the personal-data
+        // cells must simply stay blank rather than e.g. printing "nil".
+        let person = PraeEligiblePerson(id: UUID(), displayName: "Nur-App-Konto", membershipIDs: [], member: nil)
+
+        let url = try PraeExporter.exportMainForm(person: person)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("Nur-App-Konto"))
+        // L5 (Geburtsdatum) and D33 (IBAN) are conditionally skipped when
+        // there's no data — must remain blank template cells (no <is>).
+        XCTAssertFalse(sheetXML.range(of: "<c r=\"L5\"[^>]*><is>", options: .regularExpression) != nil)
+        XCTAssertFalse(sheetXML.range(of: "<c r=\"D33\"[^>]*><is>", options: .regularExpression) != nil)
+    }
+
+    func testExportDarstellungIncludesPersonalDataFromMember() throws {
+        let team = Team(name: "Torball 1", sport: "Torball")
+        var birthComponents = DateComponents()
+        birthComponents.year = 1990
+        birthComponents.month = 3
+        birthComponents.day = 21
+        let birthDate = Calendar.current.date(from: birthComponents)!
+        let coach = Member(firstName: "Anna", lastName: "Trainer", street: "Hauptstraße 1", zip: "8010", city: "Graz",
+                            birthDate: birthDate, svnr: "1234210390", iban: "AT611904300234573201")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        let summary = PraeMonthSummary(
+            person: person, month: 7, year: 2026,
+            entries: [PraeDayEntry(day: 5, amount: 40, purpose: "Torball-Training")]
+        )
+
+        let url = try PraeExporter.exportDarstellung(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("Hauptstraße 1, 8010 Graz"))
+        XCTAssertTrue(sheetXML.contains("1234210390"))
+        XCTAssertTrue(sheetXML.contains("21.03.1990"))
+        XCTAssertTrue(sheetXML.contains("AT611904300234573201"))
+    }
+
+    func testExportDarstellungOmitsEmptyPersonalDataRows() throws {
+        // No Member at all (User-only account) — must not print blank
+        // "Sozialversicherungsnummer:"/"IBAN:" rows with nothing after them.
+        let person = PraeEligiblePerson(id: UUID(), displayName: "Nur-App-Konto", membershipIDs: [], member: nil)
+        let summary = PraeMonthSummary(
+            person: person, month: 7, year: 2026,
+            entries: [PraeDayEntry(day: 5, amount: 40, purpose: "Torball-Training")]
+        )
+
+        let url = try PraeExporter.exportDarstellung(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertFalse(sheetXML.contains("Sozialversicherungsnummer:"))
+        XCTAssertFalse(sheetXML.contains("IBAN:"))
+        XCTAssertFalse(sheetXML.contains("Wohnanschrift:"))
+        XCTAssertFalse(sheetXML.contains("Geburtsdatum:"))
     }
 }

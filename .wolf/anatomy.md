@@ -87,7 +87,7 @@
 - `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4724 tok)
 - `Models.swift` — Class: User; SportEvent gained street/zip/city + fullAddress extension (~6900 tok)
 - `PraeCalculation.swift` — PraeCalculator: monthly (Training-only) summary + summary(for:tournament:) (~2300 tok)
-- `PraeExport.swift` — PraeExporter: exportMainForm, exportDarstellung(PraeMonthSummary) + exportDarstellung(PraeTournamentSummary) sharing a private helper (~3400 tok)
+- `PraeExport.swift` — PraeExporter: exportMainForm (D4/D5/L5/D7/D33 = name/SVNR/Geburtsdatum/Adresse/IBAN from Member), exportDarstellung x2 sharing a private helper (~3800 tok)
 - `PraeViews.swift` — PraeCalculationView (monthly, Trainings) + PraeTournamentCalculationView (per-tournament) (~3800 tok)
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RootView.swift` — SwiftUI view: RootView (~3907 tok)
@@ -110,7 +110,7 @@
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~2170 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
-- `PraeCalculationTests.swift` — Class: PraeCalculationTests, incl. tournament-scoped summary/export tests (~4300 tok)
+- `PraeCalculationTests.swift` — Class: PraeCalculationTests, incl. tournament-scoped + personal-data (SVNR/IBAN/Geburtsdatum) export tests (~5200 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~4276 tok)
 

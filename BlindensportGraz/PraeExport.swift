@@ -28,15 +28,19 @@ enum PraeExportError: LocalizedError {
 ///    automation was never the point). Reverse-engineering the exact
 ///    day-grid cell coordinates from the raw XML turned out ambiguous even
 ///    after careful analysis (see the day-30 case: its label cell doesn't
-///    sit in the grid the other 30 do), and this app's data model doesn't
-///    even store the SVNR/Geburtsdatum fields most of the form needs. Given
-///    a wrong cell placement here means real money recorded against the
-///    wrong calendar day on a compliance document, this only auto-fills the
-///    two cells that are both unambiguous (confirmed blank, unmerged, single
-///    wide input cells: D4, D7) AND backed by data we actually have (name,
-///    address) — everything else (month/year, the day grid, checkboxes,
-///    signature) is left for manual completion, using the in-app PRAE
-///    calculation screen as the source to transcribe from.
+///    sit in the grid the other 30 do), so that part is still left for
+///    manual completion (month/year, the day grid, checkboxes, signature),
+///    using the in-app PRAE calculation screen as the source to transcribe
+///    from. The personal-data header row IS fully auto-filled though: name
+///    (D4), SVNR (D5), Geburtsdatum (L5), address (D7), and IBAN (D33) are
+///    all confirmed-blank, unmerged-from-their-label, single wide input
+///    cells (verified against the template's own merge/style XML, same
+///    scrutiny as the day-grid check above) and all backed by `Member`
+///    fields this app already stores — Member.svnr/birthDate/iban, sourced
+///    via `person.member`. A person backed only by a `User` account (no
+///    `Member` roster entry) has `person.member == nil`, so those fields
+///    export blank — same existing behavior as the address field always
+///    had.
 /// 2. "Darstellung der Verwendungszwecke" (the funding-accounting appendix)
 ///    is a plain three-column table with no checkboxes and a fully regular
 ///    layout — safe to fill completely. Its only official copy is a legacy
@@ -66,10 +70,32 @@ enum PraeExporter {
 
     private static func exportDarstellung(person: PraeEligiblePerson, periodFieldLabel: String, periodValue: String,
                                            entries: [PraeDayEntry], total: Double, vereinName: String) throws -> URL {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+
         var rows: [[XLSXCell]] = []
         rows.append([.text("Darstellung der Verwendungszwecke von pauschalen Reiseaufwandsentschädigungen zur Abrechnung von Fördermitteln im Sport", bold: true)])
         rows.append([.text("Name des Vereins/Verbands:"), .text(vereinName)])
         rows.append([.text("Name des Empfängers / der Empfängerin:"), .text(person.displayName)])
+        // Same personal-data fields as exportMainForm's header row, sourced
+        // the same way (person.member, blank if only a User account backs
+        // this person) — added per explicit user request that PRAE AND its
+        // Darstellung both pull this from the Member roster entry. Each
+        // conditional on the underlying field being non-empty, unlike
+        // name/period which are always shown, since a mostly-empty roster
+        // entry shouldn't print a wall of blank label rows.
+        if let member = person.member, !member.fullAddress.isEmpty {
+            rows.append([.text("Wohnanschrift:"), .text(member.fullAddress)])
+        }
+        if let svnr = person.member?.svnr, !svnr.isEmpty {
+            rows.append([.text("Sozialversicherungsnummer:"), .text(svnr)])
+        }
+        if let birthDate = person.member?.birthDate {
+            rows.append([.text("Geburtsdatum:"), .text(dateFormatter.string(from: birthDate))])
+        }
+        if let iban = person.member?.iban, !iban.isEmpty {
+            rows.append([.text("IBAN:"), .text(iban)])
+        }
         rows.append([.text(periodFieldLabel), .text(periodValue)])
         rows.append([])
         rows.append([.text("Kalendertag", bold: true), .text("Entschädigungshöhe", bold: true), .text("Verwendungszweck", bold: true)])
@@ -89,8 +115,9 @@ enum PraeExporter {
 
     // MARK: - Main signed form (patches the bundled official template)
 
-    /// Only fills the name (D4) and address (D7) cells — see the type-level
-    /// doc comment for why the rest is deliberately left blank.
+    /// Fills name (D4), SVNR (D5), Geburtsdatum (L5), address (D7), and IBAN
+    /// (D33) — see the type-level doc comment for why the day grid,
+    /// checkboxes, and signature stay manual.
     static func exportMainForm(person: PraeEligiblePerson) throws -> URL {
         guard let templateURL = Bundle.main.url(forResource: "PRAE_Formular", withExtension: "xlsx") else {
             throw PraeExportError.templateNotFound
@@ -100,13 +127,23 @@ enum PraeExporter {
             .appendingPathComponent("PRAE-Formular-\(UUID().uuidString).xlsx")
         let outputArchive = try Archive(url: outputURL, accessMode: .create)
 
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+
         for entry in sourceArchive {
             var data = Data()
             _ = try sourceArchive.extract(entry) { data.append($0) }
 
             if entry.path == "xl/worksheets/sheet1.xml", let xml = String(data: data, encoding: .utf8) {
                 var patched = XLSXCellPatch.setText(in: xml, ref: "D4", value: person.displayName)
+                patched = XLSXCellPatch.setText(in: patched, ref: "D5", value: person.member?.svnr ?? "")
                 patched = XLSXCellPatch.setText(in: patched, ref: "D7", value: person.member?.fullAddress ?? "")
+                if let birthDate = person.member?.birthDate {
+                    patched = XLSXCellPatch.setText(in: patched, ref: "L5", value: dateFormatter.string(from: birthDate))
+                }
+                if let iban = person.member?.iban, !iban.isEmpty {
+                    patched = XLSXCellPatch.setText(in: patched, ref: "D33", value: iban)
+                }
                 data = Data(patched.utf8)
             }
 
