@@ -22,6 +22,28 @@ struct TrainingsfrequenzlistePerson: Identifiable {
     // string for every other use site in the app, which doesn't fit here).
     var firstName: String { membership.user?.firstName ?? membership.member?.firstName ?? "" }
     var lastName: String { membership.user?.lastName ?? membership.member?.lastName ?? "" }
+
+    /// German role suffix printed after the surname in the export, e.g.
+    /// "Hobisch (Übungsleiter)" — reverse-engineered from the club's newer
+    /// reference file (data/Trainingsfrequenzliste_Torball_2026.xlsx), which
+    /// appends "(Übungsleiter/-in)" for coaches and "(Helfer/-in)" for
+    /// assistants but leaves plain "player" rows unsuffixed. Derived from
+    /// `membership.role` + `Member.gender` (per the user's explicit choice
+    /// over adding a dedicated free-text function field) — User-backed
+    /// memberships have no gender field and default to the masculine form.
+    /// Known gap: the reference file also used a third label, "(Trainer/-in)",
+    /// for two specific people, which this app has no separate role for —
+    /// those two would come out as "Übungsleiter(in)" here instead. Accepted
+    /// tradeoff; revisit by adding a per-person function field if that
+    /// distinction ever needs to be exact.
+    var roleSuffix: String? {
+        let isFemale = membership.member?.gender == "f"
+        switch membership.role {
+        case "coach": return isFemale ? "Übungsleiterin" : "Übungsleiter"
+        case "assistant": return isFemale ? "Helferin" : "Helfer"
+        default: return nil
+        }
+    }
 }
 
 /// The two federal reporting periods Sport Austria's Trainingsfrequenzliste
@@ -58,6 +80,16 @@ struct TrainingsfrequenzlisteSummary {
     let trainingDates: [Date] // sorted ascending, capped at maxDateColumns
     let people: [TrainingsfrequenzlistePerson] // sorted by displayName, capped at maxPersonRows
     let teams: [Team] // every team assigned to a training in this period, in first-seen order
+
+    // "Sportstätte:"/"Trainingszeiten:" header fields the newer reference
+    // template (data/Trainingsfrequenzliste_Torball_2026.xlsx) added —
+    // taken from whichever period training is chronologically earliest,
+    // since in practice a sport trains at one recurring weekly slot/venue
+    // and the form only has room for a single representative value, not one
+    // per training day. Empty/nil when the period has no trainings at all.
+    let location: String
+    let startTime: Date?
+    let endTime: Date?
 
     func totalPresent(on date: Date) -> Int {
         people.reduce(0) { $0 + ($1.attended(on: date) ? 1 : 0) }
@@ -142,8 +174,13 @@ enum TrainingsfrequenzlisteCalculator {
                 )
             }
 
+        let representativeTraining = periodTrainings.min { $0.startDate < $1.startDate }
+
         return TrainingsfrequenzlisteSummary(sport: sport, halfYear: halfYear, year: year,
                                               trainingDates: trainingDates, people: Array(people),
-                                              teams: assignedTeams)
+                                              teams: assignedTeams,
+                                              location: representativeTraining?.location ?? "",
+                                              startTime: representativeTraining?.startDate,
+                                              endTime: representativeTraining?.endDate)
     }
 }

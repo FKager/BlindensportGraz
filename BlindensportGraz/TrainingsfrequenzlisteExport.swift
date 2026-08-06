@@ -5,53 +5,77 @@ import ZIPFoundation
 /// (training attendance register) — one row per team member, one column per
 /// training date, "j"/"n" attendance per cell, plus a per-date total row.
 ///
-/// The only real-world copy of this form found (ÖBSV/OÖBSV's
-/// `Trainingsfrequenzliste.xls`, downloaded and reverse-engineered via
-/// `xlrd` for this feature) is a legacy binary .xls (OLE2), NOT a zip-based
-/// .xlsx — so unlike TeilnehmerlisteExporter/PraeExporter.exportMainForm
-/// (which patch a real .xlsx template's XML in place), this can't be
-/// patched the same way. Follows PraeExporter.exportDarstellung's precedent
-/// instead: build a fresh, minimal-but-valid .xlsx from scratch that
-/// reproduces the original's exact layout (title, "Verein/LV:"/"Sportart:"
-/// header, "Trainingstage (Datum):" label, Nr./Vorname/Nachname/Verein
-/// columns, one date column per training day, "ges. TL" total row, and the
-/// original's own legend footnote text verbatim) but with real per-member
-/// attendance filled in — deliberately reproducing the original's field set
-/// as-is with no added columns (e.g. no per-member total column, which the
-/// original doesn't have either).
+/// Header layout reverse-engineered from the club's newer reference copy
+/// (data/Trainingsfrequenzliste_Torball_2026.xlsx, an .xlsx this time, not
+/// the older ÖBSV/OÖBSV .xls this exporter originally targeted): title row,
+/// then "Verein/LV:"/"Sportart:"/"Sportstätte:" on one line, "Trainingszeiten:
+/// Uhrzeit von:/bis:"/"Jahr:" on the next, then "Trainingstage (Datum):"
+/// carrying the date columns directly in its own row, followed by a plain
+/// Nr./Vorname/Nachname header row (no "Verein" column per row anymore — it's
+/// stated once, club-wide, in the header). Field labels/values sit at fixed,
+/// non-contiguous spreadsheet columns in that reference file (e.g.
+/// "Sportart:" in M3 but its value in P3) rather than packed sequentially,
+/// so — unlike the rest of this exporter's simple left-to-right rows — the
+/// header rows below place cells by explicit column number.
+///
+/// Like before, this can't be built by patching a real template's XML
+/// in-place (see XLSXCellPatch/TeilnehmerlisteExporter/PraeExporter for that
+/// approach) since a from-scratch reproduction is simpler than diffing this
+/// export's variable person/date row counts into a fixed template; follows
+/// PraeExporter.exportDarstellung's precedent of building a fresh, minimal
+/// .xlsx from scratch instead.
 enum TrainingsfrequenzlisteExporter {
     static func export(summary: TrainingsfrequenzlisteSummary, vereinName: String = "Grazer VSC") throws -> URL {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "de_AT")
         dateFormatter.dateFormat = "dd.MM."
 
-        let periodLabel = "\(summary.halfYear.label) \(summary.year)"
+        let timeFormatter = DateFormatter()
+        timeFormatter.locale = Locale(identifier: "de_AT")
+        timeFormatter.dateFormat = "HH:mm"
 
-        var rows: [[XLSXGridCell]] = []
-        rows.append([.text("T R A I N I N G S F R E Q U E N Z L I S T E", bold: true)])
-        rows.append([])
-        rows.append([.text("Verein/LV:", bold: true), .text(vereinName), .text(""), .text("Sportart:", bold: true), .text(summary.sport)])
-        rows.append([.text("Zeitraum:", bold: true), .text(periodLabel)])
-        rows.append([])
-        rows.append([.text("Trainingstage (Datum):", bold: true)])
+        let dateColumnStart = 4 // column D — Nr./Vorname/Nachname occupy A–C
 
-        var headerRow: [XLSXGridCell] = [.text("Nr.", bold: true), .text("Vorname", bold: true),
-                                          .text("Nachname", bold: true), .text("Verein", bold: true)]
-        headerRow.append(contentsOf: summary.trainingDates.map { .text(dateFormatter.string(from: $0), bold: true) })
-        rows.append(headerRow)
+        var rows: [XLSXRow] = []
+        rows.append([(1, .text("T R A I N I N G S F R E Q U E N Z L I S T E", bold: true))])
+        rows.append([])
+        rows.append([
+            (1, .text("Verein/LV:", bold: true)), (4, .text(vereinName)),
+            (13, .text("Sportart:", bold: true)), (16, .text(summary.sport)),
+            (21, .text("Sportstätte:", bold: true)), (25, .text(summary.location))
+        ])
+        rows.append([
+            (3, .text("Trainingszeiten:", bold: true)),
+            (5, .text("Uhrzeit von:", bold: true)), (8, .text(summary.startTime.map { timeFormatter.string(from: $0) } ?? "")),
+            (11, .text("bis:", bold: true)), (12, .text(summary.endTime.map { timeFormatter.string(from: $0) } ?? "")),
+            (21, .text("Jahr:", bold: true)), (25, .number(Double(summary.year)))
+        ])
+        rows.append([])
+
+        var trainingstageRow: XLSXRow = [(2, .text("Trainingstage (Datum):", bold: true))]
+        trainingstageRow.append(contentsOf: summary.trainingDates.enumerated().map { index, date in
+            (dateColumnStart + index, .text(dateFormatter.string(from: date), bold: true))
+        })
+        rows.append(trainingstageRow)
+
+        rows.append([(1, .text("Nr.", bold: true)), (2, .text("Vorname", bold: true)), (3, .text("Nachname", bold: true))])
 
         for (index, person) in summary.people.enumerated() {
-            var row: [XLSXGridCell] = [.text("\(index + 1)."), .text(person.firstName), .text(person.lastName), .text(vereinName)]
-            row.append(contentsOf: summary.trainingDates.map { .text(person.attended(on: $0) ? "j" : "n") })
+            let lastNameWithSuffix = person.roleSuffix.map { "\(person.lastName) (\($0))" } ?? person.lastName
+            var row: XLSXRow = [(1, .text("\(index + 1).")), (2, .text(person.firstName)), (3, .text(lastNameWithSuffix))]
+            row.append(contentsOf: summary.trainingDates.enumerated().map { index, date in
+                (dateColumnStart + index, .text(person.attended(on: date) ? "j" : "n"))
+            })
             rows.append(row)
         }
 
-        var totalRow: [XLSXGridCell] = [.text(""), .text(""), .text("ges. TL", bold: true), .text("")]
-        totalRow.append(contentsOf: summary.trainingDates.map { .number(Double(summary.totalPresent(on: $0))) })
+        var totalRow: XLSXRow = [(2, .text(" ")), (3, .text("ges. TL", bold: true))]
+        totalRow.append(contentsOf: summary.trainingDates.enumerated().map { index, date in
+            (dateColumnStart + index, .number(Double(summary.totalPresent(on: date))))
+        })
         rows.append(totalRow)
 
-        rows.append([])
-        rows.append([.text("Trainingstage (Datum) bei anwesenden SportlerInnen \"j\" sonst \"n\" eintragen")])
+        rows.append([(1, .text(" ")), (2, .text("Trainingstage (Datum) bei anwesenden SportlerInnen \"j\" sonst \"n\" eintragen"))])
 
         let outputURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("Trainingsfrequenzliste-\(UUID().uuidString).xlsx")
@@ -73,7 +97,13 @@ private enum XLSXGridCell {
     case number(Double, bold: Bool = false)
 }
 
-private func writeMinimalXLSX(rows: [[XLSXGridCell]], sheetName: String, to url: URL) throws {
+/// One row as explicit (1-based column, cell) placements, rather than a
+/// plain left-to-right array — the header rows above need to place labels
+/// and values at fixed, non-contiguous columns (e.g. "Sportart:" in column
+/// M with its value in column P) to match the reference template.
+private typealias XLSXRow = [(column: Int, cell: XLSXGridCell)]
+
+private func writeMinimalXLSX(rows: [XLSXRow], sheetName: String, to url: URL) throws {
     let contentTypes = """
     <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
     <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
@@ -130,8 +160,8 @@ private func writeMinimalXLSX(rows: [[XLSXGridCell]], sheetName: String, to url:
     for (rowIndex, row) in rows.enumerated() {
         let rowNumber = rowIndex + 1
         sheetXML += "<row r=\"\(rowNumber)\">"
-        for (colIndex, cell) in row.enumerated() {
-            let ref = "\(columnLetter(colIndex + 1))\(rowNumber)"
+        for (column, cell) in row.sorted(by: { $0.column < $1.column }) {
+            let ref = "\(columnLetter(column))\(rowNumber)"
             switch cell {
             case .text(let value, let bold):
                 guard !value.isEmpty else { continue }
@@ -169,7 +199,7 @@ private func writeMinimalXLSX(rows: [[XLSXGridCell]], sheetName: String, to url:
 }
 
 /// 1-indexed column number to spreadsheet letter (1 -> A, 27 -> AA) — this
-/// export needs up to 37 columns (Nr./Vorname/Nachname/Verein + 33 dates).
+/// export needs up to 37 columns (Nr./Vorname/Nachname + 33 dates).
 private func columnLetter(_ column: Int) -> String {
     var n = column
     var letters = ""

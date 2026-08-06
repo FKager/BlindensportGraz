@@ -3334,10 +3334,32 @@
       "file": "BlindensportGrazTests/MemberImportExportTests.swift",
       "root_cause": "MemberImportExport.importMembers(...) (MemberImportExport.swift:303) calls CloudKitSync.shared.pushMember(member) as a side effect of a plain import — CloudKitSync.shared lazily constructs a real CKContainer. Running xcodebuild test with CODE_SIGNING_ALLOWED=NO (required in this sandboxed session because real codesigning hits a separate sandbox wall, see the 2026-07-15 Do-Not-Repeat entries) strips the app's iCloud entitlement, so the moment any code path touches CKContainer the process hard-crashes (not a catchable Swift error) — this is a CloudKit SDK behavior, not an app bug. Every other test suite in the target passed cleanly (72/72 across InheritanceQueryTests/KostZCalculationTests/PraeCalculationTests/TeilnehmerlisteExportTests/TrainingsfrequenzlisteCalculationTests) in the same run — only MemberImportExportTests exercises a CloudKitSync push path, which is why it's the only suite affected. This superseded an earlier same-session guess that this was generic simulator flakiness (see cerebrum.md's 2026-08-05 Do-Not-Repeat entry) — it is fully reproducible, not flaky, and unrelated to any change made this session.",
       "fix": "Not fixed — this only manifests when running unit tests unsigned (CODE_SIGNING_ALLOWED=NO), which this sandboxed session requires. No code change was made since MemberImportExportTests' behavior (pushing to CloudKit on import) is correct/intended for a real signed build; the crash is purely a side effect of stripping entitlements for local unsigned test runs. Workaround options for a future session, none applied: (1) run tests from a properly signed context (Xcode GUI, or a CI runner with real signing) where the entitlement is present; (2) inject a fake/no-op CloudKitSync for tests via dependency injection, which would be a real (larger) refactor, not attempted here since it wasn't asked for.",
-      "tags": ["cloudkit", "entitlements", "test-crash", "code-signing", "simulator"],
+      "tags": [
+        "cloudkit",
+        "entitlements",
+        "test-crash",
+        "code-signing",
+        "simulator"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-05T19:02:01.000Z"
+    },
+    {
+      "id": "bug-203",
+      "timestamp": "2026-08-06T16:44:20.554Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-06T16:44:20.554Z"
     }
   ]
 }

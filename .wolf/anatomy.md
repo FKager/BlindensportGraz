@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-04T19:09:00.498Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-06T16:46:27.024Z
 > Files: 86 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -95,8 +95,8 @@
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~3776 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView incl. Adresse section; TournamentDetailView editable street/zip/city + PRAE+KostZ "Berichte" menu, list view has neither anymore (~5450 tok)
-- `TrainingsfrequenzlisteCalculation.swift` — / Scoped by Training.sport (Sportart), not a hand-picked team; roster unions every team assigned to that sport's period trainings (~1986 tok)
-- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2423 tok)
+- `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2556 tok)
+- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2847 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's calendar-badge toolbar button); Sportart + Halbjahr/Jahr picker (~1661 tok)
 - `TrainingsViews.swift` — SwiftUI view: AddTrainingView incl. Adresse section; TrainingDetailView editable street/zip/city (~5350 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~547 tok)
