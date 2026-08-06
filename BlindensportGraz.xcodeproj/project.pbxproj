@@ -19,6 +19,7 @@
 		2867281A3E333332F517D115 /* BlindensportGrazApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D94F0C24E1AD32118BF8127 /* BlindensportGrazApp.swift */; };
 		36061B56E0540AB834ACB702 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 83DBEE4CC921CC2722BCB73F /* Localizable.xcstrings */; };
 		38B8B1D161FA86B44AD28F4B /* TN_TeilnehmerInnenliste.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */; };
+		49DF91037358BE604C37CE2E /* Trainingsfrequenzliste_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 4FA5E8F29F13CB502F4FCA7F /* Trainingsfrequenzliste_Vorlage.xlsx */; };
 		4BC27F862748D31620DD255A /* KostZViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFA21F5E8AA02DD2D9326D8 /* KostZViews.swift */; };
 		4E13B12C366BB2656C4E5476 /* MemberImportExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D338EFF67001DA0AFB208CF3 /* MemberImportExportTests.swift */; };
 		4E800EA4DA42A4A593B6132F /* PraeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D863B0A68F55B79E025BBBB5 /* PraeViews.swift */; };
@@ -28,6 +29,7 @@
 		60A1D7FA23E0AF252C26E319 /* InheritanceQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */; };
 		60D9C878D9FB8EDC6C3BA5E6 /* CloudKitSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BB191BC0FAABBA7206E135 /* CloudKitSync.swift */; };
 		746DF2717BB82DDF95BF84B1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A214338B12D918B771269754 /* ZIPFoundation */; };
+		7804039D81464834C622D821 /* PRAE_Darstellung_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 51F794B1B6C3052518196C03 /* PRAE_Darstellung_Vorlage.xlsx */; };
 		883A941D130AF6840F6283D0 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9DE238BBE5A6E6B45BA118 /* RootView.swift */; };
 		886B320C465DDB5914963E23 /* TeamImportExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A2DB7023E996844A07A644 /* TeamImportExport.swift */; };
 		937EFC9FEE0E714A0122B6B7 /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = 83D9A0D3FAB093A5FAE4A12C /* settings.local.json */; };
@@ -78,6 +80,8 @@
 		44CFF4EF0C96BC5384667E50 /* XLSXCellPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXCellPatch.swift; sourceTree = "<group>"; };
 		46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InheritanceQueryTests.swift; sourceTree = "<group>"; };
 		4D3FFE0B26185C4884719B1A /* TrainingsfrequenzlisteExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsfrequenzlisteExport.swift; sourceTree = "<group>"; };
+		4FA5E8F29F13CB502F4FCA7F /* Trainingsfrequenzliste_Vorlage.xlsx */ = {isa = PBXFileReference; path = Trainingsfrequenzliste_Vorlage.xlsx; sourceTree = "<group>"; };
+		51F794B1B6C3052518196C03 /* PRAE_Darstellung_Vorlage.xlsx */ = {isa = PBXFileReference; path = PRAE_Darstellung_Vorlage.xlsx; sourceTree = "<group>"; };
 		52DEFEF3CAAB124E75D49614 /* PRAE_Formular.xlsx */ = {isa = PBXFileReference; path = PRAE_Formular.xlsx; sourceTree = "<group>"; };
 		5A295360023A2F97D708F995 /* TrainingsfrequenzlisteCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsfrequenzlisteCalculationTests.swift; sourceTree = "<group>"; };
 		5DFA21F5E8AA02DD2D9326D8 /* KostZViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KostZViews.swift; sourceTree = "<group>"; };
@@ -153,6 +157,7 @@
 				D658D11752C2F382D2950CC4 /* MemberListView.swift */,
 				C75961394C34A767344AC7C5 /* MembersViews.swift */,
 				E23F4A5BEF09AA11041EF66B /* Models.swift */,
+				51F794B1B6C3052518196C03 /* PRAE_Darstellung_Vorlage.xlsx */,
 				52DEFEF3CAAB124E75D49614 /* PRAE_Formular.xlsx */,
 				D15C672FD868BD79242BCDA2 /* PraeCalculation.swift */,
 				223C350376AFCF7359D1B95B /* PraeExport.swift */,
@@ -164,6 +169,7 @@
 				C67CC5BCE3EE5934D74787F2 /* TeilnehmerlisteExport.swift */,
 				E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */,
 				88E9971005663999F4668F45 /* TournamentsViews.swift */,
+				4FA5E8F29F13CB502F4FCA7F /* Trainingsfrequenzliste_Vorlage.xlsx */,
 				37A780E3E7EC0B3F11675D05 /* TrainingsfrequenzlisteCalculation.swift */,
 				4D3FFE0B26185C4884719B1A /* TrainingsfrequenzlisteExport.swift */,
 				D5C88EC09CB7F5C7D2A06A9B /* TrainingsfrequenzlisteViews.swift */,
@@ -292,8 +298,10 @@
 				1450125A2E8AB000202E6872 /* CLAUDE.md in Resources */,
 				BAE5BA21BCB2CA1048A4A047 /* KostZ_Kostenzusammenstellung.xlsx in Resources */,
 				36061B56E0540AB834ACB702 /* Localizable.xcstrings in Resources */,
+				7804039D81464834C622D821 /* PRAE_Darstellung_Vorlage.xlsx in Resources */,
 				278F952DF303B3BA14EAE285 /* PRAE_Formular.xlsx in Resources */,
 				38B8B1D161FA86B44AD28F4B /* TN_TeilnehmerInnenliste.xlsx in Resources */,
+				49DF91037358BE604C37CE2E /* Trainingsfrequenzliste_Vorlage.xlsx in Resources */,
 				937EFC9FEE0E714A0122B6B7 /* settings.local.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

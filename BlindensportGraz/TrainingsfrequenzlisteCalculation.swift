@@ -60,12 +60,12 @@ enum HalfYear: Int, CaseIterable, Identifiable, Hashable {
 }
 
 /// One half-year's Trainingsfrequenzliste for one training sport (e.g.
-/// "Torball", "Blindenfußball") — mirrors the real ÖBSV
-/// "Trainingsfrequenzliste" paper form (reverse-engineered from the official
-/// .xls, see TrainingsfrequenzlisteExporter's doc comment): one row per
-/// roster member (capped at 23, the original template's row count), one
-/// column per training date (capped at 33, the original's date-column
-/// count), "j"/"n" attendance per cell, and a per-date total row ("ges. TL").
+/// "Torball", "Blindenfußball") — mirrors the club's real reference
+/// "Trainingsfrequenzliste" template (see TrainingsfrequenzlisteExporter's
+/// doc comment): one row per roster member (capped at 24, the template's
+/// person-row count, rows 8–31), one column per training date (capped at
+/// 25, the template's date-column count, D–AB), "j"/"n" attendance per
+/// cell, and a per-date total row ("ges. TL").
 ///
 /// Scoped by `Training.sport`, not by a hand-picked team — the original form
 /// files one homogenous sheet per "Sportart", and a sport can be trained by
@@ -100,8 +100,8 @@ struct TrainingsfrequenzlisteSummary {
 /// TrainingsfrequenzlisteExporter for where this gets rendered into the
 /// .xlsx file.
 enum TrainingsfrequenzlisteCalculator {
-    static let maxDateColumns = 33
-    static let maxPersonRows = 23
+    static let maxDateColumns = 25
+    static let maxPersonRows = 24
 
     static func summary(sport: String, halfYear: HalfYear, year: Int, in context: ModelContext) -> TrainingsfrequenzlisteSummary {
         let calendar = Calendar.current

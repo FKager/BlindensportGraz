@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-06T17:53:58.849Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-06T21:21:36.068Z
 > Files: 86 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
@@ -87,7 +87,7 @@
 - `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4724 tok)
 - `Models.swift` — Class: User; SportEvent gained street/zip/city + fullAddress extension (~6900 tok)
 - `PraeCalculation.swift` — PraeCalculator: monthly (Training-only) summary + summary(for:tournament:) (~2300 tok)
-- `PraeExport.swift` — PraeExporter: exportMainForm (D4/D5/L5/D7/D33 = name/SVNR/Geburtsdatum/Adresse/IBAN from Member), exportDarstellung x2 sharing a private helper (~3800 tok)
+- `PraeExport.swift` — Declares PraeExportError (~2884 tok)
 - `PraeViews.swift` — PraeCalculationView (monthly, Trainings) + PraeTournamentCalculationView (per-tournament) (~3800 tok)
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RootView.swift` — SwiftUI view: RootView (~3907 tok)
@@ -95,11 +95,11 @@
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~3776 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView incl. Adresse section; TournamentDetailView editable street/zip/city + PRAE+KostZ "Berichte" menu, list view has neither anymore (~5450 tok)
-- `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2556 tok)
-- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2847 tok)
+- `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2552 tok)
+- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2493 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's calendar-badge toolbar button); Sportart + Halbjahr/Jahr picker (~1661 tok)
 - `TrainingsViews.swift` — SwiftUI view: AddTrainingView incl. Adresse section; TrainingDetailView editable street/zip/city (~5350 tok)
-- `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~547 tok)
+- `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/.claude/
 
@@ -110,9 +110,9 @@
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~2170 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
-- `PraeCalculationTests.swift` — Class: PraeCalculationTests, incl. tournament-scoped + personal-data (SVNR/IBAN/Geburtsdatum) export tests (~5200 tok)
+- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~6452 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
-- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~4276 tok)
+- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~4560 tok)
 
 ## RootCLI/
 

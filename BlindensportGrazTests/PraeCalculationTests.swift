@@ -379,7 +379,11 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertFalse(sheetXML.range(of: "<c r=\"D33\"[^>]*><is>", options: .regularExpression) != nil)
     }
 
-    func testExportDarstellungIncludesPersonalDataFromMember() throws {
+    /// The real "Darstellung" template (see PraeExporter's doc comment) only
+    /// has a Geburtsdatum field, not Wohnanschrift/SVNR/IBAN — those three
+    /// were a from-scratch-only addition, dropped once a real template
+    /// existed to check against (confirmed with the user 2026-08-06).
+    func testExportDarstellungIncludesGeburtsdatumFromMember() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
         var birthComponents = DateComponents()
         birthComponents.year = 1990
@@ -403,15 +407,21 @@ final class PraeCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
-        XCTAssertTrue(sheetXML.contains("Hauptstraße 1, 8010 Graz"))
-        XCTAssertTrue(sheetXML.contains("1234210390"))
         XCTAssertTrue(sheetXML.contains("21.03.1990"))
-        XCTAssertTrue(sheetXML.contains("AT611904300234573201"))
+        // Wohnanschrift/SVNR/IBAN have no cells in the real template at all
+        // (not just conditionally blank) — must never appear.
+        XCTAssertFalse(sheetXML.contains("Hauptstraße 1, 8010 Graz"))
+        XCTAssertFalse(sheetXML.contains("1234210390"))
+        XCTAssertFalse(sheetXML.contains("AT611904300234573201"))
+        XCTAssertFalse(sheetXML.contains("Sozialversicherungsnummer:"))
+        XCTAssertFalse(sheetXML.contains("IBAN:"))
+        XCTAssertFalse(sheetXML.contains("Wohnanschrift:"))
     }
 
-    func testExportDarstellungOmitsEmptyPersonalDataRows() throws {
-        // No Member at all (User-only account) — must not print blank
-        // "Sozialversicherungsnummer:"/"IBAN:" rows with nothing after them.
+    /// Unlike the from-scratch version this replaced, "Geburtsdatum:" is a
+    /// static label baked into the real template (row 4) — it stays printed
+    /// even without a Member, only its value cell (C4) stays blank.
+    func testExportDarstellungLeavesGeburtsdatumValueBlankWithoutMember() throws {
         let person = PraeEligiblePerson(id: UUID(), displayName: "Nur-App-Konto", membershipIDs: [], member: nil)
         let summary = PraeMonthSummary(
             person: person, month: 7, year: 2026,
@@ -426,9 +436,32 @@ final class PraeCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
+        XCTAssertTrue(sheetXML.contains("Geburtsdatum:"))
+        XCTAssertFalse(sheetXML.range(of: "<c r=\"C4\"[^>]*><is>", options: .regularExpression) != nil)
         XCTAssertFalse(sheetXML.contains("Sozialversicherungsnummer:"))
         XCTAssertFalse(sheetXML.contains("IBAN:"))
         XCTAssertFalse(sheetXML.contains("Wohnanschrift:"))
-        XCTAssertFalse(sheetXML.contains("Geburtsdatum:"))
+    }
+
+    /// The real template only has 21 entry rows (rows 8–28) — a hard cap
+    /// inherited from the original paper form, not one row per calendar day.
+    func testExportDarstellungCapsEntriesAtMaxEntryRows() throws {
+        let team = Team(name: "Torball 1", sport: "Torball")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        let entries = (1...25).map { PraeDayEntry(day: $0, amount: 20, purpose: "Training \($0)") }
+        let summary = PraeMonthSummary(person: person, month: 7, year: 2026, entries: entries)
+
+        let url = try PraeExporter.exportDarstellung(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("<t>Training 21</t>"))
+        XCTAssertFalse(sheetXML.contains("<t>Training 22</t>"))
     }
 }

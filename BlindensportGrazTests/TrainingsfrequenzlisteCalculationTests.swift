@@ -189,20 +189,37 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
-        XCTAssertTrue(sheetXML.contains("T R A I N I N G S F R E Q U E N Z L I S T E"))
-        XCTAssertTrue(sheetXML.contains("Verein/LV:"))
-        XCTAssertTrue(sheetXML.contains("Grazer VSC"))
-        XCTAssertTrue(sheetXML.contains("Sportart:"))
-        XCTAssertTrue(sheetXML.contains("Torball"))
-        XCTAssertTrue(sheetXML.contains("Nr."))
-        XCTAssertTrue(sheetXML.contains("Vorname"))
-        XCTAssertTrue(sheetXML.contains("Nachname"))
+        // Static template text (title, field labels, "Nr."/"Vorname"/
+        // "Nachname" header, "ges. TL", the footnote) now lives in the
+        // template's own xl/sharedStrings.xml, untouched by this exporter —
+        // only the cells it actually patches become sheet1.xml inline
+        // strings. See TrainingsfrequenzlisteExporter's doc comment.
+        var sharedStringsData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/sharedStrings.xml"])) { sharedStringsData.append($0) }
+        let sharedStringsXML = try XCTUnwrap(String(data: sharedStringsData, encoding: .utf8))
+
+        XCTAssertTrue(sharedStringsXML.contains("T R A I N I N G S F R E Q U E N Z L I S T E"))
+        XCTAssertTrue(sharedStringsXML.contains("Verein/LV:"))
+        XCTAssertTrue(sharedStringsXML.contains("Sportart:"))
+        XCTAssertTrue(sharedStringsXML.contains("Nr."))
+        XCTAssertTrue(sharedStringsXML.contains("Vorname"))
+        XCTAssertTrue(sharedStringsXML.contains("Nachname"))
+        XCTAssertTrue(sharedStringsXML.contains("ges. TL"))
+        XCTAssertTrue(sharedStringsXML.contains("bei anwesenden SportlerInnen"))
+
+        // Dynamically patched values: written as sheet1.xml inline strings.
+        XCTAssertTrue(sheetXML.contains("<t>Grazer VSC</t>"))
+        XCTAssertTrue(sheetXML.contains("<t>Torball</t>"))
         XCTAssertTrue(sheetXML.contains("<t>Anna</t>"))
         XCTAssertTrue(sheetXML.contains("<t>Sportlerin</t>"))
-        XCTAssertTrue(sheetXML.contains("05.07."))
-        XCTAssertTrue(sheetXML.contains(">j<") || sheetXML.contains("<t>j</t>"))
-        XCTAssertTrue(sheetXML.contains("ges. TL"))
-        XCTAssertTrue(sheetXML.contains("bei anwesenden SportlerInnen"))
+        XCTAssertTrue(sheetXML.contains("<t>j</t>"))
+
+        // The training date is a real Excel date serial (numFmtId 164 =
+        // "d/m"), not text — see TrainingsfrequenzlisteExporter.excelSerialDate.
+        let expectedSerial = TrainingsfrequenzlisteExporter.excelSerialDate(training.startDate)
+        XCTAssertTrue(sheetXML.contains("<c r=\"D6\""))
+        XCTAssertTrue(sheetXML.contains("<v>\(expectedSerial)</v>"))
+
         // No per-member total column beyond the original's own field set.
         XCTAssertFalse(sheetXML.contains("Gesamt"))
     }

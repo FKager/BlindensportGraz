@@ -1182,3 +1182,20 @@
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 | 20:20 | Deployed to iPhone via iOS Device Deploy GHA workflow (retried 2x after wireless CoreDevice tunnel drops; fixed by switching to USB) | .github/workflows/ios-device-deploy.yml | success, run 31125734715 | ~1200 |
+
+## Session: 2026-08-06 22:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:47 | Edited BlindensportGraz/XLSXCellPatch.swift | modified xmlEscape() | ~1163 |
+| 22:49 | Created BlindensportGraz/TrainingsfrequenzlisteExport.swift | — | ~2492 |
+| 22:50 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | form() → template() | ~130 |
+| 22:51 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | "\($0.lastName) (\(suffix)" → "\(p.lastName) (\(suffix))" | ~34 |
+| 22:52 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 2→2 lines | ~19 |
+| 22:53 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | expanded (+17 lines) | ~600 |
+| 22:56 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | 4→2 lines | ~38 |
+| 22:58 | Session end: 7 writes across 4 files (XLSXCellPatch.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift) | 6 reads | ~17637 tok |
+| 23:18 | Created BlindensportGraz/PraeExport.swift | — | ~2884 |
+| 23:19 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testExportDarstellungIncludesGeburtsdatumFromMember() | ~1319 |
+| 23:21 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 4→2 lines | ~36 |
+| 23:29 | Session end: 10 writes across 6 files (XLSXCellPatch.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, PraeExport.swift) | 9 reads | ~32430 tok |
