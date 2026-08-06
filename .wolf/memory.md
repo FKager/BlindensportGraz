@@ -1181,3 +1181,4 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 20:20 | Deployed to iPhone via iOS Device Deploy GHA workflow (retried 2x after wireless CoreDevice tunnel drops; fixed by switching to USB) | .github/workflows/ios-device-deploy.yml | success, run 31125734715 | ~1200 |
