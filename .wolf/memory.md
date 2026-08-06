@@ -1142,3 +1142,42 @@
 | 18:48 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
 | 18:49 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
 | 18:50 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:04 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:17 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:24 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:24 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:24 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:25 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:26 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:27 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:28 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:29 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:30 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:31 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:32 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:33 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:34 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:35 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:37 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:39 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:40 | Session end: 4 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift) | 7 reads | ~27446 tok |
+| 19:46 | Edited .claude/settings.local.json | 4→2 lines | ~10 |
+| 19:46 | Session end: 5 writes across 3 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, settings.local.json) | 8 reads | ~27836 tok |
+| 19:47 | Session end: 5 writes across 3 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, settings.local.json) | 8 reads | ~27836 tok |
+
+## Session: 2026-08-06 19:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:53 | Created .mcp.json | — | ~7 |
+| 19:53 | Edited .claude/settings.local.json | 5→3 lines | ~18 |
+| 19:54 | Removed xcodebuildmcp MCP server (user request, conflicts with established self-hosted-GHA-only device deploy convention) | .mcp.json, .claude/settings.local.json | done | ~15 |
+| 19:55 | Session end: 2 writes across 2 files (.mcp.json, settings.local.json) | 2 reads | ~2504 tok |
+| 19:56 | Session end: 2 writes across 2 files (.mcp.json, settings.local.json) | 4 reads | ~5443 tok |
+| 20:01 | Session end: 2 writes across 2 files (.mcp.json, settings.local.json) | 4 reads | ~5443 tok |
+| 20:05 | Session end: 2 writes across 2 files (.mcp.json, settings.local.json) | 4 reads | ~5443 tok |
+
+## Session: 2026-08-06 20:14
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
