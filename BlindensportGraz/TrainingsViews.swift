@@ -426,13 +426,10 @@ struct TrainingsListView: View {
         .toolbar {
             if isAdmin {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { showTrainingsfrequenzliste = true } label: {
-                        Image(systemName: "calendar.badge.checkmark")
-                    }
-                    .accessibilityLabel("Trainingsfrequenzliste")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
                     Menu {
+                        Button { showTrainingsfrequenzliste = true } label: {
+                            Label("Trainingsfrequenzliste", systemImage: "calendar.badge.checkmark")
+                        }
                         Button { showPraeCalculation = true } label: {
                             Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
                         }

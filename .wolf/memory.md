@@ -1220,3 +1220,8 @@
 | 11:45 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | 3→5 lines | ~102 |
 | 11:45 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportPatchesTimesFromRepresentativeTraining() | ~1231 |
 | 11:46 | Created ../../../../tmp/append_bug2.py | — | ~774 |
+| 11:48 | Session end: 8 writes across 5 files (TrainingsfrequenzlisteCalculationTests.swift, append_bug.py, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, append_bug2.py) | 5 reads | ~18076 tok |
+| 11:50 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~243 |
+| 11:50 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | tab() → period() | ~382 |
+| 11:51 | Created ../../../../tmp/append_bug3.py | — | ~491 |
+| 11:52 | Merged Trainingsfrequenzliste into TrainingsListView's "Berichte" Menu (was standalone toolbar button); answered "where is PRAE Darstellung" (PraeCalculationView's Export section, 2nd ShareLink) | TrainingsViews.swift, TrainingsfrequenzlisteViews.swift | BUILD SUCCEEDED (xcodebuild, unsigned), logged bug-209 | ~1800 |

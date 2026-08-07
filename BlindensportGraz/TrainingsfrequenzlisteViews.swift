@@ -1,19 +1,22 @@
 import SwiftUI
 import SwiftData
 
-/// Admin-only screen (see TrainingsListView's calendar-badge toolbar button)
-/// that exports one training sport's half-year attendance register — Sport
-/// Austria's Trainingsfrequenzliste is filed per federal reporting period
-/// (1. Halbjahr Jänner–Juni, 2. Halbjahr Juli–Dezember), not per calendar
-/// month. Unlike KostZCalculationView (club-wide, no picker), the
-/// Trainingsfrequenzliste is inherently per-sport — the original form has one
-/// "Verein/LV" + "Sportart" line, i.e. one homogenous group per sheet — so
-/// this adds a Sportart picker on top of the Halbjahr/Jahr picker. Scoped by
-/// `Training.sport`, not by a hand-picked team (a sport like "Torball" can be
-/// trained by several teams at once, e.g. Damen + Herren) — the roster itself
-/// still comes from whichever teams are actually assigned to trainings of
-/// that sport, unchanged from before. Deliberately reachable only from the
-/// Trainings tab (not AccountView, where PRAE/KostZ still live) since it's
+/// Admin-only screen (see TrainingsListView's "Berichte" toolbar menu,
+/// alongside PRAE-Berechnung/KostZ-Berechnung — folded in there per user
+/// request, previously its own standalone toolbar button) that exports one
+/// training sport's half-year attendance register — Sport Austria's
+/// Trainingsfrequenzliste is filed per federal reporting period (1. Halbjahr
+/// Jänner–Juni, 2. Halbjahr Juli–Dezember), not per calendar month. Unlike
+/// KostZCalculationView (club-wide, no picker), the Trainingsfrequenzliste is
+/// inherently per-sport — the original form has one "Verein/LV" + "Sportart"
+/// line, i.e. one homogenous group per sheet — so this adds a Sportart picker
+/// on top of the Halbjahr/Jahr picker. Scoped by `Training.sport`, not by a
+/// hand-picked team (a sport like "Torball" can be trained by several teams
+/// at once, e.g. Damen + Herren) — the roster itself still comes from
+/// whichever teams are actually assigned to trainings of that sport,
+/// unchanged from before. Deliberately reachable only from the Trainings tab
+/// (not AccountView, where nothing report-related lives anymore, or
+/// TournamentsListView, which has no notion of "sport" attendance) since it's
 /// specifically about training attendance, unlike PRAE/KostZ which cover all
 /// deployment types. Self-contained NavigationStack + dismiss button since
 /// it's sheet-presented, matching KostZCalculationView/PraeCalculationView.

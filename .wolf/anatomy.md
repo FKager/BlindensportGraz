@@ -1,12 +1,13 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T09:46:41.883Z
-> Files: 89 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T09:51:15.610Z
+> Files: 90 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
 - `append_bug.py` (~878 tok)
 - `append_bug2.py` (~774 tok)
+- `append_bug3.py` (~491 tok)
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -103,8 +104,8 @@
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView incl. Adresse section; TournamentDetailView editable street/zip/city + PRAE+KostZ "Berichte" menu, list view has neither anymore (~5450 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2596 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2581 tok)
-- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's calendar-badge toolbar button); Sportart + Halbjahr/Jahr picker (~1661 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView incl. Adresse section; TrainingDetailView editable street/zip/city (~5350 tok)
+- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1718 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~5359 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/.claude/

@@ -3501,6 +3501,27 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-07T09:47:00.000Z"
+    },
+    {
+      "id": "bug-209",
+      "timestamp": "2026-08-07T10:00:00.000Z",
+      "error_message": "refactor request: 'Want to have the Trainingsfrequenzliste also in Berichte - like PRAE and KostZ.' Trainingsfrequenzliste was a standalone toolbar button on TrainingsListView, separate from the 'Berichte' Menu containing PRAE-Berechnung/KostZ-Berechnung.",
+      "file": "BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+      "root_cause": "Not a bug, a UI consolidation request. TrainingsListView had two separate toolbar items: a standalone calendar-badge Button for Trainingsfrequenzliste, and a chart.bar.doc.horizontal 'Berichte' Menu with PRAE-Berechnung + KostZ-Berechnung.",
+      "fix": "Merged the standalone Trainingsfrequenzliste button into the 'Berichte' Menu as its first item (Label with the same calendar.badge.checkmark icon), removing the separate toolbar icon entirely. State (@State showTrainingsfrequenzliste) and .sheet wiring unchanged. Updated TrainingsfrequenzlisteView's doc comment to reflect the new entry point. Verified via xcodebuild build (CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator) — BUILD SUCCEEDED.",
+      "tags": [
+        "trainingsfrequenzliste",
+        "ui",
+        "toolbar",
+        "berichte",
+        "refactor"
+      ],
+      "related_bugs": [
+        "bug-207",
+        "bug-208"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T10:00:00.000Z"
     }
   ]
 }
