@@ -216,6 +216,20 @@ enum PraeExporter {
                 patched = XLSXCellPatch.setNumber(in: patched, ref: ref, value: entry.amount)
             }
 
+            // L16 ("...in Höhe von:") already carries the template's own
+            // SUM(day-grid) formula (=C12+C13+...+AD14) — Excel/Numbers
+            // recalculate it on open regardless of what we write here, but
+            // its cached <v> (currently 0, a pristine template's blank grid
+            // sums to zero) needs refreshing too for non-recalculating
+            // previewers, same reasoning as TrainingsfrequenzlisteExporter's
+            // "ges. TL" row. B18 ("in Worten:") has no formula/template
+            // support for spelling out a number, so it's written directly.
+            let total = entries.reduce(0) { $0 + $1.amount }
+            patched = XLSXCellPatch.setFormulaCachedValue(in: patched, ref: "L16", value: total)
+            if total > 0 {
+                patched = XLSXCellPatch.setText(in: patched, ref: "B18", value: GermanNumberWords.spelledOutEuroAmount(total))
+            }
+
             return patched
         }
     }
@@ -271,5 +285,64 @@ enum PraeExporter {
         }
 
         return outputURL
+    }
+}
+
+/// Spells out a Euro amount in German words, for the PRAE main form's
+/// "in Worten:" (B18) field — e.g. 135.50 -> "Einhundertfünfunddreißig Euro
+/// und fünfzig Cent". Uses the formal "ein-" prefixed style ("einhundert",
+/// "eintausend") official Austrian documents use, not the colloquial
+/// "hundert"/"tausend" short form. Only used by PraeExporter; kept top-level
+/// (not nested) since it's a general-purpose number-to-words utility with no
+/// PRAE-specific state, in case another export ever needs the same thing.
+enum GermanNumberWords {
+    private static let onesStandalone = ["null", "eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun"]
+    // Same digit words, but without the standalone "eins" -> used as a
+    // prefix ("ein-und-zwanzig", "einhundert"), never on its own.
+    private static let onesPrefix = ["", "ein", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "acht", "neun"]
+    private static let teens = ["zehn", "elf", "zwölf", "dreizehn", "vierzehn", "fünfzehn", "sechzehn", "siebzehn", "achtzehn", "neunzehn"]
+    private static let tens = ["", "", "zwanzig", "dreißig", "vierzig", "fünfzig", "sechzig", "siebzig", "achtzig", "neunzig"]
+
+    /// Spells out a non-negative integer below 1,000,000 — plenty of
+    /// headroom for a PRAE total (legally capped at €720/month, though the
+    /// cap is only flagged, not enforced, see PraeCalculator's doc comment).
+    /// Falls back to plain digits above that rather than growing this into a
+    /// general-purpose arbitrary-precision speller no caller needs.
+    static func spellOut(_ n: Int) -> String {
+        if n < 0 { return "minus " + spellOut(-n) }
+        if n == 0 { return onesStandalone[0] }
+        if n < 10 { return onesStandalone[n] }
+        if n < 20 { return teens[n - 10] }
+        if n < 100 {
+            let (t, o) = (n / 10, n % 10)
+            return o == 0 ? tens[t] : onesPrefix[o] + "und" + tens[t]
+        }
+        if n < 1000 {
+            let (h, rest) = (n / 100, n % 100)
+            let prefix = (h == 1 ? "ein" : onesStandalone[h]) + "hundert"
+            return rest == 0 ? prefix : prefix + spellOut(rest)
+        }
+        if n < 1_000_000 {
+            let (th, rest) = (n / 1000, n % 1000)
+            let prefix = (th == 1 ? "ein" : spellOut(th)) + "tausend"
+            return rest == 0 ? prefix : prefix + spellOut(rest)
+        }
+        return String(n)
+    }
+
+    /// Rounds to the nearest cent first (currency values shouldn't carry
+    /// float noise like 45.499999999996 into a legal document), then spells
+    /// out "<Euro> Euro und <Cent> Cent" — the "und <Cent> Cent" clause is
+    /// dropped entirely for a whole-euro amount, matching how this phrase is
+    /// conventionally written by hand.
+    static func spelledOutEuroAmount(_ amount: Double) -> String {
+        let totalCents = Int((amount * 100).rounded())
+        let euros = totalCents / 100
+        let cents = abs(totalCents % 100)
+        let euroWords = spellOut(euros)
+        let capitalized = euroWords.prefix(1).uppercased() + euroWords.dropFirst()
+        let euroClause = "\(capitalized) Euro"
+        guard cents != 0 else { return euroClause }
+        return "\(euroClause) und \(spellOut(cents)) Cent"
     }
 }

@@ -3572,6 +3572,27 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-07T10:05:00.000Z"
+    },
+    {
+      "id": "bug-211",
+      "timestamp": "2026-08-07T10:20:00.000Z",
+      "error_message": "New feature request: 'Can can write the summed amount of cost from column L16 and write the spoken word of the value in column B18.'",
+      "file": "BlindensportGraz/PraeExport.swift, BlindensportGrazTests/PraeCalculationTests.swift",
+      "root_cause": "Not a bug, a feature request following on from bug-210's day-grid auto-fill. L16 (merged L16:S16) already carries the real template's own SUM formula over every day-grid cell (=C12+C13+...+AD14), with a cached <v>0</v> that only Excel/Numbers recalculate on open — non-recalculating previewers (iOS QuickLook) would show a stale 0 unless the cached value is refreshed to match the newly-patched day-grid amounts. B18 (merged B18:AE18, the 'in Worten:' row) had no content or formula at all — Excel has no built-in number-to-German-words function, so nothing before this patched it.",
+      "fix": "Added a new top-level GermanNumberWords enum (PraeExport.swift) that spells out a non-negative integer below 1,000,000 in formal German ('einhundert'/'eintausend' style, not colloquial 'hundert'/'tausend'), plus spelledOutEuroAmount(_:) which rounds to the nearest cent (avoids float noise like 45.099999999996 turning into a bogus fractional-cent word) and renders '<Euro> Euro und <Cent> Cent', dropping the Cent clause entirely for whole-euro amounts. In PraeExporter.exportMainForm's shared private helper: after patching the day-grid amounts, XLSXCellPatch.setFormulaCachedValue refreshes L16's cached SUM value (formula left intact) to the real entries total, and B18 is patched with GermanNumberWords.spelledOutEuroAmount(total) — only when total > 0, so an empty grid keeps B18 blank ('Null Euro' would look absurd on an otherwise pristine form) while L16 still gets its cached 0 refreshed (matches the pristine template's own state, confirms the patch path doesn't skip/crash on an empty grid). Added testGermanNumberWordsSpellsOutBasicRanges/testGermanNumberWordsSpelledOutEuroAmountOmitsCentClauseForWholeEuros (unit tests on the speller itself) plus assertions on L16/B18 in the existing day-grid export test and a new testExportMainFormLeavesInWortenBlankWithNoEntries. 20/20 PraeCalculationTests pass, full app build succeeds (xcodebuild build + test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator).",
+      "tags": [
+        "prae",
+        "export",
+        "xlsx",
+        "german-number-words",
+        "l16",
+        "b18"
+      ],
+      "related_bugs": [
+        "bug-210"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T10:20:00.000Z"
     }
   ]
 }

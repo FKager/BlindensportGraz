@@ -397,6 +397,37 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertTrue(sheetXML.contains("<v>45.0</v>"))
         XCTAssertTrue(sheetXML.contains("<c r=\"C15\""))
         XCTAssertTrue(sheetXML.contains("<v>60.0</v>"))
+
+        // L16 keeps its original SUM(day-grid) formula but its cached value
+        // is refreshed to the real total (30+45+60=135); B18 gets the total
+        // spelled out in German words.
+        XCTAssertTrue(sheetXML.contains("<f>C12+C13+C14+C15+"))
+        XCTAssertTrue(sheetXML.contains("<v>135.0</v>"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"B18\""))
+        XCTAssertTrue(sheetXML.contains("<t>Einhundertfünfunddreißig Euro</t>"))
+    }
+
+    /// No deployment days at all -> total is 0 -> B18 stays blank (a pristine
+    /// template's own state) rather than printing the slightly absurd "Null
+    /// Euro" on an otherwise-empty form. L16 still gets its cached formula
+    /// value refreshed to 0 (matches the pristine template's own cached 0,
+    /// but confirms the patch path doesn't crash/skip on an empty grid).
+    func testExportMainFormLeavesInWortenBlankWithNoEntries() throws {
+        let team = Team(name: "Torball 1", sport: "Torball")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        let summary = PraeMonthSummary(person: person, month: 7, year: 2026, entries: [])
+
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("<v>0.0</v>"))
+        XCTAssertFalse(sheetXML.range(of: "<c r=\"B18\"[^>]*><is>", options: .regularExpression) != nil)
     }
 
     func testExportMainFormLeavesPersonalDataBlankWithoutMember() throws {
@@ -505,5 +536,28 @@ final class PraeCalculationTests: XCTestCase {
 
         XCTAssertTrue(sheetXML.contains("<t>Training 21</t>"))
         XCTAssertFalse(sheetXML.contains("<t>Training 22</t>"))
+    }
+
+    // MARK: - GermanNumberWords
+
+    func testGermanNumberWordsSpellsOutBasicRanges() {
+        XCTAssertEqual(GermanNumberWords.spellOut(0), "null")
+        XCTAssertEqual(GermanNumberWords.spellOut(1), "eins")
+        XCTAssertEqual(GermanNumberWords.spellOut(12), "zwölf")
+        XCTAssertEqual(GermanNumberWords.spellOut(21), "einundzwanzig")
+        XCTAssertEqual(GermanNumberWords.spellOut(30), "dreißig")
+        XCTAssertEqual(GermanNumberWords.spellOut(100), "einhundert")
+        XCTAssertEqual(GermanNumberWords.spellOut(120), "einhundertzwanzig")
+        XCTAssertEqual(GermanNumberWords.spellOut(135), "einhundertfünfunddreißig")
+        XCTAssertEqual(GermanNumberWords.spellOut(1000), "eintausend")
+        XCTAssertEqual(GermanNumberWords.spellOut(2026), "zweitausendsechsundzwanzig")
+    }
+
+    func testGermanNumberWordsSpelledOutEuroAmountOmitsCentClauseForWholeEuros() {
+        XCTAssertEqual(GermanNumberWords.spelledOutEuroAmount(120), "Einhundertzwanzig Euro")
+        XCTAssertEqual(GermanNumberWords.spelledOutEuroAmount(45.5), "Fünfundvierzig Euro und fünfzig Cent")
+        // Float noise (e.g. 45.1 + 0.4 in binary floating point) must round
+        // to the nearest cent, not spell out a bogus fractional-cent word.
+        XCTAssertEqual(GermanNumberWords.spelledOutEuroAmount(45.1 + 0.4), "Fünfundvierzig Euro und fünfzig Cent")
     }
 }

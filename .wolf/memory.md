@@ -1236,3 +1236,11 @@
 | 12:00 | Edited BlindensportGraz/PraeExport.swift | 3→3 lines | ~77 |
 | 12:01 | Created ../../../../tmp/append_bug4.py | — | ~1281 |
 | 12:03 | Implemented PRAE day-grid + month/year auto-fill (was manual-only): PraeExporter.dayGridAmountRef, split exportMainForm into summary-based overloads, fixed call sites/task ids | PraeExport.swift, PraeViews.swift, PraeCalculationTests.swift | 17/17 PraeCalculationTests pass, full build succeeds, logged bug-210 | ~6800 |
+| 12:03 | Session end: 20 writes across 12 files (TrainingsfrequenzlisteCalculationTests.swift, append_bug.py, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, append_bug2.py) | 10 reads | ~45069 tok |
+| 12:15 | Edited BlindensportGraz/PraeExport.swift | modified reduce() | ~319 |
+| 12:15 | Edited BlindensportGraz/PraeExport.swift | 8→8 lines | ~160 |
+| 12:15 | Edited BlindensportGraz/PraeExport.swift | modified spellOut() | ~876 |
+| 12:16 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testExportMainFormLeavesInWortenBlankWithNoEntries() | ~635 |
+| 12:16 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testGermanNumberWordsSpellsOutBasicRanges() | ~402 |
+| 12:17 | Created ../../../../tmp/append_bug5.py | — | ~897 |
+| 12:19 | Added L16 (SUM cached-value refresh) + B18 (GermanNumberWords spelled-out total) to PRAE main form export | PraeExport.swift, PraeCalculationTests.swift | 20/20 tests pass, full build succeeds, logged bug-211 | ~3200 |
