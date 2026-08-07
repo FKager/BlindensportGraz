@@ -81,13 +81,18 @@ struct TrainingsfrequenzlisteSummary {
     let people: [TrainingsfrequenzlistePerson] // sorted by displayName, capped at maxPersonRows
     let teams: [Team] // every team assigned to a training in this period, in first-seen order
 
-    // "Sportstätte:"/"Trainingszeiten:" header fields the newer reference
-    // template (data/Trainingsfrequenzliste_Torball_2026.xlsx) added —
-    // taken from whichever period training is chronologically earliest,
-    // since in practice a sport trains at one recurring weekly slot/venue
-    // and the form only has room for a single representative value, not one
-    // per training day. Empty/nil when the period has no trainings at all.
-    let location: String
+    // "Trainingszeiten:" header fields the newer reference template
+    // (data/Trainingsfrequenzliste_Torball_2026.xlsx) added — taken from
+    // whichever period training is chronologically earliest, since in
+    // practice a sport trains at one recurring weekly slot and the form only
+    // has room for a single representative value, not one per training day.
+    // Nil when the period has no trainings at all.
+    //
+    // "Sportstätte:" (location) is deliberately NOT computed here, per
+    // explicit user request — it stays whatever the bundled template
+    // (Trainingsfrequenzliste_Vorlage.xlsx) already has filled in, since
+    // TrainingsfrequenzlisteExporter never patches that cell. See its doc
+    // comment.
     let startTime: Date?
     let endTime: Date?
 
@@ -179,7 +184,6 @@ enum TrainingsfrequenzlisteCalculator {
         return TrainingsfrequenzlisteSummary(sport: sport, halfYear: halfYear, year: year,
                                               trainingDates: trainingDates, people: Array(people),
                                               teams: assignedTeams,
-                                              location: representativeTraining?.location ?? "",
                                               startTime: representativeTraining?.startDate,
                                               endTime: representativeTraining?.endDate)
     }

@@ -1,11 +1,12 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T09:28:13.939Z
-> Files: 88 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T09:46:41.883Z
+> Files: 89 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
 - `append_bug.py` (~878 tok)
+- `append_bug2.py` (~774 tok)
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -100,8 +101,8 @@
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~3776 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView incl. Adresse section; TournamentDetailView editable street/zip/city + PRAE+KostZ "Berichte" menu, list view has neither anymore (~5450 tok)
-- `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2552 tok)
-- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2493 tok)
+- `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2596 tok)
+- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2581 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's calendar-badge toolbar button); Sportart + Halbjahr/Jahr picker (~1661 tok)
 - `TrainingsViews.swift` — SwiftUI view: AddTrainingView incl. Adresse section; TrainingDetailView editable street/zip/city (~5350 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
@@ -117,7 +118,7 @@
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~6452 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
-- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~5316 tok)
+- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~5791 tok)
 
 ## RootCLI/
 

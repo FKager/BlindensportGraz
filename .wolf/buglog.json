@@ -3449,6 +3449,58 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-07T09:30:00.000Z"
+    },
+    {
+      "id": "bug-209",
+      "timestamp": "2026-08-07T09:44:56.017Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 9→14 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T09:44:56.017Z"
+    },
+    {
+      "id": "bug-210",
+      "timestamp": "2026-08-07T09:45:42.525Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+      "root_cause": "11 lines replaced/restructured",
+      "fix": "Rewrote 46→74 lines (11 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T09:45:42.525Z"
+    },
+    {
+      "id": "bug-208",
+      "timestamp": "2026-08-07T09:47:00.000Z",
+      "error_message": "Follow-up to bug-207: user clarified 'Want the location information from the provided template' — i.e. Sportstätte should NOT be derived from Training.location (the opposite of start/end time, which should stay training-derived).",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift, BlindensportGraz/TrainingsfrequenzlisteExport.swift, BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+      "root_cause": "Not a bug in the prior sense — a scope clarification. bug-207's investigation had confirmed TrainingsfrequenzlisteCalculator.summary() derived location/startTime/endTime uniformly from the representative Training and patched all three into the template (Y3/H4/L4). The user then specified the two fields should be sourced differently: start/end time from the Training data (unchanged), but location should always reflect the bundled reference template's own pre-filled Sportstätte value (the real club document says 'ASKÖ-Halle B'), not whatever an individual Training record's location field happens to say.",
+      "fix": "Removed the `location` field entirely from TrainingsfrequenzlisteSummary and stopped computing it in TrainingsfrequenzlisteCalculator.summary(). Deleted the `XLSXCellPatch.setInlineText(...,ref:\"Y3\",...)` call in TrainingsfrequenzlisteExporter.patch — Y3 is now never touched, so it keeps the template's own shared-string value. Updated the earlier testExportPatchesLocationAndTimesFromRepresentativeTraining (renamed testExportPatchesTimesFromRepresentativeTraining, location assertions dropped) and added testExportLeavesLocationFromTemplateUntouched (asserts the Training's location string does NOT appear in the export and Y3 still references the original shared string). 11/11 tests pass (xcodebuild test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator). Committed and redeployed via ios-device-deploy.yml.",
+      "tags": [
+        "trainingsfrequenzliste",
+        "export",
+        "xlsx",
+        "scope-clarification",
+        "location"
+      ],
+      "related_bugs": [
+        "bug-207"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T09:47:00.000Z"
     }
   ]
 }

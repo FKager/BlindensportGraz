@@ -224,16 +224,16 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertFalse(sheetXML.contains("Gesamt"))
     }
 
-    /// Covers the "Sportstätte:"/"Trainingszeiten:" header fields (Y3/H4/L4),
-    /// added alongside the real-template patch in TrainingsfrequenzlisteExporter
-    /// — sourced from whichever period training is chronologically earliest
+    /// Covers the "Trainingszeiten:" header fields (H4/L4), added alongside
+    /// the real-template patch in TrainingsfrequenzlisteExporter — sourced
+    /// from whichever period training is chronologically earliest
     /// (`representativeTraining`, TrainingsfrequenzlisteCalculator.swift), not
     /// hand-entered. Regression coverage for the user-reported bug that these
-    /// fields were missing from the export: asserts the location and both
-    /// times actually reach the patched sheet XML, not just that `summary`
-    /// carries them (the earlier tests only checked the Verein/Sportart/name/
-    /// date cells, never these three).
-    func testExportPatchesLocationAndTimesFromRepresentativeTraining() throws {
+    /// fields were missing from the export: asserts both times actually
+    /// reach the patched sheet XML, not just that `summary` carries them
+    /// (the earlier tests only checked the Verein/Sportart/name/date cells,
+    /// never these two).
+    func testExportPatchesTimesFromRepresentativeTraining() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
@@ -248,7 +248,6 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         context.insert(training)
 
         let summary = TrainingsfrequenzlisteCalculator.summary(sport: "Torball", halfYear: .second, year: 2026, in: context)
-        XCTAssertEqual(summary.location, "Sporthalle Puntigam")
         XCTAssertEqual(summary.startTime, training.startDate)
         XCTAssertEqual(summary.endTime, training.endDate)
 
@@ -259,9 +258,6 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
-        // Y3 = Sportstätte (location), inline string.
-        XCTAssertTrue(sheetXML.contains("<t>Sporthalle Puntigam</t>"))
-
         // H4/L4 = Uhrzeit von/bis, Excel time-of-day fractions (17:30 -> 0.729166…, 20:30 -> 0.854166…).
         let expectedStart = TrainingsfrequenzlisteExporter.excelTimeFraction(training.startDate)
         let expectedEnd = TrainingsfrequenzlisteExporter.excelTimeFraction(training.endDate)
@@ -269,6 +265,38 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertTrue(sheetXML.contains("<v>\(expectedStart)</v>"))
         XCTAssertTrue(sheetXML.contains("<c r=\"L4\""))
         XCTAssertTrue(sheetXML.contains("<v>\(expectedEnd)</v>"))
+    }
+
+    /// Sportstätte (Y3) is deliberately NOT overwritten from `Training.location`
+    /// — per explicit user request the export should show whatever venue the
+    /// bundled reference template itself already has filled in ("ASKÖ-Halle B"
+    /// in the checked-in Trainingsfrequenzliste_Vorlage.xlsx), regardless of
+    /// what any individual Training record's `location` says. Asserts the
+    /// template's own value survives, and that the summary struct doesn't even
+    /// carry a `location` field to (re-)patch from.
+    func testExportLeavesLocationFromTemplateUntouched() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let training = Training(title: "Training", sport: "Torball", location: "Sporthalle Puntigam",
+                                 startDate: Calendar.current.date(from: DateComponents(year: 2026, month: 7, day: 5))!,
+                                 teams: [team])
+        context.insert(training)
+
+        let summary = TrainingsfrequenzlisteCalculator.summary(sport: "Torball", halfYear: .second, year: 2026, in: context)
+        let url = try TrainingsfrequenzlisteExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        // Y3 was never rewritten to an inline string, so it still references
+        // the template's own shared string (not the Training's "Sporthalle
+        // Puntigam") — confirms the cell was left alone, not blanked either.
+        XCTAssertFalse(sheetXML.contains("<t>Sporthalle Puntigam</t>"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"Y3\" s=\"39\" t=\"s\"><v>5</v></c>"))
     }
 
     /// Every other test in this file uses a Member-backed membership; this

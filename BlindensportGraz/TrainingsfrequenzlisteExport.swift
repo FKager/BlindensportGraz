@@ -20,7 +20,10 @@ import ZIPFoundation
 /// - Row 1: title (static, untouched).
 /// - Row 3: "Verein/LV:" label / value at A3 (merged A3:C3) / D3 (merged
 ///   D3:J3); "Sportart:" / value at M3 (merged M3:O3) / P3 (merged P3:T3);
-///   "Sportstätte:" / value at U3 (merged U3:X3) / Y3 (merged Y3:AB3).
+///   "Sportstätte:" / value at U3 (merged U3:X3) / Y3 (merged Y3:AB3) — Y3 is
+///   deliberately left untouched, per explicit user request the venue shown
+///   is always whatever the bundled reference template already has filled
+///   in, not derived per-export from a Training's `location`.
 /// - Row 4: "Trainingszeiten:"/"Uhrzeit von:" labels at C4/E4, value at H4
 ///   (merged H4:J4); "bis:" label at K4, value at L4 (merged L4:O4);
 ///   "Jahr:" label at U4 (merged U4:X4), value at Y4 (merged Y4:AB4).
@@ -99,7 +102,9 @@ enum TrainingsfrequenzlisteExporter {
 
         result = XLSXCellPatch.setInlineText(in: result, ref: "D3", value: vereinName)
         result = XLSXCellPatch.setInlineText(in: result, ref: "P3", value: summary.sport)
-        result = XLSXCellPatch.setInlineText(in: result, ref: "Y3", value: summary.location)
+        // Y3 ("Sportstätte:" value) is intentionally never patched — see this
+        // type's doc comment — so it keeps whatever venue the bundled
+        // reference template already has filled in.
 
         if let startTime = summary.startTime {
             result = XLSXCellPatch.setCellNumber(in: result, ref: "H4", value: excelTimeFraction(startTime))

@@ -1211,3 +1211,12 @@
 | 11:27 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportPatchesLocationAndTimesFromRepresentativeTraining() | ~797 |
 | 11:28 | Created ../../../../tmp/append_bug.py | — | ~878 |
 | 11:30 | Investigated user-reported bug (Trainingsfrequenzliste missing Location/start/end time): ran `xcodebuild test` unsigned against TrainingsfrequenzlisteCalculationTests, 10/10 pass incl. new header-patch test | TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift | not-a-bug — feature already implemented (commit fc6bb51), added missing test coverage, logged bug-207 | ~4500 |
+| 09:32 | Committed (346a3e0) + pushed test-coverage fix, deployed to "iPhone von Franz" via ios-device-deploy.yml | BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift + .wolf/* + build_commands.md | success, run 31166221330, all steps green in ~1min | ~900 |
+| 09:50 | User clarified: location should come from the template (not Training data), unlike start/end time. Removed `location` from TrainingsfrequenzlisteSummary/Calculator, stopped patching Y3 in Exporter, updated tests | TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculationTests.swift | 11/11 tests pass, logged bug-208 | ~5200 |
+| 11:32 | Session end: 2 writes across 2 files (TrainingsfrequenzlisteCalculationTests.swift, append_bug.py) | 5 reads | ~14642 tok |
+| 11:44 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 9→14 lines | ~209 |
+| 11:45 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 6→5 lines | ~117 |
+| 11:45 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | 3→6 lines | ~119 |
+| 11:45 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | 3→5 lines | ~102 |
+| 11:45 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportPatchesTimesFromRepresentativeTraining() | ~1231 |
+| 11:46 | Created ../../../../tmp/append_bug2.py | — | ~774 |
