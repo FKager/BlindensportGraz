@@ -224,6 +224,53 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertFalse(sheetXML.contains("Gesamt"))
     }
 
+    /// Covers the "Sportstätte:"/"Trainingszeiten:" header fields (Y3/H4/L4),
+    /// added alongside the real-template patch in TrainingsfrequenzlisteExporter
+    /// — sourced from whichever period training is chronologically earliest
+    /// (`representativeTraining`, TrainingsfrequenzlisteCalculator.swift), not
+    /// hand-entered. Regression coverage for the user-reported bug that these
+    /// fields were missing from the export: asserts the location and both
+    /// times actually reach the patched sheet XML, not just that `summary`
+    /// carries them (the earlier tests only checked the Verein/Sportart/name/
+    /// date cells, never these three).
+    func testExportPatchesLocationAndTimesFromRepresentativeTraining() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+
+        var startComponents = DateComponents()
+        startComponents.year = 2026; startComponents.month = 7; startComponents.day = 5
+        startComponents.hour = 17; startComponents.minute = 30
+        let startDate = Calendar.current.date(from: startComponents)!
+        let training = Training(title: "Training", sport: "Torball", location: "Sporthalle Puntigam",
+                                 startDate: startDate, durationMinutes: 180, teams: [team])
+        context.insert(training)
+
+        let summary = TrainingsfrequenzlisteCalculator.summary(sport: "Torball", halfYear: .second, year: 2026, in: context)
+        XCTAssertEqual(summary.location, "Sporthalle Puntigam")
+        XCTAssertEqual(summary.startTime, training.startDate)
+        XCTAssertEqual(summary.endTime, training.endDate)
+
+        let url = try TrainingsfrequenzlisteExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        // Y3 = Sportstätte (location), inline string.
+        XCTAssertTrue(sheetXML.contains("<t>Sporthalle Puntigam</t>"))
+
+        // H4/L4 = Uhrzeit von/bis, Excel time-of-day fractions (17:30 -> 0.729166…, 20:30 -> 0.854166…).
+        let expectedStart = TrainingsfrequenzlisteExporter.excelTimeFraction(training.startDate)
+        let expectedEnd = TrainingsfrequenzlisteExporter.excelTimeFraction(training.endDate)
+        XCTAssertTrue(sheetXML.contains("<c r=\"H4\""))
+        XCTAssertTrue(sheetXML.contains("<v>\(expectedStart)</v>"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"L4\""))
+        XCTAssertTrue(sheetXML.contains("<v>\(expectedEnd)</v>"))
+    }
+
     /// Every other test in this file uses a Member-backed membership; this
     /// covers a User-backed one (a registered app account) too, since the two
     /// take different paths through `TrainingsfrequenzlistePerson.firstName`/

@@ -1,7 +1,11 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-06T21:21:36.068Z
-> Files: 86 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T09:28:13.939Z
+> Files: 88 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../../tmp/
+
+- `append_bug.py` (~878 tok)
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -23,6 +27,7 @@
 - `.DS_Store` (~2186 tok)
 - `.gitignore` — Git ignore rules (~41 tok)
 - `.mcp.json` (~7 tok)
+- `build_commands.md` — Build & deploy commands used (iPhone von Franz) (~776 tok)
 - `ci_cert.md` — Fixing the CI provisioning profile (Push Notifications capability) (~1016 tok)
 - `CLAUDE.md` — OpenWolf (~129 tok)
 - `CLAUDE.mdes` — Requirements (~91 tok)
@@ -112,7 +117,7 @@
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~6452 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
-- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~4560 tok)
+- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~5316 tok)
 
 ## RootCLI/
 

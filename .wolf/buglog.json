@@ -3430,6 +3430,25 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-06T21:19:36.293Z"
+    },
+    {
+      "id": "bug-207",
+      "timestamp": "2026-08-07T09:30:00.000Z",
+      "error_message": "User-reported: the Trainingsfrequenzliste export does not have the information from the Training like Location of Training and start/end time; the date/location should come from the training data.",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift, BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+      "root_cause": "Investigated fresh (new session, no memory of prior work): TrainingsfrequenzlisteCalculator.summary() and TrainingsfrequenzlisteExporter already DID derive/patch Sportstätte (Y3) and Uhrzeit von/bis (H4/L4) from the chronologically-earliest training in the period (representativeTraining), landed in commit fc6bb51 (2026-08-06 23:33) the night before this report. Verified end-to-end by hand-decoding the bundled Trainingsfrequenzliste_Vorlage.xlsx real cell refs (row3: A3=Verein/LV label,D3=value,M3=Sportart label,P3=value,U3=Sportstätte label,Y3=value; row4: C4/E4=Trainingszeiten/Uhrzeit-von labels,H4=start value,K4=bis label,L4=end value,U4=Jahr label,Y4=value) and confirming they match the exporter code, then adding a real regression test (testExportPatchesLocationAndTimesFromRepresentativeTraining) that asserts Y3/H4/L4 actually contain the training location/time in the patched sheet1.xml — it passed on first run with zero code changes needed. No test previously asserted on these three cells (only Verein/Sportart/name/date cells were checked), so the fix existed but was uncovered by tests. Conclusion: not a code bug — the feature is implemented correctly; the user was almost certainly testing a build on-device from before the fc6bb51 commit was deployed.",
+      "fix": "No production code change. Added BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift::testExportPatchesLocationAndTimesFromRepresentativeTraining as permanent regression coverage for Y3 (Sportstätte)/H4+L4 (Uhrzeit von/bis) header patching. Confirmed via xcodebuild test (CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator) — 10/10 tests pass. Recommended next step: redeploy the current build to the user's device via the ios-device-deploy.yml workflow so they can verify with real data, since the fix already existed in git history before this report.",
+      "tags": [
+        "trainingsfrequenzliste",
+        "export",
+        "xlsx",
+        "not-a-bug",
+        "stale-build",
+        "test-coverage-gap"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T09:30:00.000Z"
     }
   ]
 }

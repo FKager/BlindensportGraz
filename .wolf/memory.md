@@ -1199,3 +1199,15 @@
 | 23:19 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testExportDarstellungIncludesGeburtsdatumFromMember() | ~1319 |
 | 23:21 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 4→2 lines | ~36 |
 | 23:29 | Session end: 10 writes across 6 files (XLSXCellPatch.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, PraeExport.swift) | 9 reads | ~32430 tok |
+| 23:33 | Session end: 10 writes across 6 files (XLSXCellPatch.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, PraeExport.swift) | 9 reads | ~32430 tok |
+| 23:36 | Session end: 10 writes across 6 files (XLSXCellPatch.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, PraeExport.swift) | 9 reads | ~32430 tok |
+| 23:40 | Created build_commands.md | — | ~827 |
+| 23:40 | Session end: 11 writes across 7 files (XLSXCellPatch.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, PraeExport.swift) | 10 reads | ~37029 tok |
+
+## Session: 2026-08-07 11:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:27 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportPatchesLocationAndTimesFromRepresentativeTraining() | ~797 |
+| 11:28 | Created ../../../../tmp/append_bug.py | — | ~878 |
+| 11:30 | Investigated user-reported bug (Trainingsfrequenzliste missing Location/start/end time): ran `xcodebuild test` unsigned against TrainingsfrequenzlisteCalculationTests, 10/10 pass incl. new header-patch test | TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift | not-a-bug — feature already implemented (commit fc6bb51), added missing test coverage, logged bug-207 | ~4500 |
