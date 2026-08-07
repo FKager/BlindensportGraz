@@ -1256,3 +1256,5 @@
 | 12:29 | Created BlindensportGrazTests/SammelabrechnungExportTests.swift | — | ~1879 |
 | 12:32 | Created ../../../../tmp/append_bug6.py | — | ~1010 |
 | 12:34 | Added Sammelabrechnung feature (new zip export bundling KostZ + all eligible PRAE/Darstellung), wired into both Berichte menus | SammelabrechnungExport.swift, SammelabrechnungViews.swift, TrainingsViews.swift, TournamentsViews.swift, SammelabrechnungExportTests.swift | 56/56 tests pass, full build succeeds, logged bug-212 | ~9500 |
+| 12:37 | Created ../../../../tmp/append_bug7.py | — | ~574 |
+| 12:38 | Committed (9ba8114) + pushed Sammelabrechnung; first deploy failed at launch (device locked), retried after user unlocked -> success (run 31170732562, 24s) | .wolf/buglog.json | logged bug-213 (locked-device launch failure, distinct from bug-204 tunnel flakiness) | ~600 |

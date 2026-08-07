@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T10:32:57.175Z
-> Files: 96 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T10:37:10.724Z
+> Files: 97 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -11,6 +11,7 @@
 - `append_bug4.py` (~1281 tok)
 - `append_bug5.py` (~897 tok)
 - `append_bug6.py` (~1010 tok)
+- `append_bug7.py` (~574 tok)
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 

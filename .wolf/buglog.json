@@ -3615,6 +3615,25 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-07T10:35:00.000Z"
+    },
+    {
+      "id": "bug-213",
+      "timestamp": "2026-08-07T10:34:40.000Z",
+      "error_message": "ios-device-deploy.yml run failed at 'Install and launch on device': ERROR: The application failed to launch. (com.apple.dt.CoreDeviceError error 10002), NSLocalizedFailureReason = 'Unable to launch it.a11y.BlindensportGraz because the device was not, or could not be, unlocked.'",
+      "file": ".github/workflows/ios-device-deploy.yml",
+      "root_cause": "Distinct from the known bug-204 wireless-CoreDevice-tunnel flakiness (which fails earlier, at 'Install' or even 'Build', with a destination-not-found or disconnected-tunnel error). Here the install itself fully succeeded (devicectl reported 'App installed' with a real bundle/database UUID) -- only the immediately-following `devicectl device process launch` step failed, and specifically because iOS refuses to foreground-launch an app on a screen-locked device (SBMainWorkspace 'Locked' / FBSOpenApplicationErrorDomain error 7). Not a code, signing, or workflow bug -- purely an environmental state (the physical iPhone's screen was locked at the moment CI tried to launch it).",
+      "fix": "No workflow change needed. Asked the user to unlock the iPhone's screen, then simply re-ran `gh workflow run \"iOS Device Deploy\"` -- the retry's install+launch both succeeded in 24s with the phone unlocked.",
+      "tags": [
+        "ios-device-deploy",
+        "devicectl",
+        "locked-device",
+        "launch-failure"
+      ],
+      "related_bugs": [
+        "bug-204"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T10:34:40.000Z"
     }
   ]
 }
