@@ -3593,6 +3593,28 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-07T10:20:00.000Z"
+    },
+    {
+      "id": "bug-212",
+      "timestamp": "2026-08-07T10:35:00.000Z",
+      "error_message": "New feature request: 'Add a Sammelabrechnung inside Berichte. This should include all PRAE, PRAE Darstellung of the helper/trainer and KostZ for a tournament or training period. The excel files should be zipped together.'",
+      "file": "BlindensportGraz/SammelabrechnungExport.swift, BlindensportGraz/SammelabrechnungViews.swift, BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift, BlindensportGrazTests/SammelabrechnungExportTests.swift",
+      "root_cause": "New feature, not a bug. Previously PRAE-Formular/PRAE-Darstellung (per person) and KostZ (per period) had to be exported one at a time from three separate 'Berichte' menu entries, no bundled/combined download existed.",
+      "fix": "New SammelabrechnungExporter (pure orchestration, no new template-patching logic — reuses KostZExporter.export/PraeExporter.exportMainForm/PraeExporter.exportDarstellung as-is) with two overloads (KostZMonthSummary+[PraeMonthSummary] / KostZTournamentSummary+[PraeTournamentSummary]) that generate one KostZ file plus, for every person KostZCalculator's summary already resolved to a non-zero honorarium (personAmounts, amount > 0 -- no separate eligibility computation needed), their PRAE-Formular and (since personAmounts>0 implies non-empty entries) PRAE-Darstellung, then zip all of it into one fresh .zip (ZIPFoundation, .none/stored compression matching every other exporter in this codebase) named 'KostZ.xlsx' / 'PRAE_Nachname_Vorname.xlsx' / 'PRAE-Darstellung_Nachname_Vorname.xlsx'. New SammelabrechnungView (month-scoped, TrainingsListView's 'Berichte' menu) and SammelabrechnungTournamentView(tournament:) (TournamentDetailView's 'Berichte' menu) mirror KostZCalculationView/KostZTournamentCalculationView's month-vs-tournament split and eager-.task-then-ShareLink pattern (never a Button-triggered second sheet, per the standing VoiceOver-nested-sheet convention). Both Berichte menus gained a 4th/3rd 'Sammelabrechnung' entry (icon doc.zipper). Added SammelabrechnungExportTests.swift (3 tests): a two-coach month scenario asserting all 5 zip entries exist and each is itself a valid, re-openable .xlsx (not just non-empty bytes); a zero-eligible-people case producing just the KostZ file; and the tournament-scoped overload. project.yml uses explicit pbxproj file references (not synchronized groups), so `xcodegen generate` had to be re-run after adding the two new source files + the new test file before they'd compile at all. 56/56 tests pass (xcodebuild test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator, excluding the known bug-202 CloudKit-entitlement-crash suite), full app build succeeds.",
+      "tags": [
+        "sammelabrechnung",
+        "prae",
+        "kostz",
+        "export",
+        "zip",
+        "berichte"
+      ],
+      "related_bugs": [
+        "bug-210",
+        "bug-211"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T10:35:00.000Z"
     }
   ]
 }

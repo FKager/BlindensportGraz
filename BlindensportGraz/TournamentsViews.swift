@@ -207,6 +207,7 @@ struct TournamentDetailView: View {
    @State private var showMemberList = false
    @State private var showKostZCalculation = false
    @State private var showPraeCalculation = false
+   @State private var showSammelabrechnung = false
 
    var isAdmin: Bool {
        currentUser?.role == "admin"
@@ -355,6 +356,9 @@ var body: some View {
                     Button { showKostZCalculation = true } label: {
                         Label("KostZ-Berechnung", systemImage: "doc.text.fill")
                     }
+                    Button { showSammelabrechnung = true } label: {
+                        Label("Sammelabrechnung", systemImage: "doc.zipper")
+                    }
                 } label: {
                     Image(systemName: "chart.bar.doc.horizontal")
                 }
@@ -380,6 +384,9 @@ var body: some View {
     }
     .sheet(isPresented: $showPraeCalculation) {
         PraeTournamentCalculationView(tournament: tournament)
+    }
+    .sheet(isPresented: $showSammelabrechnung) {
+        SammelabrechnungTournamentView(tournament: tournament)
     }
     .onDisappear {
         try? modelContext.save()

@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 7094366,
-    "total_reads": 2482,
-    "total_writes": 4798,
+    "total_tokens_estimated": 7145404,
+    "total_reads": 2492,
+    "total_writes": 4824,
     "total_sessions": 35,
-    "anatomy_hits": 2260,
+    "anatomy_hits": 2270,
     "anatomy_misses": 212,
-    "repeated_reads_blocked": 1494,
-    "estimated_savings_vs_bare_cli": 5750813
+    "repeated_reads_blocked": 1504,
+    "estimated_savings_vs_bare_cli": 5799974
   },
   "sessions": [
     {
@@ -43315,6 +43315,213 @@
         "reads_count": 10,
         "writes_count": 20,
         "repeated_reads_blocked": 5,
+        "anatomy_lookups": 10
+      }
+    },
+    {
+      "id": "session-2026-08-07-1103",
+      "started": "2026-08-07T09:03:07.034Z",
+      "ended": "2026-08-07T10:21:10.816Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 2493,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 2552,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 5316,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/XLSXCellPatch.swift",
+          "tokens_estimated": 1644,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 1661,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeViews.swift",
+          "tokens_estimated": 3800,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 5350,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 4263,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeCalculation.swift",
+          "tokens_estimated": 2300,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PraeCalculationTests.swift",
+          "tokens_estimated": 7632,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 854,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/append_bug.py",
+          "tokens_estimated": 878,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 224,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
+          "tokens_estimated": 125,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 127,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 109,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+          "tokens_estimated": 1319,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/append_bug2.py",
+          "tokens_estimated": 774,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 260,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteViews.swift",
+          "tokens_estimated": 410,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/append_bug3.py",
+          "tokens_estimated": 491,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 373,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 1588,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeViews.swift",
+          "tokens_estimated": 253,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeViews.swift",
+          "tokens_estimated": 215,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PraeCalculationTests.swift",
+          "tokens_estimated": 305,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PraeCalculationTests.swift",
+          "tokens_estimated": 96,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PraeCalculationTests.swift",
+          "tokens_estimated": 804,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 82,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/append_bug4.py",
+          "tokens_estimated": 1281,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 341,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 171,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 939,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PraeCalculationTests.swift",
+          "tokens_estimated": 680,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PraeCalculationTests.swift",
+          "tokens_estimated": 431,
+          "action": "edit"
+        },
+        {
+          "file": "/tmp/append_bug5.py",
+          "tokens_estimated": 897,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 37011,
+        "output_tokens_estimated": 14027,
+        "reads_count": 10,
+        "writes_count": 26,
+        "repeated_reads_blocked": 10,
         "anatomy_lookups": 10
       }
     }

@@ -385,6 +385,7 @@ struct TrainingsListView: View {
         @State private var showTrainingsfrequenzliste = false
         @State private var showPraeCalculation = false
         @State private var showKostZCalculation = false
+        @State private var showSammelabrechnung = false
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
@@ -436,6 +437,9 @@ struct TrainingsListView: View {
                         Button { showKostZCalculation = true } label: {
                             Label("KostZ-Berechnung", systemImage: "doc.text.fill")
                         }
+                        Button { showSammelabrechnung = true } label: {
+                            Label("Sammelabrechnung", systemImage: "doc.zipper")
+                        }
                     } label: {
                         Image(systemName: "chart.bar.doc.horizontal")
                     }
@@ -461,6 +465,9 @@ struct TrainingsListView: View {
         }
         .sheet(isPresented: $showKostZCalculation) {
             KostZCalculationView()
+        }
+        .sheet(isPresented: $showSammelabrechnung) {
+            SammelabrechnungView()
         }
     }
 

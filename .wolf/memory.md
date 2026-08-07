@@ -1244,3 +1244,15 @@
 | 12:16 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testGermanNumberWordsSpellsOutBasicRanges() | ~402 |
 | 12:17 | Created ../../../../tmp/append_bug5.py | — | ~897 |
 | 12:19 | Added L16 (SUM cached-value refresh) + B18 (GermanNumberWords spelled-out total) to PRAE main form export | PraeExport.swift, PraeCalculationTests.swift | 20/20 tests pass, full build succeeds, logged bug-211 | ~3200 |
+| 12:21 | Session end: 26 writes across 13 files (TrainingsfrequenzlisteCalculationTests.swift, append_bug.py, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, append_bug2.py) | 10 reads | ~51038 tok |
+| 12:28 | Created BlindensportGraz/SammelabrechnungExport.swift | — | ~1434 |
+| 12:28 | Created BlindensportGraz/SammelabrechnungViews.swift | — | ~2093 |
+| 12:28 | Edited BlindensportGraz/TrainingsViews.swift | 4→5 lines | ~73 |
+| 12:28 | Edited BlindensportGraz/TrainingsViews.swift | 10→13 lines | ~160 |
+| 12:28 | Edited BlindensportGraz/TrainingsViews.swift | modified deleteTrainings() | ~70 |
+| 12:28 | Edited BlindensportGraz/TournamentsViews.swift | 2→3 lines | ~41 |
+| 12:29 | Edited BlindensportGraz/TournamentsViews.swift | 7→10 lines | ~132 |
+| 12:29 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~68 |
+| 12:29 | Created BlindensportGrazTests/SammelabrechnungExportTests.swift | — | ~1879 |
+| 12:32 | Created ../../../../tmp/append_bug6.py | — | ~1010 |
+| 12:34 | Added Sammelabrechnung feature (new zip export bundling KostZ + all eligible PRAE/Darstellung), wired into both Berichte menus | SammelabrechnungExport.swift, SammelabrechnungViews.swift, TrainingsViews.swift, TournamentsViews.swift, SammelabrechnungExportTests.swift | 56/56 tests pass, full build succeeds, logged bug-212 | ~9500 |
