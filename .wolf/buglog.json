@@ -3634,6 +3634,22 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-07T10:34:40.000Z"
+    },
+    {
+      "id": "bug-219",
+      "timestamp": "2026-08-07T10:46:00.143Z",
+      "error_message": "Significant refactor of ",
+      "file": ".claude/commands/deploy.md",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 15→25 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-07T10:46:00.143Z"
     }
   ]
 }

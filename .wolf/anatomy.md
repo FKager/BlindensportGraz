@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T10:37:10.724Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T10:46:00.136Z
 > Files: 97 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -49,7 +49,7 @@
 
 ## .claude/commands/
 
-- `deploy.md` (~465 tok)
+- `deploy.md` (~664 tok)
 
 ## .claude/rules/
 

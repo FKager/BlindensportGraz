@@ -1258,3 +1258,7 @@
 | 12:34 | Added Sammelabrechnung feature (new zip export bundling KostZ + all eligible PRAE/Darstellung), wired into both Berichte menus | SammelabrechnungExport.swift, SammelabrechnungViews.swift, TrainingsViews.swift, TournamentsViews.swift, SammelabrechnungExportTests.swift | 56/56 tests pass, full build succeeds, logged bug-212 | ~9500 |
 | 12:37 | Created ../../../../tmp/append_bug7.py | — | ~574 |
 | 12:38 | Committed (9ba8114) + pushed Sammelabrechnung; first deploy failed at launch (device locked), retried after user unlocked -> success (run 31170732562, 24s) | .wolf/buglog.json | logged bug-213 (locked-device launch failure, distinct from bug-204 tunnel flakiness) | ~600 |
+| 12:38 | Session end: 37 writes across 19 files (TrainingsfrequenzlisteCalculationTests.swift, append_bug.py, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, append_bug2.py) | 14 reads | ~70056 tok |
+| 12:42 | Session end: 37 writes across 19 files (TrainingsfrequenzlisteCalculationTests.swift, append_bug.py, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, append_bug2.py) | 14 reads | ~70056 tok |
+| 12:46 | Edited .claude/commands/deploy.md | expanded (+10 lines) | ~438 |
+| 12:47 | User confirmed: stop manually triggering gh workflow run after push (it already auto-triggers, was causing duplicate failed runs + duplicate emails) — updated deploy.md + cerebrum.md preference | .claude/commands/deploy.md, .wolf/cerebrum.md | done | ~500 |
