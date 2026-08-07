@@ -1225,3 +1225,14 @@
 | 11:50 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | tab() → period() | ~382 |
 | 11:51 | Created ../../../../tmp/append_bug3.py | — | ~491 |
 | 11:52 | Merged Trainingsfrequenzliste into TrainingsListView's "Berichte" Menu (was standalone toolbar button); answered "where is PRAE Darstellung" (PraeCalculationView's Export section, 2nd ShareLink) | TrainingsViews.swift, TrainingsfrequenzlisteViews.swift | BUILD SUCCEEDED (xcodebuild, unsigned), logged bug-209 | ~1800 |
+| 11:54 | Session end: 11 writes across 8 files (TrainingsfrequenzlisteCalculationTests.swift, append_bug.py, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, append_bug2.py) | 7 reads | ~28387 tok |
+| 11:59 | Edited BlindensportGraz/PraeExport.swift | 16→18 lines | ~348 |
+| 11:59 | Edited BlindensportGraz/PraeExport.swift | modified dayGridAmountRef() | ~1483 |
+| 11:59 | Edited BlindensportGraz/PraeViews.swift | modified monthName() | ~236 |
+| 11:59 | Edited BlindensportGraz/PraeViews.swift | modified task() | ~201 |
+| 12:00 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 16→17 lines | ~285 |
+| 12:00 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 4→5 lines | ~90 |
+| 12:00 | Edited BlindensportGrazTests/PraeCalculationTests.swift | added error handling | ~751 |
+| 12:00 | Edited BlindensportGraz/PraeExport.swift | 3→3 lines | ~77 |
+| 12:01 | Created ../../../../tmp/append_bug4.py | — | ~1281 |
+| 12:03 | Implemented PRAE day-grid + month/year auto-fill (was manual-only): PraeExporter.dayGridAmountRef, split exportMainForm into summary-based overloads, fixed call sites/task ids | PraeExport.swift, PraeViews.swift, PraeCalculationTests.swift | 17/17 PraeCalculationTests pass, full build succeeds, logged bug-210 | ~6800 |

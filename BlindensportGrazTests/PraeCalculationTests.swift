@@ -332,8 +332,9 @@ final class PraeCalculationTests: XCTestCase {
                             birthDate: birthDate, svnr: "1234210390", iban: "AT611904300234573201")
         let membership = TeamMembership(member: coach, team: team, role: "coach")
         let person = PraeEligiblePerson(id: coach.id, displayName: "Trainer Anna", membershipIDs: [membership.id], member: coach)
+        let summary = PraeMonthSummary(person: person, month: 7, year: 2026, entries: [])
 
-        let url = try PraeExporter.exportMainForm(person: person)
+        let url = try PraeExporter.exportMainForm(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
 
         let archive = try Archive(url: url, accessMode: .read)
@@ -358,13 +359,54 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertGreaterThan(extractedCount, 5)
     }
 
+    /// Regression coverage for the user-reported bug that PRAE amounts never
+    /// reached the main form's day grid and "im Monat:"/"Jahr:" were never
+    /// filled in. Covers three grid positions spanning all four grid rows
+    /// (day 1 -> row 12's first slot, day 15 -> row 13's mid slot, day 31 ->
+    /// row 15's lone slot) to catch an off-by-row or off-by-column mistake
+    /// that a single day wouldn't. Cell refs (C12/O13/C15) match
+    /// PraeExporter.dayGridAmountRef's doc comment, derived from the real
+    /// template's own `<mergeCells>`.
+    func testExportMainFormPatchesMonthYearAndDayGridAmounts() throws {
+        let team = Team(name: "Torball 1", sport: "Torball")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        let summary = PraeMonthSummary(person: person, month: 7, year: 2026, entries: [
+            PraeDayEntry(day: 1, amount: 30, purpose: "Training"),
+            PraeDayEntry(day: 15, amount: 45, purpose: "Training"),
+            PraeDayEntry(day: 31, amount: 60, purpose: "Training"),
+        ])
+
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        // B11 ("im Monat:" value) / K11 ("Jahr:" value).
+        XCTAssertTrue(sheetXML.contains("<t>Juli</t>"))
+        XCTAssertTrue(sheetXML.contains("<t>2026</t>"))
+
+        // Day 1 -> C12, day 15 -> O13, day 31 -> C15 (each the top-left cell
+        // of its merged amount box).
+        XCTAssertTrue(sheetXML.contains("<c r=\"C12\""))
+        XCTAssertTrue(sheetXML.contains("<v>30.0</v>"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"O13\""))
+        XCTAssertTrue(sheetXML.contains("<v>45.0</v>"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"C15\""))
+        XCTAssertTrue(sheetXML.contains("<v>60.0</v>"))
+    }
+
     func testExportMainFormLeavesPersonalDataBlankWithoutMember() throws {
         // A person backed only by a User account (no roster entry) has
         // person.member == nil — must not crash, and the personal-data
         // cells must simply stay blank rather than e.g. printing "nil".
         let person = PraeEligiblePerson(id: UUID(), displayName: "Nur-App-Konto", membershipIDs: [], member: nil)
+        let summary = PraeMonthSummary(person: person, month: 7, year: 2026, entries: [])
 
-        let url = try PraeExporter.exportMainForm(person: person)
+        let url = try PraeExporter.exportMainForm(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
 
         let archive = try Archive(url: url, accessMode: .read)

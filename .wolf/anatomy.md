@@ -1,13 +1,14 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T09:51:15.610Z
-> Files: 90 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-07T10:01:36.852Z
+> Files: 91 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
 - `append_bug.py` (~878 tok)
 - `append_bug2.py` (~774 tok)
 - `append_bug3.py` (~491 tok)
+- `append_bug4.py` (~1281 tok)
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
@@ -94,8 +95,8 @@
 - `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4724 tok)
 - `Models.swift` — Class: User; SportEvent gained street/zip/city + fullAddress extension (~6900 tok)
 - `PraeCalculation.swift` — PraeCalculator: monthly (Training-only) summary + summary(for:tournament:) (~2300 tok)
-- `PraeExport.swift` — Declares PraeExportError (~2884 tok)
-- `PraeViews.swift` — PraeCalculationView (monthly, Trainings) + PraeTournamentCalculationView (per-tournament) (~3800 tok)
+- `PraeExport.swift` — Declares PraeExportError (~4016 tok)
+- `PraeViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4262 tok)
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RootView.swift` — SwiftUI view: RootView (~3907 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3021 tok)
@@ -117,7 +118,7 @@
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~2170 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
-- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~6452 tok)
+- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~7121 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~5791 tok)
 

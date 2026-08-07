@@ -141,11 +141,11 @@ struct PraeCalculationView: View {
             } message: {
                 Text(exportError ?? "")
             }
-            .task(id: selectedPersonID) {
+            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)") {
                 mainFormURL = nil
-                guard let person = selectedPerson else { return }
+                guard let summary else { return }
                 do {
-                    mainFormURL = try PraeExporter.exportMainForm(person: person)
+                    mainFormURL = try PraeExporter.exportMainForm(summary: summary)
                 } catch {
                     exportError = error.localizedDescription
                 }
@@ -298,9 +298,9 @@ struct PraeTournamentCalculationView: View {
             }
             .task(id: selectedPersonID) {
                 mainFormURL = nil
-                guard let person = selectedPerson else { return }
+                guard let summary else { return }
                 do {
-                    mainFormURL = try PraeExporter.exportMainForm(person: person)
+                    mainFormURL = try PraeExporter.exportMainForm(summary: summary)
                 } catch {
                     exportError = error.localizedDescription
                 }
