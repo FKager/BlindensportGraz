@@ -1268,3 +1268,41 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+
+## Session: 2026-08-13 14:40
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-13 20:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 06:52 | /deploy: committed pending OpenWolf files, pushed, workflow ran | .wolf/memory.md, .wolf/token-ledger.json | Failed: provisioning profile expired 11.08.2026 | ~2k |
+| 20:19 | Verified signing cert still valid (2027); guided user to renew profile via ASC portal | download_certificate.sh (read only) | User downloaded fresh .mobileprovision | ~3k |
+| 20:46 | Inspected new profile (team/bundle/device match), pushed to gh secret, re-ran workflow | IOS_CI_PROVISIONING_PROFILE_BASE64 (secret) | Deploy succeeded in 1m24s | ~2k |
+| 20:47 | Logged bug-220 and cerebrum entry for profile-vs-cert expiry distinction | .wolf/buglog.json, .wolf/cerebrum.md | Documented for future renewal | ~2k |
+| 20:56 | Created ../../.claude/plans/foamy-churning-widget.md | — | ~1846 |
+| 20:56 | Session end: 1 writes across 1 files (foamy-churning-widget.md) | 4 reads | ~26644 tok |
+| 20:59 | Edited BlindensportGraz/Models.swift | added nullish coalescing | ~1467 |
+| 20:59 | Edited BlindensportGraz/BlindensportGrazApp.swift | 4→5 lines | ~36 |
+| 20:59 | Edited BlindensportGraz/CloudKitSync.swift | added error handling | ~229 |
+| 20:59 | Edited BlindensportGraz/CloudKitSync.swift | 3→4 lines | ~43 |
+| 21:00 | Edited BlindensportGraz/CloudKitSync.swift | added nullish coalescing | ~442 |
+| 21:00 | Edited BlindensportGraz/TrainingsViews.swift | 3→4 lines | ~70 |
+| 21:00 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~217 |
+| 21:00 | Edited BlindensportGraz/TrainingsViews.swift | modified applyFavorite() | ~248 |
+| 21:00 | Edited BlindensportGraz/TrainingsViews.swift | expanded (+15 lines) | ~287 |
+| 21:00 | Created BlindensportGrazTests/TrainingFavoriteTests.swift | — | ~1718 |
+| 21:02 | Feature complete: Training-Favoriten (shared max-5 LRU quick-fill), built+tested clean (43/43 excl. known bug-202) | Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift, TrainingFavoriteTests.swift | Success | ~15k |
+| 21:03 | Session end: 11 writes across 6 files (foamy-churning-widget.md, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 5 reads | ~37531 tok |
+| 21:05 | Edited BlindensportGraz/Models.swift | expanded (+9 lines) | ~280 |
+| 21:06 | Edited BlindensportGraz/Models.swift | modified recordUsage() | ~818 |
+| 21:06 | Edited BlindensportGraz/CloudKitSync.swift | 5→6 lines | ~64 |
+| 21:06 | Edited BlindensportGraz/CloudKitSync.swift | 20→23 lines | ~345 |
+| 21:06 | Edited BlindensportGraz/TrainingsViews.swift | modified Button() | ~132 |
+| 21:06 | Edited BlindensportGraz/TrainingsViews.swift | 4→4 lines | ~79 |
+| 21:06 | Edited BlindensportGraz/TrainingsViews.swift | modified applyFavorite() | ~183 |
+| 21:06 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | added optional chaining | ~444 |
+| 21:07 | Enhancement: capture manually-selected Beteiligte Teams in TrainingFavorite too, restore on apply | Models.swift, CloudKitSync.swift, TrainingsViews.swift, TrainingFavoriteTests.swift | Success, 9/9 favorite tests pass | ~6k |
+| 21:07 | Session end: 19 writes across 6 files (foamy-churning-widget.md, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 6 reads | ~42370 tok |

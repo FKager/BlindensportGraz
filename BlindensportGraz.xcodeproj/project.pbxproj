@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0989835B5B4984BD3ED6D894 /* TrainingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1467C0C4F1DC760FC540D2EC /* TrainingsViews.swift */; };
 		0D7F8830FD58F3214648BE4C /* KostZExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE611C00307E7BD3FA553B29 /* KostZExport.swift */; };
+		0F6C4EB476B60C7C8C655A88 /* TrainingFavoriteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401DEC882A1342C320FDC3D3 /* TrainingFavoriteTests.swift */; };
 		0FCA8C53E2A7831B1235C978 /* MemberImportExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19E9C07FEF9C901B9C5101E8 /* MemberImportExport.swift */; };
 		11A453DFC68205E022361EBB /* TrainingsfrequenzlisteCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37A780E3E7EC0B3F11675D05 /* TrainingsfrequenzlisteCalculation.swift */; };
 		1450125A2E8AB000202E6872 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 683DD62FB77BF46E434620D2 /* CLAUDE.md */; };
@@ -80,6 +81,7 @@
 		37A780E3E7EC0B3F11675D05 /* TrainingsfrequenzlisteCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsfrequenzlisteCalculation.swift; sourceTree = "<group>"; };
 		38F3AB4D1AEF1ADED71FFBFC /* KostZCalculation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KostZCalculation.swift; sourceTree = "<group>"; };
 		3B86E0A6A17784555A60960C /* KostZCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KostZCalculationTests.swift; sourceTree = "<group>"; };
+		401DEC882A1342C320FDC3D3 /* TrainingFavoriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingFavoriteTests.swift; sourceTree = "<group>"; };
 		40551CD48F48617AB9E75979 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		44CFF4EF0C96BC5384667E50 /* XLSXCellPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXCellPatch.swift; sourceTree = "<group>"; };
 		46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InheritanceQueryTests.swift; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				33BBA744C5DE3AA5F9F0DE54 /* PraeCalculationTests.swift */,
 				DDE3F917A1C77D9369C95493 /* SammelabrechnungExportTests.swift */,
 				9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */,
+				401DEC882A1342C320FDC3D3 /* TrainingFavoriteTests.swift */,
 				5A295360023A2F97D708F995 /* TrainingsfrequenzlisteCalculationTests.swift */,
 			);
 			path = BlindensportGrazTests;
@@ -366,6 +369,7 @@
 				F4FC9293EBF3D3927E10F372 /* PraeCalculationTests.swift in Sources */,
 				87AA1F426546F5D62C19EA80 /* SammelabrechnungExportTests.swift in Sources */,
 				C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */,
+				0F6C4EB476B60C7C8C655A88 /* TrainingFavoriteTests.swift in Sources */,
 				1CAD989F362D3B774D912034 /* TrainingsfrequenzlisteCalculationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

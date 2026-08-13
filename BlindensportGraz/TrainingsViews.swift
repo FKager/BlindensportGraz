@@ -8,6 +8,7 @@ struct AddTrainingView: View {
      @Environment(\.modelContext) private var modelContext
         @Environment(\.dismiss) private var dismiss
       @Query private var allTeams: [Team]
+      @Query(sort: \TrainingFavorite.lastUsedAt, order: .reverse) private var favorites: [TrainingFavorite]
 
        @State private var title = ""
        @State private var sport = "Torball"
@@ -34,9 +35,42 @@ struct AddTrainingView: View {
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
 
+    // Pre-fills name/sport/time from a tapped favorite and suggests a start
+    // date one week out (at the favorite's stored time-of-day) — see
+    // TrainingFavorite.suggestedStartDate. Also switches includesTime on
+    // since a favorite always carries an explicit time.
+    private func applyFavorite(_ favorite: TrainingFavorite) {
+        title = favorite.title
+        sport = favorite.sport
+        includesTime = true
+        startDate = TrainingFavorite.suggestedStartDate(startHour: favorite.startHour, startMinute: favorite.startMinute)
+        durationMinutes = favorite.durationMinutes
+        // Only pre-checks teams still visible/manageable by this user (the
+        // "Beteiligte Teams" list is itself filtered to myTeams) — a team
+        // from the favorite that this user can no longer manage is simply
+        // not offered, same as if they'd never checked it manually.
+        selectedTeamIDs = Set(favorite.teams.map { $0.id })
+    }
+
     var body: some View {
         NavigationStack {
             Form {
+                if !favorites.isEmpty {
+                    Section("Favoriten") {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                ForEach(favorites) { favorite in
+                                    Button {
+                                        applyFavorite(favorite)
+                                    } label: {
+                                        Text("\(favorite.title) (\(favorite.sport))")
+                                    }
+                                    .buttonStyle(.bordered)
+                                }
+                            }
+                        }
+                    }
+                }
                 Section("Training") {
                     TextField("Titel", text: $title)
                     Picker("Sportart", selection: $sport) {
@@ -103,6 +137,10 @@ struct AddTrainingView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
                         var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
+                        // Captured before auto-assigned teams are appended
+                        // below — favorites store only the manually-checked
+                        // selection, see TrainingFavorite.teams' doc comment.
+                        let manuallySelectedTeams = teams
                         // Business rule, not a UI convenience: applies to
                         // ANY training of a mapped sport regardless of who
                         // created it or which teams they personally belong
@@ -134,6 +172,21 @@ struct AddTrainingView: View {
                         modelContext.insert(training)
                         try? modelContext.save()
                         CloudKitSync.shared.pushTraining(training)
+
+                        // Auto-add/refresh this name+sport combo in the
+                        // shared Favoriten list (max 5, LRU-evicted) — see
+                        // TrainingFavorite.recordUsage's doc comment.
+                        let (favorite, evictedID) = TrainingFavorite.recordUsage(
+                            title: title, sport: sport, startDate: startDate,
+                            durationMinutes: durationMinutes, teams: manuallySelectedTeams, in: modelContext
+                        )
+                        try? modelContext.save()
+                        if let favorite {
+                            CloudKitSync.shared.pushTrainingFavorite(favorite)
+                        }
+                        if let evictedID {
+                            CloudKitSync.shared.deleteTrainingFavorite(evictedID)
+                        }
 
                         // Post notification when training is created
                         NotificationCenter.default.post(

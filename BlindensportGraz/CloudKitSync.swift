@@ -261,6 +261,29 @@ final class CloudKitSync {
         }
     }
 
+    func pushTrainingFavorite(_ favorite: TrainingFavorite) {
+        let record = CKRecord(recordType: "TrainingFavorite", recordID: recordID(favorite.id))
+        record["title"] = favorite.title
+        record["sport"] = favorite.sport
+        record["startHour"] = favorite.startHour
+        record["startMinute"] = favorite.startMinute
+        record["endHour"] = favorite.endHour
+        record["endMinute"] = favorite.endMinute
+        record["teamIDs"] = favorite.teams.map { $0.id.uuidString }
+        record["lastUsedAt"] = favorite.lastUsedAt
+        save(record)
+    }
+
+    func deleteTrainingFavorite(_ id: UUID) {
+        Task {
+            do {
+                try await publicDB.deleteRecord(withID: recordID(id))
+            } catch {
+                print("CloudKitSync delete failed for TrainingFavorite \(id): \(error)")
+            }
+        }
+    }
+
     private func recordID(_ id: UUID) -> CKRecord.ID {
         CKRecord.ID(recordName: id.uuidString)
     }
@@ -432,6 +455,7 @@ final class CloudKitSync {
         await pullEventImages(modelContext: modelContext)
         await pullParticipations(modelContext: modelContext)
         await pullAttendances(modelContext: modelContext)
+        await pullTrainingFavorites(modelContext: modelContext)
         try? modelContext.save()
     }
 
@@ -807,6 +831,39 @@ final class CloudKitSync {
             let image = EventImage(id: id, imageData: data, uploadedBy: uploadedBy, uploadedAt: uploadedAt,
                                     event: event)
             modelContext.insert(image)
+        }
+    }
+
+    private func pullTrainingFavorites(modelContext: ModelContext) async {
+        for record in await fetchAll(recordType: "TrainingFavorite") {
+            guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
+            let title = record["title"] as? String ?? ""
+            let sport = record["sport"] as? String ?? ""
+            let startHour = record["startHour"] as? Int ?? 18
+            let startMinute = record["startMinute"] as? Int ?? 0
+            let endHour = record["endHour"] as? Int ?? 19
+            let endMinute = record["endMinute"] as? Int ?? 30
+            let teams = findTeams(record["teamIDs"] as? [String] ?? [], modelContext: modelContext)
+            let lastUsedAt = record["lastUsedAt"] as? Date ?? .now
+
+            var descriptor = FetchDescriptor<TrainingFavorite>(predicate: #Predicate { $0.id == id })
+            descriptor.fetchLimit = 1
+            if let existing = try? modelContext.fetch(descriptor).first {
+                existing.title = title
+                existing.sport = sport
+                existing.startHour = startHour
+                existing.startMinute = startMinute
+                existing.endHour = endHour
+                existing.endMinute = endMinute
+                existing.teams = teams
+                existing.lastUsedAt = lastUsedAt
+            } else {
+                let favorite = TrainingFavorite(id: id, title: title, sport: sport,
+                                                 startHour: startHour, startMinute: startMinute,
+                                                 endHour: endHour, endMinute: endMinute,
+                                                 teams: teams, lastUsedAt: lastUsedAt)
+                modelContext.insert(favorite)
+            }
         }
     }
 

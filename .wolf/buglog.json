@@ -3636,6 +3636,28 @@
       "last_seen": "2026-08-07T10:34:40.000Z"
     },
     {
+      "id": "bug-220",
+      "timestamp": "2026-08-13T04:52:06.980Z",
+      "error_message": "ios-device-deploy.yml run failed at 'Build for device': error: Provisioning profile \"*** CI Development\" expired on 11.08.2026. (in target '***' from project '***'), Process completed with exit code 65.",
+      "file": ".github/workflows/ios-device-deploy.yml (secret: IOS_CI_PROVISIONING_PROFILE_BASE64)",
+      "root_cause": "The Development .mobileprovision baked into the IOS_CI_PROVISIONING_PROFILE_BASE64 GitHub secret expired on 11.08.2026 (profiles are typically 1-year-lived). Not the signing certificate -- verified separately that the 'Apple Development: Franz Kager' identity in the login keychain (team 5Q57Y9YT8J) is valid until 15.07.2027, so only the profile needed renewal. `asc` CLI was installed but had no App Store Connect API key configured (no keychain/config credentials, no ASC_* env vars, no local AuthKey_*.p8 found), so the asc-signing-setup skill's automated profile regeneration wasn't usable without the user first generating a key in the ASC web portal (Users and Access -> Integrations -> Keys) -- deferred as a future improvement.",
+      "fix": "User regenerated the profile manually via developer.apple.com/account/resources/profiles/list (Edit -> Generate -> Download) as 'BlindensportGraz_iOS_Development.mobileprovision'. Before installing, verified it decoded cleanly with `security cms -D`, and cross-checked its ProvisionedDevices UDID (00008130-001875010A78001C) against `xcrun xctrace list devices` to confirm it's actually 'iPhone von Franz' -- that hardware UDID is a different ID space than the CoreDevice identifier the workflow's DEVICE_ID env var uses for devicectl (BD764E6D-... from `xcrun devicectl list devices`), so a naive string compare between the two would have wrongly looked like a mismatch. Also confirmed team ID (5Q57Y9YT8J) and bundle ID (it.a11y.BlindensportGraz) matched, and new expiration is 13.08.2027. Ran `base64 -i <path> | gh secret set IOS_CI_PROVISIONING_PROFILE_BASE64`, then since the commit was already pushed (nothing new to trigger a push-based run), used `gh workflow run \"iOS Device Deploy\"` to fire a fresh run manually -- succeeded in 1m24s.",
+      "tags": [
+        "ios-device-deploy",
+        "provisioning-profile",
+        "expired",
+        "signing",
+        "gh-secret",
+        "coredevice-vs-hardware-udid"
+      ],
+      "related_bugs": [
+        "bug-198",
+        "bug-213"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T18:46:30.000Z"
+    },
+    {
       "id": "bug-219",
       "timestamp": "2026-08-07T10:46:00.143Z",
       "error_message": "Significant refactor of ",
@@ -3650,6 +3672,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-07T10:46:00.143Z"
+    },
+    {
+      "id": "bug-221",
+      "timestamp": "2026-08-13T18:59:40.653Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T18:59:40.653Z"
+    },
+    {
+      "id": "bug-222",
+      "timestamp": "2026-08-13T18:59:49.779Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T18:59:49.779Z"
+    },
+    {
+      "id": "bug-223",
+      "timestamp": "2026-08-13T19:00:02.755Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T19:00:02.755Z"
+    },
+    {
+      "id": "bug-224",
+      "timestamp": "2026-08-13T19:06:50.053Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGrazTests/TrainingFavoriteTests.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T19:06:50.053Z"
     }
   ]
 }

@@ -16,7 +16,8 @@ struct BlindensportGrazApp: App {
             EventParticipation.self,
             Member.self,
             EventImage.self,
-            Attendance.self
+            Attendance.self,
+            TrainingFavorite.self
                ])
         // Local store only. Cross-user, team-scoped sharing is handled by
         // CloudKitSync's manual public-database push/pull, not SwiftData's
