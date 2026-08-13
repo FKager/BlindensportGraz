@@ -555,6 +555,10 @@ final class TrainingFavorite {
     var startMinute: Int = 0
     var endHour: Int = 19
     var endMinute: Int = 30
+    // Calendar.current's `.weekday` component convention (1 = Sunday...7 =
+    // Saturday), stored directly in that form so it plugs straight back into
+    // Calendar arithmetic in suggestedStartDate without any custom mapping.
+    var weekday: Int = 2 // Monday
     var lastUsedAt: Date = Date.now
 
     // The manually-checked "Beteiligte Teams" selection at save time (NOT
@@ -567,7 +571,7 @@ final class TrainingFavorite {
 
     init(id: UUID = UUID(), title: String, sport: String,
          startHour: Int, startMinute: Int, endHour: Int, endMinute: Int,
-         teams: [Team] = [], lastUsedAt: Date = .now) {
+         weekday: Int = 2, teams: [Team] = [], lastUsedAt: Date = .now) {
         self.id = id
         self.title = title
         self.sport = sport
@@ -575,6 +579,7 @@ final class TrainingFavorite {
         self.startMinute = startMinute
         self.endHour = endHour
         self.endMinute = endMinute
+        self.weekday = weekday
         self.teams = teams
         self.lastUsedAt = lastUsedAt
     }
@@ -612,6 +617,7 @@ extension TrainingFavorite {
         let startComponents = calendar.dateComponents([.hour, .minute], from: startDate)
         let endDate = startDate.addingTimeInterval(TimeInterval(durationMinutes) * 60)
         let endComponents = calendar.dateComponents([.hour, .minute], from: endDate)
+        let weekday = calendar.component(.weekday, from: startDate)
 
         if let match = existingFavorites.first(where: {
             $0.title.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(trimmedTitle) == .orderedSame
@@ -621,6 +627,7 @@ extension TrainingFavorite {
             match.startMinute = startComponents.minute ?? match.startMinute
             match.endHour = endComponents.hour ?? match.endHour
             match.endMinute = endComponents.minute ?? match.endMinute
+            match.weekday = weekday
             match.teams = teams
             match.lastUsedAt = .now
             return (match, nil)
@@ -636,20 +643,29 @@ extension TrainingFavorite {
             title: trimmedTitle, sport: sport,
             startHour: startComponents.hour ?? 18, startMinute: startComponents.minute ?? 0,
             endHour: endComponents.hour ?? 19, endMinute: endComponents.minute ?? 30,
-            teams: teams
+            weekday: weekday, teams: teams
         )
         modelContext.insert(favorite)
         return (favorite, evictedID)
     }
 
-    /// Combines this favorite's stored time-of-day with "one week from now"
-    /// to produce the date AddTrainingView pre-fills when the favorite is
-    /// tapped. Factored out as a plain static function (rather than inline
-    /// SwiftUI code) so it's independently testable.
-    static func suggestedStartDate(startHour: Int, startMinute: Int, from reference: Date = .now,
+    /// Produces the date AddTrainingView pre-fills when the favorite is
+    /// tapped: the favorite's stored weekday, at its stored time-of-day, at
+    /// least one full week out from `reference` (today). Deliberately NOT
+    /// just "the next occurrence of that weekday" (which could be as little
+    /// as a day away) — first pins a floor of `reference + 7 days`, then
+    /// finds that same-weekday occurrence on or after the floor (up to 6
+    /// days later), so a favorite last used on a Tuesday, tapped again on a
+    /// Thursday, suggests the Tuesday 12 days out rather than the closer one
+    /// only 5 days out. Factored out as a plain static function (rather than
+    /// inline SwiftUI code) so it's independently testable.
+    static func suggestedStartDate(startHour: Int, startMinute: Int, weekday: Int, from reference: Date = .now,
                                     calendar: Calendar = .current) -> Date {
-        let oneWeekOut = calendar.date(byAdding: .day, value: 7, to: reference) ?? reference
-        return calendar.date(bySettingHour: startHour, minute: startMinute, second: 0, of: oneWeekOut) ?? oneWeekOut
+        let floor = calendar.date(byAdding: .day, value: 7, to: reference) ?? reference
+        let floorWeekday = calendar.component(.weekday, from: floor)
+        let daysToTargetWeekday = (weekday - floorWeekday + 7) % 7
+        let targetDate = calendar.date(byAdding: .day, value: daysToTargetWeekday, to: floor) ?? floor
+        return calendar.date(bySettingHour: startHour, minute: startMinute, second: 0, of: targetDate) ?? targetDate
     }
 
     /// Duration in minutes implied by this favorite's stored start/end

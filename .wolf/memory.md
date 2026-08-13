@@ -1306,3 +1306,18 @@
 | 21:06 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | added optional chaining | ~444 |
 | 21:07 | Enhancement: capture manually-selected Beteiligte Teams in TrainingFavorite too, restore on apply | Models.swift, CloudKitSync.swift, TrainingsViews.swift, TrainingFavoriteTests.swift | Success, 9/9 favorite tests pass | ~6k |
 | 21:07 | Session end: 19 writes across 6 files (foamy-churning-widget.md, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 6 reads | ~42370 tok |
+| 21:10 | Session end: 19 writes across 6 files (foamy-churning-widget.md, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 6 reads | ~42370 tok |
+| 21:26 | Edited BlindensportGraz/TrainingsViews.swift | inline fix | ~25 |
+| 21:26 | Edited BlindensportGraz/TournamentsViews.swift | inline fix | ~26 |
+| 21:26 | Edited BlindensportGraz/Models.swift | 5→9 lines | ~110 |
+| 21:26 | Edited BlindensportGraz/Models.swift | 14→15 lines | ~140 |
+| 21:27 | Edited BlindensportGraz/Models.swift | modified min() | ~450 |
+| 21:27 | Edited BlindensportGraz/Models.swift | modified suggestedStartDate() | ~369 |
+| 21:27 | Edited BlindensportGraz/CloudKitSync.swift | 3→4 lines | ~55 |
+| 21:27 | Edited BlindensportGraz/CloudKitSync.swift | 21→23 lines | ~361 |
+| 21:27 | Edited BlindensportGraz/TrainingsViews.swift | inline fix | ~40 |
+| 21:27 | Edited BlindensportGraz/TrainingsViews.swift | 4→5 lines | ~84 |
+| 21:28 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | 8→9 lines | ~113 |
+| 21:28 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | modified testSuggestedStartDateIsExactlyOneWeekLaterWhenWeekdayMatchesToday() | ~653 |
+| 21:29 | Enhancement: descending sort for Trainings/Tournaments lists; TrainingFavorite now stores weekday, suggests one-week-plus-weekday date | TrainingsViews.swift, TournamentsViews.swift, Models.swift, CloudKitSync.swift, TrainingFavoriteTests.swift | Success, 66/66 tests pass (excl. bug-202) | ~9k |
+| 21:29 | Session end: 31 writes across 7 files (foamy-churning-widget.md, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 7 reads | ~53686 tok |

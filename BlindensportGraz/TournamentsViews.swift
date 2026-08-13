@@ -435,7 +435,7 @@ var body: some View {
 struct TournamentsListView: View {
      let currentUser: User?
       @Environment(\.modelContext) private var modelContext
-       @Query(sort: \Tournament.startDate) private var tournaments: [Tournament]
+       @Query(sort: \Tournament.startDate, order: .reverse) private var tournaments: [Tournament]
         @State private var showAdd = false
 
   var canManageEvents: Bool {

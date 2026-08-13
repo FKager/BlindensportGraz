@@ -3736,6 +3736,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-13T19:06:50.053Z"
+    },
+    {
+      "id": "bug-225",
+      "timestamp": "2026-08-13T19:27:13.550Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 9→18 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T19:27:13.550Z"
+    },
+    {
+      "id": "bug-226",
+      "timestamp": "2026-08-13T19:28:17.990Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGrazTests/TrainingFavoriteTests.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 14→36 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T19:28:17.990Z"
     }
   ]
 }

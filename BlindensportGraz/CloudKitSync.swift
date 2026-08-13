@@ -269,6 +269,7 @@ final class CloudKitSync {
         record["startMinute"] = favorite.startMinute
         record["endHour"] = favorite.endHour
         record["endMinute"] = favorite.endMinute
+        record["weekday"] = favorite.weekday
         record["teamIDs"] = favorite.teams.map { $0.id.uuidString }
         record["lastUsedAt"] = favorite.lastUsedAt
         save(record)
@@ -843,6 +844,7 @@ final class CloudKitSync {
             let startMinute = record["startMinute"] as? Int ?? 0
             let endHour = record["endHour"] as? Int ?? 19
             let endMinute = record["endMinute"] as? Int ?? 30
+            let weekday = record["weekday"] as? Int ?? 2
             let teams = findTeams(record["teamIDs"] as? [String] ?? [], modelContext: modelContext)
             let lastUsedAt = record["lastUsedAt"] as? Date ?? .now
 
@@ -855,13 +857,14 @@ final class CloudKitSync {
                 existing.startMinute = startMinute
                 existing.endHour = endHour
                 existing.endMinute = endMinute
+                existing.weekday = weekday
                 existing.teams = teams
                 existing.lastUsedAt = lastUsedAt
             } else {
                 let favorite = TrainingFavorite(id: id, title: title, sport: sport,
                                                  startHour: startHour, startMinute: startMinute,
                                                  endHour: endHour, endMinute: endMinute,
-                                                 teams: teams, lastUsedAt: lastUsedAt)
+                                                 weekday: weekday, teams: teams, lastUsedAt: lastUsedAt)
                 modelContext.insert(favorite)
             }
         }

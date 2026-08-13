@@ -36,14 +36,15 @@ struct AddTrainingView: View {
     }
 
     // Pre-fills name/sport/time from a tapped favorite and suggests a start
-    // date one week out (at the favorite's stored time-of-day) — see
-    // TrainingFavorite.suggestedStartDate. Also switches includesTime on
-    // since a favorite always carries an explicit time.
+    // date on the favorite's stored weekday, at its stored time-of-day, at
+    // least one week out — see TrainingFavorite.suggestedStartDate. Also
+    // switches includesTime on since a favorite always carries an explicit
+    // time.
     private func applyFavorite(_ favorite: TrainingFavorite) {
         title = favorite.title
         sport = favorite.sport
         includesTime = true
-        startDate = TrainingFavorite.suggestedStartDate(startHour: favorite.startHour, startMinute: favorite.startMinute)
+        startDate = TrainingFavorite.suggestedStartDate(startHour: favorite.startHour, startMinute: favorite.startMinute, weekday: favorite.weekday)
         durationMinutes = favorite.durationMinutes
         // Only pre-checks teams still visible/manageable by this user (the
         // "Beteiligte Teams" list is itself filtered to myTeams) — a team
@@ -433,7 +434,7 @@ struct TrainingDetailView: View {
 struct TrainingsListView: View {
      let currentUser: User?
         @Environment(\.modelContext) private var modelContext
-        @Query(sort: \Training.startDate) private var trainings: [Training]
+        @Query(sort: \Training.startDate, order: .reverse) private var trainings: [Training]
         @State private var showAdd = false
         @State private var showTrainingsfrequenzliste = false
         @State private var showPraeCalculation = false

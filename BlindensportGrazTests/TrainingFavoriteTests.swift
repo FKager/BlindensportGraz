@@ -43,6 +43,7 @@ final class TrainingFavoriteTests: XCTestCase {
         XCTAssertEqual(favorite?.startMinute, 30)
         XCTAssertEqual(favorite?.endHour, 20)
         XCTAssertEqual(favorite?.endMinute, 0)
+        XCTAssertEqual(favorite?.weekday, Calendar.current.component(.weekday, from: date(hour: 18, minute: 30)))
 
         let all = try context.fetch(FetchDescriptor<TrainingFavorite>())
         XCTAssertEqual(all.count, 1)
@@ -139,9 +140,10 @@ final class TrainingFavoriteTests: XCTestCase {
 
     // MARK: - suggestedStartDate
 
-    func testSuggestedStartDateIsOneWeekLaterAtStoredTime() {
+    func testSuggestedStartDateIsExactlyOneWeekLaterWhenWeekdayMatchesToday() {
         let reference = date(hour: 10, day: 1, month: 7, year: 2026)
-        let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 30, from: reference)
+        let referenceWeekday = Calendar.current.component(.weekday, from: reference)
+        let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 30, weekday: referenceWeekday, from: reference)
 
         let calendar = Calendar.current
         let expectedDay = calendar.date(byAdding: .day, value: 7, to: reference)!
@@ -150,6 +152,27 @@ final class TrainingFavoriteTests: XCTestCase {
         XCTAssertEqual(calendar.component(.year, from: suggested), calendar.component(.year, from: expectedDay))
         XCTAssertEqual(calendar.component(.hour, from: suggested), 18)
         XCTAssertEqual(calendar.component(.minute, from: suggested), 30)
+    }
+
+    /// The core "same weekday, but one week later" behavior: a weekday
+    /// closer than 7 days away (here, 2 days after `reference`'s own
+    /// weekday) must NOT be picked as "the next occurrence" — it should
+    /// land 9 days out (7-day floor + 2 more days to reach that weekday),
+    /// not just 2 days out.
+    func testSuggestedStartDateSkipsCloserOccurrenceAndLandsOneWeekPlusOffset() {
+        let calendar = Calendar.current
+        let reference = date(hour: 10, day: 1, month: 7, year: 2026)
+        let referenceWeekday = calendar.component(.weekday, from: reference)
+        let targetWeekday = ((referenceWeekday - 1 + 2) % 7) + 1 // 2 days after reference's own weekday
+
+        let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 0, weekday: targetWeekday, from: reference)
+
+        let expected = calendar.date(byAdding: .day, value: 9, to: calendar.startOfDay(for: reference))!
+        XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expected))
+        XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expected))
+        XCTAssertEqual(calendar.component(.weekday, from: suggested), targetWeekday)
+        XCTAssertGreaterThanOrEqual(suggested.timeIntervalSince(reference), 7 * 24 * 60 * 60,
+                                     "suggested date must always be at least a full week out")
     }
 
     // MARK: - durationMinutes
