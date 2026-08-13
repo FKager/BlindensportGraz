@@ -326,10 +326,6 @@ struct TrainingDetailView: View {
         return result.sortedByLastName()
     }
 
-    var attendedMemberships: [TeamMembership] {
-        allMemberships.filter { attendance(for: $0)?.attended == true }
-    }
-
     var body: some View {
         Form {
             EventImagesSection(images: training.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
@@ -426,16 +422,14 @@ struct TrainingDetailView: View {
             }
         }
         .sheet(isPresented: $showMemberList) {
+            // No exportContext (unlike TournamentDetailView) — the
+            // TeilnehmerInnenliste export is Sport-Austria tournament
+            // paperwork; trainings already have their own equivalent, the
+            // Trainingsfrequenzliste (via TrainingsListView's "Berichte"
+            // menu), so this view is roster-only for trainings.
             MemberListView(
                 itemName: training.title,
-                teams: training.teams,
-                exportContext: TeilnehmerlisteContext(
-                    betrifft: training.title,
-                    ort: training.location,
-                    startDate: training.startDate,
-                    endDate: training.endDate,
-                    attendedMemberships: attendedMemberships
-                )
+                teams: training.teams
             )
         }
         .onDisappear {

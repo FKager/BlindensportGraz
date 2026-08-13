@@ -1362,3 +1362,9 @@
 | 22:04 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | added optional chaining | ~821 |
 | 22:05 | Added favorite deletion (long-press) and 'populate from recent trainings' backfill to self-heal stale favorites | Models.swift, TrainingsViews.swift, TrainingFavoriteTests.swift | Success, 71/71 tests pass (excl. bug-202) | ~8k |
 | 22:06 | Session end: 10 writes across 4 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md, TrainingsViews.swift) | 6 reads | ~37050 tok |
+| 22:12 | Session end: 10 writes across 4 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md, TrainingsViews.swift) | 6 reads | ~37050 tok |
+| 22:13 | Session end: 10 writes across 4 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md, TrainingsViews.swift) | 6 reads | ~37050 tok |
+| 22:14 | Edited BlindensportGraz/TrainingsViews.swift | removed 5 lines | ~7 |
+| 22:14 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~139 |
+| 22:14 | Edited BlindensportGraz/MemberListView.swift | 8→12 lines | ~179 |
+| 22:15 | Fix: removed TeilnehmerInnenliste export from TrainingDetailView (tournament-only; trainings use Trainingsfrequenzliste) | TrainingsViews.swift, MemberListView.swift | Success, 71/71 tests pass (excl. bug-202) | ~5k |

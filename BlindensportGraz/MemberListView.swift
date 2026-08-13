@@ -5,8 +5,12 @@ import SwiftUI
 struct MemberListView: View {
     let itemName: String
     let teams: [Team]
-    // Only set for Training/Tournament, which track per-member attendance —
-    // nil for SportEvent, which has no such concept, so no export button shows.
+    // Only set by TournamentDetailView. The TeilnehmerInnenliste export is
+    // Sport-Austria tournament paperwork — SportEvent has no attendance
+    // concept to source it from, and Training already has its own
+    // equivalent (the Trainingsfrequenzliste, via TrainingsListView's
+    // "Berichte" menu), so neither passes an exportContext and this view
+    // stays roster-only for them.
     var exportContext: TeilnehmerlisteContext? = nil
 
     @State private var exportedFileURL: URL?

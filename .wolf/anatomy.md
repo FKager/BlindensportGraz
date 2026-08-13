@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-13T20:04:40.732Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-13T20:14:49.902Z
 > Files: 102 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -107,7 +107,7 @@
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
 - `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4738 tok)
-- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1374 tok)
+- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1438 tok)
 - `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4724 tok)
 - `Models.swift` — Class: User (~9768 tok)
 - `PraeCalculation.swift` — PraeCalculator: monthly (Training-only) summary + summary(for:tournament:) (~2300 tok)
@@ -124,7 +124,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2596 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2581 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1718 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~6968 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~6942 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/.claude/

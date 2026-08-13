@@ -3890,6 +3890,22 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-13T20:05:00.000Z"
+    },
+    {
+      "id": "bug-234",
+      "timestamp": "2026-08-13T20:14:49.908Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/MemberListView.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 8→12 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T20:14:49.908Z"
     }
   ]
 }
