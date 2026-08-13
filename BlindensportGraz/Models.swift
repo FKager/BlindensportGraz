@@ -559,6 +559,10 @@ final class TrainingFavorite {
     // Saturday), stored directly in that form so it plugs straight back into
     // Calendar arithmetic in suggestedStartDate without any custom mapping.
     var weekday: Int = 2 // Monday
+    var location: String = ""
+    var street: String = ""
+    var zip: String = ""
+    var city: String = ""
     var lastUsedAt: Date = Date.now
 
     // The manually-checked "Beteiligte Teams" selection at save time (NOT
@@ -571,7 +575,8 @@ final class TrainingFavorite {
 
     init(id: UUID = UUID(), title: String, sport: String,
          startHour: Int, startMinute: Int, endHour: Int, endMinute: Int,
-         weekday: Int = 2, teams: [Team] = [], lastUsedAt: Date = .now) {
+         weekday: Int = 2, location: String = "", street: String = "", zip: String = "", city: String = "",
+         teams: [Team] = [], lastUsedAt: Date = .now) {
         self.id = id
         self.title = title
         self.sport = sport
@@ -580,6 +585,10 @@ final class TrainingFavorite {
         self.endHour = endHour
         self.endMinute = endMinute
         self.weekday = weekday
+        self.location = location
+        self.street = street
+        self.zip = zip
+        self.city = city
         self.teams = teams
         self.lastUsedAt = lastUsedAt
     }
@@ -590,11 +599,11 @@ extension TrainingFavorite {
 
     /// Called from AddTrainingView's save action every time a training is
     /// created. Matches an existing favorite by case-insensitive trimmed
-    /// title + exact sport: if found, refreshes its stored time + `teams` +
-    /// `lastUsedAt` in place; if not found and the list has room, inserts a
-    /// new one; if not found and already at `maxCount`, evicts the
-    /// least-recently-used favorite first (returned as `evictedID` so the
-    /// caller can push its deletion to CloudKit too).
+    /// title + exact sport: if found, refreshes its stored time + `weekday` +
+    /// address + `teams` + `lastUsedAt` in place; if not found and the list
+    /// has room, inserts a new one; if not found and already at `maxCount`,
+    /// evicts the least-recently-used favorite first (returned as
+    /// `evictedID` so the caller can push its deletion to CloudKit too).
     ///
     /// `teams` should be the manually-checked "Beteiligte Teams" selection
     /// only, NOT the final sport-driven auto-assigned set — see the
@@ -606,6 +615,7 @@ extension TrainingFavorite {
     /// room, so CloudKitSync pushes stay in sync with the local change.
     @discardableResult
     static func recordUsage(title: String, sport: String, startDate: Date, durationMinutes: Int,
+                             location: String = "", street: String = "", zip: String = "", city: String = "",
                              teams: [Team] = [], in modelContext: ModelContext) -> (favorite: TrainingFavorite?, evictedID: UUID?) {
         let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
         guard !trimmedTitle.isEmpty,
@@ -628,6 +638,10 @@ extension TrainingFavorite {
             match.endHour = endComponents.hour ?? match.endHour
             match.endMinute = endComponents.minute ?? match.endMinute
             match.weekday = weekday
+            match.location = location
+            match.street = street
+            match.zip = zip
+            match.city = city
             match.teams = teams
             match.lastUsedAt = .now
             return (match, nil)
@@ -643,29 +657,32 @@ extension TrainingFavorite {
             title: trimmedTitle, sport: sport,
             startHour: startComponents.hour ?? 18, startMinute: startComponents.minute ?? 0,
             endHour: endComponents.hour ?? 19, endMinute: endComponents.minute ?? 30,
-            weekday: weekday, teams: teams
+            weekday: weekday, location: location, street: street, zip: zip, city: city, teams: teams
         )
         modelContext.insert(favorite)
         return (favorite, evictedID)
     }
 
     /// Produces the date AddTrainingView pre-fills when the favorite is
-    /// tapped: the favorite's stored weekday, at its stored time-of-day, at
-    /// least one full week out from `reference` (today). Deliberately NOT
-    /// just "the next occurrence of that weekday" (which could be as little
-    /// as a day away) — first pins a floor of `reference + 7 days`, then
-    /// finds that same-weekday occurrence on or after the floor (up to 6
-    /// days later), so a favorite last used on a Tuesday, tapped again on a
-    /// Thursday, suggests the Tuesday 12 days out rather than the closer one
-    /// only 5 days out. Factored out as a plain static function (rather than
-    /// inline SwiftUI code) so it's independently testable.
+    /// tapped: the favorite's stored weekday, at its stored time-of-day, in
+    /// the calendar week immediately following `reference`'s (today's) own
+    /// week — i.e. "same weekday, next week", not "the next occurrence of
+    /// that weekday" (which could resolve to later THIS week) and not a
+    /// fixed +7-days-then-search-forward offset (which could overshoot into
+    /// the week after next). Uses `.yearForWeekOfYear`/`.weekOfYear` (not
+    /// plain `.year`/`.weekOfYear`) so this stays correct across a
+    /// year-boundary week (e.g. a week that starts in late December and
+    /// ends in early January). Factored out as a plain static function
+    /// (rather than inline SwiftUI code) so it's independently testable.
     static func suggestedStartDate(startHour: Int, startMinute: Int, weekday: Int, from reference: Date = .now,
                                     calendar: Calendar = .current) -> Date {
-        let floor = calendar.date(byAdding: .day, value: 7, to: reference) ?? reference
-        let floorWeekday = calendar.component(.weekday, from: floor)
-        let daysToTargetWeekday = (weekday - floorWeekday + 7) % 7
-        let targetDate = calendar.date(byAdding: .day, value: daysToTargetWeekday, to: floor) ?? floor
-        return calendar.date(bySettingHour: startHour, minute: startMinute, second: 0, of: targetDate) ?? targetDate
+        let nextWeekReference = calendar.date(byAdding: .weekOfYear, value: 1, to: reference) ?? reference
+        var components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: nextWeekReference)
+        components.weekday = weekday
+        components.hour = startHour
+        components.minute = startMinute
+        components.second = 0
+        return calendar.date(from: components) ?? nextWeekReference
     }
 
     /// Duration in minutes implied by this favorite's stored start/end

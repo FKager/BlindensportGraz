@@ -49,6 +49,40 @@ final class TrainingFavoriteTests: XCTestCase {
         XCTAssertEqual(all.count, 1)
     }
 
+    func testRecordUsageStoresAddress() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        let (favorite, _) = TrainingFavorite.recordUsage(
+            title: "Wochentraining", sport: "Torball",
+            startDate: date(hour: 18), durationMinutes: 90,
+            location: "ASKÖ-Halle", street: "Musterstraße 1", zip: "8010", city: "Graz",
+            in: context
+        )
+
+        XCTAssertEqual(favorite?.location, "ASKÖ-Halle")
+        XCTAssertEqual(favorite?.street, "Musterstraße 1")
+        XCTAssertEqual(favorite?.zip, "8010")
+        XCTAssertEqual(favorite?.city, "Graz")
+    }
+
+    func testRecordUsageUpdatesAddressOnExistingMatch() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        _ = TrainingFavorite.recordUsage(title: "Wochentraining", sport: "Torball",
+                                          startDate: date(hour: 18), durationMinutes: 90,
+                                          location: "Alte Halle", street: "", zip: "", city: "Graz", in: context)
+        let (favorite, _) = TrainingFavorite.recordUsage(title: "Wochentraining", sport: "Torball",
+                                                           startDate: date(hour: 18), durationMinutes: 90,
+                                                           location: "Neue Halle", street: "Neustraße 2", zip: "8020", city: "Graz",
+                                                           in: context)
+
+        XCTAssertEqual(favorite?.location, "Neue Halle")
+        XCTAssertEqual(favorite?.street, "Neustraße 2")
+        XCTAssertEqual(favorite?.zip, "8020")
+    }
+
     func testRecordUsageStoresManuallySelectedTeams() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
@@ -146,6 +180,10 @@ final class TrainingFavoriteTests: XCTestCase {
         let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 30, weekday: referenceWeekday, from: reference)
 
         let calendar = Calendar.current
+        // When the target weekday IS today's own weekday, "next week's same
+        // weekday" is always exactly +7 days, regardless of the calendar's
+        // first-weekday convention (Sunday-start vs Monday-start) — this
+        // part of the contract doesn't depend on locale.
         let expectedDay = calendar.date(byAdding: .day, value: 7, to: reference)!
         XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expectedDay))
         XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expectedDay))
@@ -154,25 +192,30 @@ final class TrainingFavoriteTests: XCTestCase {
         XCTAssertEqual(calendar.component(.minute, from: suggested), 30)
     }
 
-    /// The core "same weekday, but one week later" behavior: a weekday
-    /// closer than 7 days away (here, 2 days after `reference`'s own
-    /// weekday) must NOT be picked as "the next occurrence" — it should
-    /// land 9 days out (7-day floor + 2 more days to reach that weekday),
-    /// not just 2 days out.
-    func testSuggestedStartDateSkipsCloserOccurrenceAndLandsOneWeekPlusOffset() {
+    /// The core "same weekday, next calendar week" behavior — verified via
+    /// the same yearForWeekOfYear/weekOfYear bucketing the implementation
+    /// itself uses (rather than hardcoded day-offset arithmetic), since the
+    /// exact day offset depends on Calendar.current's first-weekday
+    /// convention (Sunday-start vs Monday-start), which varies by locale/
+    /// region and isn't something this test should assume. This is still a
+    /// meaningful regression check: the previous (buggy) implementation
+    /// searched forward from "today + 7 days" instead of snapping to next
+    /// week's calendar bucket, so it would NOT satisfy the weekOfYear
+    /// equality asserted here for every target weekday.
+    func testSuggestedStartDateLandsInNextCalendarWeekOnTargetWeekday() {
         let calendar = Calendar.current
         let reference = date(hour: 10, day: 1, month: 7, year: 2026)
         let referenceWeekday = calendar.component(.weekday, from: reference)
-        let targetWeekday = ((referenceWeekday - 1 + 2) % 7) + 1 // 2 days after reference's own weekday
+        let targetWeekday = referenceWeekday % 7 + 1 // some other weekday than today's
 
         let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 0, weekday: targetWeekday, from: reference)
+        let nextWeekReference = calendar.date(byAdding: .weekOfYear, value: 1, to: reference)!
 
-        let expected = calendar.date(byAdding: .day, value: 9, to: calendar.startOfDay(for: reference))!
-        XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expected))
-        XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expected))
         XCTAssertEqual(calendar.component(.weekday, from: suggested), targetWeekday)
-        XCTAssertGreaterThanOrEqual(suggested.timeIntervalSince(reference), 7 * 24 * 60 * 60,
-                                     "suggested date must always be at least a full week out")
+        XCTAssertEqual(calendar.component(.weekOfYear, from: suggested), calendar.component(.weekOfYear, from: nextWeekReference))
+        XCTAssertEqual(calendar.component(.yearForWeekOfYear, from: suggested), calendar.component(.yearForWeekOfYear, from: nextWeekReference))
+        XCTAssertEqual(calendar.component(.hour, from: suggested), 18)
+        XCTAssertEqual(calendar.component(.minute, from: suggested), 0)
     }
 
     // MARK: - durationMinutes

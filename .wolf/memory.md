@@ -1321,3 +1321,15 @@
 | 21:28 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | modified testSuggestedStartDateIsExactlyOneWeekLaterWhenWeekdayMatchesToday() | ~653 |
 | 21:29 | Enhancement: descending sort for Trainings/Tournaments lists; TrainingFavorite now stores weekday, suggests one-week-plus-weekday date | TrainingsViews.swift, TournamentsViews.swift, Models.swift, CloudKitSync.swift, TrainingFavoriteTests.swift | Success, 66/66 tests pass (excl. bug-202) | ~9k |
 | 21:29 | Session end: 31 writes across 7 files (foamy-churning-widget.md, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 7 reads | ~53686 tok |
+| 21:36 | Session end: 31 writes across 7 files (foamy-churning-widget.md, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 7 reads | ~53686 tok |
+| 21:42 | Edited BlindensportGraz/Models.swift | 4→8 lines | ~68 |
+| 21:42 | Edited BlindensportGraz/Models.swift | 15→20 lines | ~193 |
+| 21:42 | Edited BlindensportGraz/Models.swift | modified recordUsage() | ~936 |
+| 21:43 | Edited BlindensportGraz/Models.swift | modified suggestedStartDate() | ~383 |
+| 21:43 | Edited BlindensportGraz/CloudKitSync.swift | 5→9 lines | ~95 |
+| 21:43 | Edited BlindensportGraz/CloudKitSync.swift | expanded (+9 lines) | ~461 |
+| 21:43 | Edited BlindensportGraz/TrainingsViews.swift | modified applyFavorite() | ~216 |
+| 21:43 | Edited BlindensportGraz/TrainingsViews.swift | 4→6 lines | ~109 |
+| 21:44 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | modified testSuggestedStartDateIsExactlyOneWeekLaterWhenWeekdayMatchesToday() | ~831 |
+| 21:45 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | added optional chaining | ~464 |
+| 21:46 | Bug fix: TrainingFavorite now captures address (location/street/zip/city); rewrote suggestedStartDate to use Calendar weekOfYear-based 'same weekday, next calendar week' instead of forward-search-from-+7-days | Models.swift, CloudKitSync.swift, TrainingsViews.swift, TrainingFavoriteTests.swift | Fixed, 68/68 tests pass (excl. bug-202) | ~10k |

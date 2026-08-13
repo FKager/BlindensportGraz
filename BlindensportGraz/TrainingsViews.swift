@@ -35,14 +35,18 @@ struct AddTrainingView: View {
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
 
-    // Pre-fills name/sport/time from a tapped favorite and suggests a start
-    // date on the favorite's stored weekday, at its stored time-of-day, at
-    // least one week out — see TrainingFavorite.suggestedStartDate. Also
-    // switches includesTime on since a favorite always carries an explicit
-    // time.
+    // Pre-fills name/sport/time/address from a tapped favorite and suggests
+    // a start date on the favorite's stored weekday, at its stored
+    // time-of-day, in the week following today's — see
+    // TrainingFavorite.suggestedStartDate. Also switches includesTime on
+    // since a favorite always carries an explicit time.
     private func applyFavorite(_ favorite: TrainingFavorite) {
         title = favorite.title
         sport = favorite.sport
+        location = favorite.location
+        street = favorite.street
+        zip = favorite.zip
+        city = favorite.city
         includesTime = true
         startDate = TrainingFavorite.suggestedStartDate(startHour: favorite.startHour, startMinute: favorite.startMinute, weekday: favorite.weekday)
         durationMinutes = favorite.durationMinutes
@@ -179,7 +183,9 @@ struct AddTrainingView: View {
                         // TrainingFavorite.recordUsage's doc comment.
                         let (favorite, evictedID) = TrainingFavorite.recordUsage(
                             title: title, sport: sport, startDate: startDate,
-                            durationMinutes: durationMinutes, teams: manuallySelectedTeams, in: modelContext
+                            durationMinutes: durationMinutes,
+                            location: location, street: street, zip: zip, city: city,
+                            teams: manuallySelectedTeams, in: modelContext
                         )
                         try? modelContext.save()
                         if let favorite {

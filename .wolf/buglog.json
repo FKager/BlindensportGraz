@@ -3768,6 +3768,43 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-13T19:28:17.990Z"
+    },
+    {
+      "id": "bug-227",
+      "timestamp": "2026-08-13T19:45:03.023Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGrazTests/TrainingFavoriteTests.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T19:45:03.023Z"
+    },
+    {
+      "id": "bug-221",
+      "timestamp": "2026-08-13T21:45:00.000Z",
+      "error_message": "User-reported: 'the creation of a favorite entry ... the weekday and additionally the address information should be taken. When a favorite entry is taken for creating a new entry, the next calculated date is wrong. The next date should be on the same weekday but in the next week starting from the current date.'",
+      "file": "BlindensportGraz/Models.swift, BlindensportGraz/CloudKitSync.swift, BlindensportGraz/TrainingsViews.swift, BlindensportGrazTests/TrainingFavoriteTests.swift",
+      "root_cause": "Two separate gaps in the TrainingFavorite feature. (1) TrainingFavorite never stored location/street/zip/city at all -- recordUsage/applyFavorite only ever touched title/sport/time/weekday/teams, so tapping a favorite left the address fields untouched (whatever was already typed, or blank). (2) suggestedStartDate's algorithm (added in the prior session) computed 'today + 7 days, then search forward (0-6 more days) for the target weekday' -- mathematically equivalent to 'next occurrence of that weekday on/after today, then +7 days', which lands anywhere from 7 to 13 days out depending on how the target weekday relates to today's. The user's actual intent, per this report, is simpler and more standard: 'same weekday, but in the NEXT CALENDAR WEEK' -- i.e. within the week immediately following today's own week, which for a target weekday earlier in the week than today can be LESS than 7 days away (e.g. today Wednesday, target Monday, Calendar.current's Sunday-start week -> next week's Monday is only 5 days out). The old forward-search algorithm never returns a result closer than 7 days, so it disagreed with the user's expectation whenever the target weekday preceded today's weekday within the week.",
+      "fix": "Added TrainingFavorite.location/street/zip/city (String, default \"\"), threaded through recordUsage's params (also stored on the existing-match update path) and CloudKitSync push/pull. AddTrainingView.applyFavorite now also sets location/street/zip/city from the tapped favorite, and its recordUsage call site passes the current location/street/zip/city. Rewrote suggestedStartDate to use Calendar's .yearForWeekOfYear/.weekOfYear/.weekday DateComponents directly: compute nextWeekReference = reference + 1 weekOfYear, extract its (yearForWeekOfYear, weekOfYear), then set .weekday = the favorite's stored weekday and let Calendar.date(from:) resolve the exact date within that week -- correctly handles year-boundary weeks (Dec/Jan) via yearForWeekOfYear rather than plain year. Rewrote the two suggestedStartDate tests: kept the locale-independent 'same weekday as today -> exactly +7 days' case, and replaced the old '>= 7 days out' assertion (no longer part of the contract) with a locale-robust weekOfYear/yearForWeekOfYear-bucket equality check against reference+1-week, since the exact day offset depends on Calendar.current's first-weekday convention (Sunday-start vs Monday-start), which the test must not hardcode. Added testRecordUsageStoresAddress/testRecordUsageUpdatesAddressOnExistingMatch. 12/12 TrainingFavoriteTests pass, 68/68 full suite (excl. known bug-202) passes.",
+      "tags": [
+        "trainingfavorite",
+        "suggestedStartDate",
+        "weekday",
+        "address",
+        "calendar",
+        "weekOfYear"
+      ],
+      "related_bugs": [
+        "bug-202"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T21:45:00.000Z"
     }
   ]
 }
