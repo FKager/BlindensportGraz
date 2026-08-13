@@ -1361,3 +1361,4 @@
 | 22:04 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~518 |
 | 22:04 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | added optional chaining | ~821 |
 | 22:05 | Added favorite deletion (long-press) and 'populate from recent trainings' backfill to self-heal stale favorites | Models.swift, TrainingsViews.swift, TrainingFavoriteTests.swift | Success, 71/71 tests pass (excl. bug-202) | ~8k |
+| 22:06 | Session end: 10 writes across 4 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md, TrainingsViews.swift) | 6 reads | ~37050 tok |
