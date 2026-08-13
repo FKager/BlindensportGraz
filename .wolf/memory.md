@@ -1368,3 +1368,12 @@
 | 22:14 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~139 |
 | 22:14 | Edited BlindensportGraz/MemberListView.swift | 8→12 lines | ~179 |
 | 22:15 | Fix: removed TeilnehmerInnenliste export from TrainingDetailView (tournament-only; trainings use Trainingsfrequenzliste) | TrainingsViews.swift, MemberListView.swift | Success, 71/71 tests pass (excl. bug-202) | ~5k |
+| 22:15 | Session end: 13 writes across 5 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md, TrainingsViews.swift, MemberListView.swift) | 8 reads | ~44848 tok |
+| 22:17 | Session end: 13 writes across 5 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md, TrainingsViews.swift, MemberListView.swift) | 8 reads | ~44848 tok |
+| 22:22 | Created BlindensportGraz/TrainingImportExport.swift | — | ~2629 |
+| 22:22 | Edited BlindensportGraz/TrainingsViews.swift | added 1 import(s) | ~21 |
+| 22:22 | Edited BlindensportGraz/TrainingsViews.swift | expanded (+6 lines) | ~172 |
+| 22:22 | Edited BlindensportGraz/TrainingsViews.swift | added error handling | ~792 |
+| 22:23 | Created BlindensportGrazTests/TrainingImportExportTests.swift | — | ~2392 |
+| 22:23 | Edited BlindensportGrazTests/TrainingImportExportTests.swift | 2→2 lines | ~55 |
+| 22:24 | New feature: Training JSON import/export (mirrors MemberImportExport pattern) | TrainingImportExport.swift (new), TrainingsViews.swift, TrainingImportExportTests.swift (new) | Success, app builds clean, 71/71 other tests pass | ~12k |

@@ -3906,6 +3906,39 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-13T20:14:49.908Z"
+    },
+    {
+      "id": "bug-235",
+      "timestamp": "2026-08-13T20:22:48.662Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T20:22:48.662Z"
+    },
+    {
+      "id": "bug-236",
+      "timestamp": "2026-08-13T20:24:00.000Z",
+      "error_message": "SwiftCompile error while writing TrainingImportExportTests.swift: 'Missing argument for parameter 'location' in call' plus a cascading 'Cannot infer key path type from context' on a later, otherwise-correct line.",
+      "file": "BlindensportGrazTests/TrainingImportExportTests.swift",
+      "root_cause": "testImportLeavesExistingTeamsUntouchedWhenTeamsFieldOmitted constructed a Training(...) test fixture omitting the `location:` argument -- Training.init has no default for `location` (unlike street/zip/city, which default to \"\"). The second error (a `.map(\\.id)` key-path a few lines later, identical to a pattern used successfully elsewhere in the same file) was a pure cascade from the first: Swift's type checker reports spurious secondary diagnostics on nearby lines once an earlier line in the same file fails to type-check, even when that later line is independently correct.",
+      "fix": "Added the missing `location: \"Alte Halle\"` argument. Re-running the build made both errors disappear together, confirming the second was cascading noise, not a real second defect -- worth remembering before spending time investigating a key-path/type error that shows up right after a genuine missing-argument error in the same file.",
+      "tags": [
+        "swift",
+        "compile-error",
+        "cascading-diagnostic",
+        "training-import-export"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T20:24:00.000Z"
     }
   ]
 }

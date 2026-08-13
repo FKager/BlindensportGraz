@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-13T20:14:49.902Z
-> Files: 102 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-13T20:23:52.880Z
+> Files: 104 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
 
@@ -121,10 +121,11 @@
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~3776 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~5433 tok)
+- `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2629 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2596 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2581 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1718 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~6942 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView; TrainingsListView has import/export toolbar buttons (~7585 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/.claude/
@@ -140,6 +141,7 @@
 - `SammelabrechnungExportTests.swift` — Class: SammelabrechnungExportTests (~1879 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
 - `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~3965 tok)
+- `TrainingImportExportTests.swift` — Class: TrainingImportExportTests (~2398 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~5791 tok)
 
 ## RootCLI/

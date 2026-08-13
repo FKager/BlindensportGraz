@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import Combine
+import UniformTypeIdentifiers
 
 struct AddTrainingView: View {
      let currentUser: User?
@@ -485,6 +486,12 @@ struct TrainingsListView: View {
         @State private var showPraeCalculation = false
         @State private var showKostZCalculation = false
         @State private var showSammelabrechnung = false
+        // Same eager-generation + ShareLink convention as MembersListView's
+        // import/export (see that view's doc comment) — a hand-rolled
+        // "generate on tap" flow previously froze the app under VoiceOver.
+        @State private var exportURL: URL?
+        @State private var showImporter = false
+        @State private var importResultMessage: String?
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
@@ -547,6 +554,20 @@ struct TrainingsListView: View {
             }
             if canManageEvents {
                 ToolbarItem(placement: .topBarTrailing) {
+                    Button { showImporter = true } label: {
+                        Image(systemName: "square.and.arrow.down")
+                    }
+                    .accessibilityLabel("Trainings importieren")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    if let exportURL {
+                        ShareLink(item: exportURL) {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        .accessibilityLabel("Trainings exportieren")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
                     Button { showAdd = true } label: {
                         Image(systemName: "plus")
                     }
@@ -567,6 +588,37 @@ struct TrainingsListView: View {
         }
         .sheet(isPresented: $showSammelabrechnung) {
             SammelabrechnungView()
+        }
+        .task(id: trainings.map(\.id)) {
+            exportURL = try? TrainingImportExport.exportFile(trainings: trainings)
+        }
+        .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
+            handleImport(result)
+        }
+        .alert("Import", isPresented: Binding(
+            get: { importResultMessage != nil },
+            set: { if !$0 { importResultMessage = nil } }
+        )) {
+            Button("OK") { importResultMessage = nil }
+        } message: {
+            Text(importResultMessage ?? "")
+        }
+    }
+
+    private func handleImport(_ result: Result<URL, Error>) {
+        switch result {
+        case .failure(let error):
+            importResultMessage = "Import fehlgeschlagen: \(error.localizedDescription)"
+        case .success(let url):
+            let didAccess = url.startAccessingSecurityScopedResource()
+            defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
+            do {
+                let data = try Data(contentsOf: url)
+                let outcome = TrainingImportExport.importTrainings(from: data, into: trainings, modelContext: modelContext)
+                importResultMessage = outcome.summary
+            } catch {
+                importResultMessage = "Datei konnte nicht gelesen werden: \(error.localizedDescription)"
+            }
         }
     }
 

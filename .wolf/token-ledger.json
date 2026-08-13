@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 7807115,
-    "total_reads": 2599,
-    "total_writes": 5124,
+    "total_tokens_estimated": 7896811,
+    "total_reads": 2615,
+    "total_writes": 5150,
     "total_sessions": 41,
-    "anatomy_hits": 2373,
-    "anatomy_misses": 216,
-    "repeated_reads_blocked": 1609,
-    "estimated_savings_vs_bare_cli": 6518072
+    "anatomy_hits": 2387,
+    "anatomy_misses": 218,
+    "repeated_reads_blocked": 1617,
+    "estimated_savings_vs_bare_cli": 6585244
   },
   "sessions": [
     {
@@ -45903,6 +45903,266 @@
         "writes_count": 10,
         "repeated_reads_blocked": 2,
         "anatomy_lookups": 5
+      }
+    },
+    {
+      "id": "session-2026-08-13-2151",
+      "started": "2026-08-13T19:51:03.304Z",
+      "ended": "2026-08-13T20:15:29.091Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9125,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9125,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 3178,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 6968,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 3178,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 1374,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 5433,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+          "tokens_estimated": 586,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+          "tokens_estimated": 347,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 1438,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/.wolf/cerebrum.md",
+          "tokens_estimated": 1080,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 811,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 71,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 340,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 555,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 880,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 149,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 192,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 38381,
+        "output_tokens_estimated": 6467,
+        "reads_count": 8,
+        "writes_count": 13,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 7
+      }
+    },
+    {
+      "id": "session-2026-08-13-2151",
+      "started": "2026-08-13T19:51:03.304Z",
+      "ended": "2026-08-13T20:17:35.951Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9125,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9125,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 3178,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/.wolf/cerebrum.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 6968,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 3178,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 1374,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 5433,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+          "tokens_estimated": 586,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+          "tokens_estimated": 347,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 1438,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+          "tokens_estimated": 10,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.claude/worktrees/reactive-watching-lemon/.wolf/cerebrum.md",
+          "tokens_estimated": 1080,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 811,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 71,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 340,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 555,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 880,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 8,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 149,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 192,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 38381,
+        "output_tokens_estimated": 6467,
+        "reads_count": 8,
+        "writes_count": 13,
+        "repeated_reads_blocked": 4,
+        "anatomy_lookups": 7
       }
     }
   ],
