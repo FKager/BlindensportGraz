@@ -1333,3 +1333,31 @@
 | 21:44 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | modified testSuggestedStartDateIsExactlyOneWeekLaterWhenWeekdayMatchesToday() | ~831 |
 | 21:45 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | added optional chaining | ~464 |
 | 21:46 | Bug fix: TrainingFavorite now captures address (location/street/zip/city); rewrote suggestedStartDate to use Calendar weekOfYear-based 'same weekday, next calendar week' instead of forward-search-from-+7-days | Models.swift, CloudKitSync.swift, TrainingsViews.swift, TrainingFavoriteTests.swift | Fixed, 68/68 tests pass (excl. bug-202) | ~10k |
+| 21:46 | Session end: 41 writes across 7 files (foamy-churning-widget.md, Models.swift, BlindensportGrazApp.swift, CloudKitSync.swift, TrainingsViews.swift) | 7 reads | ~58282 tok |
+
+## Session: 2026-08-13 21:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-13 21:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-13 21:51
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:52 | Edited .claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift | modified suggestedStartDate() | ~547 |
+| 21:52 | Edited .claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift | 18→17 lines | ~324 |
+| 21:53 | Edited .claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/TrainingFavoriteTests.swift | modified testSuggestedStartDateIsExactlyOneWeekLaterWhenWeekdayMatchesToday() | ~1342 |
+| 21:56 | Edited .claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift | 232 → 228 | ~10 |
+| 21:57 | Edited .claude/worktrees/reactive-watching-lemon/.wolf/cerebrum.md | 1→3 lines | ~1008 |
+| 21:57 | Session end: 5 writes across 3 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md) | 4 reads | ~24889 tok |
+| 22:03 | Edited BlindensportGraz/Models.swift | modified populateFromRecentTrainings() | ~757 |
+| 22:04 | Edited BlindensportGraz/TrainingsViews.swift | 2→3 lines | ~66 |
+| 22:04 | Edited BlindensportGraz/TrainingsViews.swift | modified deleteFavorite() | ~317 |
+| 22:04 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~518 |
+| 22:04 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | added optional chaining | ~821 |
+| 22:05 | Added favorite deletion (long-press) and 'populate from recent trainings' backfill to self-heal stale favorites | Models.swift, TrainingsViews.swift, TrainingFavoriteTests.swift | Success, 71/71 tests pass (excl. bug-202) | ~8k |

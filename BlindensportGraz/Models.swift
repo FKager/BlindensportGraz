@@ -693,6 +693,49 @@ extension TrainingFavorite {
         let raw = (endHour * 60 + endMinute) - (startHour * 60 + startMinute)
         return min(max(raw, 15), 240)
     }
+
+    /// Backfills the Favoriten list from real `Training` records already in
+    /// the store, via the exact same `recordUsage` path a live training
+    /// creation goes through — useful right after this feature shipped
+    /// (existing trainings predate any auto-recorded favorite, so their
+    /// favorite either doesn't exist yet or has stale/default data from an
+    /// earlier version of this feature) or any time the list should just be
+    /// rebuilt from what's actually being trained recently, without
+    /// re-creating trainings by hand.
+    ///
+    /// `trainings` is expected sorted newest-first (as TrainingsListView's
+    /// own `@Query` already provides). Dedupes by the same title+sport key
+    /// `recordUsage` matches on — only the newest instance of each combo
+    /// counts — then processes up to `maxCount` distinct combos **oldest of
+    /// the selected batch first**, so `recordUsage`'s own `lastUsedAt`
+    /// bookkeeping ends up ranking the newest training as most recently
+    /// used, exactly as if a user had tapped through creating these
+    /// trainings themselves in that order.
+    ///
+    /// Returns each recorded/updated favorite paired with any id evicted to
+    /// make room, mirroring `recordUsage`'s own return shape, so the caller
+    /// can push every change (and every eviction) to CloudKit.
+    @available(iOS 26, *)
+    @discardableResult
+    static func populateFromRecentTrainings(_ trainings: [Training], in modelContext: ModelContext) -> [(favorite: TrainingFavorite?, evictedID: UUID?)] {
+        var seenKeys = Set<String>()
+        var distinctNewestFirst: [Training] = []
+        for training in trainings {
+            let key = "\(training.title.trimmingCharacters(in: .whitespaces).lowercased())|\(training.sport)"
+            guard seenKeys.insert(key).inserted else { continue }
+            distinctNewestFirst.append(training)
+            if distinctNewestFirst.count == maxCount { break }
+        }
+
+        return distinctNewestFirst.reversed().map { training in
+            recordUsage(
+                title: training.title, sport: training.sport, startDate: training.startDate,
+                durationMinutes: training.durationMinutes,
+                location: training.location, street: training.street, zip: training.zip, city: training.city,
+                teams: training.teams, in: modelContext
+            )
+        }
+    }
 }
 
 /// Attendance record for one team-roster entry (TeamMembership) at one

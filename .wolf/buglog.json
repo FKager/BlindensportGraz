@@ -3805,6 +3805,91 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-13T21:45:00.000Z"
+    },
+    {
+      "id": "bug-229",
+      "timestamp": "2026-08-13T19:52:29.858Z",
+      "error_message": "Significant refactor of ",
+      "file": ".claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+      "root_cause": "14 lines replaced/restructured",
+      "fix": "Rewrote 21→30 lines (14 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T19:52:29.858Z"
+    },
+    {
+      "id": "bug-230",
+      "timestamp": "2026-08-13T19:53:24.194Z",
+      "error_message": "Significant refactor of ",
+      "file": ".claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/TrainingFavoriteTests.swift",
+      "root_cause": "23 lines replaced/restructured",
+      "fix": "Rewrote 43→72 lines (23 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T19:53:24.194Z"
+    },
+    {
+      "id": "bug-231",
+      "timestamp": "2026-08-13T19:56:05.653Z",
+      "error_message": "Wrong reference: 232 should be 228",
+      "file": ".claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
+      "root_cause": "Used \"232\" instead of \"228\"",
+      "fix": "Changed 232 → 228",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T19:56:05.653Z"
+    },
+    {
+      "id": "bug-232",
+      "timestamp": "2026-08-13T20:04:40.738Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGrazTests/TrainingFavoriteTests.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T20:04:40.738Z"
+    },
+    {
+      "id": "bug-222",
+      "timestamp": "2026-08-13T20:05:00.000Z",
+      "error_message": "User-reported: 'the calculation of the date of the next training is wrong... Example: when the last training was on 12.08. (weekday Wednesday), the next should be at 19.08.' Investigation found suggestedStartDate's already-deployed weekOfYear-based logic (from bug-221's fix) produces the correct 19.08 for a favorite with the right weekday -- root cause was suspected to be a STALE favorite (created before the weekday field existed, or during the ~10min window today between the two same-day deploys where an earlier buggy formula was live) rather than a fresh code bug. Rather than guess further, added a direct way for the user to fix this themselves without re-typing trainings by hand.",
+      "file": "BlindensportGraz/Models.swift, BlindensportGraz/TrainingsViews.swift, BlindensportGrazTests/TrainingFavoriteTests.swift",
+      "root_cause": "Not a fresh logic bug in suggestedStartDate (verified correct via a standalone Swift simulation matching the user's exact example, both Sunday-first and Monday-first calendar conventions). Most likely explanation: TrainingFavorite records don't self-heal -- weekday/location/street/zip/city only ever get (re)computed when recordUsage runs, i.e. when a NEW training with the same title+sport is actually created. A favorite tied to a training created before those fields existed (or before their fix landed) keeps stale/default data (weekday defaults to 2/Monday) until something re-triggers recordUsage for that exact title+sport combo -- there was no way to force a refresh without re-creating a matching training by hand.",
+      "fix": "User asked (separately from confirming the exact root cause) for two capabilities that directly address this: (1) delete a favorite -- added a long-press .contextMenu with a destructive 'Loeschen' button on each Favoriten chip, calling a new deleteFavorite(_:) that removes locally and pushes CloudKitSync.shared.deleteTrainingFavorite. (2) backfill favorites from real existing Training data -- added TrainingFavorite.populateFromRecentTrainings(_:in:) (Models.swift), which dedupes a newest-first Training list by the same title+sport key recordUsage matches on, keeps up to maxCount distinct combos, and replays them through recordUsage oldest-of-the-batch-first (so lastUsedAt ranks the newest training as most-recently-used, matching normal usage order) -- this recomputes weekday/address/teams fresh from real data via the ALREADY-CORRECT current logic, self-healing any stale favorite without the user needing to recreate trainings by hand. Wired into AddTrainingView as a 'Aus letzten Trainings befuellen' button in the Favoriten section (shown whenever any Training exists), backed by a new @Query(sort: \\Training.startDate, order: .reverse) private var recentTrainings. Added 3 new tests (dedup-keeps-newest, captures-weekday-and-address, respects-maxCount). 71/71 tests pass (excl. known bug-202).",
+      "tags": [
+        "trainingfavorite",
+        "stale-data",
+        "delete",
+        "backfill",
+        "weekday"
+      ],
+      "related_bugs": [
+        "bug-221",
+        "bug-202"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T20:05:00.000Z"
     }
   ]
 }

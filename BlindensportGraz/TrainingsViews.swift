@@ -9,6 +9,7 @@ struct AddTrainingView: View {
         @Environment(\.dismiss) private var dismiss
       @Query private var allTeams: [Team]
       @Query(sort: \TrainingFavorite.lastUsedAt, order: .reverse) private var favorites: [TrainingFavorite]
+      @Query(sort: \Training.startDate, order: .reverse) private var recentTrainings: [Training]
 
        @State private var title = ""
        @State private var sport = "Torball"
@@ -57,21 +58,65 @@ struct AddTrainingView: View {
         selectedTeamIDs = Set(favorite.teams.map { $0.id })
     }
 
+    private func deleteFavorite(_ favorite: TrainingFavorite) {
+        let id = favorite.id
+        modelContext.delete(favorite)
+        try? modelContext.save()
+        CloudKitSync.shared.deleteTrainingFavorite(id)
+    }
+
+    // Rebuilds the Favoriten list from real Training records already in the
+    // store — see TrainingFavorite.populateFromRecentTrainings's doc comment.
+    // Useful right after this feature shipped (existing trainings predate
+    // any auto-recorded favorite) or any time the list should reflect what's
+    // actually been trained recently without re-creating trainings by hand.
+    private func populateFavoritesFromRecentTrainings() {
+        let results = TrainingFavorite.populateFromRecentTrainings(recentTrainings, in: modelContext)
+        try? modelContext.save()
+        for (favorite, evictedID) in results {
+            if let favorite {
+                CloudKitSync.shared.pushTrainingFavorite(favorite)
+            }
+            if let evictedID {
+                CloudKitSync.shared.deleteTrainingFavorite(evictedID)
+            }
+        }
+    }
+
     var body: some View {
         NavigationStack {
             Form {
-                if !favorites.isEmpty {
+                if !favorites.isEmpty || !recentTrainings.isEmpty {
                     Section("Favoriten") {
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack {
-                                ForEach(favorites) { favorite in
-                                    Button {
-                                        applyFavorite(favorite)
-                                    } label: {
-                                        Text("\(favorite.title) (\(favorite.sport))")
+                        if !favorites.isEmpty {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(favorites) { favorite in
+                                        Button {
+                                            applyFavorite(favorite)
+                                        } label: {
+                                            Text("\(favorite.title) (\(favorite.sport))")
+                                        }
+                                        .buttonStyle(.bordered)
+                                        // Long-press since these are compact chips in a
+                                        // horizontal scroll — no room for a swipe gesture
+                                        // or a visible per-chip delete button.
+                                        .contextMenu {
+                                            Button(role: .destructive) {
+                                                deleteFavorite(favorite)
+                                            } label: {
+                                                Label("Löschen", systemImage: "trash")
+                                            }
+                                        }
                                     }
-                                    .buttonStyle(.bordered)
                                 }
+                            }
+                        }
+                        if !recentTrainings.isEmpty {
+                            Button {
+                                populateFavoritesFromRecentTrainings()
+                            } label: {
+                                Label("Aus letzten Trainings befüllen", systemImage: "arrow.triangle.2.circlepath")
                             }
                         }
                     }

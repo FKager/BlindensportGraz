@@ -24,6 +24,67 @@ final class TrainingFavoriteTests: XCTestCase {
         return Calendar.current.date(from: components)!
     }
 
+    // MARK: - populateFromRecentTrainings
+
+    func testPopulateFromRecentTrainingsDedupesByTitleAndSportKeepingNewest() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        // Two "Wochentraining"/Torball trainings, newest first (as the
+        // real @Query already sorts) — only the newest should be recorded.
+        let older = Training(title: "Wochentraining", sport: "Torball", location: "Alte Halle",
+                              startDate: date(hour: 18, day: 5))
+        let newer = Training(title: "Wochentraining", sport: "Torball", location: "Neue Halle",
+                              startDate: date(hour: 19, day: 12))
+        context.insert(older)
+        context.insert(newer)
+
+        let results = TrainingFavorite.populateFromRecentTrainings([newer, older], in: context)
+
+        XCTAssertEqual(results.count, 1)
+        XCTAssertEqual(results.first?.favorite?.location, "Neue Halle")
+        let all = try context.fetch(FetchDescriptor<TrainingFavorite>())
+        XCTAssertEqual(all.count, 1)
+    }
+
+    func testPopulateFromRecentTrainingsCapturesWeekdayAndAddress() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        let training = Training(title: "Mittwochstraining", sport: "Torball",
+                                 location: "ASKÖ-Halle", street: "Musterstraße 1", zip: "8010", city: "Graz",
+                                 startDate: date(hour: 18, day: 12)) // a Wednesday
+        context.insert(training)
+
+        let results = TrainingFavorite.populateFromRecentTrainings([training], in: context)
+
+        XCTAssertEqual(results.first?.favorite?.weekday, Calendar.current.component(.weekday, from: training.startDate))
+        XCTAssertEqual(results.first?.favorite?.location, "ASKÖ-Halle")
+        XCTAssertEqual(results.first?.favorite?.street, "Musterstraße 1")
+        XCTAssertEqual(results.first?.favorite?.zip, "8010")
+        XCTAssertEqual(results.first?.favorite?.city, "Graz")
+    }
+
+    func testPopulateFromRecentTrainingsRespectsMaxCount() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+
+        // 7 distinct name+sport combos, newest first.
+        let trainings = (1...7).reversed().map { i in
+            Training(title: "Training \(i)", sport: "Torball", location: "Graz", startDate: date(hour: 18, day: i))
+        }
+        for t in trainings { context.insert(t) }
+
+        let results = TrainingFavorite.populateFromRecentTrainings(trainings, in: context)
+
+        XCTAssertEqual(results.count, TrainingFavorite.maxCount)
+        let all = try context.fetch(FetchDescriptor<TrainingFavorite>())
+        XCTAssertEqual(all.count, TrainingFavorite.maxCount)
+        // The 5 newest (Training 7 down to Training 3) should be kept, not the oldest.
+        XCTAssertTrue(all.contains { $0.title == "Training 7" })
+        XCTAssertFalse(all.contains { $0.title == "Training 1" })
+    }
+
     // MARK: - recordUsage
 
     func testRecordUsageInsertsNewFavorite() throws {
