@@ -180,10 +180,10 @@ final class TrainingFavoriteTests: XCTestCase {
         let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 30, weekday: referenceWeekday, from: reference)
 
         let calendar = Calendar.current
-        // When the target weekday IS today's own weekday, "next week's same
-        // weekday" is always exactly +7 days, regardless of the calendar's
-        // first-weekday convention (Sunday-start vs Monday-start) — this
-        // part of the contract doesn't depend on locale.
+        // When the target weekday IS today's own weekday, that's the
+        // "otherwise" branch (today is not BEFORE the target) — roll a full
+        // week forward rather than suggesting today. Always exactly +7 days,
+        // regardless of the calendar's first-weekday convention.
         let expectedDay = calendar.date(byAdding: .day, value: 7, to: reference)!
         XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expectedDay))
         XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expectedDay))
@@ -192,30 +192,59 @@ final class TrainingFavoriteTests: XCTestCase {
         XCTAssertEqual(calendar.component(.minute, from: suggested), 30)
     }
 
-    /// The core "same weekday, next calendar week" behavior — verified via
-    /// the same yearForWeekOfYear/weekOfYear bucketing the implementation
-    /// itself uses (rather than hardcoded day-offset arithmetic), since the
-    /// exact day offset depends on Calendar.current's first-weekday
-    /// convention (Sunday-start vs Monday-start), which varies by locale/
-    /// region and isn't something this test should assume. This is still a
-    /// meaningful regression check: the previous (buggy) implementation
-    /// searched forward from "today + 7 days" instead of snapping to next
-    /// week's calendar bucket, so it would NOT satisfy the weekOfYear
-    /// equality asserted here for every target weekday.
-    func testSuggestedStartDateLandsInNextCalendarWeekOnTargetWeekday() {
+    /// Reproduces the user-reported bug directly: last training Wed 12.08.2026,
+    /// today (reference) Thu 13.08.2026 — today is already past this week's
+    /// Wednesday, so the suggestion must roll to NEXT week's Wednesday
+    /// (19.08.2026), not stay stuck 7-13 days out from some other anchor.
+    func testSuggestedStartDateMatchesUserReportedExample() {
         let calendar = Calendar.current
-        let reference = date(hour: 10, day: 1, month: 7, year: 2026)
-        let referenceWeekday = calendar.component(.weekday, from: reference)
-        let targetWeekday = referenceWeekday % 7 + 1 // some other weekday than today's
+        let reference = date(hour: 9, day: 13, month: 8, year: 2026) // Thursday
+        XCTAssertEqual(calendar.component(.weekday, from: reference), 5, "sanity check: 13.08.2026 is a Thursday")
+        let wednesday = 4 // Calendar.weekday: 1 = Sunday ... 4 = Wednesday
 
-        let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 0, weekday: targetWeekday, from: reference)
-        let nextWeekReference = calendar.date(byAdding: .weekOfYear, value: 1, to: reference)!
+        let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 0, weekday: wednesday, from: reference)
 
-        XCTAssertEqual(calendar.component(.weekday, from: suggested), targetWeekday)
-        XCTAssertEqual(calendar.component(.weekOfYear, from: suggested), calendar.component(.weekOfYear, from: nextWeekReference))
-        XCTAssertEqual(calendar.component(.yearForWeekOfYear, from: suggested), calendar.component(.yearForWeekOfYear, from: nextWeekReference))
+        let expected = date(hour: 18, day: 19, month: 8, year: 2026)
+        XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expected))
+        XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expected))
+        XCTAssertEqual(calendar.component(.year, from: suggested), calendar.component(.year, from: expected))
+    }
+
+    /// When today is still BEFORE the target weekday within the current
+    /// week, the suggestion must stay in THIS week (as little as 1 day out)
+    /// rather than jumping a full week ahead — this is exactly what the
+    /// previous `.weekOfYear`-bucketing implementation got wrong: it always
+    /// snapped to next week regardless of how close the target weekday was.
+    func testSuggestedStartDateStaysInSameWeekWhenTodayIsBeforeTargetWeekday() {
+        let calendar = Calendar.current
+        let reference = date(hour: 10, day: 1, month: 7, year: 2026) // Wednesday
+        XCTAssertEqual(calendar.component(.weekday, from: reference), 4, "sanity check: 01.07.2026 is a Wednesday")
+        let friday = 6 // later this same week
+
+        let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 0, weekday: friday, from: reference)
+
+        let expected = calendar.date(byAdding: .day, value: 2, to: reference)! // Wed -> Fri, 2 days out
+        XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expected))
+        XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expected))
+        XCTAssertEqual(calendar.component(.year, from: suggested), calendar.component(.year, from: expected))
         XCTAssertEqual(calendar.component(.hour, from: suggested), 18)
-        XCTAssertEqual(calendar.component(.minute, from: suggested), 0)
+    }
+
+    /// When today is ON OR AFTER the target weekday (it already happened
+    /// this week), the suggestion must roll to next week.
+    func testSuggestedStartDateRollsToNextWeekWhenTodayIsAfterTargetWeekday() {
+        let calendar = Calendar.current
+        let reference = date(hour: 10, day: 3, month: 7, year: 2026) // Friday
+        XCTAssertEqual(calendar.component(.weekday, from: reference), 6, "sanity check: 03.07.2026 is a Friday")
+        let wednesday = 4 // earlier this same week, already passed
+
+        let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 0, weekday: wednesday, from: reference)
+
+        let expected = calendar.date(byAdding: .day, value: 5, to: reference)! // Fri -> next Wed, 5 days out
+        XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expected))
+        XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expected))
+        XCTAssertEqual(calendar.component(.year, from: suggested), calendar.component(.year, from: expected))
+        XCTAssertEqual(calendar.component(.hour, from: suggested), 18)
     }
 
     // MARK: - durationMinutes

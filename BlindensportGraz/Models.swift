@@ -664,25 +664,33 @@ extension TrainingFavorite {
     }
 
     /// Produces the date AddTrainingView pre-fills when the favorite is
-    /// tapped: the favorite's stored weekday, at its stored time-of-day, in
-    /// the calendar week immediately following `reference`'s (today's) own
-    /// week — i.e. "same weekday, next week", not "the next occurrence of
-    /// that weekday" (which could resolve to later THIS week) and not a
-    /// fixed +7-days-then-search-forward offset (which could overshoot into
-    /// the week after next). Uses `.yearForWeekOfYear`/`.weekOfYear` (not
-    /// plain `.year`/`.weekOfYear`) so this stays correct across a
-    /// year-boundary week (e.g. a week that starts in late December and
-    /// ends in early January). Factored out as a plain static function
-    /// (rather than inline SwiftUI code) so it's independently testable.
+    /// tapped: the next date, at the favorite's stored time-of-day, that
+    /// falls on its stored weekday and is strictly AFTER `reference`
+    /// (today) — never `reference`'s own date, even when `reference`'s
+    /// weekday already equals the target (that case rolls a full week
+    /// forward rather than suggesting "today"). Concretely this is 1-6 days
+    /// out when the target weekday still has an occurrence left in
+    /// `reference`'s current week, and exactly 7 days out when it doesn't
+    /// (including the exact-match case). Implemented via plain `.weekday`
+    /// numeric distance (`(target - todayWeekday + 7) % 7`, with a 0 result
+    /// bumped to 7) — deliberately NOT `.weekOfYear`/`.yearForWeekOfYear`
+    /// calendar-week bucketing (the prior implementation), which always
+    /// jumped a full week ahead regardless of how close the target weekday
+    /// actually was. Pure day-count arithmetic like this also stays correct
+    /// across year boundaries for free. Factored out as a plain static
+    /// function (rather than inline SwiftUI code) so it's independently
+    /// testable. See [[bug-228]].
     static func suggestedStartDate(startHour: Int, startMinute: Int, weekday: Int, from reference: Date = .now,
                                     calendar: Calendar = .current) -> Date {
-        let nextWeekReference = calendar.date(byAdding: .weekOfYear, value: 1, to: reference) ?? reference
-        var components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: nextWeekReference)
-        components.weekday = weekday
+        let referenceWeekday = calendar.component(.weekday, from: reference)
+        var daysToAdd = (weekday - referenceWeekday + 7) % 7
+        if daysToAdd == 0 { daysToAdd = 7 }
+        let targetDay = calendar.date(byAdding: .day, value: daysToAdd, to: reference) ?? reference
+        var components = calendar.dateComponents([.year, .month, .day], from: targetDay)
         components.hour = startHour
         components.minute = startMinute
         components.second = 0
-        return calendar.date(from: components) ?? nextWeekReference
+        return calendar.date(from: components) ?? targetDay
     }
 
     /// Duration in minutes implied by this favorite's stored start/end

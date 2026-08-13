@@ -3805,6 +3805,27 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-13T21:45:00.000Z"
+    },
+    {
+      "id": "bug-228",
+      "timestamp": "2026-08-13T21:56:00.000Z",
+      "error_message": "User-reported: 'the next date of a training is wrong. The weekday should be taken from the favorite. Should be in the same day/week, when the current date is before the saved weekday. Otherwise, should be in the next week. For example, when the last training was on 12.08. the next should be on 19.08., because they are on the same weekday (Wednesday).'",
+      "file": "BlindensportGraz/Models.swift, BlindensportGrazTests/TrainingFavoriteTests.swift",
+      "root_cause": "The bug-221 fix (same day, earlier) implemented suggestedStartDate via .yearForWeekOfYear/.weekOfYear calendar-bucket snapping: it ALWAYS jumped to the calendar week immediately after reference's own week, then found the target weekday within that bucket. That's wrong whenever the target weekday still has an occurrence left later in reference's CURRENT week (e.g. today Monday, target Wednesday) -- the correct suggestion should stay in the current week (2 days out), not jump a full week ahead. Bucket-snapping can never return less than roughly a week out, silently violating the actual spec: next occurrence of the target weekday strictly after today, rolling to next week only if today is on/after the target weekday already.",
+      "fix": "Rewrote suggestedStartDate using plain numeric .weekday distance instead of calendar-week bucketing: daysToAdd = (targetWeekday - referenceWeekday + 7) % 7, with a 0 result (todays weekday equals the target -- not before, so roll forward) bumped to 7. Standard next-occurrence-of-a-weekday-never-today formula: 1-6 days out when the target weekday is still ahead this week, exactly 7 when it already passed or matches today. Verified against the users own example (reference Thu 13.08.2026, target Wednesday -> suggests Wed 19.08.2026, since Wednesday already passed this week) plus new same-week and next-week regression tests. All 14 TrainingFavoriteTests pass; full suite 50/50 excluding the pre-existing/unrelated bug-202 MemberImportExportTests CloudKit-entitlement failures.",
+      "tags": [
+        "trainingfavorite",
+        "suggestedStartDate",
+        "weekday",
+        "calendar",
+        "regression"
+      ],
+      "related_bugs": [
+        "bug-221",
+        "bug-202"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-13T21:56:00.000Z"
     }
   ]
 }
