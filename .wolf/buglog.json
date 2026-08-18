@@ -3939,6 +3939,54 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-13T20:24:00.000Z"
+    },
+    {
+      "id": "bug-237",
+      "timestamp": "2026-08-18T09:12:10.141Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+      "root_cause": "Had \"Grazer VSC\"",
+      "fix": "Changed to \"Sektion Blindensport (GVSC)\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T09:12:10.141Z"
+    },
+    {
+      "id": "bug-238",
+      "timestamp": "2026-08-18T09:12:18.966Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+      "root_cause": "Had \"<t>Grazer VSC</t>\"",
+      "fix": "Changed to \"<t>Sektion Blindensport (GVSC)</t>\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T09:12:18.966Z"
+    },
+    {
+      "id": "bug-239",
+      "timestamp": "2026-08-18T09:12:37.530Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
+      "root_cause": "13 lines replaced/restructured",
+      "fix": "Rewrote 31→52 lines (13 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T09:12:37.530Z"
     }
   ]
 }

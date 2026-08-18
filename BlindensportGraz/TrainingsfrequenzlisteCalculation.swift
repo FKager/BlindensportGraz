@@ -81,20 +81,22 @@ struct TrainingsfrequenzlisteSummary {
     let people: [TrainingsfrequenzlistePerson] // sorted by displayName, capped at maxPersonRows
     let teams: [Team] // every team assigned to a training in this period, in first-seen order
 
-    // "Trainingszeiten:" header fields the newer reference template
-    // (data/Trainingsfrequenzliste_Torball_2026.xlsx) added — taken from
-    // whichever period training is chronologically earliest, since in
-    // practice a sport trains at one recurring weekly slot and the form only
-    // has room for a single representative value, not one per training day.
-    // Nil when the period has no trainings at all.
+    // "Trainingszeiten:"/"Sportstätte:" header fields — all taken from
+    // whichever period training is chronologically earliest
+    // (`representativeTraining`), since in practice a sport trains at one
+    // recurring weekly slot/venue and the form only has room for a single
+    // representative value, not one per training day. Nil when the period
+    // has no trainings at all.
     //
-    // "Sportstätte:" (location) is deliberately NOT computed here, per
-    // explicit user request — it stays whatever the bundled template
-    // (Trainingsfrequenzliste_Vorlage.xlsx) already has filled in, since
-    // TrainingsfrequenzlisteExporter never patches that cell. See its doc
-    // comment.
+    // Note: "Sportstätte:" (location) was deliberately left un-derived here
+    // until 2026-08-18, per an earlier explicit user request that it keep
+    // whatever venue the bundled template already had filled in — the user
+    // has since reversed that decision and asked for it to come from the
+    // trainings like startTime/endTime do. See TrainingsfrequenzlisteExporter's
+    // doc comment for where this gets patched into Y3.
     let startTime: Date?
     let endTime: Date?
+    let location: String?
 
     func totalPresent(on date: Date) -> Int {
         people.reduce(0) { $0 + ($1.attended(on: date) ? 1 : 0) }
@@ -185,6 +187,7 @@ enum TrainingsfrequenzlisteCalculator {
                                               trainingDates: trainingDates, people: Array(people),
                                               teams: assignedTeams,
                                               startTime: representativeTraining?.startDate,
-                                              endTime: representativeTraining?.endDate)
+                                              endTime: representativeTraining?.endDate,
+                                              location: representativeTraining?.location)
     }
 }

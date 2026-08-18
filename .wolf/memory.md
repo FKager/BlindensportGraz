@@ -1377,3 +1377,19 @@
 | 22:23 | Created BlindensportGrazTests/TrainingImportExportTests.swift | — | ~2392 |
 | 22:23 | Edited BlindensportGrazTests/TrainingImportExportTests.swift | 2→2 lines | ~55 |
 | 22:24 | New feature: Training JSON import/export (mirrors MemberImportExport pattern) | TrainingImportExport.swift (new), TrainingsViews.swift, TrainingImportExportTests.swift (new) | Success, app builds clean, 71/71 other tests pass | ~12k |
+| 22:27 | Session end: 19 writes across 7 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md, TrainingsViews.swift, MemberListView.swift) | 14 reads | ~71951 tok |
+| 22:30 | Session end: 19 writes across 7 files (Models.swift, TrainingFavoriteTests.swift, cerebrum.md, TrainingsViews.swift, MemberListView.swift) | 14 reads | ~71951 tok |
+
+## Session: 2026-08-18 10:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 11:11 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 14→16 lines | ~243 |
+| 11:11 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 5→6 lines | ~141 |
+| 11:11 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | 6→5 lines | ~94 |
+| 11:12 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | 5→7 lines | ~114 |
+| 11:12 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | "Grazer VSC" → "Sektion Blindensport (GVS" | ~35 |
+| 11:12 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | "<t>Grazer VSC</t>" → "<t>Sektion Blindensport (" | ~21 |
+| 11:12 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportPatchesLocationFromRepresentativeTraining() | ~819 |
+| 11:14 | Ran TrainingsfrequenzlisteCalculationTests (unsigned, iPhone 17 sim) after location/vereinName changes | TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift | 12/12 passed | ~200 |
+| 11:13 | Session end: 7 writes across 3 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculationTests.swift) | 6 reads | ~23051 tok |

@@ -208,7 +208,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertTrue(sharedStringsXML.contains("bei anwesenden SportlerInnen"))
 
         // Dynamically patched values: written as sheet1.xml inline strings.
-        XCTAssertTrue(sheetXML.contains("<t>Grazer VSC</t>"))
+        XCTAssertTrue(sheetXML.contains("<t>Sektion Blindensport (GVSC)</t>"))
         XCTAssertTrue(sheetXML.contains("<t>Torball</t>"))
         XCTAssertTrue(sheetXML.contains("<t>Anna</t>"))
         XCTAssertTrue(sheetXML.contains("<t>Sportlerin</t>"))
@@ -267,14 +267,13 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertTrue(sheetXML.contains("<v>\(expectedEnd)</v>"))
     }
 
-    /// Sportstätte (Y3) is deliberately NOT overwritten from `Training.location`
-    /// — per explicit user request the export should show whatever venue the
-    /// bundled reference template itself already has filled in ("ASKÖ-Halle B"
-    /// in the checked-in Trainingsfrequenzliste_Vorlage.xlsx), regardless of
-    /// what any individual Training record's `location` says. Asserts the
-    /// template's own value survives, and that the summary struct doesn't even
-    /// carry a `location` field to (re-)patch from.
-    func testExportLeavesLocationFromTemplateUntouched() throws {
+    /// Sportstätte (Y3) is patched from the representative Training's
+    /// `location` — same source as the Trainingszeiten fields (H4/L4), see
+    /// testExportPatchesTimesFromRepresentativeTraining. This reverses an
+    /// earlier (2026-08-07) explicit user request to leave Y3 as whatever the
+    /// bundled reference template had filled in; the user has since asked for
+    /// it to come from the trainings after all, per the 2026-08-18 session.
+    func testExportPatchesLocationFromRepresentativeTraining() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
         let team = Team(name: "Torball 1", sport: "Torball")
@@ -285,6 +284,8 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         context.insert(training)
 
         let summary = TrainingsfrequenzlisteCalculator.summary(sport: "Torball", halfYear: .second, year: 2026, in: context)
+        XCTAssertEqual(summary.location, "Sporthalle Puntigam")
+
         let url = try TrainingsfrequenzlisteExporter.export(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
         let archive = try Archive(url: url, accessMode: .read)
@@ -292,11 +293,31 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
-        // Y3 was never rewritten to an inline string, so it still references
-        // the template's own shared string (not the Training's "Sporthalle
-        // Puntigam") — confirms the cell was left alone, not blanked either.
-        XCTAssertFalse(sheetXML.contains("<t>Sporthalle Puntigam</t>"))
-        XCTAssertTrue(sheetXML.contains("<c r=\"Y3\" s=\"39\" t=\"s\"><v>5</v></c>"))
+        // Y3 was rewritten to an inline string carrying the Training's
+        // location, no longer the template's own shared string.
+        XCTAssertTrue(sheetXML.contains("<t>Sporthalle Puntigam</t>"))
+        XCTAssertFalse(sheetXML.contains("<c r=\"Y3\" s=\"39\" t=\"s\"><v>5</v></c>"))
+    }
+
+    /// No trainings in the period -> no representative Training -> Y3 gets
+    /// cleared rather than left dangling with a stale/previous value, same
+    /// pattern as H4/L4 when `startTime`/`endTime` are nil.
+    func testExportClearsLocationWhenNoTrainingsInPeriod() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+
+        let summary = TrainingsfrequenzlisteCalculator.summary(sport: "Torball", halfYear: .second, year: 2026, in: context)
+        XCTAssertNil(summary.location)
+
+        let url = try TrainingsfrequenzlisteExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+        XCTAssertFalse(sheetXML.contains("<c r=\"Y3\" s=\"39\" t=\"s\"><v>5</v></c>"))
     }
 
     /// Every other test in this file uses a Member-backed membership; this
