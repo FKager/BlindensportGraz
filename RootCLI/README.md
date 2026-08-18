@@ -219,7 +219,7 @@ credentials above) for the admin page, or call the REST API directly:
 | POST   | `/api/members/import` | JSON array of `Member`-shaped objects | 200, returns `{succeeded, failed, total, messages}` |
 
 Field names match `members.example.json` (`firstName`, `lastName`, `street`,
-`zip`, `city`, `email`, `phone`, `memberNumber`, `joinedAt`, `notes`), plus
+`zip`, `city`, `country`, `email`, `phone`, `memberNumber`, `joinedAt`, `notes`), plus
 `gender`/`title`/`birthDate`/`sportId`/`svnr`/`iban`/`lastMedicalExamination`/
 `defaultFunction`/`memberOfGVSC` (the last defaults to `true` when omitted);
 `id` is assigned server-side on create and is otherwise read-only.

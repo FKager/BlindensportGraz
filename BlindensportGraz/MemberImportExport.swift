@@ -17,6 +17,7 @@ struct MemberIO: Codable {
     var street: String?
     var zip: String?
     var city: String?
+    var country: String?
     var email: String?
     var phone: String?
     var memberNumber: String?
@@ -33,12 +34,12 @@ struct MemberIO: Codable {
     var memberOfGVSC: Bool?
 
     private enum CodingKeys: String, CodingKey {
-        case id, firstName, lastName, street, zip, plz, city, email, phone, memberNumber, joinedAt, notes,
+        case id, firstName, lastName, street, zip, plz, city, country, email, phone, memberNumber, joinedAt, notes,
              gender, title, birthDate, sportId, svnr, iban, lastMedicalExamination, defaultFunction, memberOfGVSC
     }
 
     init(id: String? = nil, firstName: String? = nil, lastName: String? = nil, street: String? = nil,
-         zip: String? = nil, city: String? = nil, email: String? = nil, phone: String? = nil,
+         zip: String? = nil, city: String? = nil, country: String? = nil, email: String? = nil, phone: String? = nil,
          memberNumber: String? = nil, joinedAt: String? = nil, notes: String? = nil,
          gender: String? = nil, title: String? = nil, birthDate: String? = nil, sportId: String? = nil,
          svnr: String? = nil, iban: String? = nil, lastMedicalExamination: String? = nil,
@@ -49,6 +50,7 @@ struct MemberIO: Codable {
         self.street = street
         self.zip = zip
         self.city = city
+        self.country = country
         self.email = email
         self.phone = phone
         self.memberNumber = memberNumber
@@ -74,6 +76,7 @@ struct MemberIO: Codable {
         zip = try container.decodeIfPresent(String.self, forKey: .zip)
             ?? container.decodeIfPresent(String.self, forKey: .plz)
         city = try container.decodeIfPresent(String.self, forKey: .city)
+        country = try container.decodeIfPresent(String.self, forKey: .country)
         email = try container.decodeIfPresent(String.self, forKey: .email)
         phone = try container.decodeIfPresent(String.self, forKey: .phone)
         memberNumber = try container.decodeIfPresent(String.self, forKey: .memberNumber)
@@ -102,6 +105,7 @@ struct MemberIO: Codable {
         try container.encodeIfPresent(street, forKey: .street)
         try container.encodeIfPresent(zip, forKey: .zip)
         try container.encodeIfPresent(city, forKey: .city)
+        try container.encodeIfPresent(country, forKey: .country)
         try container.encodeIfPresent(email, forKey: .email)
         try container.encodeIfPresent(phone, forKey: .phone)
         try container.encodeIfPresent(memberNumber, forKey: .memberNumber)
@@ -150,6 +154,7 @@ enum MemberImportExport {
                     street: member.street,
                     zip: member.zip,
                     city: member.city,
+                    country: member.country,
                     email: member.email,
                     phone: member.phone,
                     memberNumber: member.memberNumber,
@@ -251,6 +256,7 @@ enum MemberImportExport {
                 fillIfBlank(&existing.street, row.street)
                 fillIfBlank(&existing.zip, row.zip)
                 fillIfBlank(&existing.city, row.city)
+                fillIfBlank(&existing.country, row.country)
                 fillIfBlank(&existing.email, row.email)
                 fillIfBlank(&existing.phone, row.phone)
                 fillIfBlank(&existing.memberNumber, row.memberNumber)
@@ -276,6 +282,7 @@ enum MemberImportExport {
                     street: row.street ?? "",
                     zip: row.zip ?? "",
                     city: row.city ?? "",
+                    country: row.country ?? "",
                     email: row.email ?? "",
                     phone: row.phone ?? "",
                     memberNumber: row.memberNumber ?? "",

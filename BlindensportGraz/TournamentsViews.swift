@@ -14,6 +14,7 @@ struct AddTournamentView: View {
         @State private var street = ""
         @State private var zip = ""
         @State private var city = ""
+        @State private var country = ""
         @State private var startDate = Date()
         @State private var endDate = Date().addingTimeInterval(86400)
         @State private var maxTeams = 8
@@ -48,6 +49,7 @@ struct AddTournamentView: View {
                     TextField("Straße", text: $street)
                     TextField("PLZ", text: $zip)
                     TextField("Ort", text: $city)
+                    TextField("Land", text: $country)
                 }
                 Section("Zeitraum") {
                     DatePicker("Start", selection: $startDate, displayedComponents: [.date])
@@ -121,6 +123,7 @@ struct AddTournamentView: View {
                             street: street,
                             zip: zip,
                             city: city,
+                            country: country,
                             startDate: startDate,
                             endDate: endDate,
                             maxTeams: maxTeams,
@@ -276,6 +279,7 @@ var body: some View {
             TextField("Straße", text: $tournament.street)
             TextField("PLZ", text: $tournament.zip)
             TextField("Ort", text: $tournament.city)
+            TextField("Land", text: $tournament.country)
         }
         Section("Zeitraum") {
             DatePicker("Start", selection: $tournament.startDate, displayedComponents: [.date])
@@ -395,7 +399,7 @@ var body: some View {
             teams: tournament.teams,
             exportContext: TeilnehmerlisteContext(
                 betrifft: tournament.title,
-                ort: tournament.location,
+                ort: tournament.locationWithCountry,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
                 attendedMemberships: attendedMemberships.filter(isSportler)
@@ -410,7 +414,7 @@ var body: some View {
             teams: tournament.teams,
             exportContext: TeilnehmerlisteContext(
                 betrifft: tournament.title,
-                ort: tournament.location,
+                ort: tournament.locationWithCountry,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
                 attendedMemberships: attendedMemberships.filter(isHelfer)

@@ -186,6 +186,7 @@ struct MemberDetailView: View {
                 TextField("PLZ", text: $member.zip)
                     .keyboardType(.numberPad)
                 TextField("Ort", text: $member.city)
+                TextField("Land", text: $member.country)
             }
             Section("Kontakt") {
                 TextField("E-Mail", text: $member.email)
@@ -277,6 +278,7 @@ struct MyMemberView: View {
                     TextField("PLZ", text: $member.zip)
                         .keyboardType(.numberPad)
                     TextField("Ort", text: $member.city)
+                    TextField("Land", text: $member.country)
                 }
                 Section("Kontakt") {
                     TextField("E-Mail", text: $member.email)
@@ -311,6 +313,7 @@ struct AddMemberView: View {
     @State private var street = ""
     @State private var zip = ""
     @State private var city = ""
+    @State private var country = ""
     @State private var email = ""
     @State private var phone = ""
     @State private var memberNumber = ""
@@ -343,6 +346,7 @@ struct AddMemberView: View {
                     TextField("PLZ", text: $zip)
                         .keyboardType(.numberPad)
                     TextField("Ort", text: $city)
+                    TextField("Land", text: $country)
                 }
                 Section("Kontakt") {
                     TextField("E-Mail", text: $email)
@@ -378,7 +382,7 @@ struct AddMemberView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
                         let member = Member(firstName: firstName, lastName: lastName, street: street,
-                                             zip: zip, city: city, email: email, phone: phone,
+                                             zip: zip, city: city, country: country, email: email, phone: phone,
                                              memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
                                              gender: gender, title: title, birthDate: birthDate,
                                              sportId: sportId, svnr: svnr, iban: iban,

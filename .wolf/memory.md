@@ -1481,3 +1481,99 @@
 | 15:06 | Edited BlindensportGraz/TournamentsViews.swift | 4→4 lines | ~61 |
 | 15:07 | Turnaments: Teilnehmer Sportler now filters strictly role=="player" (isSportler helper) instead of !isHelfer, so unexpected/imported role strings no longer leak into the Sportler roster | TournamentsViews.swift | done | ~250 |
 | 15:07 | Session end: 5 writes across 1 files (TournamentsViews.swift) | 2 reads | ~8060 tok |
+| 15:16 | Session end: 5 writes across 1 files (TournamentsViews.swift) | 2 reads | ~8060 tok |
+
+## Session: 2026-08-18 17:58
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:03 | Edited BlindensportGraz/Models.swift | 6→7 lines | ~52 |
+| 18:03 | Edited BlindensportGraz/Models.swift | 24→26 lines | ~213 |
+| 18:03 | Edited BlindensportGraz/Models.swift | 7→9 lines | ~158 |
+| 18:03 | Edited BlindensportGraz/Models.swift | 5→6 lines | ~74 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 18→20 lines | ~152 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 8→9 lines | ~140 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 19→20 lines | ~200 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 18→19 lines | ~222 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 5→6 lines | ~47 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 15→16 lines | ~160 |
+| 18:04 | Edited BlindensportGraz/Models.swift | modified recordUsage() | ~97 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 5→6 lines | ~53 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 3→3 lines | ~45 |
+| 18:04 | Edited BlindensportGraz/Models.swift | 2→2 lines | ~52 |
+| 18:04 | Edited BlindensportGraz/CloudKitSync.swift | 5→6 lines | ~65 |
+| 18:04 | Edited BlindensportGraz/CloudKitSync.swift | 5→6 lines | ~70 |
+| 18:04 | Edited BlindensportGraz/CloudKitSync.swift | 4→5 lines | ~60 |
+| 18:04 | Edited BlindensportGraz/CloudKitSync.swift | 4→5 lines | ~52 |
+| 18:04 | Edited BlindensportGraz/CloudKitSync.swift | 5→6 lines | ~75 |
+| 18:04 | Edited BlindensportGraz/CloudKitSync.swift | 4→5 lines | ~76 |
+| 18:05 | Edited BlindensportGraz/CloudKitSync.swift | 6→7 lines | ~77 |
+| 18:05 | Edited BlindensportGraz/CloudKitSync.swift | 2→2 lines | ~55 |
+| 18:05 | Edited BlindensportGraz/CloudKitSync.swift | 30→32 lines | ~468 |
+| 18:05 | Edited BlindensportGraz/CloudKitSync.swift | 31→33 lines | ~495 |
+| 18:05 | Edited BlindensportGraz/CloudKitSync.swift | 31→33 lines | ~490 |
+| 18:05 | Edited BlindensportGraz/CloudKitSync.swift | 29→31 lines | ~478 |
+| 18:05 | Edited BlindensportGraz/MemberImportExport.swift | 4→5 lines | ~31 |
+| 18:05 | Edited BlindensportGraz/MemberImportExport.swift | modified init() | ~288 |
+| 18:05 | Edited BlindensportGraz/MemberImportExport.swift | 2→3 lines | ~61 |
+| 18:05 | Edited BlindensportGraz/MemberImportExport.swift | 2→3 lines | ~50 |
+| 18:06 | Edited BlindensportGraz/MemberImportExport.swift | 4→5 lines | ~55 |
+| 18:06 | Edited BlindensportGraz/MemberImportExport.swift | 4→5 lines | ~75 |
+| 18:06 | Edited BlindensportGraz/MemberImportExport.swift | 4→5 lines | ~59 |
+| 18:06 | Edited BlindensportGraz/TrainingImportExport.swift | 4→5 lines | ~32 |
+| 18:06 | Edited BlindensportGraz/TrainingImportExport.swift | 4→5 lines | ~67 |
+| 18:06 | Edited BlindensportGraz/TrainingImportExport.swift | 3→4 lines | ~68 |
+| 18:06 | Edited BlindensportGraz/TrainingImportExport.swift | 4→5 lines | ~58 |
+| 18:06 | Edited BlindensportGraz/EventsViews.swift | 4→5 lines | ~52 |
+| 18:06 | Edited BlindensportGraz/EventsViews.swift | modified Section() | ~79 |
+| 18:06 | Edited BlindensportGraz/EventsViews.swift | 4→5 lines | ~58 |
+| 18:06 | Edited BlindensportGraz/TournamentsViews.swift | 4→5 lines | ~53 |
+| 18:06 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~80 |
+| 18:06 | Edited BlindensportGraz/TournamentsViews.swift | 4→5 lines | ~58 |
+| 18:06 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~69 |
+| 18:06 | Edited BlindensportGraz/TrainingsViews.swift | 4→5 lines | ~52 |
+| 18:06 | Edited BlindensportGraz/TrainingsViews.swift | 4→5 lines | ~41 |
+| 18:06 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~80 |
+| 18:06 | Edited BlindensportGraz/TrainingsViews.swift | 5→6 lines | ~75 |
+| 18:07 | Edited BlindensportGraz/TrainingsViews.swift | 2→2 lines | ~48 |
+| 18:07 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~72 |
+| 18:07 | Edited BlindensportGraz/MembersViews.swift | modified Section() | ~181 |
+| 18:07 | Edited BlindensportGraz/MembersViews.swift | 5→6 lines | ~81 |
+| 18:07 | Edited BlindensportGraz/MembersViews.swift | 4→5 lines | ~46 |
+| 18:07 | Edited BlindensportGraz/MembersViews.swift | 5→6 lines | ~74 |
+| 18:07 | Edited BlindensportGraz/MembersViews.swift | 2→2 lines | ~58 |
+| 18:07 | Edited RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | 4→5 lines | ~39 |
+| 18:07 | Edited RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | 4→5 lines | ~38 |
+| 18:07 | Edited RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | 4→5 lines | ~36 |
+| 18:07 | Edited RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | 4→5 lines | ~63 |
+| 18:07 | Edited RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | 3→4 lines | ~41 |
+| 18:07 | Edited RootCLI/Sources/CloudKitS2SCore/MemberBulkImport.swift | 4→5 lines | ~40 |
+| 18:08 | Edited RootCLI/Sources/CloudKitS2SCore/MemberBulkImport.swift | modified init() | ~296 |
+| 18:08 | Edited RootCLI/Sources/CloudKitS2SCore/MemberBulkImport.swift | 2→3 lines | ~61 |
+| 18:08 | Edited RootCLI/Sources/CloudKitS2SCore/MemberBulkImport.swift | 2→3 lines | ~50 |
+| 18:08 | Edited RootCLI/Sources/CloudKitS2SCore/MemberBulkImport.swift | 4→5 lines | ~56 |
+| 18:08 | Edited RootCLI/Sources/CloudKitS2SCore/MemberFillUpdate.swift | 4→5 lines | ~60 |
+| 18:08 | Edited RootCLI/Sources/CloudKitS2SCore/MemberFillUpdate.swift | 4→5 lines | ~51 |
+| 18:08 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | 4→5 lines | ~31 |
+| 18:08 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | 4→5 lines | ~51 |
+| 18:08 | Edited RootCLI/members.example.json | 4→5 lines | ~38 |
+| 18:08 | Edited RootCLI/README.md | 2→2 lines | ~44 |
+| 18:12 | Added country/"Land" field to member + event/training/tournament addresses (Models.swift, CloudKitSync.swift, MembersViews/EventsViews/TournamentsViews/TrainingsViews.swift, Member/TrainingImportExport.swift, RootCLI CloudKitS2SCore+clubmembersapi) | 15 files | xcodebuild build + build-for-testing + swift build all green | ~large |
+| 18:11 | Edited BlindensportGraz/Localizable.xcstrings | 2→3 lines | ~21 |
+| 18:12 | Session end: 72 writes across 15 files (Models.swift, CloudKitSync.swift, MemberImportExport.swift, TrainingImportExport.swift, EventsViews.swift) | 16 reads | ~74649 tok |
+
+## Session: 2026-08-18 18:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-18 18:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:17 | Edited BlindensportGraz/Models.swift | expanded (+13 lines) | ~291 |
+| 18:17 | Edited BlindensportGraz/TournamentsViews.swift | 7→7 lines | ~89 |
+| 18:18 | Edited BlindensportGraz/TournamentsViews.swift | 7→7 lines | ~88 |
+| 18:18 | Edited BlindensportGrazTests/TeilnehmerlisteExportTests.swift | modified testExportFullRoster() | ~381 |
+| 18:20 | Turnaments Teilnehmerliste "Ort" now includes country (comma-separated) when set and != "Österreich"; added `SportEvent.locationWithCountry`, wired into both TournamentsViews.swift TeilnehmerlisteContext call sites | Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift | xcodebuild test (TeilnehmerlisteExportTests) 3/3 passed | ~9000 |
+| 18:19 | Session end: 4 writes across 3 files (Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift) | 4 reads | ~20701 tok |

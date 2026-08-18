@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T13:06:55.141Z
-> Files: 108 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T16:18:28.630Z
+> Files: 111 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -100,20 +100,20 @@
 - `BlindensportGraz.entitlements` (~164 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1127 tok)
 - `CLAUDE.md` — CLAUDE.md (~1292 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~12262 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~12484 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~3777 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~3814 tok)
 - `Info.plist` (~443 tok)
 - `KostZCalculation.swift` — KostZCalculator: monthly (Training-only) summary + summary(for tournament:) (~1500 tok)
 - `KostZExport.swift` — KostZExporter: month export ORT="Graz"+training-date-derived period; tournament export ORT=tournament.city (~1700 tok)
 - `KostZViews.swift` — KostZCalculationView (monthly, Trainings) + KostZTournamentCalculationView (per-tournament) (~2400 tok)
-- `Localizable.xcstrings` (~6145 tok)
+- `Localizable.xcstrings` (~6958 tok)
 - `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
-- `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4738 tok)
+- `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4840 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1659 tok)
-- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4724 tok)
-- `Models.swift` — Class: User (~9768 tok)
+- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4784 tok)
+- `Models.swift` — Class: User (~10141 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~2626 tok)
 - `PraeExport.swift` — Declares PraeExportError; D4/C3 name fields use person.praeFormName ("Nachname, Vorname"), not displayName (~5140 tok)
 - `PraeViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4262 tok)
@@ -125,12 +125,12 @@
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3021 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~4292 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~6030 tok)
-- `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2629 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~6089 tok)
+- `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2679 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2807 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2643 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1718 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~7670 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~7737 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/.claude/
@@ -152,16 +152,16 @@
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~8159 tok)
 - `SammelabrechnungExportTests.swift` — Class: SammelabrechnungExportTests (~1879 tok)
-- `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
+- `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1983 tok)
 - `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~3965 tok)
 - `TrainingImportExportTests.swift` — Class: TrainingImportExportTests (~2398 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~6931 tok)
 
 ## RootCLI/
 
-- `members.example.json` (~110 tok)
+- `members.example.json` (~118 tok)
 - `Package.swift` — swift-tools-version:5.9 (~355 tok)
-- `README.md` — Project documentation (~3463 tok)
+- `README.md` — Project documentation (~3466 tok)
 
 ## RootCLI/Public/
 
@@ -174,13 +174,16 @@
 - `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
 - `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~2435 tok)
 - `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
+- `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3132 tok)
+- `MemberFillUpdate.swift` — / Non-destructive counterpart to `MemberBulkImport.run` — fills in fields (~1808 tok)
+- `MemberRecord.swift` — / Single source of truth for the `ClubMember` CKRecord field mapping, (~1626 tok)
 
 ## RootCLI/Sources/clubmembersapi/
 
 - `Auth.swift` — HTTP Basic Auth middleware, constant-time SHA256 compare, API_USERNAME/API_PASSWORD (~315 tok)
 - `Configure.swift` — Vapor app config: requires API_USERNAME/PASSWORD (fails fast if missing), auth+guard+FileMiddleware(defaultFile: "index.html"), PORT/HOSTNAME (~423 tok)
 - `Entrypoint.swift` — @main entrypoint — deliberately NOT named main.swift (SPM special-cases that filename, see cerebrum Do-Not-Repeat 2026-07-16); wraps startup throw in do/catch for clean exit(1) instead of fatalError (~200 tok)
-- `Routes.swift` — Struct: MemberInput (~2726 tok)
+- `Routes.swift` — Struct: MemberInput (~2755 tok)
 
 ## RootCLI/Sources/rootcli/
 

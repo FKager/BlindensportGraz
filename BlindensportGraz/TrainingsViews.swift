@@ -18,6 +18,7 @@ struct AddTrainingView: View {
        @State private var street = ""
        @State private var zip = ""
        @State private var city = ""
+       @State private var country = ""
        @State private var startDate = Date()
        @State private var durationMinutes = 90
        @State private var focusArea = ""
@@ -49,6 +50,7 @@ struct AddTrainingView: View {
         street = favorite.street
         zip = favorite.zip
         city = favorite.city
+        country = favorite.country
         includesTime = true
         startDate = TrainingFavorite.suggestedStartDate(startHour: favorite.startHour, startMinute: favorite.startMinute, weekday: favorite.weekday)
         durationMinutes = favorite.durationMinutes
@@ -137,6 +139,7 @@ struct AddTrainingView: View {
                     TextField("Straße", text: $street)
                     TextField("PLZ", text: $zip)
                     TextField("Ort", text: $city)
+                    TextField("Land", text: $country)
                 }
                 Section("Planung") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
@@ -215,6 +218,7 @@ struct AddTrainingView: View {
                             street: street,
                             zip: zip,
                             city: city,
+                            country: country,
                             startDate: startDate,
                             durationMinutes: durationMinutes,
                             focusArea: focusArea,
@@ -232,7 +236,7 @@ struct AddTrainingView: View {
                         let (favorite, evictedID) = TrainingFavorite.recordUsage(
                             title: title, sport: sport, startDate: startDate,
                             durationMinutes: durationMinutes,
-                            location: location, street: street, zip: zip, city: city,
+                            location: location, street: street, zip: zip, city: city, country: country,
                             teams: manuallySelectedTeams, in: modelContext
                         )
                         try? modelContext.save()
@@ -345,6 +349,7 @@ struct TrainingDetailView: View {
                TextField("Straße", text: $training.street)
                TextField("PLZ", text: $training.zip)
                TextField("Ort", text: $training.city)
+               TextField("Land", text: $training.country)
            }
            Section("Planung") {
                DatePicker("Start", selection: $training.startDate)

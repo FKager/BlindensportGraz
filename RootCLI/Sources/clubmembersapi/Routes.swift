@@ -11,6 +11,7 @@ struct MemberInput: Content {
     var street: String?
     var zip: String?
     var city: String?
+    var country: String?
     var email: String?
     var phone: String?
     var memberNumber: String?
@@ -58,6 +59,7 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
             street: input.street ?? "",
             zip: input.zip ?? "",
             city: input.city ?? "",
+            country: input.country ?? "",
             email: input.email ?? "",
             phone: input.phone ?? "",
             memberNumber: input.memberNumber ?? "",
@@ -93,6 +95,7 @@ func routes(_ app: Application, client: CloudKitS2SClient) throws {
             street: input.street ?? "",
             zip: input.zip ?? "",
             city: input.city ?? "",
+            country: input.country ?? "",
             email: input.email ?? "",
             phone: input.phone ?? "",
             memberNumber: input.memberNumber ?? "",

@@ -5,6 +5,7 @@
     "street": "Musterstraße 1",
     "zip": "8010",
     "city": "Graz",
+    "country": "Österreich",
     "email": "anna@example.com",
     "phone": "+43 660 1234567",
     "memberNumber": "1001",
