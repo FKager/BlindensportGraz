@@ -402,7 +402,8 @@ var body: some View {
                 ort: tournament.locationWithCountry,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
-                attendedMemberships: attendedMemberships.filter(isSportler)
+                attendedMemberships: attendedMemberships.filter(isSportler),
+                fileNamePrefix: "TN-Sportler"
             ),
             membershipFilter: { isSportler($0) && attendance(for: $0)?.attended == true },
             kindLabel: "Teilnehmer Sportler"
@@ -417,7 +418,8 @@ var body: some View {
                 ort: tournament.locationWithCountry,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
-                attendedMemberships: attendedMemberships.filter(isHelfer)
+                attendedMemberships: attendedMemberships.filter(isHelfer),
+                fileNamePrefix: "TN-Helfer"
             ),
             membershipFilter: { isHelfer($0) && attendance(for: $0)?.attended == true },
             kindLabel: "Teilnehmer Helfer"

@@ -17,6 +17,12 @@ struct TeilnehmerlisteContext {
     let startDate: Date
     let endDate: Date
     let attendedMemberships: [TeamMembership]
+    // Base name for the exported .xlsx (UUID + extension appended by the
+    // exporter) — TournamentsViews.swift sets "TN-Sportler"/"TN-Helfer" for
+    // its two role-split exports; defaults to the old generic name for any
+    // other caller (there are none currently, but this keeps existing test
+    // fixtures/callers compiling without change).
+    var fileNamePrefix: String = "TeilnehmerInnenliste"
 }
 
 enum TeilnehmerlisteExportError: LocalizedError {
@@ -53,7 +59,7 @@ enum TeilnehmerlisteExporter {
 
         let sourceArchive = try Archive(url: templateURL, accessMode: .read)
         let outputURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent("TeilnehmerInnenliste-\(UUID().uuidString).xlsx")
+            .appendingPathComponent("\(context.fileNamePrefix)-\(UUID().uuidString).xlsx")
         let outputArchive = try Archive(url: outputURL, accessMode: .create)
 
         let dateFormatter = DateFormatter()
