@@ -1393,3 +1393,15 @@
 | 11:12 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportPatchesLocationFromRepresentativeTraining() | ~819 |
 | 11:14 | Ran TrainingsfrequenzlisteCalculationTests (unsigned, iPhone 17 sim) after location/vereinName changes | TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift | 12/12 passed | ~200 |
 | 11:13 | Session end: 7 writes across 3 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculationTests.swift) | 6 reads | ~23051 tok |
+| 11:18 | Session end: 7 writes across 3 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculationTests.swift) | 6 reads | ~23051 tok |
+
+## Session: 2026-08-18 12:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:21 | Edited BlindensportGraz/PraeCalculation.swift | modified hash() | ~227 |
+| 12:21 | Edited BlindensportGraz/PraeExport.swift | inline fix | ~26 |
+| 12:22 | Edited BlindensportGraz/PraeExport.swift | inline fix | ~26 |
+| 12:22 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testPraeFormNameUsesLastNameCommaFirstNameOrder() | ~188 |
+| 12:22 | PRAE name field now "Nachname, Vorname" (was Vorname Nachname) per user request; added PraeEligiblePerson.praeFormName, used for D4 (main form) + C3 (Darstellung appendix) | PraeCalculation.swift, PraeExport.swift, PraeCalculationTests.swift | xcodebuild test -only-testing:PraeCalculationTests 22/22 passed | ~4000 |
+| 12:23 | Session end: 4 writes across 3 files (PraeCalculation.swift, PraeExport.swift, PraeCalculationTests.swift) | 4 reads | ~25698 tok |

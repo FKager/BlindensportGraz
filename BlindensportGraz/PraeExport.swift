@@ -117,7 +117,7 @@ enum PraeExporter {
 
         return try patchTemplate(templateURL: templateURL, outputPrefix: "PRAE-Darstellung") { xml in
             var patched = XLSXCellPatch.setText(in: xml, ref: "C2", value: vereinName)
-            patched = XLSXCellPatch.setText(in: patched, ref: "C3", value: person.displayName)
+            patched = XLSXCellPatch.setText(in: patched, ref: "C3", value: person.praeFormName)
             if let birthDate = person.member?.birthDate {
                 patched = XLSXCellPatch.setText(in: patched, ref: "C4", value: dateFormatter.string(from: birthDate))
             }
@@ -198,7 +198,7 @@ enum PraeExporter {
         monthFormatter.dateFormat = "LLLL"
 
         return try patchTemplate(templateURL: templateURL, outputPrefix: "PRAE-Formular") { xml in
-            var patched = XLSXCellPatch.setText(in: xml, ref: "D4", value: person.displayName)
+            var patched = XLSXCellPatch.setText(in: xml, ref: "D4", value: person.praeFormName)
             patched = XLSXCellPatch.setText(in: patched, ref: "D5", value: person.member?.svnr ?? "")
             patched = XLSXCellPatch.setText(in: patched, ref: "D7", value: person.member?.fullAddress ?? "")
             if let birthDate = person.member?.birthDate {

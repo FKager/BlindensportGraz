@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T09:12:37.523Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T10:22:27.855Z
 > Files: 104 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -110,8 +110,8 @@
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1438 tok)
 - `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4724 tok)
 - `Models.swift` — Class: User (~9768 tok)
-- `PraeCalculation.swift` — PraeCalculator: monthly (Training-only) summary + summary(for:tournament:) (~2300 tok)
-- `PraeExport.swift` — Declares PraeExportError (~5131 tok)
+- `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~2626 tok)
+- `PraeExport.swift` — Declares PraeExportError; D4/C3 name fields use person.praeFormName ("Nachname, Vorname"), not displayName (~5140 tok)
 - `PraeViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4262 tok)
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RootView.swift` — SwiftUI view: RootView (~3907 tok)
@@ -137,7 +137,7 @@
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~2170 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
-- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~7998 tok)
+- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~8159 tok)
 - `SammelabrechnungExportTests.swift` — Class: SammelabrechnungExportTests (~1879 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1634 tok)
 - `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~3965 tok)

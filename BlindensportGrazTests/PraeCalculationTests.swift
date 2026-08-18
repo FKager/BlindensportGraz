@@ -63,6 +63,19 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertEqual(eligible.map(\.displayName).sorted(), ["Anna Trainer", "Bernd Helfer"])
     }
 
+    // MARK: - praeFormName
+
+    func testPraeFormNameUsesLastNameCommaFirstNameOrder() {
+        let person = PraeEligiblePerson(id: UUID(), displayName: "Anna Trainer", lastName: "Trainer",
+                                         firstName: "Anna", membershipIDs: [], member: nil)
+        XCTAssertEqual(person.praeFormName, "Trainer, Anna")
+    }
+
+    func testPraeFormNameFallsBackToDisplayNameWhenPartsMissing() {
+        let person = PraeEligiblePerson(id: UUID(), displayName: "Nur-App-Konto", membershipIDs: [], member: nil)
+        XCTAssertEqual(person.praeFormName, "Nur-App-Konto")
+    }
+
     func testEligiblePeopleDedupesSamePersonAcrossTeams() throws {
         let container = try makeContainer()
         let context = ModelContext(container)

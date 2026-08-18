@@ -34,6 +34,19 @@ struct PraeEligiblePerson: Identifiable, Hashable {
 
     static func == (lhs: PraeEligiblePerson, rhs: PraeEligiblePerson) -> Bool { lhs.id == rhs.id }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
+
+    /// PRAE's own name-field convention (per Sport Austria form + user
+    /// request 2026-08-18): "Nachname, Vorname" — the opposite order from
+    /// `displayName`'s "Vorname Nachname" used everywhere else in the app.
+    /// Falls back to `displayName` when either part is blank (e.g. test
+    /// fixtures built via the displayName-only init) rather than emitting a
+    /// bare trailing/leading comma.
+    var praeFormName: String {
+        let last = lastName.trimmingCharacters(in: .whitespaces)
+        let first = firstName.trimmingCharacters(in: .whitespaces)
+        guard !last.isEmpty, !first.isEmpty else { return displayName }
+        return "\(last), \(first)"
+    }
 }
 
 /// One calendar day's PRAE deployment for a person in a given month.

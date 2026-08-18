@@ -3987,6 +3987,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-18T09:12:37.530Z"
+    },
+    {
+      "id": "bug-240",
+      "timestamp": "2026-08-18T10:21:56.587Z",
+      "error_message": "Wrong reference: displayName should be praeFormName",
+      "file": "BlindensportGraz/PraeExport.swift",
+      "root_cause": "Used \"displayName\" instead of \"praeFormName\"",
+      "fix": "Changed displayName → praeFormName",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-08-18T10:22:02.108Z"
     }
   ]
 }
