@@ -4195,6 +4195,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-18T16:11:43.584Z"
+    },
+    {
+      "id": "bug-253",
+      "timestamp": "2026-08-18T16:45:13.139Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
+      "root_cause": "Had \"TeilnehmerInnenliste-\\(UUID().uuidString).xlsx\"",
+      "fix": "Changed to \"\\(context.fileNamePrefix)-\\(UUID().uuidString).xl",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T16:45:13.139Z"
     }
   ]
 }

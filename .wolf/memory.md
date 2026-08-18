@@ -1577,3 +1577,11 @@
 | 18:18 | Edited BlindensportGrazTests/TeilnehmerlisteExportTests.swift | modified testExportFullRoster() | ~381 |
 | 18:20 | Turnaments Teilnehmerliste "Ort" now includes country (comma-separated) when set and != "Österreich"; added `SportEvent.locationWithCountry`, wired into both TournamentsViews.swift TeilnehmerlisteContext call sites | Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift | xcodebuild test (TeilnehmerlisteExportTests) 3/3 passed | ~9000 |
 | 18:19 | Session end: 4 writes across 3 files (Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift) | 4 reads | ~20701 tok |
+| 18:33 | Session end: 4 writes across 3 files (Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift) | 4 reads | ~20701 tok |
+| 18:35 | Session end: 4 writes across 3 files (Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift) | 4 reads | ~20701 tok |
+| 18:40 | Session end: 4 writes across 3 files (Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift) | 4 reads | ~20701 tok |
+| 18:45 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | expanded (+6 lines) | ~155 |
+| 18:45 | Edited BlindensportGraz/TeilnehmerlisteExport.swift | 2→2 lines | ~41 |
+| 18:45 | Edited BlindensportGraz/TournamentsViews.swift | 7→8 lines | ~102 |
+| 18:45 | Edited BlindensportGraz/TournamentsViews.swift | 7→8 lines | ~100 |
+| 18:46 | Session end: 8 writes across 4 files (Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift, TeilnehmerlisteExport.swift) | 5 reads | ~22787 tok |
