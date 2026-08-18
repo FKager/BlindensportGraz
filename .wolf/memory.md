@@ -1405,3 +1405,7 @@
 | 12:22 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testPraeFormNameUsesLastNameCommaFirstNameOrder() | ~188 |
 | 12:22 | PRAE name field now "Nachname, Vorname" (was Vorname Nachname) per user request; added PraeEligiblePerson.praeFormName, used for D4 (main form) + C3 (Darstellung appendix) | PraeCalculation.swift, PraeExport.swift, PraeCalculationTests.swift | xcodebuild test -only-testing:PraeCalculationTests 22/22 passed | ~4000 |
 | 12:23 | Session end: 4 writes across 3 files (PraeCalculation.swift, PraeExport.swift, PraeCalculationTests.swift) | 4 reads | ~25698 tok |
+| 12:24 | Session end: 4 writes across 3 files (PraeCalculation.swift, PraeExport.swift, PraeCalculationTests.swift) | 4 reads | ~25698 tok |
+| 12:36 | Edited BlindensportGraz/TeamsViews.swift | modified ForEach() | ~378 |
+| 12:37 | Edited BlindensportGraz/TeamsViews.swift | modified roleBinding() | ~380 |
+| 12:38 | Team member role now editable in-place (TeamDetailView membership list): tap-to-Menu Picker over player/coach/assistant, persists + re-pushes via CloudKitSync.pushMembership; gated by canManageTeams same as add/delete | TeamsViews.swift | xcodebuild build + build-for-testing succeeded | ~4500 |

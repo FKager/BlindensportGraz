@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T10:22:27.855Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T10:37:02.040Z
 > Files: 104 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../tmp/
@@ -118,7 +118,7 @@
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~1434 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~2093 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3021 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~3776 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView (~4264 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~5433 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2629 tok)
