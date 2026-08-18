@@ -4131,6 +4131,22 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-08-18T12:54:10.497Z"
+    },
+    {
+      "id": "bug-249",
+      "timestamp": "2026-08-18T13:03:33.129Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 7→4 lines (5 removed) | Also: DatePicker(\"Start\", selection: $tournament.startDa; DatePicker(\"Ende\", selection: $tournament.endDate)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-08-18T13:03:39.894Z"
     }
   ]
 }

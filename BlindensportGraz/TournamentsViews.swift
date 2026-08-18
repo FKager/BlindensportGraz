@@ -19,8 +19,7 @@ struct AddTournamentView: View {
         @State private var maxTeams = 8
         @State private var notes = ""
         @State private var selectedTeamIDs: Set<UUID> = []
-        @State private var includesTime = true
-                
+
         let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
         
 // Admins manage every team, not just ones they personally joined — a team
@@ -51,11 +50,8 @@ struct AddTournamentView: View {
                     TextField("Ort", text: $city)
                 }
                 Section("Zeitraum") {
-                    Toggle("Uhrzeit festlegen", isOn: $includesTime)
-                    DatePicker("Start", selection: $startDate,
-                               displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
-                    DatePicker("Ende", selection: $endDate,
-                               displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
+                    DatePicker("Start", selection: $startDate, displayedComponents: [.date])
+                    DatePicker("Ende", selection: $endDate, displayedComponents: [.date])
                       }
                 Section("Details") {
                     Stepper("Max. Teams: \(maxTeams)", value: $maxTeams, in: 2...64)
@@ -257,6 +253,16 @@ struct TournamentDetailView: View {
         ["coach", "assistant"].contains(membership.role)
     }
 
+    // "Teilnehmer Sportler" must only include role == "player" — NOT simply
+    // "!isHelfer" — because TeamMembership.role isn't a closed enum: Excel
+    // import (TeamImportExport.importMembership) writes whatever string a
+    // spreadsheet row has, so a mistyped/unexpected role (e.g. "Trainer"
+    // instead of "coach") would slip into the Sportler roster under the old
+    // `!isHelfer` check since it isn't literally "coach"/"assistant" either.
+    private func isSportler(_ membership: TeamMembership) -> Bool {
+        membership.role == "player"
+    }
+
 var body: some View {
     Form {
         EventImagesSection(images: tournament.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
@@ -272,8 +278,8 @@ var body: some View {
             TextField("Ort", text: $tournament.city)
         }
         Section("Zeitraum") {
-            DatePicker("Start", selection: $tournament.startDate)
-            DatePicker("Ende", selection: $tournament.endDate)
+            DatePicker("Start", selection: $tournament.startDate, displayedComponents: [.date])
+            DatePicker("Ende", selection: $tournament.endDate, displayedComponents: [.date])
         }
         Section("Details") {
             Stepper("Max. Teams: \(tournament.maxTeams)", value: $tournament.maxTeams, in: 2...64)
@@ -392,9 +398,9 @@ var body: some View {
                 ort: tournament.location,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
-                attendedMemberships: attendedMemberships.filter { !isHelfer($0) }
+                attendedMemberships: attendedMemberships.filter(isSportler)
             ),
-            membershipFilter: { !isHelfer($0) && attendance(for: $0)?.attended == true },
+            membershipFilter: { isSportler($0) && attendance(for: $0)?.attended == true },
             kindLabel: "Teilnehmer Sportler"
         )
     }

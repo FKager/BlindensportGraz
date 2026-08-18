@@ -1466,3 +1466,18 @@
 | 14:54 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~62 |
 | 14:54 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~59 |
 | 14:54 | Teilnehmer Sportler/Helfer roster now filtered by attendance too, not just role | TournamentsViews.swift | build succeeded | ~1k |
+| 14:55 | Session end: 9 writes across 2 files (TournamentsViews.swift, MemberListView.swift) | 5 reads | ~23087 tok |
+
+## Session: 2026-08-18 15:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:03 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~66 |
+| 15:03 | Edited BlindensportGraz/TournamentsViews.swift | 3→2 lines | ~16 |
+| 15:03 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~61 |
+| 15:03 | Turnaments: date-only pickers (removed time toggle/hourAndMinute) in Add + Edit views | TournamentsViews.swift | done | ~200 |
+| 15:04 | Session end: 3 writes across 1 files (TournamentsViews.swift) | 1 reads | ~6091 tok |
+| 15:06 | Edited BlindensportGraz/TournamentsViews.swift | modified isHelfer() | ~283 |
+| 15:06 | Edited BlindensportGraz/TournamentsViews.swift | 4→4 lines | ~61 |
+| 15:07 | Turnaments: Teilnehmer Sportler now filters strictly role=="player" (isSportler helper) instead of !isHelfer, so unexpected/imported role strings no longer leak into the Sportler roster | TournamentsViews.swift | done | ~250 |
+| 15:07 | Session end: 5 writes across 1 files (TournamentsViews.swift) | 2 reads | ~8060 tok |
