@@ -208,8 +208,12 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertTrue(sharedStringsXML.contains("bei anwesenden SportlerInnen"))
 
         // Dynamically patched values: written as sheet1.xml inline strings.
+        // P3 ("Sportart:") carries the representative Training's own title
+        // ("Training 5.7.", from makeTraining), not the generic sport string
+        // — see testExportPatchesTitleFromRepresentativeTraining below for
+        // the dedicated coverage of that rule.
         XCTAssertTrue(sheetXML.contains("<t>Sektion Blindensport (GVSC)</t>"))
-        XCTAssertTrue(sheetXML.contains("<t>Torball</t>"))
+        XCTAssertTrue(sheetXML.contains("<t>Training 5.7.</t>"))
         XCTAssertTrue(sheetXML.contains("<t>Anna</t>"))
         XCTAssertTrue(sheetXML.contains("<t>Sportlerin</t>"))
         XCTAssertTrue(sheetXML.contains("<t>j</t>"))
@@ -297,6 +301,59 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         // location, no longer the template's own shared string.
         XCTAssertTrue(sheetXML.contains("<t>Sporthalle Puntigam</t>"))
         XCTAssertFalse(sheetXML.contains("<c r=\"Y3\" s=\"39\" t=\"s\"><v>5</v></c>"))
+    }
+
+    /// Sportart (P3) is patched from the representative Training's own
+    /// `title` (e.g. "Dienstagstraining"), not the generic `sport` string
+    /// ("Torball") the summary is scoped by — per explicit 2026-08-18 user
+    /// request. See testExportFallsBackToSportForTitleWhenNoTrainingsInPeriod
+    /// for the no-training fallback rule.
+    func testExportPatchesTitleFromRepresentativeTraining() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let training = Training(title: "Dienstagstraining", sport: "Torball", location: "Graz",
+                                 startDate: Calendar.current.date(from: DateComponents(year: 2026, month: 7, day: 5))!,
+                                 teams: [team])
+        context.insert(training)
+
+        let summary = TrainingsfrequenzlisteCalculator.summary(sport: "Torball", halfYear: .second, year: 2026, in: context)
+        XCTAssertEqual(summary.title, "Dienstagstraining")
+
+        let url = try TrainingsfrequenzlisteExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("<t>Dienstagstraining</t>"))
+        XCTAssertFalse(sheetXML.contains("<t>Torball</t>"))
+    }
+
+    /// No trainings in the period -> no representative Training -> no title
+    /// to show, so Sportart (P3) falls back to the plain `sport` string
+    /// rather than going blank (unlike Y3/H4/L4, which clear — P3 previously
+    /// always showed a non-blank value and there's no reason to regress that
+    /// just because this period happens to have no trainings yet).
+    func testExportFallsBackToSportForTitleWhenNoTrainingsInPeriod() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+
+        let summary = TrainingsfrequenzlisteCalculator.summary(sport: "Torball", halfYear: .second, year: 2026, in: context)
+        XCTAssertNil(summary.title)
+
+        let url = try TrainingsfrequenzlisteExporter.export(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("<t>Torball</t>"))
     }
 
     /// No trainings in the period -> no representative Training -> Y3 gets

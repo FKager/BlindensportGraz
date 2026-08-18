@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 8138211,
-    "total_reads": 2663,
-    "total_writes": 5210,
+    "total_tokens_estimated": 8168497,
+    "total_reads": 2668,
+    "total_writes": 5216,
     "total_sessions": 43,
-    "anatomy_hits": 2431,
+    "anatomy_hits": 2436,
     "anatomy_misses": 220,
     "repeated_reads_blocked": 1631,
-    "estimated_savings_vs_bare_cli": 6688324
+    "estimated_savings_vs_bare_cli": 6689324
   },
   "sessions": [
     {
@@ -46853,6 +46853,83 @@
         "writes_count": 4,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-08-18-1219",
+      "started": "2026-08-18T10:19:53.498Z",
+      "ended": "2026-08-18T10:37:48.629Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9768,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 5131,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeCalculation.swift",
+          "tokens_estimated": 2300,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PraeCalculationTests.swift",
+          "tokens_estimated": 7998,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 3776,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeCalculation.swift",
+          "tokens_estimated": 244,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/PraeExport.swift",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PraeCalculationTests.swift",
+          "tokens_estimated": 201,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 405,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeamsViews.swift",
+          "tokens_estimated": 407,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 28973,
+        "output_tokens_estimated": 1313,
+        "reads_count": 5,
+        "writes_count": 6,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 5
       }
     }
   ],

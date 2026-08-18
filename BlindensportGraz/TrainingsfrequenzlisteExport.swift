@@ -19,10 +19,12 @@ import ZIPFoundation
 /// `xl/worksheets/sheet1.xml`):
 /// - Row 1: title (static, untouched).
 /// - Row 3: "Verein/LV:" label / value at A3 (merged A3:C3) / D3 (merged
-///   D3:J3); "Sportart:" / value at M3 (merged M3:O3) / P3 (merged P3:T3);
-///   "Sportstätte:" / value at U3 (merged U3:X3) / Y3 (merged Y3:AB3) — Y3 is
-///   patched from the representative Training's `location`, same source as
-///   the Trainingszeiten fields below (H4/L4).
+///   D3:J3); "Sportart:" / value at M3 (merged M3:O3) / P3 (merged P3:T3) —
+///   patched from the representative Training's `title` (falling back to the
+///   summary's `sport` when there's no training in the period to take a
+///   title from); "Sportstätte:" / value at U3 (merged U3:X3) / Y3 (merged
+///   Y3:AB3) — Y3 is patched from the representative Training's `location`,
+///   same source as the Trainingszeiten fields below (H4/L4).
 /// - Row 4: "Trainingszeiten:"/"Uhrzeit von:" labels at C4/E4, value at H4
 ///   (merged H4:J4); "bis:" label at K4, value at L4 (merged L4:O4);
 ///   "Jahr:" label at U4 (merged U4:X4), value at Y4 (merged Y4:AB4).
@@ -100,7 +102,8 @@ enum TrainingsfrequenzlisteExporter {
         var result = xml
 
         result = XLSXCellPatch.setInlineText(in: result, ref: "D3", value: vereinName)
-        result = XLSXCellPatch.setInlineText(in: result, ref: "P3", value: summary.sport)
+        let sportartValue = (summary.title?.isEmpty == false) ? summary.title! : summary.sport
+        result = XLSXCellPatch.setInlineText(in: result, ref: "P3", value: sportartValue)
         if let location = summary.location, !location.isEmpty {
             result = XLSXCellPatch.setInlineText(in: result, ref: "Y3", value: location)
         } else {

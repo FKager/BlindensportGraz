@@ -1409,3 +1409,11 @@
 | 12:36 | Edited BlindensportGraz/TeamsViews.swift | modified ForEach() | ~378 |
 | 12:37 | Edited BlindensportGraz/TeamsViews.swift | modified roleBinding() | ~380 |
 | 12:38 | Team member role now editable in-place (TeamDetailView membership list): tap-to-Menu Picker over player/coach/assistant, persists + re-pushes via CloudKitSync.pushMembership; gated by canManageTeams same as add/delete | TeamsViews.swift | xcodebuild build + build-for-testing succeeded | ~4500 |
+| 12:37 | Session end: 6 writes across 4 files (PraeCalculation.swift, PraeExport.swift, PraeCalculationTests.swift, TeamsViews.swift) | 5 reads | ~30286 tok |
+| 12:57 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | expanded (+8 lines) | ~374 |
+| 12:57 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 6→7 lines | ~163 |
+| 12:57 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | 5→7 lines | ~138 |
+| 12:57 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | added optional chaining | ~73 |
+| 12:58 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | 4→8 lines | ~148 |
+| 12:58 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportPatchesTitleFromRepresentativeTraining() | ~854 |
+| 13:00 | Trainingsfrequenzliste Sportart (P3) now derived from representative Training.title, falling back to sport string when no trainings in period | TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculationTests.swift | xcodebuild test -only-testing:TrainingsfrequenzlisteCalculationTests 14/14 passed | ~4000 |
