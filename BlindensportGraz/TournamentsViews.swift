@@ -300,7 +300,7 @@ var body: some View {
             }
         }
         if !allMemberships.isEmpty {
-            Section("Anwesenheit") {
+            Section("Teilnehmer:innen") {
                 ForEach(allMemberships) { membership in
                     Toggle(isOn: Binding(
                         get: { attendance(for: membership)?.attended ?? false },

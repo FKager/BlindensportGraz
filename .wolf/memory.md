@@ -1444,3 +1444,13 @@
 | 14:24 | Edited project.yml | 3→5 lines | ~80 |
 | 14:24 | Edited project.yml | 3→2 lines | ~33 |
 | 14:26 | Session end: 12 writes across 8 files (SportIcons.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, TeamsViews.swift) | 7 reads | ~23089 tok |
+| 14:29 | Session end: 12 writes across 8 files (SportIcons.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, TeamsViews.swift) | 7 reads | ~23089 tok |
+
+## Session: 2026-08-18 14:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:43 | Edited BlindensportGraz/TournamentsViews.swift | "Anwesenheit" → "Teilnehmer:innen" | ~11 |
+| 14:43 | Changed Turnaments attendance section heading to Teilnehmer:innen | TournamentsViews.swift | done | ~0.2k |
+| 14:43 | Session end: 1 writes across 1 files (TournamentsViews.swift) | 1 reads | ~5509 tok |
+| 14:44 | Session end: 1 writes across 1 files (TournamentsViews.swift) | 1 reads | ~5509 tok |

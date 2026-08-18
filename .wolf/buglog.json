@@ -4067,6 +4067,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-18T10:57:51.238Z"
+    },
+    {
+      "id": "bug-245",
+      "timestamp": "2026-08-18T12:43:28.706Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Had \"Anwesenheit\"",
+      "fix": "Changed to \"Teilnehmer:innen\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T12:43:28.706Z"
     }
   ]
 }
