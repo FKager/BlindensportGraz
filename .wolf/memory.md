@@ -1454,3 +1454,11 @@
 | 14:43 | Changed Turnaments attendance section heading to Teilnehmer:innen | TournamentsViews.swift | done | ~0.2k |
 | 14:43 | Session end: 1 writes across 1 files (TournamentsViews.swift) | 1 reads | ~5509 tok |
 | 14:44 | Session end: 1 writes across 1 files (TournamentsViews.swift) | 1 reads | ~5509 tok |
+| 14:45 | Session end: 1 writes across 1 files (TournamentsViews.swift) | 1 reads | ~5509 tok |
+| 14:50 | Edited BlindensportGraz/MemberListView.swift | modified filteredMemberships() | ~491 |
+| 14:50 | Edited BlindensportGraz/MemberListView.swift | sortedByLastName() → filteredMemberships() | ~109 |
+| 14:50 | Edited BlindensportGraz/MemberListView.swift | "Mitglieder – \(itemName)" → "\(kindLabel) – \(itemName" | ~16 |
+| 14:50 | Edited BlindensportGraz/TournamentsViews.swift | 3→4 lines | ~52 |
+| 14:50 | Edited BlindensportGraz/TournamentsViews.swift | modified isHelfer() | ~166 |
+| 14:50 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~842 |
+| 14:51 | Split Mitgliederliste into Berichte>Teilnehmer Sportler/Helfer (2 Excel exports) | TournamentsViews.swift, MemberListView.swift | build succeeded | ~3k |

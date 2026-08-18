@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T12:43:28.695Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T12:50:54.249Z
 > Files: 108 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -111,7 +111,7 @@
 - `Localizable.xcstrings` (~6145 tok)
 - `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
 - `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4738 tok)
-- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1438 tok)
+- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1659 tok)
 - `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~4724 tok)
 - `Models.swift` — Class: User (~9768 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~2626 tok)
@@ -125,7 +125,7 @@
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3021 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView (~4292 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~5498 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~5914 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2629 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2807 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2643 tok)

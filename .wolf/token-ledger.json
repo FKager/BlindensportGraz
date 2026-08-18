@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 8338438,
-    "total_reads": 2707,
-    "total_writes": 5273,
+    "total_tokens_estimated": 8343947,
+    "total_reads": 2708,
+    "total_writes": 5274,
     "total_sessions": 46,
-    "anatomy_hits": 2473,
+    "anatomy_hits": 2474,
     "anatomy_misses": 222,
     "repeated_reads_blocked": 1637,
-    "estimated_savings_vs_bare_cli": 6733180
+    "estimated_savings_vs_bare_cli": 6733380
   },
   "sessions": [
     {
@@ -47546,6 +47546,34 @@
       "id": "session-2026-08-18-1442",
       "started": "2026-08-18T12:42:27.351Z",
       "ended": "2026-08-18T12:44:25.507Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 5497,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 12,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 5497,
+        "output_tokens_estimated": 12,
+        "reads_count": 1,
+        "writes_count": 1,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-08-18-1442",
+      "started": "2026-08-18T12:42:27.351Z",
+      "ended": "2026-08-18T12:45:33.375Z",
       "reads": [
         {
           "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",

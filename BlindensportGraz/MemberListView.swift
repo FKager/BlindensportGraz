@@ -12,13 +12,27 @@ struct MemberListView: View {
     // "Berichte" menu), so neither passes an exportContext and this view
     // stays roster-only for them.
     var exportContext: TeilnehmerlisteContext? = nil
+    // Restricts the displayed/exported roster to memberships matching this
+    // predicate — used by TournamentDetailView's "Teilnehmer Sportler" /
+    // "Teilnehmer Helfer" Berichte entries to split one combined member list
+    // into a role-based pair, each with its own Sport-Austria Excel export.
+    // Events/Trainings don't pass one, so they keep showing everyone.
+    var membershipFilter: (TeamMembership) -> Bool = { _ in true }
+    // "Mitglieder" for the plain Events/Trainings roster; TournamentDetailView
+    // overrides this to "Teilnehmer Sportler"/"Teilnehmer Helfer" for its
+    // role-split Berichte entries.
+    var kindLabel: String = "Mitglieder"
 
     @State private var exportedFileURL: URL?
     @State private var exportErrorMessage: String?
 
+    private func filteredMemberships(for team: Team) -> [TeamMembership] {
+        team.memberships.filter(membershipFilter).sortedByLastName()
+    }
+
     private var exportText: String {
         teams.map { team in
-            let names = team.memberships.sortedByLastName().map(\.displayName)
+            let names = filteredMemberships(for: team).map(\.displayName)
             let noMembers = String(localized: "Keine Mitglieder")
             let lines = names.isEmpty ? noMembers : names.map { "- \($0)" }.joined(separator: "\n")
             return "\(team.name):\n\(lines)"
@@ -35,11 +49,11 @@ struct MemberListView: View {
                 } else {
                     ForEach(teams) { team in
                         Section(team.name) {
-                            if team.memberships.isEmpty {
+                            if filteredMemberships(for: team).isEmpty {
                                 Text("Keine Mitglieder")
                                     .foregroundStyle(.secondary)
                             } else {
-                                ForEach(team.memberships.sortedByLastName()) { membership in
+                                ForEach(filteredMemberships(for: team)) { membership in
                                     HStack {
                                         Text(membership.displayName)
                                         Spacer()
@@ -79,7 +93,7 @@ struct MemberListView: View {
                     }
                 }
             }
-            .navigationTitle("Mitglieder – \(itemName)")
+            .navigationTitle("\(kindLabel) – \(itemName)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if !teams.isEmpty {

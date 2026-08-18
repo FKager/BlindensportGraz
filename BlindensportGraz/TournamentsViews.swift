@@ -209,7 +209,8 @@ struct TournamentDetailView: View {
    let currentUser: User?
    @Environment(\.modelContext) private var modelContext
    @Query private var allTeams: [Team]
-   @State private var showMemberList = false
+   @State private var showTeilnehmerSportler = false
+   @State private var showTeilnehmerHelfer = false
    @State private var showKostZCalculation = false
    @State private var showPraeCalculation = false
    @State private var showSammelabrechnung = false
@@ -245,6 +246,15 @@ struct TournamentDetailView: View {
 
     var attendedMemberships: [TeamMembership] {
         allMemberships.filter { attendance(for: $0)?.attended == true }
+    }
+
+    // Splits the combined roster the old single "Mitgliederliste" used to
+    // show into the two roles the Berichte menu's "Teilnehmer Sportler" /
+    // "Teilnehmer Helfer" entries each export separately (two Sport-Austria
+    // Excel files instead of one mixed one) — mirrors the PRAE-eligibility
+    // role check above (role "coach"/"assistant" = Helfer).
+    private func isHelfer(_ membership: TeamMembership) -> Bool {
+        ["coach", "assistant"].contains(membership.role)
     }
 
 var body: some View {
@@ -338,13 +348,6 @@ var body: some View {
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {
         if isAdmin {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showMemberList = true
-                } label: {
-                    Label("Mitgliederliste", systemImage: "list.bullet.clipboard")
-                }
-            }
             // Per-tournament PRAE + KostZ. Both used to live on
             // TournamentsListView's list-level "Berichte" menu; moved here
             // since each is scoped to one specific tournament's own PRAE
@@ -353,8 +356,17 @@ var body: some View {
             // supply — TrainingsListView's "Berichte" menu is unaffected and
             // stays month-wide/list-level, since Trainings' PRAE/KostZ are
             // still summed across a whole month, not per-event.
+            // "Teilnehmer Sportler"/"Teilnehmer Helfer" (formerly one combined
+            // "Mitgliederliste" toolbar button) live here too now, split by
+            // role so each gets its own Sport-Austria Excel export.
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
+                    Button { showTeilnehmerSportler = true } label: {
+                        Label("Teilnehmer Sportler", systemImage: "figure.run")
+                    }
+                    Button { showTeilnehmerHelfer = true } label: {
+                        Label("Teilnehmer Helfer", systemImage: "hand.raised.fill")
+                    }
                     Button { showPraeCalculation = true } label: {
                         Label("PRAE-Berechnung", systemImage: "eurosign.circle.fill")
                     }
@@ -371,7 +383,7 @@ var body: some View {
             }
         }
     }
-    .sheet(isPresented: $showMemberList) {
+    .sheet(isPresented: $showTeilnehmerSportler) {
         MemberListView(
             itemName: tournament.title,
             teams: tournament.teams,
@@ -380,8 +392,25 @@ var body: some View {
                 ort: tournament.location,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
-                attendedMemberships: attendedMemberships
-            )
+                attendedMemberships: attendedMemberships.filter { !isHelfer($0) }
+            ),
+            membershipFilter: { !isHelfer($0) },
+            kindLabel: "Teilnehmer Sportler"
+        )
+    }
+    .sheet(isPresented: $showTeilnehmerHelfer) {
+        MemberListView(
+            itemName: tournament.title,
+            teams: tournament.teams,
+            exportContext: TeilnehmerlisteContext(
+                betrifft: tournament.title,
+                ort: tournament.location,
+                startDate: tournament.startDate,
+                endDate: tournament.endDate,
+                attendedMemberships: attendedMemberships.filter(isHelfer)
+            ),
+            membershipFilter: isHelfer,
+            kindLabel: "Teilnehmer Helfer"
         )
     }
     .sheet(isPresented: $showKostZCalculation) {
