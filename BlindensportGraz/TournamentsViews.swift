@@ -39,7 +39,9 @@ struct AddTournamentView: View {
                 Section("Turnier") {
                     TextField("Name", text: $title)
                     Picker("Sportart", selection: $sport) {
-                        ForEach(sports, id: \.self) { Text($0) }
+                        ForEach(sports, id: \.self) { s in
+                            Label(s, systemImage: SportIcon.symbolName(for: s)).tag(s)
+                        }
                           }
                     TextField("Veranstaltungsort", text: $location)
                      }
@@ -168,6 +170,8 @@ struct TournamentRow: View {
      }
 
   var body: some View {
+    HStack(alignment: .top, spacing: 12) {
+      SportGlyph(sport: tournament.sport, size: 32)
       VStack(alignment: .leading, spacing: 6) {
           HStack {
               Text(tournament.title)
@@ -181,7 +185,7 @@ struct TournamentRow: View {
                  .foregroundColor(statusColor)
           }
           HStack {
-              Label(tournament.sport, systemImage: "sportscourt")
+              Label(tournament.sport, systemImage: SportIcon.symbolName(for: tournament.sport))
                Spacer()
            Label("\(tournament.maxTeams) Teams", systemImage: "person.3.fill")
           }
@@ -195,6 +199,7 @@ struct TournamentRow: View {
           .font(.caption)
           .foregroundColor(.secondary)
        }
+      }
        .padding(.vertical, 4)
     }
 }

@@ -125,7 +125,9 @@ struct AddTrainingView: View {
                 Section("Training") {
                     TextField("Titel", text: $title)
                     Picker("Sportart", selection: $sport) {
-                        ForEach(sports, id: \.self) { Text($0) }
+                        ForEach(sports, id: \.self) { s in
+                            Label(s, systemImage: SportIcon.symbolName(for: s)).tag(s)
+                        }
                        }
                     // Relabeled from "Ort" to "Veranstaltungsort" — see
                     // EventsViews.AddEventView's identical comment.
@@ -267,24 +269,27 @@ struct TrainingRow: View {
      let training: Training
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(training.title)
-               .font(.headline)
-            HStack {
-                Label(training.sport, systemImage: "sportscourt")
-                Spacer()
-                Label("\(training.durationMinutes) min", systemImage: "clock")
-               }
-               .font(.caption)
-               .foregroundColor(.secondary)
+        HStack(alignment: .top, spacing: 12) {
+            SportGlyph(sport: training.sport, size: 32)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(training.title)
+                   .font(.headline)
+                HStack {
+                    Label(training.sport, systemImage: SportIcon.symbolName(for: training.sport))
+                    Spacer()
+                    Label("\(training.durationMinutes) min", systemImage: "clock")
+                   }
+                   .font(.caption)
+                   .foregroundColor(.secondary)
 
-            HStack {
-                Label(training.location, systemImage: "mappin.and.ellipse")
-                Spacer()
-                Text(training.startDate, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).hour().minute())
-               }
-               .font(.caption)
-               .foregroundColor(.secondary)
+                HStack {
+                    Label(training.location, systemImage: "mappin.and.ellipse")
+                    Spacer()
+                    Text(training.startDate, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).hour().minute())
+                   }
+                   .font(.caption)
+                   .foregroundColor(.secondary)
+            }
         }
        .padding(.vertical, 4)
     }

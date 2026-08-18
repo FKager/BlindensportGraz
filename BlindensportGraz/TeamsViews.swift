@@ -366,7 +366,9 @@ struct AddTeamView: View {
                 Section("Team") {
                     TextField("Name", text: $name)
                     Picker("Sportart", selection: $sport) {
-                        ForEach(sports, id: \.self) { Text($0) }
+                        ForEach(sports, id: \.self) { s in
+                            Label(s, systemImage: SportIcon.symbolName(for: s)).tag(s)
+                        }
                     }
                     TextField("Beschreibung", text: $descriptionText, axis: .vertical)
                         .lineLimit(3...6)

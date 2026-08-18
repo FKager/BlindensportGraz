@@ -201,6 +201,8 @@ struct EventRow: View {
               .padding(.vertical, 4)
               .background(.blue.opacity(0.15), in: RoundedRectangle(cornerRadius: 8))
 
+            SportGlyph(sport: event.sport, size: 28)
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(event.title)
                       .font(.headline)

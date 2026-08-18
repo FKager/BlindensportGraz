@@ -1417,3 +1417,30 @@
 | 12:58 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | 4→8 lines | ~148 |
 | 12:58 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testExportPatchesTitleFromRepresentativeTraining() | ~854 |
 | 13:00 | Trainingsfrequenzliste Sportart (P3) now derived from representative Training.title, falling back to sport string when no trainings in period | TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteExport.swift, TrainingsfrequenzlisteCalculationTests.swift | xcodebuild test -only-testing:TrainingsfrequenzlisteCalculationTests 14/14 passed | ~4000 |
+| 12:58 | Session end: 12 writes across 7 files (PraeCalculation.swift, PraeExport.swift, PraeCalculationTests.swift, TeamsViews.swift, TrainingsfrequenzlisteCalculation.swift) | 8 reads | ~43465 tok |
+| 13:03 | Session end: 12 writes across 7 files (PraeCalculation.swift, PraeExport.swift, PraeCalculationTests.swift, TeamsViews.swift, TrainingsfrequenzlisteCalculation.swift) | 9 reads | ~47178 tok |
+
+## Session: 2026-08-18 14:02
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-18 14:10
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:20 | Created BlindensportGraz/SportIcons.swift | — | ~1974 |
+| 14:20 | Edited BlindensportGraz/EventsViews.swift | modified HStack() | ~289 |
+| 14:21 | Edited BlindensportGraz/TrainingsViews.swift | modified HStack() | ~288 |
+| 14:21 | Edited BlindensportGraz/TournamentsViews.swift | modified HStack() | ~289 |
+| 14:21 | Edited BlindensportGraz/TrainingsViews.swift | modified Picker() | ~69 |
+| 14:21 | Edited BlindensportGraz/TournamentsViews.swift | modified Picker() | ~70 |
+| 14:21 | Edited BlindensportGraz/TeamsViews.swift | modified Picker() | ~68 |
+| 14:21 | Verified build: xcodegen generate + xcodebuild build (iphonesimulator) after SportIcons.swift + row/picker wiring | SportIcons.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, TeamsViews.swift | BUILD SUCCEEDED | ~200 |
+| 14:22 | Session end: 7 writes across 5 files (SportIcons.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, TeamsViews.swift) | 6 reads | ~22102 tok |
+| 14:24 | Created ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/generate_app_icon.swift | — | ~742 |
+| 14:24 | Created BlindensportGraz/Assets.xcassets/Contents.json | — | ~18 |
+| 14:24 | Created BlindensportGraz/Assets.xcassets/AppIcon.appiconset/Contents.json | — | ~61 |
+| 14:24 | Edited project.yml | 3→5 lines | ~80 |
+| 14:24 | Edited project.yml | 3→2 lines | ~33 |
+| 14:26 | Session end: 12 writes across 8 files (SportIcons.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, TeamsViews.swift) | 7 reads | ~23089 tok |

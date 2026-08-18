@@ -18,6 +18,7 @@
 		267DF087D026B5C89D7075D9 /* EventsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02746C61B9A7503128EDC23F /* EventsViews.swift */; };
 		278F952DF303B3BA14EAE285 /* PRAE_Formular.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 52DEFEF3CAAB124E75D49614 /* PRAE_Formular.xlsx */; };
 		2867281A3E333332F517D115 /* BlindensportGrazApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D94F0C24E1AD32118BF8127 /* BlindensportGrazApp.swift */; };
+		2F03B655B297772962A99B89 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16E321FF80C13057D9EBCB51 /* Assets.xcassets */; };
 		36061B56E0540AB834ACB702 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 83DBEE4CC921CC2722BCB73F /* Localizable.xcstrings */; };
 		38B8B1D161FA86B44AD28F4B /* TN_TeilnehmerInnenliste.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */; };
 		49DF91037358BE604C37CE2E /* Trainingsfrequenzliste_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 4FA5E8F29F13CB502F4FCA7F /* Trainingsfrequenzliste_Vorlage.xlsx */; };
@@ -55,6 +56,7 @@
 		EF64D94AF393691E63643445 /* PraeExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C350376AFCF7359D1B95B /* PraeExport.swift */; };
 		F307DACC2CA8BAD596E2ACB7 /* EventImagesViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207463624BA5593411638F49 /* EventImagesViews.swift */; };
 		F4FC9293EBF3D3927E10F372 /* PraeCalculationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BBA744C5DE3AA5F9F0DE54 /* PraeCalculationTests.swift */; };
+		F8419D4F61AEC889EBAEC8D1 /* SportIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1D9C7AF0BC3644F9457B9 /* SportIcons.swift */; };
 		FCDFE2E417B840FFCEDC3C46 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40551CD48F48617AB9E75979 /* DashboardView.swift */; };
 		FD6379C1D7D0DFF2D923D80B /* TrainingsfrequenzlisteViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5C88EC09CB7F5C7D2A06A9B /* TrainingsfrequenzlisteViews.swift */; };
 /* End PBXBuildFile section */
@@ -73,6 +75,7 @@
 		02746C61B9A7503128EDC23F /* EventsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsViews.swift; sourceTree = "<group>"; };
 		0FE9591B60B77215D9F2E592 /* SammelabrechnungExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SammelabrechnungExport.swift; sourceTree = "<group>"; };
 		1467C0C4F1DC760FC540D2EC /* TrainingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsViews.swift; sourceTree = "<group>"; };
+		16E321FF80C13057D9EBCB51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		19E9C07FEF9C901B9C5101E8 /* MemberImportExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberImportExport.swift; sourceTree = "<group>"; };
 		207463624BA5593411638F49 /* EventImagesViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagesViews.swift; sourceTree = "<group>"; };
 		20BB191BC0FAABBA7206E135 /* CloudKitSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSync.swift; sourceTree = "<group>"; };
@@ -96,6 +99,7 @@
 		5A295360023A2F97D708F995 /* TrainingsfrequenzlisteCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsfrequenzlisteCalculationTests.swift; sourceTree = "<group>"; };
 		5DFA21F5E8AA02DD2D9326D8 /* KostZViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KostZViews.swift; sourceTree = "<group>"; };
 		683DD62FB77BF46E434620D2 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		6DD1D9C7AF0BC3644F9457B9 /* SportIcons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportIcons.swift; sourceTree = "<group>"; };
 		72DD020ECDC368BEE589A742 /* BlindensportGraz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BlindensportGraz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		77EE00D33AB2AF7A8148E8A9 /* TrainingImportExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingImportExportTests.swift; sourceTree = "<group>"; };
 		83D9A0D3FAB093A5FAE4A12C /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
@@ -156,6 +160,7 @@
 			children = (
 				9D151B782788860EBA6A7728 /* AccountView.swift */,
 				DA89D2EB7A70D732E8D254C5 /* AppleSignIn.swift */,
+				16E321FF80C13057D9EBCB51 /* Assets.xcassets */,
 				9D94F0C24E1AD32118BF8127 /* BlindensportGrazApp.swift */,
 				683DD62FB77BF46E434620D2 /* CLAUDE.md */,
 				20BB191BC0FAABBA7206E135 /* CloudKitSync.swift */,
@@ -181,6 +186,7 @@
 				2C9DE238BBE5A6E6B45BA118 /* RootView.swift */,
 				0FE9591B60B77215D9F2E592 /* SammelabrechnungExport.swift */,
 				512D9209475F8B7BE4E19C88 /* SammelabrechnungViews.swift */,
+				6DD1D9C7AF0BC3644F9457B9 /* SportIcons.swift */,
 				B9A2DB7023E996844A07A644 /* TeamImportExport.swift */,
 				B624DF0AE87AB21129137E98 /* TeamsViews.swift */,
 				C67CC5BCE3EE5934D74787F2 /* TeilnehmerlisteExport.swift */,
@@ -313,6 +319,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F03B655B297772962A99B89 /* Assets.xcassets in Resources */,
 				1450125A2E8AB000202E6872 /* CLAUDE.md in Resources */,
 				BAE5BA21BCB2CA1048A4A047 /* KostZ_Kostenzusammenstellung.xlsx in Resources */,
 				36061B56E0540AB834ACB702 /* Localizable.xcstrings in Resources */,
@@ -353,6 +360,7 @@
 				883A941D130AF6840F6283D0 /* RootView.swift in Sources */,
 				7FDDDF54DCD626883A47625A /* SammelabrechnungExport.swift in Sources */,
 				E77BDFB61E06972E54E30ABF /* SammelabrechnungViews.swift in Sources */,
+				F8419D4F61AEC889EBAEC8D1 /* SportIcons.swift in Sources */,
 				886B320C465DDB5914963E23 /* TeamImportExport.swift in Sources */,
 				50D5828C877DB7411A16D9E5 /* TeamsViews.swift in Sources */,
 				E70BA7534735B83C9AB54A4F /* TeilnehmerlisteExport.swift in Sources */,

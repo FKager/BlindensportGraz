@@ -34,6 +34,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz
         GENERATE_INFOPLIST_FILE: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_CFBundleDisplayName: "Blindensport Graz"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationPortrait"

@@ -1,7 +1,11 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T10:58:22.945Z
-> Files: 104 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-18T12:24:38.262Z
+> Files: 108 tracked | Anatomy hits: 0 | Misses: 0
+
+## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
+
+- `generate_app_icon.swift` — Renders the 1024x1024 App Store marketing icon: a diagonal blue->purple (~742 tok)
 
 ## ../../../../tmp/
 
@@ -41,7 +45,7 @@
 - `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
 - `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
 - `profile.plist` (~0 tok)
-- `project.yml` (~557 tok)
+- `project.yml` (~572 tok)
 
 ## .claude/
 
@@ -99,7 +103,7 @@
 - `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~12262 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~1112 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1549 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView incl. Adresse section; EventDetailView shows fullAddress (~3700 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~3777 tok)
 - `Info.plist` (~443 tok)
 - `KostZCalculation.swift` — KostZCalculator: monthly (Training-only) summary + summary(for tournament:) (~1500 tok)
 - `KostZExport.swift` — KostZExporter: month export ORT="Graz"+training-date-derived period; tournament export ORT=tournament.city (~1700 tok)
@@ -117,20 +121,29 @@
 - `RootView.swift` — SwiftUI view: RootView (~3907 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~1434 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~2093 tok)
+- `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1974 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3021 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~4264 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView (~4292 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2131 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~5433 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~5497 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2629 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2807 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2643 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1718 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView; TrainingsListView has import/export toolbar buttons (~7585 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~7670 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/.claude/
 
 - `settings.local.json` (~38 tok)
+
+## BlindensportGraz/Assets.xcassets/
+
+- `Contents.json` (~18 tok)
+
+## BlindensportGraz/Assets.xcassets/AppIcon.appiconset/
+
+- `Contents.json` (~61 tok)
 
 ## BlindensportGrazTests/
 
