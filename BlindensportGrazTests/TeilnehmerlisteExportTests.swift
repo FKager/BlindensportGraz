@@ -123,4 +123,25 @@ final class TeilnehmerlisteExportTests: XCTestCase {
     func testExportFullRoster() throws {
         _ = try context(realisticNames.count, timeout: 10)
     }
+
+    /// `Tournament.locationWithCountry` feeds the Teilnehmerliste's "Ort" field
+    /// (see TournamentsViews.swift's two TeilnehmerlisteContext call sites) —
+    /// covers the no-country, explicit-Österreich, and foreign-country cases.
+    func testTournamentLocationWithCountry() {
+        let noCountry = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle Graz",
+                                    startDate: .now, endDate: .now)
+        XCTAssertEqual(noCountry.locationWithCountry, "Stadthalle Graz")
+
+        let austria = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle Graz",
+                                  country: "Österreich", startDate: .now, endDate: .now)
+        XCTAssertEqual(austria.locationWithCountry, "Stadthalle Graz")
+
+        let foreign = Tournament(title: "Cup", sport: "Torball", location: "Sporthalle Maribor",
+                                  country: "Slowenien", startDate: .now, endDate: .now)
+        XCTAssertEqual(foreign.locationWithCountry, "Sporthalle Maribor, Slowenien")
+
+        let blankCountry = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle Graz",
+                                       country: "   ", startDate: .now, endDate: .now)
+        XCTAssertEqual(blankCountry.locationWithCountry, "Stadthalle Graz")
+    }
 }

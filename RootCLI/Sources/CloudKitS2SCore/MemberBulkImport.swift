@@ -22,6 +22,7 @@ public struct MemberBulkInput: Codable, Sendable {
     public var street: String?
     public var zip: String?
     public var city: String?
+    public var country: String?
     public var email: String?
     public var phone: String?
     public var memberNumber: String?
@@ -38,13 +39,13 @@ public struct MemberBulkInput: Codable, Sendable {
     public var memberOfGVSC: Bool?
 
     private enum CodingKeys: String, CodingKey {
-        case id, firstName, lastName, street, zip, plz, city, email, phone, memberNumber, joinedAt, notes,
+        case id, firstName, lastName, street, zip, plz, city, country, email, phone, memberNumber, joinedAt, notes,
              gender, title, birthDate, sportId, svnr, iban, lastMedicalExamination, defaultFunction, memberOfGVSC
     }
 
     public init(
         id: String? = nil, firstName: String? = nil, lastName: String? = nil,
-        street: String? = nil, zip: String? = nil, city: String? = nil,
+        street: String? = nil, zip: String? = nil, city: String? = nil, country: String? = nil,
         email: String? = nil, phone: String? = nil, memberNumber: String? = nil,
         joinedAt: String? = nil, notes: String? = nil,
         gender: String? = nil, title: String? = nil, birthDate: String? = nil,
@@ -58,6 +59,7 @@ public struct MemberBulkInput: Codable, Sendable {
         self.street = street
         self.zip = zip
         self.city = city
+        self.country = country
         self.email = email
         self.phone = phone
         self.memberNumber = memberNumber
@@ -83,6 +85,7 @@ public struct MemberBulkInput: Codable, Sendable {
         zip = try container.decodeIfPresent(String.self, forKey: .zip)
             ?? container.decodeIfPresent(String.self, forKey: .plz)
         city = try container.decodeIfPresent(String.self, forKey: .city)
+        country = try container.decodeIfPresent(String.self, forKey: .country)
         email = try container.decodeIfPresent(String.self, forKey: .email)
         phone = try container.decodeIfPresent(String.self, forKey: .phone)
         memberNumber = try container.decodeIfPresent(String.self, forKey: .memberNumber)
@@ -111,6 +114,7 @@ public struct MemberBulkInput: Codable, Sendable {
         try container.encodeIfPresent(street, forKey: .street)
         try container.encodeIfPresent(zip, forKey: .zip)
         try container.encodeIfPresent(city, forKey: .city)
+        try container.encodeIfPresent(country, forKey: .country)
         try container.encodeIfPresent(email, forKey: .email)
         try container.encodeIfPresent(phone, forKey: .phone)
         try container.encodeIfPresent(memberNumber, forKey: .memberNumber)
@@ -173,6 +177,7 @@ public enum MemberBulkImport {
                 street: input.street ?? "",
                 zip: input.zip ?? "",
                 city: input.city ?? "",
+                country: input.country ?? "",
                 email: input.email ?? "",
                 phone: input.phone ?? "",
                 memberNumber: input.memberNumber ?? "",

@@ -71,6 +71,7 @@ public enum MemberFillUpdate {
             fillString("street", input.street)
             fillString("zip", input.zip)
             fillString("city", input.city)
+            fillString("country", input.country)
             fillString("email", input.email)
             fillString("phone", input.phone)
             fillString("memberNumber", input.memberNumber)
@@ -113,6 +114,7 @@ public enum MemberFillUpdate {
             street: input.street ?? "",
             zip: input.zip ?? "",
             city: input.city ?? "",
+            country: input.country ?? "",
             email: input.email ?? "",
             phone: input.phone ?? "",
             memberNumber: input.memberNumber ?? "",

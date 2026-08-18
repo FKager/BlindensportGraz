@@ -4147,6 +4147,54 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-08-18T13:03:39.894Z"
+    },
+    {
+      "id": "bug-250",
+      "timestamp": "2026-08-18T16:03:53.060Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Models.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→9 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T16:03:53.060Z"
+    },
+    {
+      "id": "bug-251",
+      "timestamp": "2026-08-18T16:08:46.165Z",
+      "error_message": "Incorrect value in code",
+      "file": "RootCLI/README.md",
+      "root_cause": "Had `email`",
+      "fix": "Changed to `country`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T16:08:46.165Z"
+    },
+    {
+      "id": "bug-252",
+      "timestamp": "2026-08-18T16:11:43.584Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/Localizable.xcstrings",
+      "root_cause": "Had \"Laufend\"",
+      "fix": "Changed to \"Land\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "xcstrings"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-18T16:11:43.584Z"
     }
   ]
 }

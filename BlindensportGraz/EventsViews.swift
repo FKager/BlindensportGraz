@@ -13,6 +13,7 @@ struct AddEventView: View {
        @State private var street = ""
        @State private var zip = ""
        @State private var city = ""
+       @State private var country = ""
        @State private var startDate = Date()
        @State private var endDate = Date().addingTimeInterval(3600)
        @State private var notes = ""
@@ -49,6 +50,7 @@ struct AddEventView: View {
                     TextField("Straße", text: $street)
                     TextField("PLZ", text: $zip)
                     TextField("Ort", text: $city)
+                    TextField("Land", text: $country)
                 }
                 Section("Zeit") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
@@ -103,6 +105,7 @@ struct AddEventView: View {
                             street: street,
                             zip: zip,
                             city: city,
+                            country: country,
                             startDate: startDate,
                             endDate: endDate,
                             notes: notes,

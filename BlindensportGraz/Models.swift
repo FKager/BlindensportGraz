@@ -123,6 +123,7 @@ final class Member {
     var street: String = ""
     var zip: String = ""
     var city: String = ""
+    var country: String = ""
     var email: String = ""
     var phone: String = ""
     var memberNumber: String = ""
@@ -160,6 +161,7 @@ final class Member {
          street: String = "",
          zip: String = "",
          city: String = "",
+         country: String = "",
          email: String = "",
          phone: String = "",
          memberNumber: String = "",
@@ -180,6 +182,7 @@ final class Member {
         self.street = street
         self.zip = zip
         self.city = city
+        self.country = country
         self.email = email
         self.phone = phone
         self.memberNumber = memberNumber
@@ -204,11 +207,13 @@ extension Member {
         [firstName, lastName].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
     }
 
-    /// Combines street/zip/city into one display line, e.g. "Hauptstraße 12, 8010 Graz".
+    /// Combines street/zip/city/country into one display line, e.g.
+    /// "Hauptstraße 12, 8010 Graz, Österreich" — `country` only appears when
+    /// set, so existing addresses without one still read exactly as before.
     /// Not stored, mirrors fullName's pattern — can't be used as a @Query sort key.
     var fullAddress: String {
         let zipCity = [zip, city].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
-        return [street, zipCity].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
+        return [street, zipCity, country].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
     }
 }
 
@@ -409,10 +414,11 @@ class SportEvent {
     var kind: String = "event" // "event", "training", "tournament"
     var title: String = ""
     var sport: String = ""
-    var location: String = "" // venue name, e.g. "Sporthalle Eggenberg" — see street/zip/city below for the postal address
+    var location: String = "" // venue name, e.g. "Sporthalle Eggenberg" — see street/zip/city/country below for the postal address
     var street: String = ""
     var zip: String = ""
     var city: String = ""
+    var country: String = ""
     var startDate: Date = Date.now
     var endDate: Date = Date.now
     var notes: String = ""
@@ -437,6 +443,7 @@ class SportEvent {
          street: String = "",
          zip: String = "",
          city: String = "",
+         country: String = "",
          startDate: Date,
          endDate: Date,
          notes: String = "",
@@ -450,6 +457,7 @@ class SportEvent {
         self.street = street
         self.zip = zip
         self.city = city
+        self.country = country
         self.startDate = startDate
         self.endDate = endDate
         self.notes = notes
@@ -460,12 +468,26 @@ class SportEvent {
 }
 
 extension SportEvent {
-    /// Combines street/zip/city into one display line, e.g. "Hauptstraße 12,
-    /// 8010 Graz" — mirrors Member.fullAddress exactly (same join logic).
-    /// Not stored, so it can't be used as a @Query sort key.
+    /// Combines street/zip/city/country into one display line, e.g.
+    /// "Hauptstraße 12, 8010 Graz, Österreich" — mirrors Member.fullAddress
+    /// exactly (same join logic). Not stored, so it can't be used as a
+    /// @Query sort key.
     var fullAddress: String {
         let zipCity = [zip, city].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
-        return [street, zipCity].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
+        return [street, zipCity, country].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
+    }
+
+    /// `location` with `country` appended, comma-separated, but only when
+    /// `country` is set to something other than "Österreich" — Austria is
+    /// the assumed default for this club's events, so it stays implicit;
+    /// a foreign country is the one case worth calling out in something
+    /// like the Teilnehmerliste's "Ort" field. Kept separate from
+    /// `fullAddress` above, which always shows `country` unconditionally
+    /// as part of the full postal address.
+    var locationWithCountry: String {
+        let trimmedCountry = country.trimmingCharacters(in: .whitespaces)
+        guard !trimmedCountry.isEmpty, trimmedCountry != "Österreich" else { return location }
+        return "\(location), \(trimmedCountry)"
     }
 }
 
@@ -482,6 +504,7 @@ final class Tournament: SportEvent {
          street: String = "",
          zip: String = "",
          city: String = "",
+         country: String = "",
          startDate: Date,
          endDate: Date,
          maxTeams: Int = 8,
@@ -492,7 +515,7 @@ final class Tournament: SportEvent {
          teams: [Team] = []) {
         self.maxTeams = maxTeams
         self.status = status
-        super.init(id: id, title: title, sport: sport, location: location, street: street, zip: zip, city: city,
+        super.init(id: id, title: title, sport: sport, location: location, street: street, zip: zip, city: city, country: country,
                    startDate: startDate, endDate: endDate, notes: notes, createdBy: createdBy, createdAt: createdAt, teams: teams)
         self.kind = "tournament"
     }
@@ -511,6 +534,7 @@ final class Training: SportEvent {
          street: String = "",
          zip: String = "",
          city: String = "",
+         country: String = "",
          startDate: Date,
          durationMinutes: Int = 90,
          focusArea: String = "",
@@ -521,7 +545,7 @@ final class Training: SportEvent {
         self.durationMinutes = durationMinutes
         self.focusArea = focusArea
         let endDate = startDate.addingTimeInterval(TimeInterval(durationMinutes) * 60)
-        super.init(id: id, title: title, sport: sport, location: location, street: street, zip: zip, city: city,
+        super.init(id: id, title: title, sport: sport, location: location, street: street, zip: zip, city: city, country: country,
                    startDate: startDate, endDate: endDate, notes: notes, createdBy: createdBy, createdAt: createdAt, teams: teams)
         self.kind = "training"
     }
@@ -563,6 +587,7 @@ final class TrainingFavorite {
     var street: String = ""
     var zip: String = ""
     var city: String = ""
+    var country: String = ""
     var lastUsedAt: Date = Date.now
 
     // The manually-checked "Beteiligte Teams" selection at save time (NOT
@@ -575,7 +600,7 @@ final class TrainingFavorite {
 
     init(id: UUID = UUID(), title: String, sport: String,
          startHour: Int, startMinute: Int, endHour: Int, endMinute: Int,
-         weekday: Int = 2, location: String = "", street: String = "", zip: String = "", city: String = "",
+         weekday: Int = 2, location: String = "", street: String = "", zip: String = "", city: String = "", country: String = "",
          teams: [Team] = [], lastUsedAt: Date = .now) {
         self.id = id
         self.title = title
@@ -589,6 +614,7 @@ final class TrainingFavorite {
         self.street = street
         self.zip = zip
         self.city = city
+        self.country = country
         self.teams = teams
         self.lastUsedAt = lastUsedAt
     }
@@ -615,7 +641,7 @@ extension TrainingFavorite {
     /// room, so CloudKitSync pushes stay in sync with the local change.
     @discardableResult
     static func recordUsage(title: String, sport: String, startDate: Date, durationMinutes: Int,
-                             location: String = "", street: String = "", zip: String = "", city: String = "",
+                             location: String = "", street: String = "", zip: String = "", city: String = "", country: String = "",
                              teams: [Team] = [], in modelContext: ModelContext) -> (favorite: TrainingFavorite?, evictedID: UUID?) {
         let trimmedTitle = title.trimmingCharacters(in: .whitespaces)
         guard !trimmedTitle.isEmpty,
@@ -642,6 +668,7 @@ extension TrainingFavorite {
             match.street = street
             match.zip = zip
             match.city = city
+            match.country = country
             match.teams = teams
             match.lastUsedAt = .now
             return (match, nil)
@@ -657,7 +684,7 @@ extension TrainingFavorite {
             title: trimmedTitle, sport: sport,
             startHour: startComponents.hour ?? 18, startMinute: startComponents.minute ?? 0,
             endHour: endComponents.hour ?? 19, endMinute: endComponents.minute ?? 30,
-            weekday: weekday, location: location, street: street, zip: zip, city: city, teams: teams
+            weekday: weekday, location: location, street: street, zip: zip, city: city, country: country, teams: teams
         )
         modelContext.insert(favorite)
         return (favorite, evictedID)
@@ -731,7 +758,7 @@ extension TrainingFavorite {
             recordUsage(
                 title: training.title, sport: training.sport, startDate: training.startDate,
                 durationMinutes: training.durationMinutes,
-                location: training.location, street: training.street, zip: training.zip, city: training.city,
+                location: training.location, street: training.street, zip: training.zip, city: training.city, country: training.country,
                 teams: training.teams, in: modelContext
             )
         }

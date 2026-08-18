@@ -17,6 +17,7 @@ struct TrainingIO: Codable {
     var street: String?
     var zip: String?
     var city: String?
+    var country: String?
     var startDate: String?
     var durationMinutes: Int?
     var focusArea: String?
@@ -52,6 +53,7 @@ enum TrainingImportExport {
                     street: training.street,
                     zip: training.zip,
                     city: training.city,
+                    country: training.country,
                     startDate: isoFormatter.string(from: training.startDate),
                     durationMinutes: training.durationMinutes,
                     focusArea: training.focusArea,
@@ -156,6 +158,7 @@ enum TrainingImportExport {
                 overwriteIfNonEmpty(&existing.street, row.street)
                 overwriteIfNonEmpty(&existing.zip, row.zip)
                 overwriteIfNonEmpty(&existing.city, row.city)
+                overwriteIfNonEmpty(&existing.country, row.country)
                 overwriteIfNonEmpty(&existing.focusArea, row.focusArea)
                 overwriteIfNonEmpty(&existing.notes, row.notes)
                 existing.startDate = startDate
@@ -176,6 +179,7 @@ enum TrainingImportExport {
                     street: row.street ?? "",
                     zip: row.zip ?? "",
                     city: row.city ?? "",
+                    country: row.country ?? "",
                     startDate: startDate,
                     durationMinutes: (row.durationMinutes.map { $0 > 0 ? $0 : 90 }) ?? 90,
                     focusArea: row.focusArea ?? "",

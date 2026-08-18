@@ -16,6 +16,7 @@ public struct MemberRecord: Codable, Equatable, Sendable {
     public var street: String
     public var zip: String
     public var city: String
+    public var country: String
     public var email: String
     public var phone: String
     public var memberNumber: String
@@ -38,6 +39,7 @@ public struct MemberRecord: Codable, Equatable, Sendable {
         street: String = "",
         zip: String = "",
         city: String = "",
+        country: String = "",
         email: String = "",
         phone: String = "",
         memberNumber: String = "",
@@ -59,6 +61,7 @@ public struct MemberRecord: Codable, Equatable, Sendable {
         self.street = street
         self.zip = zip
         self.city = city
+        self.country = country
         self.email = email
         self.phone = phone
         self.memberNumber = memberNumber
@@ -83,6 +86,7 @@ public struct MemberRecord: Codable, Equatable, Sendable {
         street = dto.stringField("street") ?? ""
         zip = dto.stringField("zip") ?? ""
         city = dto.stringField("city") ?? ""
+        country = dto.stringField("country") ?? ""
         email = dto.stringField("email") ?? ""
         phone = dto.stringField("phone") ?? ""
         memberNumber = dto.stringField("memberNumber") ?? ""
@@ -120,6 +124,7 @@ public struct MemberRecord: Codable, Equatable, Sendable {
             "street": ["value": street],
             "zip": ["value": zip],
             "city": ["value": city],
+            "country": ["value": country],
             "email": ["value": email],
             "phone": ["value": phone],
             "memberNumber": ["value": memberNumber],
