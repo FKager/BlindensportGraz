@@ -394,7 +394,7 @@ var body: some View {
                 endDate: tournament.endDate,
                 attendedMemberships: attendedMemberships.filter { !isHelfer($0) }
             ),
-            membershipFilter: { !isHelfer($0) },
+            membershipFilter: { !isHelfer($0) && attendance(for: $0)?.attended == true },
             kindLabel: "Teilnehmer Sportler"
         )
     }
@@ -409,7 +409,7 @@ var body: some View {
                 endDate: tournament.endDate,
                 attendedMemberships: attendedMemberships.filter(isHelfer)
             ),
-            membershipFilter: isHelfer,
+            membershipFilter: { isHelfer($0) && attendance(for: $0)?.attended == true },
             kindLabel: "Teilnehmer Helfer"
         )
     }

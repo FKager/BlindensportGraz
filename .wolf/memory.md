@@ -1462,3 +1462,7 @@
 | 14:50 | Edited BlindensportGraz/TournamentsViews.swift | modified isHelfer() | ~166 |
 | 14:50 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~842 |
 | 14:51 | Split Mitgliederliste into Berichte>Teilnehmer Sportler/Helfer (2 Excel exports) | TournamentsViews.swift, MemberListView.swift | build succeeded | ~3k |
+| 14:52 | Session end: 7 writes across 2 files (TournamentsViews.swift, MemberListView.swift) | 5 reads | ~22958 tok |
+| 14:54 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~62 |
+| 14:54 | Edited BlindensportGraz/TournamentsViews.swift | added optional chaining | ~59 |
+| 14:54 | Teilnehmer Sportler/Helfer roster now filtered by attendance too, not just role | TournamentsViews.swift | build succeeded | ~1k |
