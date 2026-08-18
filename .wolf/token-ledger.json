@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 8507553,
-    "total_reads": 2743,
-    "total_writes": 5379,
+    "total_tokens_estimated": 8590357,
+    "total_reads": 2759,
+    "total_writes": 5395,
     "total_sessions": 50,
-    "anatomy_hits": 2506,
+    "anatomy_hits": 2522,
     "anatomy_misses": 225,
-    "repeated_reads_blocked": 1659,
-    "estimated_savings_vs_bare_cli": 6869669
+    "repeated_reads_blocked": 1663,
+    "estimated_savings_vs_bare_cli": 6912641
   },
   "sessions": [
     {
@@ -48395,6 +48395,250 @@
       "id": "session-2026-08-18-1812",
       "started": "2026-08-18T16:12:34.686Z",
       "ended": "2026-08-18T16:19:28.025Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeilnehmerlisteExport.swift",
+          "tokens_estimated": 2131,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 6083,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9943,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 1634,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 312,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 408,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 19791,
+        "output_tokens_estimated": 910,
+        "reads_count": 4,
+        "writes_count": 4,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-08-18-1812",
+      "started": "2026-08-18T16:12:34.686Z",
+      "ended": "2026-08-18T16:21:44.333Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeilnehmerlisteExport.swift",
+          "tokens_estimated": 2131,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 6083,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9943,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 1634,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 312,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 408,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 19791,
+        "output_tokens_estimated": 910,
+        "reads_count": 4,
+        "writes_count": 4,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-08-18-1812",
+      "started": "2026-08-18T16:12:34.686Z",
+      "ended": "2026-08-18T16:23:51.062Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeilnehmerlisteExport.swift",
+          "tokens_estimated": 2131,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 6083,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9943,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 1634,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 312,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 408,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 19791,
+        "output_tokens_estimated": 910,
+        "reads_count": 4,
+        "writes_count": 4,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-08-18-1812",
+      "started": "2026-08-18T16:12:34.686Z",
+      "ended": "2026-08-18T16:24:58.324Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeilnehmerlisteExport.swift",
+          "tokens_estimated": 2131,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 6083,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 9943,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 1634,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Models.swift",
+          "tokens_estimated": 312,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 95,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+          "tokens_estimated": 408,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 19791,
+        "output_tokens_estimated": 910,
+        "reads_count": 4,
+        "writes_count": 4,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-08-18-1812",
+      "started": "2026-08-18T16:12:34.686Z",
+      "ended": "2026-08-18T16:26:05.539Z",
       "reads": [
         {
           "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeilnehmerlisteExport.swift",
