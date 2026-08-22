@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T17:47:40.056Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T17:54:54.714Z
 > Files: 219 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -155,7 +155,7 @@
 - `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
 - `BlindensportGraz.entitlements` (~164 tok)
-- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~1644 tok)
+- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2135 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
 - `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2260 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)

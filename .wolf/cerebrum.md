@@ -200,6 +200,30 @@
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
 
+- [2026-08-22] **Changing a `@Model` stored property's type (e.g. `String` → a closed `RawRepresentable`/
+  `Codable` enum like `AppRole`) is NOT a change any of this run's automated verification could actually
+  catch** — `xcodebuild test`/`build` and the simulator always start from a fresh, empty SwiftData store,
+  so old-format data reading under the new type is never exercised. This shipped a real crash: Phase 7
+  changed `User.role` from `String` to `AppRole`; the very next real-device deploy crash-looped on launch
+  (`SIGABRT`/`swift_dynamicCastFailure` in `User.role.getter`, from `RootView.resolveAccount()`) for the
+  device's pre-existing local data. `ModelContainer(for:configurations:)` itself opened fine (no throw),
+  so `BlindensportGrazApp.init()`'s existing catch-and-reset fallback never ran — the crash is a hard
+  SwiftData-internal `fatalError` inside a property getter, not a throwable Swift error, so nothing short
+  of preventing the OLD store from ever being opened under the new schema can stop it. Fixed with a
+  one-time, `UserDefaults`-gated local-store wipe that runs BEFORE `ModelContainer` opens the store (see
+  [[bug-319]]) — reusing the exact reset mechanism the file already had for a different migration case.
+  **Lesson for any future `@Model` stored-property type change in this app: this class of bug is
+  invisible to every build/test command available in this sandbox — the only way to catch it before a
+  user does is to reason about it explicitly whenever a property's TYPE changes (not just its default
+  value or a new property being added), and pre-emptively add the same kind of version-gated reset, or a
+  real `SchemaMigrationPlan`, in the same commit as the type change** — don't wait for a real-device crash
+  report to discover it. Diagnosis technique worth repeating: `xcrun devicectl device info files
+  --domain-type systemCrashLogs --device <id>` lists `.ips` crash reports directly off the physical
+  device (no Xcode Devices window needed); `xcrun devicectl device copy from --domain-type
+  systemCrashLogs --source <name> --destination <path>` pulls one down; each `.ips` file is a JSON header
+  line followed by a JSON crash report — `report['faultingThread']` indexes into `report['threads']` for
+  the actual crashing stack, `report['exception']`/`report['termination']` for the signal/reason.
+
 - [2026-08-22] Any new local SwiftPM package added under this repo (e.g. `Shared/ClubSchema` from Phase
   9) needs its OWN `.build/` entry added to the root `.gitignore` — `RootCLI/.build/` is already there
   but does not cover a sibling package's build directory. Caught right before a `git add -A` almost

@@ -26,6 +26,34 @@ struct BlindensportGrazApp: App {
         // CloudKitSync's manual public-database push/pull, not SwiftData's
         // automatic CloudKit mirroring (which only supports private, per-user sync).
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false, cloudKitDatabase: .none)
+
+        // Phase 7 of the audit.md supergoal run (2026-08-22) changed
+        // User.role/TeamMembership.role/SportEvent.sport from plain String
+        // to closed AppRole/MembershipRole/Sport enums. Confirmed live on a
+        // real device (crash logs pulled via `xcrun devicectl device info
+        // files --domain-type systemCrashLogs`): SwiftData's lightweight
+        // migration does NOT reliably re-read an old plain-String-stored
+        // `role` value as the new enum type — every launch crashed with
+        // `swift_dynamicCastFailure` inside `User.role.getter`, called from
+        // `RootView.resolveAccount()`, for any device carrying data written
+        // before this change. This can't be caught with do/catch below (a
+        // property-getter dynamic-cast failure is a hard SwiftData-internal
+        // fatalError, not a throwable Swift error, so it never reaches the
+        // `catch` block's own reset logic) — it has to be prevented before
+        // `ModelContainer` ever opens the old store. One-time,
+        // version-gated wipe, reusing the exact same "reset and resync from
+        // CloudKit" mechanism the `catch` block below already relies on for
+        // a different migration failure mode (the SportEvent inheritance
+        // refactor) — CloudKit is already this app's established source of
+        // truth, so this is safe, just a client-side no-op on any device
+        // that never had pre-migration data (fresh installs, or a device
+        // that already ran this exact check once).
+        let roleEnumMigrationKey = "didWipeForRoleEnumMigration_2026_08_22"
+        if !UserDefaults.standard.bool(forKey: roleEnumMigrationKey) {
+            BlindensportGrazApp.deleteLocalStore(for: config)
+            UserDefaults.standard.set(true, forKey: roleEnumMigrationKey)
+        }
+
         do {
             modelContainer = try ModelContainer(for: schema, configurations: [config])
         } catch {

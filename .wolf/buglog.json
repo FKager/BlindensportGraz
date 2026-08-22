@@ -5268,6 +5268,24 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-22T19:55:00.000Z"
+    },
+    {
+      "id": "bug-319",
+      "timestamp": "2026-08-22T17:54:54.721Z",
+      "error_message": "App crashes on launch on a real device with pre-existing local data: SIGABRT, swift_dynamicCastFailure inside User.role.getter, called from RootView.applyDesignatedRootGrant(_:) <- RootView.resolveAccount(). Confirmed via three identical crash logs pulled from the physical device (xcrun devicectl device info files --domain-type systemCrashLogs) after deploying the audit.md supergoal run.",
+      "file": "BlindensportGraz/BlindensportGrazApp.swift",
+      "root_cause": "Phase 7 of the run changed User.role/TeamMembership.role/SportEvent.sport from plain String to closed AppRole/MembershipRole/Sport enums. SwiftData's lightweight migration does not reliably re-read an old plain-String-stored role value as the new enum type -- every automated build/test in the run used a fresh empty simulator store, so this incompatibility with a device's REAL pre-existing local data was never exercised until the actual device deploy. ModelContainer(for:configurations:) itself opens successfully (no throw), so the app's existing catch-and-reset fallback never runs -- the crash happens later, inside a property getter's hard fatalError, which cannot be caught with do/catch.",
+      "fix": "Added a one-time, version-gated local-store wipe in BlindensportGrazApp.init() (UserDefaults key didWipeForRoleEnumMigration_2026_08_22), running BEFORE ModelContainer opens the store -- reuses the exact deleteLocalStore(for:) helper the existing catch block already relies on for a different migration failure mode. CloudKit remains the source of truth (CloudKitSync.syncAll() repopulates on next login), so this is safe. Verified: xcodebuild test still 139 pass/16 known-baseline fail (no regression), redeployed to the physical device, confirmed no new crash logs after relaunch.",
+      "tags": [
+        "swiftdata",
+        "migration",
+        "crash",
+        "enum",
+        "device-only"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T17:54:54.721Z"
     }
   ]
 }
