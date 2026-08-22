@@ -5465,6 +5465,29 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-22T21:20:00.000Z"
+    },
+    {
+      "id": "bug-325",
+      "timestamp": "2026-08-22T21:35:00.000Z",
+      "error_message": "Follow-up investigation from bug-323: 4 team IDs (39B58957, 956679C5, 3892CDC2, 1647E607) were referenced by 24 TeamMembership/Training/TrainingFavorite records but had no backing Team record in CloudKit -- teams that were deleted at some point (most likely during the same duplicate-team churn as bug-323, from ensureDefaultTeams creating a fresh local Team every launch while bug-322's queryable-index gap was live) without cleaning up what pointed at them.",
+      "file": "CloudKit development data -- no app code",
+      "root_cause": "Same root cause chain as bug-323/bug-322: repeated silent local Team re-creation across sessions produced far more than the 2-copies-per-name pattern bug-323's name-based grouping caught -- some of those extra copies were later deleted (by an app-side deleteTeam call, which pushes a CloudKit delete for the Team record itself but never touches Training/TeamMembership records that already reference its id -- see CloudKitSync+Team.swift), leaving dangling teamID references with no name to group by since the Team record itself was gone.",
+      "fix": "Resolved each orphan id's real identity by cross-referencing every signal available: (1) co-occurrence with real team ids inside the same Training/TrainingFavorite teamIDs list, inferring the orphan fills whichever of the standard 3-team Torball auto-assign set (Damen/Herren/Helfer) was missing; (2) referenced ClubMember.gender on orphan TeamMembership records (all 3 members on the 'Damen' orphan were female); (3) cross-checking whether the same person already had a separate, valid membership to the inferred real team (all 4 did -- Franz Czuk already had a real Grazer VSC Herren membership, the 3 women already had real Grazer VSC Damen memberships), confirming each orphan was a stale duplicate of an already-correct assignment, not a distinct new fact. Mapped 39B58957 and 3892CDC2 -> Grazer VSC Damen, 956679C5 and 1647E607 -> Grazer VSC Herren. Reassigned the 4 attendance records pointing at soon-to-be-collapsed memberships first, deleted the 4 resulting duplicate TeamMemberships, repointed the 3 surviving ones plus 14 Training/TrainingFavorite teamIDs lists (full-field payloads, same forceReplace precaution as bug-323). Verified: 0 orphan team-id references remain anywhere; TrainingAttendance/TournamentAttendance counts unchanged (59/5) confirming no attendance history lost.",
+      "tags": [
+        "cloudkit",
+        "data-integrity",
+        "orphaned-reference",
+        "team",
+        "rootcli",
+        "resolved"
+      ],
+      "related_bugs": [
+        "bug-322",
+        "bug-323",
+        "bug-324"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T21:35:00.000Z"
     }
   ]
 }

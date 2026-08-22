@@ -2070,3 +2070,7 @@
 | 21:52 | Edited RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift | modified queryRecords() | ~394 |
 | 21:54 | Created ../../.claude/jobs/a920fb1f/tmp/execute_merge2.py | — | ~1868 |
 | 21:20 | Merged CloudKit duplicate Teams (12->8) and ClubMembers (239->65) + fixed rootcli pagination bug that hid 39 records | CloudKitS2SClient.swift, CloudKit data | fixed, verified 0 dup names remain | ~52000 |
+| 22:00 | Session end: 3 writes across 3 files (execute_merge.py, CloudKitS2SClient.swift, execute_merge2.py) | 10 reads | ~24365 tok |
+| 22:05 | Created ../../.claude/jobs/a920fb1f/tmp/execute_orphan_fix.py | — | ~2698 |
+| 22:05 | Edited ../../.claude/jobs/a920fb1f/tmp/execute_orphan_fix.py | 3→1 lines | ~28 |
+| 21:35 | Resolved 4 orphaned team-id references (24 records) by inferring real team via co-occurrence + member gender + existing-membership cross-check, no data lost | CloudKit data | fixed, verified 0 orphans remain | ~38000 |
