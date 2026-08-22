@@ -199,12 +199,36 @@ struct RootCLI {
 
         case "set":
             guard rest.count >= 3 else {
-                throw CLIError.message("Usage: rootcli record set <type> <id> field=value [field:TYPE=value ...]\nTYPE is one of INT64, DOUBLE, TIMESTAMP, STRING_LIST, STRING (default STRING when omitted).")
+                throw CLIError.message("Usage: rootcli record set <type> <id> field=value [field:TYPE=value ...]\nTYPE is one of INT64, DOUBLE, TIMESTAMP, STRING_LIST, STRING, ASSET (default STRING when omitted). ASSET's value is a local file path, uploaded via CloudKit's asset-upload flow.")
             }
             let recordType = rest[0]
             let id = rest[1]
             let assignments = Array(rest.dropFirst(2))
-            let fields = CKFieldCoding.parseCLIAssignments(assignments)
+
+            // ASSET assignments need an async upload (assets/upload + a
+            // pre-authorized POST, see CloudKitS2SClient.uploadAsset) and
+            // can't go through CKFieldCoding's pure, synchronous encoder —
+            // pull those out first, upload each, then merge with the
+            // ordinary synchronously-encoded fields below.
+            var assetAssignments: [(name: String, path: String)] = []
+            var otherAssignments: [String] = []
+            for arg in assignments {
+                guard let eq = arg.firstIndex(of: "="), let colon = arg.firstIndex(of: ":"), colon < eq,
+                      arg[arg.index(after: colon)..<eq].uppercased() == "ASSET" else {
+                    otherAssignments.append(arg)
+                    continue
+                }
+                let name = String(arg[arg.startIndex..<colon])
+                let path = String(arg[arg.index(after: eq)...])
+                assetAssignments.append((name, path))
+            }
+
+            var fields = CKFieldCoding.parseCLIAssignments(otherAssignments)
+            for asset in assetAssignments {
+                let singleFile = try await client.uploadAsset(
+                    recordType: recordType, fieldName: asset.name, fileURL: URL(fileURLWithPath: asset.path))
+                fields[asset.name] = ["value": singleFile, "type": "ASSETID"]
+            }
             guard !fields.isEmpty else {
                 throw CLIError.message("No valid field=value assignments given.")
             }

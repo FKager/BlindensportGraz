@@ -14,6 +14,42 @@
 
 ## Key Learnings
 
+- [2026-08-22] Post-supergoal-run CloudKit follow-up session, several real findings worth keeping:
+  - **CloudKit Dashboard requires a SEPARATE Server-to-Server key pair per environment** — the same
+    public key cannot be registered under both Development and Production. Confirmed live: a key
+    registered under Production returned `HTTP 401` when used with `CLOUDKIT_ENVIRONMENT=development`,
+    and vice versa. `RootCLI/README.md` now documents this explicitly under step 2 of the one-time setup.
+  - **`xcrun cktool validate-schema`/`import-schema` refuse `--environment production` outright**
+    (`BadRequestException: endpoint not applicable in the environment 'production'`) — Production schema
+    can ONLY be changed via CloudKit Dashboard's own "Deploy Schema Changes" button (Development →
+    Production), there is no API/CLI path around this. `export-schema`/`validate-schema`/`import-schema`
+    all work fine against `development`, just never `production`.
+  - **CloudKit Web Services' REST API (what `cktool create-record`/RootCLI's S2S client use) does NOT
+    auto-create a record type's schema on first write**, unlike the native CloudKit SDK the app itself
+    uses (which does auto-create Development schema on first write via `CKContainer`). A write to an
+    undefined type fails with `NOT_FOUND — could not find record_type with name '...'` — the type must
+    be defined via `cktool import-schema` (or written once from the actual app) first. This is why
+    `RoleChangeLog`/`ExpenseReceipt` (added this run, never actually used yet) didn't show up in a
+    Development schema export even though the app code was long since correct.
+  - **`cktool query-records`/`create-record` need a different auth token than `export-schema`/
+    `import-schema`/`validate-schema`** — the latter three work with a saved "management" token
+    (`cktool save-token`, already set up in this environment, confirmed via `get-teams`); the former two
+    error with "No user token found... See: save-token" and need a "user" token instead, which (like the
+    S2S key) requires interactive Apple ID Dashboard sign-in this sandbox can't do. Use `rootcli`
+    (S2S REST, already has working credentials) for actual record reads/writes instead of `cktool`
+    whenever a management token is all that's available.
+  - **CloudKit's `records/modify` returns HTTP 200 for the whole batch even when an individual operation
+    inside it fails** — the per-operation error (`serverErrorCode`/`reason`) is embedded in that record's
+    entry in the response's `records` array, not surfaced as a non-2xx HTTP status. See [[bug-317]] — this
+    silently broke RootCLI's RoleChangeLog audit-log writes (and, unnoticed, every other write path in
+    the package) until fixed with an explicit per-operation check after every `records/modify` call.
+  - **CloudKit's asset-upload URL (from `assets/upload`'s token response) expects `multipart/form-data`
+    (a `"files"` part), not a raw-bytes POST body** — a raw POST returns a bare `400 Bad Request` with no
+    further detail. See [[bug-318]] — `CloudKitS2SClient.uploadAsset` now builds a proper multipart body.
+  - **Env vars a user sets via the harness's `!` prefix don't persist into subsequent Bash tool calls** —
+    already documented below (2026-08-22 entry near `CLOUDKIT_KEY_ID`), reconfirmed this session: always
+    have the user paste the raw value in chat and build one self-contained `KEY=value command` Bash
+    invocation, never ask them to `! export` first.
 - [2026-08-22] Phase 8's `PersistenceService.saveAndPush`/`.deleteAndPush` service layer held up cleanly
   across every feature phase that used it (14 local reminders, 15 attendance trends, 16 season rollup,
   17 calendar export, 18 receipt attachments) — no awkwardness or friction found worth flagging for

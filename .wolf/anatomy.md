@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T16:50:15.500Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T17:47:40.056Z
 > Files: 219 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -279,7 +279,7 @@
 
 - `members.example.json` (~118 tok)
 - `Package.swift` — swift-tools-version:5.9 (~448 tok)
-- `README.md` — Project documentation (~4752 tok)
+- `README.md` — Project documentation (~5219 tok)
 
 ## RootCLI/Public/
 
@@ -288,9 +288,9 @@
 
 ## RootCLI/Sources/CloudKitS2SCore/
 
-- `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1697 tok)
+- `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1757 tok)
 - `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
-- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~2435 tok)
+- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~3765 tok)
 - `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
 - `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3132 tok)
 - `MemberFillUpdate.swift` — / Non-destructive counterpart to `MemberBulkImport.run` — fills in fields (~1808 tok)
@@ -306,7 +306,7 @@
 
 ## RootCLI/Sources/rootcli/
 
-- `RootCLI.swift` — Struct: RootCLI (~3514 tok)
+- `RootCLI.swift` — Struct: RootCLI (~3886 tok)
 
 ## Shared/ClubSchema/
 

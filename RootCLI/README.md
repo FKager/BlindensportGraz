@@ -63,6 +63,16 @@ to share; it's what you paste into the Dashboard next.
    of `rootcli_public_key.pem`.
 3. Copy the generated **Key ID** — that's `CLOUDKIT_KEY_ID` below.
 
+> **Development and Production each need their OWN key pair.** CloudKit
+> Dashboard will not let the same public key be registered under both
+> environments — repeat step 1 (with a different output filename, e.g.
+> `rootcli_private_key_development_pkcs8.pem` / `..._production_pkcs8.pem`)
+> and step 2 once per environment, and keep both `CLOUDKIT_KEY_ID`/
+> `CLOUDKIT_PRIVATE_KEY_PATH` pairs on hand — you'll switch between them via
+> `CLOUDKIT_ENVIRONMENT`. Confirmed live 2026-08-22: a key registered only
+> under Production returns `HTTP 401 Authentication failed` when used with
+> `CLOUDKIT_ENVIRONMENT=development`, and vice versa.
+
 ### 3. Restrict access via CloudKit Security Roles (recommended)
 
 By default every CKRecord type in a public database grants the **World**
@@ -210,8 +220,8 @@ where some people already exist with data you don't want clobbered.
 `UserIdentity`, `ClubMember`, `Team`, `TeamMembership`, `SportEvent`,
 `Training`, `Tournament`, `TrainingAttendance`, `TournamentAttendance`,
 `EventParticipation` — not just the ones with a dedicated subcommand above.
-`EventImage` is excluded; it carries a binary `CKAsset`, which this text/JSON
-field editor doesn't handle.
+`EventImage`/`ExpenseReceipt` carry a binary `CKAsset`; use `field:ASSET=path`
+(below) for that one field, everything else works the same as any other type.
 
 ```bash
 rootcli record list <type>
@@ -223,12 +233,29 @@ rootcli record delete <type> <id>
 `set` always upserts (`createOrReplaceRecord`) — no change-tag/conflict
 handling, matching the app's own push semantics. Field values default to
 `STRING`; use `field:TYPE=value` for `INT64`, `DOUBLE`, `TIMESTAMP` (ISO8601
-input), or `STRING_LIST` (comma-separated). Example:
+input), `STRING_LIST` (comma-separated), or `ASSET` (a local file path —
+uploaded via CloudKit's asset-upload flow before the record is saved).
+Examples:
 
 ```bash
 rootcli record set Team 3F2504E0-4F89-11D3-9A0C-0305E82C3301 name="Herren A" sport=Torball
 rootcli record set UserIdentity 3F2504E0-... isRoot:INT64=1
+rootcli record set ExpenseReceipt 3F2504E0-... uploadedBy=admin note="Fahrtkosten" asset:ASSET=/path/to/receipt.jpg
 ```
+
+> **The record type must already exist in schema before `set` can create the
+> first record of that type.** Unlike the app's own native-SDK writes,
+> CloudKit's Web Services REST API (what `rootcli`/`clubmembersapi` use)
+> does NOT auto-create a record type's schema on first write — a write to an
+> undefined type fails with `NOT_FOUND — could not find record_type with
+> name '...'`. Define new types via `xcrun cktool import-schema` first (see
+> Apple's CloudKit Web Services / `cktool` documentation), or use them from
+> the app itself once, which does auto-create Development schema via the
+> native SDK. Confirmed live 2026-08-22, alongside a real bug this exposed:
+> every write path in this package used to silently ignore this class of
+> per-operation failure (CloudKit's `records/modify` returns HTTP 200 for
+> the whole batch even when an individual operation inside it fails) — now
+> fixed, every write throws a real, visible error when this happens.
 
 ## Web API & admin page
 

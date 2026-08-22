@@ -146,7 +146,9 @@ public final class CloudKitS2SClient {
                 ] as [String: Any]
             ]]
         ]
-        return try await send(endpoint: "records/modify", body: body)
+        let json = try await send(endpoint: "records/modify", body: body)
+        try checkModifyResult(json, endpoint: "records/modify")
+        return json
     }
 
     /// Creates a record at `recordName`, or unconditionally overwrites it if one
@@ -167,7 +169,63 @@ public final class CloudKitS2SClient {
                 ] as [String: Any]
             ]]
         ]
-        return try await send(endpoint: "records/modify", body: body)
+        let json = try await send(endpoint: "records/modify", body: body)
+        try checkModifyResult(json, endpoint: "records/modify")
+        return json
+    }
+
+    /// Uploads a local file as a CKAsset for `fieldName` on `recordType`,
+    /// returning the raw "singleFile" dict CloudKit's asset-upload response
+    /// contains — embed that directly as `["value": <this>, "type":
+    /// "ASSETID"]` in a subsequent `createOrReplaceRecord`/`updateRecord`
+    /// call's fields dict. Two-step per Apple's CloudKit Web Services
+    /// Reference ("Uploading Assets"): `assets/upload` (a normal signed S2S
+    /// request, like every other endpoint here) returns a short-lived,
+    /// pre-authorized upload URL; the file bytes are then POSTed directly
+    /// to THAT url — not through `send()`, since asset-upload URLs are
+    /// already pre-authorized and don't use/expect S2S request signing.
+    public func uploadAsset(recordType: String, fieldName: String, fileURL: URL) async throws -> [String: Any] {
+        let tokenBody: [String: Any] = [
+            "tokens": [["recordType": recordType, "fieldName": fieldName]]
+        ]
+        let tokenJSON = try await send(endpoint: "assets/upload", body: tokenBody)
+        guard let tokens = tokenJSON["tokens"] as? [[String: Any]], let token = tokens.first,
+              let urlString = token["url"] as? String, let uploadURL = URL(string: urlString) else {
+            throw CLIError.message("CloudKit assets/upload did not return an upload URL: \(tokenJSON)")
+        }
+
+        let fileData: Data
+        do {
+            fileData = try Data(contentsOf: fileURL)
+        } catch {
+            throw CLIError.message("Could not read asset file at \(fileURL.path): \(error)")
+        }
+
+        // The pre-authorized upload URL expects a multipart/form-data body
+        // (a raw-bytes POST body returns "Bad Request", confirmed live) —
+        // one "files" part carrying the asset's bytes.
+        let boundary = "----RootCLIAssetUpload-\(UUID().uuidString)"
+        var multipartBody = Data()
+        multipartBody.append("--\(boundary)\r\n".data(using: .utf8)!)
+        multipartBody.append("Content-Disposition: form-data; name=\"files\"; filename=\"\(fileURL.lastPathComponent)\"\r\n".data(using: .utf8)!)
+        multipartBody.append("Content-Type: application/octet-stream\r\n\r\n".data(using: .utf8)!)
+        multipartBody.append(fileData)
+        multipartBody.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+
+        var uploadRequest = URLRequest(url: uploadURL)
+        uploadRequest.httpMethod = "POST"
+        uploadRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        uploadRequest.httpBody = multipartBody
+        let (uploadData, uploadResponse) = try await URLSession.shared.data(for: uploadRequest)
+        guard let http = uploadResponse as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            let body = String(data: uploadData, encoding: .utf8) ?? "unknown error"
+            throw CLIError.message("Asset upload to CloudKit failed: \(body)")
+        }
+        let uploadJSON = (try? JSONSerialization.jsonObject(with: uploadData)) as? [String: Any] ?? [:]
+        guard let singleFile = uploadJSON["singleFile"] as? [String: Any] else {
+            throw CLIError.message("Asset upload response missing 'singleFile': \(uploadJSON)")
+        }
+        return singleFile
     }
 
     /// Deletes unconditionally (no recordChangeTag check), matching this
@@ -184,6 +242,30 @@ public final class CloudKitS2SClient {
                 ] as [String: Any]
             ]]
         ]
-        return try await send(endpoint: "records/modify", body: body)
+        let json = try await send(endpoint: "records/modify", body: body)
+        try checkModifyResult(json, endpoint: "records/modify")
+        return json
+    }
+
+    /// `records/modify` returns HTTP 200 for the whole batch call even when
+    /// an individual operation inside it failed — CloudKit reports
+    /// per-operation failures as a "serverErrorCode"/"reason" pair embedded
+    /// in that record's entry in the response's "records" array, not as a
+    /// non-2xx HTTP status. `send()` itself stays tolerant of per-record
+    /// errors (query/lookup legitimately use a per-record NOT_FOUND as
+    /// normal, expected data — see `lookupRecord`'s doc comment — not a
+    /// failure to surface), so every write path checks explicitly instead.
+    /// Found live: `rootcli set-role`'s RoleChangeLog write was silently
+    /// no-oping whenever the record type didn't exist yet in schema,
+    /// because nothing checked for this — the "Warning: ... write failed"
+    /// message right above this call site never actually printed.
+    private func checkModifyResult(_ json: [String: Any], endpoint: String) throws {
+        let records = json["records"] as? [[String: Any]] ?? []
+        for record in records {
+            guard let errorCode = record["serverErrorCode"] as? String else { continue }
+            let reason = (record["reason"] as? String) ?? "no reason given"
+            let recordName = (record["recordName"] as? String) ?? "unknown record"
+            throw CLIError.message("CloudKit \(endpoint) failed for record '\(recordName)': \(errorCode) — \(reason)")
+        }
     }
 }

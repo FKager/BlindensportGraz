@@ -7,7 +7,7 @@
       "error_message": "Wrong reference: BlinddensportGraz should be BlindensportGraz",
       "file": "project.yml",
       "root_cause": "Used \"BlinddensportGraz\" instead of \"BlindensportGraz\"",
-      "fix": "Changed BlinddensportGraz → BlindensportGraz",
+      "fix": "Changed BlinddensportGraz \u2192 BlindensportGraz",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -71,7 +71,7 @@
       "error_message": "Wrong reference: BlinddensportGraz should be BlindensportGraz",
       "file": ".github/workflows/ios-build-deploy.yml",
       "root_cause": "Used \"BlinddensportGraz\" instead of \"BlindensportGraz\"",
-      "fix": "Changed BlinddensportGraz → BlindensportGraz",
+      "fix": "Changed BlinddensportGraz \u2192 BlindensportGraz",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -87,7 +87,7 @@
       "error_message": "Wrong reference: Blinddensport should be Blindensport",
       "file": "CLAUDE.mdes",
       "root_cause": "Used \"Blinddensport\" instead of \"Blindensport\"",
-      "fix": "Changed Blinddensport → Blindensport",
+      "fix": "Changed Blinddensport \u2192 Blindensport",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -103,7 +103,7 @@
       "error_message": "Wrong reference: BlinddensportGrazApp should be BlindensportGrazApp",
       "file": "BlindensportGraz/BlindensportGrazApp.swift",
       "root_cause": "Used \"BlinddensportGrazApp\" instead of \"BlindensportGrazApp\"",
-      "fix": "Changed BlinddensportGrazApp → BlindensportGrazApp",
+      "fix": "Changed BlinddensportGrazApp \u2192 BlindensportGrazApp",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -202,7 +202,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/BlindensportGrazApp.swift",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 3→4 lines (3 removed)",
+      "fix": "Rewrote 3\u21924 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -265,7 +265,7 @@
       "timestamp": "2026-07-15T18:48:15.681Z",
       "error_message": "Missing await",
       "file": "BlindensportGraz/RootView.swift",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -282,7 +282,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/EventsViews.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 25→29 lines (2 removed)",
+      "fix": "Rewrote 25\u219229 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -298,7 +298,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TournamentsViews.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 24→28 lines (2 removed)",
+      "fix": "Rewrote 24\u219228 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -412,7 +412,7 @@
       "error_message": "Wrong reference: title should be Mitglieder",
       "file": "BlindensportGraz/MemberListView.swift",
       "root_cause": "Used \"title\" instead of \"Mitglieder\"",
-      "fix": "Changed title → Mitglieder",
+      "fix": "Changed title \u2192 Mitglieder",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -427,7 +427,7 @@
       "timestamp": "2026-07-16T16:07:00.347Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -443,7 +443,7 @@
       "timestamp": "2026-07-16T16:07:17.709Z",
       "error_message": "Missing await",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -460,7 +460,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/CloudKitSync.swift",
       "root_cause": "7 lines replaced/restructured",
-      "fix": "Rewrote 8→12 lines (7 removed)",
+      "fix": "Rewrote 8\u219212 lines (7 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -491,7 +491,7 @@
       "timestamp": "2026-07-16T16:27:30.920Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -507,7 +507,7 @@
       "timestamp": "2026-07-16T16:27:36.485Z",
       "error_message": "Missing await",
       "file": "BlindensportGraz/RootView.swift",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call | Also: isCreating = true; Task {",
       "tags": [
         "auto-detected",
@@ -524,7 +524,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 71→112 lines (2 removed)",
+      "fix": "Rewrote 71\u2192112 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -539,7 +539,7 @@
       "timestamp": "2026-07-16T18:40:00Z",
       "error_message": "'main' attribute cannot be used in a module that contains top-level code",
       "file": "RootCLI/Sources/rootcli/main.swift",
-      "root_cause": "SwiftPM treats a source file literally named `main.swift` in an executable target as implicit top-level-code script, which conflicts with a separate `@main`-annotated type in the same target — not a general Swift language restriction, just SwiftPM's naming special-case.",
+      "root_cause": "SwiftPM treats a source file literally named `main.swift` in an executable target as implicit top-level-code script, which conflicts with a separate `@main`-annotated type in the same target \u2014 not a general Swift language restriction, just SwiftPM's naming special-case.",
       "fix": "Renamed the file from main.swift to RootCLI.swift (keeping the @main struct); build succeeded immediately after.",
       "tags": [
         "swift",
@@ -557,7 +557,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Sources/rootcli/RootCLI.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 16→22 lines (5 removed)",
+      "fix": "Rewrote 16\u219222 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -573,7 +573,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/README.md",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 4→10 lines (4 removed)",
+      "fix": "Rewrote 4\u219210 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -701,7 +701,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TeamsViews.swift",
       "root_cause": "8 lines replaced/restructured",
-      "fix": "Rewrote 52→78 lines (8 removed)",
+      "fix": "Rewrote 52\u219278 lines (8 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -716,7 +716,7 @@
       "timestamp": "2026-07-17T00:00:00Z",
       "error_message": "User-reported: 'I can not assign a member of Grazer VSC to a newly created team. The members are not listed.'",
       "file": "BlindensportGraz/TeamsViews.swift",
-      "root_cause": "TeamMembership.user required a registered User (not the ClubMember roster), and AddMemberView's picker only ever queried [User]. Most Grazer VSC roster entries (ClubMember) have no matching app account, since they're admin-entered roster data, not sign-ups — so they never appeared as assignable team members. Not a code defect so much as a design gap: two separate 'member' concepts (registered User vs. roster ClubMember) with no bridge between them for team assignment.",
+      "root_cause": "TeamMembership.user required a registered User (not the ClubMember roster), and AddMemberView's picker only ever queried [User]. Most Grazer VSC roster entries (ClubMember) have no matching app account, since they're admin-entered roster data, not sign-ups \u2014 so they never appeared as assignable team members. Not a code defect so much as a design gap: two separate 'member' concepts (registered User vs. roster ClubMember) with no bridge between them for team assignment.",
       "fix": "Made TeamMembership.user optional and added an optional TeamMembership.clubMember, exactly one set per membership. Added TeamMembership.displayName/.subtitle computed helpers so rendering code doesn't need to know which side is set. AddMemberView now shows two Picker sections: 'Registrierte Benutzer' and 'Grazer VSC Mitglieder ohne Konto'. CloudKitSync publishes/resolves either userID or clubMemberID on the TeamMembership record. EventParticipation was deliberately left untouched (self-registering for an event still requires an account).",
       "tags": [
         "user-reported",
@@ -734,7 +734,7 @@
       "timestamp": "2026-07-16T17:38:57.031Z",
       "error_message": "Missing error handling in throws",
       "file": "RootCLI/Sources/rootcli/RootCLI.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -751,7 +751,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 34→45 lines (3 removed)",
+      "fix": "Rewrote 34\u219245 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -783,7 +783,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Sources/rootcli/ClubMemberImport.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 5→8 lines (2 removed)",
+      "fix": "Rewrote 5\u21928 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -882,7 +882,7 @@
       "timestamp": "2026-07-17T00:20:00Z",
       "error_message": "User-reported: 'The app says: no team assigned, when i want to add a member to a training.'",
       "file": "BlindensportGraz/TrainingsViews.swift, EventsViews.swift, TournamentsViews.swift",
-      "root_cause": "TrainingDetailView/EventDetailView/TournamentDetailView had no UI to assign or change a team after creation — only the Add*View creation forms had a team picker, and that picker was itself broken until bug-054 was fixed. So a training created before that fix (or with 'Fur alle sichtbar' chosen) was permanently team-less; the admin-only member list correctly reported 'no team assigned' since MemberListView derives members entirely from the item's team(s). Separately discovered while fixing this: editing any field on an existing Event/Training/Tournament never pushed the change to CloudKit at all — pushEvent/pushTraining/pushTournament were only ever called once, at creation, in the Add*View.",
+      "root_cause": "TrainingDetailView/EventDetailView/TournamentDetailView had no UI to assign or change a team after creation \u2014 only the Add*View creation forms had a team picker, and that picker was itself broken until bug-054 was fixed. So a training created before that fix (or with 'Fur alle sichtbar' chosen) was permanently team-less; the admin-only member list correctly reported 'no team assigned' since MemberListView derives members entirely from the item's team(s). Separately discovered while fixing this: editing any field on an existing Event/Training/Tournament never pushed the change to CloudKit at all \u2014 pushEvent/pushTraining/pushTournament were only ever called once, at creation, in the Add*View.",
       "fix": "Added a team-assignment Picker to TrainingDetailView (single team, state-backed via selectedTeamID: UUID? to match the existing UUID-tag convention) and a multi-team toggle list to EventDetailView/TournamentDetailView (same 'Beteiligte Teams' pattern already used in the Add*View forms). Added .onDisappear { modelContext.save(); CloudKitSync.shared.push...(...) } to all three detail views so any edit, not just team reassignment, now syncs to CloudKit on leaving the screen.",
       "tags": [
         "user-reported",
@@ -903,7 +903,7 @@
       "error_message": "Significant refactor of ",
       "file": "fastlane/Fastfile",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 28→43 lines (3 removed)",
+      "fix": "Rewrote 28\u219243 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -919,7 +919,7 @@
       "error_message": "Wrong reference: team should be teams",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "Used \"team\" instead of \"teams\"",
-      "fix": "Changed team → teams",
+      "fix": "Changed team \u2192 teams",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -935,7 +935,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 32→60 lines (4 removed)",
+      "fix": "Rewrote 32\u219260 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -950,7 +950,7 @@
       "timestamp": "2026-07-17T18:40:40.527Z",
       "error_message": "Missing await",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -967,7 +967,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsViews.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 10→26 lines (4 removed) | Also: MemberListView(itemName: training.title, teams: tr; .onAppear {",
+      "fix": "Rewrote 10\u219226 lines (4 removed) | Also: MemberListView(itemName: training.title, teams: tr; .onAppear {",
       "tags": [
         "auto-detected",
         "refactor",
@@ -999,7 +999,7 @@
       "error_message": "Wrong reference: identi should be identity",
       "file": "download_certificate.sh",
       "root_cause": "Used \"identi\" instead of \"identity\"",
-      "fix": "Changed identi → identity",
+      "fix": "Changed identi \u2192 identity",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1015,7 +1015,7 @@
       "error_message": "Significant refactor of ",
       "file": ".github/workflows/ios-device-deploy.yml",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 8→18 lines (2 removed) | Also: CODE_SIGN_STYLE=Manual \\; PROVISIONING_PROFILE=\"$PROFILE_UUID\" \\",
+      "fix": "Rewrote 8\u219218 lines (2 removed) | Also: CODE_SIGN_STYLE=Manual \\; PROVISIONING_PROFILE=\"$PROFILE_UUID\" \\",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1062,7 +1062,7 @@
       "timestamp": "2026-07-17T20:54:39.149Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/MemberListView.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1126,7 +1126,7 @@
       "timestamp": "2026-07-18T07:17:00Z",
       "error_message": "User-reported: 'the export of members of a training is not possible. The app crashes.'",
       "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
-      "root_cause": "ActivityView (UIViewControllerRepresentable wrapping UIActivityViewController, used by MemberListView.exportTeilnehmerliste to share the generated .xlsx via a second .sheet) never configured popoverPresentationController.sourceView/sourceRect. UIActivityViewController defaults to popover presentation style on iPad (this app supports iPad via TARGETED_DEVICE_FAMILY '1,2' in project.yml) — with no popover anchor, UIKit throws an uncaught NSInvalidArgumentException at presentation time and the app hard-crashes. This is a UIKit-level fatal exception, not a thrown Swift Error, so MemberListView.exportTeilnehmerliste's existing do/catch (bug-066) could never have caught it — the export/zip-generation logic itself was already verified correct (see cerebrum 2026-07-17 TeilnehmerInnenliste entry).",
+      "root_cause": "ActivityView (UIViewControllerRepresentable wrapping UIActivityViewController, used by MemberListView.exportTeilnehmerliste to share the generated .xlsx via a second .sheet) never configured popoverPresentationController.sourceView/sourceRect. UIActivityViewController defaults to popover presentation style on iPad (this app supports iPad via TARGETED_DEVICE_FAMILY '1,2' in project.yml) \u2014 with no popover anchor, UIKit throws an uncaught NSInvalidArgumentException at presentation time and the app hard-crashes. This is a UIKit-level fatal exception, not a thrown Swift Error, so MemberListView.exportTeilnehmerliste's existing do/catch (bug-066) could never have caught it \u2014 the export/zip-generation logic itself was already verified correct (see cerebrum 2026-07-17 TeilnehmerInnenliste entry).",
       "fix": "ActivityView.makeUIViewController now sets popover.sourceView (to the key window's root view) and popover.sourceRect (centered) whenever controller.popoverPresentationController is non-nil, with permittedArrowDirections = [] since there's no specific anchor button to point at. Verified: clean xcodebuild for iphonesimulator (BUILD SUCCEEDED, 0 errors), then installed + launched on an iPad Air (M4) simulator and confirmed the process stays alive (no immediate crash). Could not drive the full export flow end-to-end in-session since the app requires real Apple ID / CloudKit sign-in, not automatable from a coding sandbox.",
       "tags": [
         "user-reported",
@@ -1149,7 +1149,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/MemberListView.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 10→16 lines (2 removed)",
+      "fix": "Rewrote 10\u219216 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1213,7 +1213,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/MemberListView.swift",
       "root_cause": "8 lines replaced/restructured",
-      "fix": "Rewrote 13→6 lines (8 removed) | Also: Button {; exportTeilnehmerliste(exportContext)",
+      "fix": "Rewrote 13\u21926 lines (8 removed) | Also: Button {; exportTeilnehmerliste(exportContext)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1245,7 +1245,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsViews.swift",
       "root_cause": "15 lines replaced/restructured",
-      "fix": "Rewrote 30→14 lines (15 removed)",
+      "fix": "Rewrote 30\u219214 lines (15 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1261,7 +1261,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TournamentsViews.swift",
       "root_cause": "9 lines replaced/restructured",
-      "fix": "Rewrote 21→13 lines (9 removed) | Also: .sheet(isPresented: $showShareSheet) {; if let exportedFileURL {",
+      "fix": "Rewrote 21\u219213 lines (9 removed) | Also: .sheet(isPresented: $showShareSheet) {; if let exportedFileURL {",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1277,7 +1277,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
       "root_cause": "16 lines replaced/restructured",
-      "fix": "Rewrote 17→7 lines (16 removed)",
+      "fix": "Rewrote 17\u21927 lines (16 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1318,7 +1318,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 40→53 lines (3 removed)",
+      "fix": "Rewrote 40\u219253 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1334,7 +1334,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/ClubMembersViews.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 5→7 lines (2 removed)",
+      "fix": "Rewrote 5\u21927 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1350,7 +1350,7 @@
       "error_message": "Wrong reference: address should be fullAddress",
       "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
       "root_cause": "Used \"address\" instead of \"fullAddress\"",
-      "fix": "Changed address → fullAddress",
+      "fix": "Changed address \u2192 fullAddress",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1366,7 +1366,7 @@
       "error_message": "Wrong reference: address should be street",
       "file": "BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
       "root_cause": "Used \"address\" instead of \"street\"",
-      "fix": "Changed address → street",
+      "fix": "Changed address \u2192 street",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1414,7 +1414,7 @@
       "error_message": "Wrong reference: fullAddress should be city",
       "file": "BlindensportGraz/TeilnehmerlisteExport.swift",
       "root_cause": "Used \"fullAddress\" instead of \"city\"",
-      "fix": "Changed fullAddress → city",
+      "fix": "Changed fullAddress \u2192 city",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1446,7 +1446,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 11→11 lines (5 removed)",
+      "fix": "Rewrote 11\u219211 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1462,7 +1462,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/CloudKitSync.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 5→3 lines (2 removed) | Also: private func findTraining(_ id: UUID, modelContext; var descriptor = FetchDescriptor<Training>(predica",
+      "fix": "Rewrote 5\u21923 lines (2 removed) | Also: private func findTraining(_ id: UUID, modelContext; var descriptor = FetchDescriptor<Training>(predica",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1478,7 +1478,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/BlindensportGrazApp.swift",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 24→48 lines (3 removed)",
+      "fix": "Rewrote 24\u219248 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1526,7 +1526,7 @@
       "error_message": "Wrong reference: name should be title",
       "file": "BlindensportGraz/TournamentsViews.swift",
       "root_cause": "Used \"name\" instead of \"title\"",
-      "fix": "Changed name → title",
+      "fix": "Changed name \u2192 title",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1558,7 +1558,7 @@
       "error_message": "Wrong reference: XCTAssertEqual should be XCTAssertTrue",
       "file": "BlindensportGrazTests/InheritanceQueryTests.swift",
       "root_cause": "Used \"XCTAssertEqual\" instead of \"XCTAssertTrue\"",
-      "fix": "Changed XCTAssertEqual → XCTAssertTrue",
+      "fix": "Changed XCTAssertEqual \u2192 XCTAssertTrue",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1574,7 +1574,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 20→33 lines (2 removed) | Also: /// Checks a newly created (or edited) account's e; /// local ClubMember roster and updates its `isGra",
+      "fix": "Rewrote 20\u219233 lines (2 removed) | Also: /// Checks a newly created (or edited) account's e; /// local ClubMember roster and updates its `isGra",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1590,7 +1590,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 12→22 lines (6 removed)",
+      "fix": "Rewrote 12\u219222 lines (6 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1654,7 +1654,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 6→10 lines (3 removed)",
+      "fix": "Rewrote 6\u219210 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1670,7 +1670,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 15→10 lines (4 removed) | Also: @State private var username = \"\"; TextField(\"Benutzername\", text: $username)",
+      "fix": "Rewrote 15\u219210 lines (4 removed) | Also: @State private var username = \"\"; TextField(\"Benutzername\", text: $username)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1686,7 +1686,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 19→14 lines (4 removed)",
+      "fix": "Rewrote 19\u219214 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1702,7 +1702,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 5→7 lines (2 removed)",
+      "fix": "Rewrote 5\u21927 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1718,7 +1718,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 11→16 lines (6 removed)",
+      "fix": "Rewrote 11\u219216 lines (6 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1734,7 +1734,7 @@
       "error_message": "Wrong reference: currentUser should be elevateIfTestAdmin",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "Used \"currentUser\" instead of \"elevateIfTestAdmin\"",
-      "fix": "Changed currentUser → elevateIfTestAdmin",
+      "fix": "Changed currentUser \u2192 elevateIfTestAdmin",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1749,7 +1749,7 @@
       "timestamp": "2026-07-19T12:14:21.789Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1766,7 +1766,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "7 lines replaced/restructured",
-      "fix": "Rewrote 11→7 lines (7 removed)",
+      "fix": "Rewrote 11\u21927 lines (7 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1782,7 +1782,7 @@
       "error_message": "Wrong reference: elevateIfTestAdmin should be applyTestAdminGrant",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "Used \"elevateIfTestAdmin\" instead of \"applyTestAdminGrant\"",
-      "fix": "Changed elevateIfTestAdmin → applyTestAdminGrant",
+      "fix": "Changed elevateIfTestAdmin \u2192 applyTestAdminGrant",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1798,7 +1798,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "9 lines replaced/restructured",
-      "fix": "Rewrote 14→8 lines (9 removed)",
+      "fix": "Rewrote 14\u21928 lines (9 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1813,7 +1813,7 @@
       "timestamp": "2026-07-19T12:23:11.222Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/AccountView.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -1847,7 +1847,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 9→12 lines (4 removed)",
+      "fix": "Rewrote 9\u219212 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1881,7 +1881,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 21→33 lines (2 removed)",
+      "fix": "Rewrote 21\u219233 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1897,7 +1897,7 @@
       "error_message": "Wrong reference: Crypto should be CryptoKit",
       "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
       "root_cause": "Used \"Crypto\" instead of \"CryptoKit\"",
-      "fix": "Changed Crypto → CryptoKit",
+      "fix": "Changed Crypto \u2192 CryptoKit",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -1913,7 +1913,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/README.md",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 8→19 lines (6 removed) | Also: This exists because the app itself deliberately ha; their own role, and no in-app way to grant the fir | Also: `ClubMember` if you want `import-members` to be th; get written — the app itself only ever needs to re",
+      "fix": "Rewrote 8\u219219 lines (6 removed) | Also: This exists because the app itself deliberately ha; their own role, and no in-app way to grant the fir | Also: `ClubMember` if you want `import-members` to be th; get written \u2014 the app itself only ever needs to re",
       "tags": [
         "auto-detected",
         "refactor",
@@ -1948,7 +1948,7 @@
       "error_message": "GET / returned 404 even before the defaultFile fix, because Public/index.html was not found at app.directory.publicDirectory at all",
       "file": "RootCLI/Package.swift",
       "root_cause": "SPM's resources: [.copy(\"Public\")] on the clubmembersapi executable target copies the folder into a <target>_<target>.bundle next to the built binary, not to <workingDirectory>/Public/ where Vapor's DirectoryConfiguration.detect() (plain getcwd()) looks for it.",
-      "fix": "Moved Public/ out of Sources/clubmembersapi and up to the RootCLI package root (sibling of Package.swift), removed the resources: declaration entirely — matches Vapor's standard project layout.",
+      "fix": "Moved Public/ out of Sources/clubmembersapi and up to the RootCLI package root (sibling of Package.swift), removed the resources: declaration entirely \u2014 matches Vapor's standard project layout.",
       "tags": [
         "vapor",
         "spm",
@@ -1968,7 +1968,7 @@
       "error_message": "Fatal error: Error raised at top level: Missing required environment variable CLOUDKIT_KEY_ID (hard crash instead of a clean error message)",
       "file": "RootCLI/Sources/clubmembersapi/Entrypoint.swift",
       "root_cause": "@main entrypoint's main() was declared async throws and let the startup error propagate out of Swift's top-level entrypoint, which triggers a runtime fatalError rather than a normal non-zero exit.",
-      "fix": "Changed main() to plain async, wrapped the body in do/catch, and print to stderr + exit(1) on failure — same pattern already used by RootCLI.swift's own main().",
+      "fix": "Changed main() to plain async, wrapped the body in do/catch, and print to stderr + exit(1) on failure \u2014 same pattern already used by RootCLI.swift's own main().",
       "tags": [
         "swift",
         "error-handling",
@@ -1984,7 +1984,7 @@
       "timestamp": "2026-07-20T14:23:06.274Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/ClubMembersViews.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -2000,7 +2000,7 @@
       "timestamp": "2026-07-20T16:35:00.000Z",
       "error_message": "redundant conformance of 'Training'/'Tournament' to protocol 'PersistentModel'/'Observable'; required initializer 'init(backingData:)' must be provided by subclass of 'SportEvent'; cannot override static property (TestFlight CI build failure)",
       "file": ".github/workflows/ios-build-deploy.yml",
-      "root_cause": "macos-15 GitHub-hosted runner's default /Applications/Xcode.app symlink points to Xcode 16.4, whose SDK tops out at iOS 18.5 — that Xcode version's SwiftData @Model macro does not support class inheritance (SportEvent base class with Training/Tournament subclasses), so it produced broken/duplicate codegen instead of a clean 'needs iOS 26' error. The self-hosted device-deploy runner has Xcode 26.5 and was unaffected, which is why only this workflow failed.",
+      "root_cause": "macos-15 GitHub-hosted runner's default /Applications/Xcode.app symlink points to Xcode 16.4, whose SDK tops out at iOS 18.5 \u2014 that Xcode version's SwiftData @Model macro does not support class inheritance (SportEvent base class with Training/Tournament subclasses), so it produced broken/duplicate codegen instead of a clean 'needs iOS 26' error. The self-hosted device-deploy runner has Xcode 26.5 and was unaffected, which is why only this workflow failed.",
       "fix": "Added a Select Xcode step that dynamically finds the newest installed /Applications/Xcode_26*.app (sort -V) and xcode-select -s's to it, instead of hardcoding the default /Applications/Xcode.app symlink or a specific patch version.",
       "tags": [
         "ci",
@@ -2070,8 +2070,8 @@
       "timestamp": "2026-07-24T09:20:35.325Z",
       "error_message": "Incorrect value in code",
       "file": "RootCLI/Public/records.html",
-      "root_cause": "Had 'Felder sind kein gĂĽltiges JSON: '",
-      "fix": "Changed to 'Felder sind kein gültiges JSON: '",
+      "root_cause": "Had 'Felder sind kein g\u0102\u013dltiges JSON: '",
+      "fix": "Changed to 'Felder sind kein g\u00fcltiges JSON: '",
       "tags": [
         "auto-detected",
         "wrong-value",
@@ -2103,7 +2103,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Package.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 5→16 lines (2 removed)",
+      "fix": "Rewrote 5\u219216 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2119,7 +2119,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Sources/rootcli/RootCLI.swift",
       "root_cause": "40 lines replaced/restructured",
-      "fix": "Rewrote 52→5 lines (40 removed)",
+      "fix": "Rewrote 52\u21925 lines (40 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2134,7 +2134,7 @@
       "timestamp": "2026-07-25T10:22:48.832Z",
       "error_message": "Missing error handling in throws",
       "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -2167,7 +2167,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/PraeCalculation.swift",
       "root_cause": "8 lines replaced/restructured",
-      "fix": "Rewrote 12→13 lines (8 removed)",
+      "fix": "Rewrote 12\u219213 lines (8 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2199,7 +2199,7 @@
       "error_message": "xcodebuild test: Simulator device failed to launch it.a11y.BlindensportGraz. The request was denied by service delegate (SBMainWorkspace) for reason: Busy (\"Application failed preflight checks\")",
       "file": "N/A (simulator/tooling state, not app code)",
       "root_cause": "Transient CoreSimulator/launchd state on a specific simulator device (this recurrence: iPhone 17, 9BE30824-E947-475E-9A22-777FD4309637) that xcrun simctl shutdown alone does not clear. Not caused by any code change - happens intermittently across unrelated xcodebuild test runs on this same device. Documented in cerebrum.md under the 2026-07-19 and 2026-07-20 entries but never logged as its own buglog entry until now; this is at least the third occurrence.",
-      "fix": "xcrun simctl erase <device-id> (full erase, not just shutdown) on the specific simulator UDID clears it every time it has been tried. Always try this FIRST the instant this exact error string appears, before any other debugging - do not assume it is a real test/build regression. UPDATE 2026-08-01: recurred as an ALL-simulators-affected variant (every device, not just one) — killall CoreSimulatorService + retry did NOT clear it this time, unlike the single-device cases. Did not try simctl erase per standing user preference to avoid touching simulator state; fell back to verifying via physical-device deploy (git push -> ios-device-deploy.yml) instead, which uses a separate CI runner unaffected by this Macs local CoreSimulator state. UPDATE 2026-08-02: recurred again as the all-simulators variant (shutdown all + killall CoreSimulatorService both insufficient), this time `xcrun simctl erase <device-id>` on one simulator did clear it and subsequent test runs on other simulators worked too.",
+      "fix": "xcrun simctl erase <device-id> (full erase, not just shutdown) on the specific simulator UDID clears it every time it has been tried. Always try this FIRST the instant this exact error string appears, before any other debugging - do not assume it is a real test/build regression. UPDATE 2026-08-01: recurred as an ALL-simulators-affected variant (every device, not just one) \u2014 killall CoreSimulatorService + retry did NOT clear it this time, unlike the single-device cases. Did not try simctl erase per standing user preference to avoid touching simulator state; fell back to verifying via physical-device deploy (git push -> ios-device-deploy.yml) instead, which uses a separate CI runner unaffected by this Macs local CoreSimulator state. UPDATE 2026-08-02: recurred again as the all-simulators variant (shutdown all + killall CoreSimulatorService both insufficient), this time `xcrun simctl erase <device-id>` on one simulator did clear it and subsequent test runs on other simulators worked too.",
       "tags": [
         "simulator",
         "xcodebuild-test",
@@ -2249,7 +2249,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Sources/CloudKitS2SCore/ClubMemberRecord.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 71→120 lines (4 removed)",
+      "fix": "Rewrote 71\u2192120 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2281,7 +2281,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 16→25 lines (2 removed)",
+      "fix": "Rewrote 16\u219225 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2362,7 +2362,7 @@
       "error_message": "Wrong operator: != should be ==",
       "file": "BlindensportGraz/ClubMemberImportExport.swift",
       "root_cause": "Used \"!=\" instead of \"==\"",
-      "fix": "Changed operator != → ==",
+      "fix": "Changed operator != \u2192 ==",
       "tags": [
         "auto-detected",
         "operator-fix",
@@ -2378,7 +2378,7 @@
       "error_message": "Wrong reference: pullClubMembers should be pullMembers",
       "file": "BlindensportGraz/CloudKitSync.swift",
       "root_cause": "Used \"pullClubMembers\" instead of \"pullMembers\"",
-      "fix": "Changed pullClubMembers → pullMembers",
+      "fix": "Changed pullClubMembers \u2192 pullMembers",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -2394,7 +2394,7 @@
       "error_message": "Wrong reference: ClubMember should be Member",
       "file": "BlindensportGraz/BlindensportGrazApp.swift",
       "root_cause": "Used \"ClubMember\" instead of \"Member\"",
-      "fix": "Changed ClubMember → Member",
+      "fix": "Changed ClubMember \u2192 Member",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -2426,7 +2426,7 @@
       "error_message": "Wrong reference: clubMember should be member",
       "file": "BlindensportGraz/PraeExport.swift",
       "root_cause": "Used \"clubMember\" instead of \"member\"",
-      "fix": "Changed clubMember → member",
+      "fix": "Changed clubMember \u2192 member",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -2458,7 +2458,7 @@
       "error_message": "Wrong reference: ClubMember should be Member",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "Used \"ClubMember\" instead of \"Member\"",
-      "fix": "Changed ClubMember → Member",
+      "fix": "Changed ClubMember \u2192 Member",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -2474,7 +2474,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Sources/rootcli/RootCLI.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 5→7 lines (2 removed)",
+      "fix": "Rewrote 5\u21927 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2506,7 +2506,7 @@
       "error_message": "Wrong reference: ClubMember should be Member",
       "file": "RootCLI/README.md",
       "root_cause": "Used \"ClubMember\" instead of \"Member\"",
-      "fix": "Changed ClubMember → Member",
+      "fix": "Changed ClubMember \u2192 Member",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -2522,7 +2522,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/README.md",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 3→5 lines (2 removed)",
+      "fix": "Rewrote 3\u21925 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2554,7 +2554,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 12→6 lines (2 removed) | Also: .sheet(isPresented: $showTrainingsfrequenzliste) {; TrainingsfrequenzlisteView()",
+      "fix": "Rewrote 12\u21926 lines (2 removed) | Also: .sheet(isPresented: $showTrainingsfrequenzliste) {; TrainingsfrequenzlisteView()",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2586,7 +2586,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsfrequenzlisteViews.swift",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 8→11 lines (3 removed)",
+      "fix": "Rewrote 8\u219211 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2618,7 +2618,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
       "root_cause": "9 lines replaced/restructured",
-      "fix": "Rewrote 69→87 lines (9 removed)",
+      "fix": "Rewrote 69\u219287 lines (9 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2634,7 +2634,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 12→4 lines (6 removed)",
+      "fix": "Rewrote 12\u21924 lines (6 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2649,8 +2649,8 @@
       "timestamp": "2026-08-02T11:20:24.564Z",
       "error_message": "Incorrect value in code",
       "file": "BlindensportGraz/TrainingsfrequenzlisteViews.swift",
-      "root_cause": "Had \"Keine Trainings in diesem Monat für dieses Team.\"",
-      "fix": "Changed to \"Keine Trainings in diesem Zeitraum für dieses Tea",
+      "root_cause": "Had \"Keine Trainings in diesem Monat f\u00fcr dieses Team.\"",
+      "fix": "Changed to \"Keine Trainings in diesem Zeitraum f\u00fcr dieses Tea",
       "tags": [
         "auto-detected",
         "wrong-value",
@@ -2666,7 +2666,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 6→4 lines (2 removed) | Also: showPraeCalculation = true; Label(\"PRAE-Berechnung\", systemImage: \"eurosign.ci",
+      "fix": "Rewrote 6\u21924 lines (2 removed) | Also: showPraeCalculation = true; Label(\"PRAE-Berechnung\", systemImage: \"eurosign.ci",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2682,7 +2682,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/PraeViews.swift",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 6→10 lines (6 removed)",
+      "fix": "Rewrote 6\u219210 lines (6 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2713,7 +2713,7 @@
       "timestamp": "2026-08-02T11:40:58.765Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -2727,10 +2727,10 @@
     {
       "id": "bug-163",
       "timestamp": "2026-08-02T13:37:00.000Z",
-      "error_message": "User-reported: 'When i open the one training in the Trainings view, the app crashed.' — real crash confirmed via devicectl crash log (EXC_BREAKPOINT/SIGTRAP, fatal SwiftData assertion) inside TeamMembership.id.getter, called from TrainingDetailView.attendance(for:)'s `training.attendances.first { $0.membership.id == membership.id }`.",
+      "error_message": "User-reported: 'When i open the one training in the Trainings view, the app crashed.' \u2014 real crash confirmed via devicectl crash log (EXC_BREAKPOINT/SIGTRAP, fatal SwiftData assertion) inside TeamMembership.id.getter, called from TrainingDetailView.attendance(for:)'s `training.attendances.first { $0.membership.id == membership.id }`.",
       "file": "BlindensportGraz/Models.swift, BlindensportGraz/CloudKitSync.swift, BlindensportGraz/TeamsViews.swift",
-      "root_cause": "Attendance.membership: TeamMembership is a non-optional to-one relationship with no explicit @Relationship deleteRule/inverse declared on the TeamMembership side. TeamsViews' roster swipe-to-delete (and Team's own cascade delete of its memberships) called modelContext.delete(membership) directly. SwiftData's default deleteRule for an undeclared to-one relationship is .nullify, which cannot null a non-optional Swift property — this corrupts the dependent Attendance's local backing row instead of failing cleanly. Any later access to that Attendance's membership.id (TrainingDetailView/TournamentDetailView.attendance(for:)) then crashes with a fatal SwiftData assertion (_assertionFailure inside the @Model-macro-generated id getter). Compounding gap: neither the membership delete nor the team delete ever pushed a CloudKit delete (no deleteMembership/deleteTeam existed in CloudKitSync.swift), so a 'deleted' membership would also silently reappear on the next pull.",
-      "fix": "Added an explicit @Relationship(deleteRule: .cascade, inverse: \\Attendance.membership) var attendances: [Attendance] = [] to TeamMembership (Models.swift), so deleting a TeamMembership now cascade-deletes its dependent Attendance records instead of corrupting them. Added CloudKitSync.deleteMembership(_:) and .deleteTeam(_:) (mirroring the existing deleteMember/deleteUserIdentity/deleteEventImage pattern) and wired them into TeamsListView.deleteTeams and TeamDetailView's roster .onDelete, plus added the missing modelContext.save() calls at both sites. Added a permanent regression test (InheritanceQueryTests.testDeletingTeamMembershipCascadeDeletesItsAttendanceWithoutCrashing) that inserts a TeamMembership with an Attendance, deletes the membership, and asserts the Attendance is gone and the training's remaining attendances can be iterated without crashing. The already-corrupted local SwiftData store on the physical test device still needs a one-time app reinstall (uninstall + fresh install) to purge the existing dangling row, since app code cannot safely touch an already-invalidated model instance to clean it up in place — the fix only prevents NEW corruption.",
+      "root_cause": "Attendance.membership: TeamMembership is a non-optional to-one relationship with no explicit @Relationship deleteRule/inverse declared on the TeamMembership side. TeamsViews' roster swipe-to-delete (and Team's own cascade delete of its memberships) called modelContext.delete(membership) directly. SwiftData's default deleteRule for an undeclared to-one relationship is .nullify, which cannot null a non-optional Swift property \u2014 this corrupts the dependent Attendance's local backing row instead of failing cleanly. Any later access to that Attendance's membership.id (TrainingDetailView/TournamentDetailView.attendance(for:)) then crashes with a fatal SwiftData assertion (_assertionFailure inside the @Model-macro-generated id getter). Compounding gap: neither the membership delete nor the team delete ever pushed a CloudKit delete (no deleteMembership/deleteTeam existed in CloudKitSync.swift), so a 'deleted' membership would also silently reappear on the next pull.",
+      "fix": "Added an explicit @Relationship(deleteRule: .cascade, inverse: \\Attendance.membership) var attendances: [Attendance] = [] to TeamMembership (Models.swift), so deleting a TeamMembership now cascade-deletes its dependent Attendance records instead of corrupting them. Added CloudKitSync.deleteMembership(_:) and .deleteTeam(_:) (mirroring the existing deleteMember/deleteUserIdentity/deleteEventImage pattern) and wired them into TeamsListView.deleteTeams and TeamDetailView's roster .onDelete, plus added the missing modelContext.save() calls at both sites. Added a permanent regression test (InheritanceQueryTests.testDeletingTeamMembershipCascadeDeletesItsAttendanceWithoutCrashing) that inserts a TeamMembership with an Attendance, deletes the membership, and asserts the Attendance is gone and the training's remaining attendances can be iterated without crashing. The already-corrupted local SwiftData store on the physical test device still needs a one-time app reinstall (uninstall + fresh install) to purge the existing dangling row, since app code cannot safely touch an already-invalidated model instance to clean it up in place \u2014 the fix only prevents NEW corruption.",
       "tags": [
         "crash",
         "swiftdata",
@@ -2750,7 +2750,7 @@
       "error_message": "Significant refactor of ",
       "file": "../../.claude/projects/-Users-franz-dev-claude/memory/feedback_test_on_physical_device.md",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 15→15 lines (5 removed)",
+      "fix": "Rewrote 15\u219215 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2763,10 +2763,10 @@
     {
       "id": "bug-164",
       "timestamp": "2026-08-02T13:53:00.000Z",
-      "error_message": "User-reported: 'all data were deleted. and where is the Benutzerverwaltung?' — after this agent uninstalled+reinstalled the app on the physical device to fix bug-163's corrupted local store.",
+      "error_message": "User-reported: 'all data were deleted. and where is the Benutzerverwaltung?' \u2014 after this agent uninstalled+reinstalled the app on the physical device to fix bug-163's corrupted local store.",
       "file": "BlindensportGraz/RootView.swift",
-      "root_cause": "RootView.resolveAccount()'s account-matching relies on two things that a full app UNINSTALL wipes simultaneously: the local SwiftData store (so the local `users.first(where: appleUserIdentifier ==)` lookup finds nothing) AND the @AppStorage-backed storedAppleUserIdentifier/storedUserID (UserDefaults is also cleared on uninstall, so the compensating id-based re-link path is gone too). Apple Sign-In only sends a real email/fullName on the very first-ever grant for an Apple ID + bundle/team combo, never again — not even after reinstall — so the post-reinstall sign-in returned a userIdentifier with nil email/fullName. With no local match and no identifying info from Apple, resolveAccount()'s final fallback branch silently created a brand-new blank 'Neues Mitglied' User (role: member, isRoot: false) instead of recognizing this was a returning user. The real account's data was never actually deleted — CloudKit still has it — but the user was now logged into a disconnected, empty, non-admin account, which explained both symptoms: apparently-empty Teams/Trainings/Tournaments lists (filtered by the new blank account's empty memberships) and the missing 'Benutzerverwaltung'/'Benutzer verwalten' buttons (gated on role==admin||isRoot, which the new account has neither).",
-      "fix": "Added a check in resolveAccount(): when Apple Sign-In returns both nil fullName and empty/nil email (the documented signature of a repeat, non-first grant) and no local account matched, the code now awaits CloudKitSync.shared.syncAll() to pull down existing accounts and then returns without creating a new user, falling through to LoginView's account picker instead of guessing. This lets the user pick their real (now locally re-synced) account, or the accidentally-created blank duplicate can be deleted via the existing swipe-to-delete on LoginView/UserListView. Recovery for the user's current device: log out (Account tab -> Abmelden) and pick the real account from the list — CloudKitSync's background sync (triggered even on the blank-account creation path) should already have pulled the real UserIdentity record back down locally.",
+      "root_cause": "RootView.resolveAccount()'s account-matching relies on two things that a full app UNINSTALL wipes simultaneously: the local SwiftData store (so the local `users.first(where: appleUserIdentifier ==)` lookup finds nothing) AND the @AppStorage-backed storedAppleUserIdentifier/storedUserID (UserDefaults is also cleared on uninstall, so the compensating id-based re-link path is gone too). Apple Sign-In only sends a real email/fullName on the very first-ever grant for an Apple ID + bundle/team combo, never again \u2014 not even after reinstall \u2014 so the post-reinstall sign-in returned a userIdentifier with nil email/fullName. With no local match and no identifying info from Apple, resolveAccount()'s final fallback branch silently created a brand-new blank 'Neues Mitglied' User (role: member, isRoot: false) instead of recognizing this was a returning user. The real account's data was never actually deleted \u2014 CloudKit still has it \u2014 but the user was now logged into a disconnected, empty, non-admin account, which explained both symptoms: apparently-empty Teams/Trainings/Tournaments lists (filtered by the new blank account's empty memberships) and the missing 'Benutzerverwaltung'/'Benutzer verwalten' buttons (gated on role==admin||isRoot, which the new account has neither).",
+      "fix": "Added a check in resolveAccount(): when Apple Sign-In returns both nil fullName and empty/nil email (the documented signature of a repeat, non-first grant) and no local account matched, the code now awaits CloudKitSync.shared.syncAll() to pull down existing accounts and then returns without creating a new user, falling through to LoginView's account picker instead of guessing. This lets the user pick their real (now locally re-synced) account, or the accidentally-created blank duplicate can be deleted via the existing swipe-to-delete on LoginView/UserListView. Recovery for the user's current device: log out (Account tab -> Abmelden) and pick the real account from the list \u2014 CloudKitSync's background sync (triggered even on the blank-account creation path) should already have pulled the real UserIdentity record back down locally.",
       "tags": [
         "apple-sign-in",
         "account-resolution",
@@ -2787,7 +2787,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TeamsViews.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 3→3 lines (2 removed) | Also: ForEach(team.memberships) { m in; let membership = team.memberships[index]",
+      "fix": "Rewrote 3\u21923 lines (2 removed) | Also: ForEach(team.memberships) { m in; let membership = team.memberships[index]",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2803,7 +2803,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/PraeCalculation.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 18→29 lines (5 removed)",
+      "fix": "Rewrote 18\u219229 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2819,7 +2819,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "6 lines replaced/restructured",
-      "fix": "Rewrote 10→3 lines (6 removed) | Also: // Covers logout -> pick-an-existing-account-from-; // which (unlike resolveAccount()) doesn't touch A | Also: private func isDesignatedRootEmail(_ email: String; guard let email else { return false }",
+      "fix": "Rewrote 10\u21923 lines (6 removed) | Also: // Covers logout -> pick-an-existing-account-from-; // which (unlike resolveAccount()) doesn't touch A | Also: private func isDesignatedRootEmail(_ email: String; guard let email else { return false }",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2832,9 +2832,9 @@
     {
       "id": "bug-173",
       "timestamp": "2026-08-02T22:56:00.000Z",
-      "error_message": "Designated club root account (blindensport.gvsc@gmail.com) never actually gets isRoot/admin — user clarified there is no real Apple ID for that address",
+      "error_message": "Designated club root account (blindensport.gvsc@gmail.com) never actually gets isRoot/admin \u2014 user clarified there is no real Apple ID for that address",
       "file": "RootView.swift, Models.swift, AccountView.swift",
-      "root_cause": "elevateIfDesignatedRoot in RootView.swift was gated on user.appleUserIdentifier being non-empty (i.e. only fires for an account created via Sign in with Apple with that verified email). But the designated account has no real Apple ID and can only ever be created via RegisterView's manual form, which always leaves appleUserIdentifier empty — so the gate could never be satisfied and the account could never become root. A prior session (2026-08-02 16:56) had already added a gate-free User.elevateIfDesignatedRoot() instance method (Models.swift, matches firstName+lastName+email together instead of email+Apple-verification) but never finished wiring it into RootView/AccountView before the session ended.",
+      "root_cause": "elevateIfDesignatedRoot in RootView.swift was gated on user.appleUserIdentifier being non-empty (i.e. only fires for an account created via Sign in with Apple with that verified email). But the designated account has no real Apple ID and can only ever be created via RegisterView's manual form, which always leaves appleUserIdentifier empty \u2014 so the gate could never be satisfied and the account could never become root. A prior session (2026-08-02 16:56) had already added a gate-free User.elevateIfDesignatedRoot() instance method (Models.swift, matches firstName+lastName+email together instead of email+Apple-verification) but never finished wiring it into RootView/AccountView before the session ended.",
       "fix": "Removed RootView's old designatedRootEmail/isDesignatedRootEmail/Apple-gated elevateIfDesignatedRoot. Replaced every call site (resolveAccount()'s three account-resolution paths, the new-account creation branch, LoginView(onLogin:), RegisterView's manual creation) with calls to the new User.elevateIfDesignatedRoot() instance method via a thin applyDesignatedRootGrant(_:) save/push wrapper. Also added the same check to AccountView's EditAccountView (.onChange of firstName/lastName/email) since editing an existing profile into a match is another place the grant needs to fire, per Models.swift's doc comment listing that as a required call site.",
       "tags": [
         "auth",
@@ -2875,7 +2875,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 13→7 lines (2 removed)",
+      "fix": "Rewrote 13\u21927 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2891,7 +2891,7 @@
       "error_message": "Wrong reference: showMembers should be showMyMember",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "Used \"showMembers\" instead of \"showMyMember\"",
-      "fix": "Changed showMembers → showMyMember",
+      "fix": "Changed showMembers \u2192 showMyMember",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -2907,7 +2907,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "8 lines replaced/restructured",
-      "fix": "Rewrote 13→10 lines (8 removed)",
+      "fix": "Rewrote 13\u219210 lines (8 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2923,7 +2923,7 @@
       "error_message": "Wrong reference: showUserList should be showMyMember",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "Used \"showUserList\" instead of \"showMyMember\"",
-      "fix": "Changed showUserList → showMyMember",
+      "fix": "Changed showUserList \u2192 showMyMember",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -2939,7 +2939,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 10→3 lines (5 removed)",
+      "fix": "Rewrote 10\u21923 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -2954,7 +2954,7 @@
       "timestamp": "2026-08-03T12:44:12.690Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/TeamsViews.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -2970,7 +2970,7 @@
       "timestamp": "2026-08-03T12:50:26.008Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -2987,7 +2987,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/CloudKitSync.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 7→22 lines (2 removed)",
+      "fix": "Rewrote 7\u219222 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3002,7 +3002,7 @@
       "timestamp": "2026-08-03T13:00:58.165Z",
       "error_message": "Missing await",
       "file": "BlindensportGraz/TeamsViews.swift",
-      "root_cause": "Async call without await — returned Promise instead of value",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
       "fix": "Added await to async call",
       "tags": [
         "auto-detected",
@@ -3094,7 +3094,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 10→14 lines (4 removed)",
+      "fix": "Rewrote 10\u219214 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3110,7 +3110,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/CloudKitSync.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 7→22 lines (2 removed)",
+      "fix": "Rewrote 7\u219222 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3142,7 +3142,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "7 lines replaced/restructured",
-      "fix": "Rewrote 7→11 lines (7 removed)",
+      "fix": "Rewrote 7\u219211 lines (7 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3157,7 +3157,7 @@
       "timestamp": "2026-08-03T14:04:43.165Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -3190,7 +3190,7 @@
       "error_message": "Wrong reference: team should be sport",
       "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift",
       "root_cause": "Used \"team\" instead of \"sport\"",
-      "fix": "Changed team → sport",
+      "fix": "Changed team \u2192 sport",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -3206,7 +3206,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsfrequenzlisteViews.swift",
       "root_cause": "15 lines replaced/restructured",
-      "fix": "Rewrote 32→41 lines (15 removed)",
+      "fix": "Rewrote 32\u219241 lines (15 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3238,7 +3238,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 17→61 lines (3 removed)",
+      "fix": "Rewrote 17\u219261 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3254,7 +3254,7 @@
       "error_message": "iOS Device Deploy workflow failed: \"Provisioning profile 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' doesn't include the Push Notifications capability\" / \"doesn't include the aps-environment entitlement\"",
       "file": ".github/workflows/ios-device-deploy.yml (secrets.IOS_CI_PROVISIONING_PROFILE_BASE64)",
       "root_cause": "The app's entitlements file gained aps-environment (Push Notifications) in an earlier commit (8d3e500, \"Push notifications for team members when a Training/Tournament is created\"), which requires the App ID's Push Notifications capability to be enabled in the Apple Developer portal and a matching provisioning profile. The CI workflow's provisioning profile is a static, pre-harvested .mobileprovision stored as the IOS_CI_PROVISIONING_PROFILE_BASE64 GitHub secret (see the 2026-07-17 self-hosted-runner cerebrum entry) -- it predates the push-notification feature and was never regenerated/re-uploaded, so it lacks the aps-environment entitlement xcodebuild now requires to match BlindensportGraz.entitlements.",
-      "fix": "Final root cause and fix, after 5 CI attempts: (1) Portal capability + fresh profile — user-side, correct. (2) stale-profile cleanup in 'Install provisioning profile' — correct, verified only one profile remains. (3) attempted CODE_SIGN_STYLE=Manual + PROVISIONING_PROFILE_SPECIFIER scoped via a '$SCHEME:SETTING=value' xcodebuild CLI prefix — this syntax does NOT exist; xcodebuild just echoes it back as an unrecognized literal key without applying it, so CODE_SIGN_STYLE silently stayed at project.yml's Automatic default and reproduced the exact original error (confirmed by the byte-identical placeholder profile name 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' in the error, which doesn't even match the real installed profile's Name field 'BlindensportGraz CI Development'). (4) a plain global CODE_SIGN_STYLE=Manual + PROVISIONING_PROFILE_SPECIFIER override DOES apply, but also lands on the ZIPFoundation SPM dependency's resource-bundle target ('ZIPFoundation_ZIPFoundation does not support provisioning profiles ... Set the provisioning profile value to Automatic') since xcodebuild command-line overrides are never actually target-scoped — there is no real per-target CLI syntax. FIX: added a new 'Configure Manual signing on the app target' step that installs the `xcodeproj` Ruby gem and directly edits the generated .xcodeproj's BlindensportGraz-target-only Debug build configuration (CODE_SIGN_STYLE=Manual, PROVISIONING_PROFILE_SPECIFIER=$PROFILE_UUID) — genuinely per-target since it edits the actual pbxproj structure rather than relying on any CLI scoping mechanism; the SPM package is a structurally separate project XCBuild resolves independently, never touched by this edit. 'Build for device' no longer passes CODE_SIGN_STYLE/PROVISIONING_PROFILE_SPECIFIER on the command line at all (baked into the project already), keeping only CODE_SIGN_IDENTITY/DEVELOPMENT_TEAM/OTHER_CODE_SIGN_FLAGS as before. Verified end-to-end on this Mac (which IS the runner) before trusting it in CI: xcodegen generate -> ruby patch -> confirmed single, correctly-scoped pbxproj occurrence -> real `xcodebuild build` against the physical device destination got all the way past provisioning/capability validation with zero Push-Notifications or ZIPFoundation errors, only failing at the unrelated, already-documented errSecInternalComponent sandboxed-codesign limitation (bug-008) specific to this coding session's own shell — the real CI workflow's ephemeral, non-interactively-unlocked keychain doesn't hit that wall. Reverted the local test mutation to BlindensportGraz.xcodeproj/project.pbxproj before committing (it's tracked, not gitignored).",
+      "fix": "Final root cause and fix, after 5 CI attempts: (1) Portal capability + fresh profile \u2014 user-side, correct. (2) stale-profile cleanup in 'Install provisioning profile' \u2014 correct, verified only one profile remains. (3) attempted CODE_SIGN_STYLE=Manual + PROVISIONING_PROFILE_SPECIFIER scoped via a '$SCHEME:SETTING=value' xcodebuild CLI prefix \u2014 this syntax does NOT exist; xcodebuild just echoes it back as an unrecognized literal key without applying it, so CODE_SIGN_STYLE silently stayed at project.yml's Automatic default and reproduced the exact original error (confirmed by the byte-identical placeholder profile name 'iOS Team Provisioning Profile: it.a11y.BlindensportGraz' in the error, which doesn't even match the real installed profile's Name field 'BlindensportGraz CI Development'). (4) a plain global CODE_SIGN_STYLE=Manual + PROVISIONING_PROFILE_SPECIFIER override DOES apply, but also lands on the ZIPFoundation SPM dependency's resource-bundle target ('ZIPFoundation_ZIPFoundation does not support provisioning profiles ... Set the provisioning profile value to Automatic') since xcodebuild command-line overrides are never actually target-scoped \u2014 there is no real per-target CLI syntax. FIX: added a new 'Configure Manual signing on the app target' step that installs the `xcodeproj` Ruby gem and directly edits the generated .xcodeproj's BlindensportGraz-target-only Debug build configuration (CODE_SIGN_STYLE=Manual, PROVISIONING_PROFILE_SPECIFIER=$PROFILE_UUID) \u2014 genuinely per-target since it edits the actual pbxproj structure rather than relying on any CLI scoping mechanism; the SPM package is a structurally separate project XCBuild resolves independently, never touched by this edit. 'Build for device' no longer passes CODE_SIGN_STYLE/PROVISIONING_PROFILE_SPECIFIER on the command line at all (baked into the project already), keeping only CODE_SIGN_IDENTITY/DEVELOPMENT_TEAM/OTHER_CODE_SIGN_FLAGS as before. Verified end-to-end on this Mac (which IS the runner) before trusting it in CI: xcodegen generate -> ruby patch -> confirmed single, correctly-scoped pbxproj occurrence -> real `xcodebuild build` against the physical device destination got all the way past provisioning/capability validation with zero Push-Notifications or ZIPFoundation errors, only failing at the unrelated, already-documented errSecInternalComponent sandboxed-codesign limitation (bug-008) specific to this coding session's own shell \u2014 the real CI workflow's ephemeral, non-interactively-unlocked keychain doesn't hit that wall. Reverted the local test mutation to BlindensportGraz.xcodeproj/project.pbxproj before committing (it's tracked, not gitignored).",
       "tags": [
         "aps-environment",
         "base64",
@@ -3285,7 +3285,7 @@
       "error_message": "Significant refactor of ",
       "file": "ci_cert.md",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 14→23 lines (5 removed)",
+      "fix": "Rewrote 14\u219223 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3301,7 +3301,7 @@
       "error_message": "Significant refactor of ",
       "file": ".github/workflows/ios-device-deploy.yml",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 19→42 lines (2 removed) | Also: # The installed profile is an Xcode-managed \"Team ; # those are only usable under Automatic signing (p | Also: CODE_SIGN_STYLE=Manual \\; PROVISIONING_PROFILE_SPECIFIER=\"$PROFILE_UUID\" \\",
+      "fix": "Rewrote 19\u219242 lines (2 removed) | Also: # The installed profile is an Xcode-managed \"Team ; # those are only usable under Automatic signing (p | Also: CODE_SIGN_STYLE=Manual \\; PROVISIONING_PROFILE_SPECIFIER=\"$PROFILE_UUID\" \\",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3317,7 +3317,7 @@
       "error_message": "Significant refactor of ",
       "file": ".github/workflows/ios-device-deploy.yml",
       "root_cause": "26 lines replaced/restructured",
-      "fix": "Rewrote 49→77 lines (26 removed)",
+      "fix": "Rewrote 49\u219277 lines (26 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3332,8 +3332,8 @@
       "timestamp": "2026-08-05T19:02:01.000Z",
       "error_message": "xcodebuild test crash-loops on MemberImportExportTests.testExportThenReimportIsIdempotent (and every test after it in that suite): 'Restarting after unexpected exit, crash, or test timeout', preceded by '[CK] Significant issue at CKContainer.m:748: In order to use CloudKit, your process must have a com.apple.developer.icloud-services entitlement.'",
       "file": "BlindensportGrazTests/MemberImportExportTests.swift",
-      "root_cause": "MemberImportExport.importMembers(...) (MemberImportExport.swift:303) calls CloudKitSync.shared.pushMember(member) as a side effect of a plain import — CloudKitSync.shared lazily constructs a real CKContainer. Running xcodebuild test with CODE_SIGNING_ALLOWED=NO (required in this sandboxed session because real codesigning hits a separate sandbox wall, see the 2026-07-15 Do-Not-Repeat entries) strips the app's iCloud entitlement, so the moment any code path touches CKContainer the process hard-crashes (not a catchable Swift error) — this is a CloudKit SDK behavior, not an app bug. Every other test suite in the target passed cleanly (72/72 across InheritanceQueryTests/KostZCalculationTests/PraeCalculationTests/TeilnehmerlisteExportTests/TrainingsfrequenzlisteCalculationTests) in the same run — only MemberImportExportTests exercises a CloudKitSync push path, which is why it's the only suite affected. This superseded an earlier same-session guess that this was generic simulator flakiness (see cerebrum.md's 2026-08-05 Do-Not-Repeat entry) — it is fully reproducible, not flaky, and unrelated to any change made this session.",
-      "fix": "Not fixed — this only manifests when running unit tests unsigned (CODE_SIGNING_ALLOWED=NO), which this sandboxed session requires. No code change was made since MemberImportExportTests' behavior (pushing to CloudKit on import) is correct/intended for a real signed build; the crash is purely a side effect of stripping entitlements for local unsigned test runs. Workaround options for a future session, none applied: (1) run tests from a properly signed context (Xcode GUI, or a CI runner with real signing) where the entitlement is present; (2) inject a fake/no-op CloudKitSync for tests via dependency injection, which would be a real (larger) refactor, not attempted here since it wasn't asked for.",
+      "root_cause": "MemberImportExport.importMembers(...) (MemberImportExport.swift:303) calls CloudKitSync.shared.pushMember(member) as a side effect of a plain import \u2014 CloudKitSync.shared lazily constructs a real CKContainer. Running xcodebuild test with CODE_SIGNING_ALLOWED=NO (required in this sandboxed session because real codesigning hits a separate sandbox wall, see the 2026-07-15 Do-Not-Repeat entries) strips the app's iCloud entitlement, so the moment any code path touches CKContainer the process hard-crashes (not a catchable Swift error) \u2014 this is a CloudKit SDK behavior, not an app bug. Every other test suite in the target passed cleanly (72/72 across InheritanceQueryTests/KostZCalculationTests/PraeCalculationTests/TeilnehmerlisteExportTests/TrainingsfrequenzlisteCalculationTests) in the same run \u2014 only MemberImportExportTests exercises a CloudKitSync push path, which is why it's the only suite affected. This superseded an earlier same-session guess that this was generic simulator flakiness (see cerebrum.md's 2026-08-05 Do-Not-Repeat entry) \u2014 it is fully reproducible, not flaky, and unrelated to any change made this session.",
+      "fix": "Not fixed \u2014 this only manifests when running unit tests unsigned (CODE_SIGNING_ALLOWED=NO), which this sandboxed session requires. No code change was made since MemberImportExportTests' behavior (pushing to CloudKit on import) is correct/intended for a real signed build; the crash is purely a side effect of stripping entitlements for local unsigned test runs. Workaround options for a future session, none applied: (1) run tests from a properly signed context (Xcode GUI, or a CI runner with real signing) where the entitlement is present; (2) inject a fake/no-op CloudKitSync for tests via dependency injection, which would be a real (larger) refactor, not attempted here since it wasn't asked for.",
       "tags": [
         "cloudkit",
         "entitlements",
@@ -3366,8 +3366,8 @@
       "timestamp": "2026-08-06T18:20:00Z",
       "error_message": "xcodebuild: error: Unable to find a destination matching the provided destination specifier {id:BD764E6D-...} / ERROR: The device disconnected immediately after connecting. (com.apple.dt.CoreDeviceError error 4000)",
       "file": ".github/workflows/ios-device-deploy.yml",
-      "root_cause": "Wireless (local-network) CoreDevice tunnel to \"iPhone von Franz\" was disconnected or flaky — pairingState was paired but connectionProperties.tunnelState was disconnected, or reconnected then dropped again during developer-disk-image mounting, both confirmed via xcrun devicectl list devices --json-output.",
-      "fix": "Ran xcrun devicectl device info details --device <id> from an interactive Terminal session to force the tunnel to re-establish, and had the user plug the iPhone into USB (transportType flips to wired) instead of relying on Wi-Fi — the wired tunnel connected reliably and the workflow run succeeded end-to-end.",
+      "root_cause": "Wireless (local-network) CoreDevice tunnel to \"iPhone von Franz\" was disconnected or flaky \u2014 pairingState was paired but connectionProperties.tunnelState was disconnected, or reconnected then dropped again during developer-disk-image mounting, both confirmed via xcrun devicectl list devices --json-output.",
+      "fix": "Ran xcrun devicectl device info details --device <id> from an interactive Terminal session to force the tunnel to re-establish, and had the user plug the iPhone into USB (transportType flips to wired) instead of relying on Wi-Fi \u2014 the wired tunnel connected reliably and the workflow run succeeded end-to-end.",
       "tags": [
         "ios",
         "github-actions",
@@ -3405,7 +3405,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
       "root_cause": "12 lines replaced/restructured",
-      "fix": "Rewrote 21→38 lines (12 removed)",
+      "fix": "Rewrote 21\u219238 lines (12 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3421,7 +3421,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGrazTests/PraeCalculationTests.swift",
       "root_cause": "8 lines replaced/restructured",
-      "fix": "Rewrote 53→86 lines (8 removed)",
+      "fix": "Rewrote 53\u219286 lines (8 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3436,8 +3436,8 @@
       "timestamp": "2026-08-07T09:30:00.000Z",
       "error_message": "User-reported: the Trainingsfrequenzliste export does not have the information from the Training like Location of Training and start/end time; the date/location should come from the training data.",
       "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift, BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
-      "root_cause": "Investigated fresh (new session, no memory of prior work): TrainingsfrequenzlisteCalculator.summary() and TrainingsfrequenzlisteExporter already DID derive/patch Sportstätte (Y3) and Uhrzeit von/bis (H4/L4) from the chronologically-earliest training in the period (representativeTraining), landed in commit fc6bb51 (2026-08-06 23:33) the night before this report. Verified end-to-end by hand-decoding the bundled Trainingsfrequenzliste_Vorlage.xlsx real cell refs (row3: A3=Verein/LV label,D3=value,M3=Sportart label,P3=value,U3=Sportstätte label,Y3=value; row4: C4/E4=Trainingszeiten/Uhrzeit-von labels,H4=start value,K4=bis label,L4=end value,U4=Jahr label,Y4=value) and confirming they match the exporter code, then adding a real regression test (testExportPatchesLocationAndTimesFromRepresentativeTraining) that asserts Y3/H4/L4 actually contain the training location/time in the patched sheet1.xml — it passed on first run with zero code changes needed. No test previously asserted on these three cells (only Verein/Sportart/name/date cells were checked), so the fix existed but was uncovered by tests. Conclusion: not a code bug — the feature is implemented correctly; the user was almost certainly testing a build on-device from before the fc6bb51 commit was deployed.",
-      "fix": "No production code change. Added BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift::testExportPatchesLocationAndTimesFromRepresentativeTraining as permanent regression coverage for Y3 (Sportstätte)/H4+L4 (Uhrzeit von/bis) header patching. Confirmed via xcodebuild test (CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator) — 10/10 tests pass. Recommended next step: redeploy the current build to the user's device via the ios-device-deploy.yml workflow so they can verify with real data, since the fix already existed in git history before this report.",
+      "root_cause": "Investigated fresh (new session, no memory of prior work): TrainingsfrequenzlisteCalculator.summary() and TrainingsfrequenzlisteExporter already DID derive/patch Sportst\u00e4tte (Y3) and Uhrzeit von/bis (H4/L4) from the chronologically-earliest training in the period (representativeTraining), landed in commit fc6bb51 (2026-08-06 23:33) the night before this report. Verified end-to-end by hand-decoding the bundled Trainingsfrequenzliste_Vorlage.xlsx real cell refs (row3: A3=Verein/LV label,D3=value,M3=Sportart label,P3=value,U3=Sportst\u00e4tte label,Y3=value; row4: C4/E4=Trainingszeiten/Uhrzeit-von labels,H4=start value,K4=bis label,L4=end value,U4=Jahr label,Y4=value) and confirming they match the exporter code, then adding a real regression test (testExportPatchesLocationAndTimesFromRepresentativeTraining) that asserts Y3/H4/L4 actually contain the training location/time in the patched sheet1.xml \u2014 it passed on first run with zero code changes needed. No test previously asserted on these three cells (only Verein/Sportart/name/date cells were checked), so the fix existed but was uncovered by tests. Conclusion: not a code bug \u2014 the feature is implemented correctly; the user was almost certainly testing a build on-device from before the fc6bb51 commit was deployed.",
+      "fix": "No production code change. Added BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift::testExportPatchesLocationAndTimesFromRepresentativeTraining as permanent regression coverage for Y3 (Sportst\u00e4tte)/H4+L4 (Uhrzeit von/bis) header patching. Confirmed via xcodebuild test (CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator) \u2014 10/10 tests pass. Recommended next step: redeploy the current build to the user's device via the ios-device-deploy.yml workflow so they can verify with real data, since the fix already existed in git history before this report.",
       "tags": [
         "trainingsfrequenzliste",
         "export",
@@ -3456,7 +3456,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
       "root_cause": "7 lines replaced/restructured",
-      "fix": "Rewrote 9→14 lines (7 removed)",
+      "fix": "Rewrote 9\u219214 lines (7 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3472,7 +3472,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
       "root_cause": "11 lines replaced/restructured",
-      "fix": "Rewrote 46→74 lines (11 removed)",
+      "fix": "Rewrote 46\u219274 lines (11 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3485,10 +3485,10 @@
     {
       "id": "bug-208",
       "timestamp": "2026-08-07T09:47:00.000Z",
-      "error_message": "Follow-up to bug-207: user clarified 'Want the location information from the provided template' — i.e. Sportstätte should NOT be derived from Training.location (the opposite of start/end time, which should stay training-derived).",
+      "error_message": "Follow-up to bug-207: user clarified 'Want the location information from the provided template' \u2014 i.e. Sportst\u00e4tte should NOT be derived from Training.location (the opposite of start/end time, which should stay training-derived).",
       "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift, BlindensportGraz/TrainingsfrequenzlisteExport.swift, BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
-      "root_cause": "Not a bug in the prior sense — a scope clarification. bug-207's investigation had confirmed TrainingsfrequenzlisteCalculator.summary() derived location/startTime/endTime uniformly from the representative Training and patched all three into the template (Y3/H4/L4). The user then specified the two fields should be sourced differently: start/end time from the Training data (unchanged), but location should always reflect the bundled reference template's own pre-filled Sportstätte value (the real club document says 'ASKÖ-Halle B'), not whatever an individual Training record's location field happens to say.",
-      "fix": "Removed the `location` field entirely from TrainingsfrequenzlisteSummary and stopped computing it in TrainingsfrequenzlisteCalculator.summary(). Deleted the `XLSXCellPatch.setInlineText(...,ref:\"Y3\",...)` call in TrainingsfrequenzlisteExporter.patch — Y3 is now never touched, so it keeps the template's own shared-string value. Updated the earlier testExportPatchesLocationAndTimesFromRepresentativeTraining (renamed testExportPatchesTimesFromRepresentativeTraining, location assertions dropped) and added testExportLeavesLocationFromTemplateUntouched (asserts the Training's location string does NOT appear in the export and Y3 still references the original shared string). 11/11 tests pass (xcodebuild test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator). Committed and redeployed via ios-device-deploy.yml.",
+      "root_cause": "Not a bug in the prior sense \u2014 a scope clarification. bug-207's investigation had confirmed TrainingsfrequenzlisteCalculator.summary() derived location/startTime/endTime uniformly from the representative Training and patched all three into the template (Y3/H4/L4). The user then specified the two fields should be sourced differently: start/end time from the Training data (unchanged), but location should always reflect the bundled reference template's own pre-filled Sportst\u00e4tte value (the real club document says 'ASK\u00d6-Halle B'), not whatever an individual Training record's location field happens to say.",
+      "fix": "Removed the `location` field entirely from TrainingsfrequenzlisteSummary and stopped computing it in TrainingsfrequenzlisteCalculator.summary(). Deleted the `XLSXCellPatch.setInlineText(...,ref:\"Y3\",...)` call in TrainingsfrequenzlisteExporter.patch \u2014 Y3 is now never touched, so it keeps the template's own shared-string value. Updated the earlier testExportPatchesLocationAndTimesFromRepresentativeTraining (renamed testExportPatchesTimesFromRepresentativeTraining, location assertions dropped) and added testExportLeavesLocationFromTemplateUntouched (asserts the Training's location string does NOT appear in the export and Y3 still references the original shared string). 11/11 tests pass (xcodebuild test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator). Committed and redeployed via ios-device-deploy.yml.",
       "tags": [
         "trainingsfrequenzliste",
         "export",
@@ -3508,7 +3508,7 @@
       "error_message": "refactor request: 'Want to have the Trainingsfrequenzliste also in Berichte - like PRAE and KostZ.' Trainingsfrequenzliste was a standalone toolbar button on TrainingsListView, separate from the 'Berichte' Menu containing PRAE-Berechnung/KostZ-Berechnung.",
       "file": "BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TrainingsfrequenzlisteViews.swift",
       "root_cause": "Not a bug, a UI consolidation request. TrainingsListView had two separate toolbar items: a standalone calendar-badge Button for Trainingsfrequenzliste, and a chart.bar.doc.horizontal 'Berichte' Menu with PRAE-Berechnung + KostZ-Berechnung.",
-      "fix": "Merged the standalone Trainingsfrequenzliste button into the 'Berichte' Menu as its first item (Label with the same calendar.badge.checkmark icon), removing the separate toolbar icon entirely. State (@State showTrainingsfrequenzliste) and .sheet wiring unchanged. Updated TrainingsfrequenzlisteView's doc comment to reflect the new entry point. Verified via xcodebuild build (CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator) — BUILD SUCCEEDED.",
+      "fix": "Merged the standalone Trainingsfrequenzliste button into the 'Berichte' Menu as its first item (Label with the same calendar.badge.checkmark icon), removing the separate toolbar icon entirely. State (@State showTrainingsfrequenzliste) and .sheet wiring unchanged. Updated TrainingsfrequenzlisteView's doc comment to reflect the new entry point. Verified via xcodebuild build (CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator) \u2014 BUILD SUCCEEDED.",
       "tags": [
         "trainingsfrequenzliste",
         "ui",
@@ -3529,7 +3529,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/PraeExport.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 28→102 lines (4 removed)",
+      "fix": "Rewrote 28\u2192102 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3544,7 +3544,7 @@
       "timestamp": "2026-08-07T10:00:40.484Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGrazTests/PraeCalculationTests.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -3560,7 +3560,7 @@
       "timestamp": "2026-08-07T10:05:00.000Z",
       "error_message": "User-reported: 'In the PRAE the stored cost is not in the sheet. The value should be stored one column after the day from the date of the training or tournament. additionally the month and year have to be set.'",
       "file": "BlindensportGraz/PraeExport.swift, BlindensportGraz/PraeViews.swift, BlindensportGrazTests/PraeCalculationTests.swift",
-      "root_cause": "PraeExporter.exportMainForm(person:) only ever patched the personal-data header (name/SVNR/address/Geburtsdatum/IBAN) — it never touched the day grid ('Einsatztage und Entschaedigungshoehe') or the 'im Monat:'/'Jahr:' header fields at all, and didn't even have access to the day/amount entries or month/year (its signature took only a PraeEligiblePerson, no PraeMonthSummary/PraeTournamentSummary). This was a DELIBERATE decision documented in the file's own doc comment ('the day grid...ambiguous even after careful analysis...so that part is still left for manual completion') and echoed in the UI caption text in PraeViews.swift ('...muss weiterhin von Hand um Monat/Jahr, Tagesbetraege...ergaenzt werden') -- but re-dumping the real PRAE_Formular.xlsx template's own <mergeCells> XML (not guessed) showed the layout is actually fully regular and unambiguous: day-label cells sit at columns B,E,H,K,N,Q,T,W,Z,AC (every 3rd column) across rows 12 (days 1-10), 13 (11-20), 14 (21-30), 15 (31 alone), and each day's amount cell is the very next column, merged 2-wide (e.g. day 1's label is B12, its amount cell is merged C12:D12) -- exactly matching the user's own description ('one column after the day'). Row 11 has 'im Monat:' (A11 label) with a blank merged value box at B11:G11, and 'Jahr:' (H11:J11 label) with a blank merged value box at K11:M11 -- also never patched before.",
+      "root_cause": "PraeExporter.exportMainForm(person:) only ever patched the personal-data header (name/SVNR/address/Geburtsdatum/IBAN) \u2014 it never touched the day grid ('Einsatztage und Entschaedigungshoehe') or the 'im Monat:'/'Jahr:' header fields at all, and didn't even have access to the day/amount entries or month/year (its signature took only a PraeEligiblePerson, no PraeMonthSummary/PraeTournamentSummary). This was a DELIBERATE decision documented in the file's own doc comment ('the day grid...ambiguous even after careful analysis...so that part is still left for manual completion') and echoed in the UI caption text in PraeViews.swift ('...muss weiterhin von Hand um Monat/Jahr, Tagesbetraege...ergaenzt werden') -- but re-dumping the real PRAE_Formular.xlsx template's own <mergeCells> XML (not guessed) showed the layout is actually fully regular and unambiguous: day-label cells sit at columns B,E,H,K,N,Q,T,W,Z,AC (every 3rd column) across rows 12 (days 1-10), 13 (11-20), 14 (21-30), 15 (31 alone), and each day's amount cell is the very next column, merged 2-wide (e.g. day 1's label is B12, its amount cell is merged C12:D12) -- exactly matching the user's own description ('one column after the day'). Row 11 has 'im Monat:' (A11 label) with a blank merged value box at B11:G11, and 'Jahr:' (H11:J11 label) with a blank merged value box at K11:M11 -- also never patched before.",
       "fix": "Added PraeExporter.dayGridAmountRef(day:) which derives the amount cell's top-left ref purely from the day number (no lookup table, the 3-column-step/10-days-per-row pattern is fully regular). Split exportMainForm into two public overloads taking PraeMonthSummary/PraeTournamentSummary (mirroring exportDarstellung's existing shape) that feed a shared private exportMainForm(person:month:year:entries:) -- this patches B11 (month name, German full-month-name via DateFormatter 'LLLL')/K11 (year) plus every entry's amount into its dayGridAmountRef cell, alongside the existing personal-data patches. The tournament overload derives month/year from Tournament.startDate (the form has no 'Turnier:' alternative label unlike Darstellung's patchable period cell -- documented as a known edge case for a tournament spanning a month boundary). Updated both call sites in PraeViews.swift (PraeCalculationView/PraeTournamentCalculationView) to pass `summary` instead of `person`, and fixed PraeCalculationView's main-form .task(id:) to key on month+year too (was person-only before, so changing the month/year picker without reselecting the person would have left a stale file). Updated the two existing exportMainForm(person:) test call sites to build a PraeMonthSummary first, and added testExportMainFormPatchesMonthYearAndDayGridAmounts covering three grid rows (day 1/15/31) plus the month/year header. Caught and fixed a 'missing return' compile error in the tournament overload during the same edit (the shared helper call needed an explicit `return`, `try expr` alone doesn't propagate the value from a non-void function). 17/17 PraeCalculationTests pass, full app build succeeds (xcodebuild build + test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator).",
       "tags": [
         "prae",
@@ -3578,8 +3578,8 @@
       "timestamp": "2026-08-07T10:20:00.000Z",
       "error_message": "New feature request: 'Can can write the summed amount of cost from column L16 and write the spoken word of the value in column B18.'",
       "file": "BlindensportGraz/PraeExport.swift, BlindensportGrazTests/PraeCalculationTests.swift",
-      "root_cause": "Not a bug, a feature request following on from bug-210's day-grid auto-fill. L16 (merged L16:S16) already carries the real template's own SUM formula over every day-grid cell (=C12+C13+...+AD14), with a cached <v>0</v> that only Excel/Numbers recalculate on open — non-recalculating previewers (iOS QuickLook) would show a stale 0 unless the cached value is refreshed to match the newly-patched day-grid amounts. B18 (merged B18:AE18, the 'in Worten:' row) had no content or formula at all — Excel has no built-in number-to-German-words function, so nothing before this patched it.",
-      "fix": "Added a new top-level GermanNumberWords enum (PraeExport.swift) that spells out a non-negative integer below 1,000,000 in formal German ('einhundert'/'eintausend' style, not colloquial 'hundert'/'tausend'), plus spelledOutEuroAmount(_:) which rounds to the nearest cent (avoids float noise like 45.099999999996 turning into a bogus fractional-cent word) and renders '<Euro> Euro und <Cent> Cent', dropping the Cent clause entirely for whole-euro amounts. In PraeExporter.exportMainForm's shared private helper: after patching the day-grid amounts, XLSXCellPatch.setFormulaCachedValue refreshes L16's cached SUM value (formula left intact) to the real entries total, and B18 is patched with GermanNumberWords.spelledOutEuroAmount(total) — only when total > 0, so an empty grid keeps B18 blank ('Null Euro' would look absurd on an otherwise pristine form) while L16 still gets its cached 0 refreshed (matches the pristine template's own state, confirms the patch path doesn't skip/crash on an empty grid). Added testGermanNumberWordsSpellsOutBasicRanges/testGermanNumberWordsSpelledOutEuroAmountOmitsCentClauseForWholeEuros (unit tests on the speller itself) plus assertions on L16/B18 in the existing day-grid export test and a new testExportMainFormLeavesInWortenBlankWithNoEntries. 20/20 PraeCalculationTests pass, full app build succeeds (xcodebuild build + test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator).",
+      "root_cause": "Not a bug, a feature request following on from bug-210's day-grid auto-fill. L16 (merged L16:S16) already carries the real template's own SUM formula over every day-grid cell (=C12+C13+...+AD14), with a cached <v>0</v> that only Excel/Numbers recalculate on open \u2014 non-recalculating previewers (iOS QuickLook) would show a stale 0 unless the cached value is refreshed to match the newly-patched day-grid amounts. B18 (merged B18:AE18, the 'in Worten:' row) had no content or formula at all \u2014 Excel has no built-in number-to-German-words function, so nothing before this patched it.",
+      "fix": "Added a new top-level GermanNumberWords enum (PraeExport.swift) that spells out a non-negative integer below 1,000,000 in formal German ('einhundert'/'eintausend' style, not colloquial 'hundert'/'tausend'), plus spelledOutEuroAmount(_:) which rounds to the nearest cent (avoids float noise like 45.099999999996 turning into a bogus fractional-cent word) and renders '<Euro> Euro und <Cent> Cent', dropping the Cent clause entirely for whole-euro amounts. In PraeExporter.exportMainForm's shared private helper: after patching the day-grid amounts, XLSXCellPatch.setFormulaCachedValue refreshes L16's cached SUM value (formula left intact) to the real entries total, and B18 is patched with GermanNumberWords.spelledOutEuroAmount(total) \u2014 only when total > 0, so an empty grid keeps B18 blank ('Null Euro' would look absurd on an otherwise pristine form) while L16 still gets its cached 0 refreshed (matches the pristine template's own state, confirms the patch path doesn't skip/crash on an empty grid). Added testGermanNumberWordsSpellsOutBasicRanges/testGermanNumberWordsSpelledOutEuroAmountOmitsCentClauseForWholeEuros (unit tests on the speller itself) plus assertions on L16/B18 in the existing day-grid export test and a new testExportMainFormLeavesInWortenBlankWithNoEntries. 20/20 PraeCalculationTests pass, full app build succeeds (xcodebuild build + test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator).",
       "tags": [
         "prae",
         "export",
@@ -3600,7 +3600,7 @@
       "error_message": "New feature request: 'Add a Sammelabrechnung inside Berichte. This should include all PRAE, PRAE Darstellung of the helper/trainer and KostZ for a tournament or training period. The excel files should be zipped together.'",
       "file": "BlindensportGraz/SammelabrechnungExport.swift, BlindensportGraz/SammelabrechnungViews.swift, BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift, BlindensportGrazTests/SammelabrechnungExportTests.swift",
       "root_cause": "New feature, not a bug. Previously PRAE-Formular/PRAE-Darstellung (per person) and KostZ (per period) had to be exported one at a time from three separate 'Berichte' menu entries, no bundled/combined download existed.",
-      "fix": "New SammelabrechnungExporter (pure orchestration, no new template-patching logic — reuses KostZExporter.export/PraeExporter.exportMainForm/PraeExporter.exportDarstellung as-is) with two overloads (KostZMonthSummary+[PraeMonthSummary] / KostZTournamentSummary+[PraeTournamentSummary]) that generate one KostZ file plus, for every person KostZCalculator's summary already resolved to a non-zero honorarium (personAmounts, amount > 0 -- no separate eligibility computation needed), their PRAE-Formular and (since personAmounts>0 implies non-empty entries) PRAE-Darstellung, then zip all of it into one fresh .zip (ZIPFoundation, .none/stored compression matching every other exporter in this codebase) named 'KostZ.xlsx' / 'PRAE_Nachname_Vorname.xlsx' / 'PRAE-Darstellung_Nachname_Vorname.xlsx'. New SammelabrechnungView (month-scoped, TrainingsListView's 'Berichte' menu) and SammelabrechnungTournamentView(tournament:) (TournamentDetailView's 'Berichte' menu) mirror KostZCalculationView/KostZTournamentCalculationView's month-vs-tournament split and eager-.task-then-ShareLink pattern (never a Button-triggered second sheet, per the standing VoiceOver-nested-sheet convention). Both Berichte menus gained a 4th/3rd 'Sammelabrechnung' entry (icon doc.zipper). Added SammelabrechnungExportTests.swift (3 tests): a two-coach month scenario asserting all 5 zip entries exist and each is itself a valid, re-openable .xlsx (not just non-empty bytes); a zero-eligible-people case producing just the KostZ file; and the tournament-scoped overload. project.yml uses explicit pbxproj file references (not synchronized groups), so `xcodegen generate` had to be re-run after adding the two new source files + the new test file before they'd compile at all. 56/56 tests pass (xcodebuild test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator, excluding the known bug-202 CloudKit-entitlement-crash suite), full app build succeeds.",
+      "fix": "New SammelabrechnungExporter (pure orchestration, no new template-patching logic \u2014 reuses KostZExporter.export/PraeExporter.exportMainForm/PraeExporter.exportDarstellung as-is) with two overloads (KostZMonthSummary+[PraeMonthSummary] / KostZTournamentSummary+[PraeTournamentSummary]) that generate one KostZ file plus, for every person KostZCalculator's summary already resolved to a non-zero honorarium (personAmounts, amount > 0 -- no separate eligibility computation needed), their PRAE-Formular and (since personAmounts>0 implies non-empty entries) PRAE-Darstellung, then zip all of it into one fresh .zip (ZIPFoundation, .none/stored compression matching every other exporter in this codebase) named 'KostZ.xlsx' / 'PRAE_Nachname_Vorname.xlsx' / 'PRAE-Darstellung_Nachname_Vorname.xlsx'. New SammelabrechnungView (month-scoped, TrainingsListView's 'Berichte' menu) and SammelabrechnungTournamentView(tournament:) (TournamentDetailView's 'Berichte' menu) mirror KostZCalculationView/KostZTournamentCalculationView's month-vs-tournament split and eager-.task-then-ShareLink pattern (never a Button-triggered second sheet, per the standing VoiceOver-nested-sheet convention). Both Berichte menus gained a 4th/3rd 'Sammelabrechnung' entry (icon doc.zipper). Added SammelabrechnungExportTests.swift (3 tests): a two-coach month scenario asserting all 5 zip entries exist and each is itself a valid, re-openable .xlsx (not just non-empty bytes); a zero-eligible-people case producing just the KostZ file; and the tournament-scoped overload. project.yml uses explicit pbxproj file references (not synchronized groups), so `xcodegen generate` had to be re-run after adding the two new source files + the new test file before they'd compile at all. 56/56 tests pass (xcodebuild test, CODE_SIGNING_ALLOWED=NO, iPhone 17 simulator, excluding the known bug-202 CloudKit-entitlement-crash suite), full app build succeeds.",
       "tags": [
         "sammelabrechnung",
         "prae",
@@ -3663,7 +3663,7 @@
       "error_message": "Significant refactor of ",
       "file": ".claude/commands/deploy.md",
       "root_cause": "8 lines replaced/restructured",
-      "fix": "Rewrote 15→25 lines (8 removed)",
+      "fix": "Rewrote 15\u219225 lines (8 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3694,7 +3694,7 @@
       "timestamp": "2026-08-13T18:59:49.779Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/CloudKitSync.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -3743,7 +3743,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "7 lines replaced/restructured",
-      "fix": "Rewrote 9→18 lines (7 removed)",
+      "fix": "Rewrote 9\u219218 lines (7 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3759,7 +3759,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGrazTests/TrainingFavoriteTests.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 14→36 lines (2 removed)",
+      "fix": "Rewrote 14\u219236 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3812,7 +3812,7 @@
       "error_message": "Significant refactor of ",
       "file": ".claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
       "root_cause": "14 lines replaced/restructured",
-      "fix": "Rewrote 21→30 lines (14 removed)",
+      "fix": "Rewrote 21\u219230 lines (14 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3828,7 +3828,7 @@
       "error_message": "Significant refactor of ",
       "file": ".claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/TrainingFavoriteTests.swift",
       "root_cause": "23 lines replaced/restructured",
-      "fix": "Rewrote 43→72 lines (23 removed)",
+      "fix": "Rewrote 43\u219272 lines (23 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3844,7 +3844,7 @@
       "error_message": "Wrong reference: 232 should be 228",
       "file": ".claude/worktrees/reactive-watching-lemon/BlindensportGraz/Models.swift",
       "root_cause": "Used \"232\" instead of \"228\"",
-      "fix": "Changed 232 → 228",
+      "fix": "Changed 232 \u2192 228",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -3897,7 +3897,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/MemberListView.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 8→12 lines (2 removed)",
+      "fix": "Rewrote 8\u219212 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3912,7 +3912,7 @@
       "timestamp": "2026-08-13T20:22:48.662Z",
       "error_message": "Missing error handling in unknown",
       "file": "BlindensportGraz/TrainingsViews.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -3978,7 +3978,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift",
       "root_cause": "13 lines replaced/restructured",
-      "fix": "Rewrote 31→52 lines (13 removed)",
+      "fix": "Rewrote 31\u219252 lines (13 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -3994,7 +3994,7 @@
       "error_message": "Wrong reference: displayName should be praeFormName",
       "file": "BlindensportGraz/PraeExport.swift",
       "root_cause": "Used \"displayName\" instead of \"praeFormName\"",
-      "fix": "Changed displayName → praeFormName",
+      "fix": "Changed displayName \u2192 praeFormName",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4010,7 +4010,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TeamsViews.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 17→27 lines (4 removed)",
+      "fix": "Rewrote 17\u219227 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4026,7 +4026,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsfrequenzlisteCalculation.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 16→24 lines (2 removed)",
+      "fix": "Rewrote 16\u219224 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4042,7 +4042,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 5→7 lines (4 removed)",
+      "fix": "Rewrote 5\u21927 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4089,8 +4089,8 @@
       "timestamp": "2026-08-18T12:50:27.326Z",
       "error_message": "Incorrect value in code",
       "file": "BlindensportGraz/MemberListView.swift",
-      "root_cause": "Had \"Mitglieder – \\(itemName)\"",
-      "fix": "Changed to \"\\(kindLabel) – \\(itemName)\"",
+      "root_cause": "Had \"Mitglieder \u2013 \\(itemName)\"",
+      "fix": "Changed to \"\\(kindLabel) \u2013 \\(itemName)\"",
       "tags": [
         "auto-detected",
         "wrong-value",
@@ -4106,7 +4106,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TournamentsViews.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 49→68 lines (5 removed)",
+      "fix": "Rewrote 49\u219268 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4138,7 +4138,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TournamentsViews.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 7→4 lines (5 removed) | Also: DatePicker(\"Start\", selection: $tournament.startDa; DatePicker(\"Ende\", selection: $tournament.endDate)",
+      "fix": "Rewrote 7\u21924 lines (5 removed) | Also: DatePicker(\"Start\", selection: $tournament.startDa; DatePicker(\"Ende\", selection: $tournament.endDate)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4154,7 +4154,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/Models.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 7→9 lines (2 removed)",
+      "fix": "Rewrote 7\u21929 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4234,7 +4234,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/RootView.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 14→5 lines (5 removed)",
+      "fix": "Rewrote 14\u21925 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4250,7 +4250,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "11 lines replaced/restructured",
-      "fix": "Rewrote 13→3 lines (11 removed)",
+      "fix": "Rewrote 13\u21923 lines (11 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4266,7 +4266,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/CLAUDE.md",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 12→16 lines (3 removed)",
+      "fix": "Rewrote 12\u219216 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4319,7 +4319,7 @@
       "timestamp": "2026-08-22T10:47:18.518Z",
       "error_message": "Missing error handling in unknown",
       "file": "RootCLI/Sources/rootcli/RootCLI.swift",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -4368,7 +4368,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGrazTests/DesignatedRootTests.swift",
       "root_cause": "9 lines replaced/restructured",
-      "fix": "Rewrote 13→7 lines (9 removed)",
+      "fix": "Rewrote 13\u21927 lines (9 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4384,7 +4384,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4416,7 +4416,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/README.md",
       "root_cause": "16 lines replaced/restructured",
-      "fix": "Rewrote 28→80 lines (16 removed)",
+      "fix": "Rewrote 28\u219280 lines (16 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4432,7 +4432,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4464,7 +4464,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4480,7 +4480,7 @@
       "error_message": "Wrong reference: AppRole should be member",
       "file": "BlindensportGraz/User.swift",
       "root_cause": "Used \"AppRole\" instead of \"member\"",
-      "fix": "Changed AppRole → member",
+      "fix": "Changed AppRole \u2192 member",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4496,7 +4496,7 @@
       "error_message": "Wrong reference: MembershipRole should be player",
       "file": "BlindensportGraz/TeamMembership.swift",
       "root_cause": "Used \"MembershipRole\" instead of \"player\"",
-      "fix": "Changed MembershipRole → player",
+      "fix": "Changed MembershipRole \u2192 player",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4512,7 +4512,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/AccountView.swift",
       "root_cause": "3 lines replaced/restructured",
-      "fix": "Rewrote 15→19 lines (3 removed)",
+      "fix": "Rewrote 15\u219219 lines (3 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4528,7 +4528,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TournamentsViews.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 9→15 lines (4 removed)",
+      "fix": "Rewrote 9\u219215 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4544,7 +4544,7 @@
       "error_message": "Wrong reference: role should be MembershipRole",
       "file": "BlindensportGraz/TeamsViews.swift",
       "root_cause": "Used \"role\" instead of \"MembershipRole\"",
-      "fix": "Changed role → MembershipRole",
+      "fix": "Changed role \u2192 MembershipRole",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4576,7 +4576,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4608,7 +4608,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TeamsViews.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 10→7 lines (4 removed) | Also: let membership = sortedMemberships[index]; CloudKitSync.shared.deleteMembership(membership.id",
+      "fix": "Rewrote 10\u21927 lines (4 removed) | Also: let membership = sortedMemberships[index]; CloudKitSync.shared.deleteMembership(membership.id",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4624,7 +4624,7 @@
       "error_message": "Wrong reference: SwiftData should be Foundation",
       "file": "BlindensportGraz/RoleChangeLogService.swift",
       "root_cause": "Used \"SwiftData\" instead of \"Foundation\"",
-      "fix": "Changed SwiftData → Foundation",
+      "fix": "Changed SwiftData \u2192 Foundation",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4640,7 +4640,7 @@
       "error_message": "Wrong reference: SwiftData should be Foundation",
       "file": "BlindensportGraz/TrainingFavoriteService.swift",
       "root_cause": "Used \"SwiftData\" instead of \"Foundation\"",
-      "fix": "Changed SwiftData → Foundation",
+      "fix": "Changed SwiftData \u2192 Foundation",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4656,7 +4656,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4672,7 +4672,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Package.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 16→21 lines (2 removed)",
+      "fix": "Rewrote 16\u219221 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4688,7 +4688,7 @@
       "error_message": "Significant refactor of ",
       "file": "RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift",
       "root_cause": "7 lines replaced/restructured",
-      "fix": "Rewrote 9→3 lines (7 removed)",
+      "fix": "Rewrote 9\u21923 lines (7 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4704,7 +4704,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/CKSchema.swift",
       "root_cause": "21 lines replaced/restructured",
-      "fix": "Rewrote 23→28 lines (21 removed)",
+      "fix": "Rewrote 23\u219228 lines (21 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4720,7 +4720,7 @@
       "error_message": "Wrong reference: svnr should be svnrRENAMED_FOR_DRIFT_DEMO",
       "file": "Shared/ClubSchema/Sources/ClubSchema/MemberField.swift",
       "root_cause": "Used \"svnr\" instead of \"svnrRENAMED_FOR_DRIFT_DEMO\"",
-      "fix": "Changed svnr → svnrRENAMED_FOR_DRIFT_DEMO",
+      "fix": "Changed svnr \u2192 svnrRENAMED_FOR_DRIFT_DEMO",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4735,7 +4735,7 @@
       "timestamp": "2026-08-22T13:44:57.732Z",
       "error_message": "Missing error handling in unknown",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
-      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
       "fix": "Added try/catch block",
       "tags": [
         "auto-detected",
@@ -4768,7 +4768,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4800,7 +4800,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/SammelabrechnungViews.swift",
       "root_cause": "4 lines replaced/restructured",
-      "fix": "Rewrote 6→5 lines (4 removed)",
+      "fix": "Rewrote 6\u21925 lines (4 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4837,7 +4837,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4853,7 +4853,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4869,7 +4869,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4885,7 +4885,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingService.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 10→29 lines (2 removed)",
+      "fix": "Rewrote 10\u219229 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4901,7 +4901,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TournamentService.swift",
       "root_cause": "2 lines replaced/restructured",
-      "fix": "Rewrote 11→30 lines (2 removed)",
+      "fix": "Rewrote 11\u219230 lines (2 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4917,7 +4917,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TournamentsViews.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 9→12 lines (5 removed)",
+      "fix": "Rewrote 9\u219212 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4933,7 +4933,7 @@
       "error_message": "Significant refactor of ",
       "file": "BlindensportGraz/TrainingsViews.swift",
       "root_cause": "5 lines replaced/restructured",
-      "fix": "Rewrote 9→12 lines (5 removed)",
+      "fix": "Rewrote 9\u219212 lines (5 removed)",
       "tags": [
         "auto-detected",
         "refactor",
@@ -4949,7 +4949,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4965,7 +4965,7 @@
       "error_message": "Wrong reference: showTrainingsfrequenzliste should be showAttendanceTrends",
       "file": "BlindensportGraz/TrainingsViews.swift",
       "root_cause": "Used \"showTrainingsfrequenzliste\" instead of \"showAttendanceTrends\"",
-      "fix": "Changed showTrainingsfrequenzliste → showAttendanceTrends",
+      "fix": "Changed showTrainingsfrequenzliste \u2192 showAttendanceTrends",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4981,7 +4981,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -4997,7 +4997,7 @@
       "error_message": "Wrong reference: ZIPFoundation should be SwiftData",
       "file": "BlindensportGraz/SammelabrechnungExport.swift",
       "root_cause": "Used \"ZIPFoundation\" instead of \"SwiftData\"",
-      "fix": "Changed ZIPFoundation → SwiftData",
+      "fix": "Changed ZIPFoundation \u2192 SwiftData",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -5029,7 +5029,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -5045,7 +5045,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -5077,7 +5077,7 @@
       "error_message": "Wrong reference: pending should be done",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"pending\" instead of \"done\"",
-      "fix": "Changed pending → done",
+      "fix": "Changed pending \u2192 done",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -5090,7 +5090,7 @@
     {
       "id": "bug-308",
       "timestamp": "2026-08-22T17:47:00.000Z",
-      "error_message": "xcodebuild build failed: 'missing argument for parameter gridlinePositions in call' — AXNumericDataAxisDescriptor(title:range:gridlinePositions:valueDescriptionProvider:) has no default for gridlinePositions",
+      "error_message": "xcodebuild build failed: 'missing argument for parameter gridlinePositions in call' \u2014 AXNumericDataAxisDescriptor(title:range:gridlinePositions:valueDescriptionProvider:) has no default for gridlinePositions",
       "file": "BlindensportGraz/AttendanceTrendsView.swift",
       "root_cause": "Wrote the y-axis AXNumericDataAxisDescriptor init assuming gridlinePositions was optional/defaulted, matching the x-axis descriptor call style; the real API requires it explicitly.",
       "fix": "Added gridlinePositions: [0, 0.25, 0.5, 0.75, 1.0] to the y-axis AXNumericDataAxisDescriptor init.",
@@ -5107,7 +5107,7 @@
     {
       "id": "bug-309",
       "timestamp": "2026-08-22T18:23:00.000Z",
-      "error_message": "Test-writing mistake (caught before a build attempt): Training(title:sport:location:startDate:endDate:) does not exist — Training's initializer has no endDate parameter, it derives endDate from startDate + durationMinutes",
+      "error_message": "Test-writing mistake (caught before a build attempt): Training(title:sport:location:startDate:endDate:) does not exist \u2014 Training's initializer has no endDate parameter, it derives endDate from startDate + durationMinutes",
       "file": "BlindensportGrazTests/CalendarEventExportTests.swift",
       "root_cause": "Assumed Training's initializer mirrored Tournament's (which does take an explicit endDate:) without checking Training.swift's actual init signature first.",
       "fix": "Rewrote the affected tests to pass durationMinutes: instead of endDate:, and derive the expected end date as start.addingTimeInterval(durationMinutes * 60) in assertions.",
@@ -5126,7 +5126,7 @@
       "error_message": "Wrong reference: IN_PROGRESS should be PHASES_COMPLETE_AUDIT_PENDING",
       "file": ".supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md",
       "root_cause": "Used \"IN_PROGRESS\" instead of \"PHASES_COMPLETE_AUDIT_PENDING\"",
-      "fix": "Changed IN_PROGRESS → PHASES_COMPLETE_AUDIT_PENDING",
+      "fix": "Changed IN_PROGRESS \u2192 PHASES_COMPLETE_AUDIT_PENDING",
       "tags": [
         "auto-detected",
         "wrong-reference",
@@ -5135,6 +5135,139 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-08-22T16:50:15.506Z"
+    },
+    {
+      "id": "bug-311",
+      "timestamp": "2026-08-22T17:40:12.828Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T17:40:12.828Z"
+    },
+    {
+      "id": "bug-312",
+      "timestamp": "2026-08-22T17:44:40.567Z",
+      "error_message": "Missing error handling in throws",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "Code path had no error handling \u2014 exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T17:44:40.567Z"
+    },
+    {
+      "id": "bug-313",
+      "timestamp": "2026-08-22T17:44:54.040Z",
+      "error_message": "Function not marked async",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Function uses await but wasn't declared async",
+      "fix": "Added async modifier",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T17:44:54.040Z"
+    },
+    {
+      "id": "bug-314",
+      "timestamp": "2026-08-22T17:45:01.968Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CKFieldCoding.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 10\u219213 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T17:45:01.968Z"
+    },
+    {
+      "id": "bug-315",
+      "timestamp": "2026-08-22T17:46:34.171Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7\u21925 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T17:46:34.171Z"
+    },
+    {
+      "id": "bug-316",
+      "timestamp": "2026-08-22T17:47:40.063Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/README.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 22\u219239 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T17:47:40.063Z"
+    },
+    {
+      "id": "bug-317",
+      "timestamp": "2026-08-22T19:50:00.000Z",
+      "error_message": "RootCLI's set-role prints 'Warning: role changed but RoleChangeLog write failed' but that warning never actually printed even when the write genuinely failed -- confirmed live: CloudKit's records/modify returns HTTP 200 for the whole batch even when the individual operation inside it fails (e.g. NOT_FOUND for an undefined record type), and nothing checked the per-operation 'records' array in the response for an embedded serverErrorCode/reason.",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "send() only checks the outer HTTP status code; CloudKit Web Services' batch records/modify endpoint reports per-record failures inside a 200 response body instead, which every write path (updateRecord/createOrReplaceRecord/deleteRecord) ignored.",
+      "fix": "Added checkModifyResult(_:endpoint:) -- inspects the records array for a serverErrorCode field and throws CLIError with the reason/recordName if found -- called after send() in updateRecord/createOrReplaceRecord/deleteRecord. send() itself stays tolerant (query/lookup legitimately use a per-record NOT_FOUND as normal data, not a failure).",
+      "tags": [
+        "cloudkit",
+        "error-handling",
+        "silent-failure",
+        "rootcli"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T19:50:00.000Z"
+    },
+    {
+      "id": "bug-318",
+      "timestamp": "2026-08-22T19:55:00.000Z",
+      "error_message": "New RootCLI record set ... field:ASSET=path uploads: first attempt got 'Asset upload to CloudKit failed: Bad Request' when POSTing the raw file bytes to CloudKit's pre-authorized singleFileUpload URL.",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "CloudKit's asset-upload URL (from the assets/upload token response) expects a multipart/form-data body (a 'files' part), not a raw-bytes POST body -- the endpoint's own name ('singleFileUpload') was the hint, confirmed by trying multipart and it working immediately.",
+      "fix": "uploadAsset(recordType:fieldName:fileURL:) builds a proper multipart/form-data body (one \"files\" part, Content-Type: application/octet-stream) before POSTing to the upload URL. Verified end-to-end live: uploaded a real receipt.jpg to a fresh ExpenseReceipt record in Development, confirmed via record get (asset dict with fileChecksum/size/downloadURL), then deleted the test record.",
+      "tags": [
+        "cloudkit",
+        "ckasset",
+        "multipart",
+        "rootcli",
+        "new-feature"
+      ],
+      "related_bugs": [
+        "bug-317"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T19:55:00.000Z"
     }
   ]
 }

@@ -17,8 +17,11 @@ public enum CKFieldCoding {
     /// Record types this app's CloudKitSync.swift actually publishes, for
     /// CLI help text and the generic web UI's type picker. Not enforced —
     /// `record`/`/api/records` work against any record type string, known or
-    /// not. `EventImage` is deliberately excluded: it carries a CKAsset
-    /// (binary file), which this text/JSON-field editor doesn't handle.
+    /// not. `EventImage`/`ExpenseReceipt` are omitted here since this file's
+    /// pure, synchronous `encode`/`parseCLIAssignments` can't handle their
+    /// CKAsset field — asset uploads need a network round-trip
+    /// (`CloudKitS2SClient.uploadAsset`), so `record set`'s "ASSET" field
+    /// type is handled directly in `RootCLI.swift`'s `runRecord`, not here.
     public static let knownTypes = [
         "UserIdentity", "ClubMember", "Team", "TeamMembership",
         "SportEvent", "Training", "Tournament",
