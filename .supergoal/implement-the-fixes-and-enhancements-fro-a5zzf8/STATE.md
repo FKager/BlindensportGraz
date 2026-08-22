@@ -1,7 +1,7 @@
 # State: Implement audit.md fixes & enhancements — BlindensportGraz
 
-**Status:** IN_PROGRESS
-**Current phase:** 19
+**Status:** PHASES_COMPLETE_AUDIT_PENDING
+**Current phase:** 19 (complete)
 **Started:** 2026-08-20
 **Last update:** 2026-08-22
 **Run root:** .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8
@@ -29,7 +29,7 @@
 | 16 | Season/year reporting rollup | done | 2026-08-22 | 2026-08-22 | SammelabrechnungExporter.exportSeason orchestrates existing KostZ/PRAE/Trainingsfrequenzliste exporters per month/tournament/sport-halfyear (skips empty periods); SammelabrechnungSeasonView wired into Berichte menu; 3 new tests, 130 pass/16 baseline fail |
 | 17 | Calendar/EventKit integration | done | 2026-08-22 | 2026-08-22 | .ics+ShareLink chosen over EKEventStore (documented rationale, VoiceOver track record); CalendarEventExport (fields mapping + RFC5545 render); wired on Training/TournamentDetailView toolbars; add-on-demand-only stale-entry behavior documented; 6 new tests, 136 pass/16 baseline fail |
 | 18 | Receipt/document attachments | done | 2026-08-22 | 2026-08-22 | ExpenseReceipt (images-only, PDF documented as follow-up) mirrors EventImage's CKAsset pattern exactly; ExpenseReceiptsSection (no nested sheet — inline expand) on KostZ month+tournament screens; uploader-or-admin delete; 3 new CKRecord-level round-trip tests, 139 pass/16 baseline fail |
-| 19 | Polish & Harden | pending | — | — | — |
+| 19 | Polish & Harden | done | 2026-08-22 | 2026-08-22 | Final regression clean (139/16 baseline), RootCLI builds, no secrets, no sheet-nesting, a11y 4→9 files, committed (9c4cda7)+pushed+real-device smoke deploy succeeded; manual follow-ups checklist printed |
 
 ## Engineering check status
 

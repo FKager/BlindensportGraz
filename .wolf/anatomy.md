@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T16:48:12.644Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T16:50:15.500Z
 > Files: 219 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -87,7 +87,7 @@
 
 - `applied-memories.md` — Applied memories (~372 tok)
 - `ROADMAP.md` — Roadmap: Implement audit.md fixes & enhancements — BlindensportGraz (~13101 tok)
-- `STATE.md` — State: Implement audit.md fixes & enhancements — BlindensportGraz (~2261 tok)
+- `STATE.md` — State: Implement audit.md fixes & enhancements — BlindensportGraz (~2322 tok)
 - `THINKING.md` — Thinking: Implement audit.md fixes & enhancements — BlindensportGraz (~1795 tok)
 - `tools.md` — Tools detected this session (~462 tok)
 
