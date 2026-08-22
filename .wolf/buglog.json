@@ -5286,6 +5286,74 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-08-22T17:54:54.721Z"
+    },
+    {
+      "id": "bug-320",
+      "timestamp": "2026-08-22T18:10:09.896Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 20\u21926 lines (9 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T18:10:09.896Z"
+    },
+    {
+      "id": "bug-321",
+      "timestamp": "2026-08-22T18:10:14.683Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 10\u21923 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T18:10:14.683Z"
+    },
+    {
+      "id": "bug-322",
+      "timestamp": "2026-08-22T18:16:21.960Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 27\u219248 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T18:16:21.960Z"
+    },
+    {
+      "id": "bug-320",
+      "timestamp": "2026-08-22T20:15:00.000Z",
+      "error_message": "User report after the bug-319 local-store-wipe fix redeployed: 'the teams are there but no team members' -- CloudKit still had all 30 real TeamMembership records (confirmed via rootcli), but zero of them appeared in the app after a full resync from an empty local store.",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "syncAll() called modelContext.save() exactly once, at the very end of the whole pull sequence. Every relationship-resolution lookup inside a later pull (findTeam/findMember/findUser, plain FetchDescriptor+#Predicate fetches) ran against still-UNSAVED inserts from earlier pulls in the SAME pass. pullMemberships needs BOTH Team (from pullTeams) and Member/User (from pullMembers/pullUserIdentities) resolved -- if those lookups don't see not-yet-saved pending inserts, every single TeamMembership's guard-let-team-else-continue silently fails, dropping every membership. Teams themselves synced fine since nothing needed to look them up first. Same mechanism would also affect pullParticipations/pullAttendances (which similarly depend on entities pulled earlier in the same unsaved pass). This was invisible in every automated test because tests always use tiny fixtures inserted+saved directly, never a real end-to-end fresh empty-store resync of production-scale data -- this only ever ran for real on the physical device, for the first time, right after bug-319's local-store wipe forced a full resync.",
+      "fix": "Added modelContext.save() calls between dependent pull stages in syncAll() (after pullTeams/pullMembers/pullUserIdentities, before pullMemberships; after pullEvents/pullTrainings/pullTournaments, before the stages that depend on them) so each stage runs its relationship lookups against durable, queryable data instead of unsaved pending inserts. Verified: xcodebuild test still 139 pass/16 known-baseline fail (no regression); redeployed to the physical device.",
+      "tags": [
+        "swiftdata",
+        "cloudkit-sync",
+        "data-loss",
+        "relationship-resolution",
+        "device-only"
+      ],
+      "related_bugs": [
+        "bug-319"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T20:15:00.000Z"
     }
   ]
 }

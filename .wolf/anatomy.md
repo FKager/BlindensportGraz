@@ -1,11 +1,15 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T17:54:54.714Z
-> Files: 219 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T18:23:16.228Z
+> Files: 220 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
 - `generate_app_icon.swift` — Renders the 1024x1024 App Store marketing icon: a diagonal blue->purple (~742 tok)
+
+## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/9310fa5d-a462-4776-b78e-97a4d735b7da/scratchpad/
+
+- `add_bug320.py` (~709 tok)
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/f77275b7-eb9b-48cf-a257-42428c82e0cc/scratchpad/cktool/
 
@@ -159,7 +163,7 @@
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
 - `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2260 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~2746 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~3101 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~945 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
 - `CloudKitSync+EventParticipation.swift` (~530 tok)

@@ -197,6 +197,23 @@
 
 ## Do-Not-Repeat
 
+- [2026-08-22] **`syncAll()`'s single end-of-sequence `modelContext.save()` silently dropped every
+  `TeamMembership` on the very first real full resync** (see [[bug-320]], follow-on to [[bug-319]]'s
+  local-store wipe forcing this codepath to actually run for real for the first time). Every later pull's
+  relationship-resolution lookup (`findTeam`/`findMember`/`findUser`) is a plain `FetchDescriptor`+
+  `#Predicate` fetch, which does NOT reliably see an earlier pull's just-inserted-but-not-yet-saved
+  objects in the same pass — `pullMemberships` needs both Team and Member/User resolved, so every
+  membership's `guard` silently bailed, while Teams themselves (nothing to look up) synced fine. Fixed by
+  adding `modelContext.save()` between dependent pull stages, not just at the very end. **Lesson: any
+  `ModelContext`-based pull/import pipeline in this app that inserts entity A then, in the same
+  unsaved pass, tries to `FetchDescriptor`-look-up entity A to resolve a relationship on entity B, is at
+  risk of this exact silent-drop bug — save after each stage a later one depends on, don't assume a
+  single end-of-pipeline save is enough.** This class of bug is also structurally invisible to this
+  project's whole test suite: every existing test constructs its fixtures via `context.insert(...)` +
+  an explicit `try context.save()` (or relies on records already being findable), never exercises a
+  multi-stage bulk-pull pipeline against a large, freshly-empty store the way a real device's first
+  post-reset sync does — don't trust "all tests pass" as proof this class of pipeline is correct.
+
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
 

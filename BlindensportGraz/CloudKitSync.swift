@@ -182,18 +182,39 @@ final class CloudKitSync {
 
     /// Pull ordering is deliberate and load-bearing — later pulls resolve
     /// relationships (e.g. TeamMembership needs Team+User+Member already
-    /// local) against entities earlier pulls just inserted. audit.md marks
-    /// this ordering itself correct (Positive Finding 5) — preserved
-    /// byte-for-byte across the Phase 6 file split, not touched.
+    /// local) against entities earlier pulls just inserted. audit.md marked
+    /// this ordering itself correct (Positive Finding 5), but that finding
+    /// was only ever validated against small test fixtures.
+    ///
+    /// **Found live, 2026-08-22, on a real device doing its first full
+    /// resync of real production-scale data (200 ClubMembers, 30
+    /// TeamMemberships) against a freshly wiped local store**: this used to
+    /// call `modelContext.save()` exactly once, at the very end of the
+    /// whole sequence — every relationship-resolution lookup inside a later
+    /// pull (`findTeam`/`findMember`/`findUser`, all plain
+    /// `FetchDescriptor`+`#Predicate` fetches) ran against still-UNSAVED
+    /// inserts from earlier pulls in the same pass. That silently broke
+    /// every single `TeamMembership` pull's `guard let team = findTeam(...)
+    /// else { continue }` (and, by the same mechanism, `pullParticipations`/
+    /// `pullAttendances`, which depend on Events/Trainings/Tournaments/
+    /// Memberships pulled earlier in the same still-unsaved pass) — Teams
+    /// themselves synced fine (nothing needed to look them up), but every
+    /// TeamMembership was silently dropped, exactly matching the observed
+    /// symptom ("teams are there but no team members"). Now saves after
+    /// every pull a later one depends on, so each stage's relationship
+    /// lookups run against durable, queryable data.
     func syncAll(modelContext: ModelContext) async {
         SyncState.shared.markSyncing()
         await pullUserIdentities(modelContext: modelContext)
         await pullMembers(modelContext: modelContext)
         await pullTeams(modelContext: modelContext)
+        try? modelContext.save()
         await pullMemberships(modelContext: modelContext)
+        try? modelContext.save()
         await pullEvents(modelContext: modelContext)
         await pullTrainings(modelContext: modelContext)
         await pullTournaments(modelContext: modelContext)
+        try? modelContext.save()
         await pullEventImages(modelContext: modelContext)
         await pullExpenseReceipts(modelContext: modelContext)
         await pullParticipations(modelContext: modelContext)
