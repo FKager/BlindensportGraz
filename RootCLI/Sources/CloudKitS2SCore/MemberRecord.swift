@@ -1,114 +1,58 @@
 import Foundation
+import ClubSchema
 
-/// Single source of truth for the `ClubMember` CKRecord field mapping,
-/// shared by `rootcli import-members` and `clubmembersapi`'s REST routes so
-/// the two tools can't silently drift apart the way the app's own
-/// hand-mirrored `MemberInput` struct already has to be kept in lockstep
-/// with `Models.swift`'s `Member` on every field change (see cerebrum.md).
-/// Named `MemberRecord` after the app-side `ClubMember` -> `Member` rename
-/// (2026-08-01), but `dto.recordType`/CKRecord's `recordType` stay the
-/// historical "ClubMember" string, since that's what already-synced
-/// production data is stored under — only the Swift-level name changed.
-public struct MemberRecord: Codable, Equatable, Sendable {
-    public var id: String
-    public var firstName: String
-    public var lastName: String
-    public var street: String
-    public var zip: String
-    public var city: String
-    public var country: String
-    public var email: String
-    public var phone: String
-    public var memberNumber: String
-    public var joinedAt: Date
-    public var notes: String
-    public var gender: String
-    public var title: String
-    public var birthDate: Date?
-    public var sportId: String
-    public var svnr: String
-    public var iban: String
-    public var lastMedicalExamination: Date?
-    public var defaultFunction: String
-    public var memberOfGVSC: Bool
+/// `MemberRecord` is now a thin alias over the shared `ClubMemberRecord`
+/// (Shared/ClubSchema — audit.md Architecture Finding 5), not an
+/// independent field-shape declaration. `rootcli import-members` and
+/// `clubmembersapi`'s REST routes both use this alias, so the two tools —
+/// and the app's own `Member` model/`CKSchema.ClubMember` — stay in
+/// lockstep with one source of truth instead of drifting apart the way a
+/// field split already required manual lockstep fixes twice (see
+/// cerebrum.md's 2026-07-18/2026-07-30 entries).
+///
+/// CKRecordDTO conversion (`init?(dto:)`/`ckFields`) stays here, not in the
+/// shared package — `CKRecordDTO` and the CloudKit Web Services field-dict
+/// wire convention (`["value": ..., "type": ...]`) are RootCLI-specific,
+/// and the shared package must stay usable from the iOS app target too,
+/// which has no use for either.
+public typealias MemberRecord = ClubMemberRecord
 
-    public init(
-        id: String = UUID().uuidString,
-        firstName: String,
-        lastName: String,
-        street: String = "",
-        zip: String = "",
-        city: String = "",
-        country: String = "",
-        email: String = "",
-        phone: String = "",
-        memberNumber: String = "",
-        joinedAt: Date = Date(),
-        notes: String = "",
-        gender: String = "",
-        title: String = "",
-        birthDate: Date? = nil,
-        sportId: String = "",
-        svnr: String = "",
-        iban: String = "",
-        lastMedicalExamination: Date? = nil,
-        defaultFunction: String = "",
-        memberOfGVSC: Bool = true
-    ) {
-        self.id = id
-        self.firstName = firstName
-        self.lastName = lastName
-        self.street = street
-        self.zip = zip
-        self.city = city
-        self.country = country
-        self.email = email
-        self.phone = phone
-        self.memberNumber = memberNumber
-        self.joinedAt = joinedAt
-        self.notes = notes
-        self.gender = gender
-        self.title = title
-        self.birthDate = birthDate
-        self.sportId = sportId
-        self.svnr = svnr
-        self.iban = iban
-        self.lastMedicalExamination = lastMedicalExamination
-        self.defaultFunction = defaultFunction
-        self.memberOfGVSC = memberOfGVSC
-    }
-
+extension ClubMemberRecord {
     public init?(dto: CKRecordDTO) {
-        guard dto.recordType == "ClubMember" else { return nil }
-        id = dto.recordName
-        firstName = dto.stringField("firstName") ?? ""
-        lastName = dto.stringField("lastName") ?? ""
-        street = dto.stringField("street") ?? ""
-        zip = dto.stringField("zip") ?? ""
-        city = dto.stringField("city") ?? ""
-        country = dto.stringField("country") ?? ""
-        email = dto.stringField("email") ?? ""
-        phone = dto.stringField("phone") ?? ""
-        memberNumber = dto.stringField("memberNumber") ?? ""
-        joinedAt = dto.dateField("joinedAt") ?? Date()
-        notes = dto.stringField("notes") ?? ""
-        gender = dto.stringField("gender") ?? ""
-        title = dto.stringField("title") ?? ""
-        birthDate = dto.dateField("birthDate")
-        sportId = dto.stringField("sportId") ?? ""
-        svnr = dto.stringField("svnr") ?? ""
-        iban = dto.stringField("iban") ?? ""
-        lastMedicalExamination = dto.dateField("lastMedicalExamination")
-        defaultFunction = dto.stringField("defaultFunction") ?? ""
+        guard dto.recordType == ClubMemberRecord.recordType else { return nil }
         // Missing on records written before this flag existed — default true,
         // matching every pre-existing roster entry's implicit membership.
         // (Can't use `dto.boolField` here: it defaults absent fields to
         // `false`, which is the wrong default for this particular flag.)
-        if let raw = (dto.fields["memberOfGVSC"] as? [String: Any])?["value"] as? NSNumber {
+        let memberOfGVSC: Bool
+        if let raw = (dto.fields[MemberField.memberOfGVSC.rawValue] as? [String: Any])?["value"] as? NSNumber {
             memberOfGVSC = raw.boolValue
         } else {
             memberOfGVSC = true
         }
+        self.init(
+            id: dto.recordName,
+            firstName: dto.stringField(MemberField.firstName.rawValue) ?? "",
+            lastName: dto.stringField(MemberField.lastName.rawValue) ?? "",
+            street: dto.stringField(MemberField.street.rawValue) ?? "",
+            zip: dto.stringField(MemberField.zip.rawValue) ?? "",
+            city: dto.stringField(MemberField.city.rawValue) ?? "",
+            country: dto.stringField(MemberField.country.rawValue) ?? "",
+            email: dto.stringField(MemberField.email.rawValue) ?? "",
+            phone: dto.stringField(MemberField.phone.rawValue) ?? "",
+            memberNumber: dto.stringField(MemberField.memberNumber.rawValue) ?? "",
+            joinedAt: dto.dateField(MemberField.joinedAt.rawValue) ?? Date(),
+            notes: dto.stringField(MemberField.notes.rawValue) ?? "",
+            gender: dto.stringField(MemberField.gender.rawValue) ?? "",
+            title: dto.stringField(MemberField.title.rawValue) ?? "",
+            birthDate: dto.dateField(MemberField.birthDate.rawValue),
+            sportId: dto.stringField(MemberField.sportId.rawValue) ?? "",
+            svnr: dto.stringField(MemberField.svnr.rawValue) ?? "",
+            iban: dto.stringField(MemberField.iban.rawValue) ?? "",
+            lastMedicalExamination: dto.dateField(MemberField.lastMedicalExamination.rawValue),
+            defaultFunction: dto.stringField(MemberField.defaultFunction.rawValue) ?? "",
+            memberOfGVSC: memberOfGVSC
+        )
     }
 
     /// Field dict as CloudKit Web Services expects it for a create/update
@@ -119,30 +63,30 @@ public struct MemberRecord: Codable, Equatable, Sendable {
     /// read-side handling of a missing key as nil.
     public var ckFields: [String: Any] {
         var fields: [String: Any] = [
-            "firstName": ["value": firstName],
-            "lastName": ["value": lastName],
-            "street": ["value": street],
-            "zip": ["value": zip],
-            "city": ["value": city],
-            "country": ["value": country],
-            "email": ["value": email],
-            "phone": ["value": phone],
-            "memberNumber": ["value": memberNumber],
-            "notes": ["value": notes],
-            "joinedAt": ["value": Int64(joinedAt.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"],
-            "gender": ["value": gender],
-            "title": ["value": title],
-            "sportId": ["value": sportId],
-            "svnr": ["value": svnr],
-            "iban": ["value": iban],
-            "defaultFunction": ["value": defaultFunction],
-            "memberOfGVSC": ["value": memberOfGVSC ? 1 : 0, "type": "INT64"]
+            MemberField.firstName.rawValue: ["value": firstName],
+            MemberField.lastName.rawValue: ["value": lastName],
+            MemberField.street.rawValue: ["value": street],
+            MemberField.zip.rawValue: ["value": zip],
+            MemberField.city.rawValue: ["value": city],
+            MemberField.country.rawValue: ["value": country],
+            MemberField.email.rawValue: ["value": email],
+            MemberField.phone.rawValue: ["value": phone],
+            MemberField.memberNumber.rawValue: ["value": memberNumber],
+            MemberField.notes.rawValue: ["value": notes],
+            MemberField.joinedAt.rawValue: ["value": Int64(joinedAt.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"],
+            MemberField.gender.rawValue: ["value": gender],
+            MemberField.title.rawValue: ["value": title],
+            MemberField.sportId.rawValue: ["value": sportId],
+            MemberField.svnr.rawValue: ["value": svnr],
+            MemberField.iban.rawValue: ["value": iban],
+            MemberField.defaultFunction.rawValue: ["value": defaultFunction],
+            MemberField.memberOfGVSC.rawValue: ["value": memberOfGVSC ? 1 : 0, "type": "INT64"]
         ]
         if let birthDate {
-            fields["birthDate"] = ["value": Int64(birthDate.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
+            fields[MemberField.birthDate.rawValue] = ["value": Int64(birthDate.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
         }
         if let lastMedicalExamination {
-            fields["lastMedicalExamination"] = ["value": Int64(lastMedicalExamination.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
+            fields[MemberField.lastMedicalExamination.rawValue] = ["value": Int64(lastMedicalExamination.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
         }
         return fields
     }

@@ -50,7 +50,7 @@ enum TeamImportExport {
                             firstName: membership.firstName,
                             lastName: membership.lastName,
                             email: membership.user?.email ?? membership.member?.email,
-                            role: membership.role,
+                            role: membership.role.rawValue,
                             joinedAt: isoFormatter.string(from: membership.joinedAt)
                         )
                     }
@@ -123,6 +123,10 @@ enum TeamImportExport {
         var users = (try? modelContext.fetch(FetchDescriptor<User>())) ?? []
         var members = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
 
+        var touchedTeams: [Team] = []
+        var touchedMemberships: [TeamMembership] = []
+        var touchedMembers: [Member] = []
+
         for row in rows {
             let name = (row.name ?? "").trimmingCharacters(in: .whitespaces)
             guard !name.isEmpty else {
@@ -153,13 +157,15 @@ enum TeamImportExport {
 
             for membershipRow in row.members ?? [] {
                 importMembership(membershipRow, into: team, users: &users, members: &members,
+                                  touchedMemberships: &touchedMemberships, touchedMembers: &touchedMembers,
                                   modelContext: modelContext, result: &result)
             }
 
-            CloudKitSync.shared.pushTeam(team)
+            touchedTeams.append(team)
         }
 
-        try? modelContext.save()
+        TeamService.saveImportBatch(teams: touchedTeams, memberships: touchedMemberships, members: touchedMembers,
+                                     modelContext: modelContext)
         // A team import can fall back to creating brand-new Member roster
         // entries (see importMembership below) — one snapshot for the whole
         // batch if that happened, same convention as
@@ -178,9 +184,13 @@ enum TeamImportExport {
         return teams.first { $0.name.caseInsensitiveCompare(name) == .orderedSame }
     }
 
+    /// Appends to `touchedMemberships`/`touchedMembers` rather than pushing
+    /// directly — the caller batches one save for the whole file (see
+    /// `importTeams`), pushing everything only once that save succeeds.
     @MainActor
     private static func importMembership(_ row: TeamMembershipIO, into team: Team,
                                           users: inout [User], members: inout [Member],
+                                          touchedMemberships: inout [TeamMembership], touchedMembers: inout [Member],
                                           modelContext: ModelContext, result: inout ImportResult) {
         let firstName = (row.firstName ?? "").trimmingCharacters(in: .whitespaces)
         let lastName = (row.lastName ?? "").trimmingCharacters(in: .whitespaces)
@@ -195,19 +205,19 @@ enum TeamImportExport {
             $0.firstName.caseInsensitiveCompare(firstName) == .orderedSame &&
             $0.lastName.caseInsensitiveCompare(lastName) == .orderedSame
         }) {
-            if let role = row.role, !role.isEmpty { existingMembership.role = role }
-            CloudKitSync.shared.pushMembership(existingMembership)
+            if let role = row.role, !role.isEmpty { existingMembership.role = MembershipRole.normalize(role) }
+            touchedMemberships.append(existingMembership)
             return
         }
 
-        let role = row.role ?? "player"
+        let role = MembershipRole.normalize(row.role ?? "player")
         let joinedAt = MemberImportExport.parseFlexibleDate(row.joinedAt) ?? Date()
         let normalizedEmail = (row.email ?? "").trimmingCharacters(in: .whitespaces).lowercased()
 
         if let user = findPerson(email: normalizedEmail, firstName: firstName, lastName: lastName, in: users) {
             let membership = TeamMembership(user: user, team: team, role: role, joinedAt: joinedAt)
             modelContext.insert(membership)
-            CloudKitSync.shared.pushMembership(membership)
+            touchedMemberships.append(membership)
             result.membershipsCreated += 1
             return
         }
@@ -219,14 +229,14 @@ enum TeamImportExport {
             let newMember = Member(firstName: firstName, lastName: lastName, email: row.email ?? "")
             modelContext.insert(newMember)
             members.append(newMember)
-            CloudKitSync.shared.pushMember(newMember)
+            touchedMembers.append(newMember)
             result.membersCreated += 1
             member = newMember
         }
 
         let membership = TeamMembership(member: member, team: team, role: role, joinedAt: joinedAt)
         modelContext.insert(membership)
-        CloudKitSync.shared.pushMembership(membership)
+        touchedMemberships.append(membership)
         result.membershipsCreated += 1
     }
 

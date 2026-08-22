@@ -24,6 +24,7 @@ struct MembersListView: View {
     @Query private var users: [User]
     @State private var showAdd = false
     @State private var showUserList = false
+    @State private var showRoleChangeLog = false
     // Eagerly (re)generated whenever the roster changes, mirroring the
     // ShareLink pattern established for TeilnehmerlisteExport (see
     // MemberListView/cerebrum.md) — this user relies on VoiceOver, and a
@@ -33,6 +34,10 @@ struct MembersListView: View {
     @State private var exportURL: URL?
     @State private var showImporter = false
     @State private var importResultMessage: String?
+    // Roster edits are one of audit.md's two explicitly-prioritized areas
+    // for visible save/sync failure signaling (alongside role changes, see
+    // UserListView) — see ServiceFailureSignal.swift.
+    private let failureSignal = ServiceFailureSignal.shared
 
     var body: some View {
         NavigationStack {
@@ -55,7 +60,7 @@ struct MembersListView: View {
             .navigationTitle("Benutzerverwaltung")
             .navigationBarTitleDisplayMode(.inline)
             .refreshable {
-                await CloudKitSync.shared.syncAll(modelContext: modelContext)
+                await SyncOrchestrationService.syncAll(modelContext: modelContext)
             }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -63,10 +68,15 @@ struct MembersListView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showAdd = true } label: { Image(systemName: "plus") }
+                        .accessibilityLabel("Neues Mitglied")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showUserList = true } label: { Image(systemName: "person.2.fill") }
                         .accessibilityLabel("Benutzer verwalten")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showRoleChangeLog = true } label: { Image(systemName: "clock.arrow.circlepath") }
+                        .accessibilityLabel("Rollenänderungen")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showImporter = true } label: { Image(systemName: "square.and.arrow.down") }
@@ -85,6 +95,9 @@ struct MembersListView: View {
             .sheet(isPresented: $showUserList) {
                 UserListView(currentUser: currentUser)
             }
+            .sheet(isPresented: $showRoleChangeLog) {
+                RoleChangeLogView()
+            }
             .task(id: members.map(\.id)) {
                 exportURL = try? MemberImportExport.exportFile(members: members)
             }
@@ -98,6 +111,14 @@ struct MembersListView: View {
                 Button("OK") { importResultMessage = nil }
             } message: {
                 Text(importResultMessage ?? "")
+            }
+            .alert("Fehler", isPresented: Binding(
+                get: { failureSignal.message != nil },
+                set: { if !$0 { failureSignal.clear() } }
+            )) {
+                Button("OK") { failureSignal.clear() }
+            } message: {
+                Text(failureSignal.message ?? "")
             }
         }
     }
@@ -125,11 +146,8 @@ struct MembersListView: View {
 
     private func deleteMembers(at offsets: IndexSet) {
         for index in offsets {
-            let member = members[index]
-            CloudKitSync.shared.deleteMember(member.id)
-            modelContext.delete(member)
+            MemberService.delete(members[index], modelContext: modelContext)
         }
-        try? modelContext.save()
         // Re-fetched rather than using the `members` @Query array directly —
         // SwiftUI's @Query refresh isn't guaranteed to have landed yet at
         // this exact point, so a fresh fetch is the only way to be sure the
@@ -159,6 +177,10 @@ struct MemberRow: View {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)
                     .help("Mit einem Benutzerkonto verknüpft")
+                    // .help() only reaches pointer/Catalyst UIs — this icon is the
+                    // only place this status is conveyed, so VoiceOver needs its
+                    // own label rather than the auto-derived SF Symbol name.
+                    .accessibilityLabel("Mit einem Benutzerkonto verknüpft")
             }
         }
         .padding(.vertical, 4)
@@ -202,9 +224,19 @@ struct MemberDetailView: View {
                 DatePicker("Beigetreten", selection: $member.joinedAt, displayedComponents: .date)
                 TextField("Sport-ID", text: $member.sportId)
                 TextField("SVNR", text: $member.svnr)
+                if !Validation.isPlausibleAustrianSVNR(member.svnr) {
+                    Label("SVNR-Format ungewöhnlich", systemImage: "exclamationmark.triangle")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
                 TextField("IBAN", text: $member.iban)
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
+                if !Validation.ibanChecksumIsValid(member.iban) {
+                    Label("IBAN-Prüfsumme ungültig", systemImage: "exclamationmark.triangle")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
                 OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $member.lastMedicalExamination)
                 TextField("Standardfunktion", text: $member.defaultFunction)
             }
@@ -221,8 +253,7 @@ struct MemberDetailView: View {
             }
         }
         .onDisappear {
-            try? modelContext.save()
-            CloudKitSync.shared.pushMember(member)
+            MemberService.save(member, modelContext: modelContext)
         }
     }
 }
@@ -297,8 +328,7 @@ struct MyMemberView: View {
                 }
             }
             .onDisappear {
-                try? modelContext.save()
-                CloudKitSync.shared.pushMember(member)
+                MemberService.save(member, modelContext: modelContext)
             }
         }
     }
@@ -362,9 +392,19 @@ struct AddMemberView: View {
                     DatePicker("Beigetreten", selection: $joinedAt, displayedComponents: .date)
                     TextField("Sport-ID", text: $sportId)
                     TextField("SVNR", text: $svnr)
+                    if !Validation.isPlausibleAustrianSVNR(svnr) {
+                        Label("SVNR-Format ungewöhnlich", systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
                     TextField("IBAN", text: $iban)
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
+                    if !Validation.ibanChecksumIsValid(iban) {
+                        Label("IBAN-Prüfsumme ungültig", systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
                     OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $lastMedicalExamination)
                     TextField("Standardfunktion", text: $defaultFunction)
                 }
@@ -389,8 +429,7 @@ struct AddMemberView: View {
                                              lastMedicalExamination: lastMedicalExamination,
                                              defaultFunction: defaultFunction, memberOfGVSC: memberOfGVSC)
                         modelContext.insert(member)
-                        try? modelContext.save()
-                        CloudKitSync.shared.pushMember(member)
+                        MemberService.save(member, modelContext: modelContext)
                         let allMembers = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
                         MemberBackup.snapshot(members: allMembers)
                         dismiss()

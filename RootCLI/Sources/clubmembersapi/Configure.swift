@@ -20,7 +20,8 @@ func configure(_ app: Application) throws {
             """)
     }
 
-    app.middleware.use(ClubMembersAuthenticator(username: apiUsername, password: apiPassword))
+    app.middleware.use(ClubMembersAuthenticator(username: apiUsername, password: apiPassword,
+                                                 limiter: LoginAttemptLimiter()))
     app.middleware.use(APIUser.guardMiddleware())
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory, defaultFile: "index.html"))
 

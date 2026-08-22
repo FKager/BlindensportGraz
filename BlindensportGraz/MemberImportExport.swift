@@ -305,10 +305,7 @@ enum MemberImportExport {
             }
         }
 
-        try? modelContext.save()
-        for member in touched {
-            CloudKitSync.shared.pushMember(member)
-        }
+        MemberService.saveBatch(touched, modelContext: modelContext)
         // One snapshot for the whole batch, not per row — importing a real
         // club spreadsheet can create dozens of entries at once.
         if result.created > 0 {

@@ -10,10 +10,25 @@ struct APIUser: Authenticatable {}
 struct ClubMembersAuthenticator: AsyncBasicAuthenticator {
     let username: String
     let password: String
+    let limiter: LoginAttemptLimiter
 
+    /// audit.md Security Finding 9: rate-limit/lock out repeated failed
+    /// attempts (see LoginAttemptLimiter) before touching the actual
+    /// credential comparison at all. A locked-out client gets 429
+    /// immediately regardless of what it sends. A successful login always
+    /// clears that client's failure history first — the limiter never
+    /// affects a request presenting valid credentials.
     func authenticate(basic: BasicAuthorization, for request: Request) async throws {
+        let client = request.remoteAddress?.ipAddress ?? "unknown"
+        guard await !limiter.isLockedOut(client: client) else {
+            throw Abort(.tooManyRequests, reason: "Too many failed login attempts. Try again later.")
+        }
         guard constantTimeEquals(basic.username, username),
-              constantTimeEquals(basic.password, password) else { return }
+              constantTimeEquals(basic.password, password) else {
+            await limiter.recordFailure(client: client)
+            return
+        }
+        await limiter.recordSuccess(client: client)
         request.auth.login(APIUser())
     }
 

@@ -17,6 +17,11 @@ struct RootView: View {
     @AppStorage("localUserID") private var storedUserID = ""
 
     @Environment(\.modelContext) private var modelContext
+    // Intentionally unfiltered (audit.md SwiftData & CloudKit Finding 6):
+    // resolveAccount() below needs to search every User for an
+    // appleUserIdentifier/id match, and check `users.isEmpty` for the
+    // very-first-account bootstrap — there's no subset of users that would
+    // still answer either question correctly.
     @Query private var users: [User]
 
     private let appleSignIn = AppleSignInCoordinator()
@@ -30,7 +35,6 @@ struct RootView: View {
             } else {
                 LoginView(onLogin: { user in
                     applyDesignatedRootGrant(user)
-                    applyTestAdminGrant(user)
                     currentUser = user
                     // Picking an existing account from LoginView's list, or
                     // finishing RegisterView's manual form, never went through
@@ -60,12 +64,10 @@ struct RootView: View {
                 currentUser = match
                 storedUserID = match.id.uuidString
                 applyDesignatedRootGrant(match)
-                applyTestAdminGrant(match)
             } else if !storedUserID.isEmpty, let id = UUID(uuidString: storedUserID) {
                 currentUser = users.first { $0.id == id }
                 if let resumed = currentUser {
                     applyDesignatedRootGrant(resumed)
-                    applyTestAdminGrant(resumed)
                 }
             }
             triggerBackgroundSync()
@@ -79,7 +81,6 @@ struct RootView: View {
             storedUserID = existing.id.uuidString
             currentUser = existing
             applyDesignatedRootGrant(existing)
-            applyTestAdminGrant(existing)
             triggerBackgroundSync()
             return
         }
@@ -99,7 +100,7 @@ struct RootView: View {
         // first so the real account is pulled in, then bail out to
         // LoginView's account picker instead of guessing.
         if result.fullName == nil && (result.email?.isEmpty ?? true) {
-            await CloudKitSync.shared.syncAll(modelContext: modelContext)
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
             return
         }
 
@@ -126,16 +127,19 @@ struct RootView: View {
         // The very first account ever created (locally and in CloudKit) becomes root,
         // and admin too — otherwise it'd be locked out of the admin features it needs
         // to set up the club (teams, roster, other admins) in the first place.
-        if users.isEmpty, !(await CloudKitSync.shared.hasAnyUserIdentity()) {
+        if users.isEmpty, !(await SyncOrchestrationService.hasAnyUserIdentity()) {
             user.isRoot = true
-            user.role = "admin"
+            user.role = .admin
         }
-        user.elevateIfDesignatedRoot()
-        user.elevateIfTestAdmin()
+        let oldRole = user.role
+        let becameDesignatedRoot = user.elevateIfDesignatedRoot()
         modelContext.insert(user)
         Member.checkMembership(for: user, modelContext: modelContext)
-        try? modelContext.save()
-        CloudKitSync.shared.pushUserIdentity(user)
+        UserService.save(user, modelContext: modelContext)
+        if becameDesignatedRoot {
+            RoleChangeLogService.log(userID: user.id, oldRole: oldRole.rawValue, newRole: user.role.rawValue,
+                                      changedBy: "system:designatedRoot", modelContext: modelContext)
+        }
 
         storedAppleUserIdentifier = result.userIdentifier
         storedUserID = user.id.uuidString
@@ -150,26 +154,19 @@ struct RootView: View {
     /// email together (rather than email alone) is what keeps the bar reasonably
     /// high instead.
     private func applyDesignatedRootGrant(_ user: User) {
+        let oldRole = user.role
         guard user.elevateIfDesignatedRoot() else { return }
-        try? modelContext.save()
-        CloudKitSync.shared.pushUserIdentity(user)
-    }
-
-    /// Saves/pushes only if User.elevateIfTestAdmin() actually changed something —
-    /// see that method's doc comment (Models.swift) for why this one, unlike
-    /// elevateIfDesignatedRoot, has no Apple-verification gate of its own.
-    private func applyTestAdminGrant(_ user: User) {
-        guard user.elevateIfTestAdmin() else { return }
-        try? modelContext.save()
-        CloudKitSync.shared.pushUserIdentity(user)
+        UserService.save(user, modelContext: modelContext)
+        RoleChangeLogService.log(userID: user.id, oldRole: oldRole.rawValue, newRole: user.role.rawValue,
+                                  changedBy: "system:designatedRoot", modelContext: modelContext)
     }
 
     /// Pulls team/event/training/tournament data other users have shared, without
     /// blocking the UI on network/CloudKit latency.
     private func triggerBackgroundSync() {
         Task {
-            await CloudKitSync.shared.syncAll(modelContext: modelContext)
-            await CloudKitSync.shared.ensureDefaultTeams(modelContext: modelContext)
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
+            await SyncOrchestrationService.ensureDefaultTeams(modelContext: modelContext)
             // `currentUser` is already set by every call site of
             // triggerBackgroundSync before it's called, and `syncAll` above
             // may have just pulled in new/changed TeamMembership rows for
@@ -177,7 +174,7 @@ struct RootView: View {
             // relationship updates in place) — re-subscribing here keeps
             // push notifications in sync with the user's current teams.
             if let currentUser {
-                await CloudKitSync.shared.ensureTrainingTournamentSubscriptions(for: currentUser)
+                await SyncOrchestrationService.ensureTrainingTournamentSubscriptions(for: currentUser)
             }
         }
         PushNotifications.requestAuthorizationIfNeeded()
@@ -205,13 +202,21 @@ struct MainTabView: View {
             NavigationStack { TeamsListView(currentUser: currentUser) }
                 .tabItem { Label("Teams", systemImage: "person.3.fill") }
 
-            if currentUser.role == "admin" || currentUser.isRoot {
+            if currentUser.role == .admin || currentUser.isRoot {
                 NavigationStack { MembersListView(currentUser: currentUser) }
                     .tabItem { Label("Benutzerverwaltung", systemImage: "building.columns.fill") }
             }
 
             NavigationStack { AccountView(currentUser: currentUser, onLogout: onLogout) }
                 .tabItem { Label("Account", systemImage: "person.crop.circle") }
+        }
+        // One banner for the whole tab bar, not per-screen — see
+        // SyncStatusBanner.swift's doc comment.
+        .safeAreaInset(edge: .top, spacing: 0) {
+            SyncStatusBanner()
+        }
+        .task {
+            NetworkMonitor.shared.start()
         }
     }
 }
@@ -243,9 +248,7 @@ struct LoginView: View {
                         }
                         .onDelete { offsets in
                             for index in offsets {
-                                let user = users[index]
-                                CloudKitSync.shared.deleteUserIdentity(user.id)
-                                modelContext.delete(user)
+                                UserService.delete(users[index], modelContext: modelContext)
                             }
                         }
                     }
@@ -271,6 +274,9 @@ struct RegisterView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    // Intentionally unfiltered — only ever read via `users.isEmpty` (the
+    // very-first-account bootstrap check below), which needs the full set
+    // to answer correctly.
     @Query private var users: [User]
 
     @State private var email = ""
@@ -288,6 +294,11 @@ struct RegisterView: View {
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                    if !Validation.isPlausibleEmail(email) {
+                        Label("Ungültige E-Mail-Adresse", systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
                 }
             }
             .navigationTitle("Neues Konto")
@@ -304,23 +315,27 @@ struct RegisterView: View {
                             // The very first account ever created (locally and in CloudKit) becomes
                             // root and admin — otherwise it'd be locked out of the admin features
                             // it needs to set up the club in the first place.
-                            if users.isEmpty, !(await CloudKitSync.shared.hasAnyUserIdentity()) {
+                            if users.isEmpty, !(await SyncOrchestrationService.hasAnyUserIdentity()) {
                                 user.isRoot = true
-                                user.role = "admin"
+                                user.role = .admin
                             }
-                            user.elevateIfDesignatedRoot()
-                            user.elevateIfTestAdmin()
+                            let oldRole = user.role
+                            let becameDesignatedRoot = user.elevateIfDesignatedRoot()
                             modelContext.insert(user)
                             Member.checkMembership(for: user, modelContext: modelContext)
-                            try? modelContext.save()
-                            CloudKitSync.shared.pushUserIdentity(user)
+                            UserService.save(user, modelContext: modelContext)
+                            if becameDesignatedRoot {
+                                RoleChangeLogService.log(userID: user.id, oldRole: oldRole.rawValue, newRole: user.role.rawValue,
+                                                          changedBy: "system:designatedRoot", modelContext: modelContext)
+                            }
                             dismiss()
                             onRegister(user)
                         }
                     }
                     .disabled(isCreating ||
                               firstName.trimmingCharacters(in: .whitespaces).isEmpty ||
-                              lastName.trimmingCharacters(in: .whitespaces).isEmpty)
+                              lastName.trimmingCharacters(in: .whitespaces).isEmpty ||
+                              !Validation.isPlausibleEmail(email))
                 }
             }
         }

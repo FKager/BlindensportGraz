@@ -33,7 +33,7 @@ struct AddTrainingView: View {
     // without this bypass it could never be assigned to anything.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
-        if user.role == "admin" { return allTeams }
+        if user.role == .admin { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
@@ -62,10 +62,7 @@ struct AddTrainingView: View {
     }
 
     private func deleteFavorite(_ favorite: TrainingFavorite) {
-        let id = favorite.id
-        modelContext.delete(favorite)
-        try? modelContext.save()
-        CloudKitSync.shared.deleteTrainingFavorite(id)
+        TrainingFavoriteService.delete(favorite, modelContext: modelContext)
     }
 
     // Rebuilds the Favoriten list from real Training records already in the
@@ -75,14 +72,8 @@ struct AddTrainingView: View {
     // actually been trained recently without re-creating trainings by hand.
     private func populateFavoritesFromRecentTrainings() {
         let results = TrainingFavorite.populateFromRecentTrainings(recentTrainings, in: modelContext)
-        try? modelContext.save()
         for (favorite, evictedID) in results {
-            if let favorite {
-                CloudKitSync.shared.pushTrainingFavorite(favorite)
-            }
-            if let evictedID {
-                CloudKitSync.shared.deleteTrainingFavorite(evictedID)
-            }
+            TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
         }
     }
 
@@ -110,6 +101,15 @@ struct AddTrainingView: View {
                                             } label: {
                                                 Label("Löschen", systemImage: "trash")
                                             }
+                                        }
+                                        // Additive VoiceOver equivalent to the long-press
+                                        // contextMenu above — audit.md Accessibility Finding
+                                        // 3: this chip had no VoiceOver-reachable way to
+                                        // delete a favorite at all (long-press has no direct
+                                        // VoiceOver gesture equivalent), same underlying
+                                        // deleteFavorite(_:) call either way.
+                                        .accessibilityAction(named: "Löschen") {
+                                            deleteFavorite(favorite)
                                         }
                                     }
                                 }
@@ -165,9 +165,11 @@ struct AddTrainingView: View {
                                     if selectedTeamIDs.contains(team.id) {
                                         Image(systemName: "checkmark")
                                             .foregroundStyle(.blue)
+                                            .accessibilityHidden(true)
                                     }
                                 }
                             }
+                            .accessibilityAddTraits(selectedTeamIDs.contains(team.id) ? .isSelected : [])
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
@@ -227,8 +229,7 @@ struct AddTrainingView: View {
                             teams: teams
                         )
                         modelContext.insert(training)
-                        try? modelContext.save()
-                        CloudKitSync.shared.pushTraining(training)
+                        TrainingService.save(training, modelContext: modelContext)
 
                         // Auto-add/refresh this name+sport combo in the
                         // shared Favoriten list (max 5, LRU-evicted) — see
@@ -239,13 +240,7 @@ struct AddTrainingView: View {
                             location: location, street: street, zip: zip, city: city, country: country,
                             teams: manuallySelectedTeams, in: modelContext
                         )
-                        try? modelContext.save()
-                        if let favorite {
-                            CloudKitSync.shared.pushTrainingFavorite(favorite)
-                        }
-                        if let evictedID {
-                            CloudKitSync.shared.deleteTrainingFavorite(evictedID)
-                        }
+                        TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
 
                         // Post notification when training is created
                         NotificationCenter.default.post(
@@ -305,16 +300,21 @@ struct TrainingDetailView: View {
      @Environment(\.modelContext) private var modelContext
      @Query private var allTeams: [Team]
      @State private var showMemberList = false
+     // Eagerly (re)generated below — same "no tap-then-wait, no
+     // Button-triggered second sheet" ShareLink convention as every other
+     // export in this app (see CalendarEventExport's doc comment for why
+     // .ics+ShareLink was chosen over EKEventStore).
+     @State private var icsURL: URL?
 
     var isAdmin: Bool {
-        currentUser?.role == "admin"
+        currentUser?.role == .admin
     }
 
     // Same admin-bypass as AddTrainingView.myTeams — an admin can reassign a
     // training to any team, not just ones they personally joined.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
-        if user.role == "admin" { return allTeams }
+        if user.role == .admin { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
@@ -375,9 +375,11 @@ struct TrainingDetailView: View {
                                if training.teams.contains(where: { $0.id == team.id }) {
                                    Image(systemName: "checkmark")
                                        .foregroundStyle(.blue)
+                                       .accessibilityHidden(true)
                                }
                            }
                        }
+                       .accessibilityAddTraits(training.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
                    }
                    Text("Keine Auswahl = für alle sichtbar")
                        .font(.caption)
@@ -395,7 +397,7 @@ struct TrainingDetailView: View {
                        }
                        // PRAE amount only for helpers/coaches (role "assistant"/
                        // "coach") who were actually present — see Attendance.praeAmount.
-                       if ["coach", "assistant"].contains(membership.role),
+                       if membership.role.isHelfer,
                           attendance(for: membership)?.attended == true {
                            HStack {
                                Text("PRAE (€)")
@@ -409,6 +411,10 @@ struct TrainingDetailView: View {
                                .keyboardType(.decimalPad)
                                .multilineTextAlignment(.trailing)
                                .frame(width: 80)
+                               // Fixed-width numeric field — shrink rather
+                               // than clip at large Dynamic Type sizes
+                               // (audit.md Accessibility Finding 4).
+                               .minimumScaleFactor(0.6)
                            }
                        }
                    }
@@ -431,6 +437,17 @@ struct TrainingDetailView: View {
                     }
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                if let icsURL {
+                    ShareLink(item: icsURL) {
+                        Image(systemName: "calendar.badge.plus")
+                    }
+                    .accessibilityLabel("Zum Kalender hinzufügen")
+                }
+            }
+        }
+        .task(id: CalendarEventExport.fields(for: training)) {
+            icsURL = try? CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: training))
         }
         .sheet(isPresented: $showMemberList) {
             // No exportContext (unlike TournamentDetailView) — the
@@ -444,8 +461,7 @@ struct TrainingDetailView: View {
             )
         }
         .onDisappear {
-            try? modelContext.save()
-            CloudKitSync.shared.pushTraining(training)
+            TrainingService.save(training, modelContext: modelContext)
         }
     }
 
@@ -462,28 +478,23 @@ struct TrainingDetailView: View {
             record = Attendance(event: training, membership: membership, attended: attended)
             modelContext.insert(record)
         }
-        try? modelContext.save()
-        CloudKitSync.shared.pushAttendance(record)
+        AttendanceService.save(record, modelContext: modelContext)
     }
 
     private func setPraeAmount(_ amount: Double, for membership: TeamMembership) {
         guard let record = attendance(for: membership) else { return }
         record.praeAmount = amount > 0 ? amount : nil
-        try? modelContext.save()
-        CloudKitSync.shared.pushAttendance(record)
+        AttendanceService.save(record, modelContext: modelContext)
     }
 
     private func addImage(_ data: Data) {
         let image = EventImage(imageData: data, uploadedBy: currentUser?.id.uuidString ?? "", event: training)
         modelContext.insert(image)
-        try? modelContext.save()
-        CloudKitSync.shared.pushEventImage(image)
+        EventImageService.save(image, modelContext: modelContext)
     }
 
     private func deleteImage(_ image: EventImage) {
-        CloudKitSync.shared.deleteEventImage(image.id)
-        modelContext.delete(image)
-        try? modelContext.save()
+        EventImageService.delete(image, modelContext: modelContext)
     }
 }
 
@@ -492,10 +503,12 @@ struct TrainingsListView: View {
         @Environment(\.modelContext) private var modelContext
         @Query(sort: \Training.startDate, order: .reverse) private var trainings: [Training]
         @State private var showAdd = false
+        @State private var showAttendanceTrends = false
         @State private var showTrainingsfrequenzliste = false
         @State private var showPraeCalculation = false
         @State private var showKostZCalculation = false
         @State private var showSammelabrechnung = false
+        @State private var showSammelabrechnungSeason = false
         // Same eager-generation + ShareLink convention as MembersListView's
         // import/export (see that view's doc comment) — a hand-rolled
         // "generate on tap" flow previously froze the app under VoiceOver.
@@ -505,17 +518,17 @@ struct TrainingsListView: View {
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
-        return user.role == "admin" || user.role == "coach"
+        return user.role == .admin || user.role == .coach
        }
 
     // Matches the gating the Trainingsfrequenzliste button used in AccountView
     // before it moved here (see TrainingsfrequenzlisteView's doc comment).
     var isAdmin: Bool {
-        currentUser?.role == "admin" || (currentUser?.isRoot ?? false)
+        currentUser?.role == .admin || (currentUser?.isRoot ?? false)
        }
 
     var visibleTrainings: [Training] {
-        if currentUser?.role == "admin" { return trainings }
+        if currentUser?.role == .admin { return trainings }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
         return trainings.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }
@@ -538,9 +551,21 @@ struct TrainingsListView: View {
                  }
         .navigationTitle("Trainings")
         .refreshable {
-            await CloudKitSync.shared.syncAll(modelContext: modelContext)
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
         }
         .toolbar {
+            // Gated to admin/coach via canManageEvents (Phase 7's AppRole
+            // enum, not a raw string) rather than isAdmin — coaches should
+            // see their own teams' attendance trends too, unlike the
+            // finance-report items below this one which stay admin-only.
+            if canManageEvents {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showAttendanceTrends = true } label: {
+                        Image(systemName: "chart.line.uptrend.xyaxis")
+                    }
+                    .accessibilityLabel("Anwesenheitstrends")
+                }
+            }
             if isAdmin {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
@@ -555,6 +580,9 @@ struct TrainingsListView: View {
                         }
                         Button { showSammelabrechnung = true } label: {
                             Label("Sammelabrechnung", systemImage: "doc.zipper")
+                        }
+                        Button { showSammelabrechnungSeason = true } label: {
+                            Label("Saison-Sammelabrechnung", systemImage: "doc.zipper.fill")
                         }
                     } label: {
                         Image(systemName: "chart.bar.doc.horizontal")
@@ -581,11 +609,15 @@ struct TrainingsListView: View {
                     Button { showAdd = true } label: {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel("Neues Training")
                 }
             }
         }
         .sheet(isPresented: $showAdd) {
             AddTrainingView(currentUser: currentUser)
+        }
+        .sheet(isPresented: $showAttendanceTrends) {
+            AttendanceTrendsView()
         }
         .sheet(isPresented: $showTrainingsfrequenzliste) {
             TrainingsfrequenzlisteView()
@@ -594,10 +626,13 @@ struct TrainingsListView: View {
             PraeCalculationView()
         }
         .sheet(isPresented: $showKostZCalculation) {
-            KostZCalculationView()
+            KostZCalculationView(currentUser: currentUser)
         }
         .sheet(isPresented: $showSammelabrechnung) {
             SammelabrechnungView()
+        }
+        .sheet(isPresented: $showSammelabrechnungSeason) {
+            SammelabrechnungSeasonView()
         }
         .task(id: trainings.map(\.id)) {
             exportURL = try? TrainingImportExport.exportFile(trainings: trainings)
@@ -632,10 +667,16 @@ struct TrainingsListView: View {
         }
     }
 
+    // Routed through TrainingService.delete (phase 14) so the local
+    // reminder — see EventReminderService — gets cancelled; still no
+    // CloudKit delete push, that scoping is unchanged (no CloudKit delete
+    // path exists for Training records, see EventsListView.deleteEvents'
+    // identical comment).
     private func deleteTrainings(at offsets: IndexSet) {
         for index in offsets {
-            modelContext.delete(trainings[index])
+            let training = trainings[index]
+            modelContext.delete(training)
+            TrainingService.delete(training, modelContext: modelContext)
         }
-        try? modelContext.save()
     }
 }

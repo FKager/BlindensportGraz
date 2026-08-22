@@ -14,6 +14,94 @@
 
 ## Key Learnings
 
+- [2026-08-22] Phase 8's `PersistenceService.saveAndPush`/`.deleteAndPush` service layer held up cleanly
+  across every feature phase that used it (14 local reminders, 15 attendance trends, 16 season rollup,
+  17 calendar export, 18 receipt attachments) — no awkwardness or friction found worth flagging for
+  Phase 19's manual-follow-ups list. `deleteAndPush`'s generic `remoteDelete`/`onSuccess` closure
+  parameter turned out flexible enough to repurpose for non-CloudKit cleanup too (phase 14's local
+  notification cancellation, phase 18 doesn't need it since ExpenseReceipt's delete IS a real CloudKit
+  delete) without needing a new service-layer shape. If a later phase does hit friction, note it
+  specifically rather than assuming this blanket "no friction" holds forever.
+- [2026-08-22] SwiftData's `#Predicate` macro CANNOT filter on one of this app's closed
+  enum-with-`.other(String)`-fallback stored properties (Phase 7's `AppRole`/`MembershipRole`/`Sport`) —
+  neither form works, and the two failure modes are dangerously different in kind:
+  - `$0.role == .coach` / `$0.role == MembershipRole.coach` — fails at COMPILE time ("key path cannot
+    refer to enum case"). Safe: caught immediately, before it ever ships.
+  - `$0.role.rawValue == "coach"` — COMPILES CLEANLY (confirmed via a standalone minimal-repro SwiftData
+    package) but CRASHES AT RUNTIME the moment it's actually fetched against a real store:
+    `Fatal error: Failed to validate \TeamMembership.role.rawValue because rawValue is not a member of
+    MembershipRole` (`SwiftData/Schema.swift:346`). This is a hard `fatalError`, not a catchable thrown
+    error — a test that exercises it kills the whole test process, it can't be asserted against.
+    **Only caught here because a dedicated test actually ran the fetch** (compiling alone, or reasoning
+    from a standalone repro that only got as far as `swift build`, both would have shipped this).
+  - **Lesson, generalizing Phase 8's "compile success ≠ runtime correctness" lesson**: for SwiftData
+    `#Predicate`/`FetchDescriptor` specifically, a standalone repro or the real build succeeding is NOT
+    sufficient evidence — always execute a real `context.fetch(...)` against an in-memory store with the
+    exact predicate before trusting it, especially for anything touching a custom enum property. **Net
+    result for this app: `MembershipRole`/`AppRole`/`Sport`-typed properties cannot be filtered via
+    `#Predicate` at all, in either form** — any future need to scope a `@Query` on one of these fields
+    has to stay a post-fetch filter (e.g. `PraeCalculator.eligiblePeople`'s existing
+    `membership.role.isHelfer` filter), not a query-level predicate.
+- [2026-08-22] The "never call CloudKitSync from new tests" rule (see the other 2026-08-22 entry below)
+  has a subtler failure mode than a direct `CloudKitSync.shared.pushX(...)` call: a test that calls a
+  `*Service.save(...)` wrapper (Phase 8's persistence service layer) to exercise its FAILURE path
+  transitively calls the real `CloudKitSync.shared.pushX(...)` if the assumed failure doesn't actually
+  occur. Compounded by a second, independent surprise: **inserting two `@Attribute(.unique) id` rows and
+  calling `modelContext.save()` does NOT reliably throw in this SwiftData/OS version** — it silently
+  remaps the temporary identifier during save instead (confirmed live, logged as `[PersistentModel] ...
+  This is a fatal logic error in DefaultStore` but NOT thrown to the caller). Combined, a
+  `TeamService.save(...)` failure-path test built on that duplicate-id technique both failed its own
+  assertions (no failure actually occurred) AND caused an `xcodebuild test` run to balloon to 20+ minutes
+  from a live `CKContainer` call. **Fix/lesson, two parts**: (1) don't rely on coaxing a real SwiftData
+  save failure at all — `PersistenceService.saveAndPush`/`.deleteAndPush` now both route through a shared
+  `PersistenceService.runAndSignal(operation: () throws -> Void, ...)` core, and tests call `runAndSignal`
+  directly with a throwing stub closure to force the failure branch deterministically; (2) never test the
+  failure path through a real `*Service` wrapper (which always calls the real `modelContext.save()`) —
+  test `runAndSignal` directly instead. See `BlindensportGrazTests/PersistenceServiceTests.swift`.
+- [2026-08-22] Phase 6's retry/backoff (`CloudKitSync.performWithRetry`, up to 4 attempts with real
+  `Task.sleep` delays) measurably slows down the ALREADY-documented `MemberImportExportTests`/
+  `TrainingImportExportTests` baseline crash (bug-202, missing iCloud entitlement under
+  `CODE_SIGNING_ALLOWED=NO`) — instead of crashing near-instantly like before Phase 6, each of those 16
+  tests now visibly hangs/retries for extended periods (observed 5-10+ minutes between individual test
+  restarts in one run) before the process ultimately dies. The FAILURE SET is unchanged (still exactly
+  those 16 tests, not a regression), but **a future session should expect `xcodebuild test` runs on this
+  project to take noticeably longer wall-clock time than pre-Phase-6 sessions documented — don't mistake
+  a slow-but-eventually-completing run for a hang and kill it prematurely; budget more time or run in the
+  background.** Not fixed in Phase 8 — out of scope; a future phase could consider skipping retry/backoff
+  when CloudKit is provably unreachable (e.g. no entitlement) to keep test runs fast, but that's a real
+  design tradeoff, not a quick fix.
+
+- [2026-08-22] New `Validation.swift` (audit.md Security Findings 4/5, Enhancement #7) holds shared
+  advisory-only `isPlausibleEmail`/`ibanChecksumIsValid` (mod-97)/`isPlausibleAustrianSVNR` helpers — all
+  three treat a blank input as valid (absence isn't malformed) and never touch the import path
+  (`MemberImportExport.swift` deliberately untouched, confirmed the existing malformed-SVNR fixture in
+  `MemberImportExportTests.swift` — `"svnr":"3727"`, only 4 digits — still imports unchanged). UI wiring
+  convention established: email can be save-blocking on a brand-new record with no prior state to protect
+  (RegisterView's `.disabled`), but must be purely advisory (never blocks Fertig/dismiss) wherever it's
+  editing an EXISTING record that might already carry malformed legacy data (EditAccountView) — don't
+  copy the `nameIsBlank`-style hard block onto email/IBAN/SVNR fields without checking which of these two
+  cases applies first. `Foundation.Process` is unavailable on iOS (only macOS) so a "confirm this backdoor
+  symbol never comes back" regression test can't literally `grep` — used `#filePath` instead (Simulator
+  test processes share the host Mac's real filesystem, so `String(contentsOf:)` against the sibling
+  `BlindensportGraz/*.swift` source directory works, and `#filePath` keeps it portable across machines
+  instead of hardcoding an absolute dev path) — see `DesignatedRootTests.testTestAdminBackdoorSymbolsAreGoneFromSource`.
+
+- [2026-08-22] New unit tests must NEVER call `CloudKitSync.shared.push*`/`pullX`/`syncAll` (even
+  transitively) in this test target — those touch a real `CKContainer`, which hard-crashes under
+  `CODE_SIGNING_ALLOWED=NO` (bug-202, the exact reason `MemberImportExportTests`/`TrainingImportExportTests`
+  are the standing documented baseline failures). When a phase adds a new sync-adjacent write path (e.g.
+  `RoleChangeLogTests.swift`, added alongside the new `RoleChangeLog` audit-trail model), test the LOCAL
+  model/write logic directly against an in-memory `ModelContainer` (insert, capture old/new field values,
+  fetch back) and stop short of calling the `CloudKitSync.shared` singleton at all — that's the only way to
+  add real test coverage without silently growing the crash baseline into something a future phase's "no
+  NEW failures" check can't distinguish from a real regression.
+- [2026-08-22] Established convention for this app's audit/log-style models going forward (see
+  `RoleChangeLog`, Models.swift): a `changedBy: String` field holds either an acting `User.id.uuidString`
+  (resolve to a display name at render time via a `@Query private var users: [User]` lookup, never store
+  the name itself — names can change) or a fixed `"system:<mechanism>"` tag for grants with no acting user
+  in the loop (`"system:designatedRoot"`, `"system:rootcli"`). Reuse this exact tag scheme for any future
+  audit-log model rather than inventing a new "who did this" representation.
+
 - [2026-08-18] `TeamMembership.role` (Models.swift) is a `String`, not a closed enum — the app's own UI only ever writes "player"/"coach"/"assistant", but `TeamImportExport.importMembership` (TeamImportExport.swift) writes whatever string a spreadsheet's `role` column contains, unvalidated. So any "not Helfer" check written as `!["coach","assistant"].contains(role)` silently also matches typos/unexpected values, not just "player". Fixed in TournamentsViews.swift's "Teilnehmer Sportler" filter by checking `role == "player"` explicitly (`isSportler` helper) instead of `!isHelfer`. Same trap applies anywhere else in the codebase that branches on this role field — check for other `!isHelfer`/`!["coach","assistant"].contains(...)`-shaped checks before assuming "not X" means "is Y".
 
 - [2026-07-18] `ClubMember.address: String` (Models.swift) split into `street`/`zip`/`city: String` per user request ("The address should be replaced by street, zip, city"). Added a new `fullAddress` computed extension property (mirrors the existing `fullName` pattern: joins non-empty parts, "street, zip city") so display call sites (ClubMemberRow, TeilnehmerlisteExport's Wohnort column) didn't need their own formatting logic. Touched every call site across the whole stack for a field rename of this shape — worth checking this same list for any FUTURE ClubMember field rename: `Models.swift` (stored property + init), `ClubMembersViews.swift` (detail form TextFields, Add form @State + form + constructor call, row display), `CloudKitSync.swift` (push field mapping AND pull field mapping — both the `existing.x =` update branch and the `ClubMember(...)` insert-new branch), `TeilnehmerlisteExport.swift` (Wohnort export column), `BlindensportGrazTests/TeilnehmerlisteExportTests.swift` (test fixture construction), and — easy to forget since it's a separate SPM package — `RootCLI/Sources/rootcli/ClubMemberImport.swift` + `RootCLI.swift`'s CKRecord field dict (the CLI's `ClubMemberInput` Decodable struct is a hand-maintained mirror of `ClubMember`, not shared code, so it silently drifts out of sync unless updated in lockstep) and `RootCLI/members.example.json`. No SwiftData schema migration needed — added/removed stored properties are handled by SwiftData's automatic lightweight migration; only a true field *rename* (keeping the same semantic data) would need explicit migration mapping, and this was a split (one field removed, three added), not a rename, so plain automatic migration applies. `PLZ` (postal code) field uses `.keyboardType(.numberPad)` even though it's stored as `String` (Austrian PLZ has no letters, but leading zeros need string storage, not Int).
@@ -67,15 +155,21 @@
 
 - [2026-08-18] User: "For Teilnehmerliste of Turnaments, if the country is set or unequal to Österreich, the country should be included in Ort, separated by a comma." — this landed right after the `country` field itself was added app-wide (see the earlier 2026-07-18 `fullAddress` entry). Added `SportEvent.locationWithCountry` (Models.swift, next to `fullAddress`) — appends `", <country>"` to `location` only when `country` is non-blank AND not "Österreich" (Austria is the implicit default for this club, so it stays silent; a foreign country is the one case worth calling out). Deliberately a *separate* computed property from `fullAddress`, which always shows `country` unconditionally as part of the full postal address — the two have different "when to show country" rules on purpose, don't merge them. Wired into TournamentsViews.swift's two `TeilnehmerlisteContext(... ort: ...)` call sites (Teilnehmer Sportler + Teilnehmer Helfer exports) — `context.ort` there is the Sport-Austria form's "Ort" header field (H3), NOT the per-attendee `wohnort` (D column, which is `membership.member?.city`, untouched by this change). Scope was Tournaments' Teilnehmerliste only, per the request — Training's Teilnehmerliste, KostZ's `ort` (which already uses `tournament.city` directly, a different field entirely), and other exports were left alone; don't generalize this without a fresh ask. Covered by `testTournamentLocationWithCountry` in TeilnehmerlisteExportTests.swift (no-country / explicit-Österreich / foreign-country / blank-country cases); verified via `xcodebuild test -only-testing:BlindensportGrazTests/TeilnehmerlisteExportTests` (3/3 passed).
 
+- [2026-08-22] Phase 12 of the audit.md supergoal run (accessibility labels & control equivalents): the app has a recurring "team multi-select" UI pattern — a `Button` row per team, `Text(team.name)` + a conditional `Image(systemName: "checkmark")` shown only when selected, no `List`/`Toggle` semantics — repeated near-verbatim across EventsViews.swift, TrainingsViews.swift, and TournamentsViews.swift (2 call sites each, add + edit screens). VoiceOver previously read each row as just the team name with no indication of selection state (the checkmark icon either got skipped or announced as a meaningless "checkmark" symbol name, depending on OS auto-labeling). Fixed all 6 sites the same way: `.accessibilityHidden(true)` on the checkmark `Image` (redundant once the trait below exists) + `.accessibilityAddTraits(condition ? .isSelected : [])` on the `Button` itself, so VoiceOver appends "ausgewählt" automatically. If a 7th copy of this pattern turns up later (e.g. a new event-like model), apply the identical two-line fix rather than reinventing — it's now the established idiom for icon-driven multi-select rows in this app, same tier as `SportGlyph`'s `.accessibilityHidden` convention.
+- [2026-08-22] Phase 12 also found genuinely icon-only, non-decorative UI a plain sweep of the 5 audit-named files missed: `MembersViews.swift`'s "linked to a user account" checkmark badge (`checkmark.circle.fill` next to a Member row) only had a `.help()` tooltip — which does nothing for VoiceOver on iOS (it's pointer/Catalyst-only) — so it was VoiceOver-invisible/meaningless despite conveying real, non-redundant information; gave it an explicit `.accessibilityLabel` instead of hiding it. Also `EventImagesViews.swift`'s per-photo `xmark.circle.fill` delete button had no label at all. **Lesson**: `.help()` is not an accessibility fix substitute on iOS — if you see `.help("...")` on an icon with no adjacent text, check whether it needs `.accessibilityLabel` too, don't assume the tooltip already covers VoiceOver.
+- [2026-08-22] Phase 12: `DashboardView.swift` has zero interactive controls (`grep -n "Button\|NavigationLink\|\.onTapGesture"` returns empty) — every icon in it (`sectionHeader`, `StatCard`) is purely decorative, paired with adjacent text, correctly given `.accessibilityHidden(true)` rather than `.accessibilityLabel`. This means the file legitimately never appears in a `grep -rln "accessibilityLabel\|accessibilityHint"` count even after a full, correct accessibility pass — don't treat that grep's file list as "which files were touched"; a file can be fully accessibility-correct via `accessibilityHidden` alone and still not show up in that specific grep. Verify coverage by reading the file, not by the label/hint grep count alone.
+
 ## Do-Not-Repeat
 
 <!-- Mistakes made and corrected. Each entry prevents the same mistake recurring. -->
 <!-- Format: [YYYY-MM-DD] Description of what went wrong and what to do instead. -->
 
+- [2026-08-22] When running `xcodebuild test ... 2>&1 | tail -80` (or any small tail) as a backgrounded command, the background task's OWN output file only ever contains those last N lines — the earlier part of the stream is gone, not just hidden. A new alphabetically-early test class (e.g. `EventReminderServiceTests` before `TrainingsfrequenzlisteCalculationTests`) can get cut from the tail entirely, making it look like the new tests never ran even though they did (briefly caused a false "my new tests didn't execute" alarm during phase 14 of the audit.md supergoal run). Don't trust a tail-truncated log's suite/count summary for "did X run" — check the actual `.xcresult` bundle instead: `xcrun xcresulttool get test-results summary --path <path-from-the-log's-own-"Test session results"-line>` for pass/fail totals, and `get test-results tests` to confirm a specific class/test ran. Prefer a larger tail (`tail -200`+) for `xcodebuild test` specifically, since it interleaves many suites.
 - [2026-08-07] NEW distinct device-deploy failure mode, don't confuse with the entry directly below: `ios-device-deploy.yml` can fail at the LAST step (`devicectl device process launch`, after install already succeeded/logged "App installed") with `CoreDeviceError error 10002` / "Unable to launch...because the device was not, or could not be, unlocked." — this means the iPhone's screen was simply locked at that moment, nothing to do with the wireless-tunnel flakiness below (which fails much earlier, at build/install, with a destination-not-found or disconnected error). Fix is trivial: ask the user to unlock the phone's screen, then just re-run `gh workflow run "iOS Device Deploy"` — no YAML/signing changes needed, confirmed by a same-session retry succeeding in 24s once unlocked. See [[bug-213]].
 - [2026-08-06] `ios-device-deploy.yml` run failed twice in a row against "iPhone von Franz" over wireless debugging before succeeding: run 1 failed at `xcodebuild build` with "Unable to find a destination matching ... {id:BD764E6D-...}" — `xcrun devicectl list devices --json-output` showed the device `pairingState: paired` but `connectionProperties.tunnelState: disconnected` (transportType `localNetwork`), so xcodebuild's destination list only offered simulators + the "Any iOS Device" placeholder, no physical entry. Running any `xcrun devicectl device info details --device <id>` from a normal Terminal session re-established the tunnel (confirmed `tunnelState` flipped to `connected`) — that alone got run 2 past the build step, but it then failed at `xcrun devicectl device install app` with `ERROR: The device disconnected immediately after connecting. (com.apple.dt.CoreDeviceError error 4000)`, i.e. the local-network tunnel connected but dropped again before "Enabling developer disk image services" finished. Root cause both times: wireless (local-network) CoreDevice tunnels to this iPhone are flaky for the GHA workflow specifically — plugging the iPhone into USB (`connectionProperties.transportType` flips to `wired`) and re-nudging with the same `devicectl device info details` call made the tunnel connect reliably and run 3 succeeded end-to-end. **Do next time a device-deploy run fails with a destination-not-found or "disconnected immediately after connecting" error**: don't touch the workflow YAML — check `xcrun devicectl list devices --json-output <path>` for `tunnelState`/`transportType` first; if `localNetwork` and disconnected/flaky, ask the user to plug the iPhone into USB, then run `xcrun devicectl device info details --device <id>` once to force the tunnel to reconnect over the wired transport before retriggering `gh workflow run`.
 
 - [2026-08-06] User asked to "use the xcodebuild MCP server to process the full build/deployment" — was set up in `.mcp.json` at some point but user had it removed same session ("remove xcodebuild mcp server") right after being offered a simulator-vs-device choice. Don't re-add or reach for an xcodebuildmcp server for this project without the user asking again first. Physical-device deploys for this app go through the self-hosted GitHub Actions workflow (`ios-device-deploy.yml`, the `deploy` skill) per the established bug-008 sandbox-codesign-block workaround — that convention still stands; this MCP removal doesn't change it, it just confirms local/MCP-driven Xcode tooling (sim or device) isn't wanted here.
+- [2026-08-22] RootCLI `CLOUDKIT_KEY_ID`/`CLOUDKIT_PRIVATE_KEY_PATH` exports the user runs via the harness's `!` prefix do NOT persist into the Bash tool's shell — each Bash tool call starts fresh from the user's profile, `!` commands run in a separate session. Don't ask the user to `! export` credentials expecting to read them back with `env` in a later Bash call; instead have the user paste the raw value in a normal chat message and build+run the full `export FOO=bar && command` in one Bash invocation yourself. Also confirmed live 2026-08-22: this project's CloudKit S2S key (`~/.config/rootcli/rootcli_private_key_pkcs8.pem`) authenticates successfully with `CLOUDKIT_ENVIRONMENT=development` but gets `HTTP 401 Authentication failed` under `CLOUDKIT_ENVIRONMENT=production` — the key was evidently only registered under the Development environment's Server-to-Server key list in CloudKit Dashboard (each environment has its own separate key registry there); needs the user to add/confirm it under Production too. Separately, even the working (development) auth then hits `HTTP 400 — Field 'recordName' is not marked queryable` on `rootcli list`/`set-role` (both do an unfiltered `records/query` by recordType, which CloudKit Web Services requires a Queryable index on `recordName` for) — this is the same unresolved issue as bug-174, confirmed to also affect the UserIdentity record type specifically, not just the five types bug-174 listed. Both fixes require CloudKit Dashboard (Apple ID web sign-in), unreachable from any sandboxed session — don't keep retrying RootCLI calls hoping for a different result once both errors have been seen once each; surface it to the user and wait.
 
 - [2026-08-05] CORRECTED same day, see below: `xcodebuild test` against the local iOS Simulator became unreliable late in a long session: repeated "Simulator device failed to launch ... Busy (Application failed preflight checks)" on the destination-by-name form, and even after explicitly booting a simulator by UDID, the full unmodified `BlindensportGrazTests` target crash-looped specifically in `MemberImportExportTests`. At the time this was guessed to be generic simulator/process-state flakiness — **that guess was wrong on both counts, don't repeat it**: (1) the "Busy" launch failure is `bug-134`, a long-documented recurring issue in this project's own history (first hit 2026-07-19) with an established fix — `xcrun simctl erase <device-id>` (plain `simctl shutdown all` reliably does NOT clear it, confirmed across at least 4 prior occurrences) — which this session never tried, reaching for shutdown/reboot instead; (2) the `MemberImportExportTests` crash is `bug-202`, fully reproducible (confirmed on a clean re-run with the same 100% crash-loop, not intermittent) and root-caused: `MemberImportExport.importMembers` calls `CloudKitSync.shared.pushMember(member)`, which touches a real `CKContainer` — running `xcodebuild test` with `CODE_SIGNING_ALLOWED=NO` (needed in this sandboxed session, see the 2026-07-15 codesign Do-Not-Repeat entries) strips the iCloud entitlement, and CloudKit hard-crashes the process the moment any code touches `CKContainer` without it. Only `MemberImportExportTests` is affected — every other suite (InheritanceQueryTests/KostZCalculationTests/PraeCalculationTests/TeilnehmerlisteExportTests/TrainingsfrequenzlisteCalculationTests, 72 tests) passes cleanly and reproducibly in the same unsigned run. **For a future session**: if "Busy (Application failed preflight checks)" appears, try `xcrun simctl erase <device-id>` FIRST, before other debugging (see bug-134). If `MemberImportExportTests` (or any other suite that imports/pushes real data) crashes under `CODE_SIGNING_ALLOWED=NO`, that's bug-202's known CloudKit-entitlement crash, not a real bug — either run that suite from a properly signed context (Xcode GUI) or accept it'll crash unsigned, but don't mistake it for flakiness or a regression from unrelated changes. Separately: this session's user gave an explicit instruction mid-session to stop using the simulator and rely on commit+push/CI instead — that was followed at the time, but note `ios-build-deploy.yml`/`ios-device-deploy.yml` do NOT run `xcodebuild test` (build+deploy only), so pushing alone never re-verifies unit test correctness.
 - [2026-07-15] fastlane's `sh("command", chdir: DIR)` does not reliably change directory before the command resolves its own relative-path lookups — `xcodegen generate` still searched `fastlane/` for `project.yml` instead of `DIR`. Fix: use `sh("cd '#{DIR}' && command")` instead of the `chdir:` keyword arg.
@@ -149,6 +243,150 @@
 ## Decision Log
 
 <!-- Significant technical decisions with rationale. Why X was chosen over Y. -->
+
+- [2026-08-22] Added `SyncState`/`NetworkMonitor`/`SyncStatusBanner` (audit.md SwiftData & CloudKit
+  Finding 3, Enhancements #3/#4) — `SyncState` (`.idle`/`.syncing`/`.synced`/`.failed` + persisted
+  `lastSyncedAt`) is driven by REAL activity, not decoration: `CloudKitSync.performWithRetry` (Phase 6)
+  calls `markSynced()`/`markFailed()` on every push/delete's actual outcome, `syncAll()` brackets its
+  pull pass with `markSyncing()`/`markSynced()`. `NetworkMonitor` wraps `NWPathMonitor` behind a
+  `ReachabilitySource` protocol specifically so it's testable without a real network change — see
+  `FakeReachabilitySource` in `NetworkMonitorTests.swift`, the pattern any future reachability-dependent
+  feature in this app should reuse rather than hard-coupling to `NWPathMonitor` directly. Both are
+  `@Observable` singletons, same shape as Phase 8's `ServiceFailureSignal`. `SyncStatusBanner` reads both
+  and is wired into `MainTabView` ONCE (not per-screen) via `.safeAreaInset(edge: .top)`, globally visible
+  across every tab; shows nothing during normal operation (`.idle`/`.synced` while online) — only surfaces
+  for offline or `.failed`, matching this phase's "visibility, not a durability guarantee" scope (no
+  offline-write-queue was built, deliberately, per the phase's own Notes).
+  - **Hardened `BlindensportGrazApp`'s local-store-reset fallback** (audit.md Finding 4): the "only
+    offline-only edits are lost" assumption was never actually verifiable before (pushes are
+    fire-and-forget, nothing recorded whether the last local edits had reached CloudKit). A full
+    pending-write ledger is a bigger undertaking than this phase's scope; the practical fix implemented:
+    log via `os.Logger` (category "SyncState", matching `SyncState`'s own) exactly what's about to be
+    discarded and why, including `SyncState`'s persisted `lastSyncedAt` (read directly from
+    `UserDefaults` at this point — `SyncState.shared` isn't safe to depend on this early in
+    `BlindensportGrazApp.init()`, before any object graph exists) as the best available evidence, in
+    place of the previous silent, unverified assumption.
+
+- [2026-08-22] **New local, Foundation-only SwiftPM package `Shared/ClubSchema` is now the home for the
+  Member/ClubMember CKRecord shape — any future cross-codebase (app + RootCLI) change to this record
+  shape should start there, not in either codebase independently.** audit.md Architecture Finding 5:
+  the app's `Member` model and RootCLI's `MemberRecord`/`clubmembersapi`'s routes each hand-maintained
+  this shape with zero shared code, already causing drift twice (cerebrum.md's 2026-07-18/2026-07-30
+  entries — a field split needing lockstep updates, caught only by manual checklist discipline).
+  `ClubSchema` exports `MemberField` (a closed `String` enum, one case per field — renaming a case is a
+  REAL compile-time break on both sides, demonstrated live: renamed `svnr` temporarily, confirmed both
+  `xcodebuild build` and RootCLI's `swift build` failed with "type 'MemberField' has no member 'svnr'",
+  then reverted) and `ClubMemberRecord` (a plain `Codable` DTO matching the field list). Wired in via
+  `project.yml`'s `packages: ClubSchema: {path: Shared/ClubSchema}` (app target) and
+  `RootCLI/Package.swift`'s `.package(path: "../Shared/ClubSchema")` (RootCLI). App-side:
+  `CKSchema.ClubMember`'s field constants now wrap `MemberField.X.rawValue` instead of their own string
+  literals — reconciled, not duplicated. RootCLI-side: `MemberRecord` is now `public typealias
+  MemberRecord = ClubSchema.ClubMemberRecord`, with `init?(dto:)`/`ckFields` (CKRecordDTO-specific, stays
+  local since the shared package can't depend on CKRecordDTO) as an extension. **Deliberately scoped to
+  ONLY Member/ClubMember** (audit.md's own scope) — not a migration of all 13 CKRecord types into the
+  shared package, which would be a much larger undertaking. `clubmembersapi`'s `MemberInput` (Routes.swift,
+  the partial-PUT body shape with all-optional fields) was left as its own independent struct — its shape
+  genuinely differs from `ClubMemberRecord`'s (optional vs. required fields), and the phase's explicit
+  scope named `MemberRecord.swift`, not `Routes.swift`.
+  - **Gotcha hit while wiring this up**: `extension MemberRecord: Content {}` (Routes.swift) started
+    emitting a "declares a conformance of imported type... in the future" warning once `MemberRecord`
+    became a typealias for a type imported from a THIRD module (`ClubSchema`, not `CloudKitS2SCore`) —
+    fixed with `@retroactive` per the compiler's own suggestion. (SourceKit's live diagnostic claims
+    `@retroactive` "does not apply" here since it considers RootCLI/clubmembersapi "the same package" as
+    ClubSchema — that's an IDE-only false positive; a full `rm -rf .build && swift build` confirms zero
+    warnings from the actual compiler either way, so `@retroactive` is harmless even if technically inert.)
+
+- [2026-08-22] **Every future local model mutation in this app should go through the Phase 8 persistence
+  service layer, not inline `modelContext.save()` + `CloudKitSync.shared.pushX`/`deleteX`.** Pattern:
+  `PersistenceService.saveAndPush`/`.deleteAndPush` (PersistenceService.swift) is the one shared
+  do/catch + `os.Logger` + `ServiceFailureSignal` core; each model gets a thin `*Service` enum
+  (`TeamService`, `TrainingService`, `MemberService`, ...) wrapping it with a `save(_:modelContext:)`/
+  `.delete(_:modelContext:)` call shape — see `TeamService.swift` as the template. A batch variant
+  (`saveBatch`/`saveImportBatch`) exists where a single import file legitimately needs ONE save for many
+  touched records (`MemberService.saveBatch`, `TrainingService.saveBatch`, `TeamService.saveImportBatch`)
+  — don't force those into N individual `*Service.save` calls, that changes real import-performance
+  characteristics for no benefit. `SyncOrchestrationService` is the parking spot for the handful of
+  app-level orchestration calls (`syncAll`/`hasAnyUserIdentity`/`ensureDefaultTeams`/
+  `ensureTrainingTournamentSubscriptions`) that aren't per-model mutations but still shouldn't be called
+  as `CloudKitSync.shared.X` from view code directly. `ServiceFailureSignal.shared` (an `@Observable`
+  singleton) is wired into an `.alert(...)` only on the two screens audit.md explicitly prioritized
+  (`UserListView` for role changes, `MembersListView` for roster edits) — not universally, that's a
+  bigger UX decision than this phase's scope. A model type with genuinely no CloudKit delete path
+  (`SportEvent`/`Training`/`Tournament`/`Attendance`/`EventParticipation`) gets a `save`-only service with
+  a doc comment saying so — don't invent delete functionality that was never there.
+
+- [2026-08-22] Split `Models.swift` (860 lines, 12 `@Model` classes incl. Phase 2's `RoleChangeLog`) into
+  one file per model — `User.swift`, `Member.swift`, `Team.swift`, `TeamMembership.swift`,
+  `SportEvent.swift`, `Tournament.swift`, `Training.swift` (SportEvent/Training/Tournament split into
+  3 separate files, NOT kept together — Swift class inheritance doesn't require same-file, only same
+  module, so the phase spec's "may share one file" exemption wasn't needed), `TrainingFavorite.swift`,
+  `Attendance.swift`, `EventImage.swift`, `EventParticipation.swift`, `RoleChangeLog.swift` — plus
+  introduced closed enums for the two confirmed free-text-role risk fields (audit.md Architecture
+  Finding 3): `AppRole` (`User.role`: member/coach/admin) and `MembershipRole` (`TeamMembership.role`:
+  player/coach/assistant), both `RawRepresentable` with an `.other(String)` fallback case that retains
+  the exact original string for any unrecognized stored value — never crashes, never silently drops
+  data, matches CloudKit's existing wire strings exactly (verified: `AppRole.admin.rawValue == "admin"`
+  etc., so no CloudKit schema/data migration needed, RootCLI's independent String-based mirror is
+  unaffected). SwiftData's `@Model` macro required the default-value expression to be the FULLY
+  QUALIFIED form (`AppRole.member`, not the shorthand `.member`) — the terser form fails with "A default
+  value requires a fully qualified domain named value" at macro-expansion time, since the macro rewrites
+  syntax before full type inference runs. `RoleChangeLog.oldRole`/`newRole` deliberately stayed plain
+  `String` (not `AppRole`) — it's a historical audit log, must record whatever was ACTUALLY stored even
+  if garbled, without going through today's normalization first.
+  - **`Sport` was deliberately NOT made a stored-model-property enum**, despite the phase text initially
+    grouping it with `role` — `SportIcon.swift`'s own pre-existing doc comment explicitly states `sport`
+    is "not a fixed enum" by design: every Team/SportEvent/Training/Tournament/TrainingFavorite `sport`
+    field is edited via a plain `TextField`, not just a `Picker`, specifically so an admin can type a
+    sport this app doesn't know about yet. A full stored-type conversion would have broken every
+    `TextField(text: $x.sport)` binding (needs `Binding<String>`) and fought that documented intent for
+    zero real bug-fix benefit — grepping the whole app for `sport ==`/`sport !=` comparisons (this
+    phase's own acceptance check) returned **zero hits before any change was made**, confirming there was
+    no existing typo-prone comparison bug here, unlike `role`'s confirmed one. Instead, `Sport` ships as a
+    normalization UTILITY enum (same `.other(String)` fallback pattern) that `SportIcon.swift` now
+    delegates to instead of its own private duplicated normalize+switch — real value (single source of
+    truth, reusable) without the regression risk. **If a future phase wants sport as a true closed field,
+    it needs a deliberate free-text-vs-picker UX decision first, not just a type swap.**
+  - Fixing every call site (~66 `.role` + ~48 `.sport` usages) surfaced one more real bug pattern beyond
+    the originally-cited one: `PraeCalculation.swift`'s `eligiblePeople` used the exact same
+    `["coach","assistant"].contains(membership.role)` shape as the TournamentsViews.swift one audit.md
+    named — now both call the new `MembershipRole.isHelfer` computed property instead, so this class of
+    typo can't recur anywhere it's used.
+  - Verified via full app + test-target build (BUILD SUCCEEDED, zero warnings) and
+    `xcodebuild test` (106 passed / 16 known pre-existing failures, identical baseline to Phase 6 — 5 new
+    tests in `RoleAndSportEnumTests.swift` covering fallback-never-crashes + rawValue/normalize
+    round-trip for both new enums, all passed).
+
+- [2026-08-22] Removed the `User.testAdminEmail`/`elevateIfTestAdmin()` TEST-ONLY backdoor (Models.swift) — a
+  hardcoded admin grant for franz.kager@gmx.net that was live a month past its own "remove once testing is
+  done" note (audit.md Security Finding 1). **Grant-first order followed exactly as the phase spec required**:
+  real admin was granted via `rootcli set-role` against the actual CloudKit UserIdentity record (matched by
+  `username == "Franz"`, recordName `9E3AC32B-E4C1-4FE7-93FB-0CA5BC63A27D`, in the **Development** CloudKit
+  environment — see [[bug-174]]-adjacent finding below for why) and confirmed via read-back *before* any
+  Models.swift edit. Removed the static let, the function, its doc comment, and all 4 call sites (2 direct in
+  RootView.swift registration/resolveAccount paths, 1 inside a dedicated `applyTestAdminGrant` helper that was
+  itself removed along with its 4 call sites, 1 in AccountView's `.onChange(of: user.email)`). Also fixed
+  `BlindensportGraz/CLAUDE.md` (in-app doc) doc-drift: removed the stale "username" field mention on `User`,
+  added the 5 real `@Model` classes it was missing (`Member`, `TrainingFavorite`, `Attendance`, `EventImage`
+  — plus already-listed ones), corrected "7 model types" to the real count of 11. Verified via `xcodebuild
+  build` (BUILD SUCCEEDED) after `xcodegen generate`.
+  - **Sub-discovery during the grant step, worth its own note**: this app's real/only data lives in CloudKit's
+    **Development** environment, not Production — confirmed via `BlindensportGraz.entitlements`
+    (`aps-environment: development`), the device-deploy GHA workflow's `CODE_SIGN_IDENTITY="Apple Development"`
+    + Development provisioning profile, and empirically: Production's schema was completely empty (only
+    CloudKit's default `Users` type, none of the app's 11 record types) while Development had all the real
+    records. **Any future RootCLI/CloudKit operation against "the real data" for this app means
+    `CLOUDKIT_ENVIRONMENT=development`, not production** — don't assume production is the live environment just
+    because it sounds like the natural default for a shipped app; verify per-app, this one was never actually
+    promoted. See [[cerebrum]] Do-Not-Repeat 2026-08-22 entry for the full credential/`cktool` mechanics.
+  - **Identifying "which UserIdentity record is the user's account" has no reliable automatic signal** — email
+    is never synced to CloudKit by design (privacy), so `rootcli list`'s per-record output is genuinely
+    ambiguous when firstName/lastName are blank. Cross-referenced the `username` field (not shown by `list`,
+    added via a temporary diagnostic edit to `RootCLI.swift`'s `runList`, reverted immediately after — confirmed
+    clean `git diff` before moving on) to disambiguate against 5 other candidate records, including 2 unrelated
+    "Blindensport Graz" (`elevateIfDesignatedRoot`, a separate real mechanism, already admin+root) and 3 with
+    auto-generated `mitgliedNNNN` usernames. **Always confirm the specific record identity with the user via
+    AskUserQuestion before running any role-granting write** — this is exactly the kind of hard-to-reverse,
+    real-account-affecting action that needs a check first, not an assumption from a plausible-looking match.
 
 - [2026-08-18] Added `country: String = ""` ("Land") to both address shapes established in the 2026-08-05 entry below: `Member` and `SportEvent` (inherited by `Training`/`Tournament`), plus `TrainingFavorite`'s mirrored address fields. Asked the user via AskUserQuestion which address(es) needed it (member vs. event/venue) rather than guessing — answer was both. Followed the exact same mechanical pattern as every other address field in this codebase: appended after `city` everywhere (model `var`/init param, `fullAddress` join — now street/zipCity/country, all still empty-part-skipping — `CloudKitSync` push+pull for all 5 record types, `MemberIO`/`TrainingIO` JSON import/export incl. `MemberIO`'s custom `Codable` en/decode, every `TextField("Land", ...)` in Add/Detail forms). **Also propagated to RootCLI** (`MemberRecord`/`MemberBulkInput`/`MemberFillUpdate`/clubmembersapi's `MemberInput`) since those independently mirror the same `ClubMember` CKRecord shape — same standing lesson as the 2026-07-19 User firstName/lastName entry above ("RootCLI mirrors this CKRecord field shape independently and needs the same lockstep update"). Updated `members.example.json`/`README.md` field list to match. No call-site breakage anywhere: same "insert a new defaulted param, all existing calls omit it by label" rule the 2026-08-05 entry already established. Verified via `xcodebuild build` + `build-for-testing` (app+tests, `CODE_SIGNING_ALLOWED=NO`, generic/iOS destination — no simulator) and `swift build --package-path RootCLI`, all green; RootCLI's `.build` had to be wiped first because it still carried a stale module-cache path baked in from before this repo was renamed/moved (`/Users/franz/dev/claude` → `.../BlindensportGraz`) — unrelated to this change but worth remembering if `swift build` ever throws "precompiled file ... was compiled with module cache path ... but the path is currently ..." again.
 

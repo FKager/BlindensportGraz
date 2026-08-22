@@ -57,7 +57,7 @@ struct MemberListView: View {
                                     HStack {
                                         Text(membership.displayName)
                                         Spacer()
-                                        Text(membership.role)
+                                        Text(membership.role.rawValue)
                                             .font(.caption)
                                             .foregroundStyle(.secondary)
                                     }

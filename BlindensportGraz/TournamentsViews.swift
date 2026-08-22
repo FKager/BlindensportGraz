@@ -28,7 +28,7 @@ struct AddTournamentView: View {
     // without this bypass it could never be assigned to anything.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
-        if user.role == "admin" { return allTeams }
+        if user.role == .admin { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
@@ -75,9 +75,15 @@ struct AddTournamentView: View {
                                     if selectedTeamIDs.contains(team.id) {
                                         Image(systemName: "checkmark")
                                             .foregroundStyle(.blue)
+                                            .accessibilityHidden(true)
                                     }
                                 }
                             }
+                            // Selection state is otherwise conveyed only by the
+                            // checkmark icon (hidden from VoiceOver above) —
+                            // the .isSelected trait makes the row itself announce
+                            // "ausgewählt" instead.
+                            .accessibilityAddTraits(selectedTeamIDs.contains(team.id) ? .isSelected : [])
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
@@ -132,8 +138,7 @@ struct AddTournamentView: View {
                             teams: teams
                         )
                         modelContext.insert(tournament)
-                        try? modelContext.save()
-                        CloudKitSync.shared.pushTournament(tournament)
+                        TournamentService.save(tournament, modelContext: modelContext)
 
                         // Post notification when tournament is created
                         NotificationCenter.default.post(
@@ -193,6 +198,7 @@ struct TournamentRow: View {
 
          HStack {
             Image(systemName: "mappin.and.ellipse")
+                .accessibilityHidden(true)
              Text(tournament.location)
           }
           .font(.caption)
@@ -213,16 +219,20 @@ struct TournamentDetailView: View {
    @State private var showKostZCalculation = false
    @State private var showPraeCalculation = false
    @State private var showSammelabrechnung = false
+   // Eagerly (re)generated below — same ShareLink convention as every other
+   // export in this app; see CalendarEventExport's doc comment for why
+   // .ics+ShareLink was chosen over EKEventStore.
+   @State private var icsURL: URL?
 
    var isAdmin: Bool {
-       currentUser?.role == "admin"
+       currentUser?.role == .admin
    }
 
    // Same admin-bypass as AddTournamentView.myTeams — an admin can reassign a
    // tournament to any team, not just ones they personally joined.
    var myTeams: [Team] {
        guard let user = currentUser else { return [] }
-       if user.role == "admin" { return allTeams }
+       if user.role == .admin { return allTeams }
        let myTeamIDs = Set(user.memberships.map { $0.team.id })
        return allTeams.filter { myTeamIDs.contains($0.id) }
    }
@@ -253,17 +263,23 @@ struct TournamentDetailView: View {
     // Excel files instead of one mixed one) — mirrors the PRAE-eligibility
     // role check above (role "coach"/"assistant" = Helfer).
     private func isHelfer(_ membership: TeamMembership) -> Bool {
-        ["coach", "assistant"].contains(membership.role)
+        membership.role.isHelfer
     }
 
-    // "Teilnehmer Sportler" must only include role == "player" — NOT simply
-    // "!isHelfer" — because TeamMembership.role isn't a closed enum: Excel
-    // import (TeamImportExport.importMembership) writes whatever string a
+    // "Teilnehmer Sportler" must only include role == .player — NOT simply
+    // "!isHelfer" — even now that TeamMembership.role is the closed
+    // MembershipRole enum (Phase 7), an unrecognized stored value normalizes
+    // to `.other(String)` (see MembershipRole.swift), which `isHelfer` (and
+    // this check) both correctly treat as "not player" — but `!isHelfer`
+    // would WRONGLY treat it as Sportler. Excel import
+    // (TeamImportExport.importMembership) writes whatever string a
     // spreadsheet row has, so a mistyped/unexpected role (e.g. "Trainer"
-    // instead of "coach") would slip into the Sportler roster under the old
-    // `!isHelfer` check since it isn't literally "coach"/"assistant" either.
+    // instead of "coach") lands in `.other` — this explicit `== .player`
+    // check is what keeps it out of the Sportler roster; `!isHelfer` alone
+    // would have let it slip in, which is the original confirmed bug this
+    // check exists to prevent (audit.md Architecture Finding 3).
     private func isSportler(_ membership: TeamMembership) -> Bool {
-        membership.role == "player"
+        membership.role == .player
     }
 
 var body: some View {
@@ -310,9 +326,11 @@ var body: some View {
                             if tournament.teams.contains(where: { $0.id == team.id }) {
                                 Image(systemName: "checkmark")
                                     .foregroundStyle(.blue)
+                                    .accessibilityHidden(true)
                             }
                         }
                     }
+                    .accessibilityAddTraits(tournament.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
                 }
                 Text("Keine Auswahl = für alle sichtbar")
                     .font(.caption)
@@ -330,7 +348,7 @@ var body: some View {
                     }
                     // PRAE amount only for helpers/coaches (role "assistant"/
                     // "coach") who were actually present — see Attendance.praeAmount.
-                    if ["coach", "assistant"].contains(membership.role),
+                    if membership.role.isHelfer,
                        attendance(for: membership)?.attended == true {
                         HStack {
                             Text("PRAE (€)")
@@ -344,6 +362,10 @@ var body: some View {
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .frame(width: 80)
+                            // Fixed-width numeric field — shrink rather than
+                            // clip at large Dynamic Type sizes (audit.md
+                            // Accessibility Finding 4).
+                            .minimumScaleFactor(0.6)
                         }
                     }
                 }
@@ -392,6 +414,17 @@ var body: some View {
                 .accessibilityLabel("Berichte")
             }
         }
+        ToolbarItem(placement: .topBarTrailing) {
+            if let icsURL {
+                ShareLink(item: icsURL) {
+                    Image(systemName: "calendar.badge.plus")
+                }
+                .accessibilityLabel("Zum Kalender hinzufügen")
+            }
+        }
+    }
+    .task(id: CalendarEventExport.fields(for: tournament)) {
+        icsURL = try? CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: tournament))
     }
     .sheet(isPresented: $showTeilnehmerSportler) {
         MemberListView(
@@ -426,7 +459,7 @@ var body: some View {
         )
     }
     .sheet(isPresented: $showKostZCalculation) {
-        KostZTournamentCalculationView(tournament: tournament)
+        KostZTournamentCalculationView(tournament: tournament, currentUser: currentUser)
     }
     .sheet(isPresented: $showPraeCalculation) {
         PraeTournamentCalculationView(tournament: tournament)
@@ -435,8 +468,7 @@ var body: some View {
         SammelabrechnungTournamentView(tournament: tournament)
     }
     .onDisappear {
-        try? modelContext.save()
-        CloudKitSync.shared.pushTournament(tournament)
+        TournamentService.save(tournament, modelContext: modelContext)
     }
    }
 
@@ -453,28 +485,23 @@ var body: some View {
             record = Attendance(event: tournament, membership: membership, attended: attended)
             modelContext.insert(record)
         }
-        try? modelContext.save()
-        CloudKitSync.shared.pushAttendance(record)
+        AttendanceService.save(record, modelContext: modelContext)
     }
 
     private func setPraeAmount(_ amount: Double, for membership: TeamMembership) {
         guard let record = attendance(for: membership) else { return }
         record.praeAmount = amount > 0 ? amount : nil
-        try? modelContext.save()
-        CloudKitSync.shared.pushAttendance(record)
+        AttendanceService.save(record, modelContext: modelContext)
     }
 
     private func addImage(_ data: Data) {
         let image = EventImage(imageData: data, uploadedBy: currentUser?.id.uuidString ?? "", event: tournament)
         modelContext.insert(image)
-        try? modelContext.save()
-        CloudKitSync.shared.pushEventImage(image)
+        EventImageService.save(image, modelContext: modelContext)
     }
 
     private func deleteImage(_ image: EventImage) {
-        CloudKitSync.shared.deleteEventImage(image.id)
-        modelContext.delete(image)
-        try? modelContext.save()
+        EventImageService.delete(image, modelContext: modelContext)
     }
 }
 
@@ -486,11 +513,11 @@ struct TournamentsListView: View {
 
   var canManageEvents: Bool {
       guard let user = currentUser else { return false }
-      return user.role == "admin" || user.role == "coach"
+      return user.role == .admin || user.role == .coach
        }
 
     var visibleTournaments: [Tournament] {
-        if currentUser?.role == "admin" { return tournaments }
+        if currentUser?.role == .admin { return tournaments }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
         return tournaments.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }
@@ -513,7 +540,7 @@ struct TournamentsListView: View {
        }
        .navigationTitle("Turniere")
        .refreshable {
-           await CloudKitSync.shared.syncAll(modelContext: modelContext)
+           await SyncOrchestrationService.syncAll(modelContext: modelContext)
        }
        .toolbar {
            // Neither PRAE nor KostZ have a "Berichte" menu here anymore —
@@ -524,6 +551,7 @@ struct TournamentsListView: View {
                    Button { showAdd = true } label: {
                        Image(systemName: "plus")
                    }
+                   .accessibilityLabel("Neues Turnier")
                }
            }
        }
@@ -532,10 +560,16 @@ struct TournamentsListView: View {
        }
     }
 
+    // Routed through TournamentService.delete (phase 14) so the local
+    // reminder — see EventReminderService — gets cancelled; still no
+    // CloudKit delete push, that scoping is unchanged (no CloudKit delete
+    // path exists for Tournament records, see EventsListView.deleteEvents'
+    // identical comment).
     private func deleteTournaments(at offsets: IndexSet) {
         for index in offsets {
-            modelContext.delete(tournaments[index])
+            let tournament = tournaments[index]
+            modelContext.delete(tournament)
+            TournamentService.delete(tournament, modelContext: modelContext)
         }
-        try? modelContext.save()
     }
 }

@@ -63,28 +63,66 @@ to share; it's what you paste into the Dashboard next.
    of `rootcli_public_key.pem`.
 3. Copy the generated **Key ID** — that's `CLOUDKIT_KEY_ID` below.
 
-### 3. Restrict write access to `UserIdentity` (recommended)
+### 3. Restrict access via CloudKit Security Roles (recommended)
 
-By default the S2S key writes with the same permissions as any other client
-("World" role), which doesn't actually close the forgery gap. Tighten it:
+By default every CKRecord type in a public database grants the **World**
+role full Read/Write — i.e. anyone who knows the container ID, not even
+signed into iCloud, can read or write any record (audit.md Security
+Finding 2). This app currently publishes **13 CKRecord types** (verified
+against `CloudKitSync.swift`/`Models.swift` directly, not just the
+2 previously documented here):
+
+`UserIdentity`, `ClubMember`, `Team`, `TeamMembership`, `SportEvent`,
+`Tournament`, `Training`, `TrainingAttendance`, `TournamentAttendance`
+(one local `Attendance` model, two CKRecord types — see `pushAttendance`),
+`EventParticipation`, `EventImage`, `TrainingFavorite`, `RoleChangeLog`.
+
+**Important architectural constraint**: the app's own write paths (creating
+a Team, RSVPing to an event, an admin editing the roster or another user's
+role in `UserListView`/`MembersViews.swift`) all go through the *signed-in
+user's own Apple ID* via `CKContainer`/`CKDatabase`, not through this
+package's S2S key. Any role locked down to `RootAdmin`-only (see Tier 2
+below) stops working from *inside the app* for that record type — this
+isn't a gap to "fix", it's a real tradeoff that has to be a deliberate
+choice per type, not a blanket lockdown.
+
+**Tier 1 — apply to all 13 types, safe, breaks nothing:**
 
 1. Dashboard → **Schema** → **Security Roles**.
-2. Create a role (e.g. `RootAdmin`) and add your S2S key as a member of it.
-3. On the `UserIdentity` record type, set the **World** role to **Read Only**,
-   and grant your new `RootAdmin` role **Read/Write**. Do the same for
-   `ClubMember` if you want `import-members`/`clubmembersapi` to be the only
-   way roster entries get written — the app itself only ever needs to
-   read/write it as an admin action, so it's a reasonable second record type
-   to lock down alongside `UserIdentity`.
-4. Repeat for the **Production** environment once you're ready to promote there
-   (Development and Production schemas/roles are configured separately).
+2. For every record type: set **World** to no access, and grant
+   **Authenticated Users** Read + Write instead.
+3. This alone closes Finding 2's literal gap (anonymous, not-signed-into-
+   iCloud access to club data over the open internet) without touching any
+   app behavior — every real user of this app is already signed into some
+   iCloud account just to make CloudKit requests at all, "Authenticated
+   Users" is not club-membership-scoped but it is a real, meaningful floor
+   above "anyone on the internet".
+
+**Tier 2 — optional, per-type judgment call, WILL break in-app write paths
+if applied without also changing app code:**
+
+| Record type | Recommendation |
+|---|---|
+| `UserIdentity` | Contains `role`/`isRoot` — the account-escalation surface Security Finding 1 was about. Locking **Write** to a custom `RootAdmin` role (S2S key only) fully closes "any app client could forge an admin grant" — but also breaks `UserListView`'s existing in-app role-editing feature (`AccountView.swift`), which pushes via the acting root user's own Apple ID. Only apply this tier if that in-app feature is intentionally retired in favor of RootCLI/`clubmembersapi`-only role management (not decided by this phase — flagged for a future decision). |
+| `ClubMember` | Roster PII — address, phone, email, and (for helpers/coaches) SVNR/IBAN. Same constraint as `UserIdentity`: `MembersViews.swift` lets admin-role app users create/edit roster entries via their own Apple ID. Locking Write to `RootAdmin`-only would make `import-members`/`clubmembersapi`/`update-members` the *only* way roster entries get written, at the cost of removing the in-app roster-editing screens' ability to save. |
+| `RoleChangeLog` | The Phase 2 audit trail — written both by the app (`CloudKitSync.logRoleChange`, same in-app Apple-ID path as above) and by RootCLI's S2S key. Same constraint: don't lock past Tier 1 unless the in-app role/root-grant write paths above are also retired. |
+| `Team`, `TeamMembership`, `SportEvent`, `Tournament`, `Training`, `EventParticipation`, `TrainingAttendance`, `TournamentAttendance`, `EventImage` | Club-shared operational data, written by any admin/coach app user through their own Apple ID as part of normal app use (creating trainings, marking attendance, uploading event photos). Tier 1 (Authenticated Users) is the realistic ceiling here — a `RootAdmin`-only Write lock would break these features entirely for every non-RootCLI admin. |
+| `TrainingFavorite` | Despite the name suggesting per-user data, this is actually **team-scoped**, not per-account-private (see `Models.swift` — it holds a `teams: [Team]` relationship, no per-user ownership field at all). Treat it the same as the other club-shared types above, not as personal data. |
 
 If `clubmembersapi` will be reachable over the network (not just run locally),
 consider registering a **separate** S2S key for it and adding only that key
-to the `RootAdmin` role — that way a compromised web server's key can't be
-used to also call `rootcli set-root`/`set-role`, which is a strictly more
-sensitive operation than roster CRUD. Reusing the same key as `rootcli` also
-works and is simpler if you're the only operator of both.
+to any `RootAdmin` role you do create — that way a compromised web server's
+key can't be used to also call `rootcli set-root`/`set-role`, which is a
+strictly more sensitive operation than roster CRUD. Reusing the same key as
+`rootcli` also works and is simpler if you're the only operator of both.
+
+**Development and Production are separate CloudKit environments with
+independently-configured schemas AND Security Roles** — nothing done in one
+applies to the other. Repeat every step above for **both** environments;
+this app's data has historically only been verified/discussed for one
+environment at a time (see cerebrum.md's 2026-08-22 entries), so don't
+assume "we hardened CloudKit" without explicitly checking both tabs in
+Dashboard.
 
 If you'd rather script this than click through the UI, `cktool` (bundled with
 Xcode, at `xcrun cktool`) can export/import the schema as a `.ckdb` file
@@ -92,7 +130,21 @@ Xcode, at `xcrun cktool`) can export/import the schema as a `.ckdb` file
 import-schema`) — but hand-verify the diff before importing, a bad schema
 import can lock out legitimate writes too.
 
-### 4. Build
+### 4. Deployment / TLS
+
+`clubmembersapi` (see [Web API & admin page](#web-api--admin-page) below)
+speaks plain HTTP by default — Vapor does not terminate TLS for you. **This
+server must never be run as a bare, unencrypted origin server reachable from
+outside `localhost`.** Basic Auth credentials and every club member's PII
+(address, phone, email, and for some entries SVNR/IBAN) travel in the clear
+over an unencrypted connection; deploy it behind a TLS-terminating reverse
+proxy or load balancer (nginx, Caddy, a cloud provider's managed load
+balancer, etc.) and only expose the proxy's HTTPS endpoint, keeping
+`clubmembersapi` itself bound to `127.0.0.1`/an internal network the proxy
+forwards from. TLS is a **deployment responsibility**, not something this
+package does for you — audit.md Security Finding 8.
+
+### 5. Build
 
 ```bash
 cd RootCLI
@@ -192,6 +244,16 @@ so `API_USERNAME`/`API_PASSWORD` are required environment variables and the
 process refuses to start without them. This is a single shared operator
 credential (like `rootcli`'s key), not a per-member login system — don't
 expose this server directly to club members.
+
+Repeated failed Basic Auth attempts from the same client IP are rate-limited
+(audit.md Security Finding 9): after 5 failures within a 5-minute sliding
+window, that client gets `429 Too Many Requests` regardless of what
+credentials it sends next, until the window clears. A successful login
+always resets that client's failure count immediately — this only ever
+slows down guessing, it never locks out a client using the real credentials.
+See `LoginAttemptLimiter.swift`; in-memory only (resets on restart), no
+database — deliberately simple for a small internal tool, see that file's
+doc comment for the reasoning.
 
 ```bash
 export CLOUDKIT_KEY_ID=<key id>

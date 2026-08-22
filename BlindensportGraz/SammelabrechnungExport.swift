@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 import ZIPFoundation
 
 /// Bundles one accounting period's full PRAE/KostZ paperwork into a single
@@ -51,6 +52,75 @@ enum SammelabrechnungExporter {
             }
         }
         return try zip(kostZURL: kostZURL, praeFiles: praeFiles)
+    }
+
+    /// Full-season rollup (audit.md Enhancement #8) — every calendar month's
+    /// and every tournament's KostZ+PRAE bundle, plus every training sport's
+    /// two Trainingsfrequenzliste half-years, all for one year, flattened
+    /// into a single zip with period-prefixed file names so nothing
+    /// collides. Pure orchestration over the existing per-period
+    /// exporters (`KostZExporter`/`PraeExporter`/`TrainingsfrequenzlisteExporter`)
+    /// — no new XLSX-patching logic, same as the two `export` overloads
+    /// above. A month/tournament with zero eligible people (`personAmounts`
+    /// empty) is skipped entirely, same as a sport/half-year with zero
+    /// training dates — a season where nothing happened all year correctly
+    /// produces a valid, empty (zero-entry) zip rather than 12 near-empty
+    /// KostZ sheets or crashing.
+    static func exportSeason(year: Int, allMemberships: [TeamMembership], tournaments: [Tournament],
+                              sports: [String], in context: ModelContext) throws -> URL {
+        var files: [(name: String, url: URL)] = []
+
+        for month in 1...12 {
+            let kostZSummary = KostZCalculator.summary(month: month, year: year, allMemberships: allMemberships, in: context)
+            guard !kostZSummary.personAmounts.isEmpty else { continue }
+            let label = String(format: "%02d-%d", month, year)
+            files.append(("\(label)_KostZ.xlsx", try KostZExporter.export(summary: kostZSummary)))
+            for personAmount in kostZSummary.personAmounts {
+                let praeSummary = PraeCalculator.summary(for: personAmount.person, month: month, year: year, in: context)
+                files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE"))", try PraeExporter.exportMainForm(summary: praeSummary)))
+                if !praeSummary.entries.isEmpty {
+                    files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE-Darstellung"))", try PraeExporter.exportDarstellung(summary: praeSummary)))
+                }
+            }
+        }
+
+        let tournamentsInYear = tournaments.filter { Calendar.current.component(.year, from: $0.startDate) == year }
+        for tournament in tournamentsInYear {
+            let kostZSummary = KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
+            guard !kostZSummary.personAmounts.isEmpty else { continue }
+            let label = "Turnier_\(sanitize(tournament.title))"
+            files.append(("\(label)_KostZ.xlsx", try KostZExporter.export(summary: kostZSummary)))
+            for personAmount in kostZSummary.personAmounts {
+                let praeSummary = PraeCalculator.summary(for: personAmount.person, tournament: tournament)
+                files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE"))", try PraeExporter.exportMainForm(summary: praeSummary)))
+                if !praeSummary.entries.isEmpty {
+                    files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE-Darstellung"))", try PraeExporter.exportDarstellung(summary: praeSummary)))
+                }
+            }
+        }
+
+        for sport in sports {
+            for halfYear in HalfYear.allCases {
+                let summary = TrainingsfrequenzlisteCalculator.summary(sport: sport, halfYear: halfYear, year: year, in: context)
+                guard !summary.trainingDates.isEmpty else { continue }
+                let label = "\(sanitize(sport))_H\(halfYear.rawValue)-\(year)"
+                files.append(("\(label)_Trainingsfrequenzliste.xlsx", try TrainingsfrequenzlisteExporter.export(summary: summary)))
+            }
+        }
+
+        let outputURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("Sammelabrechnung-Saison-\(year)-\(UUID().uuidString).zip")
+        let archive = try Archive(url: outputURL, accessMode: .create)
+        for file in files {
+            try addFile(at: file.url, as: file.name, to: archive)
+        }
+        return outputURL
+    }
+
+    /// Same "/" stripping as `fileName(for:suffix:)`, for the tournament-title
+    /// and sport-name components of a season file's prefix.
+    private static func sanitize(_ raw: String) -> String {
+        raw.replacingOccurrences(of: "/", with: "-")
     }
 
     /// "Nachname_Vorname" (matches this app's established lastName-first

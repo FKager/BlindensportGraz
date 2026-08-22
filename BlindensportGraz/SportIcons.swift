@@ -4,41 +4,43 @@ import SwiftUI
 /// Tournament/Team/Event's freeform `sport` string needs a visual badge
 /// (list rows, "Sportart" pickers). `sport` is user-editable free text (see
 /// the TextField editors in TeamsViews/TournamentsViews/TrainingsViews), not
-/// a fixed enum, so every lookup here normalizes the string and falls back
-/// gracefully for anything not in the known list.
+/// a fixed enum, so every lookup here goes through `Sport.normalize` (see
+/// Sport.swift) and falls back gracefully for anything not in the known
+/// list — this used to be its own private normalize+switch here; now shared
+/// with anything else that needs type-safe sport handling.
 enum SportIcon {
 
     /// SF Symbol best matching each known sport. Falls back to a generic
     /// "sportscourt.fill" for unrecognized/custom sport text.
     static func symbolName(for sport: String) -> String {
-        switch normalize(sport) {
-        case "torball": return "bell.fill"
-        case "goalball": return "sportscourt.fill"
-        case "blindenfussball": return "figure.soccer"
-        case "showdown": return "figure.table.tennis"
-        case "judo": return "figure.martial.arts"
-        case "leichtathletik": return "figure.track.and.field"
-        case "schwimmen": return "figure.pool.swim"
-        case "ski": return "figure.skiing.downhill"
-        case "radfahren": return "figure.outdoor.cycle"
-        default: return "sportscourt.fill"
+        switch Sport.normalize(sport) {
+        case .torball: return "bell.fill"
+        case .goalball: return "sportscourt.fill"
+        case .blindenfussball: return "figure.soccer"
+        case .showdown: return "figure.table.tennis"
+        case .judo: return "figure.martial.arts"
+        case .leichtathletik: return "figure.track.and.field"
+        case .schwimmen: return "figure.pool.swim"
+        case .ski: return "figure.skiing.downhill"
+        case .radfahren: return "figure.outdoor.cycle"
+        case .other: return "sportscourt.fill"
         }
     }
 
     /// Accent color paired with each sport's icon, echoing the tinted-circle
     /// style already used by StatCard/EventRow elsewhere in the app.
     static func color(for sport: String) -> Color {
-        switch normalize(sport) {
-        case "torball": return .orange
-        case "goalball": return .green
-        case "blindenfussball": return .mint
-        case "showdown": return .purple
-        case "judo": return .red
-        case "leichtathletik": return .yellow
-        case "schwimmen": return .cyan
-        case "ski": return .indigo
-        case "radfahren": return .pink
-        default: return .blue
+        switch Sport.normalize(sport) {
+        case .torball: return .orange
+        case .goalball: return .green
+        case .blindenfussball: return .mint
+        case .showdown: return .purple
+        case .judo: return .red
+        case .leichtathletik: return .yellow
+        case .schwimmen: return .cyan
+        case .ski: return .indigo
+        case .radfahren: return .pink
+        case .other: return .blue
         }
     }
 
@@ -47,18 +49,10 @@ enum SportIcon {
     /// small hand-drawn pictogram instead of a system glyph. See
     /// `SportPictogram`.
     static func hasCustomGlyph(for sport: String) -> Bool {
-        switch normalize(sport) {
-        case "torball", "goalball", "showdown": return true
+        switch Sport.normalize(sport) {
+        case .torball, .goalball, .showdown: return true
         default: return false
         }
-    }
-
-    fileprivate static func normalize(_ sport: String) -> String {
-        sport
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .lowercased()
-            .replacingOccurrences(of: "ß", with: "ss")
-            .replacingOccurrences(of: "ü", with: "u")
     }
 }
 
@@ -105,10 +99,10 @@ private struct SportPictogram: Shape {
     let sport: String
 
     func path(in rect: CGRect) -> Path {
-        switch SportIcon.normalize(sport) {
-        case "torball": return torball(in: rect)
-        case "goalball": return goalball(in: rect)
-        case "showdown": return showdown(in: rect)
+        switch Sport.normalize(sport) {
+        case .torball: return torball(in: rect)
+        case .goalball: return goalball(in: rect)
+        case .showdown: return showdown(in: rect)
         default: return Path()
         }
     }

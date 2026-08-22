@@ -108,7 +108,7 @@ enum PraeCalculator {
     /// down to one entry per underlying person, sorted by lastName.
     static func eligiblePeople(from allMemberships: [TeamMembership]) -> [PraeEligiblePerson] {
         var byKey: [UUID: (name: String, lastName: String, firstName: String, ids: [UUID], member: Member?)] = [:]
-        for membership in allMemberships where ["coach", "assistant"].contains(membership.role) {
+        for membership in allMemberships where membership.role.isHelfer {
             let key = membership.user?.id ?? membership.member?.id ?? membership.id
             if var existing = byKey[key] {
                 existing.ids.append(membership.id)

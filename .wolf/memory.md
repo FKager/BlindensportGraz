@@ -1585,3 +1585,433 @@
 | 18:45 | Edited BlindensportGraz/TournamentsViews.swift | 7→8 lines | ~102 |
 | 18:45 | Edited BlindensportGraz/TournamentsViews.swift | 7→8 lines | ~100 |
 | 18:46 | Session end: 8 writes across 4 files (Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift, TeilnehmerlisteExport.swift) | 5 reads | ~22787 tok |
+| 18:50 | Session end: 8 writes across 4 files (Models.swift, TournamentsViews.swift, TeilnehmerlisteExportTests.swift, TeilnehmerlisteExport.swift) | 5 reads | ~22787 tok |
+
+## Session: 2026-08-18 22:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-19 14:42
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:50 | Created .supergoal/ios-best-practices-review-vR4hEq/applied-memories.md | — | ~541 |
+| 14:50 | Created .supergoal/ios-best-practices-review-vR4hEq/THINKING.md | — | ~1922 |
+| 14:52 | Created .supergoal/ios-best-practices-review-vR4hEq/ROADMAP.md | — | ~5050 |
+| 14:52 | Created .supergoal/ios-best-practices-review-vR4hEq/STATE.md | — | ~355 |
+| 14:52 | Created .supergoal/ios-best-practices-review-vR4hEq/phases/phase-1.md | — | ~1389 |
+| 14:53 | Created .supergoal/ios-best-practices-review-vR4hEq/phases/phase-2.md | — | ~1524 |
+| 14:53 | Created .supergoal/ios-best-practices-review-vR4hEq/phases/phase-3.md | — | ~2153 |
+| 14:54 | Created .supergoal/ios-best-practices-review-vR4hEq/phases/phase-4.md | — | ~1785 |
+| 14:54 | Created .supergoal/ios-best-practices-review-vR4hEq/phases/phase-5.md | — | ~2058 |
+| 14:55 | Created .supergoal/ios-best-practices-review-vR4hEq/phases/phase-6.md | — | ~1871 |
+| 14:55 | Edited .supergoal/ios-best-practices-review-vR4hEq/STATE.md | 4→7 lines | ~129 |
+| 15:08 | Edited .supergoal/ios-best-practices-review-vR4hEq/STATE.md | 6→6 lines | ~59 |
+| 15:08 | Session end: 12 writes across 10 files (applied-memories.md, THINKING.md, ROADMAP.md, STATE.md, phase-1.md) | 8 reads | ~35041 tok |
+| 15:12 | Session end: 12 writes across 10 files (applied-memories.md, THINKING.md, ROADMAP.md, STATE.md, phase-1.md) | 9 reads | ~35529 tok |
+| 15:22 | Created audit.md | — | ~7947 |
+| 15:22 | Edited audit.md | 2→2 lines | ~54 |
+| 15:22 | Session end: 14 writes across 11 files (applied-memories.md, THINKING.md, ROADMAP.md, STATE.md, phase-1.md) | 9 reads | ~44101 tok |
+
+## Session: 2026-08-20 09:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 09:09 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/applied-memories.md | — | ~396 |
+| 09:10 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/tools.md | — | ~493 |
+| 09:13 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/THINKING.md | — | ~1855 |
+| 09:16 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/ROADMAP.md | — | ~13974 |
+| 09:17 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | — | ~553 |
+| 09:17 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-1.md | — | ~1675 |
+| 09:17 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-2.md | — | ~1287 |
+| 09:18 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-3.md | — | ~1305 |
+| 09:18 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-4.md | — | ~1283 |
+| 09:18 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-5.md | — | ~1081 |
+| 09:19 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-6.md | — | ~1347 |
+| 09:19 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-7.md | — | ~1460 |
+| 09:19 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-8.md | — | ~1424 |
+| 09:20 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-9.md | — | ~1478 |
+| 09:20 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-10.md | — | ~1133 |
+| 09:20 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-11.md | — | ~944 |
+| 09:21 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-12.md | — | ~1568 |
+| 09:21 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-13.md | — | ~971 |
+| 09:21 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-14.md | — | ~1091 |
+| 09:21 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-15.md | — | ~1052 |
+| 09:22 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-16.md | — | ~1040 |
+| 09:22 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-17.md | — | ~1130 |
+| 09:22 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-18.md | — | ~1106 |
+| 09:23 | Created .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/phase-19.md | — | ~1837 |
+| 09:44 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | expanded (+12 lines) | ~413 |
+| 09:44 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/THINKING.md | 2→4 lines | ~106 |
+| 09:44 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 6→6 lines | ~63 |
+| 09:44 | Session end: 27 writes across 24 files (applied-memories.md, tools.md, THINKING.md, ROADMAP.md, STATE.md) | 12 reads | ~59363 tok |
+| 09:49 | Created goal.md | — | ~295 |
+| 09:49 | Session end: 28 writes across 25 files (applied-memories.md, tools.md, THINKING.md, ROADMAP.md, STATE.md) | 12 reads | ~59679 tok |
+| 09:51 | Session end: 28 writes across 25 files (applied-memories.md, tools.md, THINKING.md, ROADMAP.md, STATE.md) | 12 reads | ~59679 tok |
+
+## Session: 2026-08-20 11:05
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-20 20:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-22 11:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 12:20 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | modified 1() | ~446 |
+| 12:20 | Session end: 1 writes across 1 files (STATE.md) | 2 reads | ~6067 tok |
+| 12:22 | Session end: 1 writes across 1 files (STATE.md) | 2 reads | ~6067 tok |
+| 12:24 | Session end: 1 writes across 1 files (STATE.md) | 2 reads | ~6067 tok |
+| 12:33 | Edited ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/f77275b7-eb9b-48cf-a257-42428c82e0cc/scratchpad/cktool/dev-schema.ckdb | 8→8 lines | ~87 |
+| 12:35 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 7→8 lines | ~124 |
+| 12:38 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 8→7 lines | ~108 |
+| 12:38 | Edited BlindensportGraz/Models.swift | 8→7 lines | ~132 |
+| 12:38 | Edited BlindensportGraz/Models.swift | removed 22 lines | ~1 |
+| 12:38 | Edited BlindensportGraz/RootView.swift | 4→3 lines | ~36 |
+| 12:38 | Edited BlindensportGraz/RootView.swift | modified UUID() | ~110 |
+| 12:38 | Edited BlindensportGraz/RootView.swift | 4→3 lines | ~32 |
+| 12:38 | Edited BlindensportGraz/RootView.swift | 3→2 lines | ~20 |
+| 12:38 | Edited BlindensportGraz/RootView.swift | modified applyDesignatedRootGrant() | ~56 |
+| 12:39 | Edited BlindensportGraz/RootView.swift | 3→2 lines | ~30 |
+| 12:39 | Edited BlindensportGraz/AccountView.swift | modified onChange() | ~70 |
+| 12:40 | Edited BlindensportGraz/CLAUDE.md | 12→16 lines | ~338 |
+| 12:43 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 2→2 lines | ~12 |
+| 12:45 | Edited BlindensportGraz/Models.swift | expanded (+34 lines) | ~379 |
+| 12:45 | Edited BlindensportGraz/BlindensportGrazApp.swift | 3→4 lines | ~30 |
+| 12:46 | Edited BlindensportGraz/CloudKitSync.swift | modified deleteTrainingFavorite() | ~364 |
+| 12:46 | Edited BlindensportGraz/CloudKitSync.swift | added nullish coalescing | ~389 |
+| 12:46 | Edited BlindensportGraz/CloudKitSync.swift | 2→3 lines | ~42 |
+| 12:46 | Edited BlindensportGraz/RootView.swift | modified applyDesignatedRootGrant() | ~119 |
+| 12:46 | Edited BlindensportGraz/RootView.swift | 11→16 lines | ~201 |
+| 12:46 | Edited BlindensportGraz/RootView.swift | 10→15 lines | ~270 |
+| 12:46 | Edited BlindensportGraz/AccountView.swift | modified applyDesignatedRootGrantIfNeeded() | ~120 |
+| 12:46 | Edited BlindensportGraz/AccountView.swift | modified roleBinding() | ~168 |
+| 12:47 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added error handling | ~427 |
+| 12:47 | Edited BlindensportGraz/MembersViews.swift | 2→3 lines | ~35 |
+| 12:47 | Edited BlindensportGraz/MembersViews.swift | modified ToolbarItem() | ~131 |
+| 12:47 | Edited BlindensportGraz/MembersViews.swift | modified sheet() | ~59 |
+| 12:48 | Edited BlindensportGraz/AccountView.swift | added optional chaining | ~714 |
+| 12:48 | Created BlindensportGrazTests/RoleChangeLogTests.swift | — | ~978 |
+| 12:55 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 2 → 3 | ~6 |
+| 12:56 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~8 |
+| 12:56 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 2→2 lines | ~73 |
+| 12:58 | Created BlindensportGraz/Validation.swift | — | ~897 |
+| 12:58 | Edited BlindensportGraz/Validation.swift | 2→2 lines | ~40 |
+| 12:58 | Edited BlindensportGraz/RootView.swift | modified isPlausibleEmail() | ~142 |
+| 12:58 | Edited BlindensportGraz/RootView.swift | 3→4 lines | ~76 |
+| 12:58 | Edited BlindensportGraz/AccountView.swift | modified isPlausibleEmail() | ~210 |
+| 12:58 | Edited BlindensportGraz/MembersViews.swift | modified isPlausibleAustrianSVNR() | ~202 |
+| 12:58 | Edited BlindensportGraz/MembersViews.swift | modified isPlausibleAustrianSVNR() | ~121 |
+| 12:59 | Edited BlindensportGraz/MembersViews.swift | modified ibanChecksumIsValid() | ~150 |
+| 12:59 | Created BlindensportGrazTests/DesignatedRootTests.swift | — | ~1645 |
+| 12:59 | Edited BlindensportGrazTests/DesignatedRootTests.swift | modified testFullMatchGrantsRootAndAdmin() | ~83 |
+| 12:59 | Created BlindensportGrazTests/ValidationTests.swift | — | ~684 |
+| 13:07 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 3 → 4 | ~6 |
+| 13:07 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~40 |
+| 13:08 | Created RootCLI/Sources/clubmembersapi/LoginAttemptLimiter.swift | — | ~523 |
+| 13:08 | Edited RootCLI/Sources/clubmembersapi/Auth.swift | added optional chaining | ~396 |
+| 13:08 | Edited RootCLI/Sources/clubmembersapi/Configure.swift | 1→2 lines | ~47 |
+| 13:10 | Edited RootCLI/README.md | expanded (+52 lines) | ~1656 |
+| 13:10 | Edited RootCLI/README.md | modified limited() | ~235 |
+| 13:11 | Edited RootCLI/README.md | 4 → 5 | ~4 |
+| 13:11 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 4 → 5 | ~6 |
+| 13:11 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~42 |
+| 13:12 | Created BlindensportGraz/CKSchema.swift | — | ~1953 |
+| 13:14 | Created BlindensportGraz/CloudKitSync.swift | — | ~14482 |
+| 13:23 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 5 → 6 | ~6 |
+| 13:23 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~38 |
+| 13:25 | Created BlindensportGraz/CloudKitSync.swift | — | ~2526 |
+| 13:25 | Created BlindensportGraz/CloudKitSync+Team.swift | — | ~1238 |
+| 13:25 | Created BlindensportGraz/CloudKitSync+TeamMembership.swift | — | ~871 |
+| 13:26 | Created BlindensportGraz/CloudKitSync+Events.swift | — | ~3232 |
+| 13:26 | Created BlindensportGraz/CloudKitSync+Attendance.swift | — | ~945 |
+| 13:26 | Created BlindensportGraz/CloudKitSync+EventParticipation.swift | — | ~530 |
+| 13:26 | Created BlindensportGraz/CloudKitSync+EventImage.swift | — | ~1023 |
+| 13:27 | Created BlindensportGraz/CloudKitSync+TrainingFavorite.swift | — | ~1138 |
+| 13:27 | Created BlindensportGraz/CloudKitSync+UserIdentity.swift | — | ~783 |
+| 13:28 | Created BlindensportGraz/CloudKitSync+Member.swift | — | ~1495 |
+| 13:28 | Created BlindensportGraz/CloudKitSync+RoleChangeLog.swift | — | ~721 |
+| 13:28 | Created BlindensportGraz/CloudKitSync+Subscriptions.swift | — | ~1086 |
+| 13:31 | Edited BlindensportGraz/CloudKitSync.swift | "print()" → "print" | ~22 |
+| 13:48 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 6 → 7 | ~6 |
+| 13:48 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~41 |
+| 13:52 | Created BlindensportGraz/AppRole.swift | — | ~714 |
+| 13:52 | Created BlindensportGraz/MembershipRole.swift | — | ~875 |
+| 13:52 | Created BlindensportGraz/Sport.swift | — | ~1036 |
+| 13:53 | Edited BlindensportGraz/SportIcons.swift | modified symbolName() | ~655 |
+| 13:53 | Edited BlindensportGraz/SportIcons.swift | modified path() | ~74 |
+| 13:53 | Created BlindensportGraz/User.swift | — | ~1006 |
+| 13:53 | Edited BlindensportGraz/User.swift | inline fix | ~9 |
+| 13:53 | Created BlindensportGraz/Member.swift | — | ~1947 |
+| 13:54 | Created BlindensportGraz/Team.swift | — | ~823 |
+| 13:54 | Created BlindensportGraz/TeamMembership.swift | — | ~804 |
+| 13:54 | Edited BlindensportGraz/TeamMembership.swift | inline fix | ~11 |
+| 13:54 | Created BlindensportGraz/SportEvent.swift | — | ~1090 |
+| 13:54 | Created BlindensportGraz/Tournament.swift | — | ~274 |
+| 13:54 | Created BlindensportGraz/Training.swift | — | ~405 |
+| 13:55 | Created BlindensportGraz/TrainingFavorite.swift | — | ~2839 |
+| 13:55 | Created BlindensportGraz/Attendance.swift | — | ~432 |
+| 13:55 | Created BlindensportGraz/EventImage.swift | — | ~212 |
+| 13:55 | Created BlindensportGraz/EventParticipation.swift | — | ~156 |
+| 13:55 | Created BlindensportGraz/RoleChangeLog.swift | — | ~477 |
+| 13:56 | Edited BlindensportGraz/User.swift | inline fix | ~11 |
+| 13:56 | Edited BlindensportGraz/TeamMembership.swift | inline fix | ~14 |
+| 13:56 | Edited BlindensportGraz/CloudKitSync+UserIdentity.swift | inline fix | ~17 |
+| 13:56 | Edited BlindensportGraz/CloudKitSync+UserIdentity.swift | inline fix | ~27 |
+| 13:56 | Edited BlindensportGraz/CloudKitSync+TeamMembership.swift | inline fix | ~19 |
+| 13:56 | Edited BlindensportGraz/CloudKitSync+TeamMembership.swift | inline fix | ~29 |
+| 13:56 | Edited BlindensportGraz/PraeCalculation.swift | inline fix | ~20 |
+| 13:57 | Edited BlindensportGraz/AccountView.swift | modified roleBinding() | ~297 |
+| 13:58 | Edited BlindensportGraz/AccountView.swift | 5→5 lines | ~59 |
+| 13:59 | Edited BlindensportGraz/TournamentsViews.swift | modified isSportler() | ~259 |
+| 13:59 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | 5→5 lines | ~56 |
+| 13:59 | Edited BlindensportGraz/TeamImportExport.swift | inline fix | ~16 |
+| 13:59 | Edited BlindensportGraz/TeamImportExport.swift | 6→6 lines | ~73 |
+| 14:00 | Edited BlindensportGraz/TeamsViews.swift | modified roleBinding() | ~130 |
+| 14:00 | Edited BlindensportGraz/TeamsViews.swift | inline fix | ~32 |
+| 14:00 | Edited BlindensportGraz/TeamsViews.swift | inline fix | ~33 |
+| 14:00 | Edited BlindensportGraz/MemberListView.swift | inline fix | ~19 |
+| 14:01 | Edited BlindensportGrazTests/RoleChangeLogTests.swift | 2→2 lines | ~48 |
+| 14:01 | Edited BlindensportGrazTests/RoleChangeLogTests.swift | 4→4 lines | ~71 |
+| 14:02 | Edited BlindensportGrazTests/DesignatedRootTests.swift | 2→2 lines | ~21 |
+| 14:04 | Edited BlindensportGraz/AppRole.swift | "user.role == " → "user.role" | ~22 |
+| 14:04 | Edited BlindensportGraz/Sport.swift | 3→4 lines | ~64 |
+| 14:04 | Created BlindensportGrazTests/RoleAndSportEnumTests.swift | — | ~1540 |
+| 14:04 | Edited BlindensportGrazTests/RoleAndSportEnumTests.swift | 1→2 lines | ~19 |
+| 14:13 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 7 → 8 | ~6 |
+| 14:13 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~46 |
+| 14:14 | Created BlindensportGraz/ServiceFailureSignal.swift | — | ~262 |
+| 14:14 | Created BlindensportGraz/PersistenceService.swift | — | ~753 |
+| 14:14 | Created BlindensportGraz/TeamService.swift | — | ~274 |
+| 14:15 | Created BlindensportGraz/TeamMembershipService.swift | — | ~245 |
+| 14:15 | Created BlindensportGraz/SportEventService.swift | — | ~166 |
+| 14:15 | Created BlindensportGraz/TrainingService.swift | — | ~126 |
+| 14:15 | Created BlindensportGraz/TournamentService.swift | — | ~129 |
+| 14:15 | Created BlindensportGraz/UserService.swift | — | ~221 |
+| 14:15 | Created BlindensportGraz/MemberService.swift | — | ~277 |
+| 14:15 | Created BlindensportGraz/EventImageService.swift | — | ~227 |
+| 14:16 | Created BlindensportGraz/TrainingFavoriteService.swift | — | ~381 |
+| 14:16 | Created BlindensportGraz/AttendanceService.swift | — | ~151 |
+| 14:16 | Created BlindensportGraz/EventParticipationService.swift | — | ~139 |
+| 14:16 | Created BlindensportGraz/RoleChangeLogService.swift | — | ~284 |
+| 14:16 | Created BlindensportGraz/SyncOrchestrationService.swift | — | ~305 |
+| 14:17 | Edited BlindensportGraz/RootView.swift | 4→4 lines | ~48 |
+| 14:17 | Edited BlindensportGraz/RootView.swift | 16→15 lines | ~195 |
+| 14:17 | Edited BlindensportGraz/RootView.swift | modified applyDesignatedRootGrant() | ~112 |
+| 14:17 | Edited BlindensportGraz/RootView.swift | 13→13 lines | ~207 |
+| 14:17 | Edited BlindensportGraz/RootView.swift | 7→5 lines | ~66 |
+| 14:17 | Edited BlindensportGraz/RootView.swift | 15→14 lines | ~259 |
+| 14:17 | Edited BlindensportGraz/AccountView.swift | modified applyDesignatedRootGrantIfNeeded() | ~146 |
+| 14:17 | Edited BlindensportGraz/AccountView.swift | 7→5 lines | ~55 |
+| 14:18 | Edited BlindensportGraz/AccountView.swift | modified roleBinding() | ~184 |
+| 14:18 | Edited BlindensportGraz/AccountView.swift | modified ForEach() | ~160 |
+| 14:18 | Edited BlindensportGraz/AccountView.swift | added nullish coalescing | ~148 |
+| 14:18 | Edited BlindensportGraz/AccountView.swift | 4→4 lines | ~39 |
+| 14:18 | Edited BlindensportGraz/MembersViews.swift | 3→3 lines | ~33 |
+| 14:19 | Edited BlindensportGraz/MembersViews.swift | modified deleteMembers() | ~67 |
+| 14:19 | Edited BlindensportGraz/MembersViews.swift | 4→8 lines | ~104 |
+| 14:19 | Edited BlindensportGraz/MembersViews.swift | modified Button() | ~179 |
+| 14:19 | Edited BlindensportGraz/MembersViews.swift | 6→5 lines | ~29 |
+| 14:19 | Edited BlindensportGraz/MembersViews.swift | 9→8 lines | ~43 |
+| 14:19 | Edited BlindensportGraz/MembersViews.swift | 4→3 lines | ~62 |
+| 14:20 | Edited BlindensportGraz/TeamsViews.swift | 4→4 lines | ~54 |
+| 14:20 | Edited BlindensportGraz/TeamsViews.swift | modified deleteTeams() | ~60 |
+| 14:20 | Edited BlindensportGraz/TeamsViews.swift | 8→5 lines | ~67 |
+| 14:20 | Edited BlindensportGraz/TeamsViews.swift | 6→5 lines | ~42 |
+| 14:20 | Edited BlindensportGraz/TeamsViews.swift | 6→5 lines | ~69 |
+| 14:21 | Edited BlindensportGraz/TeamsViews.swift | 5→4 lines | ~69 |
+| 14:21 | Edited BlindensportGraz/EventsViews.swift | 4→3 lines | ~44 |
+| 14:21 | Edited BlindensportGraz/EventsViews.swift | modified deleteEvents() | ~251 |
+| 14:21 | Edited BlindensportGraz/EventsViews.swift | modified Button() | ~96 |
+| 14:21 | Edited BlindensportGraz/EventsViews.swift | modified addImage() | ~132 |
+| 14:22 | Edited BlindensportGraz/TournamentsViews.swift | 5→4 lines | ~58 |
+| 14:22 | Edited BlindensportGraz/TournamentsViews.swift | modified attendance() | ~376 |
+| 14:22 | Edited BlindensportGraz/TournamentsViews.swift | 3→3 lines | ~29 |
+| 14:22 | Edited BlindensportGraz/TournamentsViews.swift | modified deleteTournaments() | ~104 |
+| 14:22 | Edited BlindensportGraz/TrainingsViews.swift | modified deleteFavorite() | ~233 |
+| 14:23 | Edited BlindensportGraz/TrainingsViews.swift | reduced (-7 lines) | ~244 |
+| 14:23 | Edited BlindensportGraz/TrainingsViews.swift | modified attendance() | ~377 |
+| 14:23 | Edited BlindensportGraz/TrainingsViews.swift | 5→5 lines | ~42 |
+| 14:23 | Edited BlindensportGraz/TrainingsViews.swift | modified deleteTrainings() | ~103 |
+| 14:24 | Edited BlindensportGraz/MemberService.swift | modified saveBatch() | ~227 |
+| 14:24 | Edited BlindensportGraz/MemberImportExport.swift | 5→2 lines | ~39 |
+| 14:24 | Edited BlindensportGraz/TrainingService.swift | modified save() | ~325 |
+| 14:24 | Edited BlindensportGraz/TrainingImportExport.swift | 3→4 lines | ~45 |
+| 14:24 | Edited BlindensportGraz/TrainingImportExport.swift | 6→6 lines | ~39 |
+| 14:25 | Edited BlindensportGraz/TeamImportExport.swift | modified importMembership() | ~781 |
+| 14:25 | Edited BlindensportGraz/TeamImportExport.swift | modified findExistingTeam() | ~539 |
+| 14:25 | Edited BlindensportGraz/TeamService.swift | modified saveImportBatch() | ~296 |
+| 14:26 | Edited BlindensportGraz/RoleChangeLogService.swift | added 1 import(s) | ~10 |
+| 14:27 | Edited BlindensportGraz/TrainingFavoriteService.swift | added 1 import(s) | ~10 |
+| 14:28 | Edited BlindensportGraz/CloudKitSync+RoleChangeLog.swift | removed 13 lines | ~17 |
+| 14:28 | Edited BlindensportGraz/CloudKitSync.swift | 3→8 lines | ~127 |
+| 14:28 | Edited BlindensportGraz/CloudKitSync+Team.swift | 5→8 lines | ~86 |
+| 14:28 | Created BlindensportGrazTests/PersistenceServiceTests.swift | — | ~1323 |
+| 14:55 | Edited BlindensportGrazTests/PersistenceServiceTests.swift | removed 22 lines | ~20 |
+| 15:16 | Session end: 187 writes across 73 files (STATE.md, dev-schema.ckdb, RootCLI.swift, Models.swift, RootView.swift) | 34 reads | ~173404 tok |
+| 15:17 | Session end: 187 writes across 73 files (STATE.md, dev-schema.ckdb, RootCLI.swift, Models.swift, RootView.swift) | 34 reads | ~173404 tok |
+| 15:20 | Created BlindensportGraz/PersistenceService.swift | — | ~968 |
+| 15:20 | Created BlindensportGrazTests/PersistenceServiceTests.swift | — | ~1138 |
+| 15:21 | Session end: 189 writes across 73 files (STATE.md, dev-schema.ckdb, RootCLI.swift, Models.swift, RootView.swift) | 36 reads | ~177501 tok |
+| 15:31 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 8 → 9 | ~6 |
+| 15:31 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~46 |
+| 15:32 | Created Shared/ClubSchema/Package.swift | — | ~296 |
+| 15:33 | Created Shared/ClubSchema/Sources/ClubSchema/MemberField.swift | — | ~288 |
+| 15:33 | Created Shared/ClubSchema/Sources/ClubSchema/ClubMemberRecord.swift | — | ~831 |
+| 15:33 | Created Shared/ClubSchema/Tests/ClubSchemaTests/ClubMemberRecordTests.swift | — | ~336 |
+| 15:34 | Edited RootCLI/Package.swift | 16→21 lines | ~304 |
+| 15:34 | Created RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | — | ~1414 |
+| 15:34 | Edited RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | expanded (+10 lines) | ~189 |
+| 15:34 | Edited RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift | removed 9 lines | ~37 |
+| 15:35 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | 4→7 lines | ~78 |
+| 15:37 | Edited project.yml | 4→8 lines | ~86 |
+| 15:37 | Edited project.yml | 2→3 lines | ~22 |
+| 15:37 | Edited BlindensportGraz/CKSchema.swift | 23→28 lines | ~443 |
+| 15:37 | Edited BlindensportGraz/CKSchema.swift | added 1 import(s) | ~24 |
+| 15:37 | Edited Shared/ClubSchema/Sources/ClubSchema/MemberField.swift | inline fix | ~10 |
+| 15:38 | Edited Shared/ClubSchema/Sources/ClubSchema/MemberField.swift | inline fix | ~4 |
+| 15:39 | Session end: 206 writes across 80 files (STATE.md, dev-schema.ckdb, RootCLI.swift, Models.swift, RootView.swift) | 42 reads | ~189483 tok |
+| 15:44 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 9 → 10 | ~6 |
+| 15:44 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~38 |
+| 15:45 | Created BlindensportGraz/SyncState.swift | — | ~639 |
+| 15:45 | Edited BlindensportGraz/CloudKitSync.swift | modified performWithRetry() | ~274 |
+| 15:46 | Edited BlindensportGraz/CloudKitSync.swift | 5→5 lines | ~78 |
+| 15:46 | Edited BlindensportGraz/CloudKitSync.swift | 3→3 lines | ~53 |
+| 15:46 | Edited BlindensportGraz/CloudKitSync.swift | modified syncAll() | ~41 |
+| 15:46 | Edited BlindensportGraz/CloudKitSync.swift | 5→6 lines | ~61 |
+| 15:46 | Created BlindensportGraz/NetworkMonitor.swift | — | ~587 |
+| 15:47 | Created BlindensportGraz/SyncStatusBanner.swift | — | ~663 |
+| 15:47 | Edited BlindensportGraz/RootView.swift | modified safeAreaInset() | ~123 |
+| 15:47 | Edited BlindensportGraz/BlindensportGrazApp.swift | added 1 import(s) | ~13 |
+| 15:47 | Edited BlindensportGraz/BlindensportGrazApp.swift | added nullish coalescing | ~768 |
+| 15:48 | Created BlindensportGrazTests/SyncStateTests.swift | — | ~447 |
+| 15:48 | Created BlindensportGrazTests/NetworkMonitorTests.swift | — | ~524 |
+| 15:48 | Edited BlindensportGrazTests/SyncStateTests.swift | inline fix | ~18 |
+| 15:49 | Session end: 222 writes across 85 files (STATE.md, dev-schema.ckdb, RootCLI.swift, Models.swift, RootView.swift) | 42 reads | ~194192 tok |
+| 15:55 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 10 → 11 | ~6 |
+| 15:55 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~39 |
+| 15:57 | Edited BlindensportGraz/KostZViews.swift | expanded (+8 lines) | ~219 |
+| 15:57 | Edited BlindensportGraz/KostZViews.swift | inline fix | ~33 |
+| 15:57 | Edited BlindensportGraz/KostZViews.swift | modified unfiltered() | ~255 |
+| 15:58 | Edited BlindensportGraz/KostZViews.swift | 15→16 lines | ~293 |
+| 15:58 | Edited BlindensportGraz/KostZViews.swift | 3→7 lines | ~117 |
+| 15:58 | Edited BlindensportGraz/SammelabrechnungViews.swift | expanded (+6 lines) | ~191 |
+| 15:59 | Edited BlindensportGraz/SammelabrechnungViews.swift | 3→6 lines | ~96 |
+| 15:59 | Edited BlindensportGraz/RootView.swift | modified unfiltered() | ~129 |
+| 15:59 | Edited BlindensportGraz/RootView.swift | 5→8 lines | ~95 |
+| 15:59 | Edited BlindensportGraz/TeamsViews.swift | modified unfiltered() | ~106 |
+| 15:59 | Edited BlindensportGraz/CloudKitSync+Subscriptions.swift | 7→11 lines | ~156 |
+| 16:00 | Created BlindensportGrazTests/QueryPredicateTests.swift | — | ~772 |
+| 16:01 | Session end: 236 writes across 88 files (STATE.md, dev-schema.ckdb, RootCLI.swift, Models.swift, RootView.swift) | 45 reads | ~202712 tok |
+| 16:07 | Edited BlindensportGraz/KostZViews.swift | modified unfiltered() | ~319 |
+| 16:08 | Edited BlindensportGraz/KostZViews.swift | Query() → above() | ~95 |
+| 16:08 | Edited BlindensportGraz/SammelabrechnungViews.swift | Query() → unfiltered() | ~203 |
+| 16:08 | Edited BlindensportGraz/SammelabrechnungViews.swift | 6→5 lines | ~63 |
+| 16:09 | Session end: 240 writes across 88 files (STATE.md, dev-schema.ckdb, RootCLI.swift, Models.swift, RootView.swift) | 45 reads | ~203744 tok |
+| 16:20 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 11 → 12 | ~6 |
+| 16:20 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~47 |
+| 16:21 | Edited BlindensportGraz/EventsViews.swift | 1→2 lines | ~38 |
+| 16:21 | Edited BlindensportGraz/TeamsViews.swift | 1→2 lines | ~38 |
+| 16:21 | Edited BlindensportGraz/MembersViews.swift | 1→2 lines | ~39 |
+| 16:21 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~71 |
+| 16:21 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~70 |
+| 16:22 | Edited BlindensportGraz/TrainingsViews.swift | modified Button() | ~320 |
+| 16:23 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | modified Picker() | ~195 |
+| 16:23 | Edited BlindensportGraz/DashboardView.swift | modified sectionHeader() | ~162 |
+| 16:23 | Edited BlindensportGraz/DashboardView.swift | modified VStack() | ~161 |
+
+## Session: 2026-08-22 16:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:27 | Edited BlindensportGraz/EventImagesViews.swift | 8→9 lines | ~149 |
+| 16:28 | Edited BlindensportGraz/MembersViews.swift | 3→7 lines | ~130 |
+| 16:28 | Edited BlindensportGraz/TournamentsViews.swift | modified contains() | ~282 |
+| 16:28 | Edited BlindensportGraz/TournamentsViews.swift | modified contains() | ~239 |
+| 16:29 | Edited BlindensportGraz/TournamentsViews.swift | 6→7 lines | ~61 |
+| 16:29 | Edited BlindensportGraz/TrainingsViews.swift | modified contains() | ~204 |
+| 16:29 | Edited BlindensportGraz/TrainingsViews.swift | modified contains() | ~236 |
+| 16:29 | Edited BlindensportGraz/EventsViews.swift | modified contains() | ~269 |
+| 16:29 | Edited BlindensportGraz/EventsViews.swift | modified contains() | ~239 |
+
+## Session: 2026-08-22 17:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:35 | Verified phase 12 (accessibility labels) work was already complete from a prior interrupted session — STATE.md was stale (marked pending). Re-ran full mandatory command set: xcodegen generate, xcodebuild build, grep count (7 files), xcodebuild test (26 pass, 16 known pre-existing CloudKit-entitlement failures, 0 new). Updated STATE.md to phase 13. | STATE.md | pass | ~15k |
+| 17:44 | Phase 13 (Dynamic Type pass): audited MemberListView, TeamsViews roster row, all 4 Add*View forms, TrainingRow/TournamentRow/MemberRow — all wrap safely (no fixed frames on scalable text). Found 4 real clip risks via grep for `.frame(width:` on text-bearing views: TeamRow avatar initial, EventRow date badge, PRAE amount TextFields (Training+Tournament detail). Fixed all 4 with `.minimumScaleFactor`+`.lineLimit(1)` (badges) or `.minimumScaleFactor` alone (numeric fields). Build+test clean (16 known baseline failures only). | TeamsViews.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift | pass | ~25k |
+| 18:35 | Phase 18 (receipt/document attachments): new ExpenseReceipt model (@Attribute(.externalStorage) imageData, uploadedBy/uploadedAt/note, exactly-one-of month+year/tournament — mirrors KostZMonthSummary/KostZTournamentSummary's own period split, NOT tied to a SportEvent like EventImage since KostZ/PRAE aren't per-event). Scoping decision documented in the model's own doc comment: images only, no PDF (materially more work, no shared UI with the image pipeline) — follow-up noted, not half-implemented. CloudKitSync+ExpenseReceipt.swift mirrors CloudKitSync+EventImage.swift's CKAsset-via-temp-file+defer pattern exactly (push/delete/pull), wired into syncAll after pullEventImages. ExpenseReceiptService (save/delete via PersistenceService, Phase 8 layer). New ExpenseReceiptsSection reusable UI (mirrors EventImagesSection) — deliberately NO nested .sheet for full-screen view (both KostZ screens embedding it are themselves already sheet-presented — inline expand-in-place instead, same VoiceOver-nested-sheet avoidance as everywhere else in this app). Embedded on KostZCalculationView (month) + KostZTournamentCalculationView (tournament) only, NOT duplicated onto PRAE screens — documented why (KostZ is the existing club-wide per-period document; PRAE's per-recipient scope doesn't match ExpenseReceipt's month/tournament grain). Delete restricted to uploader-or-admin (canDelete, same pattern as EventImageGalleryView). 3 new tests (ExpenseReceiptCloudKitRoundTripTests) — exercise real CKRecord/CKAsset field mapping directly (safe, no CKContainer touched) without going through CloudKitSync.shared (which would hit the bug-202 sandbox crash). 139 pass/16 baseline fail. | ExpenseReceipt.swift (new), ExpenseReceiptService.swift (new), CloudKitSync+ExpenseReceipt.swift (new), ExpenseReceiptViews.swift (new), CKSchema.swift, CloudKitSync.swift, BlindensportGrazApp.swift, KostZViews.swift, TrainingsViews.swift, TournamentsViews.swift, ExpenseReceiptCloudKitRoundTripTests.swift (new) | pass | ~85k |
+| 18:21 | Phase 17 (calendar/EventKit integration): chose .ics+ShareLink over EKEventStore (documented rationale in CalendarEventExport.swift's doc comment — this app's VoiceOver freeze history with UIViewControllerRepresentable wrappers, matches the phase spec's own steer). New CalendarEventExport.swift: pure fields(for:) mapping (SportEvent -> title/location/start/end, combines venue+street+zip/city+country) + icsFile(for:) RFC5545 renderer with text escaping. Add-on-demand-only stale-entry behavior explicitly documented (no EKEventStore link ever created, re-share to get an updated .ics — matches this app's "no invented delete/update path" scoping precedent from SportEventService). Wired as a ShareLink toolbar button (calendar.badge.plus, "Zum Kalender hinzufügen" label) on both TrainingDetailView and TournamentDetailView, eagerly regenerated via .task(id: CalendarEventExport.fields(for:)) — EventFields is Equatable so it works directly as a task id. 6 new tests (CalendarEventExportTests). 136 pass/16 baseline fail. | CalendarEventExport.swift (new), TrainingsViews.swift, TournamentsViews.swift, CalendarEventExportTests.swift (new) | pass | ~70k |
+| 18:12 | Phase 16 (season/year reporting rollup): added SammelabrechnungExporter.exportSeason(year:allMemberships:tournaments:sports:in:) — loops 12 months + in-year tournaments calling existing KostZCalculator/PraeCalculator/KostZExporter/PraeExporter (skips periods with zero eligible people, so an empty season = valid zero-entry zip, not 12 empty KostZ sheets), plus every sport's 2 Trainingsfrequenzliste half-years via TrainingsfrequenzlisteCalculator/Exporter (skips half-years with zero training dates). Files prefixed by period ("03-2026_KostZ.xlsx", "Turnier_<title>_KostZ.xlsx", "<Sport>_H1-2026_Trainingsfrequenzliste.xlsx") so nothing collides in the flat zip. New SammelabrechnungSeasonView (year Stepper + eager ShareLink, same pattern as the other export screens) wired into TrainingsListView's Berichte menu. 3 new tests (SammelabrechnungSeasonExportTests) — data case, empty-season case, Trainingsfrequenzliste-inclusion case. 130 pass/16 baseline fail. | SammelabrechnungExport.swift, SammelabrechnungViews.swift, TrainingsViews.swift, SammelabrechnungSeasonExportTests.swift (new) | pass | ~65k |
+| 18:02 | Phase 15 (attendance-trends dashboard): new AttendanceTrends.swift (pure monthlyRates/records aggregation over Attendance, no UI dep) + AttendanceTrendsView.swift (Charts LineMark/PointMark, team/person scope Pickers, AXChartDescriptorRepresentable for VoiceOver, ContentUnavailableView for empty data). Reachable via new toolbar button on TrainingsListView gated by canManageEvents (admin-or-coach AppRole check, not isAdmin — deliberately broader than the finance-report Berichte menu next to it). 4 new tests (AttendanceTrendsTests). Fixed one real compile error (AXNumericDataAxisDescriptor requires gridlinePositions:, not optional). 127 pass/16 baseline fail (verified via xcresulttool per the phase-14 lesson — tail -300 still wasn't enough to catch the new suite in the raw log, xcresult is the only reliable source). | AttendanceTrends.swift (new), AttendanceTrendsView.swift (new), TrainingsViews.swift, AttendanceTrendsTests.swift (new) | pass | ~60k |
+| 17:53 | Phase 14 (local reminder notifications): added `EventReminderService` (UNCalendarNotificationTrigger, 2h lead time, protocol-injected `NotificationScheduling` for testability without touching the real UNUserNotificationCenter — same rationale as avoiding the CloudKit sandbox crash). Wired into TrainingService.save/TournamentService.save (reschedule) and new TrainingService.delete/TournamentService.delete (cancel; also repurposed PersistenceService.deleteAndPush's remoteDelete closure param for non-CloudKit cleanup). Updated TrainingsViews/TournamentsViews swipe-delete call sites to route through the new service deletes. 9 new tests (EventReminderServiceTests) — pure fireDate/buildRequest computation + fake-center reschedule/cancel call-order assertions. Reused existing PushNotifications.requestAuthorizationIfNeeded() (already requests .alert/.sound/.badge, covers local notifications too — no new permission request needed). Full xcresult check: 123 passed/16 known-baseline failed (a `tail -80` pipe truncated the live log and briefly looked like the new tests didn't run — false alarm, verified via `xcrun xcresulttool get test-results` against the .xcresult bundle directly). Lesson: don't trust a tail-piped xcodebuild test log's suite/count summary lines when the pipe truncates the stream — read the .xcresult with xcresulttool for ground truth. | EventReminderService.swift (new), TrainingService.swift, TournamentService.swift, TrainingsViews.swift, TournamentsViews.swift, EventReminderServiceTests.swift (new) | pass | ~55k |
+| 17:35 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 4→4 lines | ~26 |
+| 17:35 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~135 |
+| 17:37 | Edited BlindensportGraz/TeamsViews.swift | 6→11 lines | ~143 |
+| 17:37 | Edited BlindensportGraz/EventsViews.swift | expanded (+7 lines) | ~212 |
+| 17:37 | Edited BlindensportGraz/TrainingsViews.swift | 3→7 lines | ~119 |
+| 17:37 | Edited BlindensportGraz/TournamentsViews.swift | 3→7 lines | ~114 |
+| 17:44 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 13 → 14 | ~6 |
+| 17:44 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~97 |
+| 17:45 | Created BlindensportGraz/EventReminderService.swift | — | ~1210 |
+| 17:46 | Edited BlindensportGraz/TrainingService.swift | modified save() | ~392 |
+| 17:46 | Edited BlindensportGraz/EventReminderService.swift | modified removePendingNotificationRequests() | ~63 |
+| 17:46 | Edited BlindensportGraz/TournamentService.swift | modified save() | ~401 |
+| 17:46 | Edited BlindensportGraz/TournamentsViews.swift | modified deleteTournaments() | ~159 |
+| 17:46 | Edited BlindensportGraz/TrainingsViews.swift | modified deleteTrainings() | ~154 |
+| 17:47 | Created BlindensportGrazTests/EventReminderServiceTests.swift | — | ~1754 |
+| 17:47 | Edited BlindensportGrazTests/EventReminderServiceTests.swift | modified testRescheduleRemovesOldRequestBeforeAddingNewOne() | ~425 |
+| 17:55 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 14 → 15 | ~6 |
+| 17:55 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~84 |
+| 17:57 | Created BlindensportGraz/AttendanceTrends.swift | — | ~606 |
+| 17:57 | Created BlindensportGraz/AttendanceTrendsView.swift | — | ~1914 |
+| 17:57 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~406 |
+| 17:57 | Edited BlindensportGraz/TrainingsViews.swift | 2→3 lines | ~43 |
+| 17:57 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~70 |
+| 17:58 | Created BlindensportGrazTests/AttendanceTrendsTests.swift | — | ~1543 |
+| 17:58 | Edited BlindensportGraz/AttendanceTrendsView.swift | modified AXNumericDataAxisDescriptor() | ~63 |
+| 18:05 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 15 → 16 | ~6 |
+| 18:05 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~80 |
+| 18:06 | Edited BlindensportGraz/SammelabrechnungExport.swift | added 1 import(s) | ~15 |
+| 18:06 | Edited BlindensportGraz/SammelabrechnungExport.swift | modified exportSeason() | ~1170 |
+| 18:07 | Edited BlindensportGraz/SammelabrechnungViews.swift | added nullish coalescing | ~957 |
+| 18:07 | Edited BlindensportGraz/TrainingsViews.swift | 2→5 lines | ~94 |
+| 18:07 | Edited BlindensportGraz/TrainingsViews.swift | 1→2 lines | ~32 |
+| 18:07 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~56 |
+| 18:07 | Created BlindensportGrazTests/SammelabrechnungSeasonExportTests.swift | — | ~1676 |
+| 18:14 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 16 → 17 | ~6 |
+| 18:14 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~88 |
+| 18:15 | Created BlindensportGraz/CalendarEventExport.swift | — | ~1388 |
+| 18:15 | Edited BlindensportGraz/TrainingsViews.swift | 6→11 lines | ~123 |
+| 18:15 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~240 |
+| 18:15 | Edited BlindensportGraz/TournamentsViews.swift | 3→7 lines | ~83 |
+| 18:15 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~155 |
+| 18:16 | Created BlindensportGrazTests/CalendarEventExportTests.swift | — | ~1193 |
+| 18:16 | Edited BlindensportGrazTests/CalendarEventExportTests.swift | modified testFieldsMapsTitleStartAndEndDirectlyFromTheEvent() | ~422 |
+| 18:23 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 17 → 18 | ~6 |
+| 18:23 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~95 |
+| 18:24 | Edited BlindensportGraz/BlindensportGrazApp.swift | 3→4 lines | ~31 |
+| 18:24 | Edited BlindensportGraz/CKSchema.swift | expanded (+11 lines) | ~125 |
+| 18:24 | Created BlindensportGraz/ExpenseReceipt.swift | — | ~548 |
+| 18:24 | Created BlindensportGraz/ExpenseReceiptService.swift | — | ~246 |
+| 18:24 | Created BlindensportGraz/CloudKitSync+ExpenseReceipt.swift | — | ~911 |
+| 18:24 | Edited BlindensportGraz/CloudKitSync.swift | 1→2 lines | ~32 |
+| 18:25 | Created BlindensportGraz/ExpenseReceiptViews.swift | — | ~1443 |
+| 18:25 | Edited BlindensportGraz/KostZViews.swift | 3→4 lines | ~45 |
+| 18:25 | Edited BlindensportGraz/KostZViews.swift | added optional chaining | ~291 |
+| 18:26 | Edited BlindensportGraz/KostZViews.swift | modified Section() | ~195 |
+| 18:26 | Edited BlindensportGraz/KostZViews.swift | added optional chaining | ~359 |
+| 18:26 | Edited BlindensportGraz/KostZViews.swift | modified Section() | ~184 |
+| 18:26 | Edited BlindensportGraz/TrainingsViews.swift | inline fix | ~16 |
+| 18:26 | Edited BlindensportGraz/TournamentsViews.swift | inline fix | ~24 |
+| 18:27 | Created BlindensportGrazTests/ExpenseReceiptCloudKitRoundTripTests.swift | — | ~1351 |
+| 18:33 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | 18 → 19 | ~6 |
+| 18:33 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | inline fix | ~96 |
+| 18:43 | Edited .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/STATE.md | expanded (+11 lines) | ~380 |
+| 18:48 | Edited .gitignore | 1→2 lines | ~11 |

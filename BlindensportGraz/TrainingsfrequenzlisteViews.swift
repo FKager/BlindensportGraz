@@ -64,6 +64,12 @@ struct TrainingsfrequenzlisteView: View {
                                 Text(half.label).tag(half)
                             }
                         }
+                        // The month range each half-year covers is only
+                        // visible once VoiceOver is already browsing the
+                        // options (each option's own label spells it out) —
+                        // this hint surfaces it right when the control
+                        // itself gets focus, audit.md Accessibility Finding 9.
+                        .accessibilityHint("1. Halbjahr: Jänner bis Juni. 2. Halbjahr: Juli bis Dezember.")
                         Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
                     }
                 }

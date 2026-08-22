@@ -1,7 +1,10 @@
 import Vapor
 import CloudKitS2SCore
 
-extension MemberRecord: Content {}
+// `MemberRecord` is a typealias for `ClubSchema.ClubMemberRecord` (Phase 9) —
+// this conformance is only ever added here, but the compiler can't see that
+// across module boundaries, hence `@retroactive`.
+extension MemberRecord: @retroactive Content {}
 
 /// Body shape for POST/PUT — same fields as `MemberRecord` minus `id`
 /// (assigned server-side on create, taken from the URL path on update).

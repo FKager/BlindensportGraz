@@ -39,12 +39,12 @@ final class SammelabrechnungExportTests: XCTestCase {
 
         let coach1 = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach1)
-        let membership1 = TeamMembership(member: coach1, team: team, role: "coach")
+        let membership1 = TeamMembership(member: coach1, team: team, role: .coach)
         context.insert(membership1)
 
         let coach2 = Member(firstName: "Bernd", lastName: "Helfer")
         context.insert(coach2)
-        let membership2 = TeamMembership(member: coach2, team: team, role: "assistant")
+        let membership2 = TeamMembership(member: coach2, team: team, role: .assistant)
         context.insert(membership2)
 
         let training = makeTraining(context, team: team, day: 5)
@@ -115,7 +115,7 @@ final class SammelabrechnungExportTests: XCTestCase {
         context.insert(team)
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         context.insert(membership)
         let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
                                      startDate: .now, endDate: .now, teams: [team])

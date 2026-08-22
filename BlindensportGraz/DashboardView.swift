@@ -80,7 +80,12 @@ struct DashboardView: View {
 
     private func sectionHeader(_ title: LocalizedStringKey, systemImage: String) -> some View {
         HStack {
+            // Purely decorative, paired with the text right next to it —
+            // same convention as SportGlyph (audit.md Positive Finding 6) —
+            // hidden so VoiceOver doesn't announce the raw SF Symbol name
+            // before/after the header text itself.
             Image(systemName: systemImage)
+                .accessibilityHidden(true)
             Text(title)
                 .font(.headline)
         }
@@ -97,9 +102,13 @@ struct StatCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
+            // Decorative — see sectionHeader's identical treatment above;
+            // `value`/`title` right below already say everything this card
+            // needs to communicate.
             Image(systemName: icon)
                 .font(.title2)
                 .foregroundStyle(color)
+                .accessibilityHidden(true)
             Text(value)
                 .font(.title)
                 .bold()

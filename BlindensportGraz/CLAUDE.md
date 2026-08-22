@@ -11,15 +11,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Core Models (Models.swift)
 All data models use SwiftData's `@Model` protocol with iCloud sync via `ModelContainer`:
 
-- **User**: User accounts with username, email, display name, and role (member/coach/admin)
+- **User**: App accounts with email, display name, and role (member/coach/admin)
+- **Member**: Club roster entry (address, contact info, membership number) — distinct from `User`
 - **Team**: Sport teams with name, sport type, description, and membership list
 - **TeamMembership**: Link between users and teams with roles (player/coach/assistant)
-- **SportEvent**: Events/tournaments with title, sport, location, date range, participations
+- **SportEvent**: Base class for events/tournaments with title, sport, location, date range, participations
 - **Tournament**: Competitions with venue, maxTeams count, status (planned/ongoing/finished)
 - **Training**: Training sessions with focus area, duration, location
+- **TrainingFavorite**: Saved recurring-training templates (title, sport, weekday, time range)
+- **Attendance**: Links a `TeamMembership` to a `SportEvent` with an attended flag and optional PRAE amount
+- **EventImage**: Photo attached to a `SportEvent` (or, via inheritance, a `Training`/`Tournament`)
 - **EventParticipation**: Link between users and events with status (invited/confirmed/declined)
 
-The `ModelContainer` is initialized in `BlindensportGrazApp.swift` with all 7 model types configured for persistent storage.
+The `ModelContainer` is initialized in `BlindensportGrazApp.swift` with all 11 model types configured for persistent storage.
 
 ### Application Structure
 ```

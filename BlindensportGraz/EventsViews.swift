@@ -27,7 +27,7 @@ struct AddEventView: View {
     // without this bypass it could never be assigned to anything.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
-        if user.role == "admin" { return allTeams }
+        if user.role == .admin { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
@@ -76,9 +76,11 @@ struct AddEventView: View {
                                     if selectedTeamIDs.contains(team.id) {
                                         Image(systemName: "checkmark")
                                             .foregroundStyle(.blue)
+                                            .accessibilityHidden(true)
                                     }
                                 }
                             }
+                            .accessibilityAddTraits(selectedTeamIDs.contains(team.id) ? .isSelected : [])
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
@@ -113,8 +115,7 @@ struct AddEventView: View {
                             teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
                             )
                         modelContext.insert(event)
-                        try? modelContext.save()
-                        CloudKitSync.shared.pushEvent(event)
+                        SportEventService.save(event, modelContext: modelContext)
                        dismiss()
                      }
                       .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -137,11 +138,11 @@ struct EventsListView: View {
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
-        return user.role == "admin" || user.role == "coach"
+        return user.role == .admin || user.role == .coach
     }
 
     var visibleEvents: [SportEvent] {
-        if currentUser?.role == "admin" { return events }
+        if currentUser?.role == .admin { return events }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
         return events.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }
@@ -165,12 +166,13 @@ struct EventsListView: View {
         }
         .navigationTitle("Events")
         .refreshable {
-            await CloudKitSync.shared.syncAll(modelContext: modelContext)
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
         }
         .toolbar {
             if canManageEvents {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showAdd = true } label: { Image(systemName: "plus") }
+                        .accessibilityLabel("Neues Event")
                 }
             }
         }
@@ -179,6 +181,10 @@ struct EventsListView: View {
         }
     }
 
+    // Plain `try?` here, outside the service layer, is deliberate: CloudKitSync
+    // never had a remote delete path for plain SportEvent records (see
+    // SportEventService.swift's doc comment) — there is no push/delete call for
+    // PersistenceService to gate on, only the local removal itself.
     private func deleteEvents(at offsets: IndexSet) {
         for index in offsets {
             modelContext.delete(events[index])
@@ -196,9 +202,16 @@ struct EventRow: View {
                 Text(event.startDate, format: .dateTime.day())
                       .font(.title2)
                       .bold()
+                      // Fixed-width date badge — shrink rather than clip at
+                      // large Dynamic Type sizes (audit.md Accessibility
+                      // Finding 4), matching TeamRow's avatar-badge fix.
+                      .minimumScaleFactor(0.5)
+                      .lineLimit(1)
                 Text(event.startDate, format: .dateTime.month(.abbreviated))
                       .font(.caption)
                       .foregroundStyle(.secondary)
+                      .minimumScaleFactor(0.5)
+                      .lineLimit(1)
               }
               .frame(width: 50)
               .padding(.vertical, 4)
@@ -230,14 +243,14 @@ struct EventDetailView: View {
       @State private var showMemberList = false
 
     var isAdmin: Bool {
-        currentUser?.role == "admin"
+        currentUser?.role == .admin
     }
 
     // Same admin-bypass as AddEventView.myTeams — an admin can reassign an
     // event to any team, not just ones they personally joined.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
-        if user.role == "admin" { return allTeams }
+        if user.role == .admin { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
@@ -279,9 +292,11 @@ struct EventDetailView: View {
                                 if event.teams.contains(where: { $0.id == team.id }) {
                                     Image(systemName: "checkmark")
                                         .foregroundStyle(.blue)
+                                        .accessibilityHidden(true)
                                 }
                             }
                         }
+                        .accessibilityAddTraits(event.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
                     }
                     Text("Keine Auswahl = für alle sichtbar")
                         .font(.caption)
@@ -309,8 +324,7 @@ struct EventDetailView: View {
                         Button("Selbst anmelden") {
                             let participation = EventParticipation(user: user, event: event, status: "confirmed")
                             modelContext.insert(participation)
-                            try? modelContext.save()
-                            CloudKitSync.shared.pushParticipation(participation)
+                            EventParticipationService.save(participation, modelContext: modelContext)
                            }
                        }
                   }
@@ -332,21 +346,17 @@ struct EventDetailView: View {
             MemberListView(itemName: event.title, teams: event.teams)
         }
         .onDisappear {
-            try? modelContext.save()
-            CloudKitSync.shared.pushEvent(event)
+            SportEventService.save(event, modelContext: modelContext)
         }
     }
 
     private func addImage(_ data: Data) {
         let image = EventImage(imageData: data, uploadedBy: currentUser?.id.uuidString ?? "", event: event)
         modelContext.insert(image)
-        try? modelContext.save()
-        CloudKitSync.shared.pushEventImage(image)
+        EventImageService.save(image, modelContext: modelContext)
     }
 
     private func deleteImage(_ image: EventImage) {
-        CloudKitSync.shared.deleteEventImage(image.id)
-        modelContext.delete(image)
-        try? modelContext.save()
+        EventImageService.delete(image, modelContext: modelContext)
     }
 }

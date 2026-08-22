@@ -36,7 +36,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         context.insert(team)
         let member = Member(firstName: "Anna", lastName: "Sportlerin")
         context.insert(member)
-        let membership = TeamMembership(member: member, team: team, role: "player")
+        let membership = TeamMembership(member: member, team: team, role: .player)
         context.insert(membership)
 
         let training1 = makeTraining(context, team: team, day: 5)
@@ -64,7 +64,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         context.insert(team)
         let member = Member(firstName: "Bernd", lastName: "Neu")
         context.insert(member)
-        let membership = TeamMembership(member: member, team: team, role: "player")
+        let membership = TeamMembership(member: member, team: team, role: .player)
         context.insert(membership)
         let training = makeTraining(context, team: team, day: 5)
         // No Attendance row inserted at all — matches the app's "created lazily
@@ -110,12 +110,12 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
 
         let member1 = Member(firstName: "Anna", lastName: "Damen")
         context.insert(member1)
-        let membership1 = TeamMembership(member: member1, team: team, role: "player")
+        let membership1 = TeamMembership(member: member1, team: team, role: .player)
         context.insert(membership1)
 
         let member2 = Member(firstName: "Bernd", lastName: "Herren")
         context.insert(member2)
-        let membership2 = TeamMembership(member: member2, team: otherTeam, role: "player")
+        let membership2 = TeamMembership(member: member2, team: otherTeam, role: .player)
         context.insert(membership2)
 
         let training1 = makeTraining(context, team: team, day: 5)
@@ -145,7 +145,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         for i in 0..<30 {
             let member = Member(firstName: "Person", lastName: String(format: "%02d", i))
             context.insert(member)
-            context.insert(TeamMembership(member: member, team: team, role: "player"))
+            context.insert(TeamMembership(member: member, team: team, role: .player))
         }
         // A team only counts as "assigned" (and so contributes its roster)
         // once it actually has a training in the period — matching the
@@ -166,7 +166,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         context.insert(team)
         let member = Member(firstName: "Anna", lastName: "Sportlerin")
         context.insert(member)
-        let membership = TeamMembership(member: member, team: team, role: "player")
+        let membership = TeamMembership(member: member, team: team, role: .player)
         context.insert(membership)
         let training = makeTraining(context, team: team, day: 5)
         context.insert(Attendance(event: training, membership: membership, attended: true))
@@ -388,7 +388,7 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         context.insert(team)
         let user = User(email: "franz@example.com", firstName: "Franz", lastName: "Kager")
         context.insert(user)
-        let membership = TeamMembership(user: user, team: team, role: "player")
+        let membership = TeamMembership(user: user, team: team, role: .player)
         context.insert(membership)
         let training = makeTraining(context, team: team, day: 5)
         context.insert(Attendance(event: training, membership: membership, attended: true))
@@ -420,17 +420,17 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
 
         let user = User(email: "franz@example.com", firstName: "Franz", lastName: "Kager")
         context.insert(user)
-        let userMembership = TeamMembership(user: user, team: team, role: "player")
+        let userMembership = TeamMembership(user: user, team: team, role: .player)
         context.insert(userMembership)
 
         let member1 = Member(firstName: "Anna", lastName: "Sportlerin")
         context.insert(member1)
-        let memberMembership1 = TeamMembership(member: member1, team: team, role: "player")
+        let memberMembership1 = TeamMembership(member: member1, team: team, role: .player)
         context.insert(memberMembership1)
 
         let member2 = Member(firstName: "Bernd", lastName: "Helfer")
         context.insert(member2)
-        let memberMembership2 = TeamMembership(member: member2, team: team, role: "coach")
+        let memberMembership2 = TeamMembership(member: member2, team: team, role: .coach)
         context.insert(memberMembership2)
 
         let training1 = makeTraining(context, team: team, day: 5)

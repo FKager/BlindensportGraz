@@ -39,8 +39,8 @@ struct TrainingsfrequenzlistePerson: Identifiable {
     var roleSuffix: String? {
         let isFemale = membership.member?.gender == "f"
         switch membership.role {
-        case "coach": return isFemale ? "Übungsleiterin" : "Übungsleiter"
-        case "assistant": return isFemale ? "Helferin" : "Helfer"
+        case .coach: return isFemale ? "Übungsleiterin" : "Übungsleiter"
+        case .assistant: return isFemale ? "Helferin" : "Helfer"
         default: return nil
         }
     }

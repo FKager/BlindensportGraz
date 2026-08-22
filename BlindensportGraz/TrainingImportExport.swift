@@ -131,6 +131,7 @@ enum TrainingImportExport {
 
         let allTeams = (try? modelContext.fetch(FetchDescriptor<Team>())) ?? []
         var workingTrainings = existingTrainings
+        var touched: [Training] = []
 
         for row in rows {
             let title = (row.title ?? "").trimmingCharacters(in: .whitespaces)
@@ -196,10 +197,10 @@ enum TrainingImportExport {
                 result.skippedDetails.append("Team \"\(name)\" bei \"\(title)\" nicht gefunden — nicht zugewiesen.")
             }
 
-            CloudKitSync.shared.pushTraining(training)
+            touched.append(training)
         }
 
-        try? modelContext.save()
+        TrainingService.saveBatch(touched, modelContext: modelContext)
         return result
     }
 

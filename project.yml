@@ -18,6 +18,10 @@ packages:
   ZIPFoundation:
     url: https://github.com/weichsel/ZIPFoundation.git
     from: 0.9.0
+  # Shared Member/ClubMember record shape (audit.md Architecture Finding 5) —
+  # also depended on by RootCLI/Package.swift, see Shared/ClubSchema/Package.swift.
+  ClubSchema:
+    path: Shared/ClubSchema
 targets:
   BlindensportGraz:
     type: application
@@ -30,6 +34,7 @@ targets:
           - "BlindensportGraz.entitlements"
     dependencies:
       - package: ZIPFoundation
+      - package: ClubSchema
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz

@@ -85,8 +85,31 @@ struct RootCLI {
         }
         let client = try makeClient()
         let user = try await client.findUser(matching: identifier)
+        let oldRole = user.stringField("role") ?? "member"
         try await client.updateRecord(user, fields: ["role": ["value": role]])
         print("Updated \(fullName(user)): role -> \(role)")
+        await logRoleChange(client: client, userRecordName: user.recordName, oldRole: oldRole, newRole: role)
+    }
+
+    /// Mirrors the app's own `CloudKitSync.logRoleChange` — RootCLI-issued
+    /// role changes get the same audit trail as in-app ones (audit.md P0
+    /// enhancement #2). Best-effort: a failure here doesn't roll back or fail
+    /// the role change itself, it's only ever printed as a warning, matching
+    /// this file's other best-effort side-writes.
+    private static func logRoleChange(client: CloudKitS2SClient, userRecordName: String, oldRole: String, newRole: String) async {
+        guard oldRole != newRole else { return }
+        let fields: [String: Any] = [
+            "userID": ["value": userRecordName],
+            "oldRole": ["value": oldRole],
+            "newRole": ["value": newRole],
+            "changedBy": ["value": "system:rootcli"],
+            "changedAt": ["value": Int64(Date().timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
+        ]
+        do {
+            try await client.createOrReplaceRecord(recordType: "RoleChangeLog", recordName: UUID().uuidString, fields: fields)
+        } catch {
+            FileHandle.standardError.write("Warning: role changed but RoleChangeLog write failed: \(error)\n".data(using: .utf8)!)
+        }
     }
 
     private static func runSetRoot(_ args: [String]) async throws {

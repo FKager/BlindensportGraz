@@ -5,6 +5,10 @@ import UniformTypeIdentifiers
 struct TeamsListView: View {
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
+    // Intentionally unfiltered (audit.md SwiftData & CloudKit Finding 6):
+    // this IS the club's full Teams list screen — at single-club scale
+    // (Team.defaultTeams: 5 standing teams) every team belongs on it, no
+    // subset would be correct here.
     @Query(sort: \Team.name) private var teams: [Team]
     @State private var showAdd = false
     // Eager-generation + ShareLink/.fileImporter, not a custom
@@ -16,7 +20,7 @@ struct TeamsListView: View {
 
     var canManageTeams: Bool {
         guard let user = currentUser else { return false }
-        return user.role == "admin" || user.role == "coach"
+        return user.role == .admin || user.role == .coach
     }
 
     var body: some View {
@@ -38,13 +42,14 @@ struct TeamsListView: View {
         }
         .navigationTitle("Teams")
         .refreshable {
-            await CloudKitSync.shared.syncAll(modelContext: modelContext)
-            await CloudKitSync.shared.ensureDefaultTeams(modelContext: modelContext)
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
+            await SyncOrchestrationService.ensureDefaultTeams(modelContext: modelContext)
         }
         .toolbar {
             if canManageTeams {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showAdd = true } label: { Image(systemName: "plus") }
+                        .accessibilityLabel("Neues Team")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showImporter = true } label: { Image(systemName: "square.and.arrow.down") }
@@ -97,11 +102,8 @@ struct TeamsListView: View {
     private func deleteTeams(at offsets: IndexSet) {
         if canManageTeams {
             for index in offsets {
-                let team = teams[index]
-                CloudKitSync.shared.deleteTeam(team.id)
-                modelContext.delete(team)
+                TeamService.delete(teams[index], modelContext: modelContext)
             }
-            try? modelContext.save()
         }
     }
 }
@@ -120,6 +122,11 @@ struct TeamRow: View {
                     .font(.title2)
                     .bold()
                     .foregroundStyle(.white)
+                    // Fixed-size avatar badge — wrapping isn't meaningful for a
+                    // single initial, so shrink instead of clipping at large
+                    // Dynamic Type sizes (audit.md Accessibility Finding 4).
+                    .minimumScaleFactor(0.4)
+                    .lineLimit(1)
             }
             .frame(width: 50, height: 50)
 
@@ -158,7 +165,7 @@ struct TeamDetailView: View {
 
     var canManageTeams: Bool {
         guard let user = currentUser else { return false }
-        return user.role == "admin" || user.role == "coach"
+        return user.role == .admin || user.role == .coach
     }
 
     var body: some View {
@@ -193,12 +200,12 @@ struct TeamDetailView: View {
                                         Text("Assistent:in").tag("assistant")
                                     }
                                 } label: {
-                                    roleCapsule(m.role)
+                                    roleCapsule(m.role.rawValue)
                                 }
-                                .accessibilityLabel("Rolle: \(roleLabel(m.role))")
+                                .accessibilityLabel("Rolle: \(roleLabel(m.role.rawValue))")
                                 .accessibilityHint("Doppeltippen, um die Rolle zu ändern")
                             } else {
-                                roleCapsule(m.role)
+                                roleCapsule(m.role.rawValue)
                             }
                         }
                     }
@@ -210,11 +217,8 @@ struct TeamDetailView: View {
                     // shown at that row.
                     .onDelete { offsets in
                         for index in offsets {
-                            let membership = sortedMemberships[index]
-                            CloudKitSync.shared.deleteMembership(membership.id)
-                            modelContext.delete(membership)
+                            TeamMembershipService.delete(sortedMemberships[index], modelContext: modelContext)
                         }
-                        try? modelContext.save()
                     }
                 }
 
@@ -240,12 +244,12 @@ struct TeamDetailView: View {
     /// role edit syncs the same way every other membership write does.
     private func roleBinding(for membership: TeamMembership) -> Binding<String> {
         Binding(
-            get: { membership.role },
-            set: { newRole in
+            get: { membership.role.rawValue },
+            set: { newRoleRaw in
+                let newRole = MembershipRole.normalize(newRoleRaw)
                 guard newRole != membership.role else { return }
                 membership.role = newRole
-                try? modelContext.save()
-                CloudKitSync.shared.pushMembership(membership)
+                TeamMembershipService.save(membership, modelContext: modelContext)
             }
         )
     }
@@ -329,17 +333,16 @@ struct AddTeamMemberView: View {
                         switch selection {
                         case .user(let id):
                             guard let user = availableUsers.first(where: { $0.id == id }) else { membership = nil; break }
-                            membership = TeamMembership(user: user, team: team, role: role)
+                            membership = TeamMembership(user: user, team: team, role: MembershipRole.normalize(role))
                         case .member(let id):
                             guard let member = availableMembers.first(where: { $0.id == id }) else { membership = nil; break }
-                            membership = TeamMembership(member: member, team: team, role: role)
+                            membership = TeamMembership(member: member, team: team, role: MembershipRole.normalize(role))
                         case nil:
                             membership = nil
                         }
                         if let membership {
                             modelContext.insert(membership)
-                            try? modelContext.save()
-                            CloudKitSync.shared.pushMembership(membership)
+                            TeamMembershipService.save(membership, modelContext: modelContext)
                         }
                         dismiss()
                     }
@@ -384,8 +387,7 @@ struct AddTeamView: View {
                     Button("Speichern") {
                         let team = Team(name: name, sport: sport, descriptionText: descriptionText)
                         modelContext.insert(team)
-                        try? modelContext.save()
-                        CloudKitSync.shared.pushTeam(team)
+                        TeamService.save(team, modelContext: modelContext)
                         dismiss()
                     }
                     .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)

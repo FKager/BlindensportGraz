@@ -52,8 +52,8 @@ final class KostZCalculationTests: XCTestCase {
         let helper = Member(firstName: "Bernd", lastName: "Helfer")
         context.insert(coach)
         context.insert(helper)
-        let coachMembership = TeamMembership(member: coach, team: team, role: "coach")
-        let helperMembership = TeamMembership(member: helper, team: team, role: "assistant")
+        let coachMembership = TeamMembership(member: coach, team: team, role: .coach)
+        let helperMembership = TeamMembership(member: helper, team: team, role: .assistant)
         context.insert(coachMembership)
         context.insert(helperMembership)
 
@@ -80,7 +80,7 @@ final class KostZCalculationTests: XCTestCase {
         context.insert(team)
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         context.insert(membership)
 
         let julyTraining = makeTraining(context, title: "Juli-Training", day: 5, month: 7)
@@ -101,7 +101,7 @@ final class KostZCalculationTests: XCTestCase {
         context.insert(team)
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         context.insert(membership)
 
         let notAttended = makeTraining(context, title: "Abgesagt", day: 3)
@@ -123,7 +123,7 @@ final class KostZCalculationTests: XCTestCase {
         context.insert(team)
         let player = Member(firstName: "Carla", lastName: "Spielerin")
         context.insert(player)
-        let membership = TeamMembership(member: player, team: team, role: "player")
+        let membership = TeamMembership(member: player, team: team, role: .player)
         context.insert(membership)
 
         let training = makeTraining(context, title: "Training", day: 5)
@@ -145,7 +145,7 @@ final class KostZCalculationTests: XCTestCase {
         context.insert(team)
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         context.insert(membership)
 
         let training = makeTraining(context, title: "Montagstraining", day: 5)
@@ -170,8 +170,8 @@ final class KostZCalculationTests: XCTestCase {
         let helper = Member(firstName: "Bernd", lastName: "Helfer")
         context.insert(coach)
         context.insert(helper)
-        let coachMembership = TeamMembership(member: coach, team: team, role: "coach")
-        let helperMembership = TeamMembership(member: helper, team: team, role: "assistant")
+        let coachMembership = TeamMembership(member: coach, team: team, role: .coach)
+        let helperMembership = TeamMembership(member: helper, team: team, role: .assistant)
         context.insert(coachMembership)
         context.insert(helperMembership)
 
@@ -197,7 +197,7 @@ final class KostZCalculationTests: XCTestCase {
         context.insert(team)
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         context.insert(membership)
 
         let tournament = makeTournament(context, title: "Landesmeisterschaft", day: 12)
@@ -219,7 +219,7 @@ final class KostZCalculationTests: XCTestCase {
         context.insert(team)
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         context.insert(membership)
 
         // Three trainings in July, one of them with no PRAE amount at all —
@@ -262,7 +262,7 @@ final class KostZCalculationTests: XCTestCase {
     func testExportProducesValidReadableZipWithExpectedValues() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
         let coach = Member(firstName: "Anna", lastName: "Trainer")
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
         // 4 trainings that month, on the 3rd/10th/17th/24th — ZEITRAUM/TAGE
         // must come from these, not the calendar month's 1st/31st/31 days.
@@ -327,7 +327,7 @@ final class KostZCalculationTests: XCTestCase {
     func testTournamentExportProducesValidReadableZipWithExpectedValues() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
         let coach = Member(firstName: "Anna", lastName: "Trainer")
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
         var startComponents = DateComponents()
         startComponents.year = 2026
@@ -365,7 +365,7 @@ final class KostZCalculationTests: XCTestCase {
     func testTournamentExportLeavesOrtBlankWhenCityIsEmpty() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
         let coach = Member(firstName: "Anna", lastName: "Trainer")
-        let membership = TeamMembership(member: coach, team: team, role: "coach")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
         let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
         // location IS set here — must not leak into ORT as a fallback.
         let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Stadthalle",

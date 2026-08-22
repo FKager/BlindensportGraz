@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import os
 
 @main
 struct BlindensportGrazApp: App {
@@ -17,7 +18,9 @@ struct BlindensportGrazApp: App {
             Member.self,
             EventImage.self,
             Attendance.self,
-            TrainingFavorite.self
+            TrainingFavorite.self,
+            RoleChangeLog.self,
+            ExpenseReceipt.self
                ])
         // Local store only. Cross-user, team-scoped sharing is handled by
         // CloudKitSync's manual public-database push/pull, not SwiftData's
@@ -38,6 +41,31 @@ struct BlindensportGrazApp: App {
             // never-synced local edits would be lost, a narrow edge case
             // since every local write already pushes to CloudKit
             // synchronously today.
+            //
+            // audit.md SwiftData & CloudKit Finding 4: that "only offline-only
+            // edits are lost" assumption was never actually verifiable —
+            // pushes are fire-and-forget, so nothing recorded whether the
+            // local store's last edits had actually reached CloudKit before
+            // this reset discards them. A full pending-write ledger is a
+            // bigger undertaking than this phase's scope (Phase 10's own
+            // Notes); what IS practical here: log exactly what's about to be
+            // discarded and why, via the same `os.Logger` category
+            // `SyncState`/`CloudKitSync` use, using `SyncState`'s persisted
+            // last-known-successful-sync timestamp (survives across
+            // launches, read directly from UserDefaults here since
+            // `SyncState.shared` isn't safe to depend on this early in
+            // launch) as the honest, inspectable trail this finding asks
+            // for — an honest "here's my best evidence" replaces the
+            // previous silent, unverified assumption.
+            let lastSyncedAt = UserDefaults.standard.object(forKey: "SyncState.lastSyncedAt") as? Date
+            let resetLogger = Logger(subsystem: "it.a11y.BlindensportGraz", category: "SyncState")
+            resetLogger.error("""
+                Local store failed to open under the current schema (\(String(describing: error), privacy: .public)) \
+                — wiping and resetting. Last confirmed successful CloudKit sync on this device: \
+                \(lastSyncedAt.map { $0.description } ?? "never recorded", privacy: .public). Any local edits made \
+                since that point that hadn't yet been confirmed synced will be lost; CloudKit remains the source \
+                of truth for everything already synced.
+                """)
             UserDefaults.standard.set("\(Date.now): \(error)", forKey: "lastModelContainerResetReason")
             BlindensportGrazApp.deleteLocalStore(for: config)
             do {

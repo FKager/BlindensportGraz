@@ -5,6 +5,7 @@ DerivedData/
 xcuserdata/
 .claude/settings.local.json
 RootCLI/.build/
+Shared/ClubSchema/.build/
 *.pem
 fastlane/report.xml
 .wolf/hooks/_session.json

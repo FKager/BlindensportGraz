@@ -35,7 +35,7 @@ struct AccountView: View {
                             Text(user.email)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                            Text(roleLabel(user.role))
+                            Text(roleLabel(user.role.rawValue))
                                 .font(.caption)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 2)
@@ -126,9 +126,17 @@ struct EditAccountView: View {
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
+                    // Advisory only, deliberately never blocks Fertig/dismiss (unlike
+                    // nameIsBlank below) — an already-malformed pre-existing email
+                    // must stay viewable/editable, not lock the user out of this sheet.
+                    if !Validation.isPlausibleEmail(user.email) {
+                        Label("Ungültige E-Mail-Adresse", systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
                 }
                 Section {
-                    LabeledContent("Rolle", value: roleLabel(user.role))
+                    LabeledContent("Rolle", value: roleLabel(user.role.rawValue))
                     Text("Die Rolle kann nur von einem Root-Benutzer geändert werden.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -154,28 +162,19 @@ struct EditAccountView: View {
             // so this is the only place besides creation where the grant can fire.
             .onChange(of: user.firstName) { _, _ in applyDesignatedRootGrantIfNeeded() }
             .onChange(of: user.lastName) { _, _ in applyDesignatedRootGrantIfNeeded() }
-            // TEST-ONLY: catches the case where testAdminEmail (Models.swift) is
-            // typed in here after the fact -- e.g. an account auto-created via
-            // Apple's "Hide My Email" got a relay address instead of the real
-            // one. See User.elevateIfTestAdmin's doc comment.
-            .onChange(of: user.email) { _, _ in
-                applyDesignatedRootGrantIfNeeded()
-                if user.elevateIfTestAdmin() {
-                    try? modelContext.save()
-                    CloudKitSync.shared.pushUserIdentity(user)
-                }
-            }
+            .onChange(of: user.email) { _, _ in applyDesignatedRootGrantIfNeeded() }
             .onDisappear {
-                try? modelContext.save()
-                CloudKitSync.shared.pushUserIdentity(user)
+                UserService.save(user, modelContext: modelContext)
             }
         }
     }
 
     private func applyDesignatedRootGrantIfNeeded() {
+        let oldRole = user.role
         if user.elevateIfDesignatedRoot() {
-            try? modelContext.save()
-            CloudKitSync.shared.pushUserIdentity(user)
+            UserService.save(user, modelContext: modelContext)
+            RoleChangeLogService.log(userID: user.id, oldRole: oldRole.rawValue, newRole: user.role.rawValue,
+                                      changedBy: "system:designatedRoot", modelContext: modelContext)
         }
     }
 
@@ -198,6 +197,10 @@ struct UserListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var users: [User]
     @Environment(\.dismiss) private var dismiss
+    // Role changes are one of audit.md's two explicitly-prioritized areas
+    // for visible save/sync failure signaling (alongside roster edits, see
+    // MembersListView) — see ServiceFailureSignal.swift.
+    private let failureSignal = ServiceFailureSignal.shared
 
     var body: some View {
         NavigationStack {
@@ -225,7 +228,7 @@ struct UserListView: View {
                             }
                             .labelsHidden()
                         } else {
-                            Text(user.role)
+                            Text(user.role.rawValue)
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -233,9 +236,7 @@ struct UserListView: View {
                 }
                 .onDelete { offsets in
                     for index in offsets {
-                        let user = users[index]
-                        CloudKitSync.shared.deleteUserIdentity(user.id)
-                        modelContext.delete(user)
+                        UserService.delete(users[index], modelContext: modelContext)
                     }
                 }
             }
@@ -246,19 +247,88 @@ struct UserListView: View {
                     Button("Fertig") { dismiss() }
                 }
             }
+            .alert("Fehler", isPresented: Binding(
+                get: { failureSignal.message != nil },
+                set: { if !$0 { failureSignal.clear() } }
+            )) {
+                Button("OK") { failureSignal.clear() }
+            } message: {
+                Text(failureSignal.message ?? "")
+            }
         }
     }
 
     /// Only a root user reaches this binding (see the `currentUser.isRoot` gate above),
     /// and never for their own row — so this can never be used for self-promotion.
+    /// Still `Binding<String>` — the Picker's `.tag(...)` values below are plain
+    /// strings ("member"/"coach"/"admin"), so this bridges to/from `AppRole` at
+    /// the edges rather than changing the Picker's own tag type.
     private func roleBinding(for user: User) -> Binding<String> {
         Binding(
-            get: { user.role },
-            set: { newRole in
+            get: { user.role.rawValue },
+            set: { newRoleRaw in
+                let oldRole = user.role
+                let newRole = AppRole.normalize(newRoleRaw)
+                guard newRole != oldRole else { return }
                 user.role = newRole
-                try? modelContext.save()
-                CloudKitSync.shared.pushUserIdentity(user)
+                guard UserService.save(user, modelContext: modelContext) else { return }
+                RoleChangeLogService.log(userID: user.id, oldRole: oldRole.rawValue, newRole: newRole.rawValue,
+                                          changedBy: currentUser.id.uuidString, modelContext: modelContext)
             }
         )
+    }
+}
+
+/// Admin-only view of `RoleChangeLog` entries, newest first — audit.md P0
+/// enhancement #2. Reuses the same `List` + `refreshable` + "Fertig" dismiss
+/// pattern as `UserListView`/`MembersListView` right above.
+struct RoleChangeLogView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    @Query(sort: \RoleChangeLog.changedAt, order: .reverse) private var entries: [RoleChangeLog]
+    @Query private var users: [User]
+
+    var body: some View {
+        NavigationStack {
+            List {
+                if entries.isEmpty {
+                    ContentUnavailableView("Keine Rollenänderungen",
+                                           systemImage: "clock.arrow.circlepath",
+                                           description: Text("Änderungen an Benutzerrollen erscheinen hier."))
+                } else {
+                    ForEach(entries) { entry in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("\(displayName(for: entry.userID)): \(entry.oldRole) → \(entry.newRole)")
+                                .font(.body)
+                            Text("Geändert von \(changedByLabel(entry.changedBy)) am \(entry.changedAt.formatted(date: .abbreviated, time: .shortened))")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Rollenänderungen")
+            .navigationBarTitleDisplayMode(.inline)
+            .refreshable {
+                await SyncOrchestrationService.syncAll(modelContext: modelContext)
+            }
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Fertig") { dismiss() }
+                }
+            }
+        }
+    }
+
+    private func displayName(for userID: UUID) -> String {
+        users.first { $0.id == userID }?.displayName ?? "?"
+    }
+
+    /// `changedBy` is either an acting User's `id` (uuidString) or a fixed
+    /// "system:<mechanism>" tag — resolve the former to a display name,
+    /// leave the latter as-is.
+    private func changedByLabel(_ changedBy: String) -> String {
+        guard let id = UUID(uuidString: changedBy) else { return changedBy }
+        return users.first { $0.id == id }?.displayName ?? changedBy
     }
 }

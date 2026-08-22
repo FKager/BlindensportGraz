@@ -137,7 +137,7 @@ final class InheritanceQueryTests: XCTestCase {
         context.insert(team)
         let member = Member(firstName: "Anna", lastName: "Sportlerin")
         context.insert(member)
-        let membership = TeamMembership(member: member, team: team, role: "player")
+        let membership = TeamMembership(member: member, team: team, role: .player)
         context.insert(membership)
         let training = Training(title: "Torball Training", sport: "Torball", location: "Graz",
                                  startDate: .now, teams: [team])

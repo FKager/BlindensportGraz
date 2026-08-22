@@ -98,7 +98,7 @@ struct EventImageGalleryView: View {
 
     private func canDelete(_ image: EventImage) -> Bool {
         guard let user = currentUser else { return false }
-        return user.role == "admin" || image.uploadedBy == user.id.uuidString
+        return user.role == .admin || image.uploadedBy == user.id.uuidString
     }
 
     var body: some View {
@@ -124,6 +124,7 @@ struct EventImageGalleryView: View {
                                             .foregroundStyle(.white, .black.opacity(0.6))
                                             .padding(4)
                                     }
+                                    .accessibilityLabel("Bild löschen")
                                 }
                             }
                         }

@@ -13,9 +13,24 @@ import SwiftData
 /// button since it's sheet-presented, matching PraeCalculationView/
 /// MembersListView.
 struct KostZCalculationView: View {
+    let currentUser: User?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    // Intentionally unfiltered (audit.md SwiftData & CloudKit Finding 6):
+    // every caller of `allMemberships` here goes straight into
+    // `KostZCalculator.summary` -> `PraeCalculator.eligiblePeople`, which
+    // filters to `membership.role.isHelfer`. A `#Predicate` scoping to
+    // coach/assistant only was tried and would be provably equivalent, but
+    // NEITHER form SwiftData offers works against `MembershipRole` (a
+    // custom `@Model`-stored enum): `$0.role == .coach` fails to compile
+    // ("key path cannot refer to enum case"), and `$0.role.rawValue == "coach"`
+    // COMPILES but crashes at runtime the moment it's actually fetched
+    // ("Fatal error: Failed to validate \TeamMembership.role.rawValue
+    // because rawValue is not a member of MembershipRole" — confirmed live,
+    // caught by `QueryPredicateTests` before this shipped). Filtering has
+    // to stay in `PraeCalculator.eligiblePeople` post-fetch instead.
     @Query private var allMemberships: [TeamMembership]
+    @Query private var allReceipts: [ExpenseReceipt]
 
     @State private var month = Calendar.current.component(.month, from: .now)
     @State private var year = Calendar.current.component(.year, from: .now)
@@ -24,6 +39,21 @@ struct KostZCalculationView: View {
 
     private var summary: KostZMonthSummary {
         KostZCalculator.summary(month: month, year: year, allMemberships: allMemberships, in: modelContext)
+    }
+
+    private var receipts: [ExpenseReceipt] {
+        allReceipts.filter { $0.month == month && $0.year == year }
+    }
+
+    private func addReceipt(_ data: Data) {
+        let receipt = ExpenseReceipt(imageData: data, uploadedBy: currentUser?.id.uuidString ?? "",
+                                      month: month, year: year)
+        modelContext.insert(receipt)
+        ExpenseReceiptService.save(receipt, modelContext: modelContext)
+    }
+
+    private func deleteReceipt(_ receipt: ExpenseReceipt) {
+        ExpenseReceiptService.delete(receipt, modelContext: modelContext)
     }
 
     var body: some View {
@@ -59,6 +89,9 @@ struct KostZCalculationView: View {
                         LabeledContent("Anzahl Personen", value: "\(summary.personCount)")
                     }
                 }
+
+                ExpenseReceiptsSection(receipts: receipts, currentUser: currentUser,
+                                        onAdd: addReceipt, onDelete: deleteReceipt)
 
                 Section("Export") {
                     Text("Nur die Zeile „HONORARE / VERGÜTUNGEN“ sowie Zeitraum und Personenanzahl werden vorausgefüllt — alle übrigen Kostenarten, Beilagen-Nummern und der Ort müssen weiterhin von Hand ergänzt werden.")
@@ -120,14 +153,35 @@ struct KostZCalculationView: View {
 /// KostZCalculationView, for the same VoiceOver-nested-sheet reason.
 struct KostZTournamentCalculationView: View {
     let tournament: Tournament
+    let currentUser: User?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    // Intentionally unfiltered — see KostZCalculationView's identical
+    // @Query comment above (`#Predicate` on `MembershipRole` compiles but
+    // crashes at runtime; filtering stays in `eligiblePeople` post-fetch).
     @Query private var allMemberships: [TeamMembership]
+    @Query private var allReceipts: [ExpenseReceipt]
 
     @State private var exportURL: URL?
     @State private var exportError: String?
 
     private var summary: KostZTournamentSummary {
         KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
+    }
+
+    private var receipts: [ExpenseReceipt] {
+        allReceipts.filter { $0.tournament?.id == tournament.id }
+    }
+
+    private func addReceipt(_ data: Data) {
+        let receipt = ExpenseReceipt(imageData: data, uploadedBy: currentUser?.id.uuidString ?? "",
+                                      tournament: tournament)
+        modelContext.insert(receipt)
+        ExpenseReceiptService.save(receipt, modelContext: modelContext)
+    }
+
+    private func deleteReceipt(_ receipt: ExpenseReceipt) {
+        ExpenseReceiptService.delete(receipt, modelContext: modelContext)
     }
 
     var body: some View {
@@ -154,6 +208,9 @@ struct KostZTournamentCalculationView: View {
                         LabeledContent("Anzahl Personen", value: "\(summary.personCount)")
                     }
                 }
+
+                ExpenseReceiptsSection(receipts: receipts, currentUser: currentUser,
+                                        onAdd: addReceipt, onDelete: deleteReceipt)
 
                 Section("Export") {
                     Text("Nur die Zeile „HONORARE / VERGÜTUNGEN“ sowie Zeitraum und Personenanzahl werden vorausgefüllt — alle übrigen Kostenarten, Beilagen-Nummern und der Ort müssen weiterhin von Hand ergänzt werden.")
