@@ -2053,3 +2053,20 @@
 | 20:10 | Session end: 85 writes across 31 files (STATE.md, TeamsViews.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift) | 35 reads | ~115179 tok |
 | 20:16 | Edited BlindensportGraz/CloudKitSync.swift | modified syncAll() | ~796 |
 | 20:23 | Created ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/9310fa5d-a462-4776-b78e-97a4d735b7da/scratchpad/add_bug320.py | — | ~709 |
+| 20:24 | Session end: 87 writes across 32 files (STATE.md, TeamsViews.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift) | 35 reads | ~116757 tok |
+
+## Session: 2026-08-22 20:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-08-22 20:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:30 | Diagnosed "no team members" report as bug-320 fix not yet launched (device-locked deploy failure, not a code bug); re-ran iOS Device Deploy after unlock, succeeded | .github/workflows/ios-device-deploy.yml | fixed via redeploy, no code change | ~4200 |
+| 20:45 | Diagnosed real root cause: CloudKit Development schema missing QUERYABLE index on recordName for 8 record types (ClubMember/Team/TeamMembership/Tournament/TournamentAttendance/Training/TrainingAttendance/TrainingFavorite) -- confirmed via rootcli+cktool, fixed live via cktool import-schema, re-verified all 8 now query successfully | CloudKit schema (Development) | fixed, no app code change | ~9800 |
+| 21:46 | Created ../../.claude/jobs/a920fb1f/tmp/execute_merge.py | — | ~3086 |
+| 21:52 | Edited RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift | modified queryRecords() | ~394 |
+| 21:54 | Created ../../.claude/jobs/a920fb1f/tmp/execute_merge2.py | — | ~1868 |
+| 21:20 | Merged CloudKit duplicate Teams (12->8) and ClubMembers (239->65) + fixed rootcli pagination bug that hid 39 records | CloudKitS2SClient.swift, CloudKit data | fixed, verified 0 dup names remain | ~52000 |

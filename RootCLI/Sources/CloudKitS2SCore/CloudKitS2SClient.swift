@@ -91,11 +91,30 @@ public final class CloudKitS2SClient {
         return json
     }
 
+    /// Follows CloudKit's `continuationMarker` until exhausted — a single
+    /// `records/query` request silently caps out at CloudKit's server-side
+    /// page size (observed: 200 records) with no error, just a truncated
+    /// `records` array plus a `continuationMarker` for the next page. Found
+    /// live 2026-08-22: a `ClubMember` type with 239 real records returned
+    /// exactly 200 from the un-paginated version, silently dropping the
+    /// remaining 39 from every `list`/`record list` call with no
+    /// indication anything was missing — the same "silent truncation"
+    /// failure class as the write-side bug fixed the same day (see
+    /// `RootCLI/README.md`'s `records/modify` per-operation-failure note).
     public func queryRecords(recordType: String) async throws -> [CKRecordDTO] {
-        let body: [String: Any] = ["query": ["recordType": recordType]]
-        let json = try await send(endpoint: "records/query", body: body)
-        let records = json["records"] as? [[String: Any]] ?? []
-        return records.compactMap(CKRecordDTO.init)
+        var allRecords: [CKRecordDTO] = []
+        var continuationMarker: String?
+        repeat {
+            var body: [String: Any] = ["query": ["recordType": recordType]]
+            if let continuationMarker {
+                body["continuationMarker"] = continuationMarker
+            }
+            let json = try await send(endpoint: "records/query", body: body)
+            let records = json["records"] as? [[String: Any]] ?? []
+            allRecords.append(contentsOf: records.compactMap(CKRecordDTO.init))
+            continuationMarker = json["continuationMarker"] as? String
+        } while continuationMarker != nil
+        return allRecords
     }
 
     /// Fetches a single record by its exact record name (id). More targeted

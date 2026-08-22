@@ -5354,6 +5354,117 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-22T20:15:00.000Z"
+    },
+    {
+      "id": "bug-321",
+      "timestamp": "2026-08-22T20:29:53.000Z",
+      "error_message": "User-reported 'not there. the teams are there but no team members' right after bug-320's fix (commit ef74ded) was pushed -- app appeared to still lack the fix.",
+      "file": ".github/workflows/ios-device-deploy.yml",
+      "root_cause": "Third occurrence of the same known pattern as bug-174/bug-213: ios-device-deploy.yml's auto-triggered run for ef74ded (run 32590605094) installed the fixed binary successfully (\"App installed:\" logged) but failed only on the final 'launch on device' step with CoreDeviceError 10002 (\"device was not, or could not be, unlocked\") because the phone's screen was locked at that moment. The fix itself was never actually exercised on-device -- the user was still looking at the previous (bug-320-broken) running instance, which read as the new fix not working.",
+      "fix": "No code change needed. Confirmed local main already matched origin/main (nothing to push-trigger), asked the user to unlock the phone, then manually re-ran `gh workflow run \"iOS Device Deploy\"` (run 32590908186) per the existing cerebrum.md 2026-08-07 Do-Not-Repeat entry -- succeeded in one pass, app rebuilt/installed/launched with the ef74ded fix actually running.",
+      "tags": [
+        "deploy",
+        "device-locked",
+        "coredevice-10002",
+        "false-alarm",
+        "recurring",
+        "ios-device-deploy"
+      ],
+      "related_bugs": [
+        "bug-174",
+        "bug-213",
+        "bug-320"
+      ],
+      "occurrences": 3,
+      "last_seen": "2026-08-22T20:29:53.000Z"
+    },
+    {
+      "id": "bug-322",
+      "timestamp": "2026-08-22T20:45:00.000Z",
+      "error_message": "User-reported 'still no team membership' after bug-320's sync-ordering fix (ef74ded) was confirmed actually running on-device (deploy install+launch verified successful). Direct rootcli/cktool query against the Development CloudKit environment reproduced the real error: 'CloudKit request to records/query failed (HTTP 400): Field recordName is not marked queryable' for ClubMember, Team, TeamMembership, Tournament, TournamentAttendance, Training, TrainingAttendance, and TrainingFavorite.",
+      "file": "CloudKit Dashboard schema (Development environment) -- no app code",
+      "root_cause": "This is the exact unresolved gap flagged by bug-174 (2026-08-03) and re-confirmed independently the same day as bug-320 (cerebrum.md 2026-08-22 entry re: rootcli 401/queryable errors) but never actually fixed until now. CloudKit's public-database CKQuery requires a QUERYABLE index on the recordName (___recordID) system field for ANY query, including the plain NSPredicate(value:true) every CloudKitSync.pullX/fetchAll uses -- 8 of the app's 11+ published record types never had this index set in the Development schema (only UserIdentity/RoleChangeLog/ExpenseReceipt did). So fetchAll() silently caught this CKError and returned [] for those 8 types on every single sync, regardless of any local save-ordering correctness (bug-320's fix was real and necessary, but powerless against a pull that fails before any local relationship resolution even happens). Teams appeared to 'work' only because ensureDefaultTeams recreates the 5 default teams locally + pushes them regardless of pull success -- it never actually depended on pullTeams succeeding, which masked that Team pulls were equally broken.",
+      "fix": "Exported the current Development schema via `xcrun cktool export-schema`, patched `\"___recordID\" REFERENCE` -> `\"___recordID\" REFERENCE QUERYABLE` for exactly the 8 affected RECORD TYPE blocks (ClubMember, Team, TeamMembership, Tournament, TournamentAttendance, Training, TrainingAttendance, TrainingFavorite -- purely additive, no field/type changes), validated with `cktool import-schema --validate`, got explicit user confirmation, then applied for real with `cktool import-schema`. Re-queried all 8 types afterward via rootcli -- all now return real records instead of the HTTP 400. Confirmed via `xcrun cktool get-teams` that a cached management token was already available, so no new credential setup was needed; used the user-pasted CLOUDKIT_KEY_ID (existing S2S key, already registered for Development per cerebrum.md 2026-08-22) to build/run rootcli for the read-side verification.",
+      "tags": [
+        "cloudkit",
+        "schema",
+        "queryable-index",
+        "root-cause",
+        "cktool",
+        "long-standing",
+        "sync",
+        "resolved"
+      ],
+      "related_bugs": [
+        "bug-174",
+        "bug-320",
+        "bug-321"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T20:45:00.000Z"
+    },
+    {
+      "id": "bug-326",
+      "timestamp": "2026-08-22T19:52:18.913Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6\u219225 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T19:52:18.913Z"
+    },
+    {
+      "id": "bug-323",
+      "timestamp": "2026-08-22T21:15:00.000Z",
+      "error_message": "User-reported after bug-322's schema fix started syncing everything correctly: 'now it shows it. But i have multiple entries for teams and members. Want to merge that together.'",
+      "file": "CloudKit production/development data (Team, ClubMember, TeamMembership, TrainingAttendance) -- no app code changed for the merge itself",
+      "root_cause": "Two compounding causes. (1) Team duplication: ensureDefaultTeams created a fresh local Team (new UUID) every launch whenever its CloudKit existence-check query failed -- which it always did, silently, due to bug-322's now-fixed missing-Queryable-index gap -- so every device/session that ever launched the app potentially minted its own copies of the 4 default teams, each pushed to CloudKit as a distinct record. (2) Member duplication: RootCLI's import-members was re-run multiple times (2026-07-30, twice on 08-01, 08-02, 08-22) against the same source roster without preserving existing record ids (README explicitly warns 'if you don't supply an id, a new UUID is generated each run'), producing a fresh ClubMember record per person on every re-run.",
+      "fix": "Built a merge plan by cross-referencing every Team/ClubMember id against every TeamMembership/Training/Tournament/TrainingFavorite/TrainingAttendance/TournamentAttendance record that points at it (via rootcli+cktool queries), picking a canonical id per duplicate group (most-referenced, tie-broken by most-complete field data, tie-broken by oldest), then: reassigned Attendance records pointing at soon-to-be-deleted TeamMemberships, deleted post-remap duplicate TeamMemberships, repointed surviving TeamMemberships and Training/Tournament/TrainingFavorite teamIDs lists to canonical ids (using FULL field payloads -- rootcli's `record set` is a CloudKit forceReplace, not a partial update, so omitting a field would have wiped it), then deleted the 4 duplicate Team and 174 duplicate ClubMember records (136 in the first pass + 38 more found in a second pass, see bug-324). Verified zero data loss: no duplicate-member group had complementary (non-overlapping) field data that a single 'pick the best copy' would have lost. Final state: 8 teams (was 12), 65 members (was up to 239 -- see bug-324), 25 TeamMemberships (was 30), attendance counts unchanged (59 Training / 5 Tournament) confirming no attendance history lost. User still needs to delete+reinstall the app once to pick up the clean CloudKit state locally, since CloudKitSync's pull functions only ever upsert, never remove local records absent from a fresh pull.",
+      "tags": [
+        "cloudkit",
+        "data-cleanup",
+        "duplicates",
+        "rootcli",
+        "merge",
+        "team",
+        "clubmember",
+        "resolved"
+      ],
+      "related_bugs": [
+        "bug-184",
+        "bug-322",
+        "bug-324"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T21:15:00.000Z"
+    },
+    {
+      "id": "bug-324",
+      "timestamp": "2026-08-22T21:20:00.000Z",
+      "error_message": "First merge pass (bug-323) deleted all 136 planned duplicate ClubMember records successfully (each verified individually via `record get` returning 'not found'), yet the post-delete `record list ClubMember` count only dropped from 200 to 103 instead of the expected 64 -- 39 records unaccounted for.",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "CloudKitS2SClient.queryRecords(recordType:) made exactly one records/query request and returned whatever came back, never checking for or following CloudKit's `continuationMarker` -- CloudKit's public-database query endpoint silently caps a single response at its own server-side page size (observed: exactly 200 records) with no error, just a truncated `records` array plus a continuation token for the next page. The ClubMember type actually had 239 real records; every `rootcli record list ClubMember` / `rootcli list` call before this fix silently saw only the first 200, exactly matching the class of 'silent truncation' bug already fixed on the write side the same day (records/modify per-operation failures, see RootCLI/README.md). This meant the original bug-323 merge plan was built from an incomplete dataset and missed 32 more duplicate-name groups entirely.",
+      "fix": "Rewrote queryRecords to loop, sending the previous response's continuationMarker back in the next request's body, until CloudKit stops returning one. Rebuilt rootcli, re-ran `record list ClubMember` -- now correctly returns all 103 (post-first-pass) records in one call. Ran a second merge pass against the newly-visible tail: 38 more duplicate ClubMember records deleted, 1 more duplicate TeamMembership collapsed (with its attendance record reassigned first), 1 TeamMembership repointed. Final verified count: 65 unique members, 0 duplicate-name groups remaining.",
+      "tags": [
+        "cloudkit",
+        "pagination",
+        "continuation-marker",
+        "silent-truncation",
+        "rootcli",
+        "swift",
+        "resolved"
+      ],
+      "related_bugs": [
+        "bug-323"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-22T21:20:00.000Z"
     }
   ]
 }

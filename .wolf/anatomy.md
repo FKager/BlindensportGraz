@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T18:23:16.228Z
-> Files: 220 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T19:54:05.318Z
+> Files: 222 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -28,6 +28,11 @@
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
 - `main.swift` — Struct: Entry (~843 tok)
+
+## ../../.claude/jobs/a920fb1f/tmp/
+
+- `execute_merge.py` — load, resolve_team, completeness, resolve_member (~3086 tok)
+- `execute_merge2.py` — parse_concat_json, load, completeness, resolve_member (~1868 tok)
 
 ## ../../.claude/plans/
 
@@ -294,7 +299,7 @@
 
 - `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1757 tok)
 - `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
-- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~3765 tok)
+- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~4066 tok)
 - `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
 - `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3132 tok)
 - `MemberFillUpdate.swift` — / Non-destructive counterpart to `MemberBulkImport.run` — fills in fields (~1808 tok)
