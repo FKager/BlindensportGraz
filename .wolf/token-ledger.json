@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 12058689,
-    "total_reads": 3687,
-    "total_writes": 8106,
+    "total_tokens_estimated": 12072614,
+    "total_reads": 3690,
+    "total_writes": 8109,
     "total_sessions": 61,
-    "anatomy_hits": 3365,
+    "anatomy_hits": 3368,
     "anatomy_misses": 280,
-    "repeated_reads_blocked": 2605,
-    "estimated_savings_vs_bare_cli": 11859758
+    "repeated_reads_blocked": 2606,
+    "estimated_savings_vs_bare_cli": 11862272
   },
   "sessions": [
     {
@@ -68676,6 +68676,56 @@
         "writes_count": 2,
         "repeated_reads_blocked": 1,
         "anatomy_lookups": 2
+      }
+    },
+    {
+      "id": "session-2026-08-31-2246",
+      "started": "2026-08-31T20:46:14.698Z",
+      "ended": "2026-08-31T21:12:56.317Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 1914,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 8584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 2643,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 422,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 132,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+          "tokens_estimated": 230,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 13141,
+        "output_tokens_estimated": 784,
+        "reads_count": 3,
+        "writes_count": 3,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 3
       }
     }
   ],
