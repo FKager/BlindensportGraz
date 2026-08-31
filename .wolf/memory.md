@@ -2074,3 +2074,14 @@
 | 22:05 | Created ../../.claude/jobs/a920fb1f/tmp/execute_orphan_fix.py | — | ~2698 |
 | 22:05 | Edited ../../.claude/jobs/a920fb1f/tmp/execute_orphan_fix.py | 3→1 lines | ~28 |
 | 21:35 | Resolved 4 orphaned team-id references (24 records) by inferring real team via co-occurrence + member gender + existing-membership cross-check, no data lost | CloudKit data | fixed, verified 0 orphans remain | ~38000 |
+| 22:17 | Session end: 5 writes across 4 files (execute_merge.py, CloudKitS2SClient.swift, execute_merge2.py, execute_orphan_fix.py) | 10 reads | ~27091 tok |
+| 22:18 | Session end: 5 writes across 4 files (execute_merge.py, CloudKitS2SClient.swift, execute_merge2.py, execute_orphan_fix.py) | 10 reads | ~27091 tok |
+
+## Session: 2026-08-31 22:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:47 | Edited BlindensportGraz/MemberListView.swift | added optional chaining | ~394 |
+| 22:48 | Edited BlindensportGraz/MemberListView.swift | modified ForEach() | ~124 |
+| 22:55 | Fixed duplicate names in training/event/tournament member list (person in 2 teams showed twice) | BlindensportGraz/MemberListView.swift | Fixed & build verified | ~1800 |
+| 22:54 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |

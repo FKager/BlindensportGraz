@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-22T19:54:05.318Z
-> Files: 222 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-31T20:48:02.945Z
+> Files: 223 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -33,6 +33,7 @@
 
 - `execute_merge.py` — load, resolve_team, completeness, resolve_member (~3086 tok)
 - `execute_merge2.py` — parse_concat_json, load, completeness, resolve_member (~1868 tok)
+- `execute_orphan_fix.py` — load, parse_concat_json, resolve_team, resolve_membership (~2663 tok)
 
 ## ../../.claude/plans/
 
@@ -200,7 +201,7 @@
 - `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~1947 tok)
 - `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
 - `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4825 tok)
-- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1662 tok)
+- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1914 tok)
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
 - `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~5403 tok)

@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 11916091,
-    "total_reads": 3651,
-    "total_writes": 8080,
-    "total_sessions": 60,
-    "anatomy_hits": 3331,
-    "anatomy_misses": 278,
-    "repeated_reads_blocked": 2593,
-    "estimated_savings_vs_bare_cli": 11822586
+    "total_tokens_estimated": 11981325,
+    "total_reads": 3673,
+    "total_writes": 8092,
+    "total_sessions": 61,
+    "anatomy_hits": 3351,
+    "anatomy_misses": 280,
+    "repeated_reads_blocked": 2598,
+    "estimated_savings_vs_bare_cli": 11843560
   },
   "sessions": [
     {
@@ -68160,6 +68160,249 @@
         "writes_count": 3,
         "repeated_reads_blocked": 2,
         "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-08-22-2027",
+      "started": "2026-08-22T18:27:24.604Z",
+      "ended": "2026-08-22T20:17:17.702Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+TeamMembership.swift",
+          "tokens_estimated": 881,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 3101,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Team.swift",
+          "tokens_estimated": 823,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeamMembership.swift",
+          "tokens_estimated": 804,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/README.md",
+          "tokens_estimated": 5219,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/kloudkit.md",
+          "tokens_estimated": 641,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Member.swift",
+          "tokens_estimated": 1495,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CKSchema.swift",
+          "tokens_estimated": 2260,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/dev-schema-current.ckdb",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+          "tokens_estimated": 3765,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/execute_merge.py",
+          "tokens_estimated": 3086,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+          "tokens_estimated": 422,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/execute_merge2.py",
+          "tokens_estimated": 1868,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/execute_orphan_fix.py",
+          "tokens_estimated": 2698,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/execute_orphan_fix.py",
+          "tokens_estimated": 28,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 18989,
+        "output_tokens_estimated": 8102,
+        "reads_count": 10,
+        "writes_count": 5,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-08-22-2027",
+      "started": "2026-08-22T18:27:24.604Z",
+      "ended": "2026-08-22T20:18:52.815Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+TeamMembership.swift",
+          "tokens_estimated": 881,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 3101,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Team.swift",
+          "tokens_estimated": 823,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TeamMembership.swift",
+          "tokens_estimated": 804,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/README.md",
+          "tokens_estimated": 5219,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/kloudkit.md",
+          "tokens_estimated": 641,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Member.swift",
+          "tokens_estimated": 1495,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CKSchema.swift",
+          "tokens_estimated": 2260,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/dev-schema-current.ckdb",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+          "tokens_estimated": 3765,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/execute_merge.py",
+          "tokens_estimated": 3086,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+          "tokens_estimated": 422,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/execute_merge2.py",
+          "tokens_estimated": 1868,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/execute_orphan_fix.py",
+          "tokens_estimated": 2698,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/.claude/jobs/a920fb1f/tmp/execute_orphan_fix.py",
+          "tokens_estimated": 28,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 18989,
+        "output_tokens_estimated": 8102,
+        "reads_count": 10,
+        "writes_count": 5,
+        "repeated_reads_blocked": 2,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-08-31-2246",
+      "started": "2026-08-31T20:46:14.698Z",
+      "ended": "2026-08-31T20:54:26.557Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 1914,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 8584,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 422,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/MemberListView.swift",
+          "tokens_estimated": 132,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 10498,
+        "output_tokens_estimated": 554,
+        "reads_count": 2,
+        "writes_count": 2,
+        "repeated_reads_blocked": 1,
+        "anatomy_lookups": 2
       }
     }
   ],
