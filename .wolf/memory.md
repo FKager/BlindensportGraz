@@ -2088,3 +2088,9 @@
 | 22:57 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
 | 22:58 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
 | 22:58 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
+| 22:58 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
+| 22:59 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
+| 23:00 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
+| 23:01 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
+| 23:03 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | modified excelTimeFraction() | ~215 |
+| 23:04 | Fixed CI-only Swift compiler type-check timeout (pre-existing on main since 2026-08-22) | BlindensportGraz/TrainingsfrequenzlisteExport.swift | Fixed & build verified | ~600 |

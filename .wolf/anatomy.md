@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-31T20:48:02.945Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-08-31T21:03:40.507Z
 > Files: 223 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -240,7 +240,7 @@
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2695 tok)
 - `TrainingService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~602 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2807 tok)
-- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2643 tok)
+- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1847 tok)
 - `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~8584 tok)
 - `User.swift` — Class: User (~1006 tok)

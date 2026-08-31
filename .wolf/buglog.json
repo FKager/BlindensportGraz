@@ -5525,6 +5525,42 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-08-31T20:55:00.000Z"
+    },
+    {
+      "id": "bug-332",
+      "timestamp": "2026-08-31T21:03:40.515Z",
+      "error_message": "Wrong return value",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+      "root_cause": "Was returning: seconds / 86400",
+      "fix": "Now returns: totalSeconds / 86400",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-08-31T21:03:40.515Z"
+    },
+    {
+      "id": "bug-333",
+      "timestamp": "2026-08-31T21:04:00.000Z",
+      "error_message": "##[error]the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions — CI-only failure in Build (unsigned, simulator), on main since at least 2026-08-22, unrelated to PR #3's member-list dedup change",
+      "file": "BlindensportGraz/TrainingsfrequenzlisteExport.swift",
+      "root_cause": "excelTimeFraction combined Int-optional-coalescing, multiplication, addition, and a Double(...) wrap into one nested expression (Double((components.hour ?? 0) * 3600 + (components.minute ?? 0) * 60 + (components.second ?? 0))). Type-checked fine locally but timed out on the (slower/different) CI runner's compiler. Confirmed pre-existing by checking the last 5 CI runs on main (all failing on this exact line since 2026-08-22), not introduced by this session's MemberListView change.",
+      "fix": "Split into typed sub-expressions: separate , , , then . Verified BUILD SUCCEEDED locally afterward.",
+      "tags": [
+        "compiler-timeout",
+        "type-check",
+        "ci-only",
+        "swift",
+        "flaky"
+      ],
+      "related_bugs": [
+        "bug-332"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-08-31T21:04:00.000Z"
     }
   ]
 }
