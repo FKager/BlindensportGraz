@@ -2085,3 +2085,6 @@
 | 22:48 | Edited BlindensportGraz/MemberListView.swift | modified ForEach() | ~124 |
 | 22:55 | Fixed duplicate names in training/event/tournament member list (person in 2 teams showed twice) | BlindensportGraz/MemberListView.swift | Fixed & build verified | ~1800 |
 | 22:54 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
+| 22:57 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
+| 22:58 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
+| 22:58 | Session end: 2 writes across 1 files (MemberListView.swift) | 2 reads | ~11052 tok |
