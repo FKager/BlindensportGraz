@@ -177,8 +177,16 @@ enum TrainingsfrequenzlisteExporter {
     /// 0.729166…), matching the template's own H4/L4 values.
     static func excelTimeFraction(_ date: Date, calendar: Calendar = .current) -> Double {
         let components = calendar.dateComponents([.hour, .minute, .second], from: date)
-        let seconds = Double((components.hour ?? 0) * 3600 + (components.minute ?? 0) * 60 + (components.second ?? 0))
-        return seconds / 86400
+        // Broken into typed sub-expressions — the single combined arithmetic
+        // expression (Int optionals coalesced then multiplied then summed
+        // then wrapped in Double(...)) made the CI runner's compiler time
+        // out with "unable to type-check this expression in reasonable
+        // time" (2026-08-31), even though it built fine locally.
+        let hours: Int = components.hour ?? 0
+        let minutes: Int = components.minute ?? 0
+        let seconds: Int = components.second ?? 0
+        let totalSeconds = Double(hours * 3600 + minutes * 60 + seconds)
+        return totalSeconds / 86400
     }
 }
 

@@ -30,9 +30,28 @@ struct MemberListView: View {
         team.memberships.filter(membershipFilter).sortedByLastName()
     }
 
+    private func identityKey(_ membership: TeamMembership) -> UUID {
+        membership.user?.id ?? membership.member?.id ?? membership.id
+    }
+
+    // Per-team rosters, deduped by the underlying person across all teams
+    // shown here — someone in two of these teams (e.g. a training assigned
+    // to both) would otherwise be listed once per team. Mirrors
+    // TrainingDetailView.allMemberships' identity key; kept per-team (rather
+    // than flattened) so the existing "Section per team" layout is
+    // unaffected — each person just stays in the first team section they
+    // appear in.
+    private var dedupedMembershipsByTeam: [(team: Team, memberships: [TeamMembership])] {
+        var seenKeys = Set<UUID>()
+        return teams.map { team in
+            let deduped = filteredMemberships(for: team).filter { seenKeys.insert(identityKey($0)).inserted }
+            return (team, deduped)
+        }
+    }
+
     private var exportText: String {
-        teams.map { team in
-            let names = filteredMemberships(for: team).map(\.displayName)
+        dedupedMembershipsByTeam.map { team, memberships in
+            let names = memberships.map(\.displayName)
             let noMembers = String(localized: "Keine Mitglieder")
             let lines = names.isEmpty ? noMembers : names.map { "- \($0)" }.joined(separator: "\n")
             return "\(team.name):\n\(lines)"
@@ -47,13 +66,13 @@ struct MemberListView: View {
                                            systemImage: "person.3",
                                            description: Text("Diesem Eintrag ist kein Team zugewiesen."))
                 } else {
-                    ForEach(teams) { team in
+                    ForEach(dedupedMembershipsByTeam, id: \.team.id) { team, memberships in
                         Section(team.name) {
-                            if filteredMemberships(for: team).isEmpty {
+                            if memberships.isEmpty {
                                 Text("Keine Mitglieder")
                                     .foregroundStyle(.secondary)
                             } else {
-                                ForEach(filteredMemberships(for: team)) { membership in
+                                ForEach(memberships) { membership in
                                     HStack {
                                         Text(membership.displayName)
                                         Spacer()
