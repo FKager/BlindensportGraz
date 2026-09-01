@@ -2230,3 +2230,12 @@
 | 21:50 | Edited BlindensportGraz/TrainingsViews.swift | 2→6 lines | ~116 |
 | 21:50 | Edited BlindensportGraz/TrainingsViews.swift | 1→2 lines | ~48 |
 | 21:50 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | 1→4 lines | ~75 |
+| 21:56 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | inline fix | ~69 |
+| 21:58 | Session end: 16 writes across 7 files (project_testflight-setup.md, DashboardView.swift, SammelabrechnungViews.swift, SammelabrechnungExport.swift, TournamentsViews.swift) | 5 reads | ~19661 tok |
+| 21:59 | Session end: 16 writes across 7 files (project_testflight-setup.md, DashboardView.swift, SammelabrechnungViews.swift, SammelabrechnungExport.swift, TournamentsViews.swift) | 5 reads | ~19661 tok |
+| 22:01 | Created ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/makeicon.swift | — | ~704 |
+| 22:02 | Edited ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/makeicon.swift | 20→20 lines | ~165 |
+| 22:02 | Edited ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/makeicon.swift | 20→20 lines | ~175 |
+| 22:03 | Edited ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/makeicon.swift | expanded (+10 lines) | ~235 |
+| 22:04 | Created ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/makeicon.swift | — | ~789 |
+| 22:05 | Edited generate_app_icon.swift | expanded (+7 lines) | ~135 |

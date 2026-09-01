@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T19:50:31.982Z
-> Files: 228 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T20:05:49.783Z
+> Files: 230 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -14,6 +14,10 @@
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/f77275b7-eb9b-48cf-a257-42428c82e0cc/scratchpad/cktool/
 
 - `dev-schema.ckdb` (~2434 tok)
+
+## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/
+
+- `makeicon.swift` (~789 tok)
 
 ## ../../../../tmp/
 
@@ -44,7 +48,7 @@
 
 - `MEMORY.md` — Memory (~98 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
-- `project_testflight-setup.md` (~1037 tok)
+- `project_testflight-setup.md` (~1072 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -64,6 +68,7 @@
 - `CLAUDE.md` — OpenWolf (~129 tok)
 - `CLAUDE.mdes` — Requirements (~91 tok)
 - `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
+- `generate_app_icon.swift` — Regenerates BlindensportGraz/Assets.xcassets/AppIcon.appiconset/icon-1024.png (~903 tok)
 - `goal.md` (~276 tok)
 - `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
 - `profile.plist` (~0 tok)

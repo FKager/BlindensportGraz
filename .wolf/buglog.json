@@ -5936,6 +5936,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-01T19:50:05.457Z"
+    },
+    {
+      "id": "bug-357",
+      "timestamp": "2026-09-01T19:56:20.536Z",
+      "error_message": "Incorrect value in code",
+      "file": "../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md",
+      "root_cause": "Had \"exempt\"",
+      "fix": "Changed to ' TestFlight installs (Release-only SwiftData `",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T19:56:20.536Z"
+    },
+    {
+      "id": "bug-358",
+      "timestamp": "2026-09-01T20:03:34.653Z",
+      "error_message": "Significant refactor of ",
+      "file": "../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/makeicon.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 4→14 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T20:03:34.653Z"
     }
   ]
 }
