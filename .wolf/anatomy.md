@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T12:50:34.107Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T13:06:12.056Z
 > Files: 225 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -220,7 +220,7 @@
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
 - `RootView.swift` — SwiftUI view: RootView (~4233 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3075 tok)
-- `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4210 tok)
+- `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4661 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
 - `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~1321 tok)

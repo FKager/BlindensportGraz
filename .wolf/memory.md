@@ -2128,3 +2128,8 @@
 | 14:50 | Edited BlindensportGrazTests/SammelabrechnungExportTests.swift | modified testExportForTournamentIncludesBothTeilnehmerlistenWhenProvided() | ~1058 |
 | 14:54 | Tournament Sammelabrechnung: bundle TeilnehmerInnenliste Sportler+Helfer, added 4 "Enthaltene Teile" toggles (KostZ/PRAE/TN-Sportler/TN-Helfer), all pre-selected | BlindensportGraz/SammelabrechnungExport.swift, SammelabrechnungViews.swift, BlindensportGrazTests/SammelabrechnungExportTests.swift | xcodebuild build succeeded, targeted tests 8/8 pass (full suite run pending, bug-134 simulator retries) | ~3400 |
 | 14:56 | Session end: 13 writes across 8 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 11 reads | ~48423 tok |
+| 15:02 | Session end: 13 writes across 8 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 11 reads | ~48423 tok |
+| 15:05 | Edited BlindensportGraz/SammelabrechnungViews.swift | expanded (+9 lines) | ~616 |
+| 15:06 | Edited BlindensportGraz/SammelabrechnungViews.swift | modified praeBinding() | ~1254 |
+| 15:06 | Sammelabrechnung Turnier: PRAE selection now per-helper (was one bulk toggle) | BlindensportGraz/SammelabrechnungViews.swift | xcodebuild build+test succeeded, 8/8 Sammelabrechnung tests pass | ~1300 |
+| 15:06 | Session end: 15 writes across 8 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 11 reads | ~51516 tok |
