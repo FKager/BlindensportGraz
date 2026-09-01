@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T16:43:02.198Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T19:50:31.982Z
 > Files: 228 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -44,7 +44,7 @@
 
 - `MEMORY.md` — Memory (~98 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
-- `project_testflight-setup.md` (~682 tok)
+- `project_testflight-setup.md` (~1037 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -189,7 +189,7 @@
 - `CloudKitSync+TeamMembership.swift` (~881 tok)
 - `CloudKitSync+TrainingFavorite.swift` (~1138 tok)
 - `CloudKitSync+UserIdentity.swift` (~790 tok)
-- `DashboardView.swift` — SwiftUI view: DashboardView (~1259 tok)
+- `DashboardView.swift` — SwiftUI view: DashboardView (~1334 tok)
 - `EventImage.swift` — / A photo attached to a SportEvent (or, via inheritance, a Training or (~212 tok)
 - `EventImageService.swift` — Declares EventImageService (~227 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1568 tok)
@@ -221,8 +221,8 @@
 - `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
 - `RootView.swift` — SwiftUI view: RootView (~4233 tok)
-- `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3005 tok)
-- `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5455 tok)
+- `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
+- `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
 - `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~1321 tok)
@@ -240,7 +240,7 @@
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~7012 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~7128 tok)
 - `Training.swift` — Class: Training (~405 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~2839 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -248,8 +248,8 @@
 - `TrainingService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~602 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2807 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
-- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1847 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~8748 tok)
+- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~8978 tok)
 - `User.swift` — Class: User (~1006 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)

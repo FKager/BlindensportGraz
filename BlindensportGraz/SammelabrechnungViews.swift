@@ -359,8 +359,12 @@ struct SammelabrechnungSeasonView: View {
     // Intentionally unfiltered — see SammelabrechnungView's identical
     // @Query comment above.
     @Query private var allMemberships: [TeamMembership]
-    @Query(sort: \Tournament.startDate) private var tournaments: [Tournament]
-    @Query(sort: \Training.startDate) private var trainings: [Training]
+    // No query-level `sort:` — `startDate` is inherited from SportEvent and
+    // SwiftData traps on an inherited-property sort key path in Release
+    // builds (bug-352). `exportSeason` sorts tournaments itself; `trainings`
+    // here only feeds a Set of sport names, so order is irrelevant.
+    @Query private var tournaments: [Tournament]
+    @Query private var trainings: [Training]
 
     @State private var year = Calendar.current.component(.year, from: .now)
     @State private var exportURL: URL?

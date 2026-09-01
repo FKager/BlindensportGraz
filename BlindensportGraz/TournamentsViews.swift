@@ -524,7 +524,10 @@ var body: some View {
 struct TournamentsListView: View {
      let currentUser: User?
       @Environment(\.modelContext) private var modelContext
-       @Query(sort: \Tournament.startDate, order: .reverse) private var tournaments: [Tournament]
+       // No query-level `sort:` — `startDate` is inherited from SportEvent and
+       // SwiftData traps on an inherited-property sort key path in Release
+       // builds (bug-352). `visibleTournaments` sorts (newest first) in memory.
+       @Query private var tournaments: [Tournament]
         @State private var showAdd = false
 
   var canManageEvents: Bool {
@@ -533,9 +536,10 @@ struct TournamentsListView: View {
        }
 
     var visibleTournaments: [Tournament] {
-        if currentUser?.role == .admin { return tournaments }
+        let sorted = tournaments.sorted { $0.startDate > $1.startDate }
+        if currentUser?.role == .admin { return sorted }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
-        return tournaments.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
+        return sorted.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }
 
    var body: some View {
@@ -582,8 +586,11 @@ struct TournamentsListView: View {
     // path exists for Tournament records, see EventsListView.deleteEvents'
     // identical comment).
     private func deleteTournaments(at offsets: IndexSet) {
+        // Index into the same collection the ForEach renders, not the raw
+        // @Query — they no longer share an order (see visibleTournaments).
+        let shown = visibleTournaments
         for index in offsets {
-            let tournament = tournaments[index]
+            let tournament = shown[index]
             modelContext.delete(tournament)
             TournamentService.delete(tournament, modelContext: modelContext)
         }

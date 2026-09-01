@@ -201,6 +201,24 @@
 
 ## Do-Not-Repeat
 
+- [2026-09-01] **`@Query(sort: \Tournament.startDate)` / `@Query(sort: \Training.startDate)` crash-loop
+  every Release build (TestFlight/App Store) on launch** (see [[bug-352]] — reported when Linda
+  Kanzler's TestFlight install of v0.1.1 crashed instantly; Franz never saw it because his phone runs
+  the Xcode **Debug** build). `Tournament`/`Training` are SwiftData `@Model` **subclasses** of
+  `SportEvent`, and `startDate` is a stored property declared **only on the `SportEvent` base class**.
+  Converting that *inherited-property* key path into an `NSSortDescriptor` string
+  (`PersistentModel.graph_keyPathToString`) hits an `_assertionFailure` **only under optimization** —
+  Debug resolves it fine, so `xcodebuild test`/Debug simulator/Franz's device all pass while every
+  real distributed build traps. **Lesson: never put a `@Query`/`FetchDescriptor` `sort:` (or a
+  `SortDescriptor`) on a key path that resolves to a property inherited from a parent `@Model` class.
+  Drop `sort:` and sort in memory (`.sorted { $0.startDate < $1.startDate }`), the same way this
+  project already handles `.other(String)`-enum key paths.** Sorting a query whose *element type* is
+  the class that declares the property (`@Query(sort: \SportEvent.startDate) var x: [SportEvent]`) is
+  fine — it's specifically the subclass + inherited-property combination that traps. Also: a
+  `.onDelete` that indexed the raw reverse-sorted `@Query` "happened to" line up with the rendered
+  `ForEach(visible…)` only because both were reverse-sorted; once the sort moves in-memory into the
+  `visible…` computed prop, the delete handler must index into that same collection, not the `@Query`.
+
 - [2026-08-22] **`syncAll()`'s single end-of-sequence `modelContext.save()` silently dropped every
   `TeamMembership` on the very first real full resync** (see [[bug-320]], follow-on to [[bug-319]]'s
   local-store wipe forcing this codepath to actually run for real for the first time). Every later pull's

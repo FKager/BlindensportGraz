@@ -7,8 +7,11 @@ struct DashboardView: View {
     // it) — filter to plain events only, same reasoning as EventsListView.
     @Query(filter: #Predicate<SportEvent> { $0.kind == "event" }, sort: \SportEvent.startDate)
     private var events: [SportEvent]
-    @Query(sort: \Tournament.startDate) private var tournaments: [Tournament]
-    @Query(sort: \Training.startDate) private var trainings: [Training]
+    // No query-level `sort:` — `startDate` is inherited from the SportEvent
+    // base class, and SwiftData traps converting an inherited-property key
+    // path to an NSSortDescriptor in Release builds (bug-352). Sort in memory.
+    @Query private var tournaments: [Tournament]
+    @Query private var trainings: [Training]
     @Query private var teams: [Team]
 
     var upcomingEvents: [SportEvent] {
@@ -16,11 +19,13 @@ struct DashboardView: View {
     }
 
     var upcomingTrainings: [Training] {
-        trainings.filter { $0.startDate >= .now }
+        trainings.filter { $0.startDate >= .now }.sorted { $0.startDate < $1.startDate }
     }
 
     var activeTournaments: [Tournament] {
-        tournaments.filter { $0.status == "planned" || $0.status == "ongoing" }
+        tournaments
+            .filter { $0.status == "planned" || $0.status == "ongoing" }
+            .sorted { $0.startDate < $1.startDate }
     }
 
     var body: some View {

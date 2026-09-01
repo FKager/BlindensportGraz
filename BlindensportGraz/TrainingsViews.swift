@@ -10,7 +10,11 @@ struct AddTrainingView: View {
         @Environment(\.dismiss) private var dismiss
       @Query private var allTeams: [Team]
       @Query(sort: \TrainingFavorite.lastUsedAt, order: .reverse) private var favorites: [TrainingFavorite]
-      @Query(sort: \Training.startDate, order: .reverse) private var recentTrainings: [Training]
+      // No query-level `sort:` — `startDate` is inherited from SportEvent and
+      // SwiftData traps on an inherited-property sort key path in Release
+      // builds (bug-352). populateFromRecentTrainings wants newest-first, so
+      // sort in memory at the call site.
+      @Query private var recentTrainings: [Training]
 
        @State private var title = ""
        @State private var sport = "Torball"
@@ -71,7 +75,8 @@ struct AddTrainingView: View {
     // any auto-recorded favorite) or any time the list should reflect what's
     // actually been trained recently without re-creating trainings by hand.
     private func populateFavoritesFromRecentTrainings() {
-        let results = TrainingFavorite.populateFromRecentTrainings(recentTrainings, in: modelContext)
+        let newestFirst = recentTrainings.sorted { $0.startDate > $1.startDate }
+        let results = TrainingFavorite.populateFromRecentTrainings(newestFirst, in: modelContext)
         for (favorite, evictedID) in results {
             TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
         }
@@ -511,7 +516,10 @@ struct TrainingDetailView: View {
 struct TrainingsListView: View {
      let currentUser: User?
         @Environment(\.modelContext) private var modelContext
-        @Query(sort: \Training.startDate, order: .reverse) private var trainings: [Training]
+        // No query-level `sort:` — `startDate` is inherited from SportEvent and
+        // SwiftData traps on an inherited-property sort key path in Release
+        // builds (bug-352). Sort newest-first in memory via sortedTrainings.
+        @Query private var trainings: [Training]
         @State private var showAdd = false
         @State private var showAttendanceTrends = false
         @State private var showTrainingsfrequenzliste = false
@@ -537,10 +545,15 @@ struct TrainingsListView: View {
         currentUser?.role == .admin || (currentUser?.isRoot ?? false)
        }
 
+    // Newest-first, matching the old @Query(order: .reverse).
+    var sortedTrainings: [Training] {
+        trainings.sorted { $0.startDate > $1.startDate }
+    }
+
     var visibleTrainings: [Training] {
-        if currentUser?.role == .admin { return trainings }
+        if currentUser?.role == .admin { return sortedTrainings }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
-        return trainings.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
+        return sortedTrainings.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }
 
     var body: some View {
@@ -645,7 +658,7 @@ struct TrainingsListView: View {
             SammelabrechnungSeasonView()
         }
         .task(id: trainings.map(\.id)) {
-            exportURL = try? TrainingImportExport.exportFile(trainings: trainings)
+            exportURL = try? TrainingImportExport.exportFile(trainings: sortedTrainings)
         }
         .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
             handleImport(result)
@@ -683,8 +696,11 @@ struct TrainingsListView: View {
     // path exists for Training records, see EventsListView.deleteEvents'
     // identical comment).
     private func deleteTrainings(at offsets: IndexSet) {
+        // Index into the same collection the ForEach renders, not the raw
+        // @Query — they no longer share an order (see sortedTrainings).
+        let shown = visibleTrainings
         for index in offsets {
-            let training = trainings[index]
+            let training = shown[index]
             modelContext.delete(training)
             TrainingService.delete(training, modelContext: modelContext)
         }

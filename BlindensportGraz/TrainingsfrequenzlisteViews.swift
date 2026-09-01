@@ -23,7 +23,10 @@ import SwiftData
 struct TrainingsfrequenzlisteView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \Training.startDate) private var trainings: [Training]
+    // No query-level `sort:` — `startDate` is inherited from SportEvent and
+    // SwiftData traps on an inherited-property sort key path in Release builds
+    // (bug-352). Only used for a Set of sport names here, so order is moot.
+    @Query private var trainings: [Training]
 
     @State private var selectedSport: String?
     @State private var halfYear: HalfYear = Calendar.current.component(.month, from: .now) <= 6 ? .first : .second

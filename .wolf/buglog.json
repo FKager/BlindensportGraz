@@ -5833,6 +5833,109 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-01T16:42:40.964Z"
+    },
+    {
+      "id": "bug-351",
+      "timestamp": "2026-09-01T16:52:06.610Z",
+      "error_message": "Incorrect value in code",
+      "file": "../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md",
+      "root_cause": "Had `v0.1.0`",
+      "fix": "Changed to `BlindensportGraz AppStore`",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T16:52:06.610Z"
+    },
+    {
+      "id": "bug-352",
+      "timestamp": "2026-09-01T19:17:00Z",
+      "error_message": "TestFlight Release build (v0.1.1/122) crashes on launch on Linda Kanzler's iPhone (iOS 26.6.1). EXC_BREAKPOINT in libswiftCore _assertionFailure <- SwiftData PersistentModel.graph_keyPathToString(keypath:) <- Schema.KeyPathCache.validateAndCache <- SortDescriptor.nsSortDescriptor() <- QueryController.results <- DashboardView.tournaments.getter (DashboardView.swift:10) / activeTournaments (DashboardView.swift:23). Works fine on Franz's device (Xcode Debug build).",
+      "file": "BlindensportGraz/DashboardView.swift",
+      "root_cause": "@Query(sort: \\Tournament.startDate) / @Query(sort: \\Training.startDate) sort a SwiftData @Model SUBCLASS (Tournament/Training : SportEvent) by `startDate`, which is a stored property declared only on the SportEvent base class. Converting that inherited-property key path to an NSSortDescriptor string via PersistentModel.graph_keyPathToString traps with an assertion failure in optimized/Release builds (Debug resolves it fine, which is why it never reproduced on the Xcode-installed dev build). Not a CloudKit/entitlement/provisioning/config issue.",
+      "fix": "Replaced `@Query(sort: \\Tournament.startDate)` / `@Query(sort: \\Training.startDate)` (with/without order:.reverse) with plain `@Query` and in-memory sorting, matching the project's 'sort/filter unsupported key paths in memory' convention. Sites: DashboardView.swift:13-14 (activeTournaments/upcomingTrainings now .sorted ascending), SammelabrechnungViews.swift:365-366 (exportSeason sorts tournamentsInYear itself in SammelabrechnungExport.swift; trainings only feeds a Set of sports), TournamentsViews.swift:527 (visibleTournaments sorts newest-first; deleteTournaments now indexes into visibleTournaments not the raw @Query), TrainingsViews.swift:15 recentTrainings (populateFavoritesFromRecentTrainings sorts newest-first at call site) and :522 trainings (new sortedTrainings newest-first; visibleTrainings + export use it; deleteTrainings indexes into visibleTrainings), TrainingsfrequenzlisteViews.swift:29 (Set of sports only). Left `@Query(sort: \\SportEvent.startDate)` on SportEvent-typed queries (DashboardView:8, EventsViews:135) — element type declares startDate, so no inherited-keypath trap. Release simulator build succeeds; full test suite green (TrainingFavoriteTests 15, SammelabrechnungExport 6, SammelabrechnungSeasonExport 3). Shipped as tag v0.1.2.",
+      "tags": [
+        "swiftdata",
+        "@Query",
+        "SortDescriptor",
+        "model-inheritance",
+        "inherited-keypath",
+        "graph_keyPathToString",
+        "release-build-only",
+        "testflight",
+        "crash",
+        "DashboardView"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T20:00:00Z"
+    },
+    {
+      "id": "bug-353",
+      "timestamp": "2026-09-01T19:48:38.015Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/DashboardView.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→9 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T19:48:38.015Z"
+    },
+    {
+      "id": "bug-354",
+      "timestamp": "2026-09-01T19:49:28.775Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 13→17 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T19:49:28.775Z"
+    },
+    {
+      "id": "bug-355",
+      "timestamp": "2026-09-01T19:50:01.506Z",
+      "error_message": "Wrong return value",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Was returning: trainings }",
+      "fix": "Now returns: sortedTrainings }",
+      "tags": [
+        "auto-detected",
+        "return-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T19:50:01.506Z"
+    },
+    {
+      "id": "bug-356",
+      "timestamp": "2026-09-01T19:50:05.457Z",
+      "error_message": "Wrong reference: trainings should be sortedTrainings",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Used \"trainings\" instead of \"sortedTrainings\"",
+      "fix": "Changed trainings → sortedTrainings",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T19:50:05.457Z"
     }
   ]
 }

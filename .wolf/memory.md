@@ -2194,3 +2194,39 @@
 | 18:42 | Edited .github/workflows/ios-build-deploy.yml | expanded (+18 lines) | ~950 |
 | 18:42 | Edited .github/workflows/ios-build-deploy.yml | 31→35 lines | ~382 |
 | 18:43 | Edited .github/workflows/ios-build-deploy.yml | 6→7 lines | ~119 |
+| 18:44 | Session end: 13 writes across 5 files (BlindensportGrazRelease.entitlements, project.yml, ios-build-deploy.yml, project_testflight-setup.md, MEMORY.md) | 4 reads | ~9041 tok |
+| 18:46 | Session end: 13 writes across 5 files (BlindensportGrazRelease.entitlements, project.yml, ios-build-deploy.yml, project_testflight-setup.md, MEMORY.md) | 4 reads | ~9041 tok |
+| 18:52 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | 1→3 lines | ~341 |
+| 18:52 | Session end: 14 writes across 5 files (BlindensportGrazRelease.entitlements, project.yml, ios-build-deploy.yml, project_testflight-setup.md, MEMORY.md) | 4 reads | ~9406 tok |
+
+## Session: 2026-09-01 20:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-01 20:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:36 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | 1→3 lines | ~293 |
+| 20:36 | Session end: 1 writes across 1 files (project_testflight-setup.md) | 0 reads | ~314 tok |
+| 21:04 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | inline fix | ~66 |
+| 21:04 | Session end: 2 writes across 1 files (project_testflight-setup.md) | 0 reads | ~385 tok |
+| 21:12 | Session end: 2 writes across 1 files (project_testflight-setup.md) | 0 reads | ~385 tok |
+| 21:19 | Session end: 2 writes across 1 files (project_testflight-setup.md) | 0 reads | ~385 tok |
+| 21:22 | Session end: 2 writes across 1 files (project_testflight-setup.md) | 2 reads | ~1026 tok |
+| 21:27 | Session end: 2 writes across 1 files (project_testflight-setup.md) | 2 reads | ~1026 tok |
+| 21:44 | Session end: 2 writes across 1 files (project_testflight-setup.md) | 3 reads | ~2285 tok |
+| 21:48 | Edited BlindensportGraz/DashboardView.swift | Query() → builds() | ~87 |
+| 21:48 | Edited BlindensportGraz/DashboardView.swift | 7→9 lines | ~88 |
+| 21:48 | Edited BlindensportGraz/SammelabrechnungViews.swift | Query() → builds() | ~104 |
+| 21:49 | Edited BlindensportGraz/SammelabrechnungExport.swift | 1→3 lines | ~49 |
+| 21:49 | Edited BlindensportGraz/TournamentsViews.swift | 13→17 lines | ~227 |
+| 21:49 | Edited BlindensportGraz/TournamentsViews.swift | modified deleteTournaments() | ~123 |
+| 21:49 | Edited BlindensportGraz/TrainingsViews.swift | Query() → builds() | ~103 |
+| 21:50 | Edited BlindensportGraz/TrainingsViews.swift | 5→10 lines | ~126 |
+| 21:50 | Edited BlindensportGraz/TrainingsViews.swift | 3→3 lines | ~38 |
+| 21:50 | Edited BlindensportGraz/TrainingsViews.swift | modified deleteTrainings() | ~119 |
+| 21:50 | Edited BlindensportGraz/TrainingsViews.swift | 2→6 lines | ~116 |
+| 21:50 | Edited BlindensportGraz/TrainingsViews.swift | 1→2 lines | ~48 |
+| 21:50 | Edited BlindensportGraz/TrainingsfrequenzlisteViews.swift | 1→4 lines | ~75 |

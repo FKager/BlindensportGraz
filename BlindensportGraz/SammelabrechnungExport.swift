@@ -110,7 +110,9 @@ enum SammelabrechnungExporter {
             }
         }
 
-        let tournamentsInYear = tournaments.filter { Calendar.current.component(.year, from: $0.startDate) == year }
+        let tournamentsInYear = tournaments
+            .filter { Calendar.current.component(.year, from: $0.startDate) == year }
+            .sorted { $0.startDate < $1.startDate }
         for tournament in tournamentsInYear {
             let kostZSummary = KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
             guard !kostZSummary.personAmounts.isEmpty else { continue }
