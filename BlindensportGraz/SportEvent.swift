@@ -97,4 +97,20 @@ extension SportEvent {
         guard !trimmedCountry.isEmpty, trimmedCountry != "Österreich" else { return location }
         return "\(location), \(trimmedCountry)"
     }
+
+    /// Inclusive count of calendar days this event spans — a tournament
+    /// running Fri-Sun is 3, not 2. Same day-count convention as
+    /// TeilnehmerlisteExport's private `dayCount(from:to:)`/KostZExport's
+    /// `dayCount` (kept separate rather than consolidated — out of scope for
+    /// the PRAE change that introduced this shared one). Used to size a
+    /// tournament's PRAE picker max (`PraeCalculator.dailyCap * dayCount`)
+    /// and to spread a tournament's single PRAE amount evenly across its
+    /// days (`PraeCalculator.summary(for:tournament:)`).
+    var dayCount: Int {
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: startDate)
+        let end = calendar.startOfDay(for: endDate)
+        let days = calendar.dateComponents([.day], from: start, to: end).day ?? 0
+        return max(1, days + 1)
+    }
 }

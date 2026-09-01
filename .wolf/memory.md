@@ -2095,3 +2095,28 @@
 | 23:03 | Edited BlindensportGraz/TrainingsfrequenzlisteExport.swift | modified excelTimeFraction() | ~215 |
 | 23:04 | Fixed CI-only Swift compiler type-check timeout (pre-existing on main since 2026-08-22) | BlindensportGraz/TrainingsfrequenzlisteExport.swift | Fixed & build verified | ~600 |
 | 23:12 | Session end: 3 writes across 2 files (MemberListView.swift, TrainingsfrequenzlisteExport.swift) | 3 reads | ~13925 tok |
+| 23:16 | Session end: 3 writes across 2 files (MemberListView.swift, TrainingsfrequenzlisteExport.swift) | 3 reads | ~13925 tok |
+| 23:38 | Session end: 3 writes across 2 files (MemberListView.swift, TrainingsfrequenzlisteExport.swift) | 6 reads | ~17969 tok |
+| 23:56 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_duplicate-names-investigation.md | — | ~959 |
+| 23:56 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | — | ~59 |
+| 23:56 | Session end: 5 writes across 4 files (MemberListView.swift, TrainingsfrequenzlisteExport.swift, project_duplicate-names-investigation.md, MEMORY.md) | 6 reads | ~19060 tok |
+
+## Session: 2026-09-01 13:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:48 | Edited BlindensportGraz/TrainingsViews.swift | expanded (+10 lines) | ~475 |
+| 13:48 | Changed PRAE amount input in Training Anwesenheit from free-text TextField to swipe-to-select wheel Picker (0-90, step 10) | BlindensportGraz/TrainingsViews.swift | xcodebuild build (iphonesimulator) succeeded | ~1200 |
+| 13:49 | Session end: 1 writes across 1 files (TrainingsViews.swift) | 2 reads | ~9525 tok |
+| 14:13 | Edited BlindensportGraz/SportEvent.swift | added nullish coalescing | ~301 |
+| 14:13 | Edited BlindensportGraz/TournamentsViews.swift | expanded (+16 lines) | ~572 |
+| 14:13 | Edited BlindensportGraz/PraeCalculation.swift | modified summary() | ~631 |
+| 14:14 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testTournamentSummaryGroupsByDayForJustThatTournament() | ~930 |
+| 14:14 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testDayCountIsInclusiveOfBothEndpoints() | ~285 |
+| 14:15 | Tournament PRAE: max now 120*dayCount, spread evenly across tournament days | BlindensportGraz/SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, BlindensportGrazTests/PraeCalculationTests.swift | xcodebuild build+test (iphonesimulator) succeeded, 24/24 PraeCalculationTests pass | ~2600 |
+| 14:15 | Session end: 6 writes across 5 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 8 reads | ~33558 tok |
+| 14:25 | Edited BlindensportGraz/PraeCalculation.swift | modified summary() | ~940 |
+| 14:26 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testTournamentSummaryGivesRemainderToMiddleDayWhenNotEvenlyDivisible() | ~714 |
+| 14:27 | PRAE tournament spread: give remainder to middle day (whole-euro, no comma amounts) instead of even float split | BlindensportGraz/PraeCalculation.swift, BlindensportGrazTests/PraeCalculationTests.swift | xcodebuild build+test succeeded, 26/26 PraeCalculationTests pass (simctl erase fixed a transient bug-134 Busy/preflight failure first) | ~2100 |
+| 14:27 | Session end: 8 writes across 5 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 8 reads | ~36377 tok |
+| 14:31 | Session end: 8 writes across 5 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 8 reads | ~36377 tok |

@@ -165,6 +165,14 @@ enum PraeCalculator {
     /// straight from `tournament.attendances` — no ModelContext fetch or
     /// month/year filtering needed, mirroring
     /// KostZCalculator.summary(for tournament:).
+    ///
+    /// `Attendance.praeAmount` is entered once for the whole tournament (see
+    /// TournamentDetailView's Anwesenheit section, whose picker caps the
+    /// total at `dailyCap * tournament.dayCount`), so a multi-day
+    /// tournament's amount is split across every day the tournament spans
+    /// (see `spreadEvenly`) rather than attributed entirely to the start
+    /// date — matching the Sport Austria form's one-entry-per-deployment-day
+    /// convention and keeping each day within `dailyCap` by construction.
     static func summary(for person: PraeEligiblePerson, tournament: Tournament) -> PraeTournamentSummary {
         let membershipIDs = Set(person.membershipIDs)
         let attendances = tournament.attendances.filter {
@@ -172,16 +180,23 @@ enum PraeCalculator {
         }
 
         let calendar = Calendar.current
+        let tournamentDays: [Date] = (0..<tournament.dayCount).compactMap {
+            calendar.date(byAdding: .day, value: $0, to: calendar.startOfDay(for: tournament.startDate))
+        }
+
         var byDay: [Int: (amount: Double, purposes: [String])] = [:]
         for attendance in attendances {
-            guard let day = calendar.dateComponents([.day], from: attendance.event.startDate).day,
-                  let amount = attendance.praeAmount else { continue }
-            var entry = byDay[day] ?? (0, [])
-            entry.amount += amount
-            if !entry.purposes.contains(attendance.event.title) {
-                entry.purposes.append(attendance.event.title)
+            guard let amount = attendance.praeAmount, !tournamentDays.isEmpty else { continue }
+            let perDayAmounts = spreadEvenly(amount, across: tournamentDays.count)
+            for (date, dayAmount) in zip(tournamentDays, perDayAmounts) {
+                guard let day = calendar.dateComponents([.day], from: date).day else { continue }
+                var entry = byDay[day] ?? (0, [])
+                entry.amount += dayAmount
+                if !entry.purposes.contains(attendance.event.title) {
+                    entry.purposes.append(attendance.event.title)
+                }
+                byDay[day] = entry
             }
-            byDay[day] = entry
         }
 
         let entries = byDay.keys.sorted().map { day -> PraeDayEntry in
@@ -189,5 +204,23 @@ enum PraeCalculator {
             return PraeDayEntry(day: day, amount: value.amount, purpose: value.purposes.joined(separator: ", "))
         }
         return PraeTournamentSummary(person: person, tournament: tournament, entries: entries)
+    }
+
+    /// Splits `amount` across `dayCount` days in whole euros — never a
+    /// fractional/comma amount per day, since PRAE is a form field, not a
+    /// bank transfer. When `amount` doesn't divide evenly, every day gets
+    /// the rounded-down share except the middle day, which absorbs the
+    /// whole remainder, so the days still sum to exactly `amount` (e.g. €100
+    /// over 3 days → €33/€34/€33, not €33.33 each). "Middle" is `dayCount /
+    /// 2` (0-indexed, integer division) — for an even day count that's the
+    /// day right after the true center (e.g. day 2 of a 2-day tournament),
+    /// there being no single middle day to pick.
+    static func spreadEvenly(_ amount: Double, across dayCount: Int) -> [Double] {
+        guard dayCount > 0 else { return [] }
+        guard dayCount > 1 else { return [amount] }
+        let lowerShare = (amount / Double(dayCount)).rounded(.down)
+        let middleShare = amount - lowerShare * Double(dayCount - 1)
+        let middleIndex = dayCount / 2
+        return (0..<dayCount).map { $0 == middleIndex ? middleShare : lowerShare }
     }
 }

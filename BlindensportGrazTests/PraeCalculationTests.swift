@@ -233,6 +233,9 @@ final class PraeCalculationTests: XCTestCase {
         let membership = TeamMembership(member: coach, team: team, role: .coach)
         context.insert(membership)
 
+        // makeTournament's endDate is startDate + 1 day, i.e. dayCount == 2
+        // (day 12 and day 13) — so the €60 entered is spread evenly, €30
+        // per day, per the new spread-across-all-days behavior below.
         let tournament = makeTournament(context, title: "Landesmeisterschaft", day: 12)
         let otherTournament = makeTournament(context, title: "Anderes Turnier", day: 20)
         let training = makeTraining(context, title: "Montagstraining", day: 5)
@@ -243,9 +246,90 @@ final class PraeCalculationTests: XCTestCase {
         let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
         let summary = PraeCalculator.summary(for: person, tournament: tournament)
 
-        XCTAssertEqual(summary.entries.count, 1)
-        XCTAssertEqual(summary.entries.first?.day, 12)
+        XCTAssertEqual(summary.entries.count, 2)
+        XCTAssertEqual(summary.entries.map(\.day), [12, 13])
+        XCTAssertEqual(summary.entries.map(\.amount), [30, 30])
         XCTAssertEqual(summary.total, 60)
+    }
+
+    func testTournamentSummarySpreadsAmountEvenlyAcrossAllDays() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        var startComponents = DateComponents()
+        startComponents.year = 2026
+        startComponents.month = 7
+        startComponents.day = 10
+        startComponents.hour = 9
+        let start = Calendar.current.date(from: startComponents)!
+        let end = Calendar.current.date(byAdding: .day, value: 2, to: start)! // 3-day tournament: 10th-12th
+        let tournament = Tournament(title: "Mehrtägiges Turnier", sport: "Torball", location: "Graz",
+                                     startDate: start, endDate: end)
+        context.insert(tournament)
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 90))
+
+        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
+        let summary = PraeCalculator.summary(for: person, tournament: tournament)
+
+        XCTAssertEqual(summary.entries.map(\.day), [10, 11, 12])
+        XCTAssertEqual(summary.entries.map(\.amount), [30, 30, 30])
+        XCTAssertEqual(summary.total, 90)
+        // Each day stays within the €120/day cap by construction, even
+        // though the tournament's PRAE picker allows up to dailyCap *
+        // dayCount (€360 here) as a single total.
+        XCTAssertTrue(summary.daysExceedingDailyCap.isEmpty)
+    }
+
+    func testTournamentSummaryGivesRemainderToMiddleDayWhenNotEvenlyDivisible() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        var startComponents = DateComponents()
+        startComponents.year = 2026
+        startComponents.month = 7
+        startComponents.day = 10
+        startComponents.hour = 9
+        let start = Calendar.current.date(from: startComponents)!
+        let end = Calendar.current.date(byAdding: .day, value: 2, to: start)! // 3-day tournament: 10th-12th
+        let tournament = Tournament(title: "Mehrtägiges Turnier", sport: "Torball", location: "Graz",
+                                     startDate: start, endDate: end)
+        context.insert(tournament)
+        // €100 doesn't divide evenly across 3 days (33.33...) — the middle
+        // day (11th) should absorb the remainder so every day stays a whole
+        // euro amount and the days still sum to exactly €100.
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 100))
+
+        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
+        let summary = PraeCalculator.summary(for: person, tournament: tournament)
+
+        XCTAssertEqual(summary.entries.map(\.day), [10, 11, 12])
+        XCTAssertEqual(summary.entries.map(\.amount), [33, 34, 33])
+        XCTAssertEqual(summary.total, 100)
+    }
+
+    func testSpreadEvenlyGivesRemainderToMiddleIndexOnly() {
+        // Evenly divisible: no remainder, every day gets the same share.
+        XCTAssertEqual(PraeCalculator.spreadEvenly(90, across: 3), [30, 30, 30])
+        // Not evenly divisible, odd day count: true middle (index 1 of 3)
+        // absorbs the remainder.
+        XCTAssertEqual(PraeCalculator.spreadEvenly(100, across: 3), [33, 34, 33])
+        // Not evenly divisible, even day count: no true middle, so index
+        // dayCount/2 (the day right after center) absorbs the remainder.
+        XCTAssertEqual(PraeCalculator.spreadEvenly(50, across: 4), [12, 12, 14, 12])
+        // Single day: the whole amount, untouched.
+        XCTAssertEqual(PraeCalculator.spreadEvenly(70, across: 1), [70])
     }
 
     func testTournamentSummaryIgnoresAttendanceWithoutPraeAmount() throws {
@@ -265,6 +349,27 @@ final class PraeCalculationTests: XCTestCase {
         let summary = PraeCalculator.summary(for: person, tournament: tournament)
 
         XCTAssertTrue(summary.entries.isEmpty)
+    }
+
+    // MARK: - SportEvent.dayCount
+
+    func testDayCountIsInclusiveOfBothEndpoints() {
+        var startComponents = DateComponents()
+        startComponents.year = 2026
+        startComponents.month = 7
+        startComponents.day = 10
+        startComponents.hour = 9
+        let start = Calendar.current.date(from: startComponents)!
+
+        let sameDayEnd = Calendar.current.date(byAdding: .hour, value: 3, to: start)!
+        let sameDayTournament = Tournament(title: "Eintägig", sport: "Torball", location: "Graz",
+                                            startDate: start, endDate: sameDayEnd)
+        XCTAssertEqual(sameDayTournament.dayCount, 1)
+
+        let threeDayEnd = Calendar.current.date(byAdding: .day, value: 2, to: start)!
+        let threeDayTournament = Tournament(title: "Dreitägig", sport: "Torball", location: "Graz",
+                                             startDate: start, endDate: threeDayEnd)
+        XCTAssertEqual(threeDayTournament.dayCount, 3)
     }
 
     // MARK: - Export round-trips (structural integrity, not visual layout)

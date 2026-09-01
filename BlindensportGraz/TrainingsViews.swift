@@ -404,17 +404,27 @@ struct TrainingDetailView: View {
                                    .font(.caption)
                                    .foregroundStyle(.secondary)
                                Spacer()
-                               TextField("0", value: Binding(
-                                   get: { attendance(for: membership)?.praeAmount ?? 0 },
-                                   set: { newValue in setPraeAmount(newValue, for: membership) }
-                               ), format: .number)
-                               .keyboardType(.decimalPad)
-                               .multilineTextAlignment(.trailing)
-                               .frame(width: 80)
-                               // Fixed-width numeric field — shrink rather
-                               // than clip at large Dynamic Type sizes
-                               // (audit.md Accessibility Finding 4).
-                               .minimumScaleFactor(0.6)
+                               // Swipe-to-select wheel, not free text entry —
+                               // PRAE is only ever paid in €10 steps from 0
+                               // to €90, so a wheel picker both constrains
+                               // input to valid amounts and matches the
+                               // "select via swipe" requirement.
+                               Picker("PRAE (€)", selection: Binding(
+                                   get: {
+                                       let amount = attendance(for: membership)?.praeAmount ?? 0
+                                       let step = (amount / 10).rounded()
+                                       return min(90, max(0, Int(step) * 10))
+                                   },
+                                   set: { newValue in setPraeAmount(Double(newValue), for: membership) }
+                               )) {
+                                   ForEach(Array(stride(from: 0, through: 90, by: 10)), id: \.self) { value in
+                                       Text("\(value)").tag(value)
+                                   }
+                               }
+                               .labelsHidden()
+                               .pickerStyle(.wheel)
+                               .frame(width: 100, height: 90)
+                               .clipped()
                            }
                        }
                    }

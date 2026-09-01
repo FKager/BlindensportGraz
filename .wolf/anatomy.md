@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-08-31T21:03:40.507Z
-> Files: 223 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T12:26:01.465Z
+> Files: 225 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -39,6 +39,11 @@
 
 - `foamy-churning-widget.md` — Training-Favoriten (training template quick-fill) (~1731 tok)
 - `functional-inventing-dream.md` — Make SportEvent the base class for Training and Tournament (~3676 tok)
+
+## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
+
+- `MEMORY.md` — Memory (~55 tok)
+- `project_duplicate-names-investigation.md` (~928 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -207,7 +212,7 @@
 - `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~5403 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
 - `PersistenceService.swift` — / Shared save+sync core every per-model `*Service` (e.g. `TeamService`, (~968 tok)
-- `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~2619 tok)
+- `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3164 tok)
 - `PraeExport.swift` — Declares PraeExportError; D4/C3 name fields use person.praeFormName ("Nachname, Vorname"), not displayName (~5140 tok)
 - `PraeViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4262 tok)
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
@@ -218,7 +223,7 @@
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~3120 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
-- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~1090 tok)
+- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~1321 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1940 tok)
 - `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~305 tok)
@@ -233,7 +238,7 @@
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~6735 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~7012 tok)
 - `Training.swift` — Class: Training (~405 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~2839 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -242,7 +247,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2807 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1847 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~8584 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~8748 tok)
 - `User.swift` — Class: User (~1006 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
@@ -272,7 +277,7 @@
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `NetworkMonitorTests.swift` — Class: FakeReachabilitySource (~524 tok)
 - `PersistenceServiceTests.swift` — Struct: StubError (~1138 tok)
-- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~8159 tok)
+- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~9646 tok)
 - `QueryPredicateTests.swift` — Class: QueryPredicateTests (~772 tok)
 - `RoleAndSportEnumTests.swift` — Class: RoleAndSportEnumTests (~1546 tok)
 - `RoleChangeLogTests.swift` — Class: RoleChangeLogTests (~984 tok)

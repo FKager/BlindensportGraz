@@ -350,22 +350,38 @@ var body: some View {
                     // "coach") who were actually present — see Attendance.praeAmount.
                     if membership.role.isHelfer,
                        attendance(for: membership)?.attended == true {
+                        // Swipe-to-select wheel, not free text entry — same
+                        // "select via swipe" requirement as Trainings, but
+                        // the max scales with the tournament's length: PRAE's
+                        // €120/day cap (PraeCalculator.dailyCap) times the
+                        // number of days this tournament spans
+                        // (SportEvent.dayCount), since the single amount
+                        // entered here is spread evenly across every
+                        // deployment day of the tournament, not charged
+                        // entirely to one day — see
+                        // PraeCalculator.summary(for:tournament:).
+                        let maxPrae = Int(PraeCalculator.dailyCap) * tournament.dayCount
                         HStack {
                             Text("PRAE (€)")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            TextField("0", value: Binding(
-                                get: { attendance(for: membership)?.praeAmount ?? 0 },
-                                set: { newValue in setPraeAmount(newValue, for: membership) }
-                            ), format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .frame(width: 80)
-                            // Fixed-width numeric field — shrink rather than
-                            // clip at large Dynamic Type sizes (audit.md
-                            // Accessibility Finding 4).
-                            .minimumScaleFactor(0.6)
+                            Picker("PRAE (€)", selection: Binding(
+                                get: {
+                                    let amount = attendance(for: membership)?.praeAmount ?? 0
+                                    let step = (amount / 10).rounded()
+                                    return min(maxPrae, max(0, Int(step) * 10))
+                                },
+                                set: { newValue in setPraeAmount(Double(newValue), for: membership) }
+                            )) {
+                                ForEach(Array(stride(from: 0, through: maxPrae, by: 10)), id: \.self) { value in
+                                    Text("\(value)").tag(value)
+                                }
+                            }
+                            .labelsHidden()
+                            .pickerStyle(.wheel)
+                            .frame(width: 100, height: 90)
+                            .clipped()
                         }
                     }
                 }
