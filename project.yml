@@ -32,6 +32,7 @@ targets:
         excludes:
           - "Info.plist"
           - "BlindensportGraz.entitlements"
+          - "BlindensportGrazRelease.entitlements"
     dependencies:
       - package: ZIPFoundation
       - package: ClubSchema
@@ -39,6 +40,15 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz
         GENERATE_INFOPLIST_FILE: YES
+        # CFBundleShortVersionString / CFBundleVersion. Local + Debug builds use
+        # these as-is; the TestFlight workflow overrides them per run (marketing
+        # version from the git tag, build number from the CI run number).
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        # App uses only standard HTTPS/TLS (CloudKit, URLSession) — exempt from
+        # US export compliance. Declaring this here stops every TestFlight build
+        # from parking in "Missing Compliance" until answered by hand.
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_CFBundleDisplayName: "Blindensport Graz"
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
@@ -50,7 +60,15 @@ targets:
         DEVELOPMENT_TEAM: "5Q57Y9YT8J"
         CODE_SIGNING_REQUIRED: "YES"
         CODE_SIGNING_ALLOWED: "YES"
-        CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGraz.entitlements
+      configs:
+        # Debug (local Xcode, on-device deploys) keeps the sandbox APNs
+        # environment; Release/TestFlight/App Store builds must use the
+        # production aps-environment or the App Store provisioning profile
+        # won't match the app's entitlements at archive/export time.
+        Debug:
+          CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGraz.entitlements
+        Release:
+          CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGrazRelease.entitlements
   BlindensportGrazTests:
     type: bundle.unit-test
     platform: iOS

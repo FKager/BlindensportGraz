@@ -2174,3 +2174,19 @@
 | 16:09 | Edited BlindensportGrazTests/MemberMembershipRequestTests.swift | modified testResolveIgnoresDefaultFunctionWhenReusingExistingMember() | ~609 |
 | 16:11 | AddTeamMemberView Rolle picker now pre-fills from selected Members defaultFunction (closes the loop with the Sportler/Helfer request selection) | BlindensportGraz/TeamsViews.swift, Member.swift, BlindensportGrazTests/MemberMembershipRequestTests.swift | xcodebuild build+test succeeded, 11/11 tests pass | ~1800 |
 | 16:11 | Session end: 21 writes across 8 files (SammelabrechnungExport.swift, SammelabrechnungViews.swift, SammelabrechnungExportTests.swift, MembersViews.swift, AccountView.swift) | 10 reads | ~38146 tok |
+| 16:20 | Session end: 21 writes across 8 files (SammelabrechnungExport.swift, SammelabrechnungViews.swift, SammelabrechnungExportTests.swift, MembersViews.swift, AccountView.swift) | 10 reads | ~38146 tok |
+
+## Session: 2026-09-01 16:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:29 | Created BlindensportGraz/BlindensportGrazRelease.entitlements | — | ~164 |
+| 18:29 | Edited project.yml | 5→6 lines | ~52 |
+| 18:29 | Edited project.yml | expanded (+8 lines) | ~172 |
+| 18:30 | Edited .github/workflows/ios-build-deploy.yml | expanded (+27 lines) | ~1701 |
+| 18:31 | Edited project.yml | 2→6 lines | ~108 |
+| 18:32 | Edited project.yml | 2→7 lines | ~115 |
+| 18:32 | Edited .github/workflows/ios-build-deploy.yml | expanded (+18 lines) | ~327 |
+| 18:33 | Edited .github/workflows/ios-build-deploy.yml | 4→5 lines | ~90 |
+| 18:34 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | — | ~697 |
+| 18:34 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | 1→2 lines | ~102 |

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T14:09:34.777Z
-> Files: 226 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T16:34:11.607Z
+> Files: 228 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -42,8 +42,9 @@
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
-- `MEMORY.md` — Memory (~55 tok)
+- `MEMORY.md` — Memory (~98 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
+- `project_testflight-setup.md` (~682 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -66,7 +67,7 @@
 - `goal.md` (~276 tok)
 - `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
 - `profile.plist` (~0 tok)
-- `project.yml` (~638 tok)
+- `project.yml` (~944 tok)
 
 ## .claude/
 
@@ -95,7 +96,7 @@
 
 ## .github/workflows/
 
-- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~2446 tok)
+- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~3203 tok)
 - `ios-device-deploy.yml` — CI: iOS Device Deploy (~3713 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/
@@ -171,6 +172,7 @@
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
 - `BlindensportGraz.entitlements` (~164 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2135 tok)
+- `BlindensportGrazRelease.entitlements` (~164 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
 - `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2260 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
