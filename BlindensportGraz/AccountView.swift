@@ -10,6 +10,20 @@ struct AccountView: View {
 
     @State private var showEdit = false
     @State private var showMyMember = false
+    @State private var showMembershipTypeChoice = false
+    @State private var requestedMember: Member?
+
+    // Derived live from the roster @Query, not from the possibly-stale
+    // user.isGrazerVSCMember flag (only recalculated at register/login) —
+    // gating "Vereinsdaten bearbeiten" vs. "Mitgliedschaft beantragen" on a
+    // stale flag risks the exact User+Member duplicate-record scenario the
+    // duplicate-names investigation is chasing (two independent
+    // TeamMembership rows for the same real person, one keyed by user, one
+    // by member): re-checking here before ever creating a new Member is
+    // what keeps requestMembership() safe against that.
+    private var matchedMember: Member? {
+        currentUser.flatMap { Member.first(matching: $0, in: members) }
+    }
 
     var body: some View {
         Form {
@@ -65,11 +79,18 @@ struct AccountView: View {
                         Label("Profil bearbeiten", systemImage: "pencil")
                     }
 
-                    if user.isGrazerVSCMember {
+                    if let member = matchedMember {
                         Button {
+                            requestedMember = member
                             showMyMember = true
                         } label: {
                             Label("Vereinsdaten bearbeiten", systemImage: "square.and.pencil")
+                        }
+                    } else {
+                        Button {
+                            showMembershipTypeChoice = true
+                        } label: {
+                            Label("Mitgliedschaft beantragen", systemImage: "person.badge.plus")
                         }
                     }
 
@@ -93,13 +114,69 @@ struct AccountView: View {
             }
         }
         .sheet(isPresented: $showMyMember) {
-            if let user = currentUser, let member = Member.first(matching: user, in: members) {
+            // Uses requestedMember (set right before showMyMember = true, by
+            // either button above) rather than re-deriving via
+            // Member.first(matching:in:) here — a freshly-inserted Member
+            // from requestMembership(for:as:) isn't guaranteed to already be
+            // reflected in the `members` @Query by the time this closure
+            // first runs, so re-deriving here could flash the "not found"
+            // fallback right after a successful request.
+            if let member = requestedMember {
                 MyMemberView(member: member)
             } else {
                 ContentUnavailableView("Kein Vereinsdateneintrag gefunden",
                                        systemImage: "exclamationmark.triangle")
             }
         }
+        // Helfer vs. Sportler selection for a brand-new self-request — sets
+        // the new Member's defaultFunction so it isn't left blank/ambiguous,
+        // matching the field's own stated purpose ("Default TeamMembership.role
+        // for this person"). Both choices lead to the exact same
+        // requestMembership(for:as:) call, just a different `role` argument —
+        // deliberately no branch that only allows one or the other, per user
+        // request ("A registration for member should be possible in both cases").
+        .confirmationDialog("Mitgliedschaft beantragen", isPresented: $showMembershipTypeChoice, titleVisibility: .visible) {
+            if let user = currentUser {
+                Button("Als Sportler:in") { requestMembership(for: user, as: .player) }
+                Button("Als Helfer:in") { requestMembership(for: user, as: .coach) }
+            }
+            Button("Abbrechen", role: .cancel) {}
+        } message: {
+            Text("Als Sportler:in oder als Helfer:in (Trainer:in/Betreuer:in) registrieren?")
+        }
+    }
+
+    /// Self-service roster signup for an account with no matching `Member`
+    /// entry yet ("Mitgliedschaft beantragen"). `role` is the Sportler/Helfer
+    /// choice from the confirmationDialog above, stored as the new Member's
+    /// `defaultFunction` (using the same raw strings as `MembershipRole` —
+    /// "player"/"coach" — so it stays directly usable as a
+    /// `MembershipRole.normalize(...)` input if a future admin-assignment
+    /// flow ever pre-fills from it, matching this codebase's existing role
+    /// vocabulary rather than inventing a separate one). Only applied to a
+    /// freshly-created entry — an existing matched Member already has
+    /// admin-managed data, so its defaultFunction is left untouched.
+    /// `Member.resolveMembershipRequest` re-derives the match live rather
+    /// than trusting `matchedMember`'s value from whenever the button last
+    /// rendered (e.g. an admin could have added a matching roster entry in
+    /// between) — see that function's doc comment for why this re-check
+    /// matters. Calls `Member.checkMembership` right after so
+    /// `user.isGrazerVSCMember`/AccountView's status row update immediately,
+    /// without waiting for the next login.
+    private func requestMembership(for user: User, as role: MembershipRole) {
+        switch Member.resolveMembershipRequest(for: user, in: members, defaultFunction: role.rawValue) {
+        case .existing(let member):
+            requestedMember = member
+        case .new(let member):
+            modelContext.insert(member)
+            guard MemberService.save(member, modelContext: modelContext) else { return }
+            let allMembers = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
+            MemberBackup.snapshot(members: allMembers)
+            requestedMember = member
+        }
+        Member.checkMembership(for: user, modelContext: modelContext)
+        _ = UserService.save(user, modelContext: modelContext)
+        showMyMember = true
     }
 
     private func roleLabel(_ role: String) -> LocalizedStringKey {

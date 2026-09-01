@@ -282,11 +282,21 @@ struct OptionalDatePicker: View {
 }
 
 /// Self-service editing of a member's own Grazer VSC roster entry — reachable
-/// from AccountView's "Vereinsdaten bearbeiten" button for any account with
-/// isGrazerVSCMember == true. Deliberately narrower than admin's
-/// MemberDetailView above: no "Mitgliedschaft" (memberNumber/joinedAt/
-/// memberOfGVSC are admin-assigned) and no "Notizen" (may hold private admin
-/// remarks about the member) — only personal/contact fields are self-editable.
+/// from AccountView's "Vereinsdaten bearbeiten" button for any account
+/// matched to a roster entry (see AccountView.matchedMember), or freshly
+/// created via AccountView's "Mitgliedschaft beantragen" flow for one that
+/// isn't yet. Deliberately narrower than admin's MemberDetailView above:
+/// still no "Mitgliedschaft" administrative fields (memberNumber/joinedAt/
+/// memberOfGVSC are admin-assigned/confirmed, not self-declared —
+/// memberOfGVSC in particular is exactly the "has an admin confirmed this
+/// person as an actual club member" flag, so self-editing it would defeat
+/// its own purpose) and no "Notizen" (may hold private admin remarks) — but
+/// DOES include sportId/svnr/iban/lastMedicalExamination now (moved from
+/// admin-only per user request "every user should get the possibility to
+/// enter all data"), since those are personal identity/financial/health
+/// facts only the member themselves actually knows, unlike defaultFunction
+/// (an admin's team-assignment categorization of this person, stays
+/// admin-only) or the membership-status fields above.
 struct MyMemberView: View {
     @Bindable var member: Member
     @Environment(\.modelContext) private var modelContext
@@ -318,6 +328,29 @@ struct MyMemberView: View {
                         .autocorrectionDisabled()
                     TextField("Telefon", text: $member.phone)
                         .keyboardType(.phonePad)
+                }
+                // Same fields/validation as MemberDetailView's "Mitgliedschaft"
+                // section, minus the admin-assigned ones (see this type's doc
+                // comment) — kept as its own section rather than folded into
+                // "Kontakt" since these are federation/payout data, not
+                // everyday contact info.
+                Section("Sportverband & Zahlungsdaten") {
+                    TextField("Sport-ID", text: $member.sportId)
+                    TextField("SVNR", text: $member.svnr)
+                    if !Validation.isPlausibleAustrianSVNR(member.svnr) {
+                        Label("SVNR-Format ungewöhnlich", systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+                    TextField("IBAN", text: $member.iban)
+                        .textInputAutocapitalization(.characters)
+                        .autocorrectionDisabled()
+                    if !Validation.ibanChecksumIsValid(member.iban) {
+                        Label("IBAN-Prüfsumme ungültig", systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+                    OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $member.lastMedicalExamination)
                 }
             }
             .navigationTitle("Vereinsdaten")

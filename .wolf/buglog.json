@@ -2208,8 +2208,8 @@
         "recurring"
       ],
       "related_bugs": [],
-      "occurrences": 10,
-      "last_seen": "2026-09-01T15:24:00.000Z"
+      "occurrences": 13,
+      "last_seen": "2026-09-01T16:10:00.000Z"
     },
     {
       "id": "bug-135",
@@ -5737,6 +5737,70 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-01T13:22:50.420Z"
+    },
+    {
+      "id": "bug-345",
+      "timestamp": "2026-09-01T13:39:28.505Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/MembersViews.swift",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 40\u219273 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T13:39:28.505Z"
+    },
+    {
+      "id": "bug-346",
+      "timestamp": "2026-09-01T13:41:22.050Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T13:41:22.050Z"
+    },
+    {
+      "id": "bug-347",
+      "timestamp": "2026-09-01T14:00:06.535Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 40\u219265 lines (10 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T14:00:06.535Z"
+    },
+    {
+      "id": "bug-348",
+      "timestamp": "2026-09-01T14:00:15.016Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Member.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 10\u219215 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T14:00:15.016Z"
     }
   ]
 }

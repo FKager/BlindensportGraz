@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T13:24:38.107Z
-> Files: 225 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-01T14:09:34.777Z
+> Files: 226 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -162,7 +162,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~3872 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~5112 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)
@@ -203,13 +203,13 @@
 - `KostZExport.swift` — KostZExporter: month export ORT="Graz"+training-date-derived period; tournament export ORT=tournament.city (~1700 tok)
 - `KostZViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~3136 tok)
 - `Localizable.xcstrings` (~6958 tok)
-- `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~1947 tok)
+- `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~2790 tok)
 - `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
 - `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4825 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1914 tok)
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
-- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~5403 tok)
+- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~5973 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
 - `PersistenceService.swift` — / Shared save+sync core every per-model `*Service` (e.g. `TeamService`, (~968 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3164 tok)
@@ -234,7 +234,7 @@
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
 - `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
 - `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~4416 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView (~4838 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
@@ -275,6 +275,7 @@
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~2170 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
+- `MemberMembershipRequestTests.swift` — Class: MemberMembershipRequestTests (~1810 tok)
 - `NetworkMonitorTests.swift` — Class: FakeReachabilitySource (~524 tok)
 - `PersistenceServiceTests.swift` — Struct: StubError (~1138 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~9646 tok)

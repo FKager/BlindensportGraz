@@ -109,6 +109,23 @@ extension Member {
         let zipCity = [zip, city].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
         return [street, zipCity, country].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
     }
+
+    /// `defaultFunction` normalized down to one of `MembershipRole`'s three
+    /// known raw values ("player"/"coach"/"assistant"), falling back to
+    /// "player" when it's blank or an unrecognized/`.other` value — used by
+    /// `AddTeamMemberView` to pre-fill its Rolle picker when this member is
+    /// selected, per `defaultFunction`'s own stated purpose ("Default
+    /// TeamMembership.role for this person, e.g. to pre-fill role when
+    /// assigning them to a team"), which had no actual producer/consumer
+    /// wired up until now (see AccountView's Sportler/Helfer
+    /// confirmationDialog, the producer, and AddTeamMemberView.defaultRole,
+    /// the consumer).
+    var preferredMembershipRoleRawValue: String {
+        switch MembershipRole.normalize(defaultFunction) {
+        case .player, .coach, .assistant: return defaultFunction
+        case .other: return "player"
+        }
+    }
 }
 
 extension Member {
@@ -153,5 +170,42 @@ extension Member {
             return !normalizedFirst.isEmpty && !normalizedLast.isEmpty &&
                    memberFirst == normalizedFirst && memberLast == normalizedLast
         }
+    }
+
+    /// What AccountView's "Mitgliedschaft beantragen" button should do for a
+    /// given user, against the live roster — either reuse an existing match
+    /// (`.existing`) or the shape of a brand-new entry to create (`.new`,
+    /// not yet inserted into any ModelContext). Deliberately pure/no writes,
+    /// unlike `MemberService.save` (which pushes to CloudKit) — this is what
+    /// makes the request-vs-reuse *decision* unit-testable in this sandboxed
+    /// environment (see MemberImportExportTests' documented CloudKit-push
+    /// test crash), independent of whether the actual persist step can run
+    /// here. Re-deriving the match here (not trusting a caller-cached flag
+    /// like `User.isGrazerVSCMember`, which is only recalculated at
+    /// register/login) is what keeps this from becoming a second way to
+    /// create the User+Member duplicate-record scenario the
+    /// duplicate-names-investigation memory is chasing (two independent
+    /// TeamMembership rows for the same real person, one keyed by user, one
+    /// by member) — always call this right before creating anything, never
+    /// skip straight to `Member(...)`.
+    enum MembershipRequestOutcome {
+        case existing(Member)
+        case new(Member)
+    }
+
+    /// `defaultFunction` (e.g. "player"/"coach", `MembershipRole`'s raw
+    /// values — see AccountView's Sportler/Helfer confirmationDialog) only
+    /// applies to the `.new` case: an existing matched entry already has
+    /// admin-managed data and is returned as-is, untouched.
+    static func resolveMembershipRequest(for user: User, in roster: [Member], defaultFunction: String = "") -> MembershipRequestOutcome {
+        if let existing = first(matching: user, in: roster) {
+            return .existing(existing)
+        }
+        // memberOfGVSC: false — this is a REQUEST, not automatic confirmed
+        // membership; an admin reviews new self-requested roster entries in
+        // Benutzerverwaltung and flips "Mitglied des Grazer VSC" on there,
+        // same as any other Member field.
+        return .new(Member(firstName: user.firstName, lastName: user.lastName, email: user.email,
+                            defaultFunction: defaultFunction, memberOfGVSC: false))
     }
 }

@@ -323,6 +323,21 @@ struct AddTeamMemberView: View {
             }
             .navigationTitle("Mitglied hinzufügen")
             .navigationBarTitleDisplayMode(.inline)
+            // Pre-fills Rolle from the picked Member's own defaultFunction
+            // (e.g. the Sportler/Helfer choice made at self-service
+            // registration time, see AccountView's "Mitgliedschaft
+            // beantragen" — Member.swift's doc comment on defaultFunction:
+            // "to pre-fill role when assigning them to a team", previously
+            // not actually wired up anywhere). Only fires when `selection`
+            // itself changes, not on every `role` edit, so admins can still
+            // freely override the pre-filled value afterward without it
+            // snapping back. A `.user` selection (no defaultFunction to read —
+            // that field only exists on Member) or an unrecognized/blank
+            // defaultFunction both fall back to the segmented control's
+            // existing "player" default rather than left blank/mismatched.
+            .onChange(of: selection) { _, newValue in
+                role = defaultRole(for: newValue)
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Abbrechen") { dismiss() }
@@ -350,6 +365,16 @@ struct AddTeamMemberView: View {
                 }
             }
         }
+    }
+
+    /// Only `.member` selections carry a `defaultFunction` (`User` has no
+    /// such field) — falls back to "player" for a `.user` selection or no
+    /// selection; `Member.preferredMembershipRoleRawValue` itself handles
+    /// falling back for a blank/unrecognized `defaultFunction`.
+    private func defaultRole(for selection: MemberSelection?) -> String {
+        guard case .member(let id) = selection,
+              let member = availableMembers.first(where: { $0.id == id }) else { return "player" }
+        return member.preferredMembershipRoleRawValue
     }
 }
 

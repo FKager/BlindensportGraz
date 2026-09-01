@@ -39,6 +39,7 @@
 		30F84DF2EF7C791A4C78810F /* SyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCF49C86C09E7C232C42C19 /* SyncState.swift */; };
 		36061B56E0540AB834ACB702 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 83DBEE4CC921CC2722BCB73F /* Localizable.xcstrings */; };
 		38B8B1D161FA86B44AD28F4B /* TN_TeilnehmerInnenliste.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */; };
+		3AB146C9AA3E2B0778438108 /* MemberMembershipRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1B40457372FFF65FECE717 /* MemberMembershipRequestTests.swift */; };
 		3BC8FF07BEE63FB9A2F1B3DF /* AttendanceTrends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3FEB00F8B6A3562D07E701 /* AttendanceTrends.swift */; };
 		4293A4C80D62DC608F245E63 /* EventParticipationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A98ECF51879C9F5A24728F1 /* EventParticipationService.swift */; };
 		49DF91037358BE604C37CE2E /* Trainingsfrequenzliste_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 4FA5E8F29F13CB502F4FCA7F /* Trainingsfrequenzliste_Vorlage.xlsx */; };
@@ -256,6 +257,7 @@
 		FB1318662CB1457799DA18A4 /* Sport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sport.swift; sourceTree = "<group>"; };
 		FBCF49C86C09E7C232C42C19 /* SyncState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncState.swift; sourceTree = "<group>"; };
 		FCB0CA0B53D5D5CCDD8090B8 /* Attendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attendance.swift; sourceTree = "<group>"; };
+		FD1B40457372FFF65FECE717 /* MemberMembershipRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberMembershipRequestTests.swift; sourceTree = "<group>"; };
 		FD56C9EEA81E32915CBF84C5 /* MemberService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -283,6 +285,7 @@
 				46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */,
 				3B86E0A6A17784555A60960C /* KostZCalculationTests.swift */,
 				D338EFF67001DA0AFB208CF3 /* MemberImportExportTests.swift */,
+				FD1B40457372FFF65FECE717 /* MemberMembershipRequestTests.swift */,
 				E311FD2552040187DB7B8D4D /* NetworkMonitorTests.swift */,
 				70D5136ACDC65BAB10C0F67F /* PersistenceServiceTests.swift */,
 				33BBA744C5DE3AA5F9F0DE54 /* PraeCalculationTests.swift */,
@@ -648,6 +651,7 @@
 				60A1D7FA23E0AF252C26E319 /* InheritanceQueryTests.swift in Sources */,
 				161414FD464886E634A87139 /* KostZCalculationTests.swift in Sources */,
 				4E13B12C366BB2656C4E5476 /* MemberImportExportTests.swift in Sources */,
+				3AB146C9AA3E2B0778438108 /* MemberMembershipRequestTests.swift in Sources */,
 				2058FA09D772ADB9592164CC /* NetworkMonitorTests.swift in Sources */,
 				9D599F0BC6F7C80D529CA53D /* PersistenceServiceTests.swift in Sources */,
 				F4FC9293EBF3D3927E10F372 /* PraeCalculationTests.swift in Sources */,

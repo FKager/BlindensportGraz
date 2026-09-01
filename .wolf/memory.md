@@ -2150,3 +2150,27 @@
 | 15:24 | Edited BlindensportGrazTests/SammelabrechnungExportTests.swift | modified testExportForMonthWithKostZExcludedOmitsKostZFile() | ~542 |
 | 15:26 | Month Sammelabrechnung: mirror tournament per-helper PRAE selection + KostZ toggle; exporter kostZ now optional, dead zip() helper removed | BlindensportGraz/SammelabrechnungExport.swift, SammelabrechnungViews.swift, BlindensportGrazTests/SammelabrechnungExportTests.swift | xcodebuild build+test succeeded, 9/9 Sammelabrechnung tests pass (bug-134 x1 more, shutdown all+erase) | ~2600 |
 | 15:26 | Session end: 4 writes across 3 files (SammelabrechnungExport.swift, SammelabrechnungViews.swift, SammelabrechnungExportTests.swift) | 2 reads | ~9441 tok |
+| 15:29 | Session end: 4 writes across 3 files (SammelabrechnungExport.swift, SammelabrechnungViews.swift, SammelabrechnungExportTests.swift) | 2 reads | ~9441 tok |
+| 15:39 | Edited BlindensportGraz/MembersViews.swift | modified Section() | ~1103 |
+| 15:40 | Edited BlindensportGraz/AccountView.swift | modified chasing() | ~220 |
+| 15:40 | Edited BlindensportGraz/AccountView.swift | expanded (+7 lines) | ~176 |
+| 15:41 | Edited BlindensportGraz/AccountView.swift | added nullish coalescing | ~711 |
+| 15:42 | Edited BlindensportGraz/Member.swift | modified firstMatch() | ~804 |
+| 15:42 | Edited BlindensportGraz/AccountView.swift | modified requestMembership() | ~352 |
+| 15:43 | Created BlindensportGrazTests/MemberMembershipRequestTests.swift | — | ~848 |
+| 15:53 | Self-service Member editing expanded (sportId/svnr/iban/lastMedicalExamination) + new "Mitgliedschaft beantragen" flow for unmatched users | BlindensportGraz/MembersViews.swift, AccountView.swift, Member.swift, BlindensportGrazTests/MemberMembershipRequestTests.swift | xcodebuild build+test succeeded, 4/4 new tests pass | ~4200 |
+| 15:53 | Session end: 11 writes across 7 files (SammelabrechnungExport.swift, SammelabrechnungViews.swift, SammelabrechnungExportTests.swift, MembersViews.swift, AccountView.swift) | 8 reads | ~27553 tok |
+| 15:59 | Edited BlindensportGraz/AccountView.swift | 9→9 lines | ~86 |
+| 15:59 | Edited BlindensportGraz/AccountView.swift | 3→4 lines | ~50 |
+| 16:00 | Edited BlindensportGraz/AccountView.swift | modified requestMembership() | ~1043 |
+| 16:00 | Edited BlindensportGraz/Member.swift | modified resolveMembershipRequest() | ~265 |
+| 16:00 | Edited BlindensportGrazTests/MemberMembershipRequestTests.swift | modified testResolveProposesNewMemberWhenRosterHasOnlyUnrelatedEntries() | ~740 |
+| 16:02 | Mitgliedschaft beantragen: Sportler/Helfer selection dialog sets new members defaultFunction | BlindensportGraz/AccountView.swift, Member.swift, BlindensportGrazTests/MemberMembershipRequestTests.swift | xcodebuild build+test succeeded, 7/7 tests pass | ~2400 |
+| 16:02 | Session end: 16 writes across 7 files (SammelabrechnungExport.swift, SammelabrechnungViews.swift, SammelabrechnungExportTests.swift, MembersViews.swift, AccountView.swift) | 10 reads | ~35039 tok |
+| 16:08 | Edited BlindensportGraz/TeamsViews.swift | modified Section() | ~401 |
+| 16:08 | Edited BlindensportGraz/TeamsViews.swift | modified defaultRole() | ~243 |
+| 16:09 | Edited BlindensportGraz/Member.swift | modified normalize() | ~400 |
+| 16:09 | Edited BlindensportGraz/TeamsViews.swift | modified defaultRole() | ~153 |
+| 16:09 | Edited BlindensportGrazTests/MemberMembershipRequestTests.swift | modified testResolveIgnoresDefaultFunctionWhenReusingExistingMember() | ~609 |
+| 16:11 | AddTeamMemberView Rolle picker now pre-fills from selected Members defaultFunction (closes the loop with the Sportler/Helfer request selection) | BlindensportGraz/TeamsViews.swift, Member.swift, BlindensportGrazTests/MemberMembershipRequestTests.swift | xcodebuild build+test succeeded, 11/11 tests pass | ~1800 |
+| 16:11 | Session end: 21 writes across 8 files (SammelabrechnungExport.swift, SammelabrechnungViews.swift, SammelabrechnungExportTests.swift, MembersViews.swift, AccountView.swift) | 10 reads | ~38146 tok |
