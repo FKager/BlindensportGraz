@@ -119,10 +119,11 @@ jobs:
       # Xcode resolves/downloads the right App Store profile per target and
       # leaves the SPM bundle alone. The API key (App Manager role) already
       # has Certificates/Identifiers/Profiles access.
-      - name: Set up API key and signing keychain
+      - name: Set up API key, signing keychain and provisioning profile
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
@@ -130,8 +131,7 @@ jobs:
           set -euo pipefail
 
           # --- App Store Connect API key (.p8) ---
-          # xcodebuild's -authenticationKeyPath wants an explicit path;
-          # altool also auto-discovers keys under ~/.appstoreconnect/private_keys.
+          # Used by xcodebuild archive (-authenticationKeyPath) and by altool.
           KEY_DIR="$RUNNER_TEMP/private_keys"
           mkdir -p "$KEY_DIR" ~/.appstoreconnect/private_keys
           KEY_PATH="$KEY_DIR/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
@@ -154,6 +154,24 @@ jobs:
           # Put our keychain first in the search list so codesign finds the identity.
           security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
           rm -f "$CERT_PATH"
+
+          # --- App Store provisioning profile ---
+          # `-exportArchive` with signingStyle=automatic + -allowProvisioningUpdates
+          # hits a "Cloud signing permission error" here (the App Manager API key
+          # can't drive server-side signing), so the export is done with MANUAL
+          # signing against this pre-created profile instead. `archive` still uses
+          # automatic — it signs locally with the cert above and only needs the
+          # profile to already exist, which it does.
+          PP_PATH="$RUNNER_TEMP/profile.mobileprovision"
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o "$PP_PATH"
+          security cms -D -i "$PP_PATH" > "$RUNNER_TEMP/profile.plist"
+          PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print :UUID" "$RUNNER_TEMP/profile.plist")
+          PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print :Name" "$RUNNER_TEMP/profile.plist")
+          mkdir -p ~/Library/MobileDevice/"Provisioning Profiles"
+          cp "$PP_PATH" ~/Library/MobileDevice/"Provisioning Profiles/$PROFILE_UUID.mobileprovision"
+          echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
+          echo "PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
+          echo "Installed profile '$PROFILE_NAME' ($PROFILE_UUID)"
 
       - name: Derive version numbers
         run: |
@@ -195,17 +213,24 @@ jobs:
       - name: Export IPA
         run: |
           set -o pipefail
-          cat > "$RUNNER_TEMP/ExportOptions.plist" <<'EOF'
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
             <key>method</key>
-            <string>app-store</string>
+            <string>app-store-connect</string>
             <key>teamID</key>
             <string>${{ secrets.APPSTORE_TEAM_ID }}</string>
             <key>signingStyle</key>
-            <string>automatic</string>
+            <string>manual</string>
+            <key>signingCertificate</key>
+            <string>Apple Distribution</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>${BUNDLE_ID}</key>
+              <string>${PROFILE_UUID}</string>
+            </dict>
             <key>destination</key>
             <string>export</string>
             <key>uploadSymbols</key>
@@ -214,14 +239,12 @@ jobs:
           </plist>
           EOF
 
+          # Our keychain is already first in the search list (see the setup
+          # step), so codesign finds the "Apple Distribution" identity here.
           xcodebuild -exportArchive \
             -archivePath "$RUNNER_TEMP/app.xcarchive" \
             -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
             -exportPath "$RUNNER_TEMP/export" \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath "$ASC_KEY_PATH" \
-            -authenticationKeyID "${{ secrets.APP_STORE_CONNECT_KEY_ID }}" \
-            -authenticationKeyIssuerID "${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}" \
             | xcbeautify --renderer github-actions
 
       - name: Upload to TestFlight

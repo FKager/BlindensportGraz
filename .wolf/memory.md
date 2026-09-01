@@ -2190,3 +2190,7 @@
 | 18:33 | Edited .github/workflows/ios-build-deploy.yml | 4→5 lines | ~90 |
 | 18:34 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | — | ~697 |
 | 18:34 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | 1→2 lines | ~102 |
+| 18:38 | Session end: 10 writes across 5 files (BlindensportGrazRelease.entitlements, project.yml, ios-build-deploy.yml, project_testflight-setup.md, MEMORY.md) | 4 reads | ~7590 tok |
+| 18:42 | Edited .github/workflows/ios-build-deploy.yml | expanded (+18 lines) | ~950 |
+| 18:42 | Edited .github/workflows/ios-build-deploy.yml | 31→35 lines | ~382 |
+| 18:43 | Edited .github/workflows/ios-build-deploy.yml | 6→7 lines | ~119 |

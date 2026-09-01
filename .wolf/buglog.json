@@ -5817,6 +5817,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-01T16:30:45.916Z"
+    },
+    {
+      "id": "bug-350",
+      "timestamp": "2026-09-01T16:42:40.964Z",
+      "error_message": "Significant refactor of ",
+      "file": ".github/workflows/ios-build-deploy.yml",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 35→53 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T16:42:40.964Z"
     }
   ]
 }
