@@ -2133,3 +2133,20 @@
 | 15:06 | Edited BlindensportGraz/SammelabrechnungViews.swift | modified praeBinding() | ~1254 |
 | 15:06 | Sammelabrechnung Turnier: PRAE selection now per-helper (was one bulk toggle) | BlindensportGraz/SammelabrechnungViews.swift | xcodebuild build+test succeeded, 8/8 Sammelabrechnung tests pass | ~1300 |
 | 15:06 | Session end: 15 writes across 8 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 11 reads | ~51516 tok |
+| 15:09 | Session end: 15 writes across 8 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 11 reads | ~51516 tok |
+
+## Session: 2026-09-01 15:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-01 15:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 15:21 | Edited BlindensportGraz/SammelabrechnungExport.swift | modified export() | ~336 |
+| 15:22 | Edited BlindensportGraz/SammelabrechnungExport.swift | modified zipFiles() | ~219 |
+| 15:22 | Edited BlindensportGraz/SammelabrechnungViews.swift | modified praeBinding() | ~2126 |
+| 15:24 | Edited BlindensportGrazTests/SammelabrechnungExportTests.swift | modified testExportForMonthWithKostZExcludedOmitsKostZFile() | ~542 |
+| 15:26 | Month Sammelabrechnung: mirror tournament per-helper PRAE selection + KostZ toggle; exporter kostZ now optional, dead zip() helper removed | BlindensportGraz/SammelabrechnungExport.swift, SammelabrechnungViews.swift, BlindensportGrazTests/SammelabrechnungExportTests.swift | xcodebuild build+test succeeded, 9/9 Sammelabrechnung tests pass (bug-134 x1 more, shutdown all+erase) | ~2600 |
+| 15:26 | Session end: 4 writes across 3 files (SammelabrechnungExport.swift, SammelabrechnungViews.swift, SammelabrechnungExportTests.swift) | 2 reads | ~9441 tok |

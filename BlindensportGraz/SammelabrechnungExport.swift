@@ -26,17 +26,24 @@ import ZIPFoundation
 enum SammelabrechnungExporter {
     /// One calendar month's collective settlement — KostZ across every
     /// Training that month, plus PRAE-Formular + PRAE-Darstellung for every
-    /// coach/assistant with a non-zero honorarium that month.
-    static func export(kostZ: KostZMonthSummary, praeSummaries: [PraeMonthSummary]) throws -> URL {
-        let kostZURL = try KostZExporter.export(summary: kostZ)
-        var praeFiles: [(name: String, url: URL)] = []
+    /// coach/assistant with a non-zero honorarium that month. `kostZ` is
+    /// optional (nil = excluded) so it follows the same "presence/selection
+    /// = inclusion" convention as the tournament overload below — `kostZ:
+    /// nil` when SammelabrechnungView's KostZ toggle is off, `praeSummaries`
+    /// already filtered to only the helpers selected in its per-helper PRAE
+    /// list.
+    static func export(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary]) throws -> URL {
+        var files: [(name: String, url: URL)] = []
+        if let kostZ {
+            files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
+        }
         for summary in praeSummaries {
-            praeFiles.append((fileName(for: summary.person, suffix: "PRAE"), try PraeExporter.exportMainForm(summary: summary)))
+            files.append((fileName(for: summary.person, suffix: "PRAE"), try PraeExporter.exportMainForm(summary: summary)))
             if !summary.entries.isEmpty {
-                praeFiles.append((fileName(for: summary.person, suffix: "PRAE-Darstellung"), try PraeExporter.exportDarstellung(summary: summary)))
+                files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung"), try PraeExporter.exportDarstellung(summary: summary)))
             }
         }
-        return try zip(kostZURL: kostZURL, praeFiles: praeFiles)
+        return try zipFiles(files, namePrefix: "Sammelabrechnung")
     }
 
     /// Same bundle, scoped to a single tournament instead of a calendar
@@ -149,30 +156,15 @@ enum SammelabrechnungExporter {
     }
 
     /// Creates a fresh .zip (not a patched template — nothing to unzip
-    /// first) containing the KostZ file plus every PRAE file, each read
-    /// whole into memory and re-added as its own entry. `.none` (stored),
-    /// not `.deflate`, matching every other exporter's compressionMethod
-    /// choice in this codebase — each member is already a compressed .xlsx,
-    /// so deflating the outer zip again buys negligible size for the extra
-    /// complexity/risk.
-    private static func zip(kostZURL: URL, praeFiles: [(name: String, url: URL)]) throws -> URL {
-        let outputURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent("Sammelabrechnung-\(UUID().uuidString).zip")
-        let archive = try Archive(url: outputURL, accessMode: .create)
-
-        try addFile(at: kostZURL, as: "KostZ.xlsx", to: archive)
-        for file in praeFiles {
-            try addFile(at: file.url, as: file.name, to: archive)
-        }
-
-        return outputURL
-    }
-
-    /// Zips an arbitrary flat list of already-produced files under one name
-    /// — the general-purpose counterpart to `zip(kostZURL:praeFiles:)` above
-    /// (which is specifically KostZ + PRAE, always both), used by
-    /// `exportSeason` and the tournament `export` overload, both of which
-    /// build their own variable-length/variable-part file lists.
+    /// first) from an arbitrary flat list of already-produced files, each
+    /// read whole into memory and re-added as its own entry. `.none`
+    /// (stored), not `.deflate`, matching every other exporter's
+    /// compressionMethod choice in this codebase — each member is already a
+    /// compressed .xlsx, so deflating the outer zip again buys negligible
+    /// size for the extra complexity/risk. Shared by every `export`/
+    /// `exportSeason` overload above, each of which builds its own
+    /// variable-length/variable-part file list first (KostZ/Teilnehmerliste
+    /// entries optional, any number of per-person PRAE entries).
     private static func zipFiles(_ files: [(name: String, url: URL)], namePrefix: String) throws -> URL {
         let outputURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("\(namePrefix)-\(UUID().uuidString).zip")

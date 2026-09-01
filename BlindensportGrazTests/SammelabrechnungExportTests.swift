@@ -107,6 +107,36 @@ final class SammelabrechnungExportTests: XCTestCase {
         XCTAssertEqual(entryNames, ["KostZ.xlsx"])
     }
 
+    /// Month overload's KostZ toggle off (SammelabrechnungView's new
+    /// "Enthaltene Teile" section) — kostZ: nil excludes KostZ.xlsx even
+    /// though eligible people (and their PRAE files) are still present.
+    func testExportForMonthWithKostZExcludedOmitsKostZFile() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+        let training = makeTraining(context, team: team, day: 6)
+        context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 40))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let kostZSummary = KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context)
+        let praeSummaries = kostZSummary.personAmounts.map {
+            PraeCalculator.summary(for: $0.person, month: 7, year: 2026, in: context)
+        }
+
+        let url = try SammelabrechnungExporter.export(kostZ: nil, praeSummaries: praeSummaries)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var entryNames: [String] = []
+        for entry in archive { entryNames.append(entry.path) }
+        XCTAssertEqual(Set(entryNames), Set(["PRAE_Trainer_Anna.xlsx", "PRAE-Darstellung_Trainer_Anna.xlsx"]))
+    }
+
     /// Tournament-scoped overload — same shape, different summary types.
     func testExportForTournamentBundlesKostZAndPraeFiles() throws {
         let container = try makeContainer()
