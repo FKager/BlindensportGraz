@@ -136,4 +136,62 @@ final class SammelabrechnungExportTests: XCTestCase {
         for entry in archive { entryNames.append(entry.path) }
         XCTAssertEqual(Set(entryNames), Set(["KostZ.xlsx", "PRAE_Trainer_Anna.xlsx", "PRAE-Darstellung_Trainer_Anna.xlsx"]))
     }
+
+    /// Tournament overload with both TeilnehmerlisteContexts supplied — the
+    /// two new "Enthaltene Teile" that SammelabrechnungTournamentView bundles
+    /// in alongside KostZ/PRAE (mirrors TournamentDetailView's separate
+    /// "Teilnehmer Sportler"/"Teilnehmer Helfer" exports, just zipped
+    /// together here instead).
+    func testExportForTournamentIncludesBothTeilnehmerlistenWhenProvided() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
+                                     startDate: .now, endDate: .now, teams: [team])
+        context.insert(tournament)
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 60))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let kostZSummary = KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
+        let praeSummaries = kostZSummary.personAmounts.map {
+            PraeCalculator.summary(for: $0.person, tournament: tournament)
+        }
+        let sportlerContext = TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.location,
+                                                       startDate: tournament.startDate, endDate: tournament.endDate,
+                                                       attendedMemberships: [])
+        let helferContext = TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.location,
+                                                     startDate: tournament.startDate, endDate: tournament.endDate,
+                                                     attendedMemberships: [membership])
+
+        let url = try SammelabrechnungExporter.export(kostZ: kostZSummary, praeSummaries: praeSummaries,
+                                                        teilnehmerlisteSportler: sportlerContext,
+                                                        teilnehmerlisteHelfer: helferContext)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var entryNames: [String] = []
+        for entry in archive { entryNames.append(entry.path) }
+        XCTAssertEqual(Set(entryNames), Set([
+            "KostZ.xlsx", "PRAE_Trainer_Anna.xlsx", "PRAE-Darstellung_Trainer_Anna.xlsx",
+            "TeilnehmerInnenliste-Sportler.xlsx", "TeilnehmerInnenliste-Helfer.xlsx"
+        ]))
+    }
+
+    /// All four parts deselected (nil kostZ, empty praeSummaries, nil
+    /// Teilnehmerliste contexts) — the "Enthaltene Teile" toggles all off —
+    /// still produces a valid, empty zip rather than throwing.
+    func testExportForTournamentWithNoPartsSelectedProducesEmptyZip() throws {
+        let url = try SammelabrechnungExporter.export(kostZ: nil, praeSummaries: [])
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var entryNames: [String] = []
+        for entry in archive { entryNames.append(entry.path) }
+        XCTAssertTrue(entryNames.isEmpty)
+    }
 }

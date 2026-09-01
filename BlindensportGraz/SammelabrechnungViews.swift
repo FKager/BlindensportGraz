@@ -108,16 +108,26 @@ struct SammelabrechnungView: View {
 }
 
 /// Admin-only screen (see TournamentDetailView's toolbar) that bundles a
-/// single tournament's PRAE/KostZ paperwork into one .zip — the
-/// per-tournament counterpart to SammelabrechnungView's per-month one. No
-/// month/year picker: the tournament supplies its own period, same as
-/// KostZTournamentCalculationView/PraeTournamentCalculationView.
+/// single tournament's PRAE/KostZ/TeilnehmerInnenliste paperwork into one
+/// .zip — the per-tournament counterpart to SammelabrechnungView's
+/// per-month one. No month/year picker: the tournament supplies its own
+/// period, same as KostZTournamentCalculationView/
+/// PraeTournamentCalculationView. Four independent "Enthaltene Teile"
+/// toggles (KostZ, PRAE, TeilnehmerInnenliste Sportler, TeilnehmerInnenliste
+/// Helfer) — all pre-selected by default, per user request — let the
+/// treasurer leave out parts they don't need instead of always getting
+/// everything.
 struct SammelabrechnungTournamentView: View {
     let tournament: Tournament
     @Environment(\.dismiss) private var dismiss
     // Intentionally unfiltered — see SammelabrechnungView's identical
     // @Query comment above.
     @Query private var allMemberships: [TeamMembership]
+
+    @State private var includeKostZ = true
+    @State private var includePrae = true
+    @State private var includeTeilnehmerSportler = true
+    @State private var includeTeilnehmerHelfer = true
 
     @State private var exportURL: URL?
     @State private var exportError: String?
@@ -132,26 +142,87 @@ struct SammelabrechnungTournamentView: View {
         }
     }
 
+    // Read straight from tournament.attendances (attended == true) rather
+    // than deriving from tournament.teams/allMemberships — same source
+    // PraeCalculator.summary(for:tournament:) reads from, and self-contained
+    // without needing TournamentDetailView's own allMemberships/
+    // attendedMemberships to be passed in. Deduped by underlying person,
+    // same identity-key convention as TournamentDetailView.allMemberships/
+    // PraeCalculator.eligiblePeople.
+    private var attendedMemberships: [TeamMembership] {
+        var seenKeys = Set<UUID>()
+        var result: [TeamMembership] = []
+        for attendance in tournament.attendances where attendance.attended {
+            let membership = attendance.membership
+            let key = membership.user?.id ?? membership.member?.id ?? membership.id
+            if seenKeys.insert(key).inserted {
+                result.append(membership)
+            }
+        }
+        return result.sortedByLastName()
+    }
+
+    // Same Sportler/Helfer role split as TournamentDetailView's identically-
+    // named private helpers (see that file's comments for why "== .player",
+    // not "!isHelfer").
+    private func isHelfer(_ membership: TeamMembership) -> Bool { membership.role.isHelfer }
+    private func isSportler(_ membership: TeamMembership) -> Bool { membership.role == .player }
+
+    private var teilnehmerlisteSportlerContext: TeilnehmerlisteContext {
+        TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.locationWithCountry,
+                                startDate: tournament.startDate, endDate: tournament.endDate,
+                                attendedMemberships: attendedMemberships.filter(isSportler),
+                                fileNamePrefix: "TN-Sportler")
+    }
+
+    private var teilnehmerlisteHelferContext: TeilnehmerlisteContext {
+        TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.locationWithCountry,
+                                startDate: tournament.startDate, endDate: tournament.endDate,
+                                attendedMemberships: attendedMemberships.filter(isHelfer),
+                                fileNamePrefix: "TN-Helfer")
+    }
+
+    private var hasSelectedParts: Bool {
+        includeKostZ || includePrae || includeTeilnehmerSportler || includeTeilnehmerHelfer
+    }
+
+    // Re-runs the export whenever a toggle changes or the underlying data
+    // does (kostZSummary.total, same trigger as before).
+    private var exportTaskID: String {
+        "\(includeKostZ)-\(includePrae)-\(includeTeilnehmerSportler)-\(includeTeilnehmerHelfer)-\(kostZSummary.total)"
+    }
+
     var body: some View {
         NavigationStack {
             Form {
-                Section("Enthaltene Unterlagen") {
-                    LabeledContent("KostZ-Formular", value: "1 Datei")
-                    if kostZSummary.personAmounts.isEmpty {
-                        Text("Keine Trainer:innen/Helfer:innen mit hinterlegtem PRAE-Betrag bei diesem Turnier.")
-                            .foregroundStyle(.secondary)
-                    } else {
-                        ForEach(kostZSummary.personAmounts) { entry in
-                            LabeledContent(entry.person.displayName, value: "PRAE + Darstellung")
+                Section("Enthaltene Teile") {
+                    Toggle("KostZ-Formular", isOn: $includeKostZ)
+                    Toggle("PRAE (Formular + Darstellung)", isOn: $includePrae)
+                    Toggle("TeilnehmerInnenliste Sportler", isOn: $includeTeilnehmerSportler)
+                    Toggle("TeilnehmerInnenliste Helfer", isOn: $includeTeilnehmerHelfer)
+                }
+
+                if includePrae {
+                    Section("Trainer:innen/Helfer:innen mit PRAE") {
+                        if kostZSummary.personAmounts.isEmpty {
+                            Text("Keine Trainer:innen/Helfer:innen mit hinterlegtem PRAE-Betrag bei diesem Turnier.")
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ForEach(kostZSummary.personAmounts) { entry in
+                                LabeledContent(entry.person.displayName, value: "PRAE + Darstellung")
+                            }
                         }
                     }
                 }
 
                 Section("Export") {
-                    Text("Bündelt das KostZ-Formular sowie PRAE-Formular und Darstellung der Verwendungszwecke jeder/jedes bei diesem Turnier eingesetzten Trainer:in/Helfer:in mit hinterlegtem Betrag als ZIP-Datei.")
+                    Text("Bündelt die ausgewählten Teile — KostZ-Formular, PRAE-Formular/Darstellung der eingesetzten Trainer:innen/Helfer:innen sowie die TeilnehmerInnenliste(n) — als ZIP-Datei.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    if let exportURL {
+                    if !hasSelectedParts {
+                        Text("Bitte mindestens einen Teil auswählen.")
+                            .foregroundStyle(.secondary)
+                    } else if let exportURL {
                         ShareLink(item: exportURL) {
                             Label("Sammelabrechnung exportieren", systemImage: "doc.zipper")
                         }
@@ -173,10 +244,15 @@ struct SammelabrechnungTournamentView: View {
             } message: {
                 Text(exportError ?? "")
             }
-            .task(id: kostZSummary.total) {
+            .task(id: exportTaskID) {
                 exportURL = nil
+                guard hasSelectedParts else { return }
                 do {
-                    exportURL = try SammelabrechnungExporter.export(kostZ: kostZSummary, praeSummaries: praeSummaries)
+                    exportURL = try SammelabrechnungExporter.export(
+                        kostZ: includeKostZ ? kostZSummary : nil,
+                        praeSummaries: includePrae ? praeSummaries : [],
+                        teilnehmerlisteSportler: includeTeilnehmerSportler ? teilnehmerlisteSportlerContext : nil,
+                        teilnehmerlisteHelfer: includeTeilnehmerHelfer ? teilnehmerlisteHelferContext : nil)
                 } catch {
                     exportError = error.localizedDescription
                 }

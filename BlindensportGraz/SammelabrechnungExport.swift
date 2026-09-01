@@ -41,17 +41,36 @@ enum SammelabrechnungExporter {
 
     /// Same bundle, scoped to a single tournament instead of a calendar
     /// month — mirrors KostZExporter/PraeExporter's own month-vs-tournament
-    /// overload split.
-    static func export(kostZ: KostZTournamentSummary, praeSummaries: [PraeTournamentSummary]) throws -> URL {
-        let kostZURL = try KostZExporter.export(summary: kostZ)
-        var praeFiles: [(name: String, url: URL)] = []
+    /// overload split. Unlike the month overload above, every part here is
+    /// independently optional (`kostZ`/the two `TeilnehmerlisteContext`
+    /// params are nil, or `praeSummaries` is empty, to leave that part out)
+    /// — SammelabrechnungTournamentView's four "Enthaltene Teile" toggles
+    /// (all on by default) map straight onto these, so unchecking one just
+    /// omits that file rather than the exporter needing its own separate
+    /// include flags. The two Teilnehmerliste files mirror
+    /// TournamentDetailView's existing "Teilnehmer Sportler"/"Teilnehmer
+    /// Helfer" Berichte entries (same role split, same TN-Sportler/TN-Helfer
+    /// naming) — just bundled in here too instead of exported one at a time.
+    static func export(kostZ: KostZTournamentSummary?, praeSummaries: [PraeTournamentSummary],
+                        teilnehmerlisteSportler: TeilnehmerlisteContext? = nil,
+                        teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil) throws -> URL {
+        var files: [(name: String, url: URL)] = []
+        if let kostZ {
+            files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
+        }
         for summary in praeSummaries {
-            praeFiles.append((fileName(for: summary.person, suffix: "PRAE"), try PraeExporter.exportMainForm(summary: summary)))
+            files.append((fileName(for: summary.person, suffix: "PRAE"), try PraeExporter.exportMainForm(summary: summary)))
             if !summary.entries.isEmpty {
-                praeFiles.append((fileName(for: summary.person, suffix: "PRAE-Darstellung"), try PraeExporter.exportDarstellung(summary: summary)))
+                files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung"), try PraeExporter.exportDarstellung(summary: summary)))
             }
         }
-        return try zip(kostZURL: kostZURL, praeFiles: praeFiles)
+        if let teilnehmerlisteSportler {
+            files.append(("TeilnehmerInnenliste-Sportler.xlsx", try TeilnehmerlisteExporter.export(context: teilnehmerlisteSportler)))
+        }
+        if let teilnehmerlisteHelfer {
+            files.append(("TeilnehmerInnenliste-Helfer.xlsx", try TeilnehmerlisteExporter.export(context: teilnehmerlisteHelfer)))
+        }
+        return try zipFiles(files, namePrefix: "Sammelabrechnung")
     }
 
     /// Full-season rollup (audit.md Enhancement #8) — every calendar month's
@@ -108,13 +127,7 @@ enum SammelabrechnungExporter {
             }
         }
 
-        let outputURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent("Sammelabrechnung-Saison-\(year)-\(UUID().uuidString).zip")
-        let archive = try Archive(url: outputURL, accessMode: .create)
-        for file in files {
-            try addFile(at: file.url, as: file.name, to: archive)
-        }
-        return outputURL
+        return try zipFiles(files, namePrefix: "Sammelabrechnung-Saison-\(year)")
     }
 
     /// Same "/" stripping as `fileName(for:suffix:)`, for the tournament-title
@@ -152,6 +165,21 @@ enum SammelabrechnungExporter {
             try addFile(at: file.url, as: file.name, to: archive)
         }
 
+        return outputURL
+    }
+
+    /// Zips an arbitrary flat list of already-produced files under one name
+    /// — the general-purpose counterpart to `zip(kostZURL:praeFiles:)` above
+    /// (which is specifically KostZ + PRAE, always both), used by
+    /// `exportSeason` and the tournament `export` overload, both of which
+    /// build their own variable-length/variable-part file lists.
+    private static func zipFiles(_ files: [(name: String, url: URL)], namePrefix: String) throws -> URL {
+        let outputURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("\(namePrefix)-\(UUID().uuidString).zip")
+        let archive = try Archive(url: outputURL, accessMode: .create)
+        for file in files {
+            try addFile(at: file.url, as: file.name, to: archive)
+        }
         return outputURL
     }
 

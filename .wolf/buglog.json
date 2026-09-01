@@ -2199,7 +2199,7 @@
       "error_message": "xcodebuild test: Simulator device failed to launch it.a11y.BlindensportGraz. The request was denied by service delegate (SBMainWorkspace) for reason: Busy (\"Application failed preflight checks\")",
       "file": "N/A (simulator/tooling state, not app code)",
       "root_cause": "Transient CoreSimulator/launchd state on a specific simulator device (this recurrence: iPhone 17, 9BE30824-E947-475E-9A22-777FD4309637) that xcrun simctl shutdown alone does not clear. Not caused by any code change - happens intermittently across unrelated xcodebuild test runs on this same device. Documented in cerebrum.md under the 2026-07-19 and 2026-07-20 entries but never logged as its own buglog entry until now; this is at least the third occurrence.",
-      "fix": "xcrun simctl erase <device-id> (full erase, not just shutdown) on the specific simulator UDID clears it every time it has been tried. Always try this FIRST the instant this exact error string appears, before any other debugging - do not assume it is a real test/build regression. UPDATE 2026-08-01: recurred as an ALL-simulators-affected variant (every device, not just one) \u2014 killall CoreSimulatorService + retry did NOT clear it this time, unlike the single-device cases. Did not try simctl erase per standing user preference to avoid touching simulator state; fell back to verifying via physical-device deploy (git push -> ios-device-deploy.yml) instead, which uses a separate CI runner unaffected by this Macs local CoreSimulator state. UPDATE 2026-08-02: recurred again as the all-simulators variant (shutdown all + killall CoreSimulatorService both insufficient), this time `xcrun simctl erase <device-id>` on one simulator did clear it and subsequent test runs on other simulators worked too.",
+      "fix": "xcrun simctl erase <device-id> (full erase, not just shutdown) on the specific simulator UDID clears it every time it has been tried. Always try this FIRST the instant this exact error string appears, before any other debugging - do not assume it is a real test/build regression. UPDATE 2026-08-01: recurred as an ALL-simulators-affected variant (every device, not just one) \u2014 killall CoreSimulatorService + retry did NOT clear it this time, unlike the single-device cases. Did not try simctl erase per standing user preference to avoid touching simulator state; fell back to verifying via physical-device deploy (git push -> ios-device-deploy.yml) instead, which uses a separate CI runner unaffected by this Macs local CoreSimulator state. UPDATE 2026-08-02: recurred again as the all-simulators variant (shutdown all + killall CoreSimulatorService both insufficient), this time `xcrun simctl erase <device-id>` on one simulator did clear it and subsequent test runs on other simulators worked too. UPDATE 2026-09-01: recurred twice more in the same session (occurrences 8,9) \u2014 one clear with plain simctl erase, the very next run needed simctl shutdown all + erase together (single erase alone insufficient that time); no pattern found for which fix a given occurrence needs, just retry with escalating combos.",
       "tags": [
         "simulator",
         "xcodebuild-test",
@@ -2208,8 +2208,8 @@
         "recurring"
       ],
       "related_bugs": [],
-      "occurrences": 7,
-      "last_seen": "2026-09-01T14:26:00.000Z"
+      "occurrences": 9,
+      "last_seen": "2026-09-01T14:52:00.000Z"
     },
     {
       "id": "bug-135",
@@ -5657,6 +5657,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-01T12:25:41.714Z"
+    },
+    {
+      "id": "bug-340",
+      "timestamp": "2026-09-01T12:48:12.305Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/SammelabrechnungExport.swift",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 14\u219233 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T12:48:12.305Z"
+    },
+    {
+      "id": "bug-341",
+      "timestamp": "2026-09-01T12:48:50.158Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/SammelabrechnungViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-01T12:48:50.158Z"
     }
   ]
 }

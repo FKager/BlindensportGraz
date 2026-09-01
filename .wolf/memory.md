@@ -2120,3 +2120,11 @@
 | 14:27 | PRAE tournament spread: give remainder to middle day (whole-euro, no comma amounts) instead of even float split | BlindensportGraz/PraeCalculation.swift, BlindensportGrazTests/PraeCalculationTests.swift | xcodebuild build+test succeeded, 26/26 PraeCalculationTests pass (simctl erase fixed a transient bug-134 Busy/preflight failure first) | ~2100 |
 | 14:27 | Session end: 8 writes across 5 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 8 reads | ~36377 tok |
 | 14:31 | Session end: 8 writes across 5 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 8 reads | ~36377 tok |
+| 14:40 | Session end: 8 writes across 5 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 8 reads | ~36377 tok |
+| 14:48 | Edited BlindensportGraz/SammelabrechnungExport.swift | modified export() | ~571 |
+| 14:48 | Edited BlindensportGraz/SammelabrechnungExport.swift | reduced (-6 lines) | ~24 |
+| 14:48 | Edited BlindensportGraz/SammelabrechnungExport.swift | modified zipFiles() | ~245 |
+| 14:48 | Edited BlindensportGraz/SammelabrechnungViews.swift | added optional chaining | ~2006 |
+| 14:50 | Edited BlindensportGrazTests/SammelabrechnungExportTests.swift | modified testExportForTournamentIncludesBothTeilnehmerlistenWhenProvided() | ~1058 |
+| 14:54 | Tournament Sammelabrechnung: bundle TeilnehmerInnenliste Sportler+Helfer, added 4 "Enthaltene Teile" toggles (KostZ/PRAE/TN-Sportler/TN-Helfer), all pre-selected | BlindensportGraz/SammelabrechnungExport.swift, SammelabrechnungViews.swift, BlindensportGrazTests/SammelabrechnungExportTests.swift | xcodebuild build succeeded, targeted tests 8/8 pass (full suite run pending, bug-134 simulator retries) | ~3400 |
+| 14:56 | Session end: 13 writes across 8 files (TrainingsViews.swift, SportEvent.swift, TournamentsViews.swift, PraeCalculation.swift, PraeCalculationTests.swift) | 11 reads | ~48423 tok |
