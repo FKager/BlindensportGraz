@@ -74,6 +74,12 @@
     can ONLY be changed via CloudKit Dashboard's own "Deploy Schema Changes" button (Development →
     Production), there is no API/CLI path around this. `export-schema`/`validate-schema`/`import-schema`
     all work fine against `development`, just never `production`.
+    **Re-verified 2026-09-03** (cktool 1.0.23001, both `validate` and `import` still refused for prod).
+    At that point Production held only the built-in `Users` type — none of the 11 app record types
+    (ClubMember, ExpenseReceipt, RoleChangeLog, Team, TeamMembership, Tournament, TournamentAttendance,
+    Training, TrainingAttendance, TrainingFavorite, UserIdentity) had ever been deployed to prod.
+    CloudKit also has **no cross-environment data copy** — dev records can't be "duplicated" to prod;
+    they'd have to be re-created via the API/app.
   - **CloudKit Web Services' REST API (what `cktool create-record`/RootCLI's S2S client use) does NOT
     auto-create a record type's schema on first write**, unlike the native CloudKit SDK the app itself
     uses (which does auto-create Development schema on first write via `CKContainer`). A write to an
