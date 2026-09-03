@@ -2313,3 +2313,9 @@
 | 20:46 | Session end: 38 writes across 13 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 41 reads | ~101435 tok |
 | 20:49 | Session end: 38 writes across 13 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 41 reads | ~101435 tok |
 | 21:05 | Deployed CloudKit schema Development -> Production via Safari (AppleScript `do JavaScript` driving the CloudKit Console "Deploy Schema Changes" dialog — no API exists for this). 11 record types + all indexes + _world/_icloud/_creator role grants created in prod. Verified: `cktool export-schema --environment production` now byte-identical to development. | (CloudKit Console, no repo files) | done | ~6k |
+| 20:59 | Session end: 38 writes across 13 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 41 reads | ~101435 tok |
+| 21:07 | Edited RootCLI/Sources/CloudKitS2SCore/Config.swift | modified targetFromEnvironment() | ~392 |
+| 21:07 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 3→5 lines | ~46 |
+| 21:08 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added error handling | ~1217 |
+| 21:09 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 5→6 lines | ~68 |
+| 21:09 | Edited RootCLI/Sources/rootcli/RootCLI.swift | expanded (+13 lines) | ~370 |

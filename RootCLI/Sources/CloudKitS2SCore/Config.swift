@@ -41,4 +41,25 @@ public struct Config {
             privateKeyPath: try require("CLOUDKIT_PRIVATE_KEY_PATH")
         )
     }
+
+    /// Destination settings for `copy-records`, read from a parallel set of
+    /// `CLOUDKIT_TARGET_*` variables. CloudKit requires a *separate*
+    /// Server-to-Server key pair per environment (see RootCLI/README.md), so
+    /// the copy target can't reuse `CLOUDKIT_KEY_ID`/`CLOUDKIT_PRIVATE_KEY_PATH`.
+    /// Same container as the source; environment defaults to `production`.
+    public static func targetFromEnvironment() throws -> Config {
+        let env = ProcessInfo.processInfo.environment
+        func require(_ name: String) throws -> String {
+            guard let value = env[name], !value.isEmpty else {
+                throw CLIError.message("Missing required environment variable \(name) (the copy destination). See RootCLI/README.md.")
+            }
+            return value
+        }
+        return Config(
+            containerID: env["CLOUDKIT_CONTAINER"] ?? "iCloud.it.a11y.BlindensportGraz",
+            environment: env["CLOUDKIT_TARGET_ENVIRONMENT"] ?? "production",
+            keyID: try require("CLOUDKIT_TARGET_KEY_ID"),
+            privateKeyPath: try require("CLOUDKIT_TARGET_PRIVATE_KEY_PATH")
+        )
+    }
 }

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T18:29:37.990Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T19:09:19.299Z
 > Files: 231 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -315,7 +315,7 @@
 - `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1757 tok)
 - `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
 - `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~4066 tok)
-- `Config.swift` — Public Config + CLIError, env-var based (~433 tok)
+- `Config.swift` — Struct: Config (~739 tok)
 - `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3132 tok)
 - `MemberFillUpdate.swift` — / Non-destructive counterpart to `MemberBulkImport.run` — fills in fields (~1808 tok)
 - `MemberRecord.swift` — / `MemberRecord` is now a thin alias over the shared `ClubMemberRecord` (~1414 tok)
@@ -330,7 +330,7 @@
 
 ## RootCLI/Sources/rootcli/
 
-- `RootCLI.swift` — Struct: RootCLI (~3886 tok)
+- `RootCLI.swift` — Struct: RootCLI (~5384 tok)
 
 ## Shared/ClubSchema/
 

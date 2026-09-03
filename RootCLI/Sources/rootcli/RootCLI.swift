@@ -32,6 +32,8 @@ struct RootCLI {
             try await runUpdateMembers(rest)
         case "record":
             try await runRecord(rest)
+        case "copy-records":
+            try await runCopyRecords(rest)
         case "-h", "--help", "help":
             printUsage()
         default:
@@ -247,6 +249,95 @@ struct RootCLI {
         }
     }
 
+    /// Every app-published record type that lives in the public database and
+    /// carries no CloudKit asset payload — the default set `copy-records`
+    /// walks. `ExpenseReceipt` is intentionally in the list too: its non-asset
+    /// fields copy fine and the `asset` field is skipped per-record with a
+    /// warning (an asset can't be re-pointed across environments — its bytes
+    /// live in the source env's asset store).
+    private static let copyableRecordTypes = [
+        "UserIdentity", "ClubMember", "Team", "TeamMembership",
+        "Training", "Tournament", "TrainingAttendance", "TournamentAttendance",
+        "TrainingFavorite", "RoleChangeLog", "ExpenseReceipt",
+    ]
+
+    /// Bulk-copies every record of the given types from the source CloudKit
+    /// environment (`CLOUDKIT_*`) into a destination environment
+    /// (`CLOUDKIT_TARGET_*`), preserving each record's name/id so the app's
+    /// id-string cross-references (teamID, membershipID, …) stay intact —
+    /// something `cktool create-record` can't do (it mints a fresh name).
+    /// Upsert semantics (`createOrReplaceRecord`), matching the app's own push.
+    /// Typical use: promote Development data to Production after a schema deploy.
+    private static func runCopyRecords(_ args: [String]) async throws {
+        var dryRun = false
+        var types: [String] = []
+        for arg in args {
+            switch arg {
+            case "--dry-run": dryRun = true
+            case let flag where flag.hasPrefix("-"):
+                throw CLIError.message("Unknown flag '\(flag)'. Usage: rootcli copy-records [--dry-run] [type ...]")
+            default: types.append(arg)
+            }
+        }
+        if types.isEmpty { types = copyableRecordTypes }
+
+        let sourceConfig = try Config.fromEnvironment()
+        let targetConfig = try Config.targetFromEnvironment()
+        guard sourceConfig.environment != targetConfig.environment else {
+            throw CLIError.message("""
+            Source and target are both '\(sourceConfig.environment)'. Set CLOUDKIT_ENVIRONMENT for the \
+            source and CLOUDKIT_TARGET_ENVIRONMENT for the destination so they differ.
+            """)
+        }
+        let source = try CloudKitS2SClient(config: sourceConfig)
+        let target = try CloudKitS2SClient(config: targetConfig)
+
+        print("copy-records: \(sourceConfig.environment) -> \(targetConfig.environment)  [\(sourceConfig.containerID)]\(dryRun ? "   (dry run — nothing written)" : "")")
+        var totalCopied = 0, totalFailed = 0, totalAssetsSkipped = 0
+        for type in types {
+            let records = try await source.queryRecords(recordType: type)
+            if records.isEmpty {
+                print("  \(type): 0 records")
+                continue
+            }
+            if dryRun {
+                print("  \(type): \(records.count) records would be copied")
+                totalCopied += records.count
+                continue
+            }
+            var ok = 0, failed = 0
+            for record in records {
+                var fields: [String: Any] = [:]
+                var droppedAsset = false
+                for (key, value) in record.fields {
+                    if key.hasPrefix("_") { continue }               // server-managed
+                    if (value as? [String: Any])?["type"] as? String == "ASSET" {
+                        droppedAsset = true
+                        continue
+                    }
+                    fields[key] = value
+                }
+                do {
+                    _ = try await target.createOrReplaceRecord(recordType: type, recordName: record.recordName, fields: fields)
+                    ok += 1
+                    if droppedAsset { totalAssetsSkipped += 1 }
+                } catch {
+                    failed += 1
+                    FileHandle.standardError.write("  ! \(type)/\(record.recordName): \(error)\n".data(using: .utf8)!)
+                }
+            }
+            print("  \(type): \(ok) copied\(failed > 0 ? ", \(failed) failed" : "")")
+            totalCopied += ok
+            totalFailed += failed
+        }
+        if dryRun {
+            print("Dry run: \(totalCopied) records across \(types.count) type(s).")
+        } else {
+            let assetNote = totalAssetsSkipped > 0 ? "  (\(totalAssetsSkipped) asset field(s) skipped — re-upload separately)" : ""
+            print("Done: \(totalCopied) copied, \(totalFailed) failed.\(assetNote)")
+        }
+    }
+
     private static func recordJSON(id: String, fields: [String: Any]) throws -> String {
         var obj: [String: Any] = ["id": id]
         for (key, value) in CKFieldCoding.decode(fields) { obj[key] = value }
@@ -270,6 +361,7 @@ struct RootCLI {
           rootcli record get <type> <id>
           rootcli record set <type> <id> field=value [field:TYPE=value ...]
           rootcli record delete <type> <id>
+          rootcli copy-records [--dry-run] [type ...]
 
         import-members reads a JSON array of members and creates/updates
         matching records in CloudKit (CKRecord type "ClubMember", the
@@ -295,11 +387,24 @@ struct RootCLI {
           rootcli record set Team 3F2504E0-... name="Herren A" sport=Torball
           rootcli record set UserIdentity 3F25... isRoot:INT64=1
 
+        copy-records bulk-copies every record of the given types (default: all
+        11 app types) from the source environment to a destination environment,
+        preserving each record's id so cross-references (teamID, membershipID,
+        …) stay valid. Upsert semantics. The destination needs its OWN
+        Server-to-Server key (CloudKit requires a separate key pair per
+        environment). Example — promote Development data to Production:
+          CLOUDKIT_ENVIRONMENT=development CLOUDKIT_KEY_ID=<dev> CLOUDKIT_PRIVATE_KEY_PATH=<dev.pem> \\
+          CLOUDKIT_TARGET_ENVIRONMENT=production CLOUDKIT_TARGET_KEY_ID=<prod> CLOUDKIT_TARGET_PRIVATE_KEY_PATH=<prod.pem> \\
+          rootcli copy-records --dry-run
+
         ENVIRONMENT:
-          CLOUDKIT_CONTAINER          default: iCloud.it.a11y.BlindensportGraz
-          CLOUDKIT_ENVIRONMENT        development | production (default: development)
-          CLOUDKIT_KEY_ID             required — Server-to-Server key id from CloudKit Dashboard
-          CLOUDKIT_PRIVATE_KEY_PATH   required — path to the PKCS8 PEM private key
+          CLOUDKIT_CONTAINER              default: iCloud.it.a11y.BlindensportGraz
+          CLOUDKIT_ENVIRONMENT            development | production (default: development)
+          CLOUDKIT_KEY_ID                 required — Server-to-Server key id from CloudKit Dashboard
+          CLOUDKIT_PRIVATE_KEY_PATH       required — path to the PKCS8 PEM private key
+          CLOUDKIT_TARGET_ENVIRONMENT     copy-records destination (default: production)
+          CLOUDKIT_TARGET_KEY_ID          copy-records destination — its own S2S key id
+          CLOUDKIT_TARGET_PRIVATE_KEY_PATH  copy-records destination — its own PKCS8 PEM private key
 
         See RootCLI/README.md for one-time setup (key generation, Dashboard registration,
         and restricting write access to this key).
