@@ -14,6 +14,13 @@
 
 ## Key Learnings
 
+- [2026-09-03] **Trainingsfrequenzliste roster order**: the club fills the real form with the whole
+  Sportler (player) block at the top, then the Übungsleiter/Helfer (coach + assistant) rows underneath.
+  `TrainingsfrequenzlisteCalculator.summary` enforces this via `.sortedByLastName()` then a second
+  `.sorted { by isHelfer }` pass (Swift's sort is stable, so lastName order survives within each block).
+  `MembershipRole.isHelfer` is the split key (`.other` counts as non-helper). Applies to the .xlsx
+  export only — the SwiftUI view just shows counts.
+
 - [2026-08-22] Post-supergoal-run CloudKit follow-up session, several real findings worth keeping:
   - **CloudKit Dashboard requires a SEPARATE Server-to-Server key pair per environment** — the same
     public key cannot be registered under both Development and Production. Confirmed live: a key

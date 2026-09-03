@@ -157,6 +157,31 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertEqual(summary.people.map(\.displayName), summary.people.map(\.displayName).sorted())
     }
 
+    func testSummaryPutsSportlerBeforeHelferEachGroupSortedByLastName() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+
+        func add(_ first: String, _ last: String, _ role: MembershipRole) {
+            let member = Member(firstName: first, lastName: last)
+            context.insert(member)
+            context.insert(TeamMembership(member: member, team: team, role: role))
+        }
+        // Deliberately interleaved: a coach whose surname sorts first, an
+        // assistant in the middle, players scattered around.
+        add("Cora", "Adler", .coach)
+        add("Petra", "Zimmermann", .player)
+        add("Ben", "Bauer", .assistant)
+        add("Anton", "Meier", .player)
+        add("Uwe", "Berger", .player)
+
+        _ = makeTraining(context, team: team, day: 5)
+
+        let summary = TrainingsfrequenzlisteCalculator.summary(sport: team.sport, halfYear: .second, year: 2026, in: context)
+        XCTAssertEqual(summary.people.map(\.lastName), ["Berger", "Meier", "Zimmermann", "Adler", "Bauer"])
+    }
+
     // MARK: - Export round-trip (structural integrity, not visual layout)
 
     func testExportProducesValidReadableZipWithExpectedLayout() throws {

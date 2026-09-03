@@ -78,7 +78,7 @@ struct TrainingsfrequenzlisteSummary {
     let halfYear: HalfYear
     let year: Int
     let trainingDates: [Date] // sorted ascending, capped at maxDateColumns
-    let people: [TrainingsfrequenzlistePerson] // sorted by displayName, capped at maxPersonRows
+    let people: [TrainingsfrequenzlistePerson] // Sportler first then Übungsleiter/Helfer, each block by lastName, capped at maxPersonRows
     let teams: [Team] // every team assigned to a training in this period, in first-seen order
 
     // "Sportart:"/"Trainingszeiten:"/"Sportstätte:" header fields — all taken
@@ -179,8 +179,14 @@ enum TrainingsfrequenzlisteCalculator {
             }
         }
 
+        // Sportler first, then Übungsleiter/Helfer (coach + assistant) — the
+        // club fills the real form with the whole player block up top and the
+        // staff rows underneath, per user request. Each group is still ordered
+        // by lastName/firstName (sortedByLastName's convention); the leading
+        // `isHelfer` key just splits it into the two blocks.
         let people = memberships
             .sortedByLastName()
+            .sorted { $0.role.isHelfer == $1.role.isHelfer ? false : !$0.role.isHelfer }
             .prefix(maxPersonRows)
             .map { membership in
                 TrainingsfrequenzlistePerson(

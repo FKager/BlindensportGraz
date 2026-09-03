@@ -2239,3 +2239,17 @@
 | 22:03 | Edited ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/makeicon.swift | expanded (+10 lines) | ~235 |
 | 22:04 | Created ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/makeicon.swift | — | ~789 |
 | 22:05 | Edited generate_app_icon.swift | expanded (+7 lines) | ~135 |
+| 22:06 | Session end: 22 writes across 9 files (project_testflight-setup.md, DashboardView.swift, SammelabrechnungViews.swift, SammelabrechnungExport.swift, TournamentsViews.swift) | 7 reads | ~22022 tok |
+| 22:07 | Session end: 22 writes across 9 files (project_testflight-setup.md, DashboardView.swift, SammelabrechnungViews.swift, SammelabrechnungExport.swift, TournamentsViews.swift) | 7 reads | ~22022 tok |
+| 22:13 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | 122() → only() | ~270 |
+| 22:13 | Session end: 23 writes across 9 files (project_testflight-setup.md, DashboardView.swift, SammelabrechnungViews.swift, SammelabrechnungExport.swift, TournamentsViews.swift) | 7 reads | ~22311 tok |
+
+## Session: 2026-09-03 18:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:49 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | expanded (+6 lines) | ~151 |
+| 18:50 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified testSummaryPutsSportlerBeforeHelferEachGroupSortedByLastName() | ~364 |
+| 18:50 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | inline fix | ~37 |
+| 18:51 | Trainingsfrequenzliste roster order: Sportler block first, then Übungsleiter/Helfer, each by lastName | TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift | done (2nd sorted() pass on isHelfer, relies on Swift stable sort) | ~2k |
+| 18:52 | Session end: 3 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift) | 5 reads | ~13911 tok |
