@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T16:59:27.449Z
-> Files: 230 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T17:40:18.449Z
+> Files: 231 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -41,6 +41,7 @@
 
 ## ../../.claude/plans/
 
+- `enumerated-greeting-stearns.md` — Plan: "Verein" tab — merge Teams + Benutzerverwaltung, and reorganize app accounts (~3281 tok)
 - `foamy-churning-widget.md` — Training-Favoriten (training template quick-fill) (~1731 tok)
 - `functional-inventing-dream.md` — Make SportEvent the base class for Training and Tournament (~3676 tok)
 
@@ -168,7 +169,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~5112 tok)
+- `AccountView.swift` — SwiftUI view: AccountView; also `UserListView` ("App-Konten", enriched: search, Grazer-VSC/linked-Member badges, delete confirmation) + `RoleChangeLogView` — both now pushed from `VereinView`'s hub, no self NavigationStack (~5792 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)
@@ -216,7 +217,7 @@
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1914 tok)
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
-- `MembersViews.swift` — / "Benutzerverwaltung" (user/member administration), formerly the (~5973 tok)
+- `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s hub; also `PersonenListView` (admin-only combined people list: `User` accounts + `Member` roster, deduped by `Member.first(matching:)`, tags Konto/Kartei/Grazer VSC, filter+search) (~7514 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
 - `PersistenceService.swift` — / Shared save+sync core every per-model `*Service` (e.g. `TeamService`, (~968 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3164 tok)
@@ -225,7 +226,7 @@
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
-- `RootView.swift` — SwiftUI view: RootView (~4233 tok)
+- `RootView.swift` — SwiftUI view: RootView (~4164 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
@@ -241,7 +242,7 @@
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
 - `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
 - `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~4838 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView; also `VereinView` (root of the merged "Verein" tab — non-admins get TeamsListView directly, admins get `VereinHubList`: Teams / Mitglieder / Personen / App-Konten / Rollenänderungen) (~5471 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)

@@ -269,68 +269,127 @@ struct EditAccountView: View {
     }
 }
 
+/// The list of every app account (`User`), pushed from `VereinView`'s admin
+/// hub as "App-Konten" — it used to self-wrap a NavigationStack + "Fertig"
+/// button as a sheet off MembersListView. Only a root user sees the role
+/// Picker (and never for their own row); everyone else sees roles read-only
+/// under the name.
+///
+/// Rows show whether the account fuzzily matches a `Member` roster entry
+/// (`Member.first(matching:)`). Email is shown only when non-blank: it's
+/// device-local and never pushed to CloudKit, so accounts pulled from
+/// another device legitimately have none — hence the footer note.
 struct UserListView: View {
     let currentUser: User
     @Environment(\.modelContext) private var modelContext
     @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var users: [User]
-    @Environment(\.dismiss) private var dismiss
+    @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)]) private var members: [Member]
+    @State private var searchText = ""
+    @State private var pendingDeletion: [User] = []
     // Role changes are one of audit.md's two explicitly-prioritized areas
     // for visible save/sync failure signaling (alongside roster edits, see
     // MembersListView) — see ServiceFailureSignal.swift.
     private let failureSignal = ServiceFailureSignal.shared
 
+    private var filteredUsers: [User] {
+        let needle = searchText.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !needle.isEmpty else { return users }
+        return users.filter { user in
+            user.displayName.lowercased().contains(needle)
+                || (!user.email.isEmpty && user.email.lowercased().contains(needle))
+        }
+    }
+
+    // Extracted from `body` so the `List` modifier chain stays short enough
+    // for the type-checker.
+    private var deletionDialogShown: Binding<Bool> {
+        Binding(get: { !pendingDeletion.isEmpty }, set: { if !$0 { pendingDeletion = [] } })
+    }
+    private var failureAlertShown: Binding<Bool> {
+        Binding(get: { failureSignal.message != nil }, set: { if !$0 { failureSignal.clear() } })
+    }
+
     var body: some View {
-        NavigationStack {
-            List {
-                ForEach(users) { user in
-                    HStack {
-                        HStack(spacing: 6) {
-                            Text(user.displayName)
-                            if user.isRoot {
-                                Text("ROOT")
-                                    .font(.caption2)
-                                    .bold()
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 1)
-                                    .background(.orange.opacity(0.2), in: Capsule())
-                                    .foregroundStyle(.orange)
-                            }
-                        }
-                        Spacer()
-                        if currentUser.isRoot && user.id != currentUser.id {
-                            Picker("Rolle", selection: roleBinding(for: user)) {
-                                Text("Mitglied").tag("member")
-                                Text("Trainer:in").tag("coach")
-                                Text("Admin").tag("admin")
-                            }
-                            .labelsHidden()
-                        } else {
-                            Text(user.role.rawValue)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
+        List {
+            Section {
+                ForEach(filteredUsers) { user in
+                    row(for: user)
                 }
                 .onDelete { offsets in
-                    for index in offsets {
-                        UserService.delete(users[index], modelContext: modelContext)
+                    pendingDeletion = offsets.map { filteredUsers[$0] }.filter { $0.id != currentUser.id }
+                }
+            } footer: {
+                Text("E-Mail-Adressen werden aus Datenschutzgründen nicht zwischen Geräten synchronisiert und erscheinen daher nur für lokal erstellte Konten.")
+            }
+        }
+        .navigationTitle("App-Konten")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $searchText, prompt: "Name oder E-Mail")
+        .confirmationDialog("Konto löschen?", isPresented: deletionDialogShown, titleVisibility: .visible) {
+            Button("Löschen", role: .destructive) {
+                for user in pendingDeletion {
+                    UserService.delete(user, modelContext: modelContext)
+                }
+                pendingDeletion = []
+            }
+            Button("Abbrechen", role: .cancel) { pendingDeletion = [] }
+        } message: {
+            Text("Alle Team-Mitgliedschaften und Event-Teilnahmen dieses Kontos werden ebenfalls gelöscht.")
+        }
+        .alert("Fehler", isPresented: failureAlertShown) {
+            Button("OK") { failureSignal.clear() }
+        } message: {
+            Text(failureSignal.message ?? "")
+        }
+    }
+
+    @ViewBuilder
+    private func row(for user: User) -> some View {
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text(user.displayName)
+                    if user.isRoot {
+                        Text("ROOT")
+                            .font(.caption2)
+                            .bold()
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 1)
+                            .background(.orange.opacity(0.2), in: Capsule())
+                            .foregroundStyle(.orange)
                     }
                 }
-            }
-            .navigationTitle("Benutzer")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") { dismiss() }
+                Text(user.role.displayLabel)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                if user.isGrazerVSCMember {
+                    Label("Grazer VSC", systemImage: "checkmark.seal.fill")
+                        .font(.caption)
+                        .foregroundStyle(.green)
+                }
+                Text("Konto seit " + user.createdAt.formatted(date: .abbreviated, time: .omitted))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                if !user.email.isEmpty {
+                    Text(user.email)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                if Member.first(matching: user, in: members) != nil {
+                    Label("Mit Vereinsmitglied verknüpft", systemImage: "checkmark.circle.fill")
+                        .font(.caption)
+                        .foregroundStyle(.green)
+                        .accessibilityLabel("Mit einem Vereinsmitglied verknüpft")
                 }
             }
-            .alert("Fehler", isPresented: Binding(
-                get: { failureSignal.message != nil },
-                set: { if !$0 { failureSignal.clear() } }
-            )) {
-                Button("OK") { failureSignal.clear() }
-            } message: {
-                Text(failureSignal.message ?? "")
+            Spacer()
+            if currentUser.isRoot && user.id != currentUser.id {
+                Picker("Rolle", selection: roleBinding(for: user)) {
+                    Text("Mitglied").tag("member")
+                    Text("Trainer:in").tag("coach")
+                    Text("Admin").tag("admin")
+                }
+                .labelsHidden()
             }
         }
     }
@@ -357,43 +416,35 @@ struct UserListView: View {
 }
 
 /// Admin-only view of `RoleChangeLog` entries, newest first — audit.md P0
-/// enhancement #2. Reuses the same `List` + `refreshable` + "Fertig" dismiss
-/// pattern as `UserListView`/`MembersListView` right above.
+/// enhancement #2. Pushed from `VereinView`'s admin hub (previously a sheet
+/// off MembersListView), so it no longer wraps its own NavigationStack.
 struct RoleChangeLogView: View {
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss
     @Query(sort: \RoleChangeLog.changedAt, order: .reverse) private var entries: [RoleChangeLog]
     @Query private var users: [User]
 
     var body: some View {
-        NavigationStack {
-            List {
-                if entries.isEmpty {
-                    ContentUnavailableView("Keine Rollenänderungen",
-                                           systemImage: "clock.arrow.circlepath",
-                                           description: Text("Änderungen an Benutzerrollen erscheinen hier."))
-                } else {
-                    ForEach(entries) { entry in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("\(displayName(for: entry.userID)): \(entry.oldRole) → \(entry.newRole)")
-                                .font(.body)
-                            Text("Geändert von \(changedByLabel(entry.changedBy)) am \(entry.changedAt.formatted(date: .abbreviated, time: .shortened))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+        List {
+            if entries.isEmpty {
+                ContentUnavailableView("Keine Rollenänderungen",
+                                       systemImage: "clock.arrow.circlepath",
+                                       description: Text("Änderungen an Benutzerrollen erscheinen hier."))
+            } else {
+                ForEach(entries) { entry in
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("\(displayName(for: entry.userID)): \(entry.oldRole) → \(entry.newRole)")
+                            .font(.body)
+                        Text("Geändert von \(changedByLabel(entry.changedBy)) am \(entry.changedAt.formatted(date: .abbreviated, time: .shortened))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
-            .navigationTitle("Rollenänderungen")
-            .navigationBarTitleDisplayMode(.inline)
-            .refreshable {
-                await SyncOrchestrationService.syncAll(modelContext: modelContext)
-            }
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") { dismiss() }
-                }
-            }
+        }
+        .navigationTitle("Rollenänderungen")
+        .navigationBarTitleDisplayMode(.inline)
+        .refreshable {
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
         }
     }
 

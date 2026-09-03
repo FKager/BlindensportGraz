@@ -2,29 +2,27 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-/// "Benutzerverwaltung" (user/member administration), formerly the
-/// admin-only "Grazer VSC" club roster screen. New app accounts are
-/// auto-flagged as club members by matching against this roster (see
+/// The club's member roster ("Mitglieder"), pushed from `VereinView`'s
+/// admin hub (see MainTabView) — this used to be its own admin-only
+/// "Benutzerverwaltung" tab, self-wrapping a NavigationStack + "Fertig"
+/// button because it doubled as a sheet. New app accounts are auto-flagged
+/// as club members by matching against this roster (see
 /// Member.checkMembership in Models.swift). `Member.memberOfGVSC` makes
 /// club membership an explicit per-entry flag rather than something implied
 /// by mere presence on the roster, since this list also carries
-/// helpers/coaches who aren't necessarily formal members. Its own top-level
-/// tab (admin/root only, see MainTabView), retained as a self-contained
-/// NavigationStack with a "Fertig" dismiss button since it's also still
-/// presentable as a sheet elsewhere. Also hosts access to `UserListView`
-/// (account/role administration, "Benutzer verwalten" toolbar button) --
-/// both admin-facing user-management screens live under this one tab now
-/// instead of being split between here and AccountView.
+/// helpers/coaches who aren't necessarily formal members. Account/role
+/// administration (`UserListView`) and the role-change audit log
+/// (`RoleChangeLogView`) are now siblings under the same hub rather than
+/// toolbar buttons here.
 struct MembersListView: View {
     let currentUser: User
     @Environment(\.modelContext) private var modelContext
-    @Environment(\.dismiss) private var dismiss
     @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)])
     private var members: [Member]
     @Query private var users: [User]
     @State private var showAdd = false
-    @State private var showUserList = false
-    @State private var showRoleChangeLog = false
+    // Two-step delete: swipe fills this, the confirmationDialog commits it.
+    @State private var pendingDeletion: [Member] = []
     // Eagerly (re)generated whenever the roster changes, mirroring the
     // ShareLink pattern established for TeilnehmerlisteExport (see
     // MemberListView/cerebrum.md) — this user relies on VoiceOver, and a
@@ -39,87 +37,85 @@ struct MembersListView: View {
     // UserListView) — see ServiceFailureSignal.swift.
     private let failureSignal = ServiceFailureSignal.shared
 
+    // Extracted from `body` so the modifier chain on `List` stays short
+    // enough for the type-checker (it timed out with these inline).
+    private var deletionDialogShown: Binding<Bool> {
+        Binding(get: { !pendingDeletion.isEmpty }, set: { if !$0 { pendingDeletion = [] } })
+    }
+    private var importAlertShown: Binding<Bool> {
+        Binding(get: { importResultMessage != nil }, set: { if !$0 { importResultMessage = nil } })
+    }
+    private var failureAlertShown: Binding<Bool> {
+        Binding(get: { failureSignal.message != nil }, set: { if !$0 { failureSignal.clear() } })
+    }
+
     var body: some View {
-        NavigationStack {
-            List {
-                if members.isEmpty {
-                    ContentUnavailableView("Keine Mitglieder",
-                                           systemImage: "building.columns",
-                                           description: Text("Lege ein neues Mitglied an."))
-                } else {
-                    ForEach(members) { member in
-                        NavigationLink {
-                            MemberDetailView(member: member)
-                        } label: {
-                            MemberRow(member: member, isLinked: hasMatchingAccount(member))
-                        }
-                    }
-                    .onDelete(perform: deleteMembers)
-                }
-            }
-            .navigationTitle("Benutzerverwaltung")
-            .navigationBarTitleDisplayMode(.inline)
-            .refreshable {
-                await SyncOrchestrationService.syncAll(modelContext: modelContext)
-            }
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") { dismiss() }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showAdd = true } label: { Image(systemName: "plus") }
-                        .accessibilityLabel("Neues Mitglied")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showUserList = true } label: { Image(systemName: "person.2.fill") }
-                        .accessibilityLabel("Benutzer verwalten")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showRoleChangeLog = true } label: { Image(systemName: "clock.arrow.circlepath") }
-                        .accessibilityLabel("Rollenänderungen")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showImporter = true } label: { Image(systemName: "square.and.arrow.down") }
-                        .accessibilityLabel("Mitglieder importieren")
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    if let exportURL {
-                        ShareLink(item: exportURL) { Image(systemName: "square.and.arrow.up") }
-                            .accessibilityLabel("Mitglieder exportieren")
+        List {
+            if members.isEmpty {
+                ContentUnavailableView("Keine Mitglieder",
+                                       systemImage: "building.columns",
+                                       description: Text("Lege ein neues Mitglied an."))
+            } else {
+                ForEach(members) { member in
+                    NavigationLink {
+                        MemberDetailView(member: member)
+                    } label: {
+                        MemberRow(member: member, isLinked: hasMatchingAccount(member))
                     }
                 }
+                .onDelete { offsets in
+                    pendingDeletion = offsets.map { members[$0] }
+                }
             }
-            .sheet(isPresented: $showAdd) {
-                AddMemberView()
+        }
+        .navigationTitle("Mitglieder")
+        .navigationBarTitleDisplayMode(.inline)
+        .refreshable {
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { showAdd = true } label: { Image(systemName: "plus") }
+                    .accessibilityLabel("Neues Mitglied")
             }
-            .sheet(isPresented: $showUserList) {
-                UserListView(currentUser: currentUser)
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { showImporter = true } label: { Image(systemName: "square.and.arrow.down") }
+                    .accessibilityLabel("Mitglieder importieren")
             }
-            .sheet(isPresented: $showRoleChangeLog) {
-                RoleChangeLogView()
+            ToolbarItem(placement: .topBarTrailing) {
+                if let exportURL {
+                    ShareLink(item: exportURL) { Image(systemName: "square.and.arrow.up") }
+                        .accessibilityLabel("Mitglieder exportieren")
+                }
             }
-            .task(id: members.map(\.id)) {
-                exportURL = try? MemberImportExport.exportFile(members: members)
+        }
+        .sheet(isPresented: $showAdd) {
+            AddMemberView()
+        }
+        .confirmationDialog("Mitglied löschen?", isPresented: deletionDialogShown, titleVisibility: .visible) {
+            Button("Löschen", role: .destructive) {
+                deleteMembers(pendingDeletion)
+                pendingDeletion = []
             }
-            .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
-                handleImport(result)
-            }
-            .alert("Import", isPresented: Binding(
-                get: { importResultMessage != nil },
-                set: { if !$0 { importResultMessage = nil } }
-            )) {
-                Button("OK") { importResultMessage = nil }
-            } message: {
-                Text(importResultMessage ?? "")
-            }
-            .alert("Fehler", isPresented: Binding(
-                get: { failureSignal.message != nil },
-                set: { if !$0 { failureSignal.clear() } }
-            )) {
-                Button("OK") { failureSignal.clear() }
-            } message: {
-                Text(failureSignal.message ?? "")
-            }
+            Button("Abbrechen", role: .cancel) { pendingDeletion = [] }
+        } message: {
+            Text("Der Eintrag wird aus der Vereinskartei entfernt. Team-Zuordnungen dieser Person werden ebenfalls gelöscht.")
+        }
+        .task(id: members.map(\.id)) {
+            exportURL = try? MemberImportExport.exportFile(members: members)
+        }
+        .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
+            handleImport(result)
+        }
+        .alert("Import", isPresented: importAlertShown) {
+            Button("OK") { importResultMessage = nil }
+        } message: {
+            Text(importResultMessage ?? "")
+        }
+        .alert("Fehler", isPresented: failureAlertShown) {
+            Button("OK") { failureSignal.clear() }
+        } message: {
+            Text(failureSignal.message ?? "")
         }
     }
 
@@ -144,9 +140,9 @@ struct MembersListView: View {
         users.contains { Member.matches(email: $0.email, firstName: $0.firstName, lastName: $0.lastName, in: [member]) }
     }
 
-    private func deleteMembers(at offsets: IndexSet) {
-        for index in offsets {
-            MemberService.delete(members[index], modelContext: modelContext)
+    private func deleteMembers(_ toDelete: [Member]) {
+        for member in toDelete {
+            MemberService.delete(member, modelContext: modelContext)
         }
         // Re-fetched rather than using the `members` @Query array directly —
         // SwiftUI's @Query refresh isn't guaranteed to have landed yet at
@@ -473,4 +469,162 @@ struct AddMemberView: View {
             }
         }
     }
+}
+
+/// Admin-only combined "Personen" list, pushed from `VereinView`'s hub —
+/// one row per real person, merging app accounts (`User`) and roster
+/// entries (`Member`). Reachable only from the admin hub, so no extra role
+/// gate here.
+///
+/// Dedup is best-effort: a `User` is folded together with the `Member` it
+/// matches via `Member.first(matching:)` (email first, else first+last
+/// name). Because that match is fuzzy, a `User` synced from another device
+/// — whose `email` is never synced (see CloudKitSync) — can only be paired
+/// by name, and two different people who share a first+last name collapse
+/// into one row. A persistent User↔Member link is the real fix (out of
+/// scope here).
+struct PersonenListView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)])
+    private var users: [User]
+    @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)])
+    private var members: [Member]
+    @State private var searchText = ""
+    @State private var filter: PersonFilter = .all
+
+    enum PersonFilter: String, CaseIterable, Identifiable {
+        case all = "Alle"
+        case withAccount = "Mit Konto"
+        case rosterOnly = "Nur Kartei"
+        case grazerVSC = "Grazer VSC"
+        var id: String { rawValue }
+    }
+
+    private var people: [PersonEntry] {
+        var rows: [PersonEntry] = []
+        var matchedMemberIDs = Set<UUID>()
+
+        for user in users {
+            let match = Member.first(matching: user, in: members)
+            if let match { matchedMemberIDs.insert(match.id) }
+            rows.append(PersonEntry(
+                id: "user-\(user.id.uuidString)",
+                lastName: user.lastName,
+                firstName: user.firstName,
+                name: user.displayName.isEmpty ? "?" : user.displayName,
+                hasAccount: true,
+                onRoster: match != nil,
+                roleLabel: user.role.displayLabel,
+                memberOfGVSC: match?.memberOfGVSC ?? user.isGrazerVSCMember,
+                teamCount: user.memberships.count,
+                member: match
+            ))
+        }
+
+        for member in members where !matchedMemberIDs.contains(member.id) {
+            rows.append(PersonEntry(
+                id: "member-\(member.id.uuidString)",
+                lastName: member.lastName,
+                firstName: member.firstName,
+                name: member.fullName.isEmpty ? "?" : member.fullName,
+                hasAccount: false,
+                onRoster: true,
+                roleLabel: nil,
+                memberOfGVSC: member.memberOfGVSC,
+                teamCount: member.teamMemberships.count,
+                member: member
+            ))
+        }
+
+        let filtered = rows.filter { row in
+            switch filter {
+            case .all: return true
+            case .withAccount: return row.hasAccount
+            case .rosterOnly: return row.onRoster && !row.hasAccount
+            case .grazerVSC: return row.memberOfGVSC
+            }
+        }
+        let needle = searchText.trimmingCharacters(in: .whitespaces).lowercased()
+        let searched = needle.isEmpty ? filtered : filtered.filter { $0.name.lowercased().contains(needle) }
+        return searched.sorted {
+            let byLast = $0.lastName.localizedCaseInsensitiveCompare($1.lastName)
+            if byLast != .orderedSame { return byLast == .orderedAscending }
+            return $0.firstName.localizedCaseInsensitiveCompare($1.firstName) == .orderedAscending
+        }
+    }
+
+    var body: some View {
+        List {
+            Section {
+                Picker("Filter", selection: $filter) {
+                    ForEach(PersonFilter.allCases) { Text($0.rawValue).tag($0) }
+                }
+                .pickerStyle(.segmented)
+            }
+
+            if people.isEmpty {
+                ContentUnavailableView("Keine Personen", systemImage: "person.crop.rectangle.stack")
+            } else {
+                ForEach(people) { row in
+                    if let member = row.member {
+                        NavigationLink { MemberDetailView(member: member) } label: { rowLabel(row) }
+                    } else {
+                        rowLabel(row)
+                    }
+                }
+            }
+        }
+        .navigationTitle("Personen")
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $searchText, prompt: "Name")
+        .refreshable {
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
+        }
+    }
+
+    @ViewBuilder
+    private func rowLabel(_ row: PersonEntry) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(row.name).font(.headline)
+            HStack(spacing: 6) {
+                if row.hasAccount { capsuleTag("Konto", .blue) }
+                if row.onRoster { capsuleTag("Kartei", .green) }
+                if row.memberOfGVSC {
+                    Image(systemName: "checkmark.seal.fill")
+                        .foregroundStyle(.green)
+                        .accessibilityLabel("Grazer VSC")
+                }
+            }
+            HStack(spacing: 8) {
+                if let roleLabel = row.roleLabel {
+                    Text(roleLabel)
+                }
+                Text(row.teamCount == 1 ? "1 Team" : "\(row.teamCount) Teams")
+            }
+            .font(.caption)
+            .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 2)
+    }
+
+    private func capsuleTag(_ text: String, _ color: Color) -> some View {
+        Text(text)
+            .font(.caption2).bold()
+            .padding(.horizontal, 6).padding(.vertical, 1)
+            .background(color.opacity(0.15), in: Capsule())
+            .foregroundStyle(color)
+    }
+}
+
+private struct PersonEntry: Identifiable {
+    let id: String
+    let lastName: String
+    let firstName: String
+    let name: String
+    let hasAccount: Bool
+    let onRoster: Bool
+    let roleLabel: String?
+    let memberOfGVSC: Bool
+    let teamCount: Int
+    let member: Member?
 }

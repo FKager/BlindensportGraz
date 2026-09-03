@@ -6000,6 +6000,88 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-03T16:58:21.781Z"
+    },
+    {
+      "id": "bug-361",
+      "timestamp": "2026-09-03T17:35:28.859Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 9→4 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-03T17:35:28.859Z"
+    },
+    {
+      "id": "bug-362",
+      "timestamp": "2026-09-03T17:35:45.668Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-03T17:35:45.668Z"
+    },
+    {
+      "id": "bug-363",
+      "timestamp": "2026-09-03T17:38:20.446Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/MembersViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-03T17:38:20.446Z"
+    },
+    {
+      "id": "bug-364",
+      "timestamp": "2026-09-03T17:39:10.796Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "12 lines replaced/restructured",
+      "fix": "Rewrote 65→121 lines (12 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-03T17:39:10.796Z"
+    },
+    {
+      "id": "bug-365",
+      "timestamp": "2026-09-03T17:55:00Z",
+      "error_message": "TrainingImportExportTests: 4 failures — testImportMatchesExistingByTitleAndStartDateWhenNoID (created 1/updated 0 instead of 0/1), testImportOverwritesExistingNonEmptyFields (hour 21 != 19). Discovered while running -only-testing:BlindensportGrazTests during the Verein-tab work.",
+      "file": "BlindensportGrazTests/TrainingImportExportTests.swift",
+      "root_cause": "Test-only timezone fragility, PRE-EXISTING and unrelated to the Verein-tab change. date(hour:) builds dates with Calendar.current (local TZ, Vienna = UTC+2 in summer) while the import JSON fixtures use ...Z (UTC) literals. TrainingImportExport.findExisting matches only within 60s of startDate, so the ~2h offset means no match -> import creates instead of updates, and Calendar.current.component(.hour) reads 2h higher than the UTC literal. Normally hidden because this suite is excluded from local runs (its own header says -skip-testing due to a CloudKit/signing crash on unsigned runs).",
+      "fix": "NOT FIXED (out of scope for the tab reorg). Correct fix: make date(hour:) use a fixed UTC calendar, or change the JSON fixtures to local-time offsets, so the fixture instants line up with what findExisting compares. Verified my change is not the cause: git status shows only AccountView/MembersViews/RootView/TeamsViews modified; TrainingImportExport.swift + its tests untouched since 2026-08-22; app build succeeds; 176/180 tests pass.",
+      "tags": [
+        "test-fragility",
+        "timezone",
+        "training-import",
+        "pre-existing",
+        "not-my-change"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-03T17:55:00Z"
     }
   ]
 }

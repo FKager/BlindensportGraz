@@ -2270,3 +2270,28 @@
 | 18:58 | Edited BlindensportGraz/TournamentsViews.swift | 3→3 lines | ~64 |
 | 18:59 | Edited BlindensportGrazTests/InheritanceQueryTests.swift | modified testDuplicateMatchesAcrossEventKinds() | ~1189 |
 | 18:58 | Event uniqueness: SportEvent.duplicate(title/sport/startDate) + block in AddEvent/AddTraining/AddTournament, inline warning in Training/Tournament detail | SportEvent.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, InheritanceQueryTests.swift | done, 12 tests green | ~6k |
+| 19:01 | Session end: 18 writes across 7 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 12 reads | ~44117 tok |
+| 19:02 | Session end: 18 writes across 7 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 13 reads | ~48350 tok |
+| 19:07 | Session end: 18 writes across 7 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 17 reads | ~66187 tok |
+| 19:10 | Session end: 18 writes across 7 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 26 reads | ~77618 tok |
+| 19:12 | Created ../../.claude/plans/enumerated-greeting-stearns.md | — | ~971 |
+| 19:13 | Session end: 19 writes across 8 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 26 reads | ~78658 tok |
+| 19:33 | Created ../../.claude/plans/enumerated-greeting-stearns.md | — | ~3500 |
+| 19:35 | Edited BlindensportGraz/RootView.swift | 9→4 lines | ~63 |
+| 19:35 | Edited BlindensportGraz/TeamsViews.swift | modified ToolbarItem() | ~777 |
+| 19:36 | Edited BlindensportGraz/MembersViews.swift | 24→22 lines | ~351 |
+| 19:37 | Edited BlindensportGraz/MembersViews.swift | modified ForEach() | ~882 |
+| 19:37 | Edited BlindensportGraz/MembersViews.swift | modified deleteMembers() | ~163 |
+| 19:38 | Edited BlindensportGraz/MembersViews.swift | added optional chaining | ~1686 |
+| 19:38 | Edited BlindensportGraz/TeamsViews.swift | 5→5 lines | ~53 |
+| 19:39 | Edited BlindensportGraz/AccountView.swift | modified row() | ~1484 |
+| 19:39 | Edited BlindensportGraz/MembersViews.swift | expanded (+12 lines) | ~198 |
+| 19:39 | Edited BlindensportGraz/MembersViews.swift | modified confirmationDialog() | ~303 |
+| 19:39 | Edited BlindensportGraz/AccountView.swift | modified ForEach() | ~596 |
+| 19:40 | Edited BlindensportGraz/AccountView.swift | modified ForEach() | ~419 |
+| 19:45 | Merged Teams + Benutzerverwaltung tabs into one "Verein" tab (VereinView/VereinHubList in TeamsViews); non-admins → Teams list directly, admins → hub | RootView.swift, TeamsViews.swift | done | ~3k |
+| 19:45 | MembersListView: dropped self NavigationStack + "Fertig" + "Benutzer verwalten"/"Rollenänderungen" toolbar buttons; retitled "Mitglieder"; added delete confirmation | MembersViews.swift | done | ~2k |
+| 19:45 | UserListView → "App-Konten": promoted (no self NavigationStack), search, role/Grazer-VSC/linked-Member badges, delete confirmation + blank-email footer note. RoleChangeLogView de-stacked too | AccountView.swift | done | ~3k |
+| 19:45 | New PersonenListView: combined User+Member people list, deduped via Member.first(matching:), Konto/Kartei tags, filter Picker + search | MembersViews.swift | done | ~2k |
+| 19:48 | Full test run: 176/180 pass. 4 failures in TrainingImportExportTests are PRE-EXISTING timezone fragility (bug-365), not from this change — build succeeds, unrelated files | — | investigated | ~4k |
+| 19:49 | Session end: 32 writes across 12 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 26 reads | ~92398 tok |

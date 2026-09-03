@@ -14,6 +14,28 @@
 
 ## Key Learnings
 
+- [2026-09-03] **"Verein" tab** = the merge of the former standalone "Teams" tab and admin-only
+  "Benutzerverwaltung" tab (`MainTabView`, `RootView.swift`). `VereinView` (in `TeamsViews.swift`) is
+  the tab root: non-admins get `TeamsListView` directly; admins/root get `VereinHubList`, a `List` of
+  `NavigationLink`s (Teams, Mitglieder, Personen, App-Konten, Rollenänderungen) pushed onto the tab's
+  one `NavigationStack`. Consequence: `MembersListView`, `UserListView`, `RoleChangeLogView` no longer
+  wrap their own `NavigationStack`/"Fertig" button (they used to double as sheets) — never re-add one.
+  `UserListView` is now titled "App-Konten"; `MembersListView` is now titled "Mitglieder".
+  `PersonenListView` (in `MembersViews.swift`) is the combined `User`+`Member` people list, deduped by
+  `Member.first(matching:)`.
+
+- [2026-09-03] **SwiftUI type-checker timeout in list screens**: adding a `.confirmationDialog` with an
+  inline `Binding(get:set:)` on top of an already-long modifier chain on a `List` tips the expression
+  type-checker over ("unable to type-check this expression in reasonable time"). Fix: hoist each inline
+  `Binding(get:set:)` into a `private var xShown: Binding<Bool>` computed property. Done in
+  `MembersListView` and `UserListView`.
+
+- [2026-09-03] **`TrainingImportExportTests` is timezone-fragile** (bug-365): `date(hour:)` uses
+  `Calendar.current` but the JSON fixtures use `...Z` literals, so in a non-UTC TZ the instants don't
+  line up with `TrainingImportExport.findExisting`'s 60-second match window → 4 failures. The suite is
+  normally `-skip-testing`'d locally (its header notes a CloudKit/signing crash on unsigned runs), so
+  this stays hidden. Not caused by unrelated changes — check `git status` before assuming.
+
 - [2026-09-03] **Event uniqueness rule**: every calendar entry (plain `SportEvent`, `Training`,
   `Tournament`) must be unique by name + Sportart + Zeitpunkt. `SportEvent.duplicate(title:sport:
   startDate:granularity:excluding:in:)` is the single check — polymorphic `FetchDescriptor<SportEvent>`
@@ -216,6 +238,11 @@
 - [2026-09-01] **App Store Connect API key `.p8` download can only happen once, and a script-triggered click in Safari silently fails to save it** — Safari's popup blocker eats the download when the click comes from `osascript ... do JavaScript`, but ASC still marks the key "downloaded" server-side, permanently burning it (happened twice: keys `PBU73DZB74`, `K7L3X5ZDRF`). For the download step specifically, a real human/VoiceOver click is required; everything else in ASC (create key, create app record, create cert/profile) automates fine via `do JavaScript`. Also: a **team** API key cannot authenticate without the Issuer ID, and the Issuer ID is only shown on the ASC page once ≥1 key exists.
 
 ## Do-Not-Repeat
+
+- [2026-09-03] **Don't `git stash` to check a baseline mid-task.** Franz pushed back ("why do you want
+  to git stash?"). To verify whether a failing test pre-dates your change, use `git status` +
+  `git log -1 -- <file>` (did I even touch it?) and read the assertion, or add a throwaway
+  `git worktree` — never disturb the working tree.
 
 - [2026-09-01] **`@Query(sort: \Tournament.startDate)` / `@Query(sort: \Training.startDate)` crash-loop
   every Release build (TestFlight/App Store) on launch** (see [[bug-352]] — reported when Linda

@@ -199,13 +199,8 @@ struct MainTabView: View {
             NavigationStack { TrainingsListView(currentUser: currentUser) }
                 .tabItem { Label("Trainings", systemImage: "figure.run") }
 
-            NavigationStack { TeamsListView(currentUser: currentUser) }
-                .tabItem { Label("Teams", systemImage: "person.3.fill") }
-
-            if currentUser.role == .admin || currentUser.isRoot {
-                NavigationStack { MembersListView(currentUser: currentUser) }
-                    .tabItem { Label("Benutzerverwaltung", systemImage: "building.columns.fill") }
-            }
+            NavigationStack { VereinView(currentUser: currentUser) }
+                .tabItem { Label("Verein", systemImage: "building.2.fill") }
 
             NavigationStack { AccountView(currentUser: currentUser, onLogout: onLogout) }
                 .tabItem { Label("Account", systemImage: "person.crop.circle") }
