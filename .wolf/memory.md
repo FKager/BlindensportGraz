@@ -2300,3 +2300,9 @@
 | 20:17 | Session end: 32 writes across 12 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 35 reads | ~92329 tok |
 | 20:20 | Created generate_app_icon.swift | — | ~2320 |
 | 20:21 | Created generate_app_icon.swift | — | ~2330 |
+| 20:23 | Session end: 34 writes across 13 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 37 reads | ~97311 tok |
+| 20:28 | Edited generate_app_icon.swift | modified P() | ~1334 |
+| 20:28 | Edited generate_app_icon.swift | 5→5 lines | ~112 |
+| 20:29 | Edited generate_app_icon.swift | 5→7 lines | ~151 |
+| 20:29 | Edited generate_app_icon.swift | 6→6 lines | ~77 |
+| 20:31 | App icon v2: added Torball (white disc w/ blue holes) + schematic tandem bike alongside the Material "blind" glyph, all white on blue. generate_app_icon.swift extended with CG primitive helpers. Build OK, installed on sim. | generate_app_icon.swift, icon-1024.png | done (noted: busy at small size) | ~4k |

@@ -21,6 +21,10 @@
   icon PNG with an alpha channel). Regenerate: `swift generate_app_icon.swift <path>`. The wanted look
   was **white on blue** (not the old blue→purple gradient). Prefer an established open-licensed
   pictogram over hand-drawing primitives.
+  [2026-09-03, later] Franz then asked to add a **Torball** (holey bell-ball) and a **tandem bike**
+  to the icon. `generate_app_icon.swift` now draws all three white on blue: blind glyph top-left,
+  Torball (white disc, blue holes knocked out) top-right, schematic tandem (two wheels + twin-saddle
+  frame + handlebar, CG strokes) across the bottom. Busy for a 60pt icon — offered to simplify.
 
 - [2026-09-03] **"Verein" tab** = the merge of the former standalone "Teams" tab and admin-only
   "Benutzerverwaltung" tab (`MainTabView`, `RootView.swift`). `VereinView` (in `TeamsViews.swift`) is

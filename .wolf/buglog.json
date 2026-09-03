@@ -6082,6 +6082,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-03T17:55:00Z"
+    },
+    {
+      "id": "bug-366",
+      "timestamp": "2026-09-03T18:28:12.238Z",
+      "error_message": "Significant refactor of ",
+      "file": "generate_app_icon.swift",
+      "root_cause": "13 lines replaced/restructured",
+      "fix": "Rewrote 45→96 lines (13 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-03T18:28:12.238Z"
     }
   ]
 }
