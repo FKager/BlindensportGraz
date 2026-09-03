@@ -14,6 +14,14 @@
 
 ## Key Learnings
 
+- [2026-09-03] **App icon**: Franz rejected the hand-drawn Core Graphics stick figure ("really bad").
+  Now `generate_app_icon.swift` renders Google's **Material Symbols "blind"** glyph (Apache-2.0,
+  github.com/google/material-design-icons) — a single SVG path parsed to a CGPath and filled white,
+  centred at 0.66 scale, on solid blue `#256DE9`. Opaque 24-bit RGB, no alpha (App Store rejects an
+  icon PNG with an alpha channel). Regenerate: `swift generate_app_icon.swift <path>`. The wanted look
+  was **white on blue** (not the old blue→purple gradient). Prefer an established open-licensed
+  pictogram over hand-drawing primitives.
+
 - [2026-09-03] **"Verein" tab** = the merge of the former standalone "Teams" tab and admin-only
   "Benutzerverwaltung" tab (`MainTabView`, `RootView.swift`). `VereinView` (in `TeamsViews.swift`) is
   the tab root: non-admins get `TeamsListView` directly; admins/root get `VereinHubList`, a `List` of
