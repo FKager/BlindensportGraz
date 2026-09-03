@@ -2319,3 +2319,11 @@
 | 21:08 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added error handling | ~1217 |
 | 21:09 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 5→6 lines | ~68 |
 | 21:09 | Edited RootCLI/Sources/rootcli/RootCLI.swift | expanded (+13 lines) | ~370 |
+| 21:11 | Session end: 43 writes across 15 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 41 reads | ~103676 tok |
+| 21:14 | Session end: 43 writes across 15 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 41 reads | ~103676 tok |
+| 21:18 | Session end: 43 writes across 15 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 41 reads | ~103676 tok |
+| 21:21 | Session end: 43 writes across 15 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 41 reads | ~103676 tok |
+| 21:22 | Session end: 43 writes across 15 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 41 reads | ~103676 tok |
+| 21:40 | PAUSED: dev->prod DATA copy. Schema already deployed to prod (done). Blocker: need CloudKit S2S creds — dev key (RootCli_BlindensportGraz) + prod key (PDB_S2S_BlindensportGraz): Key IDs from Console + private-key paths. Tool ready: `rootcli copy-records [--dry-run]` (commit 477d486). Resume: set CLOUDKIT_KEY_ID/CLOUDKIT_PRIVATE_KEY_PATH (dev src) + CLOUDKIT_TARGET_KEY_ID/CLOUDKIT_TARGET_PRIVATE_KEY_PATH (prod dst), run --dry-run first. NOTE: a private key was pasted into chat 21:35 — rotate/delete it in the Console. | RootCLI | paused | ~2k |
+| 21:22 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | — | ~642 |
+| 21:22 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | 1→2 lines | ~96 |
