@@ -80,6 +80,12 @@
     Training, TrainingAttendance, TrainingFavorite, UserIdentity) had ever been deployed to prod.
     CloudKit also has **no cross-environment data copy** — dev records can't be "duplicated" to prod;
     they'd have to be re-created via the API/app.
+  **2026-09-03: deployed dev→prod anyway, by scripting Safari.** AppleScript `do JavaScript ... in
+    current tab of front window` (Safari → Develop → "Allow JavaScript from Apple Events" must be on,
+    and you must be signed into the Console) can click the Console's own "Deploy Schema Changes…" →
+    "Deploy" → "Done" buttons. `document.querySelector('[role=dialog]')` holds the confirm diff. That
+    is the only automation path — still no API. Result verified with `cktool export-schema
+    --environment production` (prod schema became byte-identical to development).
   - **CloudKit Web Services' REST API (what `cktool create-record`/RootCLI's S2S client use) does NOT
     auto-create a record type's schema on first write**, unlike the native CloudKit SDK the app itself
     uses (which does auto-create Development schema on first write via `CKContainer`). A write to an
