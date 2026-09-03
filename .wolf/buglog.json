@@ -5968,6 +5968,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-01T20:03:34.653Z"
+    },
+    {
+      "id": "bug-359",
+      "timestamp": "2026-09-03T16:56:27.138Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/SportEvent.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-03T16:56:27.138Z"
+    },
+    {
+      "id": "bug-360",
+      "timestamp": "2026-09-03T16:58:21.781Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/SportEvent.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 23→38 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-03T16:58:21.781Z"
     }
   ]
 }

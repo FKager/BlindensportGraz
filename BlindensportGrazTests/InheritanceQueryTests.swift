@@ -157,4 +157,90 @@ final class InheritanceQueryTests: XCTestCase {
         let survivingTraining = try XCTUnwrap(try context.fetch(FetchDescriptor<Training>()).first)
         XCTAssertNoThrow(_ = survivingTraining.attendances.first { $0.membership.id == membership.id })
     }
+
+    // MARK: - SportEvent.duplicate (name + Sportart + Zeitpunkt uniqueness)
+
+    func testDuplicateMatchesAcrossEventKinds() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let when = Date(timeIntervalSince1970: 1_800_000_000)
+
+        context.insert(Training(title: "Torball Training", sport: "Torball", location: "Graz", startDate: when))
+        try context.save()
+
+        // A tournament with the same name/sport/day is still a "duplicate" —
+        // the rule spans every event kind, and the base-type fetch is polymorphic.
+        XCTAssertNotNil(SportEvent.duplicate(title: "Torball Training", sport: "Torball",
+                                             startDate: when, granularity: .day, in: context))
+        // Different sport → not a duplicate.
+        XCTAssertNil(SportEvent.duplicate(title: "Torball Training", sport: "Goalball",
+                                          startDate: when, in: context))
+    }
+
+    func testDuplicateIgnoresCaseAndSurroundingWhitespaceInTitle() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let when = Date(timeIntervalSince1970: 1_800_000_000)
+
+        context.insert(SportEvent(title: "Sommerfest", sport: "Torball", location: "Graz",
+                                  startDate: when, endDate: when))
+        try context.save()
+
+        XCTAssertNotNil(SportEvent.duplicate(title: "  sommerFEST ", sport: "Torball",
+                                             startDate: when, in: context))
+    }
+
+    func testDuplicateMinuteGranularityDistinguishesTimes() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let when = Date(timeIntervalSince1970: 1_800_000_000)
+
+        context.insert(Training(title: "Abendtraining", sport: "Torball", location: "Graz", startDate: when))
+        try context.save()
+
+        // Same day, one hour later → distinct at .minute granularity.
+        XCTAssertNil(SportEvent.duplicate(title: "Abendtraining", sport: "Torball",
+                                          startDate: when.addingTimeInterval(3600), in: context))
+        // Same instant → match.
+        XCTAssertNotNil(SportEvent.duplicate(title: "Abendtraining", sport: "Torball",
+                                             startDate: when, in: context))
+    }
+
+    func testDuplicateDayGranularityIgnoresTimeOfDay() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let morning = Date(timeIntervalSince1970: 1_800_000_000)
+        let evening = morning.addingTimeInterval(8 * 3600)
+
+        context.insert(Tournament(title: "Herbstcup", sport: "Torball", location: "Graz",
+                                  startDate: morning, endDate: morning))
+        try context.save()
+
+        XCTAssertNotNil(SportEvent.duplicate(title: "Herbstcup", sport: "Torball",
+                                             startDate: evening, granularity: .day, in: context))
+    }
+
+    func testDuplicateExcludesTheEventBeingEdited() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let when = Date(timeIntervalSince1970: 1_800_000_000)
+
+        let training = Training(title: "Torball Training", sport: "Torball", location: "Graz", startDate: when)
+        context.insert(training)
+        try context.save()
+
+        XCTAssertNil(SportEvent.duplicate(title: "Torball Training", sport: "Torball",
+                                          startDate: when, excluding: training.id, in: context))
+    }
+
+    func testDuplicateWithBlankTitleIsNeverAMatch() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let when = Date(timeIntervalSince1970: 1_800_000_000)
+
+        context.insert(SportEvent(title: "", sport: "Torball", location: "Graz", startDate: when, endDate: when))
+        try context.save()
+
+        XCTAssertNil(SportEvent.duplicate(title: "   ", sport: "Torball", startDate: when, in: context))
+    }
 }

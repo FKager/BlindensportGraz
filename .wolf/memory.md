@@ -2253,3 +2253,20 @@
 | 18:50 | Edited BlindensportGraz/TrainingsfrequenzlisteCalculation.swift | inline fix | ~37 |
 | 18:51 | Trainingsfrequenzliste roster order: Sportler block first, then Übungsleiter/Helfer, each by lastName | TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift | done (2nd sorted() pass on isHelfer, relies on Swift stable sort) | ~2k |
 | 18:52 | Session end: 3 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift) | 5 reads | ~13911 tok |
+| 18:53 | Session end: 3 writes across 2 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift) | 5 reads | ~13911 tok |
+| 18:56 | Edited BlindensportGraz/SportEvent.swift | added nullish coalescing | ~502 |
+| 18:56 | Edited BlindensportGraz/EventsViews.swift | 2→3 lines | ~42 |
+| 18:56 | Edited BlindensportGraz/EventsViews.swift | modified ToolbarItem() | ~484 |
+| 18:56 | Edited BlindensportGraz/TrainingsViews.swift | 4→5 lines | ~77 |
+| 18:56 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~157 |
+| 18:57 | Edited BlindensportGraz/TrainingsViews.swift | modified alert() | ~117 |
+| 18:57 | Edited BlindensportGraz/TournamentsViews.swift | 4→5 lines | ~61 |
+| 18:57 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~157 |
+| 18:57 | Edited BlindensportGraz/TournamentsViews.swift | modified alert() | ~117 |
+| 18:57 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~334 |
+| 18:57 | Edited BlindensportGraz/TournamentsViews.swift | modified isSportler() | ~342 |
+| 18:58 | Edited BlindensportGraz/SportEvent.swift | modified duplicate() | ~505 |
+| 18:58 | Edited BlindensportGraz/TournamentsViews.swift | 6→7 lines | ~131 |
+| 18:58 | Edited BlindensportGraz/TournamentsViews.swift | 3→3 lines | ~64 |
+| 18:59 | Edited BlindensportGrazTests/InheritanceQueryTests.swift | modified testDuplicateMatchesAcrossEventKinds() | ~1189 |
+| 18:58 | Event uniqueness: SportEvent.duplicate(title/sport/startDate) + block in AddEvent/AddTraining/AddTournament, inline warning in Training/Tournament detail | SportEvent.swift, EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift, InheritanceQueryTests.swift | done, 12 tests green | ~6k |

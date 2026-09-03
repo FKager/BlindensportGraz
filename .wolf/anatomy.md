@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T16:50:15.206Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T16:59:27.449Z
 > Files: 230 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -201,7 +201,7 @@
 - `EventParticipation.swift` — Class: EventParticipation (~156 tok)
 - `EventParticipationService.swift` — / No `delete` — see AttendanceService.swift's doc comment. (~139 tok)
 - `EventReminderService.swift` — / Minimal surface `EventReminderService` needs from a notification center — (~1212 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~4072 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~4271 tok)
 - `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
 - `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
@@ -230,7 +230,7 @@
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
-- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~1321 tok)
+- `SportEvent.swift` — / Base type for "a sport happening at a place & time"; also `static duplicate(title:sport:startDate:granularity:excluding:in:)` — the name+Sportart+Zeitpunkt uniqueness check used by all Add*View save buttons (~2200 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1940 tok)
 - `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~305 tok)
@@ -245,7 +245,7 @@
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~7128 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~7617 tok)
 - `Training.swift` — Class: Training (~405 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~2839 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -254,7 +254,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~8978 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~9440 tok)
 - `User.swift` — Class: User (~1006 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
@@ -279,7 +279,7 @@
 - `DesignatedRootTests.swift` — Class: DesignatedRootTests (~1561 tok)
 - `EventReminderServiceTests.swift` — Class: FakeNotificationScheduling (~1755 tok)
 - `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
-- `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~2170 tok)
+- `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `MemberMembershipRequestTests.swift` — Class: MemberMembershipRequestTests (~1810 tok)

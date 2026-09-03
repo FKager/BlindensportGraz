@@ -19,6 +19,7 @@ struct AddEventView: View {
        @State private var notes = ""
        @State private var selectedTeamIDs: Set<UUID> = []
        @State private var includesTime = true
+       @State private var showDuplicateAlert = false
 
     let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
 
@@ -100,6 +101,12 @@ struct AddEventView: View {
                       }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
+                        // Same name + Sportart + Zeitpunkt as an existing
+                        // event of any kind → refuse, see SportEvent.duplicate.
+                        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, in: modelContext) != nil {
+                            showDuplicateAlert = true
+                            return
+                        }
                         let event = SportEvent(
                             title: title,
                             sport: sport,
@@ -120,6 +127,11 @@ struct AddEventView: View {
                      }
                       .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
                    }
+                }
+                .alert("Bereits vorhanden", isPresented: $showDuplicateAlert) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text("Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt.")
                 }
            }
         }

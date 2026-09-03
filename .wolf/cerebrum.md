@@ -14,6 +14,15 @@
 
 ## Key Learnings
 
+- [2026-09-03] **Event uniqueness rule**: every calendar entry (plain `SportEvent`, `Training`,
+  `Tournament`) must be unique by name + Sportart + Zeitpunkt. `SportEvent.duplicate(title:sport:
+  startDate:granularity:excluding:in:)` is the single check — polymorphic `FetchDescriptor<SportEvent>`
+  covers all three kinds. Title compared trimmed + case-insensitively; `granularity` is `.minute` for
+  trainings/events (real Uhrzeit) and `.day` for tournaments (their DatePicker is date-only, stored
+  time is just `Date.now` at creation). Enforced as a hard block in the three `Add*View` Speichern
+  buttons; the `*DetailView` edit screens use live bindings with no save step, so they only show an
+  inline orange warning row when the edited values collide (`excluding:` the event's own id).
+
 - [2026-09-03] **Trainingsfrequenzliste roster order**: the club fills the real form with the whole
   Sportler (player) block at the top, then the Übungsleiter/Helfer (coach + assistant) rows underneath.
   `TrainingsfrequenzlisteCalculator.summary` enforces this via `.sortedByLastName()` then a second

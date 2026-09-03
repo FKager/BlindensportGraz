@@ -20,6 +20,7 @@ struct AddTournamentView: View {
         @State private var maxTeams = 8
         @State private var notes = ""
         @State private var selectedTeamIDs: Set<UUID> = []
+        @State private var showDuplicateAlert = false
 
         let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
         
@@ -108,6 +109,13 @@ struct AddTournamentView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
+                        // Same name + Sportart + Datum as an existing event of
+                        // any kind → refuse. Day granularity: the tournament UI
+                        // only picks a date, see SportEvent.duplicate.
+                        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, granularity: .day, in: modelContext) != nil {
+                            showDuplicateAlert = true
+                            return
+                        }
                         var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
                         // Same business rule as AddTrainingView: applies to
                         // ANY tournament of a mapped sport regardless of who
@@ -156,6 +164,11 @@ struct AddTournamentView: View {
                     }
                     .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
+            }
+            .alert("Bereits vorhanden", isPresented: $showDuplicateAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt.")
             }
         }
     }
@@ -282,9 +295,28 @@ struct TournamentDetailView: View {
         membership.role == .player
     }
 
+    // Live check against the club's name + Sportart + Zeitpunkt uniqueness
+    // rule — this screen edits `tournament` through bindings with no explicit
+    // save step, so a hard block isn't possible here; instead warn inline the
+    // moment the edited values collide with another event (see
+    // AddTournamentView for the enforced-at-creation path).
+    private var collidesWithExistingEvent: Bool {
+        SportEvent.duplicate(title: tournament.title, sport: tournament.sport,
+                             startDate: tournament.startDate, granularity: .day,
+                             excluding: tournament.id, in: modelContext) != nil
+    }
+
 var body: some View {
     Form {
         EventImagesSection(images: tournament.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+
+        if collidesWithExistingEvent {
+            Section {
+                Label("Ein anderer Eintrag hat bereits diesen Titel, diese Sportart und diesen Zeitpunkt. Bitte Namen oder Zeit ändern.", systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+        }
 
         Section("Turnier") {
             TextField("Name", text: $tournament.title)

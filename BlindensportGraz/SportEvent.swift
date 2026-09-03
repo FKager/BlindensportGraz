@@ -76,6 +76,51 @@ class SportEvent {
 }
 
 extension SportEvent {
+    /// The club's uniqueness rule for anything on the calendar: an event is
+    /// identified by its name + Sportart + Zeitpunkt, so the *same* training,
+    /// tournament or plain event can never be entered twice. Returns an
+    /// existing event of ANY kind that already matches — `FetchDescriptor<SportEvent>`
+    /// is polymorphic, so this one query also covers `Training`/`Tournament`.
+    ///
+    /// `title` is compared trimmed + case-insensitively. `startDate` is
+    /// compared at `granularity` — `.minute` for trainings/plain events (they
+    /// have a real Uhrzeit the user picks), `.day` for tournaments (the
+    /// tournament UI only ever picks a date, so the stored time is just
+    /// whatever `Date.now` was at creation and must be ignored). Pass the
+    /// event being edited as `excluding` so it never collides with itself.
+    /// Fetch-all-then-filter-in-Swift, matching the calculators' convention
+    /// rather than a relationship-path `#Predicate`.
+    enum DateGranularity {
+        case minute, day
+
+        var components: Set<Calendar.Component> {
+            switch self {
+            case .minute: return [.year, .month, .day, .hour, .minute]
+            case .day: return [.year, .month, .day]
+            }
+        }
+    }
+
+    static func duplicate(title: String,
+                          sport: String,
+                          startDate: Date,
+                          granularity: DateGranularity = .minute,
+                          excluding excludedID: UUID? = nil,
+                          in context: ModelContext) -> SportEvent? {
+        let normalizedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !normalizedTitle.isEmpty else { return nil }
+        let calendar = Calendar.current
+        let fields = granularity.components
+        let target = calendar.dateComponents(fields, from: startDate)
+        let all = (try? context.fetch(FetchDescriptor<SportEvent>())) ?? []
+        return all.first { other in
+            other.id != excludedID
+                && other.sport == sport
+                && other.title.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == normalizedTitle
+                && calendar.dateComponents(fields, from: other.startDate) == target
+        }
+    }
+
     /// Combines street/zip/city/country into one display line, e.g.
     /// "Hauptstraße 12, 8010 Graz, Österreich" — mirrors Member.fullAddress
     /// exactly (same join logic). Not stored, so it can't be used as a
