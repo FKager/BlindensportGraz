@@ -2,9 +2,12 @@
 //
 //   swift generate_app_icon.swift BlindensportGraz/Assets.xcassets/AppIcon.appiconset/icon-1024.png
 //
-// Draws the international "person walking with a white cane" symbol in white on
-// the app's blue->purple diagonal gradient. Output is opaque 24-bit RGB (no
-// alpha) — the App Store rejects an app icon PNG that carries an alpha channel.
+// White "blind pedestrian" pictogram (person walking with a white cane) on a
+// solid blue background. The glyph is Google's Material Symbols "blind" icon
+// (Apache License 2.0, https://github.com/google/material-design-icons) — its
+// single SVG path is parsed into a CGPath here and filled white, centred with
+// margin. Output is opaque 24-bit RGB (no alpha) — the App Store rejects an
+// app icon PNG that carries an alpha channel.
 import AppKit
 import CoreGraphics
 import ImageIO
@@ -12,67 +15,39 @@ import UniformTypeIdentifiers
 
 let S = 1024
 let cs = CGColorSpaceCreateDeviceRGB()
-// noneSkipLast => opaque, no alpha channel semantics (App Store rejects an
-// app icon PNG that carries alpha, even when nothing is transparent).
 guard let ctx = CGContext(data: nil, width: S, height: S, bitsPerComponent: 8,
                           bytesPerRow: 0, space: cs,
                           bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else {
     fatalError("ctx")
 }
 
-// Top-left origin coordinate space (y down).
+// Top-left origin coordinate space (y down), matching the SVG viewBox below.
 ctx.translateBy(x: 0, y: CGFloat(S))
 ctx.scaleBy(x: 1, y: -1)
 
-func P(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
+// ---- Background: solid blue ----
+ctx.setFillColor(CGColor(red: 0.145, green: 0.427, blue: 0.914, alpha: 1)) // #256DE9
+ctx.fill(CGRect(x: 0, y: 0, width: S, height: S))
 
-// ---- Background: diagonal blue -> purple gradient (matches the old icon) ----
-let c1 = CGColor(red: 0.322, green: 0.549, blue: 0.949, alpha: 1) // ~#528CF2
-let c2 = CGColor(red: 0.612, green: 0.435, blue: 0.867, alpha: 1) // ~#9C6FDD
-let grad = CGGradient(colorsSpace: cs, colors: [c1, c2] as CFArray, locations: [0, 1])!
-ctx.saveGState()
-ctx.addRect(CGRect(x: 0, y: 0, width: S, height: S))
-ctx.clip()
-ctx.drawLinearGradient(grad, start: P(0, 0), end: P(CGFloat(S), CGFloat(S)), options: [])
-ctx.restoreGState()
+// ---- Foreground: Material Symbols "blind" glyph, filled white ----
+// Rounded filled variant. viewBox "0 -960 960 960": y grows downward, the top
+// edge is y = -960 and the bottom edge y = 0.
+let svgPath = "M460-760q-33 0-56.5-23.5T380-840q0-33 23.5-56.5T460-920q33 0 56.5 23.5T540-840q0 33-23.5 56.5T460-760Zm260 260q0 17-11.5 28.5T680-460h-39L850-95q5 8 2.5 15T842-68q-8 5-15 3t-12-10L588-471q-40-13-72.5-37.5T460-568q-10 29-15.5 66.5T441-432l79 112v220q0 17-11.5 28.5T480-60q-17 0-28.5-11.5T440-100v-160l-71-102-9 142-96 128q-10 14-26 16t-30-8q-14-10-16-26t8-30l80-107v-213q0-31 5.5-68.5T300-596l-60 34v102q0 17-11.5 28.5T200-420q-17 0-28.5-11.5T160-460v-125q0-11 5.5-20.5T180-620l196-111q8-5 17-7t19-2q24 0 44 12t30 33l31 67q20 44 61 66t102 22q17 0 28.5 11.5T720-500Z"
 
-// ---- Foreground: white "person walking with a white cane" pictogram ----
-let white = CGColor(red: 1, green: 1, blue: 1, alpha: 1)
-ctx.setStrokeColor(white)
-ctx.setFillColor(white)
-ctx.setLineCap(.round)
-ctx.setLineJoin(.round)
-
-func stroke(_ pts: [CGPoint], _ w: CGFloat) {
-    ctx.setLineWidth(w)
-    ctx.beginPath()
-    ctx.addLines(between: pts)
-    ctx.strokePath()
+// Fit the 960x960 viewBox into a centred square with margin.
+let glyph = CGFloat(S) * 0.66
+let off = (CGFloat(S) - glyph) / 2
+let path = SVGPath.cgPath(from: svgPath) { vx, vy in
+    let nx = (vx - 0) / 960
+    let ny = (vy - (-960)) / 960
+    return CGPoint(x: off + CGFloat(nx) * glyph, y: off + CGFloat(ny) * glyph)
 }
-func dot(_ c: CGPoint, _ r: CGFloat) {
-    ctx.fillEllipse(in: CGRect(x: c.x - r, y: c.y - r, width: 2*r, height: 2*r))
-}
-
-// Head
-dot(P(454, 194), 70)
-// Torso (slight forward lean, walking)
-stroke([P(468, 268), P(446, 536)], 100)
-// Back leg (trailing, pushing off)
-stroke([P(452, 536), P(356, 800)], 58)
-// Front leg (mid-stride, bent at the knee)
-stroke([P(452, 536), P(524, 648), P(560, 808)], 58)
-// Back arm (bent, hand clearing the hip on the lower left)
-stroke([P(452, 312), P(430, 402), P(372, 476)], 42)
-// Front arm (reaching forward and down to the cane grip)
-stroke([P(476, 314), P(602, 420)], 44)
-// White cane: continues from the leading hand diagonally to the tip on the ground
-stroke([P(602, 420), P(808, 840)], 24)
-// Cane tip
-dot(P(808, 840), 21)
+ctx.addPath(path)
+ctx.setFillColor(CGColor(red: 1, green: 1, blue: 1, alpha: 1))
+ctx.fillPath(using: .winding)
 
 guard let img = ctx.makeImage() else { fatalError("img") }
-let out = CommandLine.arguments.count > 1 ? CommandLine.arguments[1]
-    : "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/icon-new.png"
+let out = CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "icon-1024.png"
 guard let dst = CGImageDestinationCreateWithURL(URL(fileURLWithPath: out) as CFURL,
                                                 UTType.png.identifier as CFString, 1, nil) else {
     fatalError("dst")
@@ -80,3 +55,128 @@ guard let dst = CGImageDestinationCreateWithURL(URL(fileURLWithPath: out) as CFU
 CGImageDestinationAddImage(dst, img, nil)
 guard CGImageDestinationFinalize(dst) else { fatalError("finalize") }
 print("wrote \(out)")
+
+// MARK: - Minimal SVG path parser: M m L l H h V v C c S s Q q T t Z z
+
+enum SVGPath {
+    private enum Token { case cmd(Character); case num(Double) }
+
+    private static func tokenize(_ d: String) -> [Token] {
+        var out: [Token] = []
+        let s = Array(d.unicodeScalars)
+        var i = 0
+        while i < s.count {
+            let c = Character(s[i])
+            if c == " " || c == "," || c == "\n" || c == "\t" || c == "\r" { i += 1; continue }
+            if c.isLetter { out.append(.cmd(c)); i += 1; continue }
+            // number
+            var str = ""
+            if c == "-" || c == "+" { str.append(c); i += 1 }
+            var seenDot = false, seenExp = false
+            while i < s.count {
+                let ch = Character(s[i])
+                if ch.isNumber { str.append(ch); i += 1 }
+                else if ch == "." && !seenDot && !seenExp { seenDot = true; str.append(ch); i += 1 }
+                else if (ch == "e" || ch == "E") && !seenExp {
+                    seenExp = true; str.append(ch); i += 1
+                    if i < s.count, s[i] == "-" || s[i] == "+" { str.append(Character(s[i])); i += 1 }
+                } else { break }
+            }
+            if let v = Double(str) { out.append(.num(v)) }
+        }
+        return out
+    }
+
+    static func cgPath(from d: String, map t: (Double, Double) -> CGPoint) -> CGPath {
+        let toks = tokenize(d)
+        let p = CGMutablePath()
+        var k = 0
+        var cur = (x: 0.0, y: 0.0)
+        var startPt = (x: 0.0, y: 0.0)
+        var prevQuadCtrl: (x: Double, y: Double)?
+        var prevCubicCtrl: (x: Double, y: Double)?
+
+        func num() -> Double {
+            while k < toks.count { if case .num(let v) = toks[k] { k += 1; return v }; k += 1 }
+            return 0
+        }
+        func nextIsNum() -> Bool { k < toks.count && { if case .num = toks[k] { return true } else { return false } }() }
+
+        var idx = 0
+        var lastCmd: Character = " "
+        while idx < toks.count {
+            guard case .cmd(let raw) = toks[idx] else { idx += 1; continue }
+            idx += 1
+            // advance the number cursor `k` to just past this command letter
+            k = idx
+            let rel = raw.isLowercase
+            let cmd = Character(raw.uppercased())
+
+            repeat {
+                switch cmd {
+                case "M":
+                    let x = (rel ? cur.x : 0) + num(), y = (rel ? cur.y : 0) + num()
+                    cur = (x, y); startPt = cur
+                    p.move(to: t(x, y))
+                    prevQuadCtrl = nil; prevCubicCtrl = nil
+                    // subsequent pairs are implicit L/l
+                    while nextIsNum() {
+                        let lx = (rel ? cur.x : 0) + num(), ly = (rel ? cur.y : 0) + num()
+                        cur = (lx, ly); p.addLine(to: t(lx, ly))
+                    }
+                case "L":
+                    let x = (rel ? cur.x : 0) + num(), y = (rel ? cur.y : 0) + num()
+                    cur = (x, y); p.addLine(to: t(x, y))
+                    prevQuadCtrl = nil; prevCubicCtrl = nil
+                case "H":
+                    let x = (rel ? cur.x : 0) + num()
+                    cur = (x, cur.y); p.addLine(to: t(cur.x, cur.y))
+                    prevQuadCtrl = nil; prevCubicCtrl = nil
+                case "V":
+                    let y = (rel ? cur.y : 0) + num()
+                    cur = (cur.x, y); p.addLine(to: t(cur.x, cur.y))
+                    prevQuadCtrl = nil; prevCubicCtrl = nil
+                case "C":
+                    let c1x = (rel ? cur.x : 0) + num(), c1y = (rel ? cur.y : 0) + num()
+                    let c2x = (rel ? cur.x : 0) + num(), c2y = (rel ? cur.y : 0) + num()
+                    let x = (rel ? cur.x : 0) + num(), y = (rel ? cur.y : 0) + num()
+                    p.addCurve(to: t(x, y), control1: t(c1x, c1y), control2: t(c2x, c2y))
+                    prevCubicCtrl = (c2x, c2y); prevQuadCtrl = nil
+                    cur = (x, y)
+                case "S":
+                    let rx = prevCubicCtrl.map { 2*cur.x - $0.x } ?? cur.x
+                    let ry = prevCubicCtrl.map { 2*cur.y - $0.y } ?? cur.y
+                    let c2x = (rel ? cur.x : 0) + num(), c2y = (rel ? cur.y : 0) + num()
+                    let x = (rel ? cur.x : 0) + num(), y = (rel ? cur.y : 0) + num()
+                    p.addCurve(to: t(x, y), control1: t(rx, ry), control2: t(c2x, c2y))
+                    prevCubicCtrl = (c2x, c2y); prevQuadCtrl = nil
+                    cur = (x, y)
+                case "Q":
+                    let cx = (rel ? cur.x : 0) + num(), cy = (rel ? cur.y : 0) + num()
+                    let x = (rel ? cur.x : 0) + num(), y = (rel ? cur.y : 0) + num()
+                    p.addQuadCurve(to: t(x, y), control: t(cx, cy))
+                    prevQuadCtrl = (cx, cy); prevCubicCtrl = nil
+                    cur = (x, y)
+                case "T":
+                    let cx = prevQuadCtrl.map { 2*cur.x - $0.x } ?? cur.x
+                    let cy = prevQuadCtrl.map { 2*cur.y - $0.y } ?? cur.y
+                    let x = (rel ? cur.x : 0) + num(), y = (rel ? cur.y : 0) + num()
+                    p.addQuadCurve(to: t(x, y), control: t(cx, cy))
+                    prevQuadCtrl = (cx, cy); prevCubicCtrl = nil
+                    cur = (x, y)
+                case "Z":
+                    p.closeSubpath()
+                    cur = startPt
+                    prevQuadCtrl = nil; prevCubicCtrl = nil
+                default:
+                    break
+                }
+                lastCmd = cmd
+                _ = lastCmd
+            } while cmd != "Z" && cmd != "M" && nextIsNum()
+
+            idx = k
+        }
+        return p
+    }
+}

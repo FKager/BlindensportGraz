@@ -2295,3 +2295,8 @@
 | 19:45 | New PersonenListView: combined User+Member people list, deduped via Member.first(matching:), Konto/Kartei tags, filter Picker + search | MembersViews.swift | done | ~2k |
 | 19:48 | Full test run: 176/180 pass. 4 failures in TrainingImportExportTests are PRE-EXISTING timezone fragility (bug-365), not from this change — build succeeds, unrelated files | — | investigated | ~4k |
 | 19:49 | Session end: 32 writes across 12 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 26 reads | ~92398 tok |
+| 20:05 | Ran the app in iPhone 17 sim: build+install+launch OK. Seeded an admin User row directly in default.store (ZUSER) + set appleUserIdentifier AppStorage to skip Apple-Sign-In. Confirmed tab bar = Übersicht/Events/Turniere/Trainings/Mehr, and "Mehr" contains exactly "Verein" + "Account". Deeper taps blocked by flaky macOS Accessibility perms for osascript click. | — | verified | ~5k |
+| 20:05 | Session end: 32 writes across 12 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 35 reads | ~92329 tok |
+| 20:17 | Session end: 32 writes across 12 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 35 reads | ~92329 tok |
+| 20:20 | Created generate_app_icon.swift | — | ~2320 |
+| 20:21 | Created generate_app_icon.swift | — | ~2330 |

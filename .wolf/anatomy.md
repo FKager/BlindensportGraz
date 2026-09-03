@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T17:40:18.449Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T18:21:33.008Z
 > Files: 231 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -69,7 +69,7 @@
 - `CLAUDE.md` — OpenWolf (~129 tok)
 - `CLAUDE.mdes` — Requirements (~91 tok)
 - `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
-- `generate_app_icon.swift` — Regenerates BlindensportGraz/Assets.xcassets/AppIcon.appiconset/icon-1024.png (~903 tok)
+- `generate_app_icon.swift` — Regenerates BlindensportGraz/Assets.xcassets/AppIcon.appiconset/icon-1024.png (~2330 tok)
 - `goal.md` (~276 tok)
 - `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
 - `profile.plist` (~0 tok)
