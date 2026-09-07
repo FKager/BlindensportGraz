@@ -433,6 +433,14 @@ var body: some View {
                         }
                     }
                 }
+                if totalPraeAmount > 0 {
+                    HStack {
+                        Text("Gesamtkosten")
+                        Spacer()
+                        Text("\(Int(totalPraeAmount)) €")
+                            .foregroundStyle(.secondary)
+                    }
+                }
             }
         }
         Section("Notizen") {
@@ -535,6 +543,14 @@ var body: some View {
         TournamentService.save(tournament, modelContext: modelContext)
     }
    }
+
+    /// Sum of every PRAE amount entered for this tournament, shown as
+    /// "Gesamtkosten" under the Anwesenheit section — only when at least one
+    /// PRAE value is actually set (`praeAmount` is nil, not 0, when unset —
+    /// see `setPraeAmount`), matching TrainingDetailView's identical field.
+    private var totalPraeAmount: Double {
+        tournament.attendances.compactMap { $0.praeAmount }.reduce(0, +)
+    }
 
     private func attendance(for membership: TeamMembership) -> Attendance? {
         tournament.attendances.first { $0.membership.id == membership.id }

@@ -2404,3 +2404,13 @@
 | 19:08 | Session end: 17 writes across 8 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 9 reads | ~46627 tok |
 | 19:12 | Edited BlindensportGraz/AccountView.swift | expanded (+14 lines) | ~280 |
 | 19:13 | Edited BlindensportGraz/AccountView.swift | modified onChange() | ~200 |
+| 19:19 | Session end: 19 writes across 9 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 9 reads | ~47141 tok |
+| 19:20 | Shipped TestFlight v0.1.9 (build 146): fix for bug-374 (EditAccountView role-clobber on screen close). Re-applied Franz Kager admin role via rootcli. CI run 34146799149, Delivery UUID c97f4ead-263e-4ee6-9bdd-7d6d964dd025, went VALID, de-DE notes added, assigned to Internal group | BlindensportGraz/AccountView.swift | success | ~20k |
+| 19:21 | Session end: 19 writes across 9 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 9 reads | ~47141 tok |
+| 19:30 | User requested push-notifications-on-training/tournament-creation feature. Found it already fully implemented (earlier session, CloudKitSync+Subscriptions.swift/PushNotifications.swift), previously flagged unverified/blocked on 2 risks. Verified both resolved: Push Notifications capability active (CI signs successfully), teamIDs QUERYABLE index confirmed present on Training+Tournament in Production schema via cktool export-schema. Localizable.xcstrings keys confirmed correct. No code changes needed -- feature should already be live. User deferred live device test. | (verification only, no files changed) | confirmed-ready | ~10k |
+| 19:33 | Session end: 19 writes across 9 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 11 reads | ~48796 tok |
+| 19:36 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~135 |
+| 19:36 | Edited BlindensportGraz/TrainingsViews.swift | modified attendance() | ~154 |
+| 19:36 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~139 |
+| 19:36 | Edited BlindensportGraz/TournamentsViews.swift | modified attendance() | ~154 |
+| 19:38 | Added "Gesamtkosten" (sum of PRAE amounts) to TrainingDetailView + TournamentDetailView Anwesenheit section, shown only when total > 0. Verified via xcodebuild build+test -> 173/173 pass | BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift | success | ~8k |

@@ -472,6 +472,14 @@ struct TrainingDetailView: View {
                            }
                        }
                    }
+                   if totalPraeAmount > 0 {
+                       HStack {
+                           Text("Gesamtkosten")
+                           Spacer()
+                           Text("\(Int(totalPraeAmount)) €")
+                               .foregroundStyle(.secondary)
+                       }
+                   }
                }
            }
            Section("Notizen") {
@@ -521,6 +529,14 @@ struct TrainingDetailView: View {
 
     private func attendance(for membership: TeamMembership) -> Attendance? {
         training.attendances.first { $0.membership.id == membership.id }
+    }
+
+    /// Sum of every PRAE amount entered for this training, shown as
+    /// "Gesamtkosten" under the Anwesenheit section — only when at least one
+    /// PRAE value is actually set (`praeAmount` is nil, not 0, when unset —
+    /// see `setPraeAmount`), matching every other conditional section here.
+    private var totalPraeAmount: Double {
+        training.attendances.compactMap { $0.praeAmount }.reduce(0, +)
     }
 
     private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
