@@ -6167,6 +6167,34 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-07T17:10:00.000Z"
+    },
+    {
+      "id": "bug-371",
+      "timestamp": "2026-09-07T18:05:00.000Z",
+      "error_message": "User-reported: 'started the testflight version and it crashes.' Immediate crash on launch, TestFlight build 136 (v0.1.4), reproducible even on a completely fresh app install/local store.",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Pulled crash logs directly off the physical device via `xcrun devicectl device info files --domain-type systemCrashLogs` + `devicectl device copy from` (no ASC crash-report sync yet, no dSYM available yet either). Both crashes: EXC_BREAKPOINT/SIGTRAP, libswiftCore `_assertionFailure` invoked deep inside SwiftData via CoreData's `NSManagedObjectContext.performAndWait`. Identical exception code and identical app-frame offsets across 4 separate crash logs (2 before uninstall/reinstall, 2 after a clean reinstall with zero local data) -- fully deterministic, independent of any pre-existing local data. Matches a known, unresolved Apple SwiftData framework bug (assertionFailure in BackingData.set, Release-build-only, relationship-property-access triggered -- see https://developer.apple.com/forums/thread/781246), not a bug introduced by any of this session's app-code changes. Correlates with timing: CloudKit Production was populated with ~190 real records (Team/TeamMembership/Training/Tournament/Attendance/etc, via `rootcli copy-records`) for the first time ever earlier the same session -- Linda Kanzler's earlier TestFlight test (2026-09-01) hit an EMPTY Production database and so never exercised CloudKitSync.syncAll()'s relationship-heavy pull/insert path at all. `syncAll()`'s final stage batched EventImages+ExpenseReceipts+Participations+Attendances (77 records, each resolving Team/User/Member/Training/Tournament relationships)+TrainingFavorites+RoleChangeLogs into ONE unsaved transaction before a single final save() -- the largest, most relationship-dense batch this codebase has ever actually executed against real production-scale data in a Release build.",
+      "fix": "Split syncAll()'s final stage into smaller save()-bounded groups, mirroring this same file's own established pattern from bug-221 (save between stages with relationship dependencies): save after EventImages+ExpenseReceipts, save after Participations, and pullAttendances (by far the largest/most relationship-heavy set) now gets its own dedicated save() immediately after. Does not fix Apple's underlying framework bug (no official fix exists per the forum thread) but is the standard low-risk mitigation for this exact bug class -- smaller transactions reduce the odds of tripping the relationship-assertion trap. Data semantics unchanged, just committed in smaller chunks. Diagnostic method worth reusing: `xcrun devicectl device info files --device <name> --domain-type systemCrashLogs` lists on-device crash logs (grep app name), `devicectl device copy from ... --destination <file>` pulls one down -- works even when ASC's own crash-report sync (`asc testflight crashes list`) hasn't caught up yet (checked repeatedly, stayed empty throughout this whole investigation) and even before Apple has generated a dSYM (`asc builds dsyms` also stayed empty) -- don't wait on either of those first next time, go straight to devicectl.",
+      "tags": [
+        "swiftdata",
+        "coredata",
+        "assertionFailure",
+        "BackingData",
+        "release-build-only",
+        "testflight",
+        "crash",
+        "CloudKitSync",
+        "syncAll",
+        "relationship",
+        "crash-log-extraction",
+        "devicectl"
+      ],
+      "related_bugs": [
+        "bug-352",
+        "bug-221"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-07T18:05:00.000Z"
     }
   ]
 }

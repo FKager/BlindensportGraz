@@ -203,6 +203,23 @@ final class CloudKitSync {
     /// symptom ("teams are there but no team members"). Now saves after
     /// every pull a later one depends on, so each stage's relationship
     /// lookups run against durable, queryable data.
+    /// **2026-09-07**: after Production CloudKit went from empty to ~190
+    /// real records (first time any Release/TestFlight build ever had to
+    /// pull this much relationship-heavy data at once — see bug-371), the
+    /// final stage below (EventImages/ExpenseReceipts/Participations/
+    /// Attendances/TrainingFavorites/RoleChangeLogs, previously all batched
+    /// into one unsaved transaction) crashed on-device with a
+    /// `_assertionFailure` inside SwiftData's `BackingData.set` —
+    /// Release-build-only, matching a known unresolved SwiftData framework
+    /// bug (developer.apple.com/forums/thread/781246) triggered by large
+    /// batches of relationship-heavy inserts/updates. Not reproducible in
+    /// Debug (same reason bug-221's crash never showed there either).
+    /// Mitigated the same way bug-221 fixed the earlier "TeamMembership
+    /// silently dropped" issue: split into smaller `save()`-bounded stages
+    /// so no single transaction touches this many relationship-carrying
+    /// rows at once. `pullAttendances` gets its own save — it's by far the
+    /// largest/most relationship-heavy set (Attendance -> event + membership)
+    /// among these.
     func syncAll(modelContext: ModelContext) async {
         SyncState.shared.markSyncing()
         await pullUserIdentities(modelContext: modelContext)
@@ -217,8 +234,11 @@ final class CloudKitSync {
         try? modelContext.save()
         await pullEventImages(modelContext: modelContext)
         await pullExpenseReceipts(modelContext: modelContext)
+        try? modelContext.save()
         await pullParticipations(modelContext: modelContext)
+        try? modelContext.save()
         await pullAttendances(modelContext: modelContext)
+        try? modelContext.save()
         await pullTrainingFavorites(modelContext: modelContext)
         await pullRoleChangeLogs(modelContext: modelContext)
         // Outside the Phase 8 service layer deliberately: this saves data

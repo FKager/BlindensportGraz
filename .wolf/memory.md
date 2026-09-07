@@ -2375,3 +2375,13 @@
 | 17:17 | Changed PRAE amount wheel picker step from €10 to €5 in both TrainingDetailView and TournamentDetailView (rounding math + stride range updated in both). Verified via xcodebuild -> BUILD SUCCEEDED | BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift | success | ~6k |
 | 17:19 | Deployed PRAE €5-step change via iOS Device Deploy workflow (run 34137504760) -> SUCCEEDED in 26s | BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift | success | ~2k |
 | 17:17 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
+| 17:26 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
+| 17:30 | Released TestFlight v0.1.4 (build 136): tagged+pushed v0.1.4, CI run 34137776032 archived/signed/uploaded (Delivery UUID a0557751-c61c-4e02-b778-a834497363c2), build went VALID, added de-DE What's New notes, assigned to Internal tester group | .github/workflows/ios-build-deploy.yml (unchanged, just used) | success | ~8k |
+| 17:27 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
+| 17:29 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
+| 17:33 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
+| 17:35 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
+| 17:38 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
+| 17:41 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
+| 17:53 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 5 reads | ~29247 tok |
+| 18:02 | Edited BlindensportGraz/CloudKitSync.swift | modified syncAll() | ~718 |

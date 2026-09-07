@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T15:16:05.877Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T16:02:03.506Z
 > Files: 232 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -183,7 +183,7 @@
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
 - `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2260 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~3101 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~3446 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~945 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
 - `CloudKitSync+EventParticipation.swift` (~530 tok)
