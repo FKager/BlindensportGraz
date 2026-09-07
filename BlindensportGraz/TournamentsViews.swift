@@ -187,8 +187,18 @@ struct TournamentRow: View {
      }
 
   var body: some View {
-    HStack(alignment: .top, spacing: 12) {
+    // Column order matches TrainingRow, per user request: date, then name, then time.
+    HStack(alignment: .center, spacing: 12) {
+      VStack(alignment: .leading, spacing: 2) {
+          Text(tournament.startDate, format: .dateTime.weekday(.abbreviated))
+          Text(tournament.startDate, format: .dateTime.day().month(.abbreviated))
+      }
+      .font(.caption)
+      .foregroundColor(.secondary)
+      .frame(width: 44, alignment: .leading)
+
       SportGlyph(sport: tournament.sport, size: 32)
+
       VStack(alignment: .leading, spacing: 6) {
           HStack {
               Text(tournament.title)
@@ -217,6 +227,12 @@ struct TournamentRow: View {
           .font(.caption)
           .foregroundColor(.secondary)
        }
+
+      Spacer()
+
+      Text(tournament.startDate, format: .dateTime.hour().minute())
+          .font(.subheadline)
+          .foregroundColor(.secondary)
       }
        .padding(.vertical, 4)
     }

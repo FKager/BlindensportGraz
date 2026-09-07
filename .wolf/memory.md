@@ -2364,3 +2364,7 @@
 | 17:06 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | 8→13 lines | ~286 |
 | 17:07 | Edited BlindensportGrazTests/TrainingFavoriteTests.swift | modified testSuggestedStartDateWithMultiDayGapStaysWithinNearTermWindow() | ~410 |
 | 17:11 | Fixed bug-370: TrainingFavorite.suggestedStartDate suggested a full week too far (16.09 instead of 09.09) when tapping a favorite earlier in the week than its weekday. Rewrote to nearest-future-occurrence day-delta arithmetic (was: always-next-calendar-week bucket snap from bug-221/222). Updated 1 test, added 1 regression test. 16/16 TrainingFavoriteTests pass (2 sim retries needed, transient "Busy" launch failure unrelated to code). | BlindensportGraz/TrainingFavorite.swift, BlindensportGrazTests/TrainingFavoriteTests.swift | fixed, verified | ~22k |
+| 17:12 | Deployed bug-370 fix via iOS Device Deploy workflow (run 34136950880) -> SUCCEEDED in 28s | BlindensportGraz/TrainingFavorite.swift | success | ~2k |
+| 17:11 | Session end: 6 writes across 4 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift) | 3 reads | ~18252 tok |
+| 17:13 | Edited BlindensportGraz/TournamentsViews.swift | modified HStack() | ~451 |
+| 17:14 | Reordered TournamentRow columns to match TrainingRow: date (weekday+day/month) first, then sport glyph+title/status/sport/maxTeams/location, then time trailing. Row previously showed no date/time at all -- added both. Verified via xcodebuild -> BUILD SUCCEEDED | BlindensportGraz/TournamentsViews.swift | success | ~7k |
