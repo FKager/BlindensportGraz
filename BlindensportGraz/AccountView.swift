@@ -193,6 +193,20 @@ struct EditAccountView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
 
+    // Snapshot of the fields this screen actually lets you edit, captured
+    // when the screen appears (bug-373 follow-up). `onDisappear` used to
+    // unconditionally push the WHOLE user record — including `role`/`isRoot`,
+    // neither of which this screen ever touches — even when nothing was
+    // edited. That's a real clobber risk: if this screen's local `user`
+    // object still held a role from before a role change made elsewhere
+    // (e.g. an admin promotion via rootcli, or another device) simply
+    // opening and closing "Profil bearbeiten" would push that stale role
+    // straight back to CloudKit, silently undoing the promotion. Only push
+    // when firstName/lastName/email actually changed.
+    @State private var originalFirstName = ""
+    @State private var originalLastName = ""
+    @State private var originalEmail = ""
+
     var body: some View {
         NavigationStack {
             Form {
@@ -240,7 +254,15 @@ struct EditAccountView: View {
             .onChange(of: user.firstName) { _, _ in applyDesignatedRootGrantIfNeeded() }
             .onChange(of: user.lastName) { _, _ in applyDesignatedRootGrantIfNeeded() }
             .onChange(of: user.email) { _, _ in applyDesignatedRootGrantIfNeeded() }
+            .onAppear {
+                originalFirstName = user.firstName
+                originalLastName = user.lastName
+                originalEmail = user.email
+            }
             .onDisappear {
+                guard user.firstName != originalFirstName
+                    || user.lastName != originalLastName
+                    || user.email != originalEmail else { return }
                 UserService.save(user, modelContext: modelContext)
             }
         }

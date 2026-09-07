@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T16:41:48.824Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T17:13:04.222Z
 > Files: 232 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -170,7 +170,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView; also `UserListView` ("App-Konten", enriched: search, Grazer-VSC/linked-Member badges, delete confirmation) + `RoleChangeLogView` — both now pushed from `VereinView`'s hub, no self NavigationStack (~5792 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~6118 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)

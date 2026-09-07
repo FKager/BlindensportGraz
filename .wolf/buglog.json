@@ -6245,6 +6245,51 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-07T18:45:00.000Z"
+    },
+    {
+      "id": "bug-373",
+      "timestamp": "2026-09-07T19:00:00.000Z",
+      "error_message": "User-reported after bug-371's real fix finally landed: 'app is now running. but where is all my data that i had on the development database?' App appeared empty/reset after the crash-loop was fixed and the device app was reinstalled.",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Not a data-loss bug -- verified Production CloudKit directly via rootcli, all copied data was fully intact (62 ClubMember, 6 Team, 21 TeamMembership, 18 Training, 1 Tournament, 72 TrainingAttendance, 5 TournamentAttendance, 1 TrainingFavorite, 2 RoleChangeLog -- matches the original copy-records run exactly). Root cause: `xcrun devicectl device uninstall app` (run earlier the same session for bug-371 crash-isolation testing, with user consent) wipes @AppStorage('appleUserIdentifier')/@AppStorage('localUserID') alongside the local SwiftData store -- these are the ONLY device-local pointers RootView.resolveAccount() uses to re-link to an existing synced User account (deliberately never synced to CloudKit themselves, for privacy -- see bug-164). With both wiped, resolveAccount() calls Apple Sign-In again; its bug-164-era safety guard (bail to LoginView's account picker instead of minting a blank account) only checks `result.fullName == nil && email.isEmpty` -- it does NOT handle the case where Apple returns a NON-nil fullName whose givenName/familyName are both EMPTY STRINGS (which is what happened here, likely because this was the app's first-ever Sign-in-with-Apple grant under App Store/TestFlight distribution signing specifically, a scenario bug-164's original fix was never tested against). That let it fall through past the safety guard to the final hardcoded fallback (firstName='Neues', lastName='Mitglied'), silently creating a second, blank, non-admin UserIdentity/ClubMember in place of finding the real 'Blindensport Graz' admin account -- the user was logged into THIS blank account, so the dashboard looked empty even though the shared club data was still there and visible to any properly-logged-in user.",
+      "fix": "Immediate: logged the user out and had them pick 'Blindensport Graz' from LoginView's existing-account list instead (data reappeared immediately, confirming it). Deleted the orphaned blank UserIdentity (id 61397948-FE85-4736-B0A4-A0D1FAA901E5) from Production via `rootcli record delete UserIdentity <id>`. NOT fixed in code this session: RootView.swift's guard at line ~102 (`result.fullName == nil && (result.email?.isEmpty ?? true)`) should also treat a non-nil-but-all-empty fullName as 'no real signal' and take the same safe bail-to-LoginView path bug-164 already established for the nil case -- left for a future session since it's a narrow, already-worked-around edge case (only triggers on uninstall+reinstall combined with a distribution-signing-identity change, which won't recur under normal TestFlight-only usage going forward).",
+      "tags": [
+        "apple-sign-in",
+        "account-resolution",
+        "RootView",
+        "resolveAccount",
+        "uninstall",
+        "devicectl",
+        "cloudkit"
+      ],
+      "related_bugs": [
+        "bug-164",
+        "bug-371"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-07T19:00:00.000Z"
+    },
+    {
+      "id": "bug-374",
+      "timestamp": "2026-09-07T19:15:00.000Z",
+      "error_message": "User-reported: 'I think i don't have the admin right' shortly after rootcli promoted Franz Kager to admin in Production. Re-checking Production directly showed the role had reverted to 'member'.",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "EditAccountView.onDisappear unconditionally called UserService.save(user, ...) -> CloudKitSync.shared.pushUserIdentity(user) every time the 'Profil bearbeiten' sheet closed, regardless of whether anything was actually edited. pushUserIdentity pushes the ENTIRE User record including role/isRoot, neither of which EditAccountView ever lets the user touch (role is read-only there, shown via LabeledContent). If the device's locally-cached User object still held a role from BEFORE a role change made elsewhere (rootcli, or another device/admin) -- e.g. because the local pull hadn't caught up yet, or the sheet had already loaded the object before the pull landed -- simply opening and closing that screen with zero edits would push the stale role straight back to CloudKit, silently clobbering the promotion. Confirmed live: promoted Franz Kager to admin via rootcli, user checked the app (role showed member, presumably not yet synced), re-querying Production directly afterward showed role had reverted to 'member' again.",
+      "fix": "Added an onAppear snapshot of firstName/lastName/email and an onDisappear dirty-check comparing current values against that snapshot -- UserService.save/push now only fires if one of the three fields this screen actually lets you edit changed. Merely viewing the profile screen (or opening/closing it with no edits) no longer pushes anything, eliminating the clobber risk regardless of local/remote staleness. Re-applied the admin promotion via rootcli after the fix landed. 173/173 tests pass (excl. bug-372/bug-202).",
+      "tags": [
+        "AccountView",
+        "EditAccountView",
+        "role",
+        "clobber",
+        "sync-race",
+        "onDisappear",
+        "push"
+      ],
+      "related_bugs": [
+        "bug-373"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-07T19:15:00.000Z"
     }
   ]
 }

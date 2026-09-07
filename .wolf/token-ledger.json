@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 15221589,
-    "total_reads": 4712,
-    "total_writes": 9319,
+    "total_tokens_estimated": 15408097,
+    "total_reads": 4748,
+    "total_writes": 9387,
     "total_sessions": 72,
-    "anatomy_hits": 4164,
+    "anatomy_hits": 4200,
     "anatomy_misses": 506,
-    "repeated_reads_blocked": 3505,
-    "estimated_savings_vs_bare_cli": 16928513
+    "repeated_reads_blocked": 3539,
+    "estimated_savings_vs_bare_cli": 17098025
   },
   "sessions": [
     {
@@ -82177,6 +82177,630 @@
         "writes_count": 10,
         "repeated_reads_blocked": 4,
         "anatomy_lookups": 8
+      }
+    },
+    {
+      "id": "session-2026-09-07-1621",
+      "started": "2026-09-07T14:21:30.835Z",
+      "ended": "2026-09-07T16:51:06.841Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 9503,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingFavorite.swift",
+          "tokens_estimated": 2839,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 4079,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 7767,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/BlindensportGrazApp.swift",
+          "tokens_estimated": 2135,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 3562,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/RootView.swift",
+          "tokens_estimated": 4164,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 3101,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 3622,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 46,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 376,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingFavorite.swift",
+          "tokens_estimated": 490,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 237,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 306,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 439,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 483,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 330,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 217,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 770,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 364,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 327,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 246,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 358,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 358,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 161,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 347,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 40772,
+        "output_tokens_estimated": 5855,
+        "reads_count": 9,
+        "writes_count": 17,
+        "repeated_reads_blocked": 8,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-09-07-1621",
+      "started": "2026-09-07T14:21:30.835Z",
+      "ended": "2026-09-07T16:52:29.946Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 9503,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingFavorite.swift",
+          "tokens_estimated": 2839,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 4079,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 7767,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/BlindensportGrazApp.swift",
+          "tokens_estimated": 2135,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 3562,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/RootView.swift",
+          "tokens_estimated": 4164,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 3101,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 3622,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 46,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 376,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingFavorite.swift",
+          "tokens_estimated": 490,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 237,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 306,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 439,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 483,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 330,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 217,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 770,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 364,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 327,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 246,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 358,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 358,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 161,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 347,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 40772,
+        "output_tokens_estimated": 5855,
+        "reads_count": 9,
+        "writes_count": 17,
+        "repeated_reads_blocked": 8,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-09-07-1621",
+      "started": "2026-09-07T14:21:30.835Z",
+      "ended": "2026-09-07T17:02:51.227Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 9503,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingFavorite.swift",
+          "tokens_estimated": 2839,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 4079,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 7767,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/BlindensportGrazApp.swift",
+          "tokens_estimated": 2135,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 3562,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/RootView.swift",
+          "tokens_estimated": 4164,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 3101,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 3622,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 46,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 376,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingFavorite.swift",
+          "tokens_estimated": 490,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 237,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 306,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 439,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 483,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 330,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 217,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 770,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 364,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 327,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 246,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 358,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 358,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 161,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 347,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 40772,
+        "output_tokens_estimated": 5855,
+        "reads_count": 9,
+        "writes_count": 17,
+        "repeated_reads_blocked": 9,
+        "anatomy_lookups": 9
+      }
+    },
+    {
+      "id": "session-2026-09-07-1621",
+      "started": "2026-09-07T14:21:30.835Z",
+      "ended": "2026-09-07T17:08:00.402Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 9503,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingFavorite.swift",
+          "tokens_estimated": 2839,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 4079,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 7767,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/BlindensportGrazApp.swift",
+          "tokens_estimated": 2135,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 3562,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/RootView.swift",
+          "tokens_estimated": 4164,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 3101,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 3622,
+          "was_repeated": true,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 46,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 376,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingFavorite.swift",
+          "tokens_estimated": 490,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 237,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 306,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/TrainingFavoriteTests.swift",
+          "tokens_estimated": 439,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 483,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TrainingsViews.swift",
+          "tokens_estimated": 330,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/TournamentsViews.swift",
+          "tokens_estimated": 217,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync.swift",
+          "tokens_estimated": 770,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 364,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/.github/workflows/ios-build-deploy.yml",
+          "tokens_estimated": 327,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 246,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 358,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 358,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 161,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/CloudKitSync+Events.swift",
+          "tokens_estimated": 347,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 40772,
+        "output_tokens_estimated": 5855,
+        "reads_count": 9,
+        "writes_count": 17,
+        "repeated_reads_blocked": 9,
+        "anatomy_lookups": 9
       }
     }
   ],

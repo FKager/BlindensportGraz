@@ -2395,3 +2395,12 @@
 | 18:41 | Edited BlindensportGraz/CloudKitSync+Events.swift | reduced (-9 lines) | ~334 |
 | 18:41 | Edited BlindensportGraz/CloudKitSync+Events.swift | added nullish coalescing | ~150 |
 | 18:41 | Edited BlindensportGraz/CloudKitSync+Events.swift | 27→26 lines | ~324 |
+| 18:51 | Session end: 17 writes across 8 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 9 reads | ~46627 tok |
+| 18:52 | Shipped TestFlight v0.1.8 (build 143): REAL fix for bug-371 (v0.1.5's fix was a wrong guess, confirmed via re-crash). Fixed CI to upload dSYMs (v0.1.6/v0.1.7 diagnostic builds), symbolicated via atos -> exact line CloudKitSync+Events.swift:135 (inherited-keypath predicate crash on Training/Tournament, same class as bug-352). CI run 34144662052, Delivery UUID 400e8791-1bdf-4667-b7a2-1f259b630aef, went VALID, de-DE notes added, assigned to Internal group | BlindensportGraz/CloudKitSync+Events.swift, .github/workflows/ios-build-deploy.yml | success | ~50k |
+| 18:52 | Session end: 17 writes across 8 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 9 reads | ~46627 tok |
+| 19:02 | Diagnosed bug-373: 'where is my data' after uninstall wiped account-link @AppStorage, app minted blank 'Neues Mitglied' account (Apple Sign-In edge case bypassing bug-164's safety guard). Verified Production data fully intact via rootcli. User logged back into 'Blindensport Graz' account via LoginView picker -- data confirmed visible again. Deleted orphan UserIdentity from Production. | RootView.swift (diagnosed, not code-fixed), Production CloudKit | resolved | ~15k |
+| 19:02 | Session end: 17 writes across 8 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 9 reads | ~46627 tok |
+| 19:05 | rootcli set-role "Franz Kager" admin (Production) -- verified via list, now shows role=admin | Production CloudKit UserIdentity | success | ~1k |
+| 19:08 | Session end: 17 writes across 8 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 9 reads | ~46627 tok |
+| 19:12 | Edited BlindensportGraz/AccountView.swift | expanded (+14 lines) | ~280 |
+| 19:13 | Edited BlindensportGraz/AccountView.swift | modified onChange() | ~200 |
