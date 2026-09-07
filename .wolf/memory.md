@@ -2373,3 +2373,5 @@
 | 17:15 | Edited BlindensportGraz/TrainingsViews.swift | 17→17 lines | ~308 |
 | 17:16 | Edited BlindensportGraz/TournamentsViews.swift | 12→12 lines | ~203 |
 | 17:17 | Changed PRAE amount wheel picker step from €10 to €5 in both TrainingDetailView and TournamentDetailView (rounding math + stride range updated in both). Verified via xcodebuild -> BUILD SUCCEEDED | BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift | success | ~6k |
+| 17:19 | Deployed PRAE €5-step change via iOS Device Deploy workflow (run 34137504760) -> SUCCEEDED in 26s | BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift | success | ~2k |
+| 17:17 | Session end: 9 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~27112 tok |
