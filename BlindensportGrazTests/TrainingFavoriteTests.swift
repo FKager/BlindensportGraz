@@ -253,30 +253,56 @@ final class TrainingFavoriteTests: XCTestCase {
         XCTAssertEqual(calendar.component(.minute, from: suggested), 30)
     }
 
-    /// The core "same weekday, next calendar week" behavior — verified via
-    /// the same yearForWeekOfYear/weekOfYear bucketing the implementation
-    /// itself uses (rather than hardcoded day-offset arithmetic), since the
-    /// exact day offset depends on Calendar.current's first-weekday
-    /// convention (Sunday-start vs Monday-start), which varies by locale/
-    /// region and isn't something this test should assume. This is still a
-    /// meaningful regression check: the previous (buggy) implementation
-    /// searched forward from "today + 7 days" instead of snapping to next
-    /// week's calendar bucket, so it would NOT satisfy the weekOfYear
-    /// equality asserted here for every target weekday.
-    func testSuggestedStartDateLandsInNextCalendarWeekOnTargetWeekday() {
+    /// The core "nearest future occurrence" behavior: tapping a favorite
+    /// whose weekday hasn't happened yet this week must suggest THIS week's
+    /// occurrence, not one a full week further out. Verified via a
+    /// day-count delta (1...6 days ahead) rather than hardcoded weekday
+    /// numbers, since the exact delta depends on which weekday `reference`
+    /// falls on. This is a regression check for the bug reported 2026-09-07
+    /// (bug-370): the previous implementation always snapped to next
+    /// calendar week's bucket regardless of how close the target weekday
+    /// actually was, so e.g. tapping a Wednesday-favorite on a Monday
+    /// suggested the Wednesday a week-and-two-days out instead of two days
+    /// out.
+    func testSuggestedStartDateLandsOnNearestFutureOccurrenceOfTargetWeekday() {
         let calendar = Calendar.current
         let reference = date(hour: 10, day: 1, month: 7, year: 2026)
         let referenceWeekday = calendar.component(.weekday, from: reference)
         let targetWeekday = referenceWeekday % 7 + 1 // some other weekday than today's
 
         let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 0, weekday: targetWeekday, from: reference)
-        let nextWeekReference = calendar.date(byAdding: .weekOfYear, value: 1, to: reference)!
 
+        // targetWeekday is deliberately "tomorrow's" weekday number
+        // (referenceWeekday + 1, wrapping 7 -> 1), so the correct suggestion
+        // is exactly 1 day out — landing later this same week, not a full
+        // week-plus-one-day out like the old buggy behavior would.
+        let expectedDay = calendar.date(byAdding: .day, value: 1, to: reference)!
+        XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expectedDay))
+        XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expectedDay))
+        XCTAssertEqual(calendar.component(.year, from: suggested), calendar.component(.year, from: expectedDay))
         XCTAssertEqual(calendar.component(.weekday, from: suggested), targetWeekday)
-        XCTAssertEqual(calendar.component(.weekOfYear, from: suggested), calendar.component(.weekOfYear, from: nextWeekReference))
-        XCTAssertEqual(calendar.component(.yearForWeekOfYear, from: suggested), calendar.component(.yearForWeekOfYear, from: nextWeekReference))
         XCTAssertEqual(calendar.component(.hour, from: suggested), 18)
         XCTAssertEqual(calendar.component(.minute, from: suggested), 0)
+    }
+
+    /// Direct regression test for the exact user-reported shape (bug-370):
+    /// a multi-day gap (not just +1) between reference and target weekday
+    /// must still land within the current week's span, not a week further
+    /// out — e.g. reference on a Monday, target weekday 2 days out (a
+    /// Wednesday), must suggest +2 days, not +9.
+    func testSuggestedStartDateWithMultiDayGapStaysWithinNearTermWindow() {
+        let calendar = Calendar.current
+        let reference = date(hour: 10, day: 1, month: 7, year: 2026)
+        let referenceWeekday = calendar.component(.weekday, from: reference)
+        let targetWeekday = (referenceWeekday - 1 + 2) % 7 + 1 // 2 days ahead of today's weekday
+
+        let suggested = TrainingFavorite.suggestedStartDate(startHour: 18, startMinute: 30, weekday: targetWeekday, from: reference)
+
+        let expectedDay = calendar.date(byAdding: .day, value: 2, to: reference)!
+        XCTAssertEqual(calendar.component(.day, from: suggested), calendar.component(.day, from: expectedDay))
+        XCTAssertEqual(calendar.component(.month, from: suggested), calendar.component(.month, from: expectedDay))
+        XCTAssertEqual(calendar.component(.year, from: suggested), calendar.component(.year, from: expectedDay))
+        XCTAssertEqual(calendar.component(.weekday, from: suggested), targetWeekday)
     }
 
     // MARK: - durationMinutes

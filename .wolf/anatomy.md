@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T14:59:16.010Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T15:07:12.303Z
 > Files: 232 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -249,7 +249,7 @@
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~7617 tok)
 - `Training.swift` — Class: Training (~405 tok)
-- `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~2839 tok)
+- `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~2914 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2695 tok)
 - `TrainingService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~602 tok)
@@ -295,7 +295,7 @@
 - `SammelabrechnungSeasonExportTests.swift` — Class: SammelabrechnungSeasonExportTests (~1676 tok)
 - `SyncStateTests.swift` — Class: SyncStateTests (~449 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1983 tok)
-- `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~3965 tok)
+- `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~4440 tok)
 - `TrainingImportExportTests.swift` — Class: TrainingImportExportTests (~2398 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~7238 tok)
 - `ValidationTests.swift` — Class: ValidationTests (~684 tok)

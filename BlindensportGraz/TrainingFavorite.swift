@@ -132,25 +132,30 @@ extension TrainingFavorite {
     }
 
     /// Produces the date AddTrainingView pre-fills when the favorite is
-    /// tapped: the favorite's stored weekday, at its stored time-of-day, in
-    /// the calendar week immediately following `reference`'s (today's) own
-    /// week — i.e. "same weekday, next week", not "the next occurrence of
-    /// that weekday" (which could resolve to later THIS week) and not a
-    /// fixed +7-days-then-search-forward offset (which could overshoot into
-    /// the week after next). Uses `.yearForWeekOfYear`/`.weekOfYear` (not
-    /// plain `.year`/`.weekOfYear`) so this stays correct across a
-    /// year-boundary week (e.g. a week that starts in late December and
-    /// ends in early January). Factored out as a plain static function
-    /// (rather than inline SwiftUI code) so it's independently testable.
+    /// tapped: the *nearest future* occurrence of the favorite's stored
+    /// weekday, at its stored time-of-day — i.e. genuinely "the next
+    /// training", which can land later THIS week (e.g. tapping a
+    /// Wednesday-favorite on a Monday suggests this coming Wednesday, not
+    /// the one a week after). Only when `reference` itself falls ON the
+    /// target weekday does this jump a full 7 days ahead, since "today" is
+    /// never a sensible suggestion for a recurring training's next date.
+    /// (An earlier version of this function always jumped to next calendar
+    /// week regardless of how many days out the target weekday actually
+    /// was — reported by the user 2026-09-07 as suggesting 16.09 instead of
+    /// the correct 09.09; see bug-370 in buglog.json.) Factored out as a
+    /// plain static function (rather than inline SwiftUI code) so it's
+    /// independently testable.
     static func suggestedStartDate(startHour: Int, startMinute: Int, weekday: Int, from reference: Date = .now,
                                     calendar: Calendar = .current) -> Date {
-        let nextWeekReference = calendar.date(byAdding: .weekOfYear, value: 1, to: reference) ?? reference
-        var components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: nextWeekReference)
-        components.weekday = weekday
+        let referenceWeekday = calendar.component(.weekday, from: reference)
+        var deltaDays = (weekday - referenceWeekday + 7) % 7
+        if deltaDays == 0 { deltaDays = 7 }
+        let targetDay = calendar.date(byAdding: .day, value: deltaDays, to: reference) ?? reference
+        var components = calendar.dateComponents([.year, .month, .day], from: targetDay)
         components.hour = startHour
         components.minute = startMinute
         components.second = 0
-        return calendar.date(from: components) ?? nextWeekReference
+        return calendar.date(from: components) ?? targetDay
     }
 
     /// Duration in minutes implied by this favorite's stored start/end
