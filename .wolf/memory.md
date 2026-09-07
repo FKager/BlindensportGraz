@@ -2389,3 +2389,4 @@
 | 18:12 | Shipped TestFlight v0.1.5 (build 138): fix for bug-371 crash, CI run 34141466323, Delivery UUID 525bec51-1a73-4d24-90c2-d2c359fb1cd6, went VALID, de-DE notes added, assigned to Internal group | BlindensportGraz/CloudKitSync.swift | success | ~4k |
 | 18:11 | Session end: 10 writes across 6 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 8 reads | ~40514 tok |
 | 18:26 | Edited .github/workflows/ios-build-deploy.yml | modified 07() | ~364 |
+| 18:32 | Edited .github/workflows/ios-build-deploy.yml | 19→20 lines | ~327 |
