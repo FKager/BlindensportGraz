@@ -6174,7 +6174,7 @@
       "error_message": "User-reported: 'started the testflight version and it crashes.' Immediate crash on launch, TestFlight build 136 (v0.1.4), reproducible even on a completely fresh app install/local store.",
       "file": "BlindensportGraz/CloudKitSync.swift",
       "root_cause": "Pulled crash logs directly off the physical device via `xcrun devicectl device info files --domain-type systemCrashLogs` + `devicectl device copy from` (no ASC crash-report sync yet, no dSYM available yet either). Both crashes: EXC_BREAKPOINT/SIGTRAP, libswiftCore `_assertionFailure` invoked deep inside SwiftData via CoreData's `NSManagedObjectContext.performAndWait`. Identical exception code and identical app-frame offsets across 4 separate crash logs (2 before uninstall/reinstall, 2 after a clean reinstall with zero local data) -- fully deterministic, independent of any pre-existing local data. Matches a known, unresolved Apple SwiftData framework bug (assertionFailure in BackingData.set, Release-build-only, relationship-property-access triggered -- see https://developer.apple.com/forums/thread/781246), not a bug introduced by any of this session's app-code changes. Correlates with timing: CloudKit Production was populated with ~190 real records (Team/TeamMembership/Training/Tournament/Attendance/etc, via `rootcli copy-records`) for the first time ever earlier the same session -- Linda Kanzler's earlier TestFlight test (2026-09-01) hit an EMPTY Production database and so never exercised CloudKitSync.syncAll()'s relationship-heavy pull/insert path at all. `syncAll()`'s final stage batched EventImages+ExpenseReceipts+Participations+Attendances (77 records, each resolving Team/User/Member/Training/Tournament relationships)+TrainingFavorites+RoleChangeLogs into ONE unsaved transaction before a single final save() -- the largest, most relationship-dense batch this codebase has ever actually executed against real production-scale data in a Release build.",
-      "fix": "Split syncAll()'s final stage into smaller save()-bounded groups, mirroring this same file's own established pattern from bug-221 (save between stages with relationship dependencies): save after EventImages+ExpenseReceipts, save after Participations, and pullAttendances (by far the largest/most relationship-heavy set) now gets its own dedicated save() immediately after. Does not fix Apple's underlying framework bug (no official fix exists per the forum thread) but is the standard low-risk mitigation for this exact bug class -- smaller transactions reduce the odds of tripping the relationship-assertion trap. Data semantics unchanged, just committed in smaller chunks. Diagnostic method worth reusing: `xcrun devicectl device info files --device <name> --domain-type systemCrashLogs` lists on-device crash logs (grep app name), `devicectl device copy from ... --destination <file>` pulls one down -- works even when ASC's own crash-report sync (`asc testflight crashes list`) hasn't caught up yet (checked repeatedly, stayed empty throughout this whole investigation) and even before Apple has generated a dSYM (`asc builds dsyms` also stayed empty) -- don't wait on either of those first next time, go straight to devicectl.",
+      "fix": "CONFIRMED root cause via a properly symbolicated stack (previous fix attempt guessed wrong and shipped v0.1.5/build 138, which crashed identically -- confirmed via a fresh crash log pull, byte-identical app-frame offsets to build 136 at the call-site level despite the syncAll() batching change, proving that guess wrong). Got real symbolication by fixing this project's CI (it never uploaded a dSYM to Apple at all -- `uploadSymbols: true` in ExportOptions.plist is a no-op with `destination: export`, confirmed live; added an `actions/upload-artifact` step pointing at app.xcarchive/dSYMs, shipped as diagnostic-only builds v0.1.6/v0.1.7 not assigned to testers), downloaded the dSYM artifact, computed real device addresses from the crash log's `usedImages[0].base` + each frame's `imageOffset`, and ran `atos -o <dSYM>/Contents/Resources/DWARF/BlindensportGraz -arch arm64 -l <base> <addresses>`. Exact result: CloudKitSync.pullTrainings(modelContext:) at CloudKitSync+Events.swift:135, called from syncAll() (CloudKitSync.swift:232) via RootView.triggerBackgroundSync()'s closure (RootView.swift:167). Line 135 was `if let existing = try? modelContext.fetch(descriptor).first` where descriptor was `FetchDescriptor<Training>(predicate: #Predicate { $0.id == id })`. `id` is declared ONLY on the SportEvent base class (SportEvent.swift:21, `@Attribute(.unique) var id`), never redeclared on Training or Tournament -- so this predicate filters a SUBCLASS-typed fetch by an INHERITED property, hitting the exact same root SwiftData/CoreData Release-build-only inherited-keypath assertion failure as bug-352, just via #Predicate's compiled NSExpression instead of SortDescriptor.nsSortDescriptor(). The earlier syncAll()-batching fix attempt (shipped as v0.1.5/138) was a plausible-sounding but WRONG guess based on circumstantial timing evidence alone -- it happened to be adjacent to the real bug (both are inside the same overall pull sequence) but didn't touch the actual crashing line. Real fix: replaced both FetchDescriptor<Training>(predicate:)/FetchDescriptor<Tournament>(predicate:) calls (CloudKitSync+Events.swift, pullTrainings and pullTournaments -- pullEvents' identical-shaped FetchDescriptor<SportEvent>(predicate:) is SAFE and untouched, since SportEvent declares `id` directly, no inheritance) with a single unfiltered fetch done ONCE before each function's loop, kept as an id-keyed Dictionary looked up (and updated on insert) per record -- matching this project's established 'sort/filter unsupported key paths in memory' convention (same shape as bug-352's fix). Verified: 173/173 tests pass (excl. bug-372, a confirmed-pre-existing-and-unrelated TrainingImportExportTests failure discovered during this verification pass, and bug-202). Local Release-configuration build succeeds. Full stack trace / symbolication method documented for reuse.",
       "tags": [
         "swiftdata",
         "coredata",
@@ -6191,10 +6191,60 @@
       ],
       "related_bugs": [
         "bug-352",
-        "bug-221"
+        "bug-221",
+        "bug-372"
       ],
       "occurrences": 1,
       "last_seen": "2026-09-07T18:05:00.000Z"
+    },
+    {
+      "id": "bug-372",
+      "timestamp": "2026-09-07T16:41:02.249Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/CloudKitSync+Events.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check) | Also: // Fetched once up front, not per-record (bug-371): `id` is ; // on the SportEvent base class, not redeclared on Training, | Also: // See pullTrainings' matching comment (bug-371) \u2014 Tournamen; // doesn't redeclare `id`, so the same inherited-keypath pre",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-09-07T16:41:39.575Z"
+    },
+    {
+      "id": "bug-373",
+      "timestamp": "2026-09-07T16:41:31.252Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/CloudKitSync+Events.swift",
+      "root_cause": "11 lines replaced/restructured",
+      "fix": "Rewrote 35\u219226 lines (11 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-07T16:41:31.252Z"
+    },
+    {
+      "id": "bug-372",
+      "timestamp": "2026-09-07T18:45:00.000Z",
+      "error_message": "4 pre-existing test failures found while verifying bug-371's fix (unrelated to it -- confirmed via git stash, same failures with the fix reverted): TrainingImportExportTests.testImportMatchesExistingByTitleAndStartDateWhenNoID (3 assertion failures: attended/matched counts and location swapped) and testImportOverwritesExistingNonEmptyFields (count mismatch 21 vs 19).",
+      "file": "BlindensportGrazTests/TrainingImportExportTests.swift",
+      "root_cause": "Not investigated -- out of scope for the bug-371 crash fix this was discovered during. Left for a future session; not a regression from anything in this session's changes.",
+      "fix": "Not fixed. Logged for visibility per OpenWolf's low-threshold bug-logging bar.",
+      "tags": [
+        "training-import-export",
+        "test-failure",
+        "pre-existing",
+        "unverified"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-07T18:45:00.000Z"
     }
   ]
 }

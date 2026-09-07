@@ -2390,3 +2390,8 @@
 | 18:11 | Session end: 10 writes across 6 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 8 reads | ~40514 tok |
 | 18:26 | Edited .github/workflows/ios-build-deploy.yml | modified 07() | ~364 |
 | 18:32 | Edited .github/workflows/ios-build-deploy.yml | 19→20 lines | ~327 |
+| 18:41 | Edited BlindensportGraz/CloudKitSync+Events.swift | added nullish coalescing | ~230 |
+| 18:41 | Edited BlindensportGraz/CloudKitSync+Events.swift | added nullish coalescing | ~334 |
+| 18:41 | Edited BlindensportGraz/CloudKitSync+Events.swift | reduced (-9 lines) | ~334 |
+| 18:41 | Edited BlindensportGraz/CloudKitSync+Events.swift | added nullish coalescing | ~150 |
+| 18:41 | Edited BlindensportGraz/CloudKitSync+Events.swift | 27→26 lines | ~324 |

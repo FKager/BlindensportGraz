@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T16:32:50.546Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T16:41:48.824Z
 > Files: 232 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -187,7 +187,7 @@
 - `CloudKitSync+Attendance.swift` — Declares via (~945 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
 - `CloudKitSync+EventParticipation.swift` (~530 tok)
-- `CloudKitSync+Events.swift` — / SportEvent/Training/Tournament kept together in one file — they share the (~3232 tok)
+- `CloudKitSync+Events.swift` — / SportEvent/Training/Tournament kept together in one file — they share the (~3532 tok)
 - `CloudKitSync+ExpenseReceipt.swift` (~911 tok)
 - `CloudKitSync+Member.swift` (~1495 tok)
 - `CloudKitSync+RoleChangeLog.swift` (~540 tok)

@@ -112,6 +112,20 @@ extension CloudKitSync {
     }
 
     func pullTrainings(modelContext: ModelContext) async {
+        // Fetched once up front, not per-record (bug-371): `id` is declared
+        // on the SportEvent base class, not redeclared on Training, so a
+        // FetchDescriptor<Training>(predicate: #Predicate { $0.id == id })
+        // filters by an INHERITED keypath — the same class of Release-
+        // build-only SwiftData/CoreData assertion-failure crash as
+        // bug-352's inherited-keypath SortDescriptor issue, just hit via
+        // #Predicate's compiled expression instead. Fetch unfiltered and
+        // match in memory instead, matching this project's established
+        // "sort/filter unsupported key paths in memory" convention; kept as
+        // an id-keyed dictionary (updated as we insert) so records within
+        // this same pull can find each other too, same as a fresh fetch
+        // would have if CloudKit ever returned a duplicate id.
+        var existingByID = Dictionary(uniqueKeysWithValues: ((try? modelContext.fetch(FetchDescriptor<Training>())) ?? []).map { ($0.id, $0) })
+
         for record in await fetchAll(recordType: CKSchema.Training.recordType) {
             guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
             let title = record[CKSchema.Training.title] as? String ?? ""
@@ -130,9 +144,7 @@ extension CloudKitSync {
             let createdAt = record[CKSchema.Training.createdAt] as? Date ?? .now
             let teams = findTeams(record[CKSchema.Training.teamIDs] as? [String] ?? [], modelContext: modelContext)
 
-            var descriptor = FetchDescriptor<Training>(predicate: #Predicate { $0.id == id })
-            descriptor.fetchLimit = 1
-            if let existing = try? modelContext.fetch(descriptor).first {
+            if let existing = existingByID[id] {
                 existing.title = title
                 existing.sport = sport
                 existing.location = location
@@ -154,11 +166,17 @@ extension CloudKitSync {
                                          createdAt: createdAt, teams: teams)
                 training.endDate = endDate
                 modelContext.insert(training)
+                existingByID[id] = training
             }
         }
     }
 
     func pullTournaments(modelContext: ModelContext) async {
+        // See pullTrainings' matching comment (bug-371) — Tournament also
+        // doesn't redeclare `id`, so the same inherited-keypath predicate
+        // crash applies here.
+        var existingByID = Dictionary(uniqueKeysWithValues: ((try? modelContext.fetch(FetchDescriptor<Tournament>())) ?? []).map { ($0.id, $0) })
+
         for record in await fetchAll(recordType: CKSchema.Tournament.recordType) {
             guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
             let title = (record[CKSchema.Tournament.title] as? String) ?? (record[CKSchema.Tournament.nameCompat] as? String) ?? ""
@@ -177,9 +195,7 @@ extension CloudKitSync {
             let createdAt = record[CKSchema.Tournament.createdAt] as? Date ?? .now
             let teams = findTeams(record[CKSchema.Tournament.teamIDs] as? [String] ?? [], modelContext: modelContext)
 
-            var descriptor = FetchDescriptor<Tournament>(predicate: #Predicate { $0.id == id })
-            descriptor.fetchLimit = 1
-            if let existing = try? modelContext.fetch(descriptor).first {
+            if let existing = existingByID[id] {
                 existing.title = title
                 existing.sport = sport
                 existing.location = location
@@ -200,6 +216,7 @@ extension CloudKitSync {
                                              status: status, notes: notes, createdBy: createdBy,
                                              createdAt: createdAt, teams: teams)
                 modelContext.insert(tournament)
+                existingByID[id] = tournament
             }
         }
     }
