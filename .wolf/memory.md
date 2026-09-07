@@ -2327,3 +2327,33 @@
 | 21:40 | PAUSED: dev->prod DATA copy. Schema already deployed to prod (done). Blocker: need CloudKit S2S creds — dev key (RootCli_BlindensportGraz) + prod key (PDB_S2S_BlindensportGraz): Key IDs from Console + private-key paths. Tool ready: `rootcli copy-records [--dry-run]` (commit 477d486). Resume: set CLOUDKIT_KEY_ID/CLOUDKIT_PRIVATE_KEY_PATH (dev src) + CLOUDKIT_TARGET_KEY_ID/CLOUDKIT_TARGET_PRIVATE_KEY_PATH (prod dst), run --dry-run first. NOTE: a private key was pasted into chat 21:35 — rotate/delete it in the Console. | RootCLI | paused | ~2k |
 | 21:22 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | — | ~642 |
 | 21:22 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | 1→2 lines | ~96 |
+| 21:23 | Session end: 45 writes across 17 files (TrainingsfrequenzlisteCalculation.swift, TrainingsfrequenzlisteCalculationTests.swift, SportEvent.swift, EventsViews.swift, TrainingsViews.swift) | 42 reads | ~104467 tok |
+
+## Session: 2026-09-03 22:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-03 23:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-03 23:13
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-09-07 16:21
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:35 | Resume dev->prod copy-records: probed every credential path. cktool mgmt token works (get-teams OK) but data cmds need CLOUDKIT_USER_TOKEN (absent). S2S Key IDs NOT derivable from public key (tried DER+PEM sha256 -> HTTP 401 both). Safari JS-from-AppleEvents works, but CloudKit Console session expired -> idmsa sign-in. Still blocked on user. | RootCLI, ~/.config/rootcli | blocked | ~12k |
+| 16:52 | copy-records creds: confirmed rootcli_private_key_pkcs8.pem + KeyID d8f546e972fedea430f039addde22a9b0a98cb8dbd722c3058d7b572314057a5 auth successfully against PRODUCTION (list -> "No UserIdentity records found", no 401). This is CLOUDKIT_TARGET_* for copy-records. Still need Development Key ID for dev_private_key_pkcs8.pem. | RootCLI | target creds confirmed | ~9k |
+| 16:58 | RAN FOR REAL: rootcli copy-records dev->prod. 189 records copied, 0 failed (UserIdentity 1, ClubMember 62, Team 6, TeamMembership 21, Training 18, Tournament 1, TrainingAttendance 72, TournamentAttendance 5, TrainingFavorite 1, RoleChangeLog 2, ExpenseReceipt 0). Verified via rootcli list + record list ClubMember against production creds. TASK COMPLETE. | RootCLI, CloudKit prod | success | ~5k |
+| 16:44 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | inline fix | ~43 |
+| 16:44 | Session end: 1 writes across 1 files (MEMORY.md) | 0 reads | ~46 tok |
+| 16:50 | Session end: 1 writes across 1 files (MEMORY.md) | 0 reads | ~46 tok |
+| 16:59 | Edited BlindensportGraz/TrainingsViews.swift | modified HStack() | ~351 |
+| 17:01 | Reordered TrainingRow columns: date (weekday+day/month) first, then sport glyph+name/sport/location, then time trailing. Dropped duration from row (still in detail view). Verified via xcodebuild (iPhone 17 sim) -> BUILD SUCCEEDED | BlindensportGraz/TrainingsViews.swift | success | ~8k |
+| 17:00 | Session end: 2 writes across 2 files (MEMORY.md, TrainingsViews.swift) | 1 reads | ~9862 tok |

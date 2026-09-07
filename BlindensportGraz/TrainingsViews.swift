@@ -285,27 +285,35 @@ struct TrainingRow: View {
      let training: Training
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
+        // Column order per user request: date, then name, then time.
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(training.startDate, format: .dateTime.weekday(.abbreviated))
+                Text(training.startDate, format: .dateTime.day().month(.abbreviated))
+            }
+            .font(.caption)
+            .foregroundColor(.secondary)
+            .frame(width: 44, alignment: .leading)
+
             SportGlyph(sport: training.sport, size: 32)
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(training.title)
                    .font(.headline)
                 HStack {
                     Label(training.sport, systemImage: SportIcon.symbolName(for: training.sport))
                     Spacer()
-                    Label("\(training.durationMinutes) min", systemImage: "clock")
-                   }
-                   .font(.caption)
-                   .foregroundColor(.secondary)
-
-                HStack {
                     Label(training.location, systemImage: "mappin.and.ellipse")
-                    Spacer()
-                    Text(training.startDate, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated).hour().minute())
                    }
                    .font(.caption)
                    .foregroundColor(.secondary)
             }
+
+            Spacer()
+
+            Text(training.startDate, format: .dateTime.hour().minute())
+                .font(.subheadline)
+                .foregroundColor(.secondary)
         }
        .padding(.vertical, 4)
     }

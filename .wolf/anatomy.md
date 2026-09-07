@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-03T19:22:45.726Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-07T14:59:16.010Z
 > Files: 232 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -47,7 +47,7 @@
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
-- `MEMORY.md` — Memory (~145 tok)
+- `MEMORY.md` — Memory (~139 tok)
 - `project_cloudkit-prod-data-copy.md` — Declares from (~630 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
 - `project_testflight-setup.md` (~1260 tok)
@@ -256,7 +256,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~9440 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~9503 tok)
 - `User.swift` — Class: User (~1006 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
