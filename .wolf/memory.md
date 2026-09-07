@@ -2368,3 +2368,8 @@
 | 17:11 | Session end: 6 writes across 4 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift) | 3 reads | ~18252 tok |
 | 17:13 | Edited BlindensportGraz/TournamentsViews.swift | modified HStack() | ~451 |
 | 17:14 | Reordered TournamentRow columns to match TrainingRow: date (weekday+day/month) first, then sport glyph+title/status/sport/maxTeams/location, then time trailing. Row previously showed no date/time at all -- added both. Verified via xcodebuild -> BUILD SUCCEEDED | BlindensportGraz/TournamentsViews.swift | success | ~7k |
+| 17:15 | Deployed tournament row column change via iOS Device Deploy workflow (run 34137245388) -> SUCCEEDED in 25s | BlindensportGraz/TournamentsViews.swift | success | ~2k |
+| 17:14 | Session end: 7 writes across 5 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 4 reads | ~26352 tok |
+| 17:15 | Edited BlindensportGraz/TrainingsViews.swift | 17→17 lines | ~308 |
+| 17:16 | Edited BlindensportGraz/TournamentsViews.swift | 12→12 lines | ~203 |
+| 17:17 | Changed PRAE amount wheel picker step from €10 to €5 in both TrainingDetailView and TournamentDetailView (rounding math + stride range updated in both). Verified via xcodebuild -> BUILD SUCCEEDED | BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift | success | ~6k |

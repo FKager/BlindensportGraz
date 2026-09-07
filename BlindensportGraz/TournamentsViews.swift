@@ -417,12 +417,12 @@ var body: some View {
                             Picker("PRAE (€)", selection: Binding(
                                 get: {
                                     let amount = attendance(for: membership)?.praeAmount ?? 0
-                                    let step = (amount / 10).rounded()
-                                    return min(maxPrae, max(0, Int(step) * 10))
+                                    let step = (amount / 5).rounded()
+                                    return min(maxPrae, max(0, Int(step) * 5))
                                 },
                                 set: { newValue in setPraeAmount(Double(newValue), for: membership) }
                             )) {
-                                ForEach(Array(stride(from: 0, through: maxPrae, by: 10)), id: \.self) { value in
+                                ForEach(Array(stride(from: 0, through: maxPrae, by: 5)), id: \.self) { value in
                                     Text("\(value)").tag(value)
                                 }
                             }

@@ -449,19 +449,19 @@ struct TrainingDetailView: View {
                                    .foregroundStyle(.secondary)
                                Spacer()
                                // Swipe-to-select wheel, not free text entry —
-                               // PRAE is only ever paid in €10 steps from 0
+                               // PRAE is only ever paid in €5 steps from 0
                                // to €90, so a wheel picker both constrains
                                // input to valid amounts and matches the
                                // "select via swipe" requirement.
                                Picker("PRAE (€)", selection: Binding(
                                    get: {
                                        let amount = attendance(for: membership)?.praeAmount ?? 0
-                                       let step = (amount / 10).rounded()
-                                       return min(90, max(0, Int(step) * 10))
+                                       let step = (amount / 5).rounded()
+                                       return min(90, max(0, Int(step) * 5))
                                    },
                                    set: { newValue in setPraeAmount(Double(newValue), for: membership) }
                                )) {
-                                   ForEach(Array(stride(from: 0, through: 90, by: 10)), id: \.self) { value in
+                                   ForEach(Array(stride(from: 0, through: 90, by: 5)), id: \.self) { value in
                                        Text("\(value)").tag(value)
                                    }
                                }
