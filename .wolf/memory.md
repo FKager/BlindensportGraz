@@ -2458,3 +2458,9 @@
 | 20:44 | Edited BlindensportGraz/EventsViews.swift | modified Section() | ~465 |
 | 20:55 | Read-only detail views now drop empty fields: separate readOnlySections @ViewBuilder (LabeledContent, fullAddress, attended-only) vs editingSections | EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift | BUILD SUCCEEDED (simulator) | ~2500 |
 | 20:44 | Session end: 14 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 6 reads | ~35296 tok |
+| 20:48 | Session end: 14 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 6 reads | ~35296 tok |
+| 20:50 | Edited .github/workflows/ios-device-deploy.yml | expanded (+12 lines) | ~199 |
+| 21:05 | Fixed CI double-trigger: added concurrency group (cancel-in-progress) to ios-device-deploy.yml; logged bug-386 | .github/workflows/ios-device-deploy.yml, .wolf/buglog.json | YAML valid | ~900 |
+| 20:51 | Session end: 15 writes across 4 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml) | 7 reads | ~39208 tok |
+| 20:53 | Edited .github/workflows/ios-build-deploy.yml | expanded (+11 lines) | ~198 |
+| 21:12 | Also guarded ios-build-deploy.yml (ref-keyed concurrency); updated bug-386 | .github/workflows/ios-build-deploy.yml, .wolf/buglog.json | YAML valid | ~500 |

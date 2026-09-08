@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T18:44:19.539Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T18:53:02.301Z
 > Files: 232 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -103,8 +103,8 @@
 
 ## .github/workflows/
 
-- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~3950 tok)
-- `ios-device-deploy.yml` — CI: iOS Device Deploy (~3713 tok)
+- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~4115 tok)
+- `ios-device-deploy.yml` — CI: iOS Device Deploy (~3894 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/
 
