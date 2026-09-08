@@ -325,6 +325,10 @@ struct TrainingDetailView: View {
      @Environment(\.modelContext) private var modelContext
      @Query private var allTeams: [Team]
      @State private var showMemberList = false
+     // Detail screens open read-only. Only an admin or the root account gets
+     // the "Bearbeiten" toolbar toggle that flips this true and unlocks the
+     // form (user request 2026-09-08).
+     @State private var isEditing = false
      // Eagerly (re)generated below — same "no tap-then-wait, no
      // Button-triggered second sheet" ShareLink convention as every other
      // export in this app (see CalendarEventExport's doc comment for why
@@ -333,6 +337,11 @@ struct TrainingDetailView: View {
 
     var isAdmin: Bool {
         currentUser?.role == .admin
+    }
+
+    // Who may leave read-only mode: admins and the club's root account.
+    var canEdit: Bool {
+        currentUser?.role == .admin || (currentUser?.isRoot ?? false)
     }
 
     // Same admin-bypass as AddTrainingView.myTeams — an admin can reassign a
@@ -487,9 +496,22 @@ struct TrainingDetailView: View {
                     .lineLimit(3...6)
               }
          }
+        // Everything above stays interactive only while editing; non-editors
+        // and editors who haven't tapped "Bearbeiten" see a read-only form.
+        .disabled(!isEditing)
         .navigationTitle(training.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            if canEdit {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(isEditing ? "Fertig" : "Bearbeiten") {
+                        if isEditing {
+                            TrainingService.save(training, modelContext: modelContext)
+                        }
+                        isEditing.toggle()
+                    }
+                }
+            }
             if isAdmin {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

@@ -2414,3 +2414,35 @@
 | 19:36 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~139 |
 | 19:36 | Edited BlindensportGraz/TournamentsViews.swift | modified attendance() | ~154 |
 | 19:38 | Added "Gesamtkosten" (sum of PRAE amounts) to TrainingDetailView + TournamentDetailView Anwesenheit section, shown only when total > 0. Verified via xcodebuild build+test -> 173/173 pass | BlindensportGraz/TrainingsViews.swift, BlindensportGraz/TournamentsViews.swift | success | ~8k |
+| 19:38 | Session end: 23 writes across 9 files (MEMORY.md, TrainingsViews.swift, TrainingFavorite.swift, TrainingFavoriteTests.swift, TournamentsViews.swift) | 11 reads | ~49499 tok |
+
+## Session: 2026-09-07 19:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:51 | Edited BlindensportGraz/User.swift | modified elevateIfDesignatedRoot() | ~374 |
+| 19:52 | Edited BlindensportGraz/RootView.swift | modified rememberLocalDesignatedRoot() | ~138 |
+| 19:52 | Edited BlindensportGraz/RootView.swift | 3→7 lines | ~106 |
+| 19:52 | Edited BlindensportGraz/RootView.swift | modified first() | ~167 |
+| 19:52 | Edited BlindensportGraz/RootView.swift | 5→6 lines | ~55 |
+| 19:52 | Edited BlindensportGraz/RootView.swift | modified Section() | ~540 |
+| 19:54 | Hide designated-root club account from LoginView picker on devices that never entered it | RootView.swift, User.swift, buglog.json, cerebrum.md | build OK (sim) | ~55k |
+| 19:54 | Session end: 6 writes across 2 files (User.swift, RootView.swift) | 3 reads | ~12764 tok |
+| 20:02 | Session end: 6 writes across 2 files (User.swift, RootView.swift) | 5 reads | ~18148 tok |
+| 20:05 | Session end: 6 writes across 2 files (User.swift, RootView.swift) | 5 reads | ~18148 tok |
+
+## Session: 2026-09-08 20:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:21 | Edited BlindensportGraz/TrainingsViews.swift | 5→9 lines | ~120 |
+| 20:21 | Edited BlindensportGraz/TrainingsViews.swift | added nullish coalescing | ~85 |
+| 20:21 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~319 |
+| 20:21 | Edited BlindensportGraz/TournamentsViews.swift | added nullish coalescing | ~200 |
+| 20:21 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~216 |
+| 20:21 | Edited BlindensportGraz/EventsViews.swift | added nullish coalescing | ~200 |
+| 20:21 | Edited BlindensportGraz/EventsViews.swift | modified Section() | ~55 |
+| 20:21 | Edited BlindensportGraz/EventsViews.swift | 7→8 lines | ~79 |
+| 20:21 | Edited BlindensportGraz/EventsViews.swift | modified ToolbarItem() | ~212 |
+| 20:25 | Detail views open read-only; admin/root-only "Bearbeiten" toggle (@State isEditing + .disabled(!isEditing)) | EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift | BUILD SUCCEEDED (simulator) | ~1200 |
+| 20:22 | Session end: 9 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 4 reads | ~24987 tok |
