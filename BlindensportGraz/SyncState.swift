@@ -25,6 +25,12 @@ final class SyncState {
     private let logger = Logger(subsystem: "it.a11y.BlindensportGraz", category: "SyncState")
 
     private(set) var status: SyncStatus = .idle
+    /// Number of CloudKit writes still sitting in the `PendingPush` outbox —
+    /// architecture-review.md 2.3. Updated by `CloudKitSync` after every
+    /// enqueue / confirmed push / `drainOutbox` pass; drives the
+    /// "N Änderungen noch nicht synchronisiert" row in `SyncStatusBanner`.
+    /// In-memory only (the durable copy is the outbox table itself).
+    private(set) var pendingCount: Int = 0
     /// Persisted across launches (see `BlindensportGrazApp`'s local-store
     /// reset fallback, which reads this to log what's about to be
     /// discarded) — the in-memory `status` above deliberately is NOT
@@ -58,5 +64,11 @@ final class SyncState {
     func markFailed() {
         status = .failed
         logger.error("Sync state moved to .failed")
+    }
+
+    /// Called by `CloudKitSync` whenever the `PendingPush` outbox changes
+    /// size (enqueue, confirmed push, drain pass).
+    func setPendingCount(_ count: Int) {
+        pendingCount = max(0, count)
     }
 }

@@ -14,6 +14,12 @@ enum SyncOrchestrationService {
         await CloudKitSync.shared.syncAll(modelContext: modelContext)
     }
 
+    /// Re-attempts just the queued `PendingPush` writes, without a full pull
+    /// pass — used when the network comes back (architecture-review.md 2.2).
+    static func drainOutbox() async {
+        await CloudKitSync.shared.drainOutbox()
+    }
+
     static func hasAnyUserIdentity() async -> Bool {
         await CloudKitSync.shared.hasAnyUserIdentity()
     }

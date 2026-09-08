@@ -42,6 +42,7 @@
 		3AB146C9AA3E2B0778438108 /* MemberMembershipRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1B40457372FFF65FECE717 /* MemberMembershipRequestTests.swift */; };
 		3BC8FF07BEE63FB9A2F1B3DF /* AttendanceTrends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F3FEB00F8B6A3562D07E701 /* AttendanceTrends.swift */; };
 		4293A4C80D62DC608F245E63 /* EventParticipationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A98ECF51879C9F5A24728F1 /* EventParticipationService.swift */; };
+		470F65E5F545A6A11A5105E7 /* PendingPushTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA56952FB80206E33D7960B8 /* PendingPushTests.swift */; };
 		49DF91037358BE604C37CE2E /* Trainingsfrequenzliste_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 4FA5E8F29F13CB502F4FCA7F /* Trainingsfrequenzliste_Vorlage.xlsx */; };
 		4B5D91E00F8180EF4E5F5121 /* Training.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DE59AC402255330C74A54B7 /* Training.swift */; };
 		4BC27F862748D31620DD255A /* KostZViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DFA21F5E8AA02DD2D9326D8 /* KostZViews.swift */; };
@@ -59,6 +60,7 @@
 		67EA0DB1A41D52FD6843C60B /* EventImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 002AC90D569743CD3F034614 /* EventImageService.swift */; };
 		6893E3CC8F87384C98D832EB /* CloudKitSync+EventImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ACDB0BBCA8CC5E772B4E235 /* CloudKitSync+EventImage.swift */; };
 		6980502D4FC007938F8E8D00 /* Tournament.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC50E1E76941D9B42A2EA14F /* Tournament.swift */; };
+		69FF1BDEA5F44465878A0B2C /* PendingPush.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC091BCEF374265B95DD0BE /* PendingPush.swift */; };
 		6F518F06A0D340408768FBA0 /* AttendanceTrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 976A27F940BB9029C563DB3D /* AttendanceTrendsView.swift */; };
 		70340758131352B4B4BB18BF /* CloudKitSync+Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA77985394B517209974D3 /* CloudKitSync+Team.swift */; };
 		7048447C9D782E85F36578E7 /* EventReminderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24482DBA01ABE94F1CDB7FB9 /* EventReminderServiceTests.swift */; };
@@ -202,6 +204,7 @@
 		72DD020ECDC368BEE589A742 /* BlindensportGraz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BlindensportGraz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74AF947186A6C9047C0A975E /* DesignatedRootTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignatedRootTests.swift; sourceTree = "<group>"; };
 		77EE00D33AB2AF7A8148E8A9 /* TrainingImportExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingImportExportTests.swift; sourceTree = "<group>"; };
+		7BC091BCEF374265B95DD0BE /* PendingPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPush.swift; sourceTree = "<group>"; };
 		814F2BF82CCE671BC89D736A /* MembershipRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembershipRole.swift; sourceTree = "<group>"; };
 		83D9A0D3FAB093A5FAE4A12C /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
 		83DBEE4CC921CC2722BCB73F /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -242,6 +245,7 @@
 		D658D11752C2F382D2950CC4 /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
 		D863B0A68F55B79E025BBBB5 /* PraeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PraeViews.swift; sourceTree = "<group>"; };
 		DA3A94E689E68FD6F8539AFE /* TrainingFavorite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingFavorite.swift; sourceTree = "<group>"; };
+		DA56952FB80206E33D7960B8 /* PendingPushTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPushTests.swift; sourceTree = "<group>"; };
 		DA89D2EB7A70D732E8D254C5 /* AppleSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignIn.swift; sourceTree = "<group>"; };
 		DAA91EB7F85CD231C4E2802A /* SportEventService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SportEventService.swift; sourceTree = "<group>"; };
 		DBB696A6769854DF75117D6F /* CalendarEventExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEventExportTests.swift; sourceTree = "<group>"; };
@@ -287,6 +291,7 @@
 				D338EFF67001DA0AFB208CF3 /* MemberImportExportTests.swift */,
 				FD1B40457372FFF65FECE717 /* MemberMembershipRequestTests.swift */,
 				E311FD2552040187DB7B8D4D /* NetworkMonitorTests.swift */,
+				DA56952FB80206E33D7960B8 /* PendingPushTests.swift */,
 				70D5136ACDC65BAB10C0F67F /* PersistenceServiceTests.swift */,
 				33BBA744C5DE3AA5F9F0DE54 /* PraeCalculationTests.swift */,
 				D51E45E7A5DCDB652047890D /* RoleAndSportEnumTests.swift */,
@@ -355,6 +360,7 @@
 				814F2BF82CCE671BC89D736A /* MembershipRole.swift */,
 				C75961394C34A767344AC7C5 /* MembersViews.swift */,
 				47FB53E9C12C928D1D86B58F /* NetworkMonitor.swift */,
+				7BC091BCEF374265B95DD0BE /* PendingPush.swift */,
 				D257583A86202D7F281FDB16 /* PersistenceService.swift */,
 				51F794B1B6C3052518196C03 /* PRAE_Darstellung_Vorlage.xlsx */,
 				52DEFEF3CAAB124E75D49614 /* PRAE_Formular.xlsx */,
@@ -595,6 +601,7 @@
 				5BF8226D8FD23B19988F2A67 /* MembersViews.swift in Sources */,
 				7301EF644B2F147EFFC0191D /* MembershipRole.swift in Sources */,
 				54B95F7837694341D0EF6973 /* NetworkMonitor.swift in Sources */,
+				69FF1BDEA5F44465878A0B2C /* PendingPush.swift in Sources */,
 				02584F77E17776275B86681F /* PersistenceService.swift in Sources */,
 				C27B01BE24EB920C70B12B68 /* PraeCalculation.swift in Sources */,
 				EF64D94AF393691E63643445 /* PraeExport.swift in Sources */,
@@ -653,6 +660,7 @@
 				4E13B12C366BB2656C4E5476 /* MemberImportExportTests.swift in Sources */,
 				3AB146C9AA3E2B0778438108 /* MemberMembershipRequestTests.swift in Sources */,
 				2058FA09D772ADB9592164CC /* NetworkMonitorTests.swift in Sources */,
+				470F65E5F545A6A11A5105E7 /* PendingPushTests.swift in Sources */,
 				9D599F0BC6F7C80D529CA53D /* PersistenceServiceTests.swift in Sources */,
 				F4FC9293EBF3D3927E10F372 /* PraeCalculationTests.swift in Sources */,
 				B620A5CA93BA09766B58DF0E /* RoleAndSportEnumTests.swift in Sources */,

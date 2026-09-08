@@ -200,6 +200,9 @@ struct MainTabView: View {
     let currentUser: User
     let onLogout: () -> Void
 
+    @Environment(\.modelContext) private var modelContext
+    private let networkMonitor = NetworkMonitor.shared
+
     var body: some View {
         TabView {
             NavigationStack { DashboardView(currentUser: currentUser) }
@@ -227,6 +230,12 @@ struct MainTabView: View {
         }
         .task {
             NetworkMonitor.shared.start()
+        }
+        // When connectivity returns, flush the PendingPush outbox right away
+        // instead of waiting for the next full sync (architecture-review.md 2.2).
+        .onChange(of: networkMonitor.isOnline) { _, isOnline in
+            guard isOnline else { return }
+            Task { await SyncOrchestrationService.drainOutbox() }
         }
     }
 }

@@ -20,7 +20,10 @@ struct BlindensportGrazApp: App {
             Attendance.self,
             TrainingFavorite.self,
             RoleChangeLog.self,
-            ExpenseReceipt.self
+            ExpenseReceipt.self,
+            // Local-only outbox of not-yet-confirmed CloudKit writes
+            // (architecture-review.md 2.2) — never itself synced.
+            PendingPush.self
                ])
         // Local store only. Cross-user, team-scoped sharing is handled by
         // CloudKitSync's manual public-database push/pull, not SwiftData's
@@ -56,6 +59,10 @@ struct BlindensportGrazApp: App {
 
         do {
             modelContainer = try ModelContainer(for: schema, configurations: [config])
+            // Give the CloudKit layer a container handle for its PendingPush
+            // outbox (architecture-review.md 2.2). Done here, before any view
+            // exists, so the very first push of the session is already durable.
+            CloudKitSync.shared.modelContainer = modelContainer
         } catch {
             // The SportEvent/Training/Tournament inheritance refactor is a
             // bigger schema shape change than SwiftData's automatic

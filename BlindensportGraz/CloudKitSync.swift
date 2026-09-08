@@ -40,6 +40,23 @@ final class CloudKitSync {
     var publicDB: CKDatabase { container.publicCloudDatabase }
     let logger = Logger(subsystem: "it.a11y.BlindensportGraz", category: "CloudKitSync")
 
+    /// Set once at launch (`BlindensportGrazApp.init`). When nil — e.g. in a
+    /// unit test that never wired it — the `PendingPush` outbox is skipped
+    /// entirely and `save`/`delete` behave exactly as they did before the
+    /// outbox existed (best-effort push, no durable record).
+    var modelContainer: ModelContainer?
+
+    /// Dedicated context for the outbox so its writes never piggyback on an
+    /// unrelated `mainContext.save()` and vice versa. Lazily made on first use.
+    private var _outboxContext: ModelContext?
+    private var outboxContext: ModelContext? {
+        if let _outboxContext { return _outboxContext }
+        guard let modelContainer else { return nil }
+        let context = ModelContext(modelContainer)
+        _outboxContext = context
+        return context
+    }
+
     init() {}
 
     func recordID(_ id: UUID) -> CKRecord.ID {
@@ -60,7 +77,11 @@ final class CloudKitSync {
     /// after every attempt is exhausted (see `CloudKitSync+EventImage.swift`'s
     /// temp-file removal) can wrap it in its own
     /// `Task { defer { ... }; await performWithRetry(...) }`.
-    func performWithRetry(_ description: String, operation: () async throws -> Void) async {
+    /// Returns `true` if `operation` eventually succeeded, `false` if every
+    /// attempt failed. Callers that enqueued a `PendingPush` use the result
+    /// to decide whether to clear it or leave it for `drainOutbox`.
+    @discardableResult
+    func performWithRetry(_ description: String, operation: () async throws -> Void) async -> Bool {
         let backoffs: [UInt64] = [500_000_000, 1_000_000_000, 2_000_000_000] // 0.5s, 1s, 2s
         var lastError: Error?
         for attempt in 0...backoffs.count {
@@ -70,7 +91,7 @@ final class CloudKitSync {
                 // user-visible sync indicator (audit.md SwiftData & CloudKit
                 // Finding 3 / Enhancement #3), not a static decoration.
                 SyncState.shared.markSynced()
-                return
+                return true
             } catch {
                 lastError = error
                 guard attempt < backoffs.count else { break }
@@ -79,29 +100,120 @@ final class CloudKitSync {
         }
         logger.error("\(description, privacy: .public) failed after \(backoffs.count + 1) attempts: \(String(describing: lastError), privacy: .public)")
         SyncState.shared.markFailed()
+        return false
     }
 
-    /// Push helper used by every per-model `pushX(_:)` — retries via
-    /// `performWithRetry`, logs final failure, never throws to the caller
-    /// (pushes have always been fire-and-forget from the UI's perspective;
-    /// this phase adds retry + real logging, not a synchronous/blocking
-    /// push API — that would be a bigger behavior change than this phase's
-    /// scope).
+    /// Push helper used by every per-model `pushX(_:)`. Records the write in
+    /// the durable `PendingPush` outbox first, fires the inline retry, and
+    /// clears the outbox row only once CloudKit confirms it — a write that
+    /// outlives its retries stays queued for `drainOutbox`
+    /// (architecture-review.md 2.2). Still fire-and-forget from the UI's
+    /// perspective; the outbox is what makes "fire" durable.
     func save(_ record: CKRecord) {
+        let recordName = record.recordID.recordName
+        enqueue(operation: PendingPush.saveOperation, recordType: record.recordType,
+                recordName: recordName, record: record)
         Task {
-            await self.performWithRetry("push for \(record.recordType) \(record.recordID.recordName)") {
+            let ok = await self.performWithRetry("push for \(record.recordType) \(recordName)") {
                 try await self.upsert(record)
             }
+            if ok { self.clearOutboxEntry(recordName: recordName) }
         }
     }
 
     /// Delete helper used by every per-model `deleteX(_:)`.
     func delete(recordType: String, id: UUID) {
+        let recordName = id.uuidString
+        enqueue(operation: PendingPush.deleteOperation, recordType: recordType,
+                recordName: recordName, record: nil)
         Task {
-            let recordID = self.recordID(id)
-            await self.performWithRetry("delete for \(recordType) \(id)") {
-                try await self.publicDB.deleteRecord(withID: recordID)
+            let ok = await self.performWithRetry("delete for \(recordType) \(id)") {
+                try await self.publicDB.deleteRecord(withID: self.recordID(id))
             }
+            if ok { self.clearOutboxEntry(recordName: recordName) }
+        }
+    }
+
+    // MARK: - PendingPush outbox
+
+    private func enqueue(operation: String, recordType: String, recordName: String, record: CKRecord?) {
+        guard let outboxContext else { return }
+        let payload = record.flatMap { PendingPush.archived($0) } ?? Data()
+        PendingPush.enqueue(in: outboxContext, operation: operation, recordType: recordType,
+                            recordName: recordName, payload: payload)
+        refreshPendingCount()
+    }
+
+    private func clearOutboxEntry(recordName: String) {
+        guard let outboxContext else { return }
+        PendingPush.clear(recordName: recordName, in: outboxContext)
+        refreshPendingCount()
+    }
+
+    private func refreshPendingCount() {
+        guard let outboxContext else { return }
+        SyncState.shared.setPendingCount(PendingPush.count(in: outboxContext))
+    }
+
+    /// Re-attempts every queued write once, oldest first. Called at the start
+    /// of `syncAll` and whenever the network comes back (see `RootView`).
+    /// Each attempt is a single try — `drainOutbox` being called again *is*
+    /// the retry loop — so a persistently-unreachable CloudKit just leaves
+    /// the rows (and the banner count) in place rather than spinning.
+    func drainOutbox() async {
+        guard let outboxContext else { return }
+        let rows = PendingPush.all(in: outboxContext)
+        guard !rows.isEmpty else { refreshPendingCount(); return }
+
+        for row in rows {
+            let succeeded: Bool
+            switch row.operation {
+            case PendingPush.deleteOperation:
+                succeeded = await attemptOutboxDelete(row)
+            default:
+                guard let record = row.decodedRecord() else {
+                    // Payload missing/corrupt — it can never succeed; drop it
+                    // rather than retrying forever.
+                    logger.error("outbox: dropping unreplayable row for \(row.recordType, privacy: .public) \(row.recordName, privacy: .public)")
+                    outboxContext.delete(row)
+                    continue
+                }
+                succeeded = await attemptOutboxSave(record, description: "outbox push for \(row.recordType) \(row.recordName)")
+            }
+            if succeeded {
+                outboxContext.delete(row)
+            } else {
+                row.attemptCount += 1
+                row.lastAttemptAt = .now
+            }
+        }
+        try? outboxContext.save()
+        refreshPendingCount()
+    }
+
+    private func attemptOutboxSave(_ record: CKRecord, description: String) async -> Bool {
+        do {
+            try await upsert(record)
+            SyncState.shared.markSynced()
+            return true
+        } catch {
+            logger.error("\(description, privacy: .public) failed: \(String(describing: error), privacy: .public)")
+            return false
+        }
+    }
+
+    private func attemptOutboxDelete(_ row: PendingPush) async -> Bool {
+        guard let id = UUID(uuidString: row.recordName) else { return true } // unparseable → drop
+        do {
+            try await publicDB.deleteRecord(withID: recordID(id))
+            SyncState.shared.markSynced()
+            return true
+        } catch let error as CKError where error.code == .unknownItem {
+            // Already gone on the server — the delete is effectively done.
+            return true
+        } catch {
+            logger.error("outbox delete for \(row.recordType, privacy: .public) \(row.recordName, privacy: .public) failed: \(String(describing: error), privacy: .public)")
+            return false
         }
     }
 
@@ -126,13 +238,33 @@ final class CloudKitSync {
         }
     }
 
+    /// Pulls EVERY record of `recordType`, following CloudKit's query cursor
+    /// across pages. `CKDatabase.records(matching:)` returns at most one
+    /// server page (~100 rows) plus a `queryCursor` for the rest — an earlier
+    /// version discarded that cursor (`let (results, _) = …`), so any record
+    /// type larger than one page (the `ClubMember` roster is ~200) was
+    /// silently truncated on every `syncAll` pull, leaving freshly-synced
+    /// devices missing roster/attendance rows (architecture-review.md 2.1 /
+    /// buglog bug-387). `RootCLI`'s server-to-server client already pages via
+    /// `continuationMarker`; this brings the on-device path to parity.
+    ///
+    /// On any error the whole pull for this type returns `[]` (unchanged
+    /// behaviour): callers only ever upsert what comes back, so an empty
+    /// result is a no-op rather than a partial reconciliation against a
+    /// half-fetched set.
     func fetchAll(recordType: String) async -> [CKRecord] {
+        var collected: [CKRecord] = []
         do {
             let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
-            let (results, _) = try await publicDB.records(matching: query)
-            return results.compactMap { try? $1.get() }
+            var page = try await publicDB.records(matching: query, resultsLimit: CKQueryOperation.maximumResults)
+            while true {
+                collected.append(contentsOf: page.matchResults.compactMap { try? $1.get() })
+                guard let cursor = page.queryCursor else { break }
+                page = try await publicDB.records(continuingMatchFrom: cursor, resultsLimit: CKQueryOperation.maximumResults)
+            }
+            return collected
         } catch {
-            logger.error("pull failed for \(recordType, privacy: .public): \(String(describing: error), privacy: .public)")
+            logger.error("pull failed for \(recordType, privacy: .public) after \(collected.count) record(s): \(String(describing: error), privacy: .public)")
             return []
         }
     }
@@ -222,6 +354,10 @@ final class CloudKitSync {
     /// among these.
     func syncAll(modelContext: ModelContext) async {
         SyncState.shared.markSyncing()
+        // Push anything still queued from a previous offline/failed session
+        // before pulling, so a full pass doesn't overwrite local edits that
+        // never made it out (architecture-review.md 2.2).
+        await drainOutbox()
         await pullUserIdentities(modelContext: modelContext)
         await pullMembers(modelContext: modelContext)
         await pullTeams(modelContext: modelContext)
