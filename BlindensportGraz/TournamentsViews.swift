@@ -331,8 +331,10 @@ struct TournamentDetailView: View {
                              excluding: tournament.id, in: modelContext) != nil
     }
 
-var body: some View {
-    Form {
+    // Shown only while editing: the full, always-complete set of editable
+    // fields (empty ones included, so they can be filled in).
+    @ViewBuilder
+    private var editingSections: some View {
         EventImagesSection(images: tournament.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
 
         if collidesWithExistingEvent {
@@ -457,9 +459,92 @@ var body: some View {
                 .lineLimit(3...6)
         }
     }
-    // Everything above stays interactive only while editing; non-editors and
-    // editors who haven't tapped "Bearbeiten" see a read-only form.
-    .disabled(!isEditing)
+
+    // Localized label for `tournament.status` — mirrors the edit Picker's tags.
+    private var statusLabel: String {
+        switch tournament.status {
+        case "planned": return "Geplant"
+        case "ongoing": return "Laufend"
+        case "finished": return "Beendet"
+        default: return tournament.status
+        }
+    }
+
+    // Default (non-editing) presentation: every empty field is dropped, so
+    // only rows that actually carry data are shown (user request 2026-09-08).
+    @ViewBuilder
+    private var readOnlySections: some View {
+        if !tournament.images.isEmpty {
+            EventImagesSection(images: tournament.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+                .disabled(true)
+        }
+        if !tournament.sport.isEmpty || !tournament.location.isEmpty {
+            Section("Turnier") {
+                if !tournament.sport.isEmpty {
+                    LabeledContent("Sportart", value: tournament.sport)
+                }
+                if !tournament.location.isEmpty {
+                    LabeledContent("Veranstaltungsort", value: tournament.location)
+                }
+            }
+        }
+        if !tournament.fullAddress.isEmpty {
+            Section("Adresse") {
+                LabeledContent("Adresse", value: tournament.fullAddress)
+            }
+        }
+        Section("Zeitraum") {
+            LabeledContent("Start", value: tournament.startDate.formatted(date: .long, time: .omitted))
+            LabeledContent("Ende", value: tournament.endDate.formatted(date: .long, time: .omitted))
+        }
+        Section("Details") {
+            LabeledContent("Max. Teams", value: "\(tournament.maxTeams)")
+            LabeledContent("Status", value: statusLabel)
+        }
+        if !tournament.teams.isEmpty {
+            Section("Beteiligte Teams") {
+                ForEach(tournament.teams) { team in
+                    Text(team.name)
+                }
+            }
+        }
+        if !attendedMemberships.isEmpty {
+            Section("Teilnehmer:innen") {
+                ForEach(attendedMemberships) { membership in
+                    HStack {
+                        Text(membership.displayName)
+                        Spacer()
+                        if let prae = attendance(for: membership)?.praeAmount, prae > 0 {
+                            Text("\(Int(prae)) €")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                if totalPraeAmount > 0 {
+                    HStack {
+                        Text("Gesamtkosten")
+                        Spacer()
+                        Text("\(Int(totalPraeAmount)) €")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
+        if !tournament.notes.isEmpty {
+            Section("Notizen") {
+                Text(tournament.notes)
+            }
+        }
+    }
+
+var body: some View {
+    Form {
+        if isEditing {
+            editingSections
+        } else {
+            readOnlySections
+        }
+    }
     .navigationTitle(tournament.title)
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {

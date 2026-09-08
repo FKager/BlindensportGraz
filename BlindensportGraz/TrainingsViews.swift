@@ -381,124 +381,204 @@ struct TrainingDetailView: View {
                              in: modelContext) != nil
     }
 
-    var body: some View {
-        Form {
-            EventImagesSection(images: training.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+    // Members who were marked present — the only rows the read-only
+    // Anwesenheit section shows (empty attendance = section hidden entirely).
+    private var attendedMemberships: [TeamMembership] {
+        allMemberships.filter { attendance(for: $0)?.attended == true }
+    }
 
-            if collidesWithExistingEvent {
-                Section {
-                    Label("Ein anderer Eintrag hat bereits diesen Titel, diese Sportart und diesen Zeitpunkt. Bitte Titel oder Zeit ändern.", systemImage: "exclamationmark.triangle.fill")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
+    // Shown only while editing: the full, always-complete set of editable
+    // fields (empty ones included, so they can be filled in).
+    @ViewBuilder
+    private var editingSections: some View {
+        EventImagesSection(images: training.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+
+        if collidesWithExistingEvent {
+            Section {
+                Label("Ein anderer Eintrag hat bereits diesen Titel, diese Sportart und diesen Zeitpunkt. Bitte Titel oder Zeit ändern.", systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
+        }
+
+        Section("Training") {
+            TextField("Titel", text: $training.title)
+            TextField("Sportart", text: $training.sport)
+            TextField("Veranstaltungsort", text: $training.location)
+        }
+        Section("Adresse") {
+            TextField("Straße", text: $training.street)
+            TextField("PLZ", text: $training.zip)
+            TextField("Ort", text: $training.city)
+            TextField("Land", text: $training.country)
+        }
+        Section("Planung") {
+            DatePicker("Start", selection: $training.startDate)
+                .onChange(of: training.startDate) { training.recomputeEndDate() }
+            Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
+                .onChange(of: training.durationMinutes) { training.recomputeEndDate() }
+            TextField("Schwerpunkt", text: $training.focusArea)
+        }
+        if !myTeams.isEmpty {
+            Section("Beteiligte Teams") {
+                ForEach(myTeams) { team in
+                    Button {
+                        if training.teams.contains(where: { $0.id == team.id }) {
+                            training.teams.removeAll { $0.id == team.id }
+                        } else {
+                            training.teams.append(team)
+                        }
+                    } label: {
+                        HStack {
+                            Text(team.name)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            if training.teams.contains(where: { $0.id == team.id }) {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(.blue)
+                                    .accessibilityHidden(true)
+                            }
+                        }
+                    }
+                    .accessibilityAddTraits(training.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
+                }
+                Text("Keine Auswahl = für alle sichtbar")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        if !allMemberships.isEmpty {
+            Section("Anwesenheit") {
+                ForEach(allMemberships) { membership in
+                    Toggle(isOn: Binding(
+                        get: { attendance(for: membership)?.attended ?? false },
+                        set: { newValue in setAttendance(newValue, for: membership) }
+                    )) {
+                        Text(membership.displayName)
+                    }
+                    // PRAE amount only for helpers/coaches (role "assistant"/
+                    // "coach") who were actually present — see Attendance.praeAmount.
+                    if membership.role.isHelfer,
+                       attendance(for: membership)?.attended == true {
+                        HStack {
+                            Text("PRAE (€)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            // Swipe-to-select wheel, not free text entry —
+                            // PRAE is only ever paid in €5 steps from 0
+                            // to €90, so a wheel picker both constrains
+                            // input to valid amounts and matches the
+                            // "select via swipe" requirement.
+                            Picker("PRAE (€)", selection: Binding(
+                                get: {
+                                    let amount = attendance(for: membership)?.praeAmount ?? 0
+                                    let step = (amount / 5).rounded()
+                                    return min(90, max(0, Int(step) * 5))
+                                },
+                                set: { newValue in setPraeAmount(Double(newValue), for: membership) }
+                            )) {
+                                ForEach(Array(stride(from: 0, through: 90, by: 5)), id: \.self) { value in
+                                    Text("\(value)").tag(value)
+                                }
+                            }
+                            .labelsHidden()
+                            .pickerStyle(.wheel)
+                            .frame(width: 100, height: 90)
+                            .clipped()
+                        }
+                    }
+                }
+                if totalPraeAmount > 0 {
+                    HStack {
+                        Text("Gesamtkosten")
+                        Spacer()
+                        Text("\(Int(totalPraeAmount)) €")
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
+        }
+        Section("Notizen") {
+            TextField("Notizen", text: $training.notes, axis: .vertical)
+                .lineLimit(3...6)
+        }
+    }
 
+    // Default (non-editing) presentation: every empty field is dropped, so
+    // only rows that actually carry data are shown (user request 2026-09-08).
+    @ViewBuilder
+    private var readOnlySections: some View {
+        if !training.images.isEmpty {
+            EventImagesSection(images: training.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+                .disabled(true)
+        }
+        if !training.sport.isEmpty || !training.location.isEmpty {
             Section("Training") {
-                TextField("Titel", text: $training.title)
-                TextField("Sportart", text: $training.sport)
-                TextField("Veranstaltungsort", text: $training.location)
-               }
-           Section("Adresse") {
-               TextField("Straße", text: $training.street)
-               TextField("PLZ", text: $training.zip)
-               TextField("Ort", text: $training.city)
-               TextField("Land", text: $training.country)
-           }
-           Section("Planung") {
-               DatePicker("Start", selection: $training.startDate)
-                   .onChange(of: training.startDate) { training.recomputeEndDate() }
-               Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
-                   .onChange(of: training.durationMinutes) { training.recomputeEndDate() }
-               TextField("Schwerpunkt", text: $training.focusArea)
-              }
-           if !myTeams.isEmpty {
-               Section("Beteiligte Teams") {
-                   ForEach(myTeams) { team in
-                       Button {
-                           if training.teams.contains(where: { $0.id == team.id }) {
-                               training.teams.removeAll { $0.id == team.id }
-                           } else {
-                               training.teams.append(team)
-                           }
-                       } label: {
-                           HStack {
-                               Text(team.name)
-                                   .foregroundStyle(.primary)
-                               Spacer()
-                               if training.teams.contains(where: { $0.id == team.id }) {
-                                   Image(systemName: "checkmark")
-                                       .foregroundStyle(.blue)
-                                       .accessibilityHidden(true)
-                               }
-                           }
-                       }
-                       .accessibilityAddTraits(training.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
-                   }
-                   Text("Keine Auswahl = für alle sichtbar")
-                       .font(.caption)
-                       .foregroundStyle(.secondary)
-               }
-           }
-           if !allMemberships.isEmpty {
-               Section("Anwesenheit") {
-                   ForEach(allMemberships) { membership in
-                       Toggle(isOn: Binding(
-                           get: { attendance(for: membership)?.attended ?? false },
-                           set: { newValue in setAttendance(newValue, for: membership) }
-                       )) {
-                           Text(membership.displayName)
-                       }
-                       // PRAE amount only for helpers/coaches (role "assistant"/
-                       // "coach") who were actually present — see Attendance.praeAmount.
-                       if membership.role.isHelfer,
-                          attendance(for: membership)?.attended == true {
-                           HStack {
-                               Text("PRAE (€)")
-                                   .font(.caption)
-                                   .foregroundStyle(.secondary)
-                               Spacer()
-                               // Swipe-to-select wheel, not free text entry —
-                               // PRAE is only ever paid in €5 steps from 0
-                               // to €90, so a wheel picker both constrains
-                               // input to valid amounts and matches the
-                               // "select via swipe" requirement.
-                               Picker("PRAE (€)", selection: Binding(
-                                   get: {
-                                       let amount = attendance(for: membership)?.praeAmount ?? 0
-                                       let step = (amount / 5).rounded()
-                                       return min(90, max(0, Int(step) * 5))
-                                   },
-                                   set: { newValue in setPraeAmount(Double(newValue), for: membership) }
-                               )) {
-                                   ForEach(Array(stride(from: 0, through: 90, by: 5)), id: \.self) { value in
-                                       Text("\(value)").tag(value)
-                                   }
-                               }
-                               .labelsHidden()
-                               .pickerStyle(.wheel)
-                               .frame(width: 100, height: 90)
-                               .clipped()
-                           }
-                       }
-                   }
-                   if totalPraeAmount > 0 {
-                       HStack {
-                           Text("Gesamtkosten")
-                           Spacer()
-                           Text("\(Int(totalPraeAmount)) €")
-                               .foregroundStyle(.secondary)
-                       }
-                   }
-               }
-           }
-           Section("Notizen") {
-                TextField("Notizen", text: $training.notes, axis: .vertical)
-                    .lineLimit(3...6)
-              }
-         }
-        // Everything above stays interactive only while editing; non-editors
-        // and editors who haven't tapped "Bearbeiten" see a read-only form.
-        .disabled(!isEditing)
+                if !training.sport.isEmpty {
+                    LabeledContent("Sportart", value: training.sport)
+                }
+                if !training.location.isEmpty {
+                    LabeledContent("Veranstaltungsort", value: training.location)
+                }
+            }
+        }
+        if !training.fullAddress.isEmpty {
+            Section("Adresse") {
+                LabeledContent("Adresse", value: training.fullAddress)
+            }
+        }
+        Section("Planung") {
+            LabeledContent("Start", value: training.startDate.formatted(date: .long, time: .shortened))
+            LabeledContent("Dauer", value: "\(training.durationMinutes) min")
+            if !training.focusArea.isEmpty {
+                LabeledContent("Schwerpunkt", value: training.focusArea)
+            }
+        }
+        if !training.teams.isEmpty {
+            Section("Beteiligte Teams") {
+                ForEach(training.teams) { team in
+                    Text(team.name)
+                }
+            }
+        }
+        if !attendedMemberships.isEmpty {
+            Section("Anwesenheit") {
+                ForEach(attendedMemberships) { membership in
+                    HStack {
+                        Text(membership.displayName)
+                        Spacer()
+                        if let prae = attendance(for: membership)?.praeAmount, prae > 0 {
+                            Text("\(Int(prae)) €")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                }
+                if totalPraeAmount > 0 {
+                    HStack {
+                        Text("Gesamtkosten")
+                        Spacer()
+                        Text("\(Int(totalPraeAmount)) €")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+        }
+        if !training.notes.isEmpty {
+            Section("Notizen") {
+                Text(training.notes)
+            }
+        }
+    }
+
+    var body: some View {
+        Form {
+            if isEditing {
+                editingSections
+            } else {
+                readOnlySections
+            }
+        }
         .navigationTitle(training.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

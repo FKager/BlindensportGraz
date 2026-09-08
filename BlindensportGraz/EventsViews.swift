@@ -284,8 +284,12 @@ struct EventDetailView: View {
                 .disabled(!isEditing)
 
             Section("Details") {
-                LabeledContent("Sportart", value: event.sport)
-                LabeledContent("Veranstaltungsort", value: event.location)
+                if !event.sport.isEmpty {
+                    LabeledContent("Sportart", value: event.sport)
+                }
+                if !event.location.isEmpty {
+                    LabeledContent("Veranstaltungsort", value: event.location)
+                }
                 if !event.fullAddress.isEmpty {
                     LabeledContent("Adresse", value: event.fullAddress)
                 }
@@ -299,34 +303,41 @@ struct EventDetailView: View {
                  }
              }
 
-            if !myTeams.isEmpty {
-                Section("Beteiligte Teams") {
-                    ForEach(myTeams) { team in
-                        Button {
-                            if event.teams.contains(where: { $0.id == team.id }) {
-                                event.teams.removeAll { $0.id == team.id }
-                            } else {
-                                event.teams.append(team)
-                            }
-                        } label: {
-                            HStack {
-                                Text(team.name)
-                                    .foregroundStyle(.primary)
-                                Spacer()
+            if isEditing {
+                if !myTeams.isEmpty {
+                    Section("Beteiligte Teams") {
+                        ForEach(myTeams) { team in
+                            Button {
                                 if event.teams.contains(where: { $0.id == team.id }) {
-                                    Image(systemName: "checkmark")
-                                        .foregroundStyle(.blue)
-                                        .accessibilityHidden(true)
+                                    event.teams.removeAll { $0.id == team.id }
+                                } else {
+                                    event.teams.append(team)
+                                }
+                            } label: {
+                                HStack {
+                                    Text(team.name)
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    if event.teams.contains(where: { $0.id == team.id }) {
+                                        Image(systemName: "checkmark")
+                                            .foregroundStyle(.blue)
+                                            .accessibilityHidden(true)
+                                    }
                                 }
                             }
+                            .accessibilityAddTraits(event.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
                         }
-                        .accessibilityAddTraits(event.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
+                        Text("Keine Auswahl = für alle sichtbar")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
-                    Text("Keine Auswahl = für alle sichtbar")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                 }
-                .disabled(!isEditing)
+            } else if !event.teams.isEmpty {
+                Section("Beteiligte Teams") {
+                    ForEach(event.teams) { team in
+                        Text(team.name)
+                    }
+                }
             }
 
             Section("Teilnehmer (\(event.participations.count))") {
