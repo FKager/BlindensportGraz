@@ -2,6 +2,14 @@ import SwiftUI
 import SwiftData
 import AuthenticationServices
 
+/// Records that the club's designated-root account was created or logged into
+/// on *this* device, so `LoginView` keeps offering it here while hiding it on
+/// every other device it merely synced to. No-op for any other account.
+func rememberLocalDesignatedRoot(_ user: User) {
+    guard user.isDesignatedRootIdentity else { return }
+    UserDefaults.standard.set(user.id.uuidString, forKey: User.localDesignatedRootIDKey)
+}
+
 struct RootView: View {
     @State private var currentUser: User?
     @State private var isResolvingAccount = true
@@ -35,6 +43,10 @@ struct RootView: View {
             } else {
                 LoginView(onLogin: { user in
                     applyDesignatedRootGrant(user)
+                    // Picking the club account from the list (or finishing
+                    // RegisterView) counts as "entered on this device" — keep
+                    // offering it here afterwards.
+                    rememberLocalDesignatedRoot(user)
                     currentUser = user
                     // Picking an existing account from LoginView's list, or
                     // finishing RegisterView's manual form, never went through
@@ -64,10 +76,12 @@ struct RootView: View {
                 currentUser = match
                 storedUserID = match.id.uuidString
                 applyDesignatedRootGrant(match)
+                rememberLocalDesignatedRoot(match)
             } else if !storedUserID.isEmpty, let id = UUID(uuidString: storedUserID) {
                 currentUser = users.first { $0.id == id }
                 if let resumed = currentUser {
                     applyDesignatedRootGrant(resumed)
+                    rememberLocalDesignatedRoot(resumed)
                 }
             }
             triggerBackgroundSync()
@@ -143,6 +157,7 @@ struct RootView: View {
 
         storedAppleUserIdentifier = result.userIdentifier
         storedUserID = user.id.uuidString
+        rememberLocalDesignatedRoot(user)
         currentUser = user
         triggerBackgroundSync()
     }
@@ -221,19 +236,32 @@ struct LoginView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var users: [User]
+    // Set only on the device that created or logged into the club account —
+    // see rememberLocalDesignatedRoot. Empty on every other device.
+    @AppStorage(User.localDesignatedRootIDKey) private var localDesignatedRootID = ""
 
     @State private var showRegister = false
+
+    // The club's designated-root account (User.swift) syncs via CloudKit like
+    // every other User, so it would otherwise show up in this picker on every
+    // user's device. Hide it unless it was entered on this device.
+    private var visibleUsers: [User] {
+        users.filter { user in
+            guard user.isDesignatedRootIdentity else { return true }
+            return !localDesignatedRootID.isEmpty && user.id.uuidString == localDesignatedRootID
+        }
+    }
 
     var body: some View {
         NavigationStack {
             List {
-                if users.isEmpty {
+                if visibleUsers.isEmpty {
                     ContentUnavailableView("Noch keine Konten",
                                            systemImage: "person.crop.circle.badge.plus",
                                            description: Text("Erstelle das erste Benutzerkonto."))
                 } else {
                     Section("Konto auswählen") {
-                        ForEach(users) { user in
+                        ForEach(visibleUsers) { user in
                             Button {
                                 onLogin(user)
                             } label: {
@@ -243,7 +271,7 @@ struct LoginView: View {
                         }
                         .onDelete { offsets in
                             for index in offsets {
-                                UserService.delete(users[index], modelContext: modelContext)
+                                UserService.delete(visibleUsers[index], modelContext: modelContext)
                             }
                         }
                     }
