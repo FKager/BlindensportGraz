@@ -53,6 +53,18 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# A single physical iPhone can only take one install at a time, and one
+# `git push` has been observed to start this workflow twice — GitHub
+# intermittently emits two push-triggered runs for a single multi-commit
+# push (confirmed 2026-09-08: commit 5d75093 spawned two full "iOS Device
+# Deploy" runs, plus two of "iOS Build and Deploy", all `event: push`,
+# same head SHA, same timestamp). Collapse any overlap to one run so two
+# device installs never race; `cancel-in-progress` means a newer run
+# supersedes an older one, leaving the phone on the latest build.
+concurrency:
+  group: ios-device-deploy
+  cancel-in-progress: true
+
 env:
   SCHEME: BlindensportGraz
   PROJECT: BlindensportGraz.xcodeproj

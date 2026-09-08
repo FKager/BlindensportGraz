@@ -24,6 +24,17 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# GitHub intermittently emits two push-triggered runs for a single
+# multi-commit push (confirmed 2026-09-08: commit 5d75093 spawned two full
+# runs of this workflow AND two of "iOS Device Deploy", all `event: push`,
+# same head SHA, same timestamp — see .wolf/buglog.json bug-386). Key the
+# group by ref (not a static name) so different branches / PRs / release
+# tags still run independently, but a duplicate — or a rapid re-push to the
+# same ref — collapses to one run, newest wins.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   SCHEME: BlindensportGraz
   PROJECT: BlindensportGraz.xcodeproj
