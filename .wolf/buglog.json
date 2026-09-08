@@ -6389,6 +6389,54 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-08T18:21:34.809Z"
+    },
+    {
+      "id": "bug-383",
+      "timestamp": "2026-09-08T18:42:39.904Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "89 lines replaced/restructured",
+      "fix": "Rewrote 119→9 lines (89 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T18:42:39.904Z"
+    },
+    {
+      "id": "bug-384",
+      "timestamp": "2026-09-08T18:43:06.623Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T18:43:06.623Z"
+    },
+    {
+      "id": "bug-385",
+      "timestamp": "2026-09-08T18:43:55.702Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 130→215 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T18:43:55.702Z"
     }
   ]
 }

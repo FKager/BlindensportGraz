@@ -2446,3 +2446,15 @@
 | 20:21 | Edited BlindensportGraz/EventsViews.swift | modified ToolbarItem() | ~212 |
 | 20:25 | Detail views open read-only; admin/root-only "Bearbeiten" toggle (@State isEditing + .disabled(!isEditing)) | EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift | BUILD SUCCEEDED (simulator) | ~1200 |
 | 20:22 | Session end: 9 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 4 reads | ~24987 tok |
+| 20:34 | Session end: 9 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 4 reads | ~24987 tok |
+| 20:35 | Session end: 9 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 4 reads | ~24987 tok |
+| 20:36 | Session end: 9 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 4 reads | ~24987 tok |
+| 20:38 | Session end: 9 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 4 reads | ~24987 tok |
+| 20:39 | Session end: 9 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 4 reads | ~24987 tok |
+| 20:42 | Edited BlindensportGraz/TrainingsViews.swift | removed 119 lines | ~59 |
+| 20:43 | Edited BlindensportGraz/TrainingsViews.swift | added optional chaining | ~2343 |
+| 20:43 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~2517 |
+| 20:44 | Edited BlindensportGraz/EventsViews.swift | modified Section() | ~241 |
+| 20:44 | Edited BlindensportGraz/EventsViews.swift | modified Section() | ~465 |
+| 20:55 | Read-only detail views now drop empty fields: separate readOnlySections @ViewBuilder (LabeledContent, fullAddress, attended-only) vs editingSections | EventsViews.swift, TrainingsViews.swift, TournamentsViews.swift | BUILD SUCCEEDED (simulator) | ~2500 |
+| 20:44 | Session end: 14 writes across 3 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift) | 6 reads | ~35296 tok |

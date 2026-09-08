@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T18:21:51.418Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T18:44:19.539Z
 > Files: 232 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -203,7 +203,7 @@
 - `EventParticipation.swift` — Class: EventParticipation (~156 tok)
 - `EventParticipationService.swift` — / No `delete` — see AttendanceService.swift's doc comment. (~139 tok)
 - `EventReminderService.swift` — / Minimal surface `EventReminderService` needs from a notification center — (~1212 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~4544 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~4669 tok)
 - `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
 - `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
@@ -247,7 +247,7 @@
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~8210 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9041 tok)
 - `Training.swift` — Class: Training (~405 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~2914 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -256,7 +256,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~9967 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10666 tok)
 - `User.swift` — Class: User (~1190 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)

@@ -24,6 +24,16 @@
   `LabeledContent`/`Text`), leaving the "Selbst anmelden" participation button always enabled — that's
   the viewer's own participation, not event data. Before this, ANY logged-in user could edit every
   field of any training/tournament with no gating at all.
+  - [2026-09-08 follow-up] The read-only presentation is now a *separate* view, not just the disabled
+    editable form. `TrainingDetailView`/`TournamentDetailView` each have `@ViewBuilder private var
+    editingSections` (the old full form, empty fields included so they're fillable) and `readOnlySections`
+    (every empty field dropped: `if !x.isEmpty { LabeledContent(...) }`, address collapsed to
+    `SportEvent.fullAddress`, teams shown as plain `Text(team.name)`, Anwesenheit shows only
+    `attendedMemberships` + Gesamtkosten, images section hidden entirely when `images.isEmpty`). `body`
+    is just `Form { if isEditing { editingSections } else { readOnlySections } }`. Tournament also has a
+    `statusLabel` computed (planned/ongoing/finished → Geplant/Laufend/Beendet). `EventDetailView` got
+    the same empty-field guards on sport/location and a read-only "Beteiligte Teams" list for
+    `!isEditing`.
 
 - [2026-09-03] **App icon**: Franz rejected the hand-drawn Core Graphics stick figure ("really bad").
   Now `generate_app_icon.swift` renders Google's **Material Symbols "blind"** glyph (Apache-2.0,
