@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T19:39:39.839Z
-> Files: 238 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T20:01:13.455Z
+> Files: 240 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -253,14 +253,15 @@
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9058 tok)
 - `Training.swift` — Class: Training (~405 tok)
-- `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~2914 tok)
+- `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2695 tok)
-- `TrainingService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~602 tok)
+- `TrainingSeriesView.swift` — / Creates a weekly-recurring series of trainings from a `TrainingFavorite` (~1387 tok)
+- `TrainingService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~1323 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10604 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10828 tok)
 - `User.swift` — Class: User (~1190 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
@@ -303,6 +304,7 @@
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1983 tok)
 - `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~4440 tok)
 - `TrainingImportExportTests.swift` — Class: TrainingImportExportTests (~2398 tok)
+- `TrainingSeriesTests.swift` — Class: TrainingSeriesTests (~1339 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~7238 tok)
 - `ValidationTests.swift` — Class: ValidationTests (~684 tok)
 

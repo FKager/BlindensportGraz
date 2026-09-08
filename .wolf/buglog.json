@@ -6634,6 +6634,60 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-08T20:55:00.000Z"
+    },
+    {
+      "id": "bug-397",
+      "timestamp": "2026-09-08T19:59:49.231Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TrainingService.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T19:59:49.231Z"
+    },
+    {
+      "id": "bug-398",
+      "timestamp": "2026-09-08T20:00:25.988Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 16\u219224 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T20:00:25.988Z"
+    },
+    {
+      "id": "bug-397",
+      "timestamp": "2026-09-08T23:40:00.000Z",
+      "error_message": "Feature (not a defect): a weekly recurring training had to be re-added by hand every week from the favorite. architecture-review.md \u00a75 P1.",
+      "file": "BlindensportGraz/TrainingSeriesView.swift",
+      "root_cause": "TrainingFavorite quick-fill only ever produced one Training per tap (AddTrainingView.applyFavorite + single Speichern).",
+      "fix": "TrainingFavorite.seriesStartDates(count:from:calendar:) \u2014 count weekly occurrences from suggestedStartDate, +1 .weekOfYear each (DST-safe). TrainingService.partitionSeriesDates(title:sport:startDates:modelContext:) splits open vs. already-taken (SportEvent.duplicate). TrainingService.createSeries(from:startDates:allTeams:createdBy:modelContext:) builds+inserts+saves each open date's Training, applying Team.autoAssignTeamNames like AddTrainingView. New TrainingSeriesView (Form: template summary, Stepper 2..26 Wochen, first/last + full date list with 'vorhanden' tags, one 'Serie erstellt' alert + a summary TrainingCreated toast). Reached from AddTrainingView's favorite-chip .contextMenu 'Serie erstellen\u2026' + an .accessibilityAction of the same name. 5 new tests (TrainingSeriesTests: series count/spacing/weekday, first==suggested, empty for count<=0, partition open/taken). createSeries not unit-tested (calls TrainingService.save -> CloudKit). Build + 198-test suite green.",
+      "tags": [
+        "feature",
+        "training",
+        "recurring",
+        "series",
+        "TrainingFavorite",
+        "architecture-review",
+        "a11y"
+      ],
+      "related_bugs": [
+        "bug-370"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T23:40:00.000Z"
     }
   ]
 }
