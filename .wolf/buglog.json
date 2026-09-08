@@ -6567,6 +6567,73 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-08T20:12:00.000Z"
+    },
+    {
+      "id": "bug-393",
+      "timestamp": "2026-09-08T19:37:44.991Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/SportEvent.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T19:37:44.991Z"
+    },
+    {
+      "id": "bug-394",
+      "timestamp": "2026-09-08T19:38:27.271Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "15 lines replaced/restructured",
+      "fix": "Rewrote 16\u21924 lines (15 removed) | Also: let record: Attendance; if let existing = attendance(for: membership) {",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-08T19:38:33.721Z"
+    },
+    {
+      "id": "bug-395",
+      "timestamp": "2026-09-08T19:39:05.262Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "14 lines replaced/restructured",
+      "fix": "Rewrote 15\u21924 lines (14 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T19:39:05.262Z"
+    },
+    {
+      "id": "bug-393",
+      "timestamp": "2026-09-08T20:55:00.000Z",
+      "error_message": "Feature (not a defect): taking attendance meant tapping Bearbeiten then scrolling a long form to toggle each person \u2014 awkward for a coach doing roll call on the sideline. architecture-review.md \u00a75 P1 #1.",
+      "file": "BlindensportGraz/AttendanceRollCallView.swift",
+      "root_cause": "The only attendance UI was the detail view's Anwesenheit section, now behind the read-only edit gate and buried among address/planning/notes sections.",
+      "fix": "New AttendanceRollCallView: full-screen List, whole-row Button toggles present/absent, leading/trailing swipeActions, '<n> von <m> anwesend' section header, toolbar 'Alle' menu (all present/absent), .sensoryFeedback(.selection). Presented as a .sheet from Training/TournamentDetailView toolbar, gated to canEdit (admin/root). Edits route through the new AttendanceService.setAttended (== AttendanceService.mark + save) so the roll call and the detail form share one create-or-update path; SportEvent.rosterAcrossTeams extracted as the single deduped/sorted roster (both detail views' allMemberships now delegate to it) \u2014 architecture-review.md \u00a71.2. 3 new tests (EventRosterTests: roster dedup+sort, mark create-then-update-in-place). Build + 193-test suite green.",
+      "tags": [
+        "feature",
+        "attendance",
+        "roll-call",
+        "architecture-review",
+        "a11y",
+        "refactor-dedup"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T20:55:00.000Z"
     }
   ]
 }

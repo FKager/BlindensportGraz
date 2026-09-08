@@ -2487,3 +2487,19 @@
 | 22:15 | Fixed bug-387: CloudKitSync.fetchAll now pages via the CKQuery cursor (records(matching:resultsLimit:) + records(continuingMatchFrom:)). | BlindensportGraz/CloudKitSync.swift | build+tests green | ~1.5k |
 | 22:15 | Started architecture-review.md 2.2/2.3: PendingPush durable outbox — new local-only @Model + Schema entry; CloudKitSync.save/delete enqueue+clear-on-confirm; drainOutbox() at syncAll start + on reconnect; SyncState.pendingCount; SyncStatusBanner pending row + "Jetzt synchronisieren" retry. 11 new tests (PendingPushTests). bug-388. | PendingPush.swift, CloudKitSync.swift, SyncState.swift, SyncStatusBanner.swift, SyncOrchestrationService.swift, RootView.swift, BlindensportGrazApp.swift, BlindensportGrazTests/PendingPushTests.swift | BUILD + 190 tests green (4 pre-existing tz TrainingImportExport fails only) | ~11k |
 | 21:13 | Session end: 32 writes across 14 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 25 reads | ~87996 tok |
+| 21:16 | Session end: 32 writes across 14 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 25 reads | ~87996 tok |
+| 21:37 | Edited BlindensportGraz/SportEvent.swift | added optional chaining | ~309 |
+| 21:37 | Edited BlindensportGraz/AttendanceService.swift | modified save() | ~498 |
+| 21:38 | Created BlindensportGraz/AttendanceRollCallView.swift | — | ~1520 |
+| 21:38 | Edited BlindensportGraz/TrainingsViews.swift | reduced (-12 lines) | ~81 |
+| 21:38 | Edited BlindensportGraz/TrainingsViews.swift | modified setAttendance() | ~52 |
+| 21:38 | Edited BlindensportGraz/TrainingsViews.swift | 4→5 lines | ~72 |
+| 21:38 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~186 |
+| 21:38 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~88 |
+| 21:38 | Edited BlindensportGraz/TournamentsViews.swift | 5→6 lines | ~88 |
+| 21:39 | Edited BlindensportGraz/TournamentsViews.swift | reduced (-11 lines) | ~80 |
+| 21:39 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~168 |
+| 21:39 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~84 |
+| 21:39 | Created BlindensportGrazTests/EventRosterTests.swift | — | ~1028 |
+| 22:55 | Built architecture-review.md P1 #1: AttendanceRollCallView — distraction-free full-screen roll call (big rows, tap + swipe present/absent, "N von M anwesend" header, Alle-anwesend/abwesend menu, .sensoryFeedback). Sheet from Training/TournamentDetailView toolbar, gated canEdit (admin/root). Extracted SportEvent.rosterAcrossTeams + AttendanceService.mark/setAttended (shared with the detail views' allMemberships/setAttendance — kills §1.2 dup). 3 new tests (EventRosterTests). | AttendanceRollCallView.swift(new), AttendanceService.swift, SportEvent.swift, TrainingsViews.swift, TournamentsViews.swift, BlindensportGrazTests/EventRosterTests.swift(new) | BUILD + 193 tests green (4 pre-existing tz fails only) | ~7k |
+| 21:40 | Session end: 45 writes across 18 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 28 reads | ~96407 tok |

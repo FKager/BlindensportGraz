@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T19:11:28.556Z
-> Files: 236 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T19:39:39.839Z
+> Files: 238 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -176,7 +176,8 @@
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)
-- `AttendanceService.swift` — / No `delete` — `CloudKitSync` never had a delete path for Attendance (~151 tok)
+- `AttendanceRollCallView.swift` — / Distraction-free "roll call" for one Training or Tournament — (~1520 tok)
+- `AttendanceService.swift` — / No `delete` — `CloudKitSync` never had a delete path for Attendance (~545 tok)
 - `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
 - `BlindensportGraz.entitlements` (~164 tok)
@@ -235,7 +236,7 @@
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
-- `SportEvent.swift` — / Base type for "a sport happening at a place & time"; also `static duplicate(title:sport:startDate:granularity:excluding:in:)` — the name+Sportart+Zeitpunkt uniqueness check used by all Add*View save buttons (~2200 tok)
+- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2169 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1940 tok)
 - `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~379 tok)
@@ -250,7 +251,7 @@
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9041 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9058 tok)
 - `Training.swift` — Class: Training (~405 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~2914 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -259,7 +260,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10666 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10604 tok)
 - `User.swift` — Class: User (~1190 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
@@ -283,6 +284,7 @@
 - `CalendarEventExportTests.swift` — Class: CalendarEventExportTests (~1200 tok)
 - `DesignatedRootTests.swift` — Class: DesignatedRootTests (~1561 tok)
 - `EventReminderServiceTests.swift` — Class: FakeNotificationScheduling (~1755 tok)
+- `EventRosterTests.swift` — Class: EventRosterTests (~1028 tok)
 - `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
