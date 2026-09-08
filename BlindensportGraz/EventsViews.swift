@@ -253,9 +253,20 @@ struct EventDetailView: View {
       @Query private var users: [User]
       @Query private var allTeams: [Team]
       @State private var showMemberList = false
+      // Detail screens open read-only. Only an admin or the root account gets
+      // the "Bearbeiten" toolbar toggle that flips this true and unlocks the
+      // editable sections (user request 2026-09-08). "Selbst anmelden" below
+      // stays available to everyone — it's the viewer's own participation,
+      // not event data.
+      @State private var isEditing = false
 
     var isAdmin: Bool {
         currentUser?.role == .admin
+    }
+
+    // Who may leave read-only mode: admins and the club's root account.
+    var canEdit: Bool {
+        currentUser?.role == .admin || (currentUser?.isRoot ?? false)
     }
 
     // Same admin-bypass as AddEventView.myTeams — an admin can reassign an
@@ -270,6 +281,7 @@ struct EventDetailView: View {
     var body: some View {
         Form {
             EventImagesSection(images: event.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
+                .disabled(!isEditing)
 
             Section("Details") {
                 LabeledContent("Sportart", value: event.sport)
@@ -314,6 +326,7 @@ struct EventDetailView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                .disabled(!isEditing)
             }
 
             Section("Teilnehmer (\(event.participations.count))") {
@@ -344,6 +357,16 @@ struct EventDetailView: View {
         }
         .navigationTitle(event.title)
         .toolbar {
+            if canEdit {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(isEditing ? "Fertig" : "Bearbeiten") {
+                        if isEditing {
+                            SportEventService.save(event, modelContext: modelContext)
+                        }
+                        isEditing.toggle()
+                    }
+                }
+            }
             if isAdmin {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

@@ -14,6 +14,17 @@
 
 ## Key Learnings
 
+- [2026-09-08] **Detail views are read-only by default** (`EventDetailView`, `TrainingDetailView`,
+  `TournamentDetailView`). Each has `@State private var isEditing = false` and a `canEdit` computed
+  (`currentUser?.role == .admin || (currentUser?.isRoot ?? false)`). A "Bearbeiten"/"Fertig" toolbar
+  button (shown only when `canEdit`) toggles `isEditing`; tapping "Fertig" also calls the per-model
+  `*Service.save(...)` for an immediate CloudKit push (the `.onDisappear` save still runs too).
+  Training/Tournament apply `.disabled(!isEditing)` to the whole `Form`; Event only disables its
+  `EventImagesSection` + "Beteiligte Teams" section (its Details/Notes were already read-only
+  `LabeledContent`/`Text`), leaving the "Selbst anmelden" participation button always enabled — that's
+  the viewer's own participation, not event data. Before this, ANY logged-in user could edit every
+  field of any training/tournament with no gating at all.
+
 - [2026-09-03] **App icon**: Franz rejected the hand-drawn Core Graphics stick figure ("really bad").
   Now `generate_app_icon.swift` renders Google's **Material Symbols "blind"** glyph (Apache-2.0,
   github.com/google/material-design-icons) — a single SVG path parsed to a CGPath and filled white,
@@ -259,6 +270,7 @@
 
 - [2026-09-01] **TestFlight / App Store Connect pipeline stood up.** Identifiers now live in `.claude/projects/.../memory/project_testflight-setup.md`: ASC app `6807475637`, API key `HAHVVGS3NX` (issuer `f7dc096f-b352-41be-b24d-35ffa14dfec5`), dist cert `X846K7335V`, App Store profile `D9DS96C74W`. Key facts for future sessions: (a) the `deploy` job in `ios-build-deploy.yml` was rewritten from manual signing to **automatic signing + `-allowProvisioningUpdates` + `-authenticationKey*` API-key flags** — manual signing with a global `CODE_SIGN_STYLE=Manual` on the xcodebuild CLI cannot work here because it also hits the ZIPFoundation SPM resource-bundle target (same root cause as the long comment in `ios-device-deploy.yml`). (b) Release builds must use `aps-environment=production`; done via per-config `CODE_SIGN_ENTITLEMENTS` in project.yml (`Release` → new `BlindensportGrazRelease.entitlements`, `Debug` unchanged). (c) `GENERATE_INFOPLIST_FILE: YES` did **not** emit `CFBundleShortVersionString`/`CFBundleVersion` until `MARKETING_VERSION`/`CURRENT_PROJECT_VERSION` were set explicitly in project.yml — the deploy job overrides both per run (marketing from git tag `v0.1.0`→`0.1.0`, build number from `github.run_number`). (d) Export compliance pre-answered with `INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO` (verified it lands as boolean `false`, not the string "NO"). (e) Trigger is `git push` of a `v*` tag.
 
+- [2026-09-07] **The designated-root club account ("Blindensport Graz", `User.designatedRoot*` identity in User.swift) must not appear in `LoginView`'s "Konto auswählen" account picker on other users' devices.** It's a plain `@Model User` row → it CloudKit-syncs everywhere → every device's `@Query<User>` picks it up. Fix pattern (RootView.swift): `User.isDesignatedRootIdentity` (3-field match, mirrors `elevateIfDesignatedRoot`) + `User.localDesignatedRootIDKey` UserDefaults key; free func `rememberLocalDesignatedRoot(_:)` stamps the account `id` on the device that *creates or logs into* it — wired into `resolveAccount`'s resume + Apple-create paths and the `LoginView(onLogin:)` closure (RegisterView routes through that same closure). `LoginView` renders `visibleUsers` (filters out any `isDesignatedRootIdentity` row whose `id` ≠ the stored one) instead of raw `users`. Adoption: any device that has logged into the club account once keeps seeing it; devices that only synced it never do. Same "device-local, never trust CloudKit for this" tier as `appleUserIdentifier`/`localUserID` in RootView's doc comment.
 - [2026-09-01] **App Store Connect API key `.p8` download can only happen once, and a script-triggered click in Safari silently fails to save it** — Safari's popup blocker eats the download when the click comes from `osascript ... do JavaScript`, but ASC still marks the key "downloaded" server-side, permanently burning it (happened twice: keys `PBU73DZB74`, `K7L3X5ZDRF`). For the download step specifically, a real human/VoiceOver click is required; everything else in ASC (create key, create app record, create cert/profile) automates fine via `do JavaScript`. Also: a **team** API key cannot authenticate without the Issuer ID, and the Issuer ID is only shown on the ASC page once ≥1 key exists.
 
 ## Do-Not-Repeat

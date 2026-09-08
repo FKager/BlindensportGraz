@@ -72,12 +72,25 @@ extension User {
     static let designatedRootLastName = "Graz"
     static let designatedRootEmail = "blindensport.gvsc@gmail.com"
 
+    /// @AppStorage/UserDefaults key holding the `id` of the designated-root
+    /// account as it was created or logged into on *this* device. The club
+    /// account syncs via CloudKit like every other `User`, so without this
+    /// flag it would appear in every device's LoginView account picker —
+    /// see RootView's `LoginView`.
+    static let localDesignatedRootIDKey = "localDesignatedRootUserID"
+
+    /// True when this account carries the club's designated-root identity
+    /// (firstName + lastName + email all match). Mirrors
+    /// `elevateIfDesignatedRoot`'s field checks, without the `!isRoot` guard.
+    var isDesignatedRootIdentity: Bool {
+        firstName.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(User.designatedRootFirstName) == .orderedSame
+            && lastName.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(User.designatedRootLastName) == .orderedSame
+            && email.trimmingCharacters(in: .whitespaces).lowercased() == User.designatedRootEmail
+    }
+
     @discardableResult
     func elevateIfDesignatedRoot() -> Bool {
-        guard firstName.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(User.designatedRootFirstName) == .orderedSame,
-              lastName.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(User.designatedRootLastName) == .orderedSame,
-              email.trimmingCharacters(in: .whitespaces).lowercased() == User.designatedRootEmail,
-              !isRoot else { return false }
+        guard isDesignatedRootIdentity, !isRoot else { return false }
         isRoot = true
         role = .admin
         return true

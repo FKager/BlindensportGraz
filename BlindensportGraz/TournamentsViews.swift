@@ -252,9 +252,18 @@ struct TournamentDetailView: View {
    // export in this app; see CalendarEventExport's doc comment for why
    // .ics+ShareLink was chosen over EKEventStore.
    @State private var icsURL: URL?
+   // Detail screens open read-only. Only an admin or the root account gets
+   // the "Bearbeiten" toolbar toggle that flips this true and unlocks the
+   // form (user request 2026-09-08).
+   @State private var isEditing = false
 
    var isAdmin: Bool {
        currentUser?.role == .admin
+   }
+
+   // Who may leave read-only mode: admins and the club's root account.
+   var canEdit: Bool {
+       currentUser?.role == .admin || (currentUser?.isRoot ?? false)
    }
 
    // Same admin-bypass as AddTournamentView.myTeams — an admin can reassign a
@@ -448,9 +457,22 @@ var body: some View {
                 .lineLimit(3...6)
         }
     }
+    // Everything above stays interactive only while editing; non-editors and
+    // editors who haven't tapped "Bearbeiten" see a read-only form.
+    .disabled(!isEditing)
     .navigationTitle(tournament.title)
     .navigationBarTitleDisplayMode(.inline)
     .toolbar {
+        if canEdit {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(isEditing ? "Fertig" : "Bearbeiten") {
+                    if isEditing {
+                        TournamentService.save(tournament, modelContext: modelContext)
+                    }
+                    isEditing.toggle()
+                }
+            }
+        }
         if isAdmin {
             // Per-tournament PRAE + KostZ. Both used to live on
             // TournamentsListView's list-level "Berichte" menu; moved here
