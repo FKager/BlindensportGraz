@@ -6456,6 +6456,117 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-08T18:50:00.000Z"
+    },
+    {
+      "id": "bug-387",
+      "timestamp": "2026-09-08T19:40:00.000Z",
+      "error_message": "Latent data-loss: CloudKitSync.fetchAll pulls only the first CloudKit page. `let (results, _) = try await publicDB.records(matching: query)` at CloudKitSync.swift:132 discards the query cursor and passes no resultsLimit, so any single record type larger than one server page (~100 rows; code comments cite ~200 ClubMembers) is silently truncated on every syncAll pull. Freshly-synced / post-reset devices would be missing roster/attendance rows.",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "fetchAll was written as a one-shot query with no continuation loop. RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift DOES page (continuationMarker loop) \u2014 the iOS side was never brought to parity. Not caught earlier because per-type counts have mostly stayed under one page so far.",
+      "fix": "FIXED 2026-09-08 (commit pending). CloudKitSync.fetchAll now loops on the query cursor: records(matching:resultsLimit: CKQueryOperation.maximumResults) then records(continuingMatchFrom: page.queryCursor, ...) until queryCursor is nil; accumulates all pages. On error still returns [] (callers only upsert, so empty = no-op, not a partial reconcile). Verified: build + 190-test suite green (4 pre-existing tz-fragile TrainingImportExport failures only, bug-365). Still TODO: confirm live ClubMember / TrainingAttendance counts in the CloudKit dashboard to know if any device is currently missing rows.",
+      "tags": [
+        "cloudkit",
+        "data-loss",
+        "latent",
+        "sync",
+        "architecture-review",
+        "fixed",
+        "pagination",
+        "fetchAll"
+      ],
+      "related_bugs": [
+        "bug-371",
+        "bug-221"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T20:10:00.000Z"
+    },
+    {
+      "id": "bug-388",
+      "timestamp": "2026-09-08T19:08:17.618Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 10\u219230 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T19:08:17.618Z"
+    },
+    {
+      "id": "bug-389",
+      "timestamp": "2026-09-08T19:08:32.065Z",
+      "error_message": "Wrong reference: matching should be continuingMatchFrom",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Used \"matching\" instead of \"continuingMatchFrom\"",
+      "fix": "Changed matching \u2192 continuingMatchFrom",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T19:08:32.065Z"
+    },
+    {
+      "id": "bug-390",
+      "timestamp": "2026-09-08T19:09:50.797Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T19:09:50.797Z"
+    },
+    {
+      "id": "bug-391",
+      "timestamp": "2026-09-08T19:10:58.465Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T19:10:58.465Z"
+    },
+    {
+      "id": "bug-392",
+      "timestamp": "2026-09-08T20:12:00.000Z",
+      "error_message": "Feature/hardening (not a defect): failed CloudKit pushes were silently lost after performWithRetry gave up \u2014 no durable record, banner only showed a transient .failed. architecture-review.md 2.2/2.3.",
+      "file": "BlindensportGraz/PendingPush.swift, BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "save()/delete() were pure fire-and-forget: 4 inline retries over ~3.5s then drop. No outbox, no visible pending count, no manual retry.",
+      "fix": "New local-only @Model PendingPush (durable outbox, added to the app Schema, never CloudKit-synced). CloudKitSync gains modelContainer + a dedicated outboxContext; save()/delete() enqueue a row (dedup by recordName, last-intent-wins) then clear it once CloudKit confirms; performWithRetry now returns Bool. drainOutbox() re-attempts queued rows oldest-first (one try each; called at syncAll start and on network reconnect via MainTabView.onChange(isOnline)). SyncState.pendingCount + SyncStatusBanner row 'N \u00c4nderungen noch nicht synchronisiert' + a 'Jetzt synchronisieren' retry button (also on the .failed banner). 11 new tests (PendingPushTests, PersistenceServiceTests-style in-memory container). Build + 190-test suite green.",
+      "tags": [
+        "cloudkit",
+        "sync",
+        "outbox",
+        "offline",
+        "architecture-review",
+        "PendingPush",
+        "resilience"
+      ],
+      "related_bugs": [
+        "bug-387",
+        "bug-371"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-08T20:12:00.000Z"
     }
   ]
 }

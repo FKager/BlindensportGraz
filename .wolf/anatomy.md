@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T18:53:02.301Z
-> Files: 232 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T19:11:28.556Z
+> Files: 236 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -64,7 +64,9 @@
 - `.DS_Store` (~2186 tok)
 - `.gitignore` — Git ignore rules (~48 tok)
 - `.mcp.json` (~7 tok)
-- `audit.md` — BlindensportGraz — Best-Practices Audit & Enhancement Backlog (~7450 tok)
+- `architecture-review.md` — BlindensportGraz — Architecture & Design Review (2026-09-08) (~4275 tok)
+- `architecture-review.md` — Architecture & design review 2026-09-08 (supersedes audit.md): 27 findings + 14 backlog items; top item = `CloudKitSync.fetchAll` doesn't paginate CloudKit results (~2600 tok)
+- `audit.md` — BlindensportGraz — Best-Practices Audit & Enhancement Backlog (2026-08-19; almost all implemented in the 2026-08-22 supergoal run) (~7450 tok)
 - `build_commands.md` — Build & deploy commands used (iPhone von Franz) (~776 tok)
 - `ci_cert.md` — Fixing the CI provisioning profile (Push Notifications capability) (~1016 tok)
 - `CLAUDE.md` — OpenWolf (~129 tok)
@@ -178,12 +180,12 @@
 - `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
 - `BlindensportGraz.entitlements` (~164 tok)
-- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2135 tok)
+- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2260 tok)
 - `BlindensportGrazRelease.entitlements` (~164 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
 - `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2260 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~3446 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5253 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~945 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
 - `CloudKitSync+EventParticipation.swift` (~530 tok)
@@ -220,6 +222,7 @@
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
 - `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s hub; also `PersonenListView` (admin-only combined people list: `User` accounts + `Member` roster, deduped by `Member.first(matching:)`, tags Konto/Kartei/Grazer VSC, filter+search) (~7514 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
+- `PendingPush.swift` — / Durable outbox for CloudKit writes — architecture-review.md 2.2 / 2.3. (~1418 tok)
 - `PersistenceService.swift` — / Shared save+sync core every per-model `*Service` (e.g. `TeamService`, (~968 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3164 tok)
 - `PraeExport.swift` — Declares PraeExportError; D4/C3 name fields use person.praeFormName ("Nachname, Vorname"), not displayName (~5140 tok)
@@ -227,7 +230,7 @@
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
-- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~4583 tok)
+- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~4705 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
@@ -235,9 +238,9 @@
 - `SportEvent.swift` — / Base type for "a sport happening at a place & time"; also `static duplicate(title:sport:startDate:granularity:excluding:in:)` — the name+Sportart+Zeitpunkt uniqueness check used by all Add*View save buttons (~2200 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1940 tok)
-- `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~305 tok)
-- `SyncState.swift` — / App-wide sync state — audit.md SwiftData & CloudKit Finding 3 ("no (~639 tok)
-- `SyncStatusBanner.swift` — / Visible sync/offline indicator — audit.md SwiftData & CloudKit Finding 3 (~663 tok)
+- `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~379 tok)
+- `SyncState.swift` — / App-wide sync state — audit.md SwiftData & CloudKit Finding 3 ("no (~804 tok)
+- `SyncStatusBanner.swift` — / Visible sync/offline indicator — audit.md SwiftData & CloudKit Finding 3 (~1118 tok)
 - `Team.swift` — Class: Team (~823 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3220 tok)
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
@@ -286,6 +289,7 @@
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `MemberMembershipRequestTests.swift` — Class: MemberMembershipRequestTests (~1810 tok)
 - `NetworkMonitorTests.swift` — Class: FakeReachabilitySource (~524 tok)
+- `PendingPushTests.swift` — Class: PendingPushTests (~1582 tok)
 - `PersistenceServiceTests.swift` — Struct: StubError (~1138 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~9646 tok)
 - `QueryPredicateTests.swift` — Class: QueryPredicateTests (~772 tok)

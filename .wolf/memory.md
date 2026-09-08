@@ -2464,3 +2464,26 @@
 | 20:51 | Session end: 15 writes across 4 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml) | 7 reads | ~39208 tok |
 | 20:53 | Edited .github/workflows/ios-build-deploy.yml | expanded (+11 lines) | ~198 |
 | 21:12 | Also guarded ios-build-deploy.yml (ref-keyed concurrency); updated bug-386 | .github/workflows/ios-build-deploy.yml, .wolf/buglog.json | YAML valid | ~500 |
+| 20:56 | Session end: 16 writes across 5 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 7 reads | ~39406 tok |
+| 20:56 | Session end: 16 writes across 5 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 7 reads | ~39406 tok |
+| 21:03 | Created architecture-review.md | — | ~4560 |
+| 21:40 | Wrote architecture-review.md — fresh arch/design/sync review superseding audit.md (mostly implemented). 27 findings + 14 backlog. Key discovery: CloudKitSync.fetchAll (CloudKitSync.swift:132) discards the CKQuery cursor → any record type > 1 CloudKit page is silently truncated on pull (RootCLI S2S client pages correctly; app side doesn't). Logged bug-387. | architecture-review.md, .wolf/buglog.json | review only, no code change | ~9k |
+| 21:03 | Session end: 17 writes across 6 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 16 reads | ~71668 tok |
+| 21:08 | Edited BlindensportGraz/CloudKitSync.swift | modified fetchAll() | ~484 |
+| 21:08 | Edited BlindensportGraz/CloudKitSync.swift | 2→2 lines | ~52 |
+| 21:09 | Created BlindensportGraz/PendingPush.swift | — | ~1418 |
+| 21:09 | Edited BlindensportGraz/CloudKitSync.swift | modified recordID() | ~308 |
+| 21:09 | Edited BlindensportGraz/CloudKitSync.swift | added nullish coalescing | ~1696 |
+| 21:09 | Edited BlindensportGraz/CloudKitSync.swift | modified syncAll() | ~105 |
+| 21:10 | Edited BlindensportGraz/SyncState.swift | expanded (+6 lines) | ~142 |
+| 21:10 | Edited BlindensportGraz/SyncState.swift | modified markFailed() | ~147 |
+| 21:10 | Created BlindensportGraz/SyncStatusBanner.swift | — | ~1118 |
+| 21:10 | Edited BlindensportGraz/BlindensportGrazApp.swift | 4→7 lines | ~76 |
+| 21:10 | Edited BlindensportGraz/BlindensportGrazApp.swift | 3→7 lines | ~112 |
+| 21:10 | Edited BlindensportGraz/SyncOrchestrationService.swift | modified syncAll() | ~103 |
+| 21:10 | Edited BlindensportGraz/RootView.swift | 6→9 lines | ~64 |
+| 21:10 | Edited BlindensportGraz/RootView.swift | modified safeAreaInset() | ~167 |
+| 21:11 | Created BlindensportGrazTests/PendingPushTests.swift | — | ~1582 |
+| 22:15 | Fixed bug-387: CloudKitSync.fetchAll now pages via the CKQuery cursor (records(matching:resultsLimit:) + records(continuingMatchFrom:)). | BlindensportGraz/CloudKitSync.swift | build+tests green | ~1.5k |
+| 22:15 | Started architecture-review.md 2.2/2.3: PendingPush durable outbox — new local-only @Model + Schema entry; CloudKitSync.save/delete enqueue+clear-on-confirm; drainOutbox() at syncAll start + on reconnect; SyncState.pendingCount; SyncStatusBanner pending row + "Jetzt synchronisieren" retry. 11 new tests (PendingPushTests). bug-388. | PendingPush.swift, CloudKitSync.swift, SyncState.swift, SyncStatusBanner.swift, SyncOrchestrationService.swift, RootView.swift, BlindensportGrazApp.swift, BlindensportGrazTests/PendingPushTests.swift | BUILD + 190 tests green (4 pre-existing tz TrainingImportExport fails only) | ~11k |
+| 21:13 | Session end: 32 writes across 14 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 25 reads | ~87996 tok |
