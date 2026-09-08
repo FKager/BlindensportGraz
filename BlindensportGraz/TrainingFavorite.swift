@@ -158,6 +158,20 @@ extension TrainingFavorite {
         return calendar.date(from: components) ?? targetDay
     }
 
+    /// Start dates for a weekly-recurring series built from this favorite
+    /// (architecture-review.md §5): `count` occurrences, the first one at
+    /// `suggestedStartDate` (this favorite's weekday + time, the nearest
+    /// future occurrence), each subsequent one exactly one calendar week
+    /// later. Uses `.weekOfYear` arithmetic so it stays on the same weekday
+    /// and wall-clock time across a DST boundary. Factored out as a plain
+    /// function so it's testable without any SwiftUI/`ModelContext`.
+    func seriesStartDates(count: Int, from reference: Date = .now, calendar: Calendar = .current) -> [Date] {
+        guard count > 0 else { return [] }
+        let first = Self.suggestedStartDate(startHour: startHour, startMinute: startMinute,
+                                            weekday: weekday, from: reference, calendar: calendar)
+        return (0..<count).compactMap { calendar.date(byAdding: .weekOfYear, value: $0, to: first) }
+    }
+
     /// Duration in minutes implied by this favorite's stored start/end
     /// time-of-day, clamped to AddTrainingView's Stepper range (15...240) so
     /// an edge-case (e.g. end time before start time) never produces a

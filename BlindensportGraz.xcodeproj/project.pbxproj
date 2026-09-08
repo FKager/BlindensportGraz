@@ -110,6 +110,7 @@
 		C1977C298926611B32F1B832 /* CloudKitSync+ExpenseReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B2958BDAA594F03FDA99CC /* CloudKitSync+ExpenseReceipt.swift */; };
 		C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */; };
 		C27B01BE24EB920C70B12B68 /* PraeCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15C672FD868BD79242BCDA2 /* PraeCalculation.swift */; };
+		C2B6EFEB2DE173C60C01A4A9 /* TrainingSeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F56897EA548E8E01D9978A8D /* TrainingSeriesView.swift */; };
 		C611F18BE32F9C47AD32EA90 /* EventImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24F700D3A8CF4A9318C4F8E8 /* EventImage.swift */; };
 		C66B9CD30D91D085B03A8866 /* KostZCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38F3AB4D1AEF1ADED71FFBFC /* KostZCalculation.swift */; };
 		C7BEAA0479B3E28EE47AE239 /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5D170F3B31A0E1218F73A12 /* Team.swift */; };
@@ -117,6 +118,7 @@
 		CDB8599A0D0BE21E5955D2C8 /* EventRosterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8DA73FA66128FEFF1064B9 /* EventRosterTests.swift */; };
 		D6EF22DD714CD9D341BD8047 /* TournamentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A12C3F3022E39C247B6F496 /* TournamentService.swift */; };
 		DD7024922AB81E5ECA5B4331 /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D658D11752C2F382D2950CC4 /* MemberListView.swift */; };
+		E3225639084155311A5B5CED /* TrainingSeriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB79152BB0C0AE01367983BF /* TrainingSeriesTests.swift */; };
 		E70BA7534735B83C9AB54A4F /* TeilnehmerlisteExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C67CC5BCE3EE5934D74787F2 /* TeilnehmerlisteExport.swift */; };
 		E77BDFB61E06972E54E30ABF /* SammelabrechnungViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512D9209475F8B7BE4E19C88 /* SammelabrechnungViews.swift */; };
 		E783F0329D08F3CFF4F4E279 /* TrainingImportExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5F835146DBAF82E595CD2D /* TrainingImportExport.swift */; };
@@ -260,9 +262,11 @@
 		E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */ = {isa = PBXFileReference; path = TN_TeilnehmerInnenliste.xlsx; sourceTree = "<group>"; };
 		F2B2958BDAA594F03FDA99CC /* CloudKitSync+ExpenseReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CloudKitSync+ExpenseReceipt.swift"; sourceTree = "<group>"; };
 		F47BC1DFE7FFC8695E1FC793 /* ExpenseReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseReceipt.swift; sourceTree = "<group>"; };
+		F56897EA548E8E01D9978A8D /* TrainingSeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSeriesView.swift; sourceTree = "<group>"; };
 		F839558E431EA641208C70D8 /* AttendanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceService.swift; sourceTree = "<group>"; };
 		F9CF99A80C7215EEF4832567 /* SyncStatusBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusBanner.swift; sourceTree = "<group>"; };
 		FB1318662CB1457799DA18A4 /* Sport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sport.swift; sourceTree = "<group>"; };
+		FB79152BB0C0AE01367983BF /* TrainingSeriesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSeriesTests.swift; sourceTree = "<group>"; };
 		FBCF49C86C09E7C232C42C19 /* SyncState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncState.swift; sourceTree = "<group>"; };
 		FCB0CA0B53D5D5CCDD8090B8 /* Attendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attendance.swift; sourceTree = "<group>"; };
 		FD1B40457372FFF65FECE717 /* MemberMembershipRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberMembershipRequestTests.swift; sourceTree = "<group>"; };
@@ -307,6 +311,7 @@
 				9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */,
 				401DEC882A1342C320FDC3D3 /* TrainingFavoriteTests.swift */,
 				77EE00D33AB2AF7A8148E8A9 /* TrainingImportExportTests.swift */,
+				FB79152BB0C0AE01367983BF /* TrainingSeriesTests.swift */,
 				5A295360023A2F97D708F995 /* TrainingsfrequenzlisteCalculationTests.swift */,
 				CBF7041585D47F19795D9DFA /* ValidationTests.swift */,
 			);
@@ -402,6 +407,7 @@
 				DA3A94E689E68FD6F8539AFE /* TrainingFavorite.swift */,
 				2288DEC02479D77232E9204B /* TrainingFavoriteService.swift */,
 				3C5F835146DBAF82E595CD2D /* TrainingImportExport.swift */,
+				F56897EA548E8E01D9978A8D /* TrainingSeriesView.swift */,
 				480FB40BB1C49DC43840828F /* TrainingService.swift */,
 				4FA5E8F29F13CB502F4FCA7F /* Trainingsfrequenzliste_Vorlage.xlsx */,
 				37A780E3E7EC0B3F11675D05 /* TrainingsfrequenzlisteCalculation.swift */,
@@ -641,6 +647,7 @@
 				E9CA58C8467B9396E1F2520D /* TrainingFavorite.swift in Sources */,
 				21945D2932CFF71BE626591C /* TrainingFavoriteService.swift in Sources */,
 				E783F0329D08F3CFF4F4E279 /* TrainingImportExport.swift in Sources */,
+				C2B6EFEB2DE173C60C01A4A9 /* TrainingSeriesView.swift in Sources */,
 				2AF9E8F457404AF8EC9B5E2B /* TrainingService.swift in Sources */,
 				0989835B5B4984BD3ED6D894 /* TrainingsViews.swift in Sources */,
 				11A453DFC68205E022361EBB /* TrainingsfrequenzlisteCalculation.swift in Sources */,
@@ -679,6 +686,7 @@
 				C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */,
 				0F6C4EB476B60C7C8C655A88 /* TrainingFavoriteTests.swift in Sources */,
 				9A86FDA539968A5B98813BA6 /* TrainingImportExportTests.swift in Sources */,
+				E3225639084155311A5B5CED /* TrainingSeriesTests.swift in Sources */,
 				1CAD989F362D3B774D912034 /* TrainingsfrequenzlisteCalculationTests.swift in Sources */,
 				30DA738A8A753C7486037138 /* ValidationTests.swift in Sources */,
 			);

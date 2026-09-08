@@ -30,6 +30,8 @@ struct AddTrainingView: View {
        @State private var selectedTeamIDs: Set<UUID> = []
        @State private var includesTime = true
        @State private var showDuplicateAlert = false
+       // Favorite whose weekly-recurring series is being set up (nil = sheet closed).
+       @State private var seriesFavorite: TrainingFavorite?
 
     let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
 
@@ -102,18 +104,26 @@ struct AddTrainingView: View {
                                         // horizontal scroll — no room for a swipe gesture
                                         // or a visible per-chip delete button.
                                         .contextMenu {
+                                            Button {
+                                                seriesFavorite = favorite
+                                            } label: {
+                                                Label("Serie erstellen…", systemImage: "calendar.badge.plus")
+                                            }
                                             Button(role: .destructive) {
                                                 deleteFavorite(favorite)
                                             } label: {
                                                 Label("Löschen", systemImage: "trash")
                                             }
                                         }
-                                        // Additive VoiceOver equivalent to the long-press
+                                        // Additive VoiceOver equivalents to the long-press
                                         // contextMenu above — audit.md Accessibility Finding
                                         // 3: this chip had no VoiceOver-reachable way to
                                         // delete a favorite at all (long-press has no direct
                                         // VoiceOver gesture equivalent), same underlying
-                                        // deleteFavorite(_:) call either way.
+                                        // calls either way.
+                                        .accessibilityAction(named: "Serie erstellen") {
+                                            seriesFavorite = favorite
+                                        }
                                         .accessibilityAction(named: "Löschen") {
                                             deleteFavorite(favorite)
                                         }
@@ -276,6 +286,9 @@ struct AddTrainingView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text("Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt.")
+            }
+            .sheet(item: $seriesFavorite) { favorite in
+                TrainingSeriesView(favorite: favorite, allTeams: allTeams, currentUser: currentUser)
             }
         }
     }
