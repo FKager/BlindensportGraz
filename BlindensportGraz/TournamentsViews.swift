@@ -248,6 +248,7 @@ struct TournamentDetailView: View {
    @State private var showKostZCalculation = false
    @State private var showPraeCalculation = false
    @State private var showSammelabrechnung = false
+   @State private var showRollCall = false
    // Eagerly (re)generated below — same ShareLink convention as every other
    // export in this app; see CalendarEventExport's doc comment for why
    // .ics+ShareLink was chosen over EKEventStore.
@@ -276,20 +277,9 @@ struct TournamentDetailView: View {
    }
 
     // Every roster entry across all assigned teams, deduped by the underlying
-    // person — mirrors TrainingDetailView.allMemberships.
-    var allMemberships: [TeamMembership] {
-        var seenKeys = Set<UUID>()
-        var result: [TeamMembership] = []
-        for team in tournament.teams {
-            for membership in team.memberships {
-                let key = membership.user?.id ?? membership.member?.id ?? membership.id
-                if seenKeys.insert(key).inserted {
-                    result.append(membership)
-                }
-            }
-        }
-        return result.sortedByLastName()
-    }
+    // person — shared with TrainingDetailView and AttendanceRollCallView via
+    // SportEvent.rosterAcrossTeams (architecture-review.md §1.2).
+    var allMemberships: [TeamMembership] { tournament.rosterAcrossTeams }
 
     var attendedMemberships: [TeamMembership] {
         allMemberships.filter { attendance(for: $0)?.attended == true }
@@ -557,6 +547,13 @@ var body: some View {
                     isEditing.toggle()
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showRollCall = true
+                } label: {
+                    Label("Anwesenheit", systemImage: "checklist")
+                }
+            }
         }
         if isAdmin {
             // Per-tournament PRAE + KostZ. Both used to live on
@@ -604,6 +601,9 @@ var body: some View {
     }
     .task(id: CalendarEventExport.fields(for: tournament)) {
         icsURL = try? CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: tournament))
+    }
+    .sheet(isPresented: $showRollCall) {
+        AttendanceRollCallView(event: tournament)
     }
     .sheet(isPresented: $showTeilnehmerSportler) {
         MemberListView(

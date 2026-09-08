@@ -325,6 +325,7 @@ struct TrainingDetailView: View {
      @Environment(\.modelContext) private var modelContext
      @Query private var allTeams: [Team]
      @State private var showMemberList = false
+     @State private var showRollCall = false
      // Detail screens open read-only. Only an admin or the root account gets
      // the "Bearbeiten" toolbar toggle that flips this true and unlocks the
      // form (user request 2026-09-08).
@@ -354,21 +355,9 @@ struct TrainingDetailView: View {
     }
 
     // Every roster entry across all assigned teams, deduped by the underlying
-    // person (a user/member could otherwise show twice if they're in two
-    // teams both assigned to this training).
-    var allMemberships: [TeamMembership] {
-        var seenKeys = Set<UUID>()
-        var result: [TeamMembership] = []
-        for team in training.teams {
-            for membership in team.memberships {
-                let key = membership.user?.id ?? membership.member?.id ?? membership.id
-                if seenKeys.insert(key).inserted {
-                    result.append(membership)
-                }
-            }
-        }
-        return result.sortedByLastName()
-    }
+    // person — now shared with TournamentDetailView and AttendanceRollCallView
+    // via SportEvent.rosterAcrossTeams (architecture-review.md §1.2).
+    var allMemberships: [TeamMembership] { training.rosterAcrossTeams }
 
     // Live check against the club's name + Sportart + Zeitpunkt uniqueness
     // rule — this screen edits `training` through bindings with no explicit
@@ -591,6 +580,13 @@ struct TrainingDetailView: View {
                         isEditing.toggle()
                     }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showRollCall = true
+                    } label: {
+                        Label("Anwesenheit", systemImage: "checklist")
+                    }
+                }
             }
             if isAdmin {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -612,6 +608,9 @@ struct TrainingDetailView: View {
         }
         .task(id: CalendarEventExport.fields(for: training)) {
             icsURL = try? CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: training))
+        }
+        .sheet(isPresented: $showRollCall) {
+            AttendanceRollCallView(event: training)
         }
         .sheet(isPresented: $showMemberList) {
             // No exportContext (unlike TournamentDetailView) — the
@@ -642,15 +641,7 @@ struct TrainingDetailView: View {
     }
 
     private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
-        let record: Attendance
-        if let existing = attendance(for: membership) {
-            existing.attended = attended
-            record = existing
-        } else {
-            record = Attendance(event: training, membership: membership, attended: attended)
-            modelContext.insert(record)
-        }
-        AttendanceService.save(record, modelContext: modelContext)
+        AttendanceService.setAttended(attended, for: membership, at: training, modelContext: modelContext)
     }
 
     private func setPraeAmount(_ amount: Double, for membership: TeamMembership) {

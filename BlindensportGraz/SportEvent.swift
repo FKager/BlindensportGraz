@@ -121,6 +121,24 @@ extension SportEvent {
         }
     }
 
+    /// Every team-roster entry across all assigned teams, deduped by the
+    /// underlying person (someone on two assigned teams appears once) and
+    /// sorted by last name. The single source of the Anwesenheit roster —
+    /// `TrainingDetailView`/`TournamentDetailView`'s `allMemberships` and
+    /// `AttendanceRollCallView` all read this (architecture-review.md §1.2,
+    /// which flagged that dedup logic being copy-pasted across those views).
+    var rosterAcrossTeams: [TeamMembership] {
+        var seen = Set<UUID>()
+        var result: [TeamMembership] = []
+        for team in teams {
+            for membership in team.memberships {
+                let key = membership.user?.id ?? membership.member?.id ?? membership.id
+                if seen.insert(key).inserted { result.append(membership) }
+            }
+        }
+        return result.sortedByLastName()
+    }
+
     /// Combines street/zip/city/country into one display line, e.g.
     /// "Hauptstraße 12, 8010 Graz, Österreich" — mirrors Member.fullAddress
     /// exactly (same join logic). Not stored, so it can't be used as a
