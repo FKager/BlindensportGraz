@@ -1,29 +1,6 @@
 {
   "sourceLanguage": "de",
   "strings": {
-    "–": {},
-    "@%@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "@%@"
-          }
-        }
-      }
-    },
-    "%lld min": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "%lld min"
-          }
-        }
-      }
-    },
     "%lld Mitglieder": {
       "extractionState": "manual",
       "localizations": {
@@ -46,8 +23,30 @@
         }
       }
     },
+    "%lld min": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
     "%lld.": {},
     "0": {},
+    "@%@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "@%@"
+          }
+        }
+      }
+    },
     "Abbrechen": {
       "extractionState": "manual",
       "localizations": {
@@ -418,8 +417,8 @@
       }
     },
     "Keine Bilder": {},
-    "Keine Einsätze mit hinterlegtem Betrag in diesem Monat.": {},
     "Keine Einsatztage mit hinterlegtem PRAE-Betrag in diesem Monat.": {},
+    "Keine Einsätze mit hinterlegtem Betrag in diesem Monat.": {},
     "Keine Events": {
       "extractionState": "manual",
       "localizations": {
@@ -582,7 +581,6 @@
         }
       }
     },
-    "männlich": {},
     "Max. Teams: %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -629,17 +627,6 @@
         }
       }
     },
-    "Mitglieder – %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Members – %@"
-          }
-        }
-      }
-    },
     "Mitglieder (%lld)": {
       "extractionState": "manual",
       "localizations": {
@@ -654,6 +641,17 @@
     "Mitglieder exportieren": {},
     "Mitglieder importieren": {},
     "Mitglieder ohne Konto": {},
+    "Mitglieder – %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Members – %@"
+          }
+        }
+      }
+    },
     "Mitgliederliste": {
       "extractionState": "manual",
       "localizations": {
@@ -670,17 +668,6 @@
     "Monat": {},
     "Monatliche Höchstgrenze von € 720,- überschritten.": {},
     "Nachname": {},
-    "Nächste Events": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Upcoming Events"
-          }
-        }
-      }
-    },
     "Name": {
       "extractionState": "manual",
       "localizations": {
@@ -784,6 +771,17 @@
       }
     },
     "Nur die Zeile „HONORARE / VERGÜTUNGEN“ sowie Zeitraum und Personenanzahl werden vorausgefüllt — alle übrigen Kostenarten, Beilagen-Nummern und der Ort müssen weiterhin von Hand ergänzt werden.": {},
+    "Nächste Events": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upcoming Events"
+          }
+        }
+      }
+    },
     "OK": {},
     "Ort": {
       "extractionState": "manual",
@@ -796,6 +794,11 @@
         }
       }
     },
+    "PLZ": {},
+    "PRAE (€)": {},
+    "PRAE-Berechnung": {},
+    "PRAE-Formular exportieren": {},
+    "PRAE-Formular wird vorbereitet …": {},
     "Person": {},
     "Planung": {
       "extractionState": "manual",
@@ -808,11 +811,6 @@
         }
       }
     },
-    "PLZ": {},
-    "PRAE (€)": {},
-    "PRAE-Berechnung": {},
-    "PRAE-Formular exportieren": {},
-    "PRAE-Formular wird vorbereitet …": {},
     "Profil": {
       "extractionState": "manual",
       "localizations": {
@@ -835,6 +833,7 @@
         }
       }
     },
+    "ROOT": {},
     "Registrierte Benutzer": {},
     "Rolle": {
       "extractionState": "manual",
@@ -847,7 +846,7 @@
         }
       }
     },
-    "ROOT": {},
+    "SVNR": {},
     "Schwerpunkt": {
       "extractionState": "manual",
       "localizations": {
@@ -939,7 +938,6 @@
       }
     },
     "Straße": {},
-    "SVNR": {},
     "Tageshöchstsatz von € 120,- überschritten an Tag(en): %@.": {},
     "Team": {
       "extractionState": "manual",
@@ -1049,17 +1047,6 @@
         }
       }
     },
-    "Übersicht": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Overview"
-          }
-        }
-      }
-    },
     "Uhrzeit festlegen": {
       "extractionState": "manual",
       "localizations": {
@@ -1085,7 +1072,6 @@
     "Vereinsdaten": {},
     "Vereinsdaten bearbeiten": {},
     "Vorname": {},
-    "weiblich": {},
     "Willkommen, %@": {
       "extractionState": "manual",
       "localizations": {
@@ -1119,18 +1105,8 @@
         }
       }
     },
-    "training_created_title": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Neues Training"
-          }
-        }
-      }
-    },
-    "training_created_body": {
+    "männlich": {},
+    "tournament_created_body": {
       "extractionState": "manual",
       "localizations": {
         "de": {
@@ -1152,7 +1128,7 @@
         }
       }
     },
-    "tournament_created_body": {
+    "tournament_updated_body": {
       "extractionState": "manual",
       "localizations": {
         "de": {
@@ -1162,7 +1138,75 @@
           }
         }
       }
-    }
+    },
+    "tournament_updated_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turnier geändert"
+          }
+        }
+      }
+    },
+    "training_created_body": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "training_created_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neues Training"
+          }
+        }
+      }
+    },
+    "training_updated_body": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "training_updated_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Training geändert"
+          }
+        }
+      }
+    },
+    "weiblich": {},
+    "Übersicht": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overview"
+          }
+        }
+      }
+    },
+    "–": {}
   },
   "version": "1.0"
 }

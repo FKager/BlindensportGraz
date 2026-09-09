@@ -27,12 +27,34 @@ extension CloudKitSync {
     func ensureTrainingTournamentSubscriptions(for user: User) async {
         let teamIDStrings = user.memberships.map { $0.team.id.uuidString }
         guard !teamIDStrings.isEmpty else { return }
-        await ensureCreationSubscription(recordType: CKSchema.Training.recordType, teamIDStrings: teamIDStrings,
-                                          titleKey: "training_created_title", bodyKey: "training_created_body",
-                                          subscriptionID: "training-created-\(user.id.uuidString)")
-        await ensureCreationSubscription(recordType: CKSchema.Tournament.recordType, teamIDStrings: teamIDStrings,
-                                          titleKey: "tournament_created_title", bodyKey: "tournament_created_body",
-                                          subscriptionID: "tournament-created-\(user.id.uuidString)")
+        // Creation alerts (original behaviour) plus, since architecture-review.md
+        // §5, a second subscription per type that fires when an existing
+        // Training/Tournament is *edited* — an admin changing the time or venue
+        // in the detail view calls `*Service.save` → `pushX` → a `.changedKeys`
+        // update to the same CKRecord, which is a distinct server event from the
+        // first insert, so the two subscriptions never both fire for one change.
+        // Kept as separate subscription IDs (not one with both fire options) so
+        // each can carry its own "neu"/"geändert" alert text — a pure alert push
+        // can't branch on `queryNotificationReason` with no app code running.
+        // No cancellation subscription: `TrainingService`/`TournamentService`
+        // delete only locally (no CloudKit delete path exists for these types),
+        // so `.firesOnRecordDeletion` would never fire.
+        await ensureSubscription(recordType: CKSchema.Training.recordType, teamIDStrings: teamIDStrings,
+                                 titleKey: "training_created_title", bodyKey: "training_created_body",
+                                 subscriptionID: "training-created-\(user.id.uuidString)",
+                                 options: .firesOnRecordCreation)
+        await ensureSubscription(recordType: CKSchema.Tournament.recordType, teamIDStrings: teamIDStrings,
+                                 titleKey: "tournament_created_title", bodyKey: "tournament_created_body",
+                                 subscriptionID: "tournament-created-\(user.id.uuidString)",
+                                 options: .firesOnRecordCreation)
+        await ensureSubscription(recordType: CKSchema.Training.recordType, teamIDStrings: teamIDStrings,
+                                 titleKey: "training_updated_title", bodyKey: "training_updated_body",
+                                 subscriptionID: "training-updated-\(user.id.uuidString)",
+                                 options: .firesOnRecordUpdate)
+        await ensureSubscription(recordType: CKSchema.Tournament.recordType, teamIDStrings: teamIDStrings,
+                                 titleKey: "tournament_updated_title", bodyKey: "tournament_updated_body",
+                                 subscriptionID: "tournament-updated-\(user.id.uuidString)",
+                                 options: .firesOnRecordUpdate)
     }
 
     /// Alert text is resolved by iOS itself at display time from
@@ -42,12 +64,13 @@ extension CloudKitSync {
     /// into that localized format string's `%1$@`/`%2$@` placeholders — no
     /// app code runs to construct this, which is what makes it work even
     /// when the recipient's app is fully terminated.
-    private func ensureCreationSubscription(recordType: String, teamIDStrings: [String],
-                                             titleKey: String, bodyKey: String, subscriptionID: String) async {
+    private func ensureSubscription(recordType: String, teamIDStrings: [String],
+                                    titleKey: String, bodyKey: String, subscriptionID: String,
+                                    options: CKQuerySubscription.Options) async {
         let predicate = NSPredicate(format: "ANY \(CKSchema.Training.teamIDs) IN %@", teamIDStrings)
         let subscription = CKQuerySubscription(recordType: recordType, predicate: predicate,
                                                 subscriptionID: subscriptionID,
-                                                options: .firesOnRecordCreation)
+                                                options: options)
         let info = CKSubscription.NotificationInfo()
         info.titleLocalizationKey = titleKey
         info.alertLocalizationKey = bodyKey
