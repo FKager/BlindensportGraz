@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T19:03:22.300Z
-> Files: 246 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T19:23:11.397Z
+> Files: 252 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -77,7 +77,7 @@
 - `goal.md` (~276 tok)
 - `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
 - `profile.plist` (~0 tok)
-- `project.yml` (~944 tok)
+- `project.yml` (~1404 tok)
 
 ## .claude/
 
@@ -107,7 +107,7 @@
 ## .github/workflows/
 
 - `ios-build-deploy.yml` — CI: iOS Build and Deploy (~4115 tok)
-- `ios-device-deploy.yml` — CI: iOS Device Deploy (~3894 tok)
+- `ios-device-deploy.yml` — CI: iOS Device Deploy (~4310 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/
 
@@ -182,9 +182,9 @@
 - `AttendanceService.swift` — / No `delete` — `CloudKitSync` never had a delete path for Attendance (~545 tok)
 - `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
-- `BlindensportGraz.entitlements` (~164 tok)
+- `BlindensportGraz.entitlements` (~200 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
-- `BlindensportGrazRelease.entitlements` (~164 tok)
+- `BlindensportGrazRelease.entitlements` (~199 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
 - `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2260 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
@@ -235,7 +235,7 @@
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
-- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~4705 tok)
+- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~4822 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
@@ -270,6 +270,8 @@
 - `User.swift` — Class: User (~1190 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
+- `WidgetRefresher.swift` — / Bridges the app's SwiftData world to the widget: recompute "what's next" (~379 tok)
+- `WidgetShared.swift` — / The small payload the home-screen widget needs, shared between the app and (~503 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/.claude/
@@ -313,6 +315,13 @@
 - `TrainingSeriesTests.swift` — Class: TrainingSeriesTests (~1339 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~7238 tok)
 - `ValidationTests.swift` — Class: ValidationTests (~684 tok)
+- `WidgetBridgeTests.swift` — Class: WidgetBridgeTests (~905 tok)
+
+## BlindensportGrazWidgets/
+
+- `BlindensportGrazWidgets.entitlements` (~86 tok)
+- `BlindensportGrazWidgets.swift` — / Home-screen widget: the user's next training or tournament (~1059 tok)
+- `Info.plist` (~85 tok)
 
 ## RootCLI/
 

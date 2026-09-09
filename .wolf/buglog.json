@@ -6796,6 +6796,78 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-09T19:25:00.000Z"
+    },
+    {
+      "id": "bug-406",
+      "timestamp": "2026-09-09T19:21:21.855Z",
+      "error_message": "Significant refactor of ",
+      "file": "project.yml",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 20\u219225 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-09T19:21:21.855Z"
+    },
+    {
+      "id": "bug-407",
+      "timestamp": "2026-09-09T19:23:03.117Z",
+      "error_message": "Significant refactor of ",
+      "file": ".github/workflows/ios-device-deploy.yml",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 42\u219254 lines (4 removed) | Also: target = project.targets.find { |t| t.name == ENV.; abort \"target #{ENV[\"SCHEME\"]} not found\" unless t",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-09T19:23:11.404Z"
+    },
+    {
+      "id": "bug-404",
+      "timestamp": "2026-09-09T21:40:00.000Z",
+      "error_message": "Simulator install failed: 'extensionDictionary must be set in placeholder attributes for an app extension placeholder' / 'Failed to create app extension placeholder for .../PlugIns/BlindensportGrazWidgets.appex'.",
+      "file": "BlindensportGrazWidgets/Info.plist",
+      "root_cause": "The widget target used GENERATE_INFOPLIST_FILE + INFOPLIST_KEY_NSExtensionPointIdentifier, which writes NSExtensionPointIdentifier at the TOP LEVEL of Info.plist. An app-extension bundle's installer requires the nested `NSExtension` dict ({ NSExtensionPointIdentifier = com.apple.widgetkit-extension }); there is no INFOPLIST_KEY_* shortcut for the nested form.",
+      "fix": "Added an explicit BlindensportGrazWidgets/Info.plist with the nested NSExtension dict; project.yml points INFOPLIST_FILE at it (GENERATE_INFOPLIST_FILE kept YES so CFBundle*/version keys still merge on top), and excludes Info.plist from that target's compiled sources. Sim build + install + 209-test suite then green.",
+      "tags": [
+        "widget",
+        "widgetkit",
+        "app-extension",
+        "Info.plist",
+        "NSExtension",
+        "xcodegen",
+        "install"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-09T21:40:00.000Z"
+    },
+    {
+      "id": "bug-405",
+      "timestamp": "2026-09-09T21:42:00.000Z",
+      "error_message": "WidgetBridgeTests: testRefreshPicksTheSoonerOfTrainingAndTournament / ...FallsBackToTournament... failed \u2014 WidgetBridge.read() nil after WidgetRefresher.refresh even with events inserted.",
+      "file": "BlindensportGrazTests/WidgetBridgeTests.swift",
+      "root_cause": "Fixtures used a fixed epoch (Date(timeIntervalSince1970: 1_760_000_000) = Oct 2025), but WidgetRefresher.refresh calls NextEventLookup.nextTraining/nextTournament with their default `now: Date = .now` (real Sept 2026), so the 'future' fixtures were ~11 months in the past and filtered out.",
+      "fix": "Fixtures now anchor on `Date.now` so past/future are genuinely relative to the real clock. (refresh() deliberately has no now: param \u2014 the widget always wants the real 'next'.)",
+      "tags": [
+        "test",
+        "widget",
+        "date",
+        "now",
+        "fixture"
+      ],
+      "related_bugs": [
+        "bug-365"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-09T21:42:00.000Z"
     }
   ]
 }
