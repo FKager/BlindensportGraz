@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		012EA74D45D6027B502DF231 /* WidgetShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C8A55EBA90B2CBDB9ACC87 /* WidgetShared.swift */; };
 		02584F77E17776275B86681F /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D257583A86202D7F281FDB16 /* PersistenceService.swift */; };
 		0970CFEF9F815512AB1B320D /* CKSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32B4424C5A3267C19DF2E457 /* CKSchema.swift */; };
 		0989835B5B4984BD3ED6D894 /* TrainingsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1467C0C4F1DC760FC540D2EC /* TrainingsViews.swift */; };
@@ -66,6 +67,7 @@
 		70340758131352B4B4BB18BF /* CloudKitSync+Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEA77985394B517209974D3 /* CloudKitSync+Team.swift */; };
 		7048447C9D782E85F36578E7 /* EventReminderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24482DBA01ABE94F1CDB7FB9 /* EventReminderServiceTests.swift */; };
 		71D2A6F69368373D44822B6B /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C86AD33F3264D531DD13B845 /* UserService.swift */; };
+		71EE76DC72C36A133D5024B4 /* BlindensportGrazWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714939FF80A1EF84FBC7C1B3 /* BlindensportGrazWidgets.swift */; };
 		7301EF644B2F147EFFC0191D /* MembershipRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 814F2BF82CCE671BC89D736A /* MembershipRole.swift */; };
 		746DF2717BB82DDF95BF84B1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A214338B12D918B771269754 /* ZIPFoundation */; };
 		773089F33A47773381B49F67 /* CloudKitSync+Attendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8765E429C0EE76E2E6F9868 /* CloudKitSync+Attendance.swift */; };
@@ -89,10 +91,12 @@
 		937EFC9FEE0E714A0122B6B7 /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = 83D9A0D3FAB093A5FAE4A12C /* settings.local.json */; };
 		967CFDD17122C9F70E208B97 /* DesignatedRootTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AF947186A6C9047C0A975E /* DesignatedRootTests.swift */; };
 		97907563300E01BD768E6653 /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F8F037A745E0C9808BCA181 /* PushNotifications.swift */; };
+		993E077F0DF58D4E0376CC5A /* WidgetBridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54207C02A8EBDE781901B041 /* WidgetBridgeTests.swift */; };
 		9A86FDA539968A5B98813BA6 /* TrainingImportExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EE00D33AB2AF7A8148E8A9 /* TrainingImportExportTests.swift */; };
 		9D599F0BC6F7C80D529CA53D /* PersistenceServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D5136ACDC65BAB10C0F67F /* PersistenceServiceTests.swift */; };
 		9F848700F904826F3B528BDE /* SportEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA91EB7F85CD231C4E2802A /* SportEventService.swift */; };
 		A1B274AD320B87FADE58C57C /* XLSXCellPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFF4EF0C96BC5384667E50 /* XLSXCellPatch.swift */; };
+		A4F81D1E2D2C704BA9F2600A /* WidgetRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DC38F4EDBFDA72F571861D /* WidgetRefresher.swift */; };
 		A61F7AC36EEE2D9F8E11EB43 /* CloudKitSync+Events.swift in Sources */ = {isa = PBXBuildFile; fileRef = B652C83BEEECE16634EAB443 /* CloudKitSync+Events.swift */; };
 		A6583481F94842689722E183 /* ExpenseReceiptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A801677F130AA8808A7ABC29 /* ExpenseReceiptService.swift */; };
 		AB42D31E73A23588F69A1FFA /* CloudKitSync+RoleChangeLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22233E599370465FE978F06B /* CloudKitSync+RoleChangeLog.swift */; };
@@ -108,7 +112,9 @@
 		B943A53258FD9356967EB112 /* TrainingsfrequenzlisteExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D3FFE0B26185C4884719B1A /* TrainingsfrequenzlisteExport.swift */; };
 		B94B31B77A4562859C174F45 /* CalendarEventExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB696A6769854DF75117D6F /* CalendarEventExportTests.swift */; };
 		BAE5BA21BCB2CA1048A4A047 /* KostZ_Kostenzusammenstellung.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 93B61D98B242A6698A79304C /* KostZ_Kostenzusammenstellung.xlsx */; };
+		BF345AFDF7FA85D0B0C733C5 /* BlindensportGrazWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AC0F05D1DE4165C10EEB3DBF /* BlindensportGrazWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C0525F26CF14FD394C9596C7 /* SyncStatusBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9CF99A80C7215EEF4832567 /* SyncStatusBanner.swift */; };
+		C14173A4734658C8B99FEA78 /* WidgetShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C8A55EBA90B2CBDB9ACC87 /* WidgetShared.swift */; };
 		C1977C298926611B32F1B832 /* CloudKitSync+ExpenseReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2B2958BDAA594F03FDA99CC /* CloudKitSync+ExpenseReceipt.swift */; };
 		C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */; };
 		C27B01BE24EB920C70B12B68 /* PraeCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = D15C672FD868BD79242BCDA2 /* PraeCalculation.swift */; };
@@ -131,6 +137,7 @@
 		EA77085EDF55C9885D1E430C /* Sport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1318662CB1457799DA18A4 /* Sport.swift */; };
 		EF64D94AF393691E63643445 /* PraeExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C350376AFCF7359D1B95B /* PraeExport.swift */; };
 		F307DACC2CA8BAD596E2ACB7 /* EventImagesViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 207463624BA5593411638F49 /* EventImagesViews.swift */; };
+		F4C451F2BFE5D5E8D9E424E1 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 419EDFA15F291E31EDCEA740 /* WidgetKit.framework */; };
 		F4FC9293EBF3D3927E10F372 /* PraeCalculationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33BBA744C5DE3AA5F9F0DE54 /* PraeCalculationTests.swift */; };
 		F7796147A8C58A69979CA61B /* AttendanceRollCallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0D416D749E55B079777D02E /* AttendanceRollCallView.swift */; };
 		F8419D4F61AEC889EBAEC8D1 /* SportIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DD1D9C7AF0BC3644F9457B9 /* SportIcons.swift */; };
@@ -140,6 +147,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		62A0E4F12896C41F8B83F5DE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 39AFC65C63FD3FCFB6AF0752 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 60B6649A4EF3DC896960EA36;
+			remoteInfo = BlindensportGrazWidgets;
+		};
 		E9D7C778A45DA922CD38A9ED /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 39AFC65C63FD3FCFB6AF0752 /* Project object */;
@@ -148,6 +162,20 @@
 			remoteInfo = BlindensportGraz;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		25FB0B0FEEA8D4ACE34C3354 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BF345AFDF7FA85D0B0C733C5 /* BlindensportGrazWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		002AC90D569743CD3F034614 /* EventImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImageService.swift; sourceTree = "<group>"; };
@@ -191,6 +219,7 @@
 		3C5F835146DBAF82E595CD2D /* TrainingImportExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingImportExport.swift; sourceTree = "<group>"; };
 		401DEC882A1342C320FDC3D3 /* TrainingFavoriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingFavoriteTests.swift; sourceTree = "<group>"; };
 		40551CD48F48617AB9E75979 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		419EDFA15F291E31EDCEA740 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		44CFF4EF0C96BC5384667E50 /* XLSXCellPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXCellPatch.swift; sourceTree = "<group>"; };
 		46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InheritanceQueryTests.swift; sourceTree = "<group>"; };
 		47FB53E9C12C928D1D86B58F /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
@@ -200,7 +229,9 @@
 		4FA5E8F29F13CB502F4FCA7F /* Trainingsfrequenzliste_Vorlage.xlsx */ = {isa = PBXFileReference; path = Trainingsfrequenzliste_Vorlage.xlsx; sourceTree = "<group>"; };
 		512D9209475F8B7BE4E19C88 /* SammelabrechnungViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SammelabrechnungViews.swift; sourceTree = "<group>"; };
 		51F794B1B6C3052518196C03 /* PRAE_Darstellung_Vorlage.xlsx */ = {isa = PBXFileReference; path = PRAE_Darstellung_Vorlage.xlsx; sourceTree = "<group>"; };
+		52C8A55EBA90B2CBDB9ACC87 /* WidgetShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetShared.swift; sourceTree = "<group>"; };
 		52DEFEF3CAAB124E75D49614 /* PRAE_Formular.xlsx */ = {isa = PBXFileReference; path = PRAE_Formular.xlsx; sourceTree = "<group>"; };
+		54207C02A8EBDE781901B041 /* WidgetBridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridgeTests.swift; sourceTree = "<group>"; };
 		5A295360023A2F97D708F995 /* TrainingsfrequenzlisteCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsfrequenzlisteCalculationTests.swift; sourceTree = "<group>"; };
 		5DFA21F5E8AA02DD2D9326D8 /* KostZViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KostZViews.swift; sourceTree = "<group>"; };
 		6178BA5CA159BF50085C9E5F /* AppRole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRole.swift; sourceTree = "<group>"; };
@@ -212,6 +243,7 @@
 		6F3FEB00F8B6A3562D07E701 /* AttendanceTrends.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceTrends.swift; sourceTree = "<group>"; };
 		706A6156AFC198711D39EA2A /* TeamMembershipService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamMembershipService.swift; sourceTree = "<group>"; };
 		70D5136ACDC65BAB10C0F67F /* PersistenceServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceServiceTests.swift; sourceTree = "<group>"; };
+		714939FF80A1EF84FBC7C1B3 /* BlindensportGrazWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindensportGrazWidgets.swift; sourceTree = "<group>"; };
 		72DD020ECDC368BEE589A742 /* BlindensportGraz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BlindensportGraz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		74AF947186A6C9047C0A975E /* DesignatedRootTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignatedRootTests.swift; sourceTree = "<group>"; };
 		77EE00D33AB2AF7A8148E8A9 /* TrainingImportExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingImportExportTests.swift; sourceTree = "<group>"; };
@@ -235,6 +267,7 @@
 		A5D170F3B31A0E1218F73A12 /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
 		A7ACB8790EDA79E9A1A9B4B5 /* RoleChangeLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleChangeLogTests.swift; sourceTree = "<group>"; };
 		A801677F130AA8808A7ABC29 /* ExpenseReceiptService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseReceiptService.swift; sourceTree = "<group>"; };
+		AC0F05D1DE4165C10EEB3DBF /* BlindensportGrazWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = BlindensportGrazWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1DCA53EF23E770795B77996 /* SyncOrchestrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncOrchestrationService.swift; sourceTree = "<group>"; };
 		B3FF5740FEFF4A9FCEC3504F /* TeamMembership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamMembership.swift; sourceTree = "<group>"; };
 		B552A78FD57F90E1B967EF64 /* BlindensportGrazTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = BlindensportGrazTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -271,6 +304,7 @@
 		E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */ = {isa = PBXFileReference; path = TN_TeilnehmerInnenliste.xlsx; sourceTree = "<group>"; };
 		EFB71ACF3054BF64826EBB44 /* ModelSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSchema.swift; sourceTree = "<group>"; };
 		F2B2958BDAA594F03FDA99CC /* CloudKitSync+ExpenseReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CloudKitSync+ExpenseReceipt.swift"; sourceTree = "<group>"; };
+		F3DC38F4EDBFDA72F571861D /* WidgetRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetRefresher.swift; sourceTree = "<group>"; };
 		F47BC1DFE7FFC8695E1FC793 /* ExpenseReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseReceipt.swift; sourceTree = "<group>"; };
 		F56897EA548E8E01D9978A8D /* TrainingSeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSeriesView.swift; sourceTree = "<group>"; };
 		F839558E431EA641208C70D8 /* AttendanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceService.swift; sourceTree = "<group>"; };
@@ -290,6 +324,7 @@
 			files = (
 				746DF2717BB82DDF95BF84B1 /* ZIPFoundation in Frameworks */,
 				929F721BDD3F369ACA9BA0A8 /* ClubSchema in Frameworks */,
+				F4C451F2BFE5D5E8D9E424E1 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -325,6 +360,7 @@
 				FB79152BB0C0AE01367983BF /* TrainingSeriesTests.swift */,
 				5A295360023A2F97D708F995 /* TrainingsfrequenzlisteCalculationTests.swift */,
 				CBF7041585D47F19795D9DFA /* ValidationTests.swift */,
+				54207C02A8EBDE781901B041 /* WidgetBridgeTests.swift */,
 			);
 			path = BlindensportGrazTests;
 			sourceTree = "<group>";
@@ -432,10 +468,20 @@
 				DD8BE8615595EA69DDF31D82 /* User.swift */,
 				C86AD33F3264D531DD13B845 /* UserService.swift */,
 				38A96FBC00FE577D16BA0B12 /* Validation.swift */,
+				F3DC38F4EDBFDA72F571861D /* WidgetRefresher.swift */,
+				52C8A55EBA90B2CBDB9ACC87 /* WidgetShared.swift */,
 				44CFF4EF0C96BC5384667E50 /* XLSXCellPatch.swift */,
 				B316FD2D404C1853E3B2FFF4 /* .claude */,
 			);
 			path = BlindensportGraz;
+			sourceTree = "<group>";
+		};
+		48AD45010D7D98F3B32BD4FA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				419EDFA15F291E31EDCEA740 /* WidgetKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		741790CCE4133EE90A0A573F /* Packages */ = {
@@ -451,7 +497,9 @@
 			children = (
 				4065556F76DB7C33C3AFCFC8 /* BlindensportGraz */,
 				3237A39CC43E35FAD349A115 /* BlindensportGrazTests */,
+				CA4E0606EE6C9154CBB0D57D /* BlindensportGrazWidgets */,
 				741790CCE4133EE90A0A573F /* Packages */,
+				48AD45010D7D98F3B32BD4FA /* Frameworks */,
 				7F516426A6BE19C600538AB0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -461,6 +509,7 @@
 			children = (
 				72DD020ECDC368BEE589A742 /* BlindensportGraz.app */,
 				B552A78FD57F90E1B967EF64 /* BlindensportGrazTests.xctest */,
+				AC0F05D1DE4165C10EEB3DBF /* BlindensportGrazWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -473,9 +522,34 @@
 			path = .claude;
 			sourceTree = "<group>";
 		};
+		CA4E0606EE6C9154CBB0D57D /* BlindensportGrazWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				714939FF80A1EF84FBC7C1B3 /* BlindensportGrazWidgets.swift */,
+			);
+			path = BlindensportGrazWidgets;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		60B6649A4EF3DC896960EA36 /* BlindensportGrazWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A7EB4D77BA82C1EAD73B7A35 /* Build configuration list for PBXNativeTarget "BlindensportGrazWidgets" */;
+			buildPhases = (
+				CC1D0C5A77B90F6275A5601B /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BlindensportGrazWidgets;
+			packageProductDependencies = (
+			);
+			productName = BlindensportGrazWidgets;
+			productReference = AC0F05D1DE4165C10EEB3DBF /* BlindensportGrazWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		AC49152E6BEEE5932F92B280 /* BlindensportGrazTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4D68E81AD073A4B456D7BD7A /* Build configuration list for PBXNativeTarget "BlindensportGrazTests" */;
@@ -501,10 +575,12 @@
 				3AE7BB4AA43F407C47B98E5A /* Sources */,
 				49D92A24B7EE10F1E7FDBF9F /* Resources */,
 				C03646AFF75058DE51190AC4 /* Frameworks */,
+				25FB0B0FEEA8D4ACE34C3354 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2B7CF52EB00EE9EA46BE640B /* PBXTargetDependency */,
 			);
 			name = BlindensportGraz;
 			packageProductDependencies = (
@@ -524,6 +600,10 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					60B6649A4EF3DC896960EA36 = {
+						DevelopmentTeam = 5Q57Y9YT8J;
+						ProvisioningStyle = Automatic;
+					};
 					AC49152E6BEEE5932F92B280 = {
 						DevelopmentTeam = 5Q57Y9YT8J;
 						ProvisioningStyle = Automatic;
@@ -554,6 +634,7 @@
 			projectRoot = "";
 			targets = (
 				FD918BB36AAA34E94A92C14B /* BlindensportGraz */,
+				60B6649A4EF3DC896960EA36 /* BlindensportGrazWidgets */,
 				AC49152E6BEEE5932F92B280 /* BlindensportGrazTests */,
 			);
 		};
@@ -675,6 +756,8 @@
 				651C1F9E3E396ECEDC4399C5 /* User.swift in Sources */,
 				71D2A6F69368373D44822B6B /* UserService.swift in Sources */,
 				2AC7732F155064C87DF2CBC6 /* Validation.swift in Sources */,
+				A4F81D1E2D2C704BA9F2600A /* WidgetRefresher.swift in Sources */,
+				012EA74D45D6027B502DF231 /* WidgetShared.swift in Sources */,
 				A1B274AD320B87FADE58C57C /* XLSXCellPatch.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -709,12 +792,27 @@
 				E3225639084155311A5B5CED /* TrainingSeriesTests.swift in Sources */,
 				1CAD989F362D3B774D912034 /* TrainingsfrequenzlisteCalculationTests.swift in Sources */,
 				30DA738A8A753C7486037138 /* ValidationTests.swift in Sources */,
+				993E077F0DF58D4E0376CC5A /* WidgetBridgeTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC1D0C5A77B90F6275A5601B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71EE76DC72C36A133D5024B4 /* BlindensportGrazWidgets.swift in Sources */,
+				C14173A4734658C8B99FEA78 /* WidgetShared.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2B7CF52EB00EE9EA46BE640B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 60B6649A4EF3DC896960EA36 /* BlindensportGrazWidgets */;
+			targetProxy = 62A0E4F12896C41F8B83F5DE /* PBXContainerItemProxy */;
+		};
 		A9921C4E09ECAAE35B4A0B72 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FD918BB36AAA34E94A92C14B /* BlindensportGraz */;
@@ -802,6 +900,56 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = it.a11y.BlindensportGraz;
 				SDKROOT = iphoneos;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		9C467D5D28E7F52AA71599E3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = BlindensportGrazWidgets/BlindensportGrazWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5Q57Y9YT8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BlindensportGrazWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Blindensport Graz";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = it.a11y.BlindensportGraz.Widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AFE03E0B7735C3DA9D7D898B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = BlindensportGrazWidgets/BlindensportGrazWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5Q57Y9YT8J;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = BlindensportGrazWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Blindensport Graz";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = it.a11y.BlindensportGraz.Widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -973,6 +1121,15 @@
 			buildConfigurations = (
 				2D82D9DAA9CB03702D3F0A36 /* Debug */,
 				5966633A43B9B4EE2E77F8C9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A7EB4D77BA82C1EAD73B7A35 /* Build configuration list for PBXNativeTarget "BlindensportGrazWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9C467D5D28E7F52AA71599E3 /* Debug */,
+				AFE03E0B7735C3DA9D7D898B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

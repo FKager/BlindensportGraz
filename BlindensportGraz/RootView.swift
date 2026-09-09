@@ -191,6 +191,9 @@ struct RootView: View {
             if let currentUser {
                 await SyncOrchestrationService.ensureTrainingTournamentSubscriptions(for: currentUser)
             }
+            // Refresh the home-screen widget with whatever the sync just
+            // pulled in (architecture-review.md §5).
+            WidgetRefresher.refresh(modelContext: modelContext, for: currentUser)
         }
         PushNotifications.requestAuthorizationIfNeeded()
     }
@@ -230,6 +233,9 @@ struct MainTabView: View {
         }
         .task {
             NetworkMonitor.shared.start()
+            // Keep the home-screen widget current whenever the app is opened,
+            // even if no sync runs (architecture-review.md §5).
+            WidgetRefresher.refresh(modelContext: modelContext, for: currentUser)
         }
         // When connectivity returns, flush the PendingPush outbox right away
         // instead of waiting for the next full sync (architecture-review.md 2.2).
