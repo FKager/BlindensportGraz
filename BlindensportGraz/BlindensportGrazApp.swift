@@ -7,28 +7,11 @@ struct BlindensportGrazApp: App {
     let modelContainer: ModelContainer
 
     init() {
-        let schema = Schema([
-            User.self,
-            SportEvent.self,
-            Tournament.self,
-            Training.self,
-            Team.self,
-            TeamMembership.self,
-            EventParticipation.self,
-            Member.self,
-            EventImage.self,
-            Attendance.self,
-            TrainingFavorite.self,
-            RoleChangeLog.self,
-            ExpenseReceipt.self,
-            // Local-only outbox of not-yet-confirmed CloudKit writes
-            // (architecture-review.md 2.2) — never itself synced.
-            PendingPush.self
-               ])
-        // Local store only. Cross-user, team-scoped sharing is handled by
-        // CloudKitSync's manual public-database push/pull, not SwiftData's
-        // automatic CloudKit mirroring (which only supports private, per-user sync).
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false, cloudKitDatabase: .none)
+        // Declared once in ModelSchema.swift — shared with the App Shortcuts
+        // intents (and, later, a widget), which open their own read-only
+        // container on the same store.
+        let schema = AppModelSchema.schema
+        let config = AppModelSchema.configuration
 
         // Phase 7 of the audit.md supergoal run (2026-08-22) changed
         // User.role/TeamMembership.role/SportEvent.sport from plain String
