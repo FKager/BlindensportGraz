@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T18:54:07.026Z
-> Files: 245 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T19:03:22.300Z
+> Files: 246 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -201,7 +201,7 @@
 - `CloudKitSync+TeamMembership.swift` (~881 tok)
 - `CloudKitSync+TrainingFavorite.swift` (~1138 tok)
 - `CloudKitSync+UserIdentity.swift` (~790 tok)
-- `DashboardView.swift` — SwiftUI view: DashboardView (~1334 tok)
+- `DashboardView.swift` — SwiftUI view: DashboardView (~2519 tok)
 - `EventImage.swift` — / A photo attached to a SportEvent (or, via inheritance, a Training or (~212 tok)
 - `EventImageService.swift` — Declares EventImageService (~227 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1568 tok)
@@ -253,6 +253,7 @@
 - `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
 - `TeamsViews.swift` — SwiftUI view: TeamsListView; also `VereinView` (root of the merged "Verein" tab — non-admins get TeamsListView directly, admins get `VereinHubList`: Teams / Mitglieder / Personen / App-Konten / Rollenänderungen) (~5471 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
+- `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~459 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9058 tok)

@@ -6759,6 +6759,43 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-09T19:05:00.000Z"
+    },
+    {
+      "id": "bug-404",
+      "timestamp": "2026-09-09T19:03:22.307Z",
+      "error_message": "Wrong reference: VereinView should be TeamsListView",
+      "file": "BlindensportGraz/DashboardView.swift",
+      "root_cause": "Used \"VereinView\" instead of \"TeamsListView\"",
+      "fix": "Changed VereinView \u2192 TeamsListView",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-09T19:03:22.307Z"
+    },
+    {
+      "id": "bug-403",
+      "timestamp": "2026-09-09T19:25:00.000Z",
+      "error_message": "Feature + minor inconsistency: DashboardView stat cards and upcoming-item rows weren't tappable (dead end), and the dashboard showed ALL trainings/tournaments/teams while the tabs filter by team visibility, so counts disagreed. architecture-review.md \u00a73.2 / \u00a73.1.",
+      "file": "BlindensportGraz/DashboardView.swift",
+      "root_cause": "StatCard/EventRow/TrainingRow/TournamentRow rendered as plain views with no NavigationLink; upcomingEvents/upcomingTrainings/activeTournaments applied no team filter.",
+      "fix": "New Theme.swift \u2014 first design-system slice: Theme.cornerRadius, Theme.cardFill (.quaternary \u2014 legible in dark mode unlike a fixed color.opacity(0.1)), and a .card(tint:) ViewModifier. DashboardView: added a 'Dein n\u00e4chster Termin' tappable NextUpCard (soonest upcoming training or tournament, whichever starts first); every StatCard is now a NavigationLink to its list view (Events/Turniere/Trainings -> *ListView, Teams -> TeamsListView) and every upcoming row a NavigationLink to its *DetailView; all three visible* computed vars now run items through NextEventLookup.isVisible(teams:to: currentUser) so the dashboard matches the tabs; visibleTeams added for the Teams count. StatCard + NextUpCard adopt .card(tint:). Build + 204-test suite green (4 pre-existing tz TrainingImportExport fails).",
+      "tags": [
+        "feature",
+        "dashboard",
+        "navigation",
+        "design-system",
+        "theme",
+        "dark-mode",
+        "architecture-review",
+        "consistency"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-09T19:25:00.000Z"
     }
   ]
 }
