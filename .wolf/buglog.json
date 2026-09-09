@@ -6723,6 +6723,42 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-09T18:35:00.000Z"
+    },
+    {
+      "id": "bug-402",
+      "timestamp": "2026-09-09T18:52:35.359Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/BlindensportGrazApp.swift",
+      "root_cause": "22 lines replaced/restructured",
+      "fix": "Rewrote 23\u21926 lines (22 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-09T18:52:35.359Z"
+    },
+    {
+      "id": "bug-402",
+      "timestamp": "2026-09-09T19:05:00.000Z",
+      "error_message": "Feature (not a defect): no voice/Shortcuts/Spotlight way to ask 'when is my next training?'. architecture-review.md \u00a75 P1.",
+      "file": "BlindensportGraz/AppShortcuts.swift",
+      "root_cause": "App had zero AppIntents (build log: 'Metadata extraction skipped. No AppIntents.framework dependency found.').",
+      "fix": "AppShortcuts.swift: NextTrainingIntent + NextTournamentIntent (AppIntent, openAppWhenRun=false, ProvidesDialog) and BlindensportShortcuts: AppShortcutsProvider with German phrases ('N\u00e4chstes Training in <app>' etc.). NextEventLookup.swift: @MainActor read helper \u2014 makeContext() reuses CloudKitSync.shared.modelContainer (set in BlindensportGrazApp.init, which runs whenever the system launches the app to service an intent, so NO App Group needed) with a fresh-container fallback; currentUser via UserDefaults 'localUserID'; nextTraining/nextTournament filter to now>=startDate + the same team-visibility rule as TrainingsListView.visibleTrainings; spokenLine German formatter (includeTime=false for day-only tournaments). Schema extracted to ModelSchema.swift (AppModelSchema) so app + intents + a future widget share one list. 6 new tests (NextEventLookupTests). No new target/entitlement/portal work. Build + 204-test suite green; ExtractAppIntentsMetadata now runs for the app target.",
+      "tags": [
+        "feature",
+        "appintents",
+        "siri",
+        "shortcuts",
+        "spotlight",
+        "architecture-review",
+        "a11y"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-09T19:05:00.000Z"
     }
   ]
 }

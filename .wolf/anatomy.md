@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T18:31:10.688Z
-> Files: 241 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T18:54:07.026Z
+> Files: 245 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -176,13 +176,14 @@
 - `AccountView.swift` — SwiftUI view: AccountView (~6118 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
+- `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
 - `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)
 - `AttendanceRollCallView.swift` — / Distraction-free "roll call" for one Training or Tournament — (~1520 tok)
 - `AttendanceService.swift` — / No `delete` — `CloudKitSync` never had a delete path for Attendance (~545 tok)
 - `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
 - `BlindensportGraz.entitlements` (~164 tok)
-- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2260 tok)
+- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
 - `BlindensportGrazRelease.entitlements` (~164 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
 - `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2260 tok)
@@ -223,7 +224,9 @@
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
 - `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s hub; also `PersonenListView` (admin-only combined people list: `User` accounts + `Member` roster, deduped by `Member.first(matching:)`, tags Konto/Kartei/Grazer VSC, filter+search) (~7514 tok)
+- `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~329 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
+- `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1076 tok)
 - `PendingPush.swift` — / Durable outbox for CloudKit writes — architecture-review.md 2.2 / 2.3. (~1418 tok)
 - `PersistenceService.swift` — / Shared save+sync core every per-model `*Service` (e.g. `TeamService`, (~968 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3164 tok)
@@ -293,6 +296,7 @@
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `MemberMembershipRequestTests.swift` — Class: MemberMembershipRequestTests (~1810 tok)
 - `NetworkMonitorTests.swift` — Class: FakeReachabilitySource (~524 tok)
+- `NextEventLookupTests.swift` — Class: NextEventLookupTests (~1418 tok)
 - `PendingPushTests.swift` — Class: PendingPushTests (~1582 tok)
 - `PersistenceServiceTests.swift` — Struct: StubError (~1138 tok)
 - `PraeCalculationTests.swift` — Class: PraeCalculationTests (~9646 tok)

@@ -2526,3 +2526,11 @@
 | 20:31 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_widget_prerequisites.md | — | ~474 |
 | 20:31 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | 1→2 lines | ~96 |
 | 20:31 | Session end: 4 writes across 3 files (CloudKitSync+Subscriptions.swift, project_widget_prerequisites.md, MEMORY.md) | 0 reads | ~1530 tok |
+| 20:34 | Session end: 4 writes across 3 files (CloudKitSync+Subscriptions.swift, project_widget_prerequisites.md, MEMORY.md) | 0 reads | ~1530 tok |
+| 20:52 | Created BlindensportGraz/ModelSchema.swift | — | ~329 |
+| 20:52 | Edited BlindensportGraz/BlindensportGrazApp.swift | modified init() | ~80 |
+| 20:53 | Created BlindensportGraz/NextEventLookup.swift | — | ~1076 |
+| 20:53 | Created BlindensportGraz/AppShortcuts.swift | — | ~873 |
+| 20:54 | Created BlindensportGrazTests/NextEventLookupTests.swift | — | ~1418 |
+| 19:05 | Built architecture-review.md P1 #4: Siri / App Shortcuts. New AppShortcuts.swift (NextTrainingIntent/NextTournamentIntent + BlindensportShortcuts: AppShortcutsProvider, German phrases "Nächstes Training in <app>" etc.). NextEventLookup.swift — @MainActor read helper: makeContext() reuses CloudKitSync.shared.modelContainer (set in App.init, runs whenever system spins app up for an intent — no App Group needed), currentUser via "localUserID" UserDefaults, team-visibility-filtered nextTraining/nextTournament (mirrors visibleTrainings), spokenLine formatter (includeTime=false for tournaments). Extracted the Schema into ModelSchema.swift (AppModelSchema, shared by App + intents + future widget). 6 new tests (NextEventLookupTests). No new target/entitlement — deploys via existing pipeline. | AppShortcuts.swift(new), NextEventLookup.swift(new), ModelSchema.swift(new), BlindensportGrazApp.swift, BlindensportGrazTests/NextEventLookupTests.swift(new) | BUILD + 204 tests green (4 pre-existing tz fails); ExtractAppIntentsMetadata now runs for the app target | ~9k |
+| 20:55 | Session end: 9 writes across 8 files (CloudKitSync+Subscriptions.swift, project_widget_prerequisites.md, MEMORY.md, ModelSchema.swift, BlindensportGrazApp.swift) | 1 reads | ~7836 tok |
