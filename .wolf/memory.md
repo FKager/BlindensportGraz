@@ -2514,3 +2514,15 @@
 | 22:01 | Created BlindensportGrazTests/TrainingSeriesTests.swift | — | ~1339 |
 | 23:40 | Built architecture-review.md P1 #2: recurring trainings from a TrainingFavorite. TrainingFavorite.seriesStartDates(count:) (weekly, .weekOfYear DST-safe, first = suggestedStartDate); TrainingService.partitionSeriesDates (dup-check preview) + createSeries (build+save, skips collisions, applies autoAssignTeamNames). New TrainingSeriesView sheet (Stepper 2..26 weeks, per-date preview w/ "vorhanden" tag, one summary alert + TrainingCreated toast). Wired into AddTrainingView favorite chip contextMenu ("Serie erstellen…") + VoiceOver action. 5 new tests (TrainingSeriesTests). | TrainingFavorite.swift, TrainingService.swift, TrainingSeriesView.swift(new), TrainingsViews.swift, BlindensportGrazTests/TrainingSeriesTests.swift(new) | BUILD + 198 tests green (4 pre-existing tz fails) | ~8k |
 | 22:02 | Session end: 52 writes across 22 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 30 reads | ~105182 tok |
+| 22:05 | Session end: 52 writes across 22 files (TrainingsViews.swift, TournamentsViews.swift, EventsViews.swift, ios-device-deploy.yml, ios-build-deploy.yml) | 30 reads | ~105182 tok |
+
+## Session: 2026-09-09 20:24
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:29 | Edited BlindensportGraz/CloudKitSync+Subscriptions.swift | modified ensureTrainingTournamentSubscriptions() | ~699 |
+| 20:29 | Edited BlindensportGraz/CloudKitSync+Subscriptions.swift | ensureCreationSubscription() → ensureSubscription() | ~160 |
+| 18:35 | Built architecture-review.md P1 #5 (edits only): push notifications when a Training/Tournament is edited. Renamed ensureCreationSubscription -> ensureSubscription(...,options:); ensureTrainingTournamentSubscriptions now also registers training-updated-<uid>/tournament-updated-<uid> CKQuerySubscriptions with .firesOnRecordUpdate. 4 new de xcstrings (training/tournament_updated_title/body). Cancellation push NOT done: no CloudKit delete path exists for these types (deliberate), so .firesOnRecordDeletion would never fire. Widget (P1 #3) blocked on Apple Developer portal work (App Group + widget bundle ID + profiles + CI secrets) — no browser automation available; manual checklist given. | CloudKitSync+Subscriptions.swift, Localizable.xcstrings | BUILD + 198 tests green (4 pre-existing tz fails) | ~4k |
+| 20:31 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_widget_prerequisites.md | — | ~474 |
+| 20:31 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | 1→2 lines | ~96 |
+| 20:31 | Session end: 4 writes across 3 files (CloudKitSync+Subscriptions.swift, project_widget_prerequisites.md, MEMORY.md) | 0 reads | ~1530 tok |

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-08T20:01:13.455Z
-> Files: 240 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T18:31:10.688Z
+> Files: 241 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -47,10 +47,11 @@
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
-- `MEMORY.md` — Memory (~139 tok)
+- `MEMORY.md` — Memory (~188 tok)
 - `project_cloudkit-prod-data-copy.md` — Declares from (~630 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
 - `project_testflight-setup.md` (~1260 tok)
+- `project_widget_prerequisites.md` (~473 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -194,7 +195,7 @@
 - `CloudKitSync+ExpenseReceipt.swift` (~911 tok)
 - `CloudKitSync+Member.swift` (~1495 tok)
 - `CloudKitSync+RoleChangeLog.swift` (~540 tok)
-- `CloudKitSync+Subscriptions.swift` — Struct: this (~1167 tok)
+- `CloudKitSync+Subscriptions.swift` — Struct: this (~1647 tok)
 - `CloudKitSync+Team.swift` (~1293 tok)
 - `CloudKitSync+TeamMembership.swift` (~881 tok)
 - `CloudKitSync+TrainingFavorite.swift` (~1138 tok)
