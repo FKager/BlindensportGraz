@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T15:00:19.351Z
-> Files: 255 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T15:17:43.938Z
+> Files: 259 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -173,7 +173,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~6113 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~6801 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
@@ -186,7 +186,7 @@
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
 - `BlindensportGrazRelease.entitlements` (~199 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
-- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2260 tok)
+- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2462 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
 - `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5253 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~945 tok)
@@ -200,7 +200,7 @@
 - `CloudKitSync+Team.swift` (~1293 tok)
 - `CloudKitSync+TeamMembership.swift` (~881 tok)
 - `CloudKitSync+TrainingFavorite.swift` (~1138 tok)
-- `CloudKitSync+UserIdentity.swift` (~790 tok)
+- `CloudKitSync+UserIdentity.swift` (~863 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~2519 tok)
 - `EventImage.swift` — / A photo attached to a SportEvent (or, via inheritance, a Training or (~212 tok)
 - `EventImageService.swift` — Declares EventImageService (~227 tok)
@@ -240,6 +240,7 @@
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `SeasonDashboard.swift` — / Aggregate season stats — architecture-review.md §5 (P2). "Season" here (~881 tok)
 - `SeasonDashboardView.swift` — / Season (= one calendar year) recap — architecture-review.md §5 (P2): (~1790 tok)
+- `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
 - `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2169 tok)
@@ -269,7 +270,7 @@
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
 - `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10918 tok)
-- `User.swift` — Class: User (~1190 tok)
+- `User.swift` — Class: User (~1280 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
 - `WidgetRefresher.swift` — / Bridges the app's SwiftData world to the widget: recompute "what's next" (~379 tok)
@@ -329,8 +330,8 @@
 ## RootCLI/
 
 - `members.example.json` (~118 tok)
-- `Package.swift` — swift-tools-version:5.9 (~448 tok)
-- `README.md` — Project documentation (~5219 tok)
+- `Package.swift` — swift-tools-version:5.9 (~534 tok)
+- `README.md` — Project documentation (~5589 tok)
 
 ## RootCLI/Public/
 
@@ -339,8 +340,9 @@
 
 ## RootCLI/Sources/CloudKitS2SCore/
 
+- `CalendarFeed.swift` — / Server-side generation of one user's read-only calendar feed — (~1124 tok)
 - `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1757 tok)
-- `CKRecordDTO.swift` — Public CKRecord DTO: stringField/boolField/dateField accessors (~420 tok)
+- `CKRecordDTO.swift` — / Minimal read-only view over a CloudKit Web Services JSON record — just (~517 tok)
 - `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~4066 tok)
 - `Config.swift` — Struct: Config (~739 tok)
 - `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3132 tok)
@@ -349,8 +351,9 @@
 
 ## RootCLI/Sources/clubmembersapi/
 
-- `Auth.swift` — Struct: APIUser (~534 tok)
-- `Configure.swift` (~444 tok)
+- `Auth.swift` — Struct: APIUser (~892 tok)
+- `CalendarFeedRoutes.swift` — / `GET /calendar/:token[.ics]` — one user's read-only webcal feed (~788 tok)
+- `Configure.swift` (~492 tok)
 - `Entrypoint.swift` — @main entrypoint — deliberately NOT named main.swift (SPM special-cases that filename, see cerebrum Do-Not-Repeat 2026-07-16); wraps startup throw in do/catch for clean exit(1) instead of fatalError (~200 tok)
 - `LoginAttemptLimiter.swift` — / In-memory sliding-window limiter for failed Basic Auth attempts on (~523 tok)
 - `Routes.swift` — `MemberRecord` is a typealias for `ClubSchema.ClubMemberRecord` (Phase 9) — (~2813 tok)
@@ -358,6 +361,10 @@
 ## RootCLI/Sources/rootcli/
 
 - `RootCLI.swift` — Struct: RootCLI (~5384 tok)
+
+## RootCLI/Tests/CloudKitS2SCoreTests/
+
+- `CalendarFeedTests.swift` — Class: CalendarFeedTests (~840 tok)
 
 ## Shared/ClubSchema/
 

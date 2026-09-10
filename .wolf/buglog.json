@@ -6977,6 +6977,75 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-10T17:15:00.000Z"
+    },
+    {
+      "id": "bug-416",
+      "timestamp": "2026-09-10T15:14:02.882Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T15:14:02.882Z"
+    },
+    {
+      "id": "bug-417",
+      "timestamp": "2026-09-10T15:14:25.339Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CKRecordDTO.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T15:14:25.339Z"
+    },
+    {
+      "id": "bug-418",
+      "timestamp": "2026-09-10T15:15:30.665Z",
+      "error_message": "Missing await",
+      "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
+      "root_cause": "Async call without await \u2014 returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T15:15:30.665Z"
+    },
+    {
+      "id": "bug-410",
+      "timestamp": "2026-09-10T17:20:00.000Z",
+      "error_message": "Feature (not a defect): no way for a member to get club trainings/tournaments into their system calendar automatically - CalendarEventExport only supports a manual per-event .ics ShareLink. architecture-review.md \u00a75 P2. NOTE: end-to-end unusable until clubmembersapi is deployed publicly (confirmed: README only documents http://127.0.0.1:8080/ local dev, no evidence of any public hosting anywhere in this repo/memory) - user explicitly chose to have the server+app code built now anyway rather than wait.",
+      "file": "RootCLI/Sources/clubmembersapi/CalendarFeedRoutes.swift",
+      "root_cause": "No aggregate/subscribable calendar endpoint existed; clubmembersapi's Basic Auth is global (app.middleware.use(APIUser.guardMiddleware())), which a webcal client can't satisfy anyway.",
+      "fix": "CalendarFeed.swift (CloudKitS2SCore, pure): visibleEvents(role:userTeamIDs:) mirrors the app's NextEventLookup.isVisible exactly (admin=all, else unscoped-or-own-team); render() emits one RFC5545 VCALENDAR with a VEVENT per event, same escaping/UTC convention as the app's CalendarEventExport.icsFile (duplicated, not shared - separate SPM target can't import the iOS app target). CalendarFeedRoutes.swift: GET /calendar/:token[.ics] queries UserIdentity by calendarToken, TeamMembership for scope, Training+Tournament for events. Auth.swift's new RequireAPIUserExceptCalendarFeed (a path-prefix allowlist middleware) replaces the previously-global APIUser.guardMiddleware() in Configure.swift so /calendar/* is the sole unauthenticated route, everything else unchanged. App side: CKSchema.UserIdentity.calendarToken + User.calendarToken (synced via CloudKitSync+UserIdentity), new ServerConfig.swift (nil host placeholder), AccountView 'Kalender-Abo' section to generate/regenerate the token and share the webcal:// URL. Added RootCLI's first-ever test target (CloudKitS2SCoreTests) - 6 tests, pure logic only, no network/Vapor. README.md documents the route and its auth exception. swift build+test green; iOS build + 212-test suite green.",
+      "tags": [
+        "feature",
+        "webcal",
+        "calendar",
+        "rootcli",
+        "clubmembersapi",
+        "vapor",
+        "architecture-review",
+        "blocked-on-hosting"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T17:20:00.000Z"
     }
   ]
 }

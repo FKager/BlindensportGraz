@@ -14,6 +14,27 @@
 
 ## Key Learnings
 
+- [2026-09-10] **RootCLI now has its FIRST test target**: `Tests/CloudKitS2SCoreTests` (Package.swift),
+  testing `CloudKitS2SCore`'s pure logic (`CalendarFeed` so far) with plain XCTest, `swift test`. No
+  network/Vapor/CloudKit in these tests — same "pure logic only, no live service" rule as the iOS app's
+  own test suite (cerebrum's standing "never call CloudKitSync from new tests"). Mirrors
+  `Shared/ClubSchema/Tests/ClubSchemaTests`'s existing pattern. `clubmembersapi` itself (the Vapor
+  executable) still has no tests — its routes are thin orchestration over already-tested
+  `CloudKitS2SCore` pieces, consistent with how the iOS view layer isn't unit-tested either.
+- [2026-09-10] **Exempting exactly one Vapor route from `clubmembersapi`'s global Basic Auth**:
+  `Configure.swift` used to gate every request with `app.middleware.use(ClubMembersAuthenticator(...))`
+  + `app.middleware.use(APIUser.guardMiddleware())` — both are `Application`-global, so `RoutesBuilder`
+  group-scoping (`app.grouped(middleware:)`) can't selectively exempt a route from them (group
+  middleware only wraps requests that match a route registered *within that group*; it can't override
+  something already global). The fix: replace the plain `APIUser.guardMiddleware()` with a custom
+  `AsyncMiddleware` (`RequireAPIUserExceptCalendarFeed`, in `Auth.swift`) that checks
+  `request.url.path.hasPrefix("/calendar/")` and short-circuits past the `req.auth.has(APIUser.self)`
+  check for just that prefix. `ClubMembersAuthenticator` itself stays global/first in the chain
+  (harmless — Vapor's `AsyncBasicAuthenticator.authenticate` only fires when a request actually carries
+  an `Authorization: Basic` header, so anonymous calendar-feed requests never touch it or its
+  `LoginAttemptLimiter`). Path-prefix **allowlist**, not a per-route opt-out annotation — every other
+  route, including any added later, stays behind auth by default (this server holds a CloudKit S2S key
+  with PII read/write access).
 - [2026-09-10] **To screenshot this app in the simulator without a real Apple ID configured**: a
   fresh launch's `RootView.resolveAccount()` always calls `appleSignIn.requestSignIn()` when
   `storedAppleUserIdentifier` is empty, which triggers the OS's blocking "Bei Apple Account anmelden"
