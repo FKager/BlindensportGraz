@@ -683,6 +683,7 @@ struct TrainingsListView: View {
         @Query private var trainings: [Training]
         @State private var showAdd = false
         @State private var showAttendanceTrends = false
+        @State private var showSeasonDashboard = false
         @State private var showTrainingsfrequenzliste = false
         @State private var showPraeCalculation = false
         @State private var showKostZCalculation = false
@@ -753,6 +754,9 @@ struct TrainingsListView: View {
             if isAdmin {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
+                        Button { showSeasonDashboard = true } label: {
+                            Label("Saison-Übersicht", systemImage: "chart.bar.xaxis")
+                        }
                         Button { showTrainingsfrequenzliste = true } label: {
                             Label("Trainingsfrequenzliste", systemImage: "calendar.badge.checkmark")
                         }
@@ -802,6 +806,9 @@ struct TrainingsListView: View {
         }
         .sheet(isPresented: $showAttendanceTrends) {
             AttendanceTrendsView()
+        }
+        .sheet(isPresented: $showSeasonDashboard) {
+            SeasonDashboardView()
         }
         .sheet(isPresented: $showTrainingsfrequenzliste) {
             TrainingsfrequenzlisteView()
