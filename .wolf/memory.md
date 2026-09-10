@@ -2539,3 +2539,23 @@
 | 21:03 | Edited BlindensportGraz/DashboardView.swift | VereinView() → TeamsListView() | ~62 |
 | 19:25 | Built architecture-review.md §3.2 (+ §3.1 slice): actionable Dashboard. New Theme.swift (Theme.cornerRadius/cardFill=.quaternary + .card(tint:) modifier replacing ad-hoc .opacity(0.1) fills — dark-mode-safe). DashboardView: "Dein nächster Termin" tappable NextUpCard (soonest training-or-tournament), StatCards are NavigationLinks to their list views, upcoming rows are NavigationLinks to detail views, and it now applies the same NextEventLookup.isVisible team filter as the tabs (fixes counts differing between dashboard and tab). StatCard + NextUpCard use .card(tint:). No new tests (view change; isVisible already covered). | Theme.swift(new), DashboardView.swift | BUILD + 204 tests green (4 pre-existing tz fails) | ~6k |
 | 21:04 | Session end: 12 writes across 10 files (CloudKitSync+Subscriptions.swift, project_widget_prerequisites.md, MEMORY.md, ModelSchema.swift, BlindensportGrazApp.swift) | 1 reads | ~11092 tok |
+| 21:07 | Session end: 12 writes across 10 files (CloudKitSync+Subscriptions.swift, project_widget_prerequisites.md, MEMORY.md, ModelSchema.swift, BlindensportGrazApp.swift) | 1 reads | ~11092 tok |
+| 21:12 | Session end: 12 writes across 10 files (CloudKitSync+Subscriptions.swift, project_widget_prerequisites.md, MEMORY.md, ModelSchema.swift, BlindensportGrazApp.swift) | 1 reads | ~11092 tok |
+| 21:12 | Session end: 12 writes across 10 files (CloudKitSync+Subscriptions.swift, project_widget_prerequisites.md, MEMORY.md, ModelSchema.swift, BlindensportGrazApp.swift) | 1 reads | ~11092 tok |
+| 21:18 | Created BlindensportGraz/WidgetShared.swift | — | ~503 |
+| 21:18 | Created BlindensportGraz/WidgetRefresher.swift | — | ~379 |
+| 21:18 | Created BlindensportGrazWidgets/BlindensportGrazWidgets.swift | — | ~1059 |
+| 21:18 | Edited BlindensportGraz/BlindensportGraz.entitlements | 5→9 lines | ~67 |
+| 21:18 | Edited BlindensportGraz/BlindensportGrazRelease.entitlements | 5→9 lines | ~67 |
+| 21:19 | Created BlindensportGrazWidgets/BlindensportGrazWidgets.entitlements | — | ~86 |
+| 21:19 | Edited project.yml | 6→9 lines | ~90 |
+| 21:19 | Edited project.yml | expanded (+29 lines) | ~429 |
+| 21:19 | Edited BlindensportGraz/RootView.swift | 7→10 lines | ~116 |
+| 21:19 | Edited BlindensportGraz/RootView.swift | modified onChange() | ~168 |
+| 21:20 | Created BlindensportGrazTests/WidgetBridgeTests.swift | — | ~877 |
+| 21:21 | Created BlindensportGrazWidgets/Info.plist | — | ~85 |
+| 21:21 | Edited project.yml | 20→25 lines | ~322 |
+| 21:21 | Edited BlindensportGrazTests/WidgetBridgeTests.swift | 1→3 lines | ~46 |
+| 21:23 | Edited .github/workflows/ios-device-deploy.yml | modified 04() | ~1001 |
+| 21:23 | Edited .github/workflows/ios-device-deploy.yml | expanded (+10 lines) | ~320 |
+| 21:40 | [branch: widget] Built architecture-review.md P1 #3: home-screen widget, snapshot approach (NO App Group store relocation). New WidgetShared.swift (NextUpSnapshot + WidgetBridge, compiled into BOTH targets), WidgetRefresher.swift (app-side: NextEventLookup pick -> WidgetBridge.write + WidgetCenter reload, called from RootView triggerBackgroundSync + MainTabView.task), BlindensportGrazWidgets/ target (WidgetBundle + TimelineProvider + small/medium views + Info.plist w/ nested NSExtension dict + .entitlements). App Group group.it.a11y.BlindensportGraz added to both app .entitlements. project.yml: app-extension target, embedded in app, WidgetKit.framework dep. ios-device-deploy.yml updated to install+pin a 2nd (widget) profile. 5 new tests (WidgetBridgeTests). BUILD + sim install + 209 tests green (4 pre-existing tz fails). Needs before merge: portal App Group + widget App ID + regenerated profiles, IOS_CI_WIDGET_PROVISIONING_PROFILE_BASE64 secret, ios-build-deploy.yml deploy job. | WidgetShared.swift(new), WidgetRefresher.swift(new), BlindensportGrazWidgets/*(new), *.entitlements, project.yml, RootView.swift, .github/workflows/ios-device-deploy.yml, BlindensportGrazTests/WidgetBridgeTests.swift(new) | branch pushed, PR open | ~18k |

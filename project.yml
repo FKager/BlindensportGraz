@@ -36,6 +36,9 @@ targets:
     dependencies:
       - package: ZIPFoundation
       - package: ClubSchema
+      - sdk: WidgetKit.framework
+      # Embedded into the .app's PlugIns automatically (app-extension type).
+      - target: BlindensportGrazWidgets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz
@@ -69,6 +72,40 @@ targets:
           CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGraz.entitlements
         Release:
           CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGrazRelease.entitlements
+  BlindensportGrazWidgets:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: BlindensportGrazWidgets
+        excludes:
+          - "BlindensportGrazWidgets.entitlements"
+          - "Info.plist"
+      # Shared snapshot type — compiled into both the app and this extension
+      # (see WidgetShared.swift's doc comment).
+      - path: BlindensportGraz/WidgetShared.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz.Widgets
+        # An explicit Info.plist for the `NSExtension` dict — the generated
+        # one (INFOPLIST_KEY_NSExtensionPointIdentifier) puts the key at the
+        # top level, but the installer requires the nested `NSExtension`
+        # dictionary for an app-extension bundle. Generated CFBundle*/version
+        # keys are still merged on top.
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: BlindensportGrazWidgets/Info.plist
+        INFOPLIST_KEY_CFBundleDisplayName: "Blindensport Graz"
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_EMIT_LOC_STRINGS: "YES"
+        SKIP_INSTALL: "NO"
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: "5Q57Y9YT8J"
+      configs:
+        Debug:
+          CODE_SIGN_ENTITLEMENTS: BlindensportGrazWidgets/BlindensportGrazWidgets.entitlements
+        Release:
+          CODE_SIGN_ENTITLEMENTS: BlindensportGrazWidgets/BlindensportGrazWidgets.entitlements
   BlindensportGrazTests:
     type: bundle.unit-test
     platform: iOS
