@@ -9,7 +9,8 @@ name: iOS Build and Deploy
 # Required repository secrets for the deploy job:
 #   BUILD_CERTIFICATE_BASE64        base64 of your Distribution .p12  (base64 -i cert.p12 | pbcopy)
 #   P12_PASSWORD                    password used when exporting the .p12
-#   BUILD_PROVISION_PROFILE_BASE64  base64 of the .mobileprovision for it.a11y.BlindensportGraz
+#   BUILD_PROVISION_PROFILE_BASE64  base64 of the App Store .mobileprovision for it.a11y.BlindensportGraz
+#   WIDGET_PROVISION_PROFILE_BASE64 base64 of the App Store .mobileprovision for it.a11y.BlindensportGraz.Widgets
 #   KEYCHAIN_PASSWORD               any random string, used only for the temporary CI keychain
 #   APPSTORE_TEAM_ID                your 10-character Apple Developer Team ID
 #   APP_STORE_CONNECT_KEY_ID        App Store Connect API key ID
@@ -39,6 +40,7 @@ env:
   SCHEME: BlindensportGraz
   PROJECT: BlindensportGraz.xcodeproj
   BUNDLE_ID: it.a11y.BlindensportGraz
+  WIDGET_BUNDLE_ID: it.a11y.BlindensportGraz.Widgets
 
 jobs:
   build:
@@ -135,6 +137,7 @@ jobs:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
           BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
+          WIDGET_PROVISION_PROFILE_BASE64: ${{ secrets.WIDGET_PROVISION_PROFILE_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
           APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
           APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
@@ -183,6 +186,21 @@ jobs:
           echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
           echo "PROFILE_NAME=$PROFILE_NAME" >> "$GITHUB_ENV"
           echo "Installed profile '$PROFILE_NAME' ($PROFILE_UUID)"
+
+          # Same, for the BlindensportGrazWidgets extension target — the app
+          # has carried a widget extension since the home-screen widget
+          # feature (App Group required both bundle ids' App Store profiles
+          # to be regenerated once App Groups was added, see
+          # .wolf/cerebrum.md's widget-portal-setup entries).
+          WIDGET_PP_PATH="$RUNNER_TEMP/widget-profile.mobileprovision"
+          echo -n "$WIDGET_PROVISION_PROFILE_BASE64" | base64 --decode -o "$WIDGET_PP_PATH"
+          security cms -D -i "$WIDGET_PP_PATH" > "$RUNNER_TEMP/widget-profile.plist"
+          WIDGET_PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print :UUID" "$RUNNER_TEMP/widget-profile.plist")
+          WIDGET_PROFILE_NAME=$(/usr/libexec/PlistBuddy -c "Print :Name" "$RUNNER_TEMP/widget-profile.plist")
+          cp "$WIDGET_PP_PATH" ~/Library/MobileDevice/"Provisioning Profiles/$WIDGET_PROFILE_UUID.mobileprovision"
+          echo "WIDGET_PROFILE_UUID=$WIDGET_PROFILE_UUID" >> "$GITHUB_ENV"
+          echo "WIDGET_PROFILE_NAME=$WIDGET_PROFILE_NAME" >> "$GITHUB_ENV"
+          echo "Installed profile '$WIDGET_PROFILE_NAME' ($WIDGET_PROFILE_UUID)"
 
       - name: Derive version numbers
         run: |
@@ -241,6 +259,8 @@ jobs:
             <dict>
               <key>${BUNDLE_ID}</key>
               <string>${PROFILE_UUID}</string>
+              <key>${WIDGET_BUNDLE_ID}</key>
+              <string>${WIDGET_PROFILE_UUID}</string>
             </dict>
             <key>destination</key>
             <string>export</string>
