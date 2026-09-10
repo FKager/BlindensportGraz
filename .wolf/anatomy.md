@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T14:55:11.097Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T15:00:19.351Z
 > Files: 255 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -235,7 +235,7 @@
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
-- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~4822 tok)
+- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~5028 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `SeasonDashboard.swift` — / Aggregate season stats — architecture-review.md §5 (P2). "Season" here (~881 tok)
@@ -253,7 +253,7 @@
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
 - `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
 - `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~5463 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView (~6299 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
