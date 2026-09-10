@@ -249,16 +249,21 @@ struct RootCLI {
         }
     }
 
-    /// Every app-published record type that lives in the public database and
-    /// carries no CloudKit asset payload — the default set `copy-records`
-    /// walks. `ExpenseReceipt` is intentionally in the list too: its non-asset
-    /// fields copy fine and the `asset` field is skipped per-record with a
-    /// warning (an asset can't be re-pointed across environments — its bytes
-    /// live in the source env's asset store).
+    /// Every app-published record type in the public database — the default
+    /// set `copy-records` walks. `ExpenseReceipt` and `EventImage` are
+    /// intentionally in the list despite carrying a CloudKit asset payload:
+    /// their non-asset fields copy fine and the asset field itself is
+    /// skipped per-record with a count (an asset can't be re-pointed across
+    /// environments — its bytes live in the source env's asset store).
+    /// `SportEvent`/`EventParticipation`/`MemberChangeRequest` added
+    /// 2026-09-10 — they existed as app-published record types before that
+    /// but were never added here, so a `copy-records` run would have
+    /// silently skipped any real data of those three types.
     private static let copyableRecordTypes = [
         "UserIdentity", "ClubMember", "Team", "TeamMembership",
-        "Training", "Tournament", "TrainingAttendance", "TournamentAttendance",
-        "TrainingFavorite", "RoleChangeLog", "ExpenseReceipt",
+        "SportEvent", "Training", "Tournament", "TrainingAttendance", "TournamentAttendance",
+        "EventParticipation", "EventImage", "TrainingFavorite", "RoleChangeLog",
+        "ExpenseReceipt", "MemberChangeRequest",
     ]
 
     /// Bulk-copies every record of the given types from the source CloudKit
@@ -295,7 +300,18 @@ struct RootCLI {
         print("copy-records: \(sourceConfig.environment) -> \(targetConfig.environment)  [\(sourceConfig.containerID)]\(dryRun ? "   (dry run — nothing written)" : "")")
         var totalCopied = 0, totalFailed = 0, totalAssetsSkipped = 0
         for type in types {
-            let records = try await source.queryRecords(recordType: type)
+            let records: [CKRecordDTO]
+            do {
+                records = try await source.queryRecords(recordType: type)
+            } catch {
+                // A record type CloudKit has never seen a write for (e.g.
+                // SportEvent, if this club has never had a plain non-
+                // training/tournament event) doesn't exist in the schema at
+                // all yet — the query 404s. That's "0 records", not a real
+                // failure; don't abort the whole run over it.
+                print("  \(type): 0 records (record type not in schema yet)")
+                continue
+            }
             if records.isEmpty {
                 print("  \(type): 0 records")
                 continue
