@@ -7189,8 +7189,17 @@
       "file": "BlindensportGraz/Training.swift, CKSchema.swift, CloudKitSync+Events.swift, TrainingsViews.swift, FullBackup.swift, FullBackupImporter.swift",
       "root_cause": "N/A — new field/feature, not a bug fix.",
       "fix": "Added Training.status (\"open\"/\"held\"/\"cancelled\", default \"open\") + Training.statusLabel for the German display text, synced via CKSchema.Training.status and CloudKitSync+Events' push/pull. TrainingRow shows a color-coded status badge (suppressed for the default \"open\" state); TrainingDetailView got a Status Picker (edit) and LabeledContent (read-only). TrainingsListView's ForEach now uses .swipeActions(edge: .trailing) with two buttons — \"Abgesagt\" (marks cancelled, orange tint) and \"Löschen\" (destructive delete) — replacing the old plain .onDelete. FullBackup/FullBackupImporter updated to carry the new field.",
-      "tags": ["feature", "training", "status", "swipe-actions", "swiftdata", "cloudkit"],
-      "related_bugs": ["bug-429"],
+      "tags": [
+        "feature",
+        "training",
+        "status",
+        "swipe-actions",
+        "swiftdata",
+        "cloudkit"
+      ],
+      "related_bugs": [
+        "bug-429"
+      ],
       "occurrences": 1,
       "last_seen": "2026-09-10T18:20:00.000Z"
     },
@@ -7201,8 +7210,16 @@
       "file": "BlindensportGraz/AttendanceService.swift, TrainingsViews.swift",
       "root_cause": "N/A — new feature, follow-up to bug-429's Training.status.",
       "fix": "Added AttendanceService.clearAll(for:modelContext:), which resets every Attendance row for a SportEvent to attended=false/praeAmount=nil and saves+pushes each (doesn't delete the rows — AttendanceService has no CloudKit delete path for Attendance, same existing scoping). Called from both places a Training's status can become cancelled: TrainingsListView.markCancelled (the swipe action) and a new .onChange(of: training.status) on TrainingDetailView's edit Picker.",
-      "tags": ["feature", "training", "attendance", "prae", "cancelled"],
-      "related_bugs": ["bug-429"],
+      "tags": [
+        "feature",
+        "training",
+        "attendance",
+        "prae",
+        "cancelled"
+      ],
+      "related_bugs": [
+        "bug-429"
+      ],
       "occurrences": 1,
       "last_seen": "2026-09-10T18:30:00.000Z"
     },
@@ -7213,8 +7230,18 @@
       "file": "BlindensportGraz/AttendanceService.swift, BlindensportGraz/CloudKitSync+Attendance.swift, BlindensportGraz/TrainingsViews.swift",
       "root_cause": "CloudKitSync had no delete path for Attendance at all (by original design, per AttendanceService's old doc comment) — deleting a row only locally would have silently come back on the next pull, so a real delete needed a real CloudKit delete push first.",
       "fix": "Added CloudKitSync.deleteAttendance(id:isTournamentEvent:) (resolves the correct one of the two CKRecord types — TrainingAttendance/TournamentAttendance — same split pushAttendance already uses) and AttendanceService.delete(_:modelContext:) built on it. Renamed AttendanceService.clearAll to deleteAll and changed it from resetting fields to modelContext.delete + AttendanceService.delete per row. Both call sites (TrainingsListView's Abgesagt swipe action and TrainingDetailView's status Picker onChange) now call deleteAll.",
-      "tags": ["feature", "correction", "training", "attendance", "cloudkit-delete", "cancelled"],
-      "related_bugs": ["bug-429", "bug-430"],
+      "tags": [
+        "feature",
+        "correction",
+        "training",
+        "attendance",
+        "cloudkit-delete",
+        "cancelled"
+      ],
+      "related_bugs": [
+        "bug-429",
+        "bug-430"
+      ],
       "occurrences": 1,
       "last_seen": "2026-09-10T18:40:00.000Z"
     },
@@ -7225,10 +7252,96 @@
       "file": "BlindensportGraz/CloudKitSync+Subscriptions.swift, BlindensportGraz/Localizable.xcstrings",
       "root_cause": "N/A — new feature, follow-up to bug-429's Training.status.",
       "fix": "ensureSubscription now takes a full NSPredicate (was: always built from teamIDStrings internally), letting each subscription filter on more than team membership. Added a training-cancelled subscription (predicate ANY teamIDs IN %@ AND status == \"cancelled\", .firesOnRecordUpdate) with its own alert text (training_cancelled_title/body, new Localizable.xcstrings entries: \"Training abgesagt\" / \"%1$@ in %2$@\"). The existing training-updated subscription's predicate now excludes status == \"cancelled\" so a cancellation triggers exactly one push (the new distinct one), not also the generic \"geändert\" one.",
-      "tags": ["feature", "training", "cloudkit-subscription", "push-notification", "cancelled"],
-      "related_bugs": ["bug-429", "bug-430", "bug-431"],
+      "tags": [
+        "feature",
+        "training",
+        "cloudkit-subscription",
+        "push-notification",
+        "cancelled"
+      ],
+      "related_bugs": [
+        "bug-429",
+        "bug-430",
+        "bug-431"
+      ],
       "occurrences": 1,
       "last_seen": "2026-09-10T18:48:00.000Z"
+    },
+    {
+      "id": "bug-432",
+      "timestamp": "2026-09-10T17:30:28.121Z",
+      "error_message": "Incorrect value in code",
+      "file": "../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_widget_prerequisites.md",
+      "root_cause": "Had `v*`",
+      "fix": "Changed to \"Created via API\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T17:30:28.121Z"
+    },
+    {
+      "id": "bug-433",
+      "timestamp": "2026-09-10T17:36:48.196Z",
+      "error_message": "Incorrect value in code",
+      "file": "../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md",
+      "root_cause": "Had \"Created via API\"",
+      "fix": "Changed to 's `",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T17:36:48.196Z"
+    },
+    {
+      "id": "bug-434",
+      "timestamp": "2026-09-10T17:40:35.117Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 11→16 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T17:40:35.117Z"
+    },
+    {
+      "id": "bug-435",
+      "timestamp": "2026-09-10T17:41:29.304Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T17:41:29.304Z"
+    },
+    {
+      "id": "bug-436",
+      "timestamp": "2026-09-10T19:55:00.000Z",
+      "error_message": "rootcli copy-records dev->prod: 2 Training records failed with 'BAD_REQUEST — Field status not found in Training'; separately, copyableRecordTypes was missing SportEvent/EventParticipation/EventImage/MemberChangeRequest and a query for a record type CloudKit had never written (SportEvent) 404'd and aborted the whole run.",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Production's CloudKit schema was deployed before Training.status existed this session, so it doesn't know that field; separately, copyableRecordTypes was hand-maintained and had never been updated to include 4 app-published record types added over time, and runCopyRecords let a query error abort the entire run instead of treating an un-schema'd type as empty.",
+      "fix": "Deployed the updated schema via CloudKit Console -> Development -> 'Deploy Schema Changes...' (diff: 1 field modified on Training + 3 indexes) -> Deploy, then re-ran copy-records (203 copied, 0 failed). Added SportEvent/EventParticipation/EventImage/MemberChangeRequest to copyableRecordTypes; wrapped the per-type query in a do/catch so a 404 for a type with no records ever written prints '0 records (record type not in schema yet)' instead of throwing.",
+      "tags": ["cloudkit", "rootcli", "schema-deploy", "copy-records", "production-sync"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T19:55:00.000Z"
     }
   ]
 }

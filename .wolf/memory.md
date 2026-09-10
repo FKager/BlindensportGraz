@@ -2703,3 +2703,17 @@
 | 18:38 | Created BlindensportGraz/CloudKitSync+Subscriptions.swift | — | ~2203 |
 | 18:49 | Distinct 'Training abgesagt' push notification (new CKQuerySubscription, narrowed the generic updated one) | CloudKitSync+Subscriptions.swift, Localizable.xcstrings | build+tests pass (only known TrainingImportExportTests timezone failures) | ~7000 |
 | 18:42 | Session end: 45 writes across 15 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 21 reads | ~73066 tok |
+| 18:51 | Session end: 45 writes across 15 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 21 reads | ~73066 tok |
+| 18:59 | Session end: 45 writes across 15 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 21 reads | ~73066 tok |
+| 19:03 | Session end: 45 writes across 15 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 21 reads | ~73066 tok |
+| 19:07 | Session end: 45 writes across 15 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 21 reads | ~73066 tok |
+| 19:18 | Session end: 45 writes across 15 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 21 reads | ~73066 tok |
+| 19:30 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | 1→3 lines | ~566 |
+| 19:30 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_widget_prerequisites.md | modified 10() | ~398 |
+| 19:30 | Session end: 47 writes across 16 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 22 reads | ~74099 tok |
+| 19:36 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | inline fix | ~415 |
+| 19:36 | Session end: 48 writes across 16 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 22 reads | ~74544 tok |
+| 19:40 | Edited RootCLI/Sources/rootcli/RootCLI.swift | warning() → count() | ~284 |
+| 19:41 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added error handling | ~207 |
+| 19:55 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | modified outstanding() | ~514 |
+| 19:56 | Pushed all Development CloudKit data to Production (203 records, 0 failed) after deploying updated schema (Training.status) and expanding rootcli's copyableRecordTypes | RootCLI/Sources/rootcli/RootCLI.swift | verified via record list Training(20)/ClubMember(62) against prod | ~9000 |
