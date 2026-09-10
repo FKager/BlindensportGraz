@@ -164,11 +164,13 @@ enum FullBackupImporter {
             guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: Training.self) else { return false }
             let teams = FullBackup.stringList(dict, "teamIDs").compactMap { UUID(uuidString: $0) }
                 .compactMap { CloudKitSync.shared.findTeam($0, modelContext: modelContext) }
+            let statusRaw = FullBackup.string(dict, "status")
             let training = Training(id: id, title: FullBackup.string(dict, "title"), sport: FullBackup.string(dict, "sport"),
                                     location: FullBackup.string(dict, "location"), street: FullBackup.string(dict, "street"),
                                     zip: FullBackup.string(dict, "zip"), city: FullBackup.string(dict, "city"),
                                     country: FullBackup.string(dict, "country"), startDate: FullBackup.date(dict, "startDate") ?? .now,
                                     durationMinutes: FullBackup.int(dict, "durationMinutes"), focusArea: FullBackup.string(dict, "focusArea"),
+                                    status: statusRaw.isEmpty ? Training.openStatus : statusRaw,
                                     notes: FullBackup.string(dict, "notes"), createdBy: FullBackup.string(dict, "createdBy"),
                                     createdAt: FullBackup.date(dict, "createdAt") ?? .now, teams: teams)
             modelContext.insert(training)

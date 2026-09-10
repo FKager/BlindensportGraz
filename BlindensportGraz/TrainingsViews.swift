@@ -297,6 +297,17 @@ struct AddTrainingView: View {
 struct TrainingRow: View {
      let training: Training
 
+    // Mirrors TournamentRow.statusColor — deliberately not shown at all for
+    // the default "open" status (an "Offen" badge on every single row would
+    // just be visual noise; only the two states worth calling out get one).
+    var statusColor: Color {
+        switch training.status {
+        case Training.heldStatus: return .green
+        case Training.cancelledStatus: return .red
+        default: return .secondary
+        }
+    }
+
     var body: some View {
         // Column order per user request: date, then name, then time.
         HStack(alignment: .center, spacing: 12) {
@@ -311,8 +322,19 @@ struct TrainingRow: View {
             SportGlyph(sport: training.sport, size: 32)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(training.title)
-                   .font(.headline)
+                HStack {
+                    Text(training.title)
+                       .font(.headline)
+                    if training.status != Training.openStatus {
+                        Spacer()
+                        Text(training.statusLabel)
+                            .font(.caption)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .badge(tint: statusColor, opacity: Theme.emphasizedBadgeOpacity)
+                            .foregroundColor(statusColor)
+                    }
+                }
                 HStack {
                     Label(training.sport, systemImage: SportIcon.symbolName(for: training.sport))
                     Spacer()
@@ -420,6 +442,11 @@ struct TrainingDetailView: View {
             Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
                 .onChange(of: training.durationMinutes) { training.recomputeEndDate() }
             TextField("Schwerpunkt", text: $training.focusArea)
+            Picker("Status", selection: $training.status) {
+                Text("Offen").tag(Training.openStatus)
+                Text("Durchgeführt").tag(Training.heldStatus)
+                Text("Abgesagt").tag(Training.cancelledStatus)
+            }
         }
         if !myTeams.isEmpty {
             Section("Beteiligte Teams") {
@@ -536,6 +563,7 @@ struct TrainingDetailView: View {
             if !training.focusArea.isEmpty {
                 LabeledContent("Schwerpunkt", value: training.focusArea)
             }
+            LabeledContent("Status", value: training.statusLabel)
         }
         if !training.teams.isEmpty {
             Section("Beteiligte Teams") {
@@ -731,7 +759,22 @@ struct TrainingsListView: View {
                           } label: {
                            TrainingRow(training: training)
                          }
-                       }.onDelete(perform: deleteTrainings)
+                       .swipeActions(edge: .trailing) {
+                           Button(role: .destructive) {
+                               delete(training)
+                           } label: {
+                               Label("Löschen", systemImage: "trash")
+                           }
+                           if training.status != Training.cancelledStatus {
+                               Button {
+                                   markCancelled(training)
+                               } label: {
+                                   Label("Abgesagt", systemImage: "xmark.circle")
+                               }
+                               .tint(.orange)
+                           }
+                       }
+                       }
                       }
                  }
         .navigationTitle("Trainings")
@@ -862,15 +905,22 @@ struct TrainingsListView: View {
     // reminder — see EventReminderService — gets cancelled; still no
     // CloudKit delete push, that scoping is unchanged (no CloudKit delete
     // path exists for Training records, see EventsListView.deleteEvents'
-    // identical comment).
-    private func deleteTrainings(at offsets: IndexSet) {
-        // Index into the same collection the ForEach renders, not the raw
-        // @Query — they no longer share an order (see sortedTrainings).
-        let shown = visibleTrainings
-        for index in offsets {
-            let training = shown[index]
-            modelContext.delete(training)
-            TrainingService.delete(training, modelContext: modelContext)
-        }
+    // identical comment). Swipe-to-delete replaced the old `.onDelete`
+    // modifier (user request 2026-09-10: "Abgesagt und Löschen als
+    // Swipe-Option") so this now takes the single row's model directly
+    // instead of an IndexSet into visibleTrainings.
+    private func delete(_ training: Training) {
+        modelContext.delete(training)
+        TrainingService.delete(training, modelContext: modelContext)
+    }
+
+    // The other swipe action: marks a training cancelled without deleting
+    // it — its roster/attendance history stays intact, it just stops
+    // reading as "Offen" everywhere (TrainingRow's badge, the season
+    // dashboard, etc.). Plain field mutation + the standard save/push, same
+    // as any other in-place edit in this app.
+    private func markCancelled(_ training: Training) {
+        training.status = Training.cancelledStatus
+        TrainingService.save(training, modelContext: modelContext)
     }
 }

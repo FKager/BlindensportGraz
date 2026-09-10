@@ -61,6 +61,7 @@ enum CKSchema {
         static let endDate = "endDate"
         static let durationMinutes = "durationMinutes"
         static let focusArea = "focusArea"
+        static let status = "status"
         static let notes = "notes"
         static let createdBy = "createdBy"
         static let createdAt = "createdAt"

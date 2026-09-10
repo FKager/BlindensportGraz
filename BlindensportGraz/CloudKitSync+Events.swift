@@ -38,6 +38,7 @@ extension CloudKitSync {
         record[CKSchema.Training.endDate] = training.endDate
         record[CKSchema.Training.durationMinutes] = training.durationMinutes
         record[CKSchema.Training.focusArea] = training.focusArea
+        record[CKSchema.Training.status] = training.status
         record[CKSchema.Training.notes] = training.notes
         record[CKSchema.Training.createdBy] = training.createdBy
         record[CKSchema.Training.createdAt] = training.createdAt
@@ -139,6 +140,7 @@ extension CloudKitSync {
             let endDate = record[CKSchema.Training.endDate] as? Date ?? startDate
             let durationMinutes = record[CKSchema.Training.durationMinutes] as? Int ?? 90
             let focusArea = record[CKSchema.Training.focusArea] as? String ?? ""
+            let status = record[CKSchema.Training.status] as? String ?? Training.openStatus
             let notes = record[CKSchema.Training.notes] as? String ?? ""
             let createdBy = record[CKSchema.Training.createdBy] as? String ?? ""
             let createdAt = record[CKSchema.Training.createdAt] as? Date ?? .now
@@ -156,13 +158,14 @@ extension CloudKitSync {
                 existing.endDate = endDate
                 existing.durationMinutes = durationMinutes
                 existing.focusArea = focusArea
+                existing.status = status
                 existing.notes = notes
                 existing.teams = teams
             } else {
                 let training = Training(id: id, title: title, sport: sport, location: location,
                                          street: street, zip: zip, city: city, country: country,
                                          startDate: startDate, durationMinutes: durationMinutes,
-                                         focusArea: focusArea, notes: notes, createdBy: createdBy,
+                                         focusArea: focusArea, status: status, notes: notes, createdBy: createdBy,
                                          createdAt: createdAt, teams: teams)
                 training.endDate = endDate
                 modelContext.insert(training)

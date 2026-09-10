@@ -99,6 +99,7 @@ enum FullBackup {
         var fields = encodeEventFields(training)
         fields["durationMinutes"] = training.durationMinutes
         fields["focusArea"] = training.focusArea
+        fields["status"] = training.status
         return fields
     }
 

@@ -76,12 +76,13 @@ final class FullBackupTests: XCTestCase {
 
     func testEncodeTrainingAddsDurationAndFocusAreaOnTopOfEventFields() {
         let training = Training(title: "Techniktraining", sport: "Torball", location: "Halle", startDate: .now,
-                                durationMinutes: 60, focusArea: "Wurftechnik")
+                                durationMinutes: 60, focusArea: "Wurftechnik", status: Training.heldStatus)
         let dict = FullBackup.encode(training)
 
         XCTAssertEqual(dict["title"] as? String, "Techniktraining")
         XCTAssertEqual(dict["durationMinutes"] as? Int, 60)
         XCTAssertEqual(dict["focusArea"] as? String, "Wurftechnik")
+        XCTAssertEqual(dict["status"] as? String, "held")
     }
 
     func testEncodeTournamentAddsMaxTeamsAndStatusOnTopOfEventFields() {
