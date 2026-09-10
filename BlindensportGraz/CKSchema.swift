@@ -215,4 +215,32 @@ enum CKSchema {
         static let changedBy = "changedBy"
         static let changedAt = "changedAt"
     }
+
+    /// A pending/approved/rejected self-service roster edit — see
+    /// `MemberChangeRequest`'s doc comment. Field names mirror `ClubMember`
+    /// for the proposed-value fields, plus its own review-workflow fields.
+    enum MemberChangeRequest {
+        static let recordType = "MemberChangeRequest"
+        static let memberID = "memberID"
+        static let requestedBy = "requestedBy"
+        static let requestedAt = "requestedAt"
+        static let status = "status"
+        static let reviewedBy = "reviewedBy"
+        static let reviewedAt = "reviewedAt"
+        static let firstName = "firstName"
+        static let lastName = "lastName"
+        static let title = "title"
+        static let gender = "gender"
+        static let birthDate = "birthDate"
+        static let street = "street"
+        static let zip = "zip"
+        static let city = "city"
+        static let country = "country"
+        static let email = "email"
+        static let phone = "phone"
+        static let sportId = "sportId"
+        static let svnr = "svnr"
+        static let iban = "iban"
+        static let lastMedicalExamination = "lastMedicalExamination"
+    }
 }

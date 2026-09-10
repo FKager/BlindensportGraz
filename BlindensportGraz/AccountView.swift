@@ -124,7 +124,7 @@ struct AccountView: View {
             // first runs, so re-deriving here could flash the "not found"
             // fallback right after a successful request.
             if let member = requestedMember {
-                MyMemberView(member: member)
+                MyMemberView(member: member, currentUser: currentUser)
             } else {
                 ContentUnavailableView("Kein Vereinsdateneintrag gefunden",
                                        systemImage: "exclamationmark.triangle")

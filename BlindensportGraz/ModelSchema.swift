@@ -20,6 +20,9 @@ enum AppModelSchema {
         TrainingFavorite.self,
         RoleChangeLog.self,
         ExpenseReceipt.self,
+        // Self-service roster edits awaiting admin review
+        // (architecture-review.md §5 P2).
+        MemberChangeRequest.self,
         // Local-only outbox of not-yet-confirmed CloudKit writes
         // (architecture-review.md 2.2) — never itself synced.
         PendingPush.self

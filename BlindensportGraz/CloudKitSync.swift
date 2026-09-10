@@ -377,6 +377,7 @@ final class CloudKitSync {
         try? modelContext.save()
         await pullTrainingFavorites(modelContext: modelContext)
         await pullRoleChangeLogs(modelContext: modelContext)
+        await pullMemberChangeRequests(modelContext: modelContext)
         // Outside the Phase 8 service layer deliberately: this saves data
         // just PULLED from CloudKit into the local store, the opposite
         // direction from every `*Service.save`/`.delete` (local edit -> push
