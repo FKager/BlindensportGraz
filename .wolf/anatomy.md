@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T15:17:43.938Z
-> Files: 259 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T15:44:03.522Z
+> Files: 268 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -173,7 +173,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~6801 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~6808 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
@@ -186,15 +186,16 @@
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
 - `BlindensportGrazRelease.entitlements` (~199 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
-- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2462 tok)
+- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2770 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5253 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5271 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~945 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
 - `CloudKitSync+EventParticipation.swift` (~530 tok)
 - `CloudKitSync+Events.swift` — / SportEvent/Training/Tournament kept together in one file — they share the (~3532 tok)
 - `CloudKitSync+ExpenseReceipt.swift` (~911 tok)
 - `CloudKitSync+Member.swift` (~1495 tok)
+- `CloudKitSync+MemberChangeRequest.swift` (~1560 tok)
 - `CloudKitSync+RoleChangeLog.swift` (~540 tok)
 - `CloudKitSync+Subscriptions.swift` — Struct: this (~1647 tok)
 - `CloudKitSync+Team.swift` (~1293 tok)
@@ -212,6 +213,9 @@
 - `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
 - `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
+- `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3163 tok)
+- `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5288 tok)
+- `FullBackupView.swift` — / Admin-only whole-club export/restore screen — architecture-review.md §5 (~1226 tok)
 - `Info.plist` (~443 tok)
 - `KostZCalculation.swift` — KostZCalculator: monthly (Training-only) summary + summary(for tournament:) (~1500 tok)
 - `KostZExport.swift` — KostZExporter: month export ORT="Graz"+training-date-derived period; tournament export ORT=tournament.city (~1700 tok)
@@ -219,12 +223,15 @@
 - `Localizable.xcstrings` (~6958 tok)
 - `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~2790 tok)
 - `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
+- `MemberChangeRequest.swift` — / A club member's own edit to their roster ("Vereinsdaten") data, awaiting (~1486 tok)
+- `MemberChangeRequestService.swift` — / Self-service roster edits awaiting admin review — architecture-review.md (~506 tok)
+- `MemberChangeRequestsView.swift` — / Admin review queue for self-service "Vereinsdaten" edits — architecture- (~2417 tok)
 - `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4825 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1914 tok)
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
-- `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s (~7507 tok)
-- `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~329 tok)
+- `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s (~8244 tok)
+- `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~366 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1076 tok)
 - `PendingPush.swift` — / Durable outbox for CloudKit writes — architecture-review.md 2.2 / 2.3. (~1418 tok)
@@ -254,7 +261,7 @@
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
 - `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
 - `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~6299 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView (~6716 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
@@ -297,8 +304,10 @@
 - `EventReminderServiceTests.swift` — Class: FakeNotificationScheduling (~1755 tok)
 - `EventRosterTests.swift` — Class: EventRosterTests (~1028 tok)
 - `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
+- `FullBackupTests.swift` — Class: FullBackupTests (~2360 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
+- `MemberChangeRequestTests.swift` — Class: MemberChangeRequestTests (~1040 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `MemberMembershipRequestTests.swift` — Class: MemberMembershipRequestTests (~1810 tok)
 - `NetworkMonitorTests.swift` — Class: FakeReachabilitySource (~524 tok)

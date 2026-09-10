@@ -2618,3 +2618,44 @@
 | 17:17 | Edited RootCLI/README.md | expanded (+26 lines) | ~486 |
 | 17:20 | Built architecture-review.md P2 #2 server-side: webcal calendar feed. NEW: RootCLI/Sources/CloudKitS2SCore/CalendarFeed.swift (pure: visibleEvents role/team filter mirroring NextEventLookup.isVisible, render() -> RFC5545 multi-VEVENT ics, mirrors CalendarEventExport.icsFile). clubmembersapi/CalendarFeedRoutes.swift: GET /calendar/:token[.ics] - looks up UserIdentity by calendarToken, resolves team scope via TeamMembership, fetches Training+Tournament, renders. Auth.swift: RequireAPIUserExceptCalendarFeed (path-prefix allowlist, replaces APIUser.guardMiddleware() globally in Configure.swift) - the one unauthenticated route, since webcal cant do a login prompt. App side: CKSchema.UserIdentity.calendarToken, User.calendarToken (stored+synced via CloudKitSync+UserIdentity push/pull), new ServerConfig.swift (clubMembersAPIHost: String? = nil placeholder until deployed), AccountView "Kalender-Abo" section (generate/regenerate token + webcal:// URL + ShareLink). Added RootCLI's FIRST test target (CloudKitS2SCoreTests, Package.swift) - 6 new tests, all pure/no-network. README.md documents the new route + auth exception. Still NOT usable end-to-end: clubmembersapi has never been deployed publicly (localhost only) - user chose "build server code anyway" over blocking on hosting. | RootCLI/Sources/CloudKitS2SCore/CalendarFeed.swift(new), RootCLI/Sources/clubmembersapi/CalendarFeedRoutes.swift(new), Auth.swift, Configure.swift, CKRecordDTO.swift, Package.swift, RootCLI/Tests/CloudKitS2SCoreTests/CalendarFeedTests.swift(new), RootCLI/README.md, CKSchema.swift, User.swift, CloudKitSync+UserIdentity.swift, ServerConfig.swift(new), AccountView.swift | swift build+test green (RootCLI), iOS BUILD+212 tests green (4 pre-existing) | ~22k |
 | 17:18 | Session end: 34 writes across 26 files (project_widget_prerequisites.md, Theme.swift, TeamsViews.swift, EventsViews.swift, AccountView.swift) | 23 reads | ~72788 tok |
+| 17:24 | Session end: 34 writes across 26 files (project_widget_prerequisites.md, Theme.swift, TeamsViews.swift, EventsViews.swift, AccountView.swift) | 23 reads | ~72788 tok |
+| 17:28 | Created BlindensportGraz/MemberChangeRequest.swift | — | ~1486 |
+| 17:28 | Edited BlindensportGraz/CKSchema.swift | expanded (+28 lines) | ~384 |
+| 17:28 | Created BlindensportGraz/CloudKitSync+MemberChangeRequest.swift | — | ~1560 |
+| 17:29 | Created BlindensportGraz/MemberChangeRequestService.swift | — | ~506 |
+| 17:29 | Edited BlindensportGraz/ModelSchema.swift | 7→10 lines | ~103 |
+| 17:29 | Edited BlindensportGraz/CloudKitSync.swift | 2→3 lines | ~51 |
+| 17:29 | Edited BlindensportGraz/MembersViews.swift | added optional chaining | ~1623 |
+| 17:30 | Edited BlindensportGraz/AccountView.swift | 3→3 lines | ~37 |
+| 17:30 | Created BlindensportGraz/MemberChangeRequestsView.swift | — | ~2417 |
+| 17:30 | Edited BlindensportGraz/TeamsViews.swift | 6→11 lines | ~98 |
+| 17:31 | Edited BlindensportGraz/TeamsViews.swift | expanded (+16 lines) | ~309 |
+| 17:31 | Edited BlindensportGraz/TeamsViews.swift | 24→26 lines | ~264 |
+| 17:31 | Edited BlindensportGraz/TeamsViews.swift | 3→4 lines | ~50 |
+| 17:32 | Created BlindensportGrazTests/MemberChangeRequestTests.swift | — | ~1040 |
+| 17:34 | Created BlindensportGraz/FullBackup.swift | — | ~2922 |
+| 17:34 | Edited BlindensportGraz/FullBackup.swift | modified string() | ~302 |
+| 17:35 | Created BlindensportGraz/FullBackupImporter.swift | — | ~4786 |
+
+## Session: 2026-09-10 17:41
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | modified exists() | ~660 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~40 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~39 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | alreadyExists() → findMembership() | ~52 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~39 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~29 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~30 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~26 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~24 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~31 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~25 |
+| 17:41 | Edited BlindensportGraz/FullBackupImporter.swift | inline fix | ~27 |
+| 17:43 | Created BlindensportGrazTests/FullBackupTests.swift | — | ~2360 |
+| 17:43 | Created BlindensportGraz/FullBackupView.swift | — | ~1226 |
+| 17:43 | Edited BlindensportGraz/TeamsViews.swift | 13→18 lines | ~156 |
+| 17:44 | Edited BlindensportGraz/TeamsViews.swift | 25→27 lines | ~280 |
+| 17:44 | Edited BlindensportGraz/TeamsViews.swift | 3→4 lines | ~45 |
+| 17:46 | Completed both P2 backlog features: member self-service edit + admin approval queue (MemberChangeRequest), full club backup/restore (FullBackup/FullBackupImporter/FullBackupView) | FullBackup*.swift, MemberChangeRequest*.swift, TeamsViews.swift, MembersViews.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~35000 |
