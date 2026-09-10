@@ -72,6 +72,8 @@ struct AccountView: View {
                     }
                 }
 
+                calendarFeedSection(for: user)
+
                 Section {
                     Button {
                         showEdit = true
@@ -185,6 +187,61 @@ struct AccountView: View {
         case "coach": return "Trainer:in"
         default: return "Mitglied"
         }
+    }
+
+    // MARK: - Calendar feed (architecture-review.md §5 P2)
+
+    @ViewBuilder
+    private func calendarFeedSection(for user: User) -> some View {
+        Section("Kalender-Abo") {
+            if user.calendarToken.isEmpty {
+                Text("Trage alle Trainings und Turniere, die du sehen kannst, automatisch in deine Kalender-App ein.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Button {
+                    generateCalendarToken(for: user)
+                } label: {
+                    Label("Kalender-Link erstellen", systemImage: "calendar.badge.plus")
+                }
+            } else {
+                LabeledContent("Kalender-URL") {
+                    Text(calendarFeedURL(for: user))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                        .truncationMode(.middle)
+                }
+                ShareLink(item: calendarFeedURL(for: user)) {
+                    Label("Kalender-Link teilen", systemImage: "square.and.arrow.up")
+                }
+                Button {
+                    generateCalendarToken(for: user)
+                } label: {
+                    Label("Neuen Link erzeugen", systemImage: "arrow.triangle.2.circlepath")
+                }
+                .accessibilityHint("Ungültig macht den bisherigen Link, falls er versehentlich weitergegeben wurde.")
+                if ServerConfig.clubMembersAPIHost == nil {
+                    Label("Der Server für den Kalender-Abgleich ist noch nicht eingerichtet — die URL oben zeigt einen Platzhalter.",
+                          systemImage: "exclamationmark.triangle")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
+            }
+        }
+    }
+
+    /// `webcal://` so a tap opens straight in the device's default calendar
+    /// app instead of a browser. Placeholder host when `ServerConfig`
+    /// hasn't been pointed at a real deployment yet — see that file's doc
+    /// comment; the token itself is real and ready either way.
+    private func calendarFeedURL(for user: User) -> String {
+        let host = ServerConfig.clubMembersAPIHost ?? "DEIN-SERVER.example"
+        return "webcal://\(host)/calendar/\(user.calendarToken).ics"
+    }
+
+    private func generateCalendarToken(for user: User) {
+        user.calendarToken = UUID().uuidString
+        UserService.save(user, modelContext: modelContext)
     }
 }
 

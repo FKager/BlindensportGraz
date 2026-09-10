@@ -80,6 +80,7 @@
 		80CBFF8A109B77BAAB5B8007 /* TeamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168BC304C308EF5A9784D13A /* TeamService.swift */; };
 		84CFF5D16BF20560B2587E3C /* AttendanceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F839558E431EA641208C70D8 /* AttendanceService.swift */; };
 		85640CC8B2B6A9C5A871B58C /* SyncStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0E1E022BE99A8781F89965 /* SyncStateTests.swift */; };
+		879A4A3317DA9A21EAB3DFF5 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F33B54E78AAF1B664FFCC375 /* ServerConfig.swift */; };
 		87AA1F426546F5D62C19EA80 /* SammelabrechnungExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDE3F917A1C77D9369C95493 /* SammelabrechnungExportTests.swift */; };
 		883A941D130AF6840F6283D0 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C9DE238BBE5A6E6B45BA118 /* RootView.swift */; };
 		886B320C465DDB5914963E23 /* TeamImportExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A2DB7023E996844A07A644 /* TeamImportExport.swift */; };
@@ -310,6 +311,7 @@
 		E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */ = {isa = PBXFileReference; path = TN_TeilnehmerInnenliste.xlsx; sourceTree = "<group>"; };
 		EFB71ACF3054BF64826EBB44 /* ModelSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSchema.swift; sourceTree = "<group>"; };
 		F2B2958BDAA594F03FDA99CC /* CloudKitSync+ExpenseReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CloudKitSync+ExpenseReceipt.swift"; sourceTree = "<group>"; };
+		F33B54E78AAF1B664FFCC375 /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
 		F3DC38F4EDBFDA72F571861D /* WidgetRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetRefresher.swift; sourceTree = "<group>"; };
 		F47BC1DFE7FFC8695E1FC793 /* ExpenseReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseReceipt.swift; sourceTree = "<group>"; };
 		F56897EA548E8E01D9978A8D /* TrainingSeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSeriesView.swift; sourceTree = "<group>"; };
@@ -443,6 +445,7 @@
 				512D9209475F8B7BE4E19C88 /* SammelabrechnungViews.swift */,
 				07457A7BF91FF248570ED93E /* SeasonDashboard.swift */,
 				73D3C61AEE326103E53ED15E /* SeasonDashboardView.swift */,
+				F33B54E78AAF1B664FFCC375 /* ServerConfig.swift */,
 				1FD49C2EA271EA05E862CA96 /* ServiceFailureSignal.swift */,
 				FB1318662CB1457799DA18A4 /* Sport.swift */,
 				D375708CB47EF25E5E299302 /* SportEvent.swift */,
@@ -735,6 +738,7 @@
 				E77BDFB61E06972E54E30ABF /* SammelabrechnungViews.swift in Sources */,
 				28830F910D34EE1D3C0D0BFE /* SeasonDashboard.swift in Sources */,
 				8BFC8F67D255BCE3CD3F624B /* SeasonDashboardView.swift in Sources */,
+				879A4A3317DA9A21EAB3DFF5 /* ServerConfig.swift in Sources */,
 				B65AF50BDF7DC1CE174DF98F /* ServiceFailureSignal.swift in Sources */,
 				EA77085EDF55C9885D1E430C /* Sport.swift in Sources */,
 				E7FF26003891C82F5FB9F1EB /* SportEvent.swift in Sources */,

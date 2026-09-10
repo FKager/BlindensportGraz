@@ -10,6 +10,7 @@ extension CloudKitSync {
         record[CKSchema.UserIdentity.role] = user.role.rawValue
         record[CKSchema.UserIdentity.isGrazerVSCMember] = user.isGrazerVSCMember
         record[CKSchema.UserIdentity.isRoot] = user.isRoot
+        record[CKSchema.UserIdentity.calendarToken] = user.calendarToken
         save(record)
     }
 
@@ -40,6 +41,7 @@ extension CloudKitSync {
             let role = AppRole.normalize(record[CKSchema.UserIdentity.role] as? String ?? "member")
             let isGrazerVSCMember = record[CKSchema.UserIdentity.isGrazerVSCMember] as? Bool ?? false
             let isRoot = record[CKSchema.UserIdentity.isRoot] as? Bool ?? false
+            let calendarToken = record[CKSchema.UserIdentity.calendarToken] as? String ?? ""
 
             var descriptor = FetchDescriptor<User>(predicate: #Predicate { $0.id == id })
             descriptor.fetchLimit = 1
@@ -50,9 +52,11 @@ extension CloudKitSync {
                 existing.role = role
                 existing.isGrazerVSCMember = isGrazerVSCMember
                 existing.isRoot = isRoot
+                existing.calendarToken = calendarToken
             } else {
                 let user = User(id: id, email: "", firstName: firstName, lastName: lastName,
                                  role: role, isGrazerVSCMember: isGrazerVSCMember, isRoot: isRoot)
+                user.calendarToken = calendarToken
                 modelContext.insert(user)
             }
         }

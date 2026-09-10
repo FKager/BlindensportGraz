@@ -336,6 +336,32 @@ the `ClubMember` record type and Security Roles are already configured per
 the setup steps above (the app itself, or a prior `rootcli import-members`
 run, will already have created the schema in Development).
 
+### Calendar feed (webcal) — the one unauthenticated route
+
+`GET /calendar/:token` (`:token` may carry a literal `.ics` suffix, e.g.
+`/calendar/AbC123.ics` — both forms work) returns one member's
+training/tournament schedule as a single RFC 5545 `.ics` file
+(`Content-Type: text/calendar`), for subscribing from a system calendar app
+via `webcal://your-host/calendar/<token>.ics`.
+
+This is the **only** route in this server that doesn't require the Basic Auth
+credentials above — a webcal subscription can't present a username/password
+prompt in most calendar clients, so each member's own opaque, unguessable,
+regenerable `calendarToken` (stored on their `UserIdentity` CKRecord, set
+from the app's Account tab → "Kalender-Abo") is the credential instead,
+checked inside the route handler. See `Auth.swift`'s
+`RequireAPIUserExceptCalendarFeed` and `CloudKitS2SCore/CalendarFeed.swift`'s
+doc comments for the full reasoning. The feed only ever includes
+title/time/venue — the same data that member could already see in the app —
+filtered by the same admin-sees-everything / everyone-else-sees-their-own-
+teams rule the app itself uses; never any roster PII.
+
+**Deployment note:** the app's Account tab builds the subscription URL
+against `ServerConfig.clubMembersAPIHost` (`BlindensportGraz/ServerConfig.swift`),
+which is `nil` until this server is actually deployed somewhere with a real
+hostname (see "Deployment / TLS" above) — point it there and rebuild once
+you have one.
+
 ### Generic record editor (any type, not just Member)
 
 `/api/members` above is a typed, validated CRUD layer specific to

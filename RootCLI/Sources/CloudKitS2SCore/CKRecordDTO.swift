@@ -36,4 +36,11 @@ public struct CKRecordDTO {
         guard let number = value as? NSNumber else { return nil }
         return Date(timeIntervalSince1970: number.doubleValue / 1000)
     }
+
+    /// Reads a CloudKit STRING_LIST field (e.g. `teamIDs` on Training/
+    /// Tournament/SportEvent) — empty (not nil) when absent, since callers
+    /// treat "no team scoping" as "visible to everyone", same as the app.
+    public func stringListField(_ name: String) -> [String] {
+        (fields[name] as? [String: Any])?["value"] as? [String] ?? []
+    }
 }

@@ -22,7 +22,9 @@ func configure(_ app: Application) throws {
 
     app.middleware.use(ClubMembersAuthenticator(username: apiUsername, password: apiPassword,
                                                  limiter: LoginAttemptLimiter()))
-    app.middleware.use(APIUser.guardMiddleware())
+    // Requires authentication for every route EXCEPT /calendar/* — see
+    // RequireAPIUserExceptCalendarFeed's doc comment.
+    app.middleware.use(RequireAPIUserExceptCalendarFeed())
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory, defaultFile: "index.html"))
 
     if let portString = env["PORT"], let port = Int(portString) {
@@ -32,5 +34,6 @@ func configure(_ app: Application) throws {
         app.http.server.configuration.hostname = hostname
     }
 
+    calendarFeedRoutes(app, client: client)
     try routes(app, client: client)
 }

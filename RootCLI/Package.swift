@@ -37,6 +37,13 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor")
             ],
             path: "Sources/clubmembersapi"
+        ),
+        // Covers CloudKitS2SCore's pure logic (CalendarFeed, CKFieldCoding) —
+        // no network, no Vapor. Mirrors Shared/ClubSchema's Tests target.
+        .testTarget(
+            name: "CloudKitS2SCoreTests",
+            dependencies: ["CloudKitS2SCore"],
+            path: "Tests/CloudKitS2SCoreTests"
         )
     ]
 )

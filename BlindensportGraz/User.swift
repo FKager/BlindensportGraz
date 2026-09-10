@@ -20,6 +20,13 @@ final class User {
     // directly to CloudKit.
     var isRoot: Bool = false
 
+    // Opaque token gating this user's read-only webcal feed — see
+    // CKSchema.UserIdentity.calendarToken's doc comment. Empty until
+    // generated (AccountView); synced (non-sensitive) like firstName/
+    // lastName/role, unlike email/appleUserIdentifier which never leave
+    // this device.
+    var calendarToken: String = ""
+
     @Relationship(deleteRule: .cascade, inverse: \TeamMembership.user)
     var memberships: [TeamMembership] = []
 

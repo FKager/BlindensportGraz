@@ -120,6 +120,17 @@ enum CKSchema {
         static let role = "role"
         static let isGrazerVSCMember = "isGrazerVSCMember"
         static let isRoot = "isRoot"
+        /// Opaque token gating this user's read-only webcal calendar feed
+        /// (architecture-review.md §5 P2 — served by clubmembersapi's
+        /// `/calendar/:token` route, deliberately outside its Basic Auth
+        /// gate since a webcal subscription can't present a login prompt in
+        /// most calendar clients). Not a secret in the security sense — the
+        /// feed only ever exposes training/tournament schedule data this
+        /// user could already see in the app — just unguessable enough that
+        /// stumbling onto someone else's feed isn't realistic. Empty until
+        /// the user generates one (AccountView); regenerable to invalidate
+        /// a leaked link.
+        static let calendarToken = "calendarToken"
     }
 
     /// The app-side model is `Member` (renamed 2026-08-01), but the CKRecord
