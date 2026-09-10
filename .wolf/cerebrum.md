@@ -14,6 +14,41 @@
 
 ## Key Learnings
 
+- [2026-09-09] **The Apple Developer portal (`developer.apple.com/account/resources/...`) is fully
+  scriptable via Safari `do JavaScript`** once the user has signed in manually (Apple ID + 2FA can't
+  be automated). It's a React app (styled-components 5.3.11), no iframes, no shadow DOM. Techniques
+  that worked, end to end, to register an App Group + a widget App ID + regenerate/create dev
+  provisioning profiles this session:
+  - **Navigate by URL**: `set URL of current tab ... to "/account/resources/identifiers/add/bundleId"`
+    (or `/applicationGroup/add/`, `/identifiers/bundleId/edit/<ID>`, `/profiles/edit/<ID>`,
+    `/profiles/add`). Give the SPA ~6-8s to render, then poll `document.body.innerText`.
+  - **Radios / checkboxes**: plain `el.click()` fires React's onChange fine (`#applicationGroup`,
+    `#bundleId`, `#explicit`, capability checkboxes like `#APP_GROUPS`, cert/device rows by their
+    data-id, `#isOfflineProfile_false`).
+  - **Text inputs**: native value setter + dispatch `input`+`change`+`blur`:
+    `Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(el,v)`.
+  - **`react-select` combobox** (the profile "Select an App ID" step, `#react-select-N-input`):
+    clicking an option element does NOT register. What works: `mousedown` on the `[class*=control]`
+    wrapper to open the menu, type a filter string into the input via the native setter + `input`
+    event, then dispatch `keydown`+`keypress`+`keyup` for `Enter` (keyCode 13) on the input — selects
+    the highlighted (first filtered) option.
+  - **Multi-step wizards** (App ID capabilities, profile Select→Configure→Generate): find the
+    `<button>` by `innerText.trim()` (`Continue`, `Register`, `Save`, `Generate`, `Confirm`) and
+    `.click()`. Editing an Xcode-managed App ID's capabilities pops a "Modify App Capabilities"
+    confirm modal (warns profiles will be invalidated) — click `Confirm`.
+  - **Downloading a `.mobileprovision` WITHOUT a file download** (avoids the 2026-09-01 "scripted
+    Safari download silently fails" gotcha): synchronous `XMLHttpRequest` — `x.open('GET',url,false)`,
+    `x.overrideMimeType('text/plain; charset=x-user-defined')`, then base64 the byte-masked
+    `responseText` (`String.fromCharCode(s.charCodeAt(i)&0xff)` → `btoa`) and return it from
+    `do JavaScript`. The download URL is on the post-Generate page:
+    `.../services-account/QH65B2/account/ios/profile/downloadProfileContent?teamId=5Q57Y9YT8J&provisioningProfileId=<ID>`.
+    Verify the bytes with `security cms -D -i file | PlistBuddy` before trusting.
+  - **`do JavaScript` does NOT await Promises** — a `fetch(...)` returns `[object Promise]`/nothing.
+    Use sync XHR, or split into polled steps.
+  - **`gh secret set` is blocked by this session's auto-mode classifier** (same as `gh pr merge`);
+    `gh workflow run` and `gh run watch` are allowed. Hand secret-setting to the user (write the b64
+    to `~/BlindensportGraz-widget-profiles/` and give them the `gh secret set NAME < file` command).
+
 - [2026-09-08] **Detail views are read-only by default** (`EventDetailView`, `TrainingDetailView`,
   `TournamentDetailView`). Each has `@State private var isEditing = false` and a `canEdit` computed
   (`currentUser?.role == .admin || (currentUser?.isRoot ?? false)`). A "Bearbeiten"/"Fertig" toolbar

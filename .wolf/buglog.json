@@ -6868,6 +6868,26 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-09T21:42:00.000Z"
+    },
+    {
+      "id": "bug-406",
+      "timestamp": "2026-09-09T22:20:00.000Z",
+      "error_message": "Driving the Apple Developer portal profile wizard via Safari `do JavaScript`: selecting the App ID in the react-select combobox didn't register (control stayed 'Select...', Continue stayed disabled) after clicking the option element; and an initial `fetch()` to download the profile returned nothing.",
+      "file": "N/A (Safari automation technique)",
+      "root_cause": "(1) react-select v2 doesn't select on a plain option .click(); it needs the menu open + keyboard Enter on the input. (2) `do JavaScript` does not await Promises, so `await fetch()` yields [object Promise].",
+      "fix": "(1) mousedown the [class*=control] wrapper to open the menu, set #react-select-N-input value via the native setter + 'input' event to filter, then dispatch keydown/keypress/keyup Enter (keyCode 13) on the input. (2) Use a synchronous XMLHttpRequest (open(...,false) + overrideMimeType('text/plain; charset=x-user-defined')) and btoa the byte-masked responseText. Full technique recorded in cerebrum.md Key Learnings 2026-09-09.",
+      "tags": [
+        "safari",
+        "osascript",
+        "do-javascript",
+        "apple-developer-portal",
+        "react-select",
+        "provisioning-profile",
+        "automation"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-09T22:20:00.000Z"
     }
   ]
 }

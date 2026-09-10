@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T19:23:11.397Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T20:24:39.876Z
 > Files: 252 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -51,7 +51,7 @@
 - `project_cloudkit-prod-data-copy.md` — Declares from (~630 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
 - `project_testflight-setup.md` (~1260 tok)
-- `project_widget_prerequisites.md` (~473 tok)
+- `project_widget_prerequisites.md` (~554 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
