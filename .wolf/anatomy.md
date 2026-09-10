@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T16:17:19.815Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T16:24:06.202Z
 > Files: 269 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -179,7 +179,7 @@
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
 - `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)
 - `AttendanceRollCallView.swift` — / Distraction-free "roll call" for one Training or Tournament — (~1520 tok)
-- `AttendanceService.swift` — / No `delete` — `CloudKitSync` never had a delete path for Attendance (~545 tok)
+- `AttendanceService.swift` — / No `delete` — `CloudKitSync` never had a delete path for Attendance (~844 tok)
 - `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
 - `BlindensportGraz.entitlements` (~200 tok)
@@ -276,7 +276,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11571 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11771 tok)
 - `User.swift` — Class: User (~1280 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)

@@ -7190,9 +7190,21 @@
       "root_cause": "N/A — new field/feature, not a bug fix.",
       "fix": "Added Training.status (\"open\"/\"held\"/\"cancelled\", default \"open\") + Training.statusLabel for the German display text, synced via CKSchema.Training.status and CloudKitSync+Events' push/pull. TrainingRow shows a color-coded status badge (suppressed for the default \"open\" state); TrainingDetailView got a Status Picker (edit) and LabeledContent (read-only). TrainingsListView's ForEach now uses .swipeActions(edge: .trailing) with two buttons — \"Abgesagt\" (marks cancelled, orange tint) and \"Löschen\" (destructive delete) — replacing the old plain .onDelete. FullBackup/FullBackupImporter updated to carry the new field.",
       "tags": ["feature", "training", "status", "swipe-actions", "swiftdata", "cloudkit"],
-      "related_bugs": [],
+      "related_bugs": ["bug-429"],
       "occurrences": 1,
       "last_seen": "2026-09-10T18:20:00.000Z"
+    },
+    {
+      "id": "bug-430",
+      "timestamp": "2026-09-10T18:30:00.000Z",
+      "error_message": "Feature (not a defect): marking a Training \"Abgesagt\" left its existing Attendance rows untouched — attended=true and any PRAE amount stayed set for a training that never happened. User request 2026-09-10: \"when a training is abgesagt, the relationship attended should be removed and no prae amount should be set.\"",
+      "file": "BlindensportGraz/AttendanceService.swift, TrainingsViews.swift",
+      "root_cause": "N/A — new feature, follow-up to bug-429's Training.status.",
+      "fix": "Added AttendanceService.clearAll(for:modelContext:), which resets every Attendance row for a SportEvent to attended=false/praeAmount=nil and saves+pushes each (doesn't delete the rows — AttendanceService has no CloudKit delete path for Attendance, same existing scoping). Called from both places a Training's status can become cancelled: TrainingsListView.markCancelled (the swipe action) and a new .onChange(of: training.status) on TrainingDetailView's edit Picker.",
+      "tags": ["feature", "training", "attendance", "prae", "cancelled"],
+      "related_bugs": ["bug-429"],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T18:30:00.000Z"
     }
   ]
 }

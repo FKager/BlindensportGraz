@@ -2687,3 +2687,8 @@
 | 18:17 | Edited BlindensportGrazTests/FullBackupTests.swift | modified testEncodeTrainingAddsDurationAndFocusAreaOnTopOfEventFields() | ~161 |
 | 18:17 | Created BlindensportGrazTests/TrainingTests.swift | — | ~470 |
 | 18:25 | Added Training.status (Offen/Durchgeführt/Abgesagt) + swipe actions (Abgesagt/Löschen) in TrainingsListView | Training.swift, CKSchema.swift, CloudKitSync+Events.swift, TrainingsViews.swift, FullBackup*.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~14000 |
+| 18:20 | Session end: 37 writes across 12 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 17 reads | ~63451 tok |
+| 18:23 | Edited BlindensportGraz/AttendanceService.swift | modified setAttended() | ~392 |
+| 18:24 | Edited BlindensportGraz/TrainingsViews.swift | modified markCancelled() | ~125 |
+| 18:24 | Edited BlindensportGraz/TrainingsViews.swift | modified Picker() | ~193 |
+| 18:30 | Clear Attendance (attended=false, praeAmount=nil) when a Training becomes Abgesagt | AttendanceService.swift, TrainingsViews.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~5000 |
