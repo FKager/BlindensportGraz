@@ -447,6 +447,14 @@ struct TrainingDetailView: View {
                 Text("Durchgeführt").tag(Training.heldStatus)
                 Text("Abgesagt").tag(Training.cancelledStatus)
             }
+            // Same "no attendance, no PRAE for a cancelled training" rule as
+            // the list's swipe action — this is the other place status can
+            // change to Abgesagt, so it needs the identical side effect.
+            .onChange(of: training.status) {
+                if training.status == Training.cancelledStatus {
+                    AttendanceService.clearAll(for: training, modelContext: modelContext)
+                }
+            }
         }
         if !myTeams.isEmpty {
             Section("Beteiligte Teams") {
@@ -922,5 +930,9 @@ struct TrainingsListView: View {
     private func markCancelled(_ training: Training) {
         training.status = Training.cancelledStatus
         TrainingService.save(training, modelContext: modelContext)
+        // No one attended a cancelled training and no PRAE is paid for it
+        // (user request 2026-09-10) — see AttendanceService.clearAll's doc
+        // comment for why this resets rather than deletes.
+        AttendanceService.clearAll(for: training, modelContext: modelContext)
     }
 }

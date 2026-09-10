@@ -40,4 +40,25 @@ enum AttendanceService {
         let record = mark(attended, for: membership, at: event, modelContext: modelContext)
         return save(record, modelContext: modelContext)
     }
+
+    /// Called when a Training is marked "Abgesagt" (`Training.cancelledStatus`,
+    /// user request 2026-09-10) — a cancelled training has no attendance and
+    /// nobody gets paid PRAE for it, so every existing `Attendance` row for
+    /// it is reset to not-attended with no PRAE amount. Doesn't delete the
+    /// rows themselves — this enum's doc comment explains why there's no
+    /// delete path (CloudKit never had one for Attendance); resetting in
+    /// place is what the sync layer can actually push/pull consistently,
+    /// and it keeps the roster's history of who was even being tracked.
+    /// Idempotent, so calling it more than once (e.g. re-saving an already-
+    /// cancelled training) is harmless.
+    @discardableResult
+    static func clearAll(for event: SportEvent, modelContext: ModelContext) -> Bool {
+        var allSucceeded = true
+        for attendance in event.attendances {
+            attendance.attended = false
+            attendance.praeAmount = nil
+            if !save(attendance, modelContext: modelContext) { allSucceeded = false }
+        }
+        return allSucceeded
+    }
 }
