@@ -1150,6 +1150,28 @@
         }
       }
     },
+    "training_cancelled_body": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ in %2$@"
+          }
+        }
+      }
+    },
+    "training_cancelled_title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Training abgesagt"
+          }
+        }
+      }
+    },
     "training_created_body": {
       "extractionState": "manual",
       "localizations": {
