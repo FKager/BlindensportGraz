@@ -251,22 +251,48 @@ final class CloudKitSync {
     /// On any error the whole pull for this type returns `[]` (unchanged
     /// behaviour): callers only ever upsert what comes back, so an empty
     /// result is a no-op rather than a partial reconciliation against a
-    /// half-fetched set.
+    /// half-fetched set. `fetchAllOrThrow` below is the one exception — it
+    /// exists specifically for a caller that DOES need to tell "genuinely
+    /// zero remote records" apart from "the fetch failed" (bug-440).
     func fetchAll(recordType: String) async -> [CKRecord] {
-        var collected: [CKRecord] = []
         do {
-            let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
-            var page = try await publicDB.records(matching: query, resultsLimit: CKQueryOperation.maximumResults)
-            while true {
-                collected.append(contentsOf: page.matchResults.compactMap { try? $1.get() })
-                guard let cursor = page.queryCursor else { break }
-                page = try await publicDB.records(continuingMatchFrom: cursor, resultsLimit: CKQueryOperation.maximumResults)
-            }
-            return collected
+            return try await fetchAllOrThrow(recordType: recordType)
         } catch {
-            logger.error("pull failed for \(recordType, privacy: .public) after \(collected.count) record(s): \(String(describing: error), privacy: .public)")
+            logger.error("pull failed for \(recordType, privacy: .public): \(String(describing: error), privacy: .public)")
             return []
         }
+    }
+
+    /// Same paging as `fetchAll`, but throws instead of swallowing the error
+    /// — for `pullTrainings`' local-orphan pruning (bug-440): a Training
+    /// deleted directly in CloudKit (outside the app, which has no delete
+    /// path for this type — see `TrainingService`) never disappeared from a
+    /// device that had already pulled it, since every existing pull only
+    /// ever upserts. Pruning is only safe when we're CERTAIN the fetch
+    /// really did return every remote record — treating a network failure's
+    /// `[]` as "delete everything local" would be catastrophic, which is
+    /// exactly why `fetchAll` itself deliberately can't distinguish the two.
+    func fetchAllOrThrow(recordType: String) async throws -> [CKRecord] {
+        var collected: [CKRecord] = []
+        let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+        var page = try await publicDB.records(matching: query, resultsLimit: CKQueryOperation.maximumResults)
+        while true {
+            collected.append(contentsOf: page.matchResults.compactMap { try? $1.get() })
+            guard let cursor = page.queryCursor else { break }
+            page = try await publicDB.records(continuingMatchFrom: cursor, resultsLimit: CKQueryOperation.maximumResults)
+        }
+        return collected
+    }
+
+    /// True if this record has a not-yet-confirmed write sitting in the
+    /// outbox — used by `pullTrainings`' pruning to never delete a Training
+    /// this device just created/edited locally but hasn't finished pushing
+    /// to CloudKit yet (it wouldn't show up in a fresh `fetchAllOrThrow` for
+    /// that reason alone, not because it was really deleted).
+    func hasPendingPush(recordName: String) -> Bool {
+        guard let outboxContext else { return false }
+        let descriptor = FetchDescriptor<PendingPush>(predicate: #Predicate { $0.recordName == recordName })
+        return ((try? outboxContext.fetchCount(descriptor)) ?? 0) > 0
     }
 
     // MARK: - Shared lookup helpers (used by multiple per-model pull functions)

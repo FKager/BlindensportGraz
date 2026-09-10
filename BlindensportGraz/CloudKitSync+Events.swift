@@ -127,8 +127,21 @@ extension CloudKitSync {
         // would have if CloudKit ever returned a duplicate id.
         var existingByID = Dictionary(uniqueKeysWithValues: ((try? modelContext.fetch(FetchDescriptor<Training>())) ?? []).map { ($0.id, $0) })
 
-        for record in await fetchAll(recordType: CKSchema.Training.recordType) {
+        // Only a genuinely successful, complete fetch is trustworthy enough
+        // to prune from (bug-440) — see fetchAllOrThrow's doc comment. On
+        // failure this matches every other pull's existing behaviour
+        // exactly: a no-op, nothing upserted or removed.
+        let records: [CKRecord]
+        do {
+            records = try await fetchAllOrThrow(recordType: CKSchema.Training.recordType)
+        } catch {
+            return
+        }
+        var seenRemoteIDs = Set<UUID>()
+
+        for record in records {
             guard let id = UUID(uuidString: record.recordID.recordName) else { continue }
+            seenRemoteIDs.insert(id)
             let title = record[CKSchema.Training.title] as? String ?? ""
             let sport = record[CKSchema.Training.sport] as? String ?? ""
             let location = record[CKSchema.Training.location] as? String ?? ""
@@ -171,6 +184,19 @@ extension CloudKitSync {
                 modelContext.insert(training)
                 existingByID[id] = training
             }
+        }
+
+        // Prune local Trainings that no longer exist in CloudKit — e.g. the
+        // duplicate cleanup this session (bug-437) removed 6 records
+        // directly via `rootcli`, and every device that had already pulled
+        // them kept showing them forever since nothing before this ever
+        // removed a local row for one deleted server-side (bug-440). Skips
+        // anything still mid-push from THIS device (see hasPendingPush's
+        // doc comment) so a training just created/edited locally can never
+        // be deleted out from under its own not-yet-confirmed write.
+        for (id, training) in existingByID where !seenRemoteIDs.contains(id) {
+            guard !hasPendingPush(recordName: id.uuidString) else { continue }
+            modelContext.delete(training)
         }
     }
 
