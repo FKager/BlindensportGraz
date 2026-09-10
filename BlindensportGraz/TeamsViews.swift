@@ -450,6 +450,11 @@ struct VereinView: View {
 private struct VereinHubList: View {
     let currentUser: User
     @Environment(\.modelContext) private var modelContext
+    @Query private var changeRequests: [MemberChangeRequest]
+
+    private var pendingChangeRequestCount: Int {
+        changeRequests.filter { $0.status == MemberChangeRequest.pendingStatus }.count
+    }
 
     var body: some View {
         List {
@@ -478,9 +483,30 @@ private struct VereinHubList: View {
                     Label("App-Konten", systemImage: "person.2.badge.key")
                 }
                 NavigationLink {
+                    MemberChangeRequestsView(currentUser: currentUser)
+                } label: {
+                    HStack {
+                        Label("Änderungsanträge", systemImage: "person.crop.circle.badge.checkmark")
+                        if pendingChangeRequestCount > 0 {
+                            Spacer()
+                            Text("\(pendingChangeRequestCount)")
+                                .font(.caption.bold())
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 7)
+                                .padding(.vertical, 2)
+                                .background(.red, in: Capsule())
+                        }
+                    }
+                }
+                NavigationLink {
                     RoleChangeLogView()
                 } label: {
                     Label("Rollenänderungen", systemImage: "clock.arrow.circlepath")
+                }
+                NavigationLink {
+                    FullBackupView()
+                } label: {
+                    Label("Datensicherung", systemImage: "externaldrive.badge.icloud")
                 }
             }
         }
@@ -509,7 +535,7 @@ struct VereinSplitView: View {
     @Environment(\.modelContext) private var modelContext
 
     enum Destination: String, CaseIterable, Identifiable, Hashable {
-        case teams, mitglieder, personen, konten, rollen
+        case teams, mitglieder, personen, konten, antraege, rollen, sicherung
         var id: String { rawValue }
 
         var title: String {
@@ -518,7 +544,9 @@ struct VereinSplitView: View {
             case .mitglieder: return "Mitglieder"
             case .personen: return "Personen"
             case .konten: return "App-Konten"
+            case .antraege: return "Änderungsanträge"
             case .rollen: return "Rollenänderungen"
+            case .sicherung: return "Datensicherung"
             }
         }
 
@@ -528,7 +556,9 @@ struct VereinSplitView: View {
             case .mitglieder: return "list.bullet.rectangle"
             case .personen: return "person.crop.rectangle.stack"
             case .konten: return "person.2.badge.key"
+            case .antraege: return "person.crop.circle.badge.checkmark"
             case .rollen: return "clock.arrow.circlepath"
+            case .sicherung: return "externaldrive.badge.icloud"
             }
         }
     }
@@ -563,7 +593,9 @@ struct VereinSplitView: View {
         case .mitglieder: MembersListView(currentUser: currentUser)
         case .personen: PersonenListView()
         case .konten: UserListView(currentUser: currentUser)
+        case .antraege: MemberChangeRequestsView(currentUser: currentUser)
         case .rollen: RoleChangeLogView()
+        case .sicherung: FullBackupView()
         }
     }
 }
