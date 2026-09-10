@@ -7338,7 +7338,13 @@
       "file": "RootCLI/Sources/rootcli/RootCLI.swift",
       "root_cause": "Production's CloudKit schema was deployed before Training.status existed this session, so it doesn't know that field; separately, copyableRecordTypes was hand-maintained and had never been updated to include 4 app-published record types added over time, and runCopyRecords let a query error abort the entire run instead of treating an un-schema'd type as empty.",
       "fix": "Deployed the updated schema via CloudKit Console -> Development -> 'Deploy Schema Changes...' (diff: 1 field modified on Training + 3 indexes) -> Deploy, then re-ran copy-records (203 copied, 0 failed). Added SportEvent/EventParticipation/EventImage/MemberChangeRequest to copyableRecordTypes; wrapped the per-type query in a do/catch so a 404 for a type with no records ever written prints '0 records (record type not in schema yet)' instead of throwing.",
-      "tags": ["cloudkit", "rootcli", "schema-deploy", "copy-records", "production-sync"],
+      "tags": [
+        "cloudkit",
+        "rootcli",
+        "schema-deploy",
+        "copy-records",
+        "production-sync"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-10T19:55:00.000Z"
@@ -7350,10 +7356,48 @@
       "file": "N/A — data issue, not a code bug",
       "root_cause": "Almost certainly TrainingService.createSeries (the recurring-trainings-from-a-favorite feature) re-generating a series that already existed, because its duplicate check (SportEvent.duplicate, local-store-only) ran against a local device whose SwiftData store hadn't yet synced the already-existing trainings from CloudKit at that moment.",
       "fix": "Confirmed safe to delete: in every pair exactly one copy had 0 TrainingAttendance records (all created at the 2026-08-22T18:07:13Z batch timestamp) and the other had the real 9-11 attendance/PRAE records — deleted the 6 zero-attendance copies via `rootcli record delete Training <id>` in BOTH Development and Production (had just been copied to Production minutes earlier by an unrelated dev->prod push). Verified 0 duplicate groups remain in Development (14 records) after cleanup.",
-      "tags": ["cloudkit", "duplicate-records", "training", "data-integrity", "recurring-trainings"],
-      "related_bugs": ["bug-323", "bug-324", "bug-325"],
+      "tags": [
+        "cloudkit",
+        "duplicate-records",
+        "training",
+        "data-integrity",
+        "recurring-trainings"
+      ],
+      "related_bugs": [
+        "bug-323",
+        "bug-324",
+        "bug-325"
+      ],
       "occurrences": 1,
       "last_seen": "2026-09-10T20:05:00.000Z"
+    },
+    {
+      "id": "bug-438",
+      "timestamp": "2026-09-10T18:13:54.786Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/TrainingSeriesView.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T18:13:54.786Z"
+    },
+    {
+      "id": "bug-439",
+      "timestamp": "2026-09-10T20:15:00.000Z",
+      "error_message": "Follow-up fix for bug-437: TrainingService.createSeries'/partitionSeriesDates' duplicate check reads only the local SwiftData store, never CloudKit directly — a stale local store silently created real duplicate Trainings when regenerating a recurring series.",
+      "file": "BlindensportGraz/TrainingSeriesView.swift",
+      "root_cause": "SportEvent.duplicate(...) is a pure, network-free local-store query by design (so it stays unit-testable), but nothing forced a sync immediately before it ran for the series-creation flow specifically, unlike a screen with a .refreshable that the user might happen to pull first.",
+      "fix": "createSeries() now awaits SyncOrchestrationService.syncAll(modelContext:) before calling TrainingService.createSeries, so the duplicate check runs against a freshly-synced store right before writing. Also added the same sync in a .task on view appear (bumping a refreshTrigger @State to force the 'X Termine existieren bereits' preview to recompute) so the preview shown before tapping Erstellen is accurate too, not just the final write.",
+      "tags": ["training", "recurring-series", "duplicate-check", "sync", "data-integrity"],
+      "related_bugs": ["bug-437"],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T20:15:00.000Z"
     }
   ]
 }

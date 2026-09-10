@@ -2720,3 +2720,7 @@
 | 19:56 | Session end: 51 writes across 18 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 23 reads | ~75719 tok |
 | 19:59 | Session end: 51 writes across 18 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 23 reads | ~75719 tok |
 | 20:08 | Found+deleted 6 duplicate Training records (Lauf- und Torballtraining series, zero-attendance copies) from Development AND Production | none (CloudKit data only) | verified 0 duplicate groups remain (14 Training records in dev) | ~10000 |
+| 20:10 | Session end: 51 writes across 18 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 23 reads | ~75719 tok |
+| 20:13 | Edited BlindensportGraz/TrainingSeriesView.swift | expanded (+10 lines) | ~189 |
+| 20:13 | Edited BlindensportGraz/TrainingSeriesView.swift | modified createSeries() | ~768 |
+| 20:16 | Fixed recurring-series duplicate check: sync CloudKit before checking + creating (was local-store-only, stale) | TrainingSeriesView.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~8000 |

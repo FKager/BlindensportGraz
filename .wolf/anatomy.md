@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T17:55:25.656Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T18:13:54.779Z
 > Files: 269 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -271,7 +271,7 @@
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2695 tok)
-- `TrainingSeriesView.swift` — / Creates a weekly-recurring series of trainings from a `TrainingFavorite` (~1387 tok)
+- `TrainingSeriesView.swift` — / Creates a weekly-recurring series of trainings from a `TrainingFavorite` (~1911 tok)
 - `TrainingService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~1323 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
