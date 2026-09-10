@@ -7342,6 +7342,18 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-10T19:55:00.000Z"
+    },
+    {
+      "id": "bug-437",
+      "timestamp": "2026-09-10T20:05:00.000Z",
+      "error_message": "User asked to check the Development CloudKit database for duplicate Training data. Found 6 duplicate pairs (12 of 20 Training records) — all \"Lauf- und Torballtraining\" at ASKÖ-Halle B, same weekly series, all the zero-attendance copies created at the identical timestamp 2026-08-22T18:07:13Z across 6 different dates.",
+      "file": "N/A — data issue, not a code bug",
+      "root_cause": "Almost certainly TrainingService.createSeries (the recurring-trainings-from-a-favorite feature) re-generating a series that already existed, because its duplicate check (SportEvent.duplicate, local-store-only) ran against a local device whose SwiftData store hadn't yet synced the already-existing trainings from CloudKit at that moment.",
+      "fix": "Confirmed safe to delete: in every pair exactly one copy had 0 TrainingAttendance records (all created at the 2026-08-22T18:07:13Z batch timestamp) and the other had the real 9-11 attendance/PRAE records — deleted the 6 zero-attendance copies via `rootcli record delete Training <id>` in BOTH Development and Production (had just been copied to Production minutes earlier by an unrelated dev->prod push). Verified 0 duplicate groups remain in Development (14 records) after cleanup.",
+      "tags": ["cloudkit", "duplicate-records", "training", "data-integrity", "recurring-trainings"],
+      "related_bugs": ["bug-323", "bug-324", "bug-325"],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T20:05:00.000Z"
     }
   ]
 }

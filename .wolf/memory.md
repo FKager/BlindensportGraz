@@ -2717,3 +2717,6 @@
 | 19:41 | Edited RootCLI/Sources/rootcli/RootCLI.swift | added error handling | ~207 |
 | 19:55 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | modified outstanding() | ~514 |
 | 19:56 | Pushed all Development CloudKit data to Production (203 records, 0 failed) after deploying updated schema (Training.status) and expanding rootcli's copyableRecordTypes | RootCLI/Sources/rootcli/RootCLI.swift | verified via record list Training(20)/ClubMember(62) against prod | ~9000 |
+| 19:56 | Session end: 51 writes across 18 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 23 reads | ~75719 tok |
+| 19:59 | Session end: 51 writes across 18 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 23 reads | ~75719 tok |
+| 20:08 | Found+deleted 6 duplicate Training records (Lauf- und Torballtraining series, zero-attendance copies) from Development AND Production | none (CloudKit data only) | verified 0 duplicate groups remain (14 Training records in dev) | ~10000 |
