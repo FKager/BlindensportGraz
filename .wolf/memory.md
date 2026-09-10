@@ -2731,3 +2731,7 @@
 | 20:22 | Edited BlindensportGraz/CloudKitSync+Events.swift | 5→6 lines | ~103 |
 | 20:22 | Edited BlindensportGraz/CloudKitSync+Events.swift | modified pullTournaments() | ~274 |
 | 20:26 | Fixed persisting duplicate Trainings visible on-device: pullTrainings now prunes local records no longer in CloudKit (new fetchAllOrThrow + hasPendingPush) | CloudKitSync.swift, CloudKitSync+Events.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~13000 |
+| 20:25 | Session end: 57 writes across 20 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 25 reads | ~84973 tok |
+| 20:25 | Session end: 57 writes across 20 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 25 reads | ~84973 tok |
+| 20:33 | Session end: 57 writes across 20 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 25 reads | ~84973 tok |
+| 20:42 | Found+merged 2 more near-duplicate Trainings (07-22, 07-29; different titles/locations, real attendance both sides) — migrated 2 attendance records, deleted 17 redundant ones + 2 Trainings, dev+prod | none (CloudKit data only) | verified 0 duplicate groups remain (12 dev / 13 prod) | ~18000 |

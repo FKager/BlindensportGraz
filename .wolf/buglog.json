@@ -7450,6 +7450,18 @@
       "related_bugs": ["bug-437", "bug-439"],
       "occurrences": 1,
       "last_seen": "2026-09-10T20:25:00.000Z"
+    },
+    {
+      "id": "bug-443",
+      "timestamp": "2026-09-10T20:40:00.000Z",
+      "error_message": "User: 'i see still duplicate entries. For example 29.07. and 22.07.' — a different, previously-undetected kind of duplicate: bug-437's cleanup only matched exact title strings, missing 2 near-duplicate Training pairs (same sport+time+teams, different title text: 'Lauf- und Torballtraining' @ ASKO-Halle B vs 'Torballtraining' @ Graz, created independently by 2 different people).",
+      "file": "N/A — data issue",
+      "root_cause": "Two different club members independently created a Training entry for the same weekly Torball slot on 2026-07-22 and 2026-07-29 without knowing the other's entry existed; both then had (mostly the same) attendance recorded against their own copy.",
+      "fix": "Confirmed via membership-id overlap that 6/7 (07-22) and 9/10 (07-29) attendees already had identical attendance on the 'official' entry — the only attendance NOT already duplicated belonged, in both cases, to the same person (the one who created the extra entry). Copied that person's one attendance record onto the official Training in both cases, then deleted the 2 duplicate Trainings and their 17 now-fully-redundant TrainingAttendance rows, in BOTH Development and Production. Verified 0 duplicate groups remain (12 Development / 13 Production Training records).",
+      "tags": ["cloudkit", "duplicate-records", "training", "attendance-merge", "data-integrity"],
+      "related_bugs": ["bug-437", "bug-442"],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T20:40:00.000Z"
     }
   ]
 }
