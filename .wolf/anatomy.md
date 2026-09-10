@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T14:44:42.542Z
-> Files: 252 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T14:55:11.097Z
+> Files: 255 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -238,6 +238,8 @@
 - `RootView.swift` — / Records that the club's designated-root account was created or logged into (~4822 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
+- `SeasonDashboard.swift` — / Aggregate season stats — architecture-review.md §5 (P2). "Season" here (~881 tok)
+- `SeasonDashboardView.swift` — / Season (= one calendar year) recap — architecture-review.md §5 (P2): (~1790 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
 - `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2169 tok)
@@ -266,7 +268,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10828 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10918 tok)
 - `User.swift` — Class: User (~1190 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
@@ -308,6 +310,7 @@
 - `RoleChangeLogTests.swift` — Class: RoleChangeLogTests (~984 tok)
 - `SammelabrechnungExportTests.swift` — Class: SammelabrechnungExportTests (~3253 tok)
 - `SammelabrechnungSeasonExportTests.swift` — Class: SammelabrechnungSeasonExportTests (~1676 tok)
+- `SeasonDashboardTests.swift` — Class: SeasonDashboardTests (~1240 tok)
 - `SyncStateTests.swift` — Class: SyncStateTests (~449 tok)
 - `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1983 tok)
 - `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~4440 tok)

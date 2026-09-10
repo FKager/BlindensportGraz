@@ -6906,6 +6906,43 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-10T16:47:00.000Z"
+    },
+    {
+      "id": "bug-412",
+      "timestamp": "2026-09-10T14:54:39.371Z",
+      "error_message": "Wrong reference: showTrainingsfrequenzliste should be showSeasonDashboard",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "Used \"showTrainingsfrequenzliste\" instead of \"showSeasonDashboard\"",
+      "fix": "Changed showTrainingsfrequenzliste \u2192 showSeasonDashboard",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T14:54:39.371Z"
+    },
+    {
+      "id": "bug-408",
+      "timestamp": "2026-09-10T17:10:00.000Z",
+      "error_message": "Feature (not a defect): no at-a-glance season summary existed - SammelabrechnungSeasonView exports the whole year's paperwork as a zip but there was nowhere to just SEE trainings held / attendance % / PRAE total for a season. architecture-review.md \u00a75 P2.",
+      "file": "BlindensportGraz/SeasonDashboardView.swift",
+      "root_cause": "AttendanceTrendsView only covers month-by-month per team/person; the season-wide roll-up only ever existed as SammelabrechnungExporter.exportSeason's zip export, no visual form.",
+      "fix": "SeasonDashboard.swift: pure summary(year:trainings:tournaments:attendances:) (counts + attendance rate + sum of Attendance.praeAmount, all filtered to the calendar year - matches SammelabrechnungExporter.exportSeason's 'season = one calendar year' convention) and teamRates(year:teams:attendances:) (per-team rate, reuses AttendanceTrends.records(forTeamID:), omits teams with zero records that year rather than showing a misleading 0%). SeasonDashboardView.swift: Form (year Stepper, \u00dcberblick LabeledContent rows, monthly BarMark Chart with AXChartDescriptor, per-team % list), admin-only, reached from TrainingsListView's Berichte menu ('Saison-\u00dcbersicht', first item). 3 new tests. Build + 212-test suite green.",
+      "tags": [
+        "feature",
+        "season",
+        "dashboard",
+        "attendance",
+        "prae",
+        "architecture-review",
+        "charts",
+        "a11y"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T17:10:00.000Z"
     }
   ]
 }
