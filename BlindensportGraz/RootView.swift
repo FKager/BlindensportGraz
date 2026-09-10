@@ -204,7 +204,12 @@ struct MainTabView: View {
     let onLogout: () -> Void
 
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let networkMonitor = NetworkMonitor.shared
+
+    private var isAdmin: Bool {
+        currentUser.role == .admin || currentUser.isRoot
+    }
 
     var body: some View {
         TabView {
@@ -220,8 +225,20 @@ struct MainTabView: View {
             NavigationStack { TrainingsListView(currentUser: currentUser) }
                 .tabItem { Label("Trainings", systemImage: "figure.run") }
 
-            NavigationStack { VereinView(currentUser: currentUser) }
-                .tabItem { Label("Verein", systemImage: "building.2.fill") }
+            // On iPad (regular width) an admin/root gets a real sidebar +
+            // detail console instead of a pushed list — the admin roster/
+            // reporting screens are genuinely desktop-shaped work
+            // (architecture-review.md §3.3). Everyone else (iPhone, or a
+            // non-admin on any size) keeps the existing pushed-list
+            // NavigationStack unchanged.
+            Group {
+                if horizontalSizeClass == .regular, isAdmin {
+                    VereinSplitView(currentUser: currentUser)
+                } else {
+                    NavigationStack { VereinView(currentUser: currentUser) }
+                }
+            }
+            .tabItem { Label("Verein", systemImage: "building.2.fill") }
 
             NavigationStack { AccountView(currentUser: currentUser, onLogout: onLogout) }
                 .tabItem { Label("Account", systemImage: "person.crop.circle") }
