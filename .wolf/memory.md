@@ -2702,3 +2702,4 @@
 | 18:32 | Session end: 44 writes across 14 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 19 reads | ~68571 tok |
 | 18:38 | Created BlindensportGraz/CloudKitSync+Subscriptions.swift | — | ~2203 |
 | 18:49 | Distinct 'Training abgesagt' push notification (new CKQuerySubscription, narrowed the generic updated one) | CloudKitSync+Subscriptions.swift, Localizable.xcstrings | build+tests pass (only known TrainingImportExportTests timezone failures) | ~7000 |
+| 18:42 | Session end: 45 writes across 15 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 21 reads | ~73066 tok |
