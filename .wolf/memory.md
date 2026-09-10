@@ -2659,3 +2659,14 @@
 | 17:44 | Edited BlindensportGraz/TeamsViews.swift | 25→27 lines | ~280 |
 | 17:44 | Edited BlindensportGraz/TeamsViews.swift | 3→4 lines | ~45 |
 | 17:46 | Completed both P2 backlog features: member self-service edit + admin approval queue (MemberChangeRequest), full club backup/restore (FullBackup/FullBackupImporter/FullBackupView) | FullBackup*.swift, MemberChangeRequest*.swift, TeamsViews.swift, MembersViews.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~35000 |
+| 17:47 | Session end: 17 writes across 4 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift) | 11 reads | ~25203 tok |
+| 17:47 | Session end: 17 writes across 4 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift) | 11 reads | ~25203 tok |
+| 17:57 | Session end: 17 writes across 4 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift) | 12 reads | ~30587 tok |
+| 18:00 | Session end: 17 writes across 4 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift) | 12 reads | ~30587 tok |
+| 18:06 | Edited .github/workflows/ios-build-deploy.yml | 4→5 lines | ~46 |
+| 18:06 | Edited .github/workflows/ios-build-deploy.yml | 2→3 lines | ~90 |
+| 18:06 | Edited .github/workflows/ios-build-deploy.yml | 6→7 lines | ~130 |
+| 18:06 | Edited .github/workflows/ios-build-deploy.yml | expanded (+15 lines) | ~550 |
+| 18:06 | Edited .github/workflows/ios-build-deploy.yml | 5→7 lines | ~76 |
+| 18:07 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_widget_prerequisites.md | modified files() | ~384 |
+| 18:12 | Resumed duplicate-names investigation (no repro found w/ current CloudKit data; asked user to reverify), regenerated invalidated TestFlight App Store profiles for main app + widget, wired ios-build-deploy.yml deploy job for both bundle ids | .github/workflows/ios-build-deploy.yml, .wolf/cerebrum.md, memory/project_widget_prerequisites.md | 2 new GH secrets set, workflow YAML validated | ~9000 |

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T15:44:03.522Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T16:07:15.580Z
 > Files: 268 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -51,7 +51,7 @@
 - `project_cloudkit-prod-data-copy.md` — Declares from (~630 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
 - `project_testflight-setup.md` (~1260 tok)
-- `project_widget_prerequisites.md` (~377 tok)
+- `project_widget_prerequisites.md` (~593 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -106,7 +106,7 @@
 
 ## .github/workflows/
 
-- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~4115 tok)
+- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~4552 tok)
 - `ios-device-deploy.yml` — CI: iOS Device Deploy (~4310 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/

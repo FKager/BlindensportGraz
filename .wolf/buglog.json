@@ -7102,7 +7102,13 @@
       "file": "BlindensportGraz/MemberChangeRequest.swift, CloudKitSync+MemberChangeRequest.swift, MemberChangeRequestService.swift, MemberChangeRequestsView.swift, MembersViews.swift, TeamsViews.swift, CKSchema.swift, ModelSchema.swift, CloudKitSync.swift, AccountView.swift",
       "root_cause": "No review step existed between a member editing their own roster data and it landing in the live Member record synced to every device.",
       "fix": "Added MemberChangeRequest (full-field snapshot, not a diff) + admin approval queue. MyMemberView now creates/updates a pending MemberChangeRequest instead of writing Member directly; MemberChangeRequestService.approve applies the snapshot onto Member only on admin action. Wired into VereinHubList/VereinSplitView with a pending-count badge.",
-      "tags": ["feature", "swiftdata", "cloudkit", "member-self-service", "approval-queue"],
+      "tags": [
+        "feature",
+        "swiftdata",
+        "cloudkit",
+        "member-self-service",
+        "approval-queue"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-10T17:45:00.000Z"
@@ -7114,10 +7120,45 @@
       "file": "BlindensportGraz/FullBackup.swift, FullBackupImporter.swift, FullBackupView.swift, TeamsViews.swift",
       "root_cause": "MemberBackup only ever wrote silent JSON snapshots of the Member roster for disaster-recovery reference; nothing covered Teams/Users/Events/Attendance/etc., and nothing could read a snapshot back in.",
       "fix": "Added FullBackup.export (pure encode() per model type + JSON bundle writer, 14 of AppModelSchema's 15 types, excluding PendingPush) and FullBackupImporter.restore (dependency-ordered, create-only-if-id-missing so it never overwrites live data, reusing CloudKitSync.shared.findX for relationship resolution). EventImage/ExpenseReceipt are skipped on restore since their required imageData was never captured in the backup. Admin UI at FullBackupView, wired into VereinHubList/VereinSplitView as \"Datensicherung\".",
-      "tags": ["feature", "swiftdata", "backup", "restore", "disaster-recovery", "admin"],
+      "tags": [
+        "feature",
+        "swiftdata",
+        "backup",
+        "restore",
+        "disaster-recovery",
+        "admin"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-10T17:45:00.000Z"
+    },
+    {
+      "id": "bug-425",
+      "timestamp": "2026-09-10T16:07:15.586Z",
+      "error_message": "Significant refactor of ",
+      "file": "../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_widget_prerequisites.md",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→5 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T16:07:15.586Z"
+    },
+    {
+      "id": "bug-427",
+      "timestamp": "2026-09-10T18:10:00.000Z",
+      "error_message": "TestFlight deploy (ios-build-deploy.yml) would fail to export a Release archive: the App Store distribution profile for it.a11y.BlindensportGraz (D9DS96C74W) was invalidated when App Groups was added to the App ID for the widget feature, and the widget extension target (it.a11y.BlindensportGraz.Widgets) never had an App Store profile at all.",
+      "file": ".github/workflows/ios-build-deploy.yml",
+      "root_cause": "Adding an App Group capability to an App ID invalidates any already-issued provisioning profile for it until regenerated; the widget's own bundle id was never given a distribution (App Store) profile, only development ones.",
+      "fix": "Regenerated BlindensportGraz AppStore (D9DS96C74W, new UUID d9353399-a50a-46c9-9fb4-0c2aaf5f397b) via the portal's Edit->Save flow; generated a new BlindensportGraz Widgets AppStore profile (GA4J2AKYSW, UUID 88deed54-d25e-456c-8506-a727ab0db12b) for the widget bundle id. Updated GitHub secret BUILD_PROVISION_PROFILE_BASE64 and added WIDGET_PROVISION_PROFILE_BASE64. deploy job now installs both profiles and lists both bundle ids in the export step's provisioningProfiles dict.",
+      "tags": ["testflight", "provisioning-profile", "widget", "app-groups", "ci"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T18:10:00.000Z"
     }
   ]
 }
