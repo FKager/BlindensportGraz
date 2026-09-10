@@ -1,8 +1,6 @@
 import Foundation
 import SwiftData
 
-/// No `delete` — `CloudKitSync` never had a delete path for Attendance
-/// records; not invented here, matching Phase 6's same scoping.
 @MainActor
 enum AttendanceService {
     @discardableResult
@@ -41,23 +39,40 @@ enum AttendanceService {
         return save(record, modelContext: modelContext)
     }
 
-    /// Called when a Training is marked "Abgesagt" (`Training.cancelledStatus`,
-    /// user request 2026-09-10) — a cancelled training has no attendance and
-    /// nobody gets paid PRAE for it, so every existing `Attendance` row for
-    /// it is reset to not-attended with no PRAE amount. Doesn't delete the
-    /// rows themselves — this enum's doc comment explains why there's no
-    /// delete path (CloudKit never had one for Attendance); resetting in
-    /// place is what the sync layer can actually push/pull consistently,
-    /// and it keeps the roster's history of who was even being tracked.
-    /// Idempotent, so calling it more than once (e.g. re-saving an already-
-    /// cancelled training) is harmless.
+    /// Caller has already called `modelContext.delete(attendance)` before
+    /// this — same contract as every other `*Service.delete`. Reads
+    /// `attendance.id`/`.event.kind` up front (not inside the push closure)
+    /// for the same reason `TrainingService.delete` captures `training.id`
+    /// first: the model may already be staged for deletion by the time the
+    /// closure actually runs.
+    ///
+    /// Was a real gap until 2026-09-10 (`CloudKitSync` had no delete path
+    /// for Attendance at all — deleting a row locally just came back on the
+    /// next pull); added specifically so `deleteAll` below can remove a
+    /// cancelled training's attendance for real instead of only resetting
+    /// its fields.
     @discardableResult
-    static func clearAll(for event: SportEvent, modelContext: ModelContext) -> Bool {
+    static func delete(_ attendance: Attendance, modelContext: ModelContext) -> Bool {
+        let id = attendance.id
+        let isTournamentEvent = attendance.event.kind == "tournament"
+        return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Attendance",
+                                                 failureMessage: "Anwesenheit konnte nicht gelöscht werden.") {
+            CloudKitSync.shared.deleteAttendance(id: id, isTournamentEvent: isTournamentEvent)
+        }
+    }
+
+    /// Called when a Training is marked "Abgesagt" (`Training.cancelledStatus`)
+    /// — a cancelled training never happened, so its attendance records are
+    /// deleted outright, not just reset (user request 2026-09-10, superseding
+    /// the reset-in-place approach from earlier the same day). Deletes and
+    /// pushes each row individually via `delete` above so the removal
+    /// actually syncs and doesn't reappear on the next pull.
+    @discardableResult
+    static func deleteAll(for event: SportEvent, modelContext: ModelContext) -> Bool {
         var allSucceeded = true
         for attendance in event.attendances {
-            attendance.attended = false
-            attendance.praeAmount = nil
-            if !save(attendance, modelContext: modelContext) { allSucceeded = false }
+            modelContext.delete(attendance)
+            if !delete(attendance, modelContext: modelContext) { allSucceeded = false }
         }
         return allSucceeded
     }

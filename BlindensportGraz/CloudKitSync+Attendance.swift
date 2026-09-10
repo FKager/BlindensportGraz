@@ -21,6 +21,18 @@ extension CloudKitSync {
         save(record)
     }
 
+    /// Takes the id + which of the two record types (see `pushAttendance`)
+    /// rather than an `Attendance` instance, since callers delete this after
+    /// `modelContext.delete(attendance)` has already staged the model for
+    /// removal — same defensive shape as every other `deleteX(id:)` in this
+    /// file's siblings. `delete(recordType:id:)`'s actual CloudKit call only
+    /// needs the id (a `CKRecord.ID` carries no type), the recordType here is
+    /// purely for the PendingPush outbox's own bookkeeping/display.
+    func deleteAttendance(id: UUID, isTournamentEvent: Bool) {
+        let recordType = isTournamentEvent ? CKSchema.Attendance.tournamentRecordType : CKSchema.Attendance.trainingRecordType
+        delete(recordType: recordType, id: id)
+    }
+
     /// Pulls both CKRecord types ("TrainingAttendance"/"TournamentAttendance",
     /// kept distinct for backward compatibility — see pushAttendance) into the
     /// single local `Attendance` model, resolving `event` via the now-generic
