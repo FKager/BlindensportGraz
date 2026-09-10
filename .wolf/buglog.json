@@ -7394,10 +7394,62 @@
       "file": "BlindensportGraz/TrainingSeriesView.swift",
       "root_cause": "SportEvent.duplicate(...) is a pure, network-free local-store query by design (so it stays unit-testable), but nothing forced a sync immediately before it ran for the series-creation flow specifically, unlike a screen with a .refreshable that the user might happen to pull first.",
       "fix": "createSeries() now awaits SyncOrchestrationService.syncAll(modelContext:) before calling TrainingService.createSeries, so the duplicate check runs against a freshly-synced store right before writing. Also added the same sync in a .task on view appear (bumping a refreshTrigger @State to force the 'X Termine existieren bereits' preview to recompute) so the preview shown before tapping Erstellen is accurate too, not just the final write.",
-      "tags": ["training", "recurring-series", "duplicate-check", "sync", "data-integrity"],
-      "related_bugs": ["bug-437"],
+      "tags": [
+        "training",
+        "recurring-series",
+        "duplicate-check",
+        "sync",
+        "data-integrity"
+      ],
+      "related_bugs": [
+        "bug-437"
+      ],
       "occurrences": 1,
       "last_seen": "2026-09-10T20:15:00.000Z"
+    },
+    {
+      "id": "bug-440",
+      "timestamp": "2026-09-10T18:22:19.788Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T18:22:19.788Z"
+    },
+    {
+      "id": "bug-441",
+      "timestamp": "2026-09-10T18:22:31.037Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/CloudKitSync+Events.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T18:22:31.037Z"
+    },
+    {
+      "id": "bug-442",
+      "timestamp": "2026-09-10T20:25:00.000Z",
+      "error_message": "User report: 'On the running app version i see duplicate values for trainings.' The 6 duplicate Training records cleaned up earlier (bug-437) were deleted directly in CloudKit via rootcli, but devices that had already pulled them locally kept showing them forever — no pull function had ever removed a local record for one deleted server-side, only ever upsert.",
+      "file": "BlindensportGraz/CloudKitSync.swift, BlindensportGraz/CloudKitSync+Events.swift",
+      "root_cause": "CloudKitSync.fetchAll swallows any fetch error and returns [], indistinguishable from 'genuinely zero remote records' — so no pull function could ever safely prune a local record missing from the fetched set (a network hiccup's [] would look identical to 'everything was deleted').",
+      "fix": "Added CloudKitSync.fetchAllOrThrow (same paging as fetchAll, but throws instead of swallowing) and hasPendingPush(recordName:) (checks the PendingPush outbox so a training this device just created/edited but hasn't finished pushing is never treated as an orphan). pullTrainings now uses fetchAllOrThrow, tracks which ids it actually saw, and after the pull loop deletes any local Training not in that set (unless it has a pending push). Scoped to Training only — the specific type with a confirmed real duplicate incident; other pull functions still use the lossy fetchAll unchanged.",
+      "tags": ["cloudkit", "sync", "orphan-pruning", "training", "duplicate-records", "data-integrity"],
+      "related_bugs": ["bug-437", "bug-439"],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T20:25:00.000Z"
     }
   ]
 }

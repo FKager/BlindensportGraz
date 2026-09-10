@@ -2724,3 +2724,10 @@
 | 20:13 | Edited BlindensportGraz/TrainingSeriesView.swift | expanded (+10 lines) | ~189 |
 | 20:13 | Edited BlindensportGraz/TrainingSeriesView.swift | modified createSeries() | ~768 |
 | 20:16 | Fixed recurring-series duplicate check: sync CloudKit before checking + creating (was local-store-only, stale) | TrainingSeriesView.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~8000 |
+| 20:16 | Session end: 53 writes across 19 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 24 reads | ~78131 tok |
+| 20:19 | Session end: 53 writes across 19 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 24 reads | ~78131 tok |
+| 20:22 | Edited BlindensportGraz/CloudKitSync.swift | added nullish coalescing | ~734 |
+| 20:22 | Edited BlindensportGraz/CloudKitSync+Events.swift | added error handling | ~182 |
+| 20:22 | Edited BlindensportGraz/CloudKitSync+Events.swift | 5→6 lines | ~103 |
+| 20:22 | Edited BlindensportGraz/CloudKitSync+Events.swift | modified pullTournaments() | ~274 |
+| 20:26 | Fixed persisting duplicate Trainings visible on-device: pullTrainings now prunes local records no longer in CloudKit (new fetchAllOrThrow + hasPendingPush) | CloudKitSync.swift, CloudKitSync+Events.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~13000 |
