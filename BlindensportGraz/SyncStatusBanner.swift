@@ -86,7 +86,7 @@ struct SyncStatusBanner: View {
         }
         .padding(.horizontal)
         .padding(.vertical, 6)
-        .background(color.opacity(0.12))
+        .background(Theme.tintedCardFill(color))
     }
 
     private func retry() {

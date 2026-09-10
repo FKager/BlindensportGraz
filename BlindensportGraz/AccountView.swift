@@ -53,7 +53,7 @@ struct AccountView: View {
                                 .font(.caption)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 2)
-                                .background(.blue.opacity(0.15), in: Capsule())
+                                .badge(tint: .blue)
                         }
                     }
                     .padding(.vertical, 8)
@@ -377,7 +377,7 @@ struct UserListView: View {
                             .bold()
                             .padding(.horizontal, 6)
                             .padding(.vertical, 1)
-                            .background(.orange.opacity(0.2), in: Capsule())
+                            .badge(tint: .orange, opacity: Theme.emphasizedBadgeOpacity)
                             .foregroundStyle(.orange)
                     }
                 }

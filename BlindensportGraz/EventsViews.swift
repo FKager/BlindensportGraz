@@ -227,7 +227,7 @@ struct EventRow: View {
               }
               .frame(width: 50)
               .padding(.vertical, 4)
-              .background(.blue.opacity(0.15), in: RoundedRectangle(cornerRadius: 8))
+              .background(.blue.opacity(Theme.badgeOpacity), in: RoundedRectangle(cornerRadius: 8))
 
             SportGlyph(sport: event.sport, size: 28)
 

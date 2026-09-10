@@ -70,7 +70,7 @@ struct SportGlyph: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(SportIcon.color(for: sport).opacity(0.15))
+                .fill(SportIcon.color(for: sport).opacity(Theme.badgeOpacity))
             if SportIcon.hasCustomGlyph(for: sport) {
                 SportPictogram(sport: sport)
                     .stroke(

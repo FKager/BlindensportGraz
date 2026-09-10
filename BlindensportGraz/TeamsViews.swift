@@ -267,7 +267,7 @@ struct TeamDetailView: View {
             .font(.caption)
             .padding(.horizontal, 8)
             .padding(.vertical, 2)
-            .background(.blue.opacity(0.15), in: Capsule())
+            .badge(tint: .blue)
     }
 }
 

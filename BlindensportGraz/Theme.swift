@@ -20,6 +20,20 @@ enum Theme {
     static func tintedCardFill(_ color: Color) -> some ShapeStyle {
         color.opacity(0.12)
     }
+
+    /// Fill fraction for a small tinted badge/pill/icon-circle — the "Text +
+    /// padding + faint capsule behind it" status/role/tag pattern repeated
+    /// (with drifting magic numbers: 0.12/0.15/0.2) across TeamsViews,
+    /// AccountView, MembersViews, TournamentsViews and SportIcons
+    /// (architecture-review.md §3.1/§5 dark-mode pass). Subtle in both colour
+    /// schemes because it blends with a dynamic system base colour (`.blue`,
+    /// `.orange`, a role/status colour) — those already shift brightness for
+    /// dark mode, this just keeps the tint fraction consistent everywhere
+    /// instead of each call site picking its own.
+    static let badgeOpacity: Double = 0.15
+    /// Slightly stronger tint for a badge meant to stand out more (a status
+    /// pill, the "ROOT" indicator) rather than a plain tag.
+    static let emphasizedBadgeOpacity: Double = 0.2
 }
 
 private struct CardModifier: ViewModifier {
@@ -41,5 +55,11 @@ extension View {
     /// rounded system-derived fill (optionally tinted).
     func card(tint: Color? = nil) -> some View {
         modifier(CardModifier(tint: tint))
+    }
+
+    /// Small tinted pill background for a status/role/tag label — apply
+    /// after the label's own padding. Callers keep their own font/foreground.
+    func badge(tint: Color, opacity: Double = Theme.badgeOpacity) -> some View {
+        background(tint.opacity(opacity), in: Capsule())
     }
 }

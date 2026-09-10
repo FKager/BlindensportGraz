@@ -611,7 +611,7 @@ struct PersonenListView: View {
         Text(text)
             .font(.caption2).bold()
             .padding(.horizontal, 6).padding(.vertical, 1)
-            .background(color.opacity(0.15), in: Capsule())
+            .badge(tint: color)
             .foregroundStyle(color)
     }
 }

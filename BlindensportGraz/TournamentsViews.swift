@@ -208,7 +208,7 @@ struct TournamentRow: View {
                  .font(.caption)
                  .padding(.horizontal, 8)
                  .padding(.vertical, 2)
-                 .background(statusColor.opacity(0.2))
+                 .badge(tint: statusColor, opacity: Theme.emphasizedBadgeOpacity)
                  .foregroundColor(statusColor)
           }
           HStack {
