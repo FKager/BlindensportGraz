@@ -7217,6 +7217,18 @@
       "related_bugs": ["bug-429", "bug-430"],
       "occurrences": 1,
       "last_seen": "2026-09-10T18:40:00.000Z"
+    },
+    {
+      "id": "bug-432",
+      "timestamp": "2026-09-10T18:48:00.000Z",
+      "error_message": "Feature (not a defect): no notification was sent to team members when a training was cancelled — the existing training-updated CKQuerySubscription fires on ANY field edit with a generic \"Training geändert\" alert, not a distinct cancellation notice. User request 2026-09-10: \"all team members should receive a notification, when a training is cancelled.\"",
+      "file": "BlindensportGraz/CloudKitSync+Subscriptions.swift, BlindensportGraz/Localizable.xcstrings",
+      "root_cause": "N/A — new feature, follow-up to bug-429's Training.status.",
+      "fix": "ensureSubscription now takes a full NSPredicate (was: always built from teamIDStrings internally), letting each subscription filter on more than team membership. Added a training-cancelled subscription (predicate ANY teamIDs IN %@ AND status == \"cancelled\", .firesOnRecordUpdate) with its own alert text (training_cancelled_title/body, new Localizable.xcstrings entries: \"Training abgesagt\" / \"%1$@ in %2$@\"). The existing training-updated subscription's predicate now excludes status == \"cancelled\" so a cancellation triggers exactly one push (the new distinct one), not also the generic \"geändert\" one.",
+      "tags": ["feature", "training", "cloudkit-subscription", "push-notification", "cancelled"],
+      "related_bugs": ["bug-429", "bug-430", "bug-431"],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T18:48:00.000Z"
     }
   ]
 }

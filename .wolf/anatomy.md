@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T16:29:34.489Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T16:38:45.465Z
 > Files: 269 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -197,7 +197,7 @@
 - `CloudKitSync+Member.swift` (~1495 tok)
 - `CloudKitSync+MemberChangeRequest.swift` (~1560 tok)
 - `CloudKitSync+RoleChangeLog.swift` (~540 tok)
-- `CloudKitSync+Subscriptions.swift` — Struct: this (~1647 tok)
+- `CloudKitSync+Subscriptions.swift` — Struct: this (~2203 tok)
 - `CloudKitSync+Team.swift` (~1293 tok)
 - `CloudKitSync+TeamMembership.swift` (~881 tok)
 - `CloudKitSync+TrainingFavorite.swift` (~1138 tok)
