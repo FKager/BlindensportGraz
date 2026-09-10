@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T16:07:15.580Z
-> Files: 268 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T16:17:19.815Z
+> Files: 269 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -186,13 +186,13 @@
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
 - `BlindensportGrazRelease.entitlements` (~199 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
-- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2770 tok)
+- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2780 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
 - `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5271 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~945 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
 - `CloudKitSync+EventParticipation.swift` (~530 tok)
-- `CloudKitSync+Events.swift` — / SportEvent/Training/Tournament kept together in one file — they share the (~3532 tok)
+- `CloudKitSync+Events.swift` — / SportEvent/Training/Tournament kept together in one file — they share the (~3587 tok)
 - `CloudKitSync+ExpenseReceipt.swift` (~911 tok)
 - `CloudKitSync+Member.swift` (~1495 tok)
 - `CloudKitSync+MemberChangeRequest.swift` (~1560 tok)
@@ -213,8 +213,8 @@
 - `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
 - `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
-- `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3163 tok)
-- `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5288 tok)
+- `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3174 tok)
+- `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5330 tok)
 - `FullBackupView.swift` — / Admin-only whole-club export/restore screen — architecture-review.md §5 (~1226 tok)
 - `Info.plist` (~443 tok)
 - `KostZCalculation.swift` — KostZCalculator: monthly (Training-only) summary + summary(for tournament:) (~1500 tok)
@@ -267,7 +267,7 @@
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
 - `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9065 tok)
-- `Training.swift` — Class: Training (~405 tok)
+- `Training.swift` — Class: Training (~770 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2695 tok)
@@ -276,7 +276,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~10918 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11571 tok)
 - `User.swift` — Class: User (~1280 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
@@ -304,7 +304,7 @@
 - `EventReminderServiceTests.swift` — Class: FakeNotificationScheduling (~1755 tok)
 - `EventRosterTests.swift` — Class: EventRosterTests (~1028 tok)
 - `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
-- `FullBackupTests.swift` — Class: FullBackupTests (~2360 tok)
+- `FullBackupTests.swift` — Class: FullBackupTests (~2383 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberChangeRequestTests.swift` — Class: MemberChangeRequestTests (~1040 tok)
@@ -327,6 +327,7 @@
 - `TrainingImportExportTests.swift` — Class: TrainingImportExportTests (~2398 tok)
 - `TrainingSeriesTests.swift` — Class: TrainingSeriesTests (~1339 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~7238 tok)
+- `TrainingTests.swift` — Class: TrainingTests (~470 tok)
 - `ValidationTests.swift` — Class: ValidationTests (~684 tok)
 - `WidgetBridgeTests.swift` — Class: WidgetBridgeTests (~905 tok)
 

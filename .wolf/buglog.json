@@ -7155,10 +7155,44 @@
       "file": ".github/workflows/ios-build-deploy.yml",
       "root_cause": "Adding an App Group capability to an App ID invalidates any already-issued provisioning profile for it until regenerated; the widget's own bundle id was never given a distribution (App Store) profile, only development ones.",
       "fix": "Regenerated BlindensportGraz AppStore (D9DS96C74W, new UUID d9353399-a50a-46c9-9fb4-0c2aaf5f397b) via the portal's Edit->Save flow; generated a new BlindensportGraz Widgets AppStore profile (GA4J2AKYSW, UUID 88deed54-d25e-456c-8506-a727ab0db12b) for the widget bundle id. Updated GitHub secret BUILD_PROVISION_PROFILE_BASE64 and added WIDGET_PROVISION_PROFILE_BASE64. deploy job now installs both profiles and lists both bundle ids in the export step's provisioningProfiles dict.",
-      "tags": ["testflight", "provisioning-profile", "widget", "app-groups", "ci"],
+      "tags": [
+        "testflight",
+        "provisioning-profile",
+        "widget",
+        "app-groups",
+        "ci"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-10T18:10:00.000Z"
+    },
+    {
+      "id": "bug-428",
+      "timestamp": "2026-09-10T16:16:32.247Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 16→23 lines (7 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T16:16:32.247Z"
+    },
+    {
+      "id": "bug-429",
+      "timestamp": "2026-09-10T18:20:00.000Z",
+      "error_message": "Feature (not a defect): Training had no status field at all — every training implicitly read as \"upcoming\" forever, with no way to mark one cancelled or held, and no way to remove one without a full delete. User request 2026-09-10: \"For every training i want to have a status: Offen, Durchgeführt, Abgesagt. In the List of Trainings, I want to have the possibility of selecting Abgesagt and Löschen as swipe option.\"",
+      "file": "BlindensportGraz/Training.swift, CKSchema.swift, CloudKitSync+Events.swift, TrainingsViews.swift, FullBackup.swift, FullBackupImporter.swift",
+      "root_cause": "N/A — new field/feature, not a bug fix.",
+      "fix": "Added Training.status (\"open\"/\"held\"/\"cancelled\", default \"open\") + Training.statusLabel for the German display text, synced via CKSchema.Training.status and CloudKitSync+Events' push/pull. TrainingRow shows a color-coded status badge (suppressed for the default \"open\" state); TrainingDetailView got a Status Picker (edit) and LabeledContent (read-only). TrainingsListView's ForEach now uses .swipeActions(edge: .trailing) with two buttons — \"Abgesagt\" (marks cancelled, orange tint) and \"Löschen\" (destructive delete) — replacing the old plain .onDelete. FullBackup/FullBackupImporter updated to carry the new field.",
+      "tags": ["feature", "training", "status", "swipe-actions", "swiftdata", "cloudkit"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T18:20:00.000Z"
     }
   ]
 }

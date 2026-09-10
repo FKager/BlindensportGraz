@@ -2670,3 +2670,20 @@
 | 18:06 | Edited .github/workflows/ios-build-deploy.yml | 5→7 lines | ~76 |
 | 18:07 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_widget_prerequisites.md | modified files() | ~384 |
 | 18:12 | Resumed duplicate-names investigation (no repro found w/ current CloudKit data; asked user to reverify), regenerated invalidated TestFlight App Store profiles for main app + widget, wired ios-build-deploy.yml deploy job for both bundle ids | .github/workflows/ios-build-deploy.yml, .wolf/cerebrum.md, memory/project_widget_prerequisites.md | 2 new GH secrets set, workflow YAML validated | ~9000 |
+| 18:11 | Session end: 23 writes across 6 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 14 reads | ~36005 tok |
+| 18:11 | Session end: 23 writes across 6 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 14 reads | ~36005 tok |
+| 18:15 | Created BlindensportGraz/Training.swift | — | ~770 |
+| 18:15 | Edited BlindensportGraz/CKSchema.swift | 7→8 lines | ~80 |
+| 18:15 | Edited BlindensportGraz/CloudKitSync+Events.swift | 3→4 lines | ~69 |
+| 18:15 | Edited BlindensportGraz/CloudKitSync+Events.swift | 3→4 lines | ~90 |
+| 18:15 | Edited BlindensportGraz/CloudKitSync+Events.swift | 10→11 lines | ~194 |
+| 18:16 | Edited BlindensportGraz/TrainingsViews.swift | modified HStack() | ~608 |
+| 18:16 | Edited BlindensportGraz/TrainingsViews.swift | modified onChange() | ~143 |
+| 18:16 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~112 |
+| 18:16 | Edited BlindensportGraz/TrainingsViews.swift | modified ForEach() | ~290 |
+| 18:16 | Edited BlindensportGraz/TrainingsViews.swift | modified delete() | ~330 |
+| 18:16 | Edited BlindensportGraz/FullBackup.swift | modified encode() | ~79 |
+| 18:16 | Edited BlindensportGraz/FullBackupImporter.swift | 7→9 lines | ~276 |
+| 18:17 | Edited BlindensportGrazTests/FullBackupTests.swift | modified testEncodeTrainingAddsDurationAndFocusAreaOnTopOfEventFields() | ~161 |
+| 18:17 | Created BlindensportGrazTests/TrainingTests.swift | — | ~470 |
+| 18:25 | Added Training.status (Offen/Durchgeführt/Abgesagt) + swipe actions (Abgesagt/Löschen) in TrainingsListView | Training.swift, CKSchema.swift, CloudKitSync+Events.swift, TrainingsViews.swift, FullBackup*.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~14000 |
