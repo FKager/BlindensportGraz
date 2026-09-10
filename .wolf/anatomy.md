@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-09T20:24:39.876Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T14:44:42.542Z
 > Files: 252 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -51,7 +51,7 @@
 - `project_cloudkit-prod-data-copy.md` — Declares from (~630 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
 - `project_testflight-setup.md` (~1260 tok)
-- `project_widget_prerequisites.md` (~554 tok)
+- `project_widget_prerequisites.md` (~377 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -173,7 +173,7 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~6118 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~6113 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
@@ -208,7 +208,7 @@
 - `EventParticipation.swift` — Class: EventParticipation (~156 tok)
 - `EventParticipationService.swift` — / No `delete` — see AttendanceService.swift's doc comment. (~139 tok)
 - `EventReminderService.swift` — / Minimal surface `EventReminderService` needs from a notification center — (~1212 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~4669 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~4673 tok)
 - `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
 - `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
@@ -223,7 +223,7 @@
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1914 tok)
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
-- `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s hub; also `PersonenListView` (admin-only combined people list: `User` accounts + `Member` roster, deduped by `Member.first(matching:)`, tags Konto/Kartei/Grazer VSC, filter+search) (~7514 tok)
+- `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s (~7507 tok)
 - `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~329 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1076 tok)
@@ -242,21 +242,21 @@
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
 - `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2169 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
-- `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1940 tok)
+- `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)
 - `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~379 tok)
 - `SyncState.swift` — / App-wide sync state — audit.md SwiftData & CloudKit Finding 3 ("no (~804 tok)
-- `SyncStatusBanner.swift` — / Visible sync/offline indicator — audit.md SwiftData & CloudKit Finding 3 (~1118 tok)
+- `SyncStatusBanner.swift` — / Visible sync/offline indicator — audit.md SwiftData & CloudKit Finding 3 (~1120 tok)
 - `Team.swift` — Class: Team (~823 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3220 tok)
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
 - `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
 - `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView; also `VereinView` (root of the merged "Verein" tab — non-admins get TeamsListView directly, admins get `VereinHubList`: Teams / Mitglieder / Personen / App-Konten / Rollenänderungen) (~5471 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView (~5463 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
-- `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~459 tok)
+- `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9058 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9065 tok)
 - `Training.swift` — Class: Training (~405 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)

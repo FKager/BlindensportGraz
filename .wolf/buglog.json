@@ -6888,6 +6888,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-09T22:20:00.000Z"
+    },
+    {
+      "id": "bug-407",
+      "timestamp": "2026-09-10T16:47:00.000Z",
+      "error_message": "Not a defect: architecture-review.md flagged 'the opacity(0.1) fills and undeclared preferredColorScheme likely read poorly in dark mode' as an unverified risk (P1 #6).",
+      "file": "BlindensportGraz/Theme.swift",
+      "root_cause": "N/A - investigated, not reproduced. Grep found zero non-adaptive colors (no hex, no Color(red:), no fixed white/black backgrounds); every tint in the app is opacity() over a dynamic system color (.blue/.orange/.secondary/a role color), which already shifts brightness for dark mode. Verified visually: simulator screenshot in forced dark mode (xcrun simctl ui <device> appearance dark) of LoginView renders correctly.",
+      "fix": "No bug to fix. Did the consistency half of the review's ask instead: consolidated 7 call sites' drifting magic-number opacities (0.12/0.15/0.2) into named Theme.badgeOpacity/emphasizedBadgeOpacity + a shared .badge(tint:opacity:) View modifier (TeamsViews, AccountView x2, MembersViews, TournamentsViews, EventsViews, SportIcons, SyncStatusBanner). One incidental visual fix: the tournament status pill was an unclipped rectangular background, now Capsule-clipped like every other badge in the app. Build + 209-test suite green.",
+      "tags": [
+        "dark-mode",
+        "theme",
+        "design-system",
+        "architecture-review",
+        "verified-not-a-bug"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T16:47:00.000Z"
     }
   ]
 }

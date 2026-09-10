@@ -14,6 +14,21 @@
 
 ## Key Learnings
 
+- [2026-09-10] **To screenshot this app in the simulator without a real Apple ID configured**: a
+  fresh launch's `RootView.resolveAccount()` always calls `appleSignIn.requestSignIn()` when
+  `storedAppleUserIdentifier` is empty, which triggers the OS's blocking "Bei Apple Account anmelden"
+  alert before any of the app's own UI renders — and there's no way to tap through it or the
+  Simulator app's window from this sandboxed execution context (`osascript tell "System Events"` gets
+  `-1719`/`-25200`, no `cliclick`; matches the 2026-07-15 Do-Not-Repeat entry about Accessibility
+  permissions not being wired here). Fix: before `xcrun simctl launch`, run
+  `xcrun simctl spawn <device> defaults write it.a11y.BlindensportGraz appleUserIdentifier "dummy"` —
+  this pre-seeds the `@AppStorage("appleUserIdentifier")` the real app reads, so `resolveAccount()`
+  takes the "already have a stored identifier" branch, finds no matching local `User`, and falls
+  straight through to `LoginView` with no system alert at all. `xcrun simctl ui <device> appearance
+  dark` sets dark mode first; `xcrun simctl io <device> screenshot <path>` captures it. Still can't
+  interact past that (no tap capability), so this only reaches the pre-login screen — logged-in
+  screens (Dashboard, Teams, Account) remain unverifiable visually from this sandbox.
+
 - [2026-09-09] **The Apple Developer portal (`developer.apple.com/account/resources/...`) is fully
   scriptable via Safari `do JavaScript`** once the user has signed in manually (Apple ID + 2FA can't
   be automated). It's a React app (styled-components 5.3.11), no iframes, no shadow DOM. Techniques

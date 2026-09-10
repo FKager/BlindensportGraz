@@ -2572,3 +2572,17 @@
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 | 16:40 | Set both widget CI secrets (gh secret set worked this time, unlike earlier session), ran iOS Device Deploy off `widget` branch to verify signing end-to-end -> success (app+widget appex installed+launched), merged PR #5 (squash 453e97f) into main, cleaned up widget branch (local+remote), merge auto-triggered both workflows on main -> both green, widget confirmed live on device. | .github/workflows/ios-device-deploy.yml (already had it), main branch | PR #5 merged, widget live | ~4k |
+| 16:38 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_widget_prerequisites.md | — | ~372 |
+| 16:38 | Session end: 1 writes across 1 files (project_widget_prerequisites.md) | 0 reads | ~398 tok |
+| 16:43 | Edited BlindensportGraz/Theme.swift | modified tintedCardFill() | ~306 |
+| 16:43 | Edited BlindensportGraz/Theme.swift | modified card() | ~147 |
+| 16:43 | Edited BlindensportGraz/TeamsViews.swift | modified roleCapsule() | ~58 |
+| 16:44 | Edited BlindensportGraz/EventsViews.swift | 3→3 lines | ~45 |
+| 16:44 | Edited BlindensportGraz/AccountView.swift | 5→5 lines | ~74 |
+| 16:44 | Edited BlindensportGraz/AccountView.swift | 9→9 lines | ~113 |
+| 16:44 | Edited BlindensportGraz/MembersViews.swift | modified capsuleTag() | ~70 |
+| 16:44 | Edited BlindensportGraz/TournamentsViews.swift | 6→6 lines | ~75 |
+| 16:44 | Edited BlindensportGraz/SportIcons.swift | 2→2 lines | ~27 |
+| 16:44 | Edited BlindensportGraz/SyncStatusBanner.swift | opacity() → tintedCardFill() | ~31 |
+| 16:47 | Dark-mode/Theme pass (architecture-review.md §5 #6, §3.1): grepped whole app for non-adaptive colors (Color(red:), hex, fixed white/black backgrounds) -> none found; verified visually via simulator screenshot in dark mode (LoginView) -> correct, no light-mode artifacts. Consolidated the 7 remaining ad-hoc .opacity(0.12-0.2) badge/pill fills into Theme.badge(tint:opacity:) + Theme.badgeOpacity/emphasizedBadgeOpacity, reused Theme.tintedCardFill for SyncStatusBanner. Sites: TeamsViews.roleCapsule, AccountView role label + ROOT badge, MembersViews.capsuleTag, TournamentsViews status pill (now Capsule-clipped, was unclipped rect), EventsViews date badge, SportIcons glyph circle, SyncStatusBanner. Could not screenshot logged-in screens (Dashboard/Teams/Account) - no Accessibility API access to tap through the simulator's system Apple ID/notification alerts in this sandbox (matches prior cerebrum finding). Build + 209 tests green (4 pre-existing tz fails). | Theme.swift, TeamsViews.swift, AccountView.swift, MembersViews.swift, TournamentsViews.swift, EventsViews.swift, SportIcons.swift, SyncStatusBanner.swift | BUILD+TEST green, LoginView screenshot-verified in dark mode | ~9k |
+| 16:46 | Session end: 11 writes across 9 files (project_widget_prerequisites.md, Theme.swift, TeamsViews.swift, EventsViews.swift, AccountView.swift) | 4 reads | ~1869 tok |
