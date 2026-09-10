@@ -7205,6 +7205,18 @@
       "related_bugs": ["bug-429"],
       "occurrences": 1,
       "last_seen": "2026-09-10T18:30:00.000Z"
+    },
+    {
+      "id": "bug-431",
+      "timestamp": "2026-09-10T18:40:00.000Z",
+      "error_message": "Follow-up correction to bug-430: user clarified \"for abgesagt, the attendence relationship should be deleted and snchronized\" — the reset-in-place approach (attended=false, praeAmount=nil) wasn't what was wanted; the Attendance rows themselves need to be deleted, and that deletion needs to actually sync (not just happen locally).",
+      "file": "BlindensportGraz/AttendanceService.swift, BlindensportGraz/CloudKitSync+Attendance.swift, BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "CloudKitSync had no delete path for Attendance at all (by original design, per AttendanceService's old doc comment) — deleting a row only locally would have silently come back on the next pull, so a real delete needed a real CloudKit delete push first.",
+      "fix": "Added CloudKitSync.deleteAttendance(id:isTournamentEvent:) (resolves the correct one of the two CKRecord types — TrainingAttendance/TournamentAttendance — same split pushAttendance already uses) and AttendanceService.delete(_:modelContext:) built on it. Renamed AttendanceService.clearAll to deleteAll and changed it from resetting fields to modelContext.delete + AttendanceService.delete per row. Both call sites (TrainingsListView's Abgesagt swipe action and TrainingDetailView's status Picker onChange) now call deleteAll.",
+      "tags": ["feature", "correction", "training", "attendance", "cloudkit-delete", "cancelled"],
+      "related_bugs": ["bug-429", "bug-430"],
+      "occurrences": 1,
+      "last_seen": "2026-09-10T18:40:00.000Z"
     }
   ]
 }

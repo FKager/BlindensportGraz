@@ -2692,3 +2692,10 @@
 | 18:24 | Edited BlindensportGraz/TrainingsViews.swift | modified markCancelled() | ~125 |
 | 18:24 | Edited BlindensportGraz/TrainingsViews.swift | modified Picker() | ~193 |
 | 18:30 | Clear Attendance (attended=false, praeAmount=nil) when a Training becomes Abgesagt | AttendanceService.swift, TrainingsViews.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~5000 |
+| 18:26 | Session end: 40 writes across 13 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 18 reads | ~64757 tok |
+| 18:27 | Session end: 40 writes across 13 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 18 reads | ~64757 tok |
+| 18:29 | Created BlindensportGraz/AttendanceService.swift | — | ~1063 |
+| 18:29 | Edited BlindensportGraz/CloudKitSync+Attendance.swift | modified deleteAttendance() | ~233 |
+| 18:29 | Edited BlindensportGraz/TrainingsViews.swift | clearAll() → deleteAll() | ~121 |
+| 18:29 | Edited BlindensportGraz/TrainingsViews.swift | modified markCancelled() | ~188 |
+| 18:42 | Corrected Abgesagt-cancels-attendance: delete Attendance rows + sync the delete (was reset-in-place) | AttendanceService.swift, CloudKitSync+Attendance.swift, TrainingsViews.swift | build+tests pass (only known TrainingImportExportTests timezone failures) | ~6000 |
