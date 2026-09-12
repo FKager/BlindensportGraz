@@ -2861,3 +2861,8 @@
 | 21:08 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~67 |
 | 21:10 | Feature: "Neues Mitglied hinzufügen" in Training/Tournament Anwesenheit — creates a new Member (memberOfGVSC:false) + TeamMembership on catch-all "Blindensport Graz" team (user's own idea, added to Team.defaultTeams) + Attendance(attended:true, praeAmount if Helfer). New AddNewEventMemberView.swift shared by both. Verified via xcodebuild build (BUILD SUCCEEDED). | AddNewEventMemberView.swift (new), Team.swift, TrainingsViews.swift, TournamentsViews.swift | Done, not committed | ~40k |
 | 21:09 | Session end: 70 writes across 25 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 37 reads | ~121059 tok |
+| 21:13 | Session end: 70 writes across 25 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 37 reads | ~121059 tok |
+| 21:19 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 6→6 lines | ~100 |
+| 21:24 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | expanded (+33 lines) | ~615 |
+| 21:24 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | inline fix | ~61 |
+| 21:24 | Session end: 73 writes across 28 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 38 reads | ~121890 tok |

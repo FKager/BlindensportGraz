@@ -262,8 +262,8 @@ struct RootCLI {
     private static let copyableRecordTypes = [
         "UserIdentity", "ClubMember", "Team", "TeamMembership",
         "SportEvent", "Training", "Tournament", "TrainingAttendance", "TournamentAttendance",
-        "EventParticipation", "EventImage", "TrainingFavorite", "RoleChangeLog",
-        "ExpenseReceipt", "MemberChangeRequest",
+        "EventParticipation", "EventMembership", "EventImage", "TrainingFavorite", "RoleChangeLog",
+        "ExpenseReceipt", "MemberChangeRequest", "BudgetEntry",
     ]
 
     /// Bulk-copies every record of the given types from the source CloudKit
