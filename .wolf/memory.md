@@ -2735,3 +2735,32 @@
 | 20:25 | Session end: 57 writes across 20 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 25 reads | ~84973 tok |
 | 20:33 | Session end: 57 writes across 20 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 25 reads | ~84973 tok |
 | 20:42 | Found+merged 2 more near-duplicate Trainings (07-22, 07-29; different titles/locations, real attendance both sides) — migrated 2 attendance records, deleted 17 redundant ones + 2 Trainings, dev+prod | none (CloudKit data only) | verified 0 duplicate groups remain (12 dev / 13 prod) | ~18000 |
+| 21:50 | Session end: 57 writes across 20 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 25 reads | ~84973 tok |
+| 21:50 | Session end: 57 writes across 20 files (FullBackupImporter.swift, FullBackupTests.swift, FullBackupView.swift, TeamsViews.swift, ios-build-deploy.yml) | 25 reads | ~84973 tok |
+
+## Session: 2026-09-12 18:09
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:38 | Edited BlindensportGraz/TrainingSeriesView.swift | 3→4 lines | ~45 |
+| 18:38 | Edited BlindensportGraz/TrainingSeriesView.swift | inline fix | ~53 |
+| 18:38 | Edited BlindensportGraz/TrainingSeriesView.swift | Binding() → onChange() | ~92 |
+| 18:38 | Edited BlindensportGraz/TrainingSeriesView.swift | 2→3 lines | ~27 |
+| 18:38 | Session end: 4 writes across 1 files (TrainingSeriesView.swift) | 15 reads | ~10537 tok |
+| 18:42 | Session end: 4 writes across 1 files (TrainingSeriesView.swift) | 15 reads | ~10537 tok |
+| 18:43 | Session end: 4 writes across 1 files (TrainingSeriesView.swift) | 15 reads | ~10537 tok |
+| 18:44 | Session end: 4 writes across 1 files (TrainingSeriesView.swift) | 15 reads | ~10537 tok |
+| 18:44 | Session end: 4 writes across 1 files (TrainingSeriesView.swift) | 15 reads | ~10537 tok |
+| 18:44 | Session end: 4 writes across 1 files (TrainingSeriesView.swift) | 15 reads | ~10537 tok |
+| 18:54 | Session end: 4 writes across 1 files (TrainingSeriesView.swift) | 25 reads | ~59807 tok |
+
+## Session: 2026-09-12 19:00
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:15 | swiftui-pro design/accessibility review (grep-targeted, not full 9-category sweep) | TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AccountView.swift, MembersViews.swift | Found `.foregroundColor()` deprecated-API inconsistency (11 sites, 3 files); toolbar icon-buttons already have accessibilityLabel everywhere checked; fixed frames/caption2 reviewed, mostly fine | ~15k |
+| 19:20 | Applied fix: `.foregroundColor(` → `.foregroundStyle(` (replace_all per file) | TournamentsViews.swift (5), EventsViews.swift (2), TrainingsViews.swift (4) | `xcodegen generate` + real `xcodebuild build -sdk iphonesimulator` → BUILD SUCCEEDED (post-edit SourceKit "Cannot find type" diagnostics were the known stale-index false positive, not real errors). Not committed — user didn't ask | ~8k |
+| 19:06 | Edited BlindensportGraz/TournamentsViews.swift | inline fix | ~5 |
+| 19:06 | Edited BlindensportGraz/EventsViews.swift | inline fix | ~5 |
+| 19:06 | Edited BlindensportGraz/TrainingsViews.swift | inline fix | ~5 |
+| 19:07 | Session end: 3 writes across 3 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift) | 5 reads | ~25900 tok |

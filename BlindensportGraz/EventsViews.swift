@@ -343,7 +343,7 @@ struct EventDetailView: View {
             Section("Teilnehmer (\(event.participations.count))") {
                 if event.participations.isEmpty {
                     Text("Noch keine Teilnehmer")
-                          .foregroundColor(.secondary)
+                          .foregroundStyle(.secondary)
                   } else {
                      ForEach(event.participations.sorted { ($0.user.lastName, $0.user.firstName) < ($1.user.lastName, $1.user.firstName) }) { p in
                         HStack {
@@ -351,7 +351,7 @@ struct EventDetailView: View {
                             Spacer()
                             Text(p.status)
                                   .font(.caption)
-                                  .foregroundColor(.secondary)
+                                  .foregroundStyle(.secondary)
                            }
                       }
 

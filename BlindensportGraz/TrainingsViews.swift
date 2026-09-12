@@ -316,7 +316,7 @@ struct TrainingRow: View {
                 Text(training.startDate, format: .dateTime.day().month(.abbreviated))
             }
             .font(.caption)
-            .foregroundColor(.secondary)
+            .foregroundStyle(.secondary)
             .frame(width: 44, alignment: .leading)
 
             SportGlyph(sport: training.sport, size: 32)
@@ -332,7 +332,7 @@ struct TrainingRow: View {
                             .padding(.horizontal, 8)
                             .padding(.vertical, 2)
                             .badge(tint: statusColor, opacity: Theme.emphasizedBadgeOpacity)
-                            .foregroundColor(statusColor)
+                            .foregroundStyle(statusColor)
                     }
                 }
                 HStack {
@@ -341,14 +341,14 @@ struct TrainingRow: View {
                     Label(training.location, systemImage: "mappin.and.ellipse")
                    }
                    .font(.caption)
-                   .foregroundColor(.secondary)
+                   .foregroundStyle(.secondary)
             }
 
             Spacer()
 
             Text(training.startDate, format: .dateTime.hour().minute())
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
         }
        .padding(.vertical, 4)
     }

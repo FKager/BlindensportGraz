@@ -194,7 +194,7 @@ struct TournamentRow: View {
           Text(tournament.startDate, format: .dateTime.day().month(.abbreviated))
       }
       .font(.caption)
-      .foregroundColor(.secondary)
+      .foregroundStyle(.secondary)
       .frame(width: 44, alignment: .leading)
 
       SportGlyph(sport: tournament.sport, size: 32)
@@ -209,7 +209,7 @@ struct TournamentRow: View {
                  .padding(.horizontal, 8)
                  .padding(.vertical, 2)
                  .badge(tint: statusColor, opacity: Theme.emphasizedBadgeOpacity)
-                 .foregroundColor(statusColor)
+                 .foregroundStyle(statusColor)
           }
           HStack {
               Label(tournament.sport, systemImage: SportIcon.symbolName(for: tournament.sport))
@@ -217,7 +217,7 @@ struct TournamentRow: View {
            Label("\(tournament.maxTeams) Teams", systemImage: "person.3.fill")
           }
           .font(.caption)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
 
          HStack {
             Image(systemName: "mappin.and.ellipse")
@@ -225,14 +225,14 @@ struct TournamentRow: View {
              Text(tournament.location)
           }
           .font(.caption)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
        }
 
       Spacer()
 
       Text(tournament.startDate, format: .dateTime.hour().minute())
           .font(.subheadline)
-          .foregroundColor(.secondary)
+          .foregroundStyle(.secondary)
       }
        .padding(.vertical, 4)
     }
