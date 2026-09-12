@@ -17,6 +17,7 @@ struct TrainingSeriesView: View {
 
     @State private var weeks = 8
     @State private var resultMessage: String?
+    @State private var isShowingResult = false
     @State private var isCreating = false
     // Bumped once the on-appear sync below completes, purely to force
     // `takenDates` to recompute against the freshened local store — this
@@ -48,7 +49,7 @@ struct TrainingSeriesView: View {
                     LabeledContent("Training", value: favorite.title)
                     LabeledContent("Sportart", value: favorite.sport)
                     LabeledContent("Wochentag", value: weekdayName)
-                    LabeledContent("Uhrzeit", value: String(format: "%02d:%02d", favorite.startHour, favorite.startMinute))
+                    LabeledContent("Uhrzeit", value: "\(favorite.startHour.formatted(.number.precision(.integerLength(2)))):\(favorite.startMinute.formatted(.number.precision(.integerLength(2))))")
                 }
 
                 Section("Serie") {
@@ -97,13 +98,13 @@ struct TrainingSeriesView: View {
                     }
                 }
             }
-            .alert("Serie erstellt", isPresented: Binding(
-                get: { resultMessage != nil },
-                set: { if !$0 { resultMessage = nil; dismiss() } }
-            )) {
-                Button("OK") { resultMessage = nil; dismiss() }
-            } message: {
-                Text(resultMessage ?? "")
+            .alert("Serie erstellt", isPresented: $isShowingResult, presenting: resultMessage) { _ in
+                Button("OK") { dismiss() }
+            } message: { message in
+                Text(message)
+            }
+            .onChange(of: isShowingResult) { _, isShowing in
+                if !isShowing { dismiss() }
             }
             // Refreshes the local store before the "existiert bereits"
             // preview above is computed against it — see refreshTrigger's
@@ -149,6 +150,7 @@ struct TrainingSeriesView: View {
             }
             isCreating = false
             resultMessage = message
+            isShowingResult = true
         }
     }
 }
