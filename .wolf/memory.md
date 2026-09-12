@@ -2846,3 +2846,18 @@
 | 20:46 | Edited BlindensportGraz/TeamsViews.swift | 3→4 lines | ~41 |
 | 20:48 | Moved Vereinsbudget from TrainingsListView's Berichte menu into the "Verein" tab (new "Finanzen" section in VereinHubList + .budget case in VereinSplitView, per user request); BudgetView converted from sheet-style (own NavigationStack+Fertig) to plain pushed view (RoleChangeLogView's precedent for the same conversion) | BudgetViews.swift, TeamsViews.swift, TrainingsViews.swift | Verified via xcodebuild build (BUILD SUCCEEDED) | ~10k |
 | 20:47 | Session end: 59 writes across 23 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 36 reads | ~116763 tok |
+| 20:47 | Session end: 59 writes across 23 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 36 reads | ~116763 tok |
+| 20:57 | Session end: 59 writes across 23 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 36 reads | ~116763 tok |
+| 21:06 | Created BlindensportGraz/AddNewEventMemberView.swift | — | ~1660 |
+| 21:06 | Edited BlindensportGraz/AddNewEventMemberView.swift | save() → service() | ~202 |
+| 21:07 | Edited BlindensportGraz/Team.swift | 3→8 lines | ~113 |
+| 21:07 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~35 |
+| 21:07 | Edited BlindensportGraz/TrainingsViews.swift | modified Section() | ~172 |
+| 21:07 | Edited BlindensportGraz/TrainingsViews.swift | 2→3 lines | ~38 |
+| 21:07 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~62 |
+| 21:07 | Edited BlindensportGraz/TournamentsViews.swift | modified Section() | ~36 |
+| 21:07 | Edited BlindensportGraz/TournamentsViews.swift | 15→20 lines | ~180 |
+| 21:08 | Edited BlindensportGraz/TournamentsViews.swift | 1→2 lines | ~24 |
+| 21:08 | Edited BlindensportGraz/TournamentsViews.swift | modified sheet() | ~67 |
+| 21:10 | Feature: "Neues Mitglied hinzufügen" in Training/Tournament Anwesenheit — creates a new Member (memberOfGVSC:false) + TeamMembership on catch-all "Blindensport Graz" team (user's own idea, added to Team.defaultTeams) + Attendance(attended:true, praeAmount if Helfer). New AddNewEventMemberView.swift shared by both. Verified via xcodebuild build (BUILD SUCCEEDED). | AddNewEventMemberView.swift (new), Team.swift, TrainingsViews.swift, TournamentsViews.swift | Done, not committed | ~40k |
+| 21:09 | Session end: 70 writes across 25 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 37 reads | ~121059 tok |

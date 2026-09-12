@@ -53,6 +53,11 @@ extension Team {
         // duplicate/orphaned team under the old name.
         ("Torball Helfer", "Torball"),
         ("Blindenfußball Helfer", "Blindenfußball"),
+        // Catch-all team for someone added directly to a Training/Tournament
+        // via AddNewEventMemberView who isn't otherwise on any specific
+        // team — user request 2026-09-12. Not sport-specific, so it's never
+        // referenced from autoAssignTeamNames below.
+        ("Blindensport Graz", "Sonstige"),
     ]
 
     /// Maps a SportEvent's `sport` string to the teams automatically

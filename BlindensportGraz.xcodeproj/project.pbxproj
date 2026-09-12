@@ -111,6 +111,7 @@
 		9A86FDA539968A5B98813BA6 /* TrainingImportExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EE00D33AB2AF7A8148E8A9 /* TrainingImportExportTests.swift */; };
 		9D599F0BC6F7C80D529CA53D /* PersistenceServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70D5136ACDC65BAB10C0F67F /* PersistenceServiceTests.swift */; };
 		9F848700F904826F3B528BDE /* SportEventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAA91EB7F85CD231C4E2802A /* SportEventService.swift */; };
+		9FE23EC49CE84DD88BEFC64B /* AddNewEventMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA3FEC4B63FCD3DB8260C90 /* AddNewEventMemberView.swift */; };
 		A1B274AD320B87FADE58C57C /* XLSXCellPatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44CFF4EF0C96BC5384667E50 /* XLSXCellPatch.swift */; };
 		A39FD1994A2C4C23B6E24157 /* MemberChangeRequestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB276F7D19820837312BFFC0 /* MemberChangeRequestService.swift */; };
 		A4F81D1E2D2C704BA9F2600A /* WidgetRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3DC38F4EDBFDA72F571861D /* WidgetRefresher.swift */; };
@@ -342,6 +343,7 @@
 		DC50E1E76941D9B42A2EA14F /* Tournament.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tournament.swift; sourceTree = "<group>"; };
 		DD8BE8615595EA69DDF31D82 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		DDE3F917A1C77D9369C95493 /* SammelabrechnungExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SammelabrechnungExportTests.swift; sourceTree = "<group>"; };
+		DFA3FEC4B63FCD3DB8260C90 /* AddNewEventMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNewEventMemberView.swift; sourceTree = "<group>"; };
 		E311FD2552040187DB7B8D4D /* NetworkMonitorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitorTests.swift; sourceTree = "<group>"; };
 		E64855CBC3B96CFBC8321F23 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		E8CDBC50F8E2A02E054EA37B /* TN_TeilnehmerInnenliste.xlsx */ = {isa = PBXFileReference; path = TN_TeilnehmerInnenliste.xlsx; sourceTree = "<group>"; };
@@ -422,6 +424,7 @@
 			isa = PBXGroup;
 			children = (
 				9D151B782788860EBA6A7728 /* AccountView.swift */,
+				DFA3FEC4B63FCD3DB8260C90 /* AddNewEventMemberView.swift */,
 				DA89D2EB7A70D732E8D254C5 /* AppleSignIn.swift */,
 				6178BA5CA159BF50085C9E5F /* AppRole.swift */,
 				35025AA98831C580C5331F4E /* AppShortcuts.swift */,
@@ -737,6 +740,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B16C319D2DF6B4CF7A06C80E /* AccountView.swift in Sources */,
+				9FE23EC49CE84DD88BEFC64B /* AddNewEventMemberView.swift in Sources */,
 				2F743B2A284E572307FD7643 /* AppRole.swift in Sources */,
 				FEA3BC981ECB68E492420F02 /* AppShortcuts.swift in Sources */,
 				54B2D9923B891FB754B57ECE /* AppleSignIn.swift in Sources */,

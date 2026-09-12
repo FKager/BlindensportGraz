@@ -249,6 +249,7 @@ struct TournamentDetailView: View {
    @State private var showPraeCalculation = false
    @State private var showSammelabrechnung = false
    @State private var showRollCall = false
+   @State private var showAddNewMember = false
    // Eagerly (re)generated below — same ShareLink convention as every other
    // export in this app; see CalendarEventExport's doc comment for why
    // .ics+ShareLink was chosen over EKEventStore.
@@ -386,8 +387,8 @@ struct TournamentDetailView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        if !allMemberships.isEmpty {
-            Section("Teilnehmer:innen") {
+        Section("Teilnehmer:innen") {
+            if !allMemberships.isEmpty {
                 ForEach(allMemberships) { membership in
                     Toggle(isOn: Binding(
                         get: { attendance(for: membership)?.attended ?? false },
@@ -442,6 +443,11 @@ struct TournamentDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+            }
+            Button {
+                showAddNewMember = true
+            } label: {
+                Label("Neues Mitglied hinzufügen", systemImage: "person.badge.plus")
             }
         }
         Section("Notizen") {
@@ -601,6 +607,9 @@ var body: some View {
     }
     .task(id: CalendarEventExport.fields(for: tournament)) {
         icsURL = try? CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: tournament))
+    }
+    .sheet(isPresented: $showAddNewMember) {
+        AddNewEventMemberView(event: tournament, praeMax: Int(PraeCalculator.dailyCap) * tournament.dayCount)
     }
     .sheet(isPresented: $showRollCall) {
         AttendanceRollCallView(event: tournament)

@@ -361,6 +361,7 @@ struct TrainingDetailView: View {
      @Query private var allTeams: [Team]
      @State private var showMemberList = false
      @State private var showRollCall = false
+     @State private var showAddNewMember = false
      // Detail screens open read-only. Only an admin or the root account gets
      // the "Bearbeiten" toolbar toggle that flips this true and unlocks the
      // form (user request 2026-09-08).
@@ -484,8 +485,8 @@ struct TrainingDetailView: View {
                     .foregroundStyle(.secondary)
             }
         }
-        if !allMemberships.isEmpty {
-            Section("Anwesenheit") {
+        Section("Anwesenheit") {
+            if !allMemberships.isEmpty {
                 ForEach(allMemberships) { membership in
                     Toggle(isOn: Binding(
                         get: { attendance(for: membership)?.attended ?? false },
@@ -534,6 +535,11 @@ struct TrainingDetailView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+            }
+            Button {
+                showAddNewMember = true
+            } label: {
+                Label("Neues Mitglied hinzufügen", systemImage: "person.badge.plus")
             }
         }
         Section("Notizen") {
@@ -660,6 +666,9 @@ struct TrainingDetailView: View {
         }
         .sheet(isPresented: $showRollCall) {
             AttendanceRollCallView(event: training)
+        }
+        .sheet(isPresented: $showAddNewMember) {
+            AddNewEventMemberView(event: training, praeMax: 90)
         }
         .sheet(isPresented: $showMemberList) {
             // No exportContext (unlike TournamentDetailView) — the

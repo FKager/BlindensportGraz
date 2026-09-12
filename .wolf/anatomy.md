@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T18:46:44.192Z
-> Files: 280 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T19:08:15.446Z
+> Files: 281 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -175,6 +175,7 @@
 ## BlindensportGraz/
 
 - `AccountView.swift` — SwiftUI view: AccountView (~6808 tok)
+- `AddNewEventMemberView.swift` — / Lets an admin/coach add someone who isn't in the roster yet directly from (~1770 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~647 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
@@ -266,7 +267,7 @@
 - `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~379 tok)
 - `SyncState.swift` — / App-wide sync state — audit.md SwiftData & CloudKit Finding 3 ("no (~804 tok)
 - `SyncStatusBanner.swift` — / Visible sync/offline indicator — audit.md SwiftData & CloudKit Finding 3 (~1120 tok)
-- `Team.swift` — Class: Team (~823 tok)
+- `Team.swift` — Class: Team (~909 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3220 tok)
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
 - `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
@@ -276,7 +277,7 @@
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9065 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9169 tok)
 - `Training.swift` — Class: Training (~770 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -286,7 +287,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11742 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11836 tok)
 - `User.swift` — Class: User (~1280 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
