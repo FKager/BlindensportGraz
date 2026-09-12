@@ -127,6 +127,15 @@ enum FullBackup {
         ]
     }
 
+    static func encode(_ entry: BudgetEntry) -> [String: Any] {
+        [
+            "id": entry.id.uuidString, "category": entry.category.rawValue, "amount": entry.amount,
+            "date": string(entry.date), "note": entry.note,
+            "eventID": entry.event.map { $0.id.uuidString } ?? NSNull(),
+            "createdBy": entry.createdBy, "createdAt": string(entry.createdAt),
+        ]
+    }
+
     static func encode(_ attendance: Attendance) -> [String: Any] {
         [
             "id": attendance.id.uuidString, "eventID": attendance.event.id.uuidString,
@@ -206,6 +215,7 @@ enum FullBackup {
             "ExpenseReceipt": ((try? modelContext.fetch(FetchDescriptor<ExpenseReceipt>())) ?? []).map(encode),
             "EventParticipation": ((try? modelContext.fetch(FetchDescriptor<EventParticipation>())) ?? []).map(encode),
             "EventMembership": ((try? modelContext.fetch(FetchDescriptor<EventMembership>())) ?? []).map(encode),
+            "BudgetEntry": ((try? modelContext.fetch(FetchDescriptor<BudgetEntry>())) ?? []).map(encode),
             "Attendance": ((try? modelContext.fetch(FetchDescriptor<Attendance>())) ?? []).map(encode),
             "TrainingFavorite": ((try? modelContext.fetch(FetchDescriptor<TrainingFavorite>())) ?? []).map(encode),
             "RoleChangeLog": ((try? modelContext.fetch(FetchDescriptor<RoleChangeLog>())) ?? []).map(encode),

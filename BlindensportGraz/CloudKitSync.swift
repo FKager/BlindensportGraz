@@ -411,6 +411,7 @@ final class CloudKitSync {
         try? modelContext.save()
         await pullParticipations(modelContext: modelContext)
         await pullEventMemberships(modelContext: modelContext)
+        await pullBudgetEntries(modelContext: modelContext)
         try? modelContext.save()
         await pullAttendances(modelContext: modelContext)
         try? modelContext.save()

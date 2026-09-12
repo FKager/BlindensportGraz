@@ -725,6 +725,7 @@ struct TrainingsListView: View {
         @State private var showKostZCalculation = false
         @State private var showSammelabrechnung = false
         @State private var showSammelabrechnungSeason = false
+        @State private var showBudget = false
         // Same eager-generation + ShareLink convention as MembersListView's
         // import/export (see that view's doc comment) — a hand-rolled
         // "generate on tap" flow previously froze the app under VoiceOver.
@@ -823,6 +824,9 @@ struct TrainingsListView: View {
                         Button { showSammelabrechnungSeason = true } label: {
                             Label("Saison-Sammelabrechnung", systemImage: "doc.zipper.fill")
                         }
+                        Button { showBudget = true } label: {
+                            Label("Vereinsbudget", systemImage: "eurosign.bank.building")
+                        }
                     } label: {
                         Image(systemName: "chart.bar.doc.horizontal")
                     }
@@ -875,6 +879,9 @@ struct TrainingsListView: View {
         }
         .sheet(isPresented: $showSammelabrechnungSeason) {
             SammelabrechnungSeasonView()
+        }
+        .sheet(isPresented: $showBudget) {
+            BudgetView(currentUser: currentUser)
         }
         .task(id: trainings.map(\.id)) {
             exportURL = try? TrainingImportExport.exportFile(trainings: sortedTrainings)

@@ -15,6 +15,7 @@ enum AppModelSchema {
         TeamMembership.self,
         EventParticipation.self,
         EventMembership.self,
+        BudgetEntry.self,
         Member.self,
         EventImage.self,
         Attendance.self,

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T17:42:02.510Z
-> Files: 272 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T18:31:19.948Z
+> Files: 280 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -44,6 +44,7 @@
 - `enumerated-greeting-stearns.md` — Plan: "Verein" tab — merge Teams + Benutzerverwaltung, and reorganize app accounts (~3281 tok)
 - `foamy-churning-widget.md` — Training-Favoriten (training template quick-fill) (~1731 tok)
 - `functional-inventing-dream.md` — Make SportEvent the base class for Training and Tournament (~3676 tok)
+- `greedy-moseying-parasol.md` — Club Budget ("Vereinsbudget") Feature (~2832 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
@@ -185,11 +186,17 @@
 - `BlindensportGraz.entitlements` (~200 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
 - `BlindensportGrazRelease.entitlements` (~199 tok)
+- `BudgetCategory.swift` — / Closed enum for `BudgetEntry.category` — mirrors `AppRole`/`MembershipRole` (~988 tok)
+- `BudgetEntry.swift` — / One club-finance ledger line for a given calendar year: the fixed annual (~497 tok)
+- `BudgetEntryService.swift` — Declares BudgetEntryService (~242 tok)
+- `BudgetSummary.swift` — / Year-scoped club finance summary — pure aggregation over `BudgetEntry` + (~717 tok)
+- `BudgetViews.swift` — / Admin-only club finance overview — see TrainingsListView's "Berichte" (~2920 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
-- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2886 tok)
+- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2998 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5958 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5974 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~1152 tok)
+- `CloudKitSync+BudgetEntry.swift` (~761 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
 - `CloudKitSync+EventMembership.swift` (~644 tok)
 - `CloudKitSync+EventParticipation.swift` (~530 tok)
@@ -216,8 +223,8 @@
 - `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
 - `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
-- `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3310 tok)
-- `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5680 tok)
+- `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3446 tok)
+- `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5987 tok)
 - `FullBackupView.swift` — / Admin-only whole-club export/restore screen — architecture-review.md §5 (~1226 tok)
 - `Info.plist` (~443 tok)
 - `KostZCalculation.swift` — KostZCalculator: monthly (Training-only) summary + summary(for tournament:) (~1500 tok)
@@ -234,7 +241,7 @@
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
 - `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s (~8244 tok)
-- `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~374 tok)
+- `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~380 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1076 tok)
 - `PendingPush.swift` — / Durable outbox for CloudKit writes — architecture-review.md 2.2 / 2.3. (~1418 tok)
@@ -279,7 +286,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11742 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11828 tok)
 - `User.swift` — Class: User (~1280 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
@@ -302,12 +309,13 @@
 ## BlindensportGrazTests/
 
 - `AttendanceTrendsTests.swift` — Class: AttendanceTrendsTests (~1543 tok)
+- `BudgetSummaryTests.swift` — Class: BudgetSummaryTests (~1024 tok)
 - `CalendarEventExportTests.swift` — Class: CalendarEventExportTests (~1200 tok)
 - `DesignatedRootTests.swift` — Class: DesignatedRootTests (~1561 tok)
 - `EventReminderServiceTests.swift` — Class: FakeNotificationScheduling (~1755 tok)
 - `EventRosterTests.swift` — Class: EventRosterTests (~1028 tok)
 - `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
-- `FullBackupTests.swift` — Class: FullBackupTests (~2541 tok)
+- `FullBackupTests.swift` — Class: FullBackupTests (~2744 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberChangeRequestTests.swift` — Class: MemberChangeRequestTests (~1040 tok)

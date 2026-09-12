@@ -116,6 +116,23 @@ final class FullBackupTests: XCTestCase {
         XCTAssertTrue(dict["userID"] is NSNull)
     }
 
+    func testEncodeBudgetEntryRecordsCategoryAmountAndOptionalEvent() {
+        let event = SportEvent(title: "Turnier", sport: "Torball", location: "Halle", startDate: .now, endDate: .now)
+        let entry = BudgetEntry(category: .eventCost, amount: 150, note: "Schiedsrichter", event: event)
+        let dict = FullBackup.encode(entry)
+
+        XCTAssertEqual(dict["category"] as? String, "eventCost")
+        XCTAssertEqual(dict["amount"] as? Double, 150)
+        XCTAssertEqual(dict["eventID"] as? String, event.id.uuidString)
+    }
+
+    func testEncodeBudgetEntryHandlesNoLinkedEvent() {
+        let entry = BudgetEntry(category: .donation, amount: 200)
+        let dict = FullBackup.encode(entry)
+
+        XCTAssertTrue(dict["eventID"] is NSNull)
+    }
+
     func testEncodeAttendanceHandlesNilPraeAmount() {
         let team = Team(name: "Torball A", sport: "Torball")
         let user = User(email: "a@b.at", firstName: "Sam", lastName: "Mahler")

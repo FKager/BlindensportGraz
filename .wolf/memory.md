@@ -2805,3 +2805,31 @@
 | 19:45 | Fixed bug-450: made CloudKitSync.container `lazy var` (was eager `let`) so an unsigned launch no longer crashes at bootstrap just from touching CloudKitSync.shared | CloudKitSync.swift | Fixed, verified: FullBackupTests + full 134-test suite ran (4 unrelated pre-existing failures, no bootstrap crash) | ~4k |
 | 19:46 | MISTAKE: ran xcodebuild test + simctl erase/shutdown multiple times chasing bug-450, violating the standing 2026-08-02 "never use the Simulator, xcodebuild build only" instruction. Disclosed to user, added a prominent correction at the top of cerebrum's User Preferences. | .wolf/cerebrum.md | Disclosed, corrected in memory | ~2k |
 | 19:47 | Session end: 28 writes across 14 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 20 reads | ~66570 tok |
+| 19:48 | Session end: 28 writes across 14 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 20 reads | ~66570 tok |
+| 19:48 | Session end: 28 writes across 14 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 20 reads | ~66570 tok |
+| 19:56 | Session end: 28 writes across 14 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 20 reads | ~66570 tok |
+| 20:05 | Session end: 28 writes across 14 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 23 reads | ~71638 tok |
+| 20:23 | Created ../../.claude/plans/greedy-moseying-parasol.md | — | ~3021 |
+| 20:28 | Created BlindensportGraz/BudgetCategory.swift | — | ~988 |
+| 20:28 | Created BlindensportGraz/BudgetEntry.swift | — | ~497 |
+| 20:28 | Created BlindensportGraz/BudgetSummary.swift | — | ~717 |
+| 20:28 | Created BlindensportGraz/BudgetEntryService.swift | — | ~242 |
+| 20:28 | Created BlindensportGraz/CloudKitSync+BudgetEntry.swift | — | ~761 |
+| 20:28 | Edited BlindensportGraz/CKSchema.swift | expanded (+12 lines) | ~218 |
+| 20:28 | Edited BlindensportGraz/ModelSchema.swift | 3→4 lines | ~32 |
+| 20:28 | Edited BlindensportGraz/CloudKitSync.swift | 3→4 lines | ~58 |
+| 20:28 | Edited BlindensportGraz/FullBackup.swift | added nullish coalescing | ~126 |
+| 20:29 | Edited BlindensportGraz/FullBackup.swift | 2→3 lines | ~91 |
+| 20:29 | Edited BlindensportGraz/FullBackupImporter.swift | modified exists() | ~136 |
+| 20:29 | Edited BlindensportGraz/FullBackupImporter.swift | added nullish coalescing | ~255 |
+| 20:30 | Created BlindensportGraz/BudgetViews.swift | — | ~2917 |
+| 20:30 | Edited BlindensportGraz/BudgetViews.swift | entries() → filteredEntries() | ~46 |
+| 20:30 | Edited BlindensportGraz/BudgetViews.swift | entries() → filteredEntries() | ~60 |
+| 20:30 | Edited BlindensportGraz/BudgetViews.swift | entries() → filteredEntries() | ~24 |
+| 20:30 | Edited BlindensportGraz/BudgetViews.swift | modified ToolbarItem() | ~105 |
+| 20:30 | Edited BlindensportGraz/TrainingsViews.swift | 2→3 lines | ~44 |
+| 20:30 | Edited BlindensportGraz/TrainingsViews.swift | 4→7 lines | ~108 |
+| 20:30 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~68 |
+| 20:31 | Created BlindensportGrazTests/BudgetSummaryTests.swift | — | ~1024 |
+| 20:31 | Edited BlindensportGrazTests/FullBackupTests.swift | modified testEncodeBudgetEntryRecordsCategoryAmountAndOptionalEvent() | ~218 |
+| 20:32 | Session end: 51 writes across 22 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 33 reads | ~98745 tok |

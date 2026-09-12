@@ -66,6 +66,10 @@ enum FullBackupImporter {
             var d = FetchDescriptor<EventMembership>(predicate: #Predicate { $0.id == id }); d.fetchLimit = 1
             return !((try? modelContext.fetch(d)) ?? []).isEmpty
         }
+        func exists(_ id: UUID, in type: BudgetEntry.Type) -> Bool {
+            var d = FetchDescriptor<BudgetEntry>(predicate: #Predicate { $0.id == id }); d.fetchLimit = 1
+            return !((try? modelContext.fetch(d)) ?? []).isEmpty
+        }
         func exists(_ id: UUID, in type: Attendance.Type) -> Bool {
             var d = FetchDescriptor<Attendance>(predicate: #Predicate { $0.id == id }); d.fetchLimit = 1
             return !((try? modelContext.fetch(d)) ?? []).isEmpty
@@ -217,6 +221,17 @@ enum FullBackupImporter {
                                              addedAt: FullBackup.date(dict, "addedAt") ?? .now)
             modelContext.insert(membership)
             return EventMembershipService.save(membership, modelContext: modelContext)
+        }
+
+        run(BudgetEntry.self, "BudgetEntry") { dict in
+            guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: BudgetEntry.self) else { return false }
+            let event = FullBackup.uuid(dict, "eventID").flatMap { CloudKitSync.shared.findEvent($0, modelContext: modelContext) }
+            let entry = BudgetEntry(id: id, category: BudgetCategory.normalize(FullBackup.string(dict, "category")),
+                                    amount: FullBackup.double(dict, "amount") ?? 0, date: FullBackup.date(dict, "date") ?? .now,
+                                    note: FullBackup.string(dict, "note"), event: event,
+                                    createdBy: FullBackup.string(dict, "createdBy"), createdAt: FullBackup.date(dict, "createdAt") ?? .now)
+            modelContext.insert(entry)
+            return BudgetEntryService.save(entry, modelContext: modelContext)
         }
 
         run(Attendance.self, "Attendance") { dict in

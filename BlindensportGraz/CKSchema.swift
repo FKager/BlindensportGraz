@@ -124,6 +124,18 @@ enum CKSchema {
         static let addedAt = "addedAt"
     }
 
+    /// One club-finance ledger line — see `BudgetEntry.swift`'s doc comment.
+    enum BudgetEntry {
+        static let recordType = "BudgetEntry"
+        static let category = "category"
+        static let amount = "amount"
+        static let date = "date"
+        static let note = "note"
+        static let eventID = "eventID"
+        static let createdBy = "createdBy"
+        static let createdAt = "createdAt"
+    }
+
     enum UserIdentity {
         static let recordType = "UserIdentity"
         static let firstName = "firstName"
