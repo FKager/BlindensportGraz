@@ -44,8 +44,13 @@ final class AppleSignInCoordinator: NSObject, ASAuthorizationControllerDelegate,
     }
 
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        UIApplication.shared.connectedScenes
-            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
-            .first ?? ASPresentationAnchor()
+        let windowScenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        // `UIWindow()` (no scene) is deprecated in iOS 26 — prefer the app's
+        // existing key window, falling back to a fresh window tied to a real
+        // scene. A window scene is guaranteed to exist here: this is only
+        // ever called while presenting UI in response to a user-initiated
+        // sign-in request.
+        return windowScenes.compactMap { $0.keyWindow }.first
+            ?? UIWindow(windowScene: windowScenes.first!)
     }
 }

@@ -2764,3 +2764,11 @@
 | 19:06 | Edited BlindensportGraz/EventsViews.swift | inline fix | ~5 |
 | 19:06 | Edited BlindensportGraz/TrainingsViews.swift | inline fix | ~5 |
 | 19:07 | Session end: 3 writes across 3 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift) | 5 reads | ~25900 tok |
+| 19:08 | Session end: 3 writes across 3 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift) | 5 reads | ~25900 tok |
+| 19:08 | Session end: 3 writes across 3 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift) | 5 reads | ~25900 tok |
+| 19:08 | Session end: 3 writes across 3 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift) | 5 reads | ~25900 tok |
+| 19:09 | Session end: 3 writes across 3 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift) | 5 reads | ~25900 tok |
+| 19:11 | Session end: 3 writes across 3 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift) | 5 reads | ~25900 tok |
+| 19:16 | Edited BlindensportGraz/AppleSignIn.swift | ASPresentationAnchor() → UIWindow() | ~175 |
+| 19:17 | Fixed AppleSignIn.swift iOS26 UIWindow() deprecation (bug-449); verified via xcodebuild build (BUILD SUCCEEDED) | AppleSignIn.swift | Fixed | ~3k |
+| 19:19 | MISTAKE: `git checkout -- .wolf/buglog.json` to undo a bad hand-edit (json.dump w/ ensure_ascii=True mangled the whole file) also discarded real uncommitted bug-444..448 entries that predated this session — unrecoverable (confirmed via git fsck/reflog, content was never staged). See cerebrum Do-Not-Repeat 2026-09-12. | .wolf/buglog.json | Data loss, disclosed to user | ~2k |

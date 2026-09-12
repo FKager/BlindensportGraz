@@ -7446,8 +7446,18 @@
       "file": "BlindensportGraz/CloudKitSync.swift, BlindensportGraz/CloudKitSync+Events.swift",
       "root_cause": "CloudKitSync.fetchAll swallows any fetch error and returns [], indistinguishable from 'genuinely zero remote records' — so no pull function could ever safely prune a local record missing from the fetched set (a network hiccup's [] would look identical to 'everything was deleted').",
       "fix": "Added CloudKitSync.fetchAllOrThrow (same paging as fetchAll, but throws instead of swallowing) and hasPendingPush(recordName:) (checks the PendingPush outbox so a training this device just created/edited but hasn't finished pushing is never treated as an orphan). pullTrainings now uses fetchAllOrThrow, tracks which ids it actually saw, and after the pull loop deletes any local Training not in that set (unless it has a pending push). Scoped to Training only — the specific type with a confirmed real duplicate incident; other pull functions still use the lossy fetchAll unchanged.",
-      "tags": ["cloudkit", "sync", "orphan-pruning", "training", "duplicate-records", "data-integrity"],
-      "related_bugs": ["bug-437", "bug-439"],
+      "tags": [
+        "cloudkit",
+        "sync",
+        "orphan-pruning",
+        "training",
+        "duplicate-records",
+        "data-integrity"
+      ],
+      "related_bugs": [
+        "bug-437",
+        "bug-439"
+      ],
       "occurrences": 1,
       "last_seen": "2026-09-10T20:25:00.000Z"
     },
@@ -7458,10 +7468,37 @@
       "file": "N/A — data issue",
       "root_cause": "Two different club members independently created a Training entry for the same weekly Torball slot on 2026-07-22 and 2026-07-29 without knowing the other's entry existed; both then had (mostly the same) attendance recorded against their own copy.",
       "fix": "Confirmed via membership-id overlap that 6/7 (07-22) and 9/10 (07-29) attendees already had identical attendance on the 'official' entry — the only attendance NOT already duplicated belonged, in both cases, to the same person (the one who created the extra entry). Copied that person's one attendance record onto the official Training in both cases, then deleted the 2 duplicate Trainings and their 17 now-fully-redundant TrainingAttendance rows, in BOTH Development and Production. Verified 0 duplicate groups remain (12 Development / 13 Production Training records).",
-      "tags": ["cloudkit", "duplicate-records", "training", "attendance-merge", "data-integrity"],
-      "related_bugs": ["bug-437", "bug-442"],
+      "tags": [
+        "cloudkit",
+        "duplicate-records",
+        "training",
+        "attendance-merge",
+        "data-integrity"
+      ],
+      "related_bugs": [
+        "bug-437",
+        "bug-442"
+      ],
       "occurrences": 1,
       "last_seen": "2026-09-10T20:40:00.000Z"
+    },
+    {
+      "id": "bug-449",
+      "timestamp": "2026-09-12T17:15:00Z",
+      "error_message": "'init()' was deprecated in iOS 26.0: Use init(windowScene:) instead. (AppleSignIn.swift:49, flagged by CI as an annotation on the iOS Build and Deploy run)",
+      "file": "BlindensportGraz/AppleSignIn.swift",
+      "root_cause": "ASAuthorizationControllerPresentationContextProviding.presentationAnchor fell back to bare ASPresentationAnchor() (== UIWindow()) when no key window was found on connectedScenes — UIWindow() with no scene is deprecated in iOS 26.",
+      "fix": "Collect UIWindowScene instances from connectedScenes once; prefer their existing keyWindow, and fall back to UIWindow(windowScene:) built from the first window scene instead of the scene-less UIWindow() initializer.",
+      "tags": [
+        "deprecated-api",
+        "ios26",
+        "AppleSignIn",
+        "UIWindow",
+        "CI-warning"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T17:15:00Z"
     }
   ]
 }
