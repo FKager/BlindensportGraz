@@ -2866,3 +2866,15 @@
 | 21:24 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | expanded (+33 lines) | ~615 |
 | 21:24 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | inline fix | ~61 |
 | 21:24 | Session end: 73 writes across 28 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 38 reads | ~121890 tok |
+| 21:30 | Session end: 73 writes across 28 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 38 reads | ~121890 tok |
+| 21:31 | Session end: 73 writes across 28 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 38 reads | ~121890 tok |
+| 21:36 | Session end: 73 writes across 28 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 38 reads | ~121890 tok |
+| 21:37 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | 1→3 lines | ~123 |
+| 21:37 | Session end: 74 writes across 29 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 38 reads | ~122022 tok |
+| 21:45 | Edited BlindensportGraz/MembersViews.swift | expanded (+13 lines) | ~363 |
+| 21:45 | Edited BlindensportGraz/MembersViews.swift | "Mitglieder" → "Benutzerverwaltung" | ~13 |
+| 21:45 | Edited BlindensportGraz/MembersViews.swift | 4→5 lines | ~98 |
+| 21:45 | Edited BlindensportGraz/TeamsViews.swift | "Mitglieder" → "Benutzerverwaltung" | ~23 |
+| 21:45 | Edited BlindensportGraz/TeamsViews.swift | "Mitglieder" → "Benutzerverwaltung" | ~16 |
+| 21:46 | Edited BlindensportGraz/TeamsViews.swift | inline fix | ~22 |
+| 21:46 | Session end: 80 writes across 30 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 39 reads | ~130962 tok |

@@ -2,10 +2,11 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-/// The club's member roster ("Mitglieder"), pushed from `VereinView`'s
-/// admin hub (see MainTabView) — this used to be its own admin-only
-/// "Benutzerverwaltung" tab, self-wrapping a NavigationStack + "Fertig"
-/// button because it doubled as a sheet. New app accounts are auto-flagged
+/// The club's member roster, pushed from `VereinView`'s admin hub (see
+/// MainTabView) as "Benutzerverwaltung" — its original standalone-tab name,
+/// restored per user request 2026-09-12 (was briefly relabeled "Mitglieder"
+/// after the tab merge). Self-wraps a NavigationStack + "Fertig" button
+/// because it doubled as a sheet. New app accounts are auto-flagged
 /// as club members by matching against this roster (see
 /// Member.checkMembership in Models.swift). `Member.memberOfGVSC` makes
 /// club membership an explicit per-entry flag rather than something implied
@@ -68,7 +69,7 @@ struct MembersListView: View {
                 }
             }
         }
-        .navigationTitle("Mitglieder")
+        .navigationTitle("Benutzerverwaltung")
         .navigationBarTitleDisplayMode(.inline)
         .refreshable {
             await SyncOrchestrationService.syncAll(modelContext: modelContext)
@@ -169,6 +170,19 @@ struct MemberRow: View {
                 }
             }
             Spacer()
+            // Flags all current Grazer VSC members in this list — user
+            // request 2026-09-12 ("A flag Member of Grazer VSC should be
+            // used and indicate all current members in the Mitglieder
+            // list"). This roster also carries helpers/coaches/one-off
+            // attendees (e.g. AddNewEventMemberView's memberOfGVSC:false
+            // entries) who aren't formal members, so a non-member row
+            // deliberately shows no badge at all rather than a "not a
+            // member" negative marker.
+            if member.memberOfGVSC {
+                Image(systemName: "checkmark.seal.fill")
+                    .foregroundStyle(.blue)
+                    .accessibilityLabel("Mitglied bei Grazer VSC")
+            }
             if isLinked {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)

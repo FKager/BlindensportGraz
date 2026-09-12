@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T19:24:34.562Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T19:46:07.384Z
 > Files: 281 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -51,7 +51,7 @@
 - `MEMORY.md` — Memory (~205 tok)
 - `project_cloudkit-prod-data-copy.md` — Declares from (~2155 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
-- `project_testflight-setup.md` — Declares systemCrashLogs (~2397 tok)
+- `project_testflight-setup.md` — Declares systemCrashLogs (~2503 tok)
 - `project_widget_prerequisites.md` (~688 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
@@ -241,7 +241,7 @@
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1914 tok)
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
-- `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s (~8244 tok)
+- `MembersViews.swift` — / The club's member roster, pushed from `VereinView`'s admin hub (see (~8471 tok)
 - `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~380 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1076 tok)
@@ -272,7 +272,7 @@
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
 - `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
 - `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~6834 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView (~6840 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)

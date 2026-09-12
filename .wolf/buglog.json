@@ -7679,6 +7679,54 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-09-12T18:46:29.539Z"
+    },
+    {
+      "id": "bug-456",
+      "timestamp": "2026-09-12T19:45:45.849Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/MembersViews.swift",
+      "root_cause": "Had \"Mitglieder\"",
+      "fix": "Changed to \"Benutzerverwaltung\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T19:45:45.849Z"
+    },
+    {
+      "id": "bug-457",
+      "timestamp": "2026-09-12T19:45:54.646Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "Had \"Mitglieder\"",
+      "fix": "Changed to \"Benutzerverwaltung\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-12T19:45:56.969Z"
+    },
+    {
+      "id": "bug-458",
+      "timestamp": "2026-09-12T19:46:07.391Z",
+      "error_message": "Wrong reference: Mitglieder should be Benutzerverwaltung",
+      "file": "BlindensportGraz/TeamsViews.swift",
+      "root_cause": "Used \"Mitglieder\" instead of \"Benutzerverwaltung\"",
+      "fix": "Changed Mitglieder → Benutzerverwaltung",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T19:46:07.391Z"
     }
   ]
 }

@@ -429,7 +429,7 @@ struct AddTeamView: View {
 /// - Non-admins land straight on the Teams list (its own `.navigationTitle`
 ///   reads "Teams" — the tab label is still "Verein").
 /// - Admins/root get a hub `List` that pushes Teams plus the admin screens
-///   (Mitglieder, Personen, App-Konten, Rollenänderungen) onto the tab's
+///   (Benutzerverwaltung, Personen, App-Konten, Rollenänderungen) onto the tab's
 ///   single `NavigationStack`, so none of those wrap themselves anymore.
 struct VereinView: View {
     let currentUser: User
@@ -470,7 +470,7 @@ private struct VereinHubList: View {
                 NavigationLink {
                     MembersListView(currentUser: currentUser)
                 } label: {
-                    Label("Mitglieder", systemImage: "list.bullet.rectangle")
+                    Label("Benutzerverwaltung", systemImage: "list.bullet.rectangle")
                 }
                 NavigationLink {
                     PersonenListView()
@@ -549,7 +549,7 @@ struct VereinSplitView: View {
         var title: String {
             switch self {
             case .teams: return "Teams"
-            case .mitglieder: return "Mitglieder"
+            case .mitglieder: return "Benutzerverwaltung"
             case .personen: return "Personen"
             case .konten: return "App-Konten"
             case .antraege: return "Änderungsanträge"
