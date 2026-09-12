@@ -2833,3 +2833,16 @@
 | 20:31 | Created BlindensportGrazTests/BudgetSummaryTests.swift | — | ~1024 |
 | 20:31 | Edited BlindensportGrazTests/FullBackupTests.swift | modified testEncodeBudgetEntryRecordsCategoryAmountAndOptionalEvent() | ~218 |
 | 20:32 | Session end: 51 writes across 22 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 33 reads | ~98745 tok |
+| 20:40 | Session end: 51 writes across 22 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 33 reads | ~98745 tok |
+| 20:41 | Session end: 51 writes across 22 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 33 reads | ~98745 tok |
+| 20:44 | Session end: 51 writes across 22 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 33 reads | ~98745 tok |
+| 20:46 | Edited BlindensportGraz/BudgetViews.swift | 10→10 lines | ~167 |
+| 20:46 | Edited BlindensportGraz/BudgetViews.swift | modified Section() | ~605 |
+| 20:46 | Edited BlindensportGraz/TrainingsViews.swift | 3→2 lines | ~32 |
+| 20:46 | Edited BlindensportGraz/TrainingsViews.swift | 7→4 lines | ~61 |
+| 20:46 | Edited BlindensportGraz/TrainingsViews.swift | modified sheet() | ~40 |
+| 20:46 | Edited BlindensportGraz/TeamsViews.swift | modified Section() | ~195 |
+| 20:46 | Edited BlindensportGraz/TeamsViews.swift | 28→30 lines | ~329 |
+| 20:46 | Edited BlindensportGraz/TeamsViews.swift | 3→4 lines | ~41 |
+| 20:48 | Moved Vereinsbudget from TrainingsListView's Berichte menu into the "Verein" tab (new "Finanzen" section in VereinHubList + .budget case in VereinSplitView, per user request); BudgetView converted from sheet-style (own NavigationStack+Fertig) to plain pushed view (RoleChangeLogView's precedent for the same conversion) | BudgetViews.swift, TeamsViews.swift, TrainingsViews.swift | Verified via xcodebuild build (BUILD SUCCEEDED) | ~10k |
+| 20:47 | Session end: 59 writes across 23 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 36 reads | ~116763 tok |

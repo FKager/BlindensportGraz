@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T18:31:19.948Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T18:46:44.192Z
 > Files: 280 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -190,7 +190,7 @@
 - `BudgetEntry.swift` — / One club-finance ledger line for a given calendar year: the fixed annual (~497 tok)
 - `BudgetEntryService.swift` — Declares BudgetEntryService (~242 tok)
 - `BudgetSummary.swift` — / Year-scoped club finance summary — pure aggregation over `BudgetEntry` + (~717 tok)
-- `BudgetViews.swift` — / Admin-only club finance overview — see TrainingsListView's "Berichte" (~2920 tok)
+- `BudgetViews.swift` — / Admin-only club finance overview — pushed from the "Verein" tab's admin (~2851 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
 - `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2998 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
@@ -271,7 +271,7 @@
 - `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
 - `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
 - `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~6716 tok)
+- `TeamsViews.swift` — SwiftUI view: TeamsListView (~6834 tok)
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
@@ -286,7 +286,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11828 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~11742 tok)
 - `User.swift` — Class: User (~1280 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)

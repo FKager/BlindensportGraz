@@ -1,15 +1,15 @@
 import SwiftUI
 import SwiftData
 
-/// Admin-only club finance overview — see TrainingsListView's "Berichte"
-/// toolbar menu. Year-scoped (like SeasonDashboardView), combining logged
-/// `BudgetEntry` records with the existing `Attendance.praeAmount` total via
-/// `BudgetSummary` so the "cost of running events" figure is honest without
-/// double-entry. Self-contained NavigationStack + dismiss button since it's
-/// sheet-presented, not tab-hosted (matches PraeCalculationView/MembersListView).
+/// Admin-only club finance overview — pushed from the "Verein" tab's admin
+/// hub (`VereinHubList`/`VereinSplitView` in TeamsViews.swift), so it doesn't
+/// wrap its own NavigationStack (same convention as `RoleChangeLogView`,
+/// which made the identical move off a sheet earlier). Year-scoped (like
+/// SeasonDashboardView), combining logged `BudgetEntry` records with the
+/// existing `Attendance.praeAmount` total via `BudgetSummary` so the "cost of
+/// running events" figure is honest without double-entry.
 struct BudgetView: View {
     let currentUser: User?
-    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Query private var entries: [BudgetEntry]
     @Query private var allAttendances: [Attendance]
@@ -31,66 +31,64 @@ struct BudgetView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Jahr") {
-                    Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
-                }
-
-                Section("Überblick") {
-                    LabeledContent("Einnahmen") {
-                        Text(summary.totalIncome, format: .currency(code: "EUR"))
-                    }
-                    LabeledContent("Ausgaben") {
-                        Text(summary.totalExpense, format: .currency(code: "EUR"))
-                    }
-                    LabeledContent("Saldo") {
-                        Text(summary.netBalance, format: .currency(code: "EUR"))
-                            .foregroundStyle(summary.netBalance < 0 ? .red : .primary)
-                            .bold()
-                    }
-                }
-
-                categorySection(.fixedSubsidy)
-                categorySection(.donation)
-
-                Section("Kosten Veranstaltungen") {
-                    HStack {
-                        Text("PRAE (Anwesenheit)")
-                        Spacer()
-                        Text(summary.praeTotal, format: .currency(code: "EUR"))
-                            .foregroundStyle(.secondary)
-                    }
-                    ForEach(filteredEntries(.eventCost)) { entry in
-                        entryRow(entry)
-                    }
-                    .onDelete { offsets in delete(offsets, from: filteredEntries(.eventCost)) }
-                    HStack {
-                        Text("Gesamt").bold()
-                        Spacer()
-                        Text(summary.totalEventCost, format: .currency(code: "EUR")).bold()
-                    }
-                }
-
-                categorySection(.otherExpense)
+        Form {
+            Section("Jahr") {
+                Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
             }
-            .navigationTitle("Vereinsbudget")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") { dismiss() }
+
+            Section("Überblick") {
+                LabeledContent("Einnahmen") {
+                    Text(summary.totalIncome, format: .currency(code: "EUR"))
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                    Button { showAdd = true } label: { Image(systemName: "plus") }
-                        .accessibilityLabel("Eintrag hinzufügen")
+                LabeledContent("Ausgaben") {
+                    Text(summary.totalExpense, format: .currency(code: "EUR"))
+                }
+                LabeledContent("Saldo") {
+                    Text(summary.netBalance, format: .currency(code: "EUR"))
+                        .foregroundStyle(summary.netBalance < 0 ? .red : .primary)
+                        .bold()
                 }
             }
-            .sheet(isPresented: $showAdd) {
-                AddBudgetEntryView(currentUser: currentUser)
+
+            categorySection(.fixedSubsidy)
+            categorySection(.donation)
+
+            Section("Kosten Veranstaltungen") {
+                HStack {
+                    Text("PRAE (Anwesenheit)")
+                    Spacer()
+                    Text(summary.praeTotal, format: .currency(code: "EUR"))
+                        .foregroundStyle(.secondary)
+                }
+                ForEach(filteredEntries(.eventCost)) { entry in
+                    entryRow(entry)
+                }
+                .onDelete { offsets in delete(offsets, from: filteredEntries(.eventCost)) }
+                HStack {
+                    Text("Gesamt").bold()
+                    Spacer()
+                    Text(summary.totalEventCost, format: .currency(code: "EUR")).bold()
+                }
             }
-            .sheet(item: $editingEntry) { entry in
-                EditBudgetEntryView(entry: entry)
+
+            categorySection(.otherExpense)
+        }
+        .navigationTitle("Vereinsbudget")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button { showAdd = true } label: { Image(systemName: "plus") }
+                    .accessibilityLabel("Eintrag hinzufügen")
             }
+        }
+        .refreshable {
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
+        }
+        .sheet(isPresented: $showAdd) {
+            AddBudgetEntryView(currentUser: currentUser)
+        }
+        .sheet(item: $editingEntry) { entry in
+            EditBudgetEntryView(entry: entry)
         }
     }
 

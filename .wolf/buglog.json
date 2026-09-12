@@ -7647,6 +7647,38 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-12T18:29:11.930Z"
+    },
+    {
+      "id": "bug-454",
+      "timestamp": "2026-09-12T18:46:19.813Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/BudgetViews.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T18:46:19.813Z"
+    },
+    {
+      "id": "bug-455",
+      "timestamp": "2026-09-12T18:46:26.456Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→4 lines (2 removed) | Also: .sheet(isPresented: $showBudget) {; BudgetView(currentUser: currentUser)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-12T18:46:29.539Z"
     }
   ]
 }
