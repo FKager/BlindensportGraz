@@ -7499,6 +7499,122 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-12T17:15:00Z"
+    },
+    {
+      "id": "bug-445",
+      "timestamp": "2026-09-12T17:31:40.426Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/FullBackup.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T17:31:40.426Z"
+    },
+    {
+      "id": "bug-446",
+      "timestamp": "2026-09-12T17:31:52.464Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/FullBackupImporter.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T17:31:52.464Z"
+    },
+    {
+      "id": "bug-447",
+      "timestamp": "2026-09-12T17:32:54.603Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "Had \"Sportart\"",
+      "fix": "Changed to \"Art der Veranstaltung\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-12T17:34:32.470Z"
+    },
+    {
+      "id": "bug-448",
+      "timestamp": "2026-09-12T17:33:02.898Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "17 lines replaced/restructured",
+      "fix": "Rewrote 29→37 lines (17 removed) | Also: createdBy: currentUser?.id.uuidString ?? \"\",; teams: myTeams.filter { selectedTeamIDs.contains($ | Also: @Query private var users: [User]; @Query private var allTeams: [Team]",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 3,
+      "last_seen": "2026-09-12T17:33:52.985Z"
+    },
+    {
+      "id": "bug-449",
+      "timestamp": "2026-09-12T17:34:00.918Z",
+      "error_message": "Wrong operator: == should be !=",
+      "file": "BlindensportGraz/EventsViews.swift",
+      "root_cause": "Used \"==\" instead of \"!=\"",
+      "fix": "Changed operator == → !=",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T17:34:00.918Z"
+    },
+    {
+      "id": "bug-450",
+      "timestamp": "2026-09-12T19:36:00.000Z",
+      "error_message": "xcodebuild test crashes at bootstrap for EVERY suite now (not just MemberImportExportTests, see bug-202): 'The test runner crashed before establishing connection: BlindensportGraz at @nonobjc CKContainer.__allocating_init(identifier:)', preceded by the same '[CK] Significant issue at CKContainer.m:748' entitlement error. Reproduced running only BlindensportGrazTests/FullBackupTests, which touches no CloudKit code at all.",
+      "file": "BlindensportGraz/BlindensportGrazApp.swift, BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "BlindensportGrazApp.swift sets `CloudKitSync.shared.modelContainer = modelContainer` unconditionally during app init, on every launch — this is what first touches the `CloudKitSync` singleton, which eagerly constructs a real `CKContainer(identifier:)` as one of its stored properties. Since xcodebuild test hosts the real app process to attach the test bundle, this now crashes the host app at launch (before any test method runs) whenever CODE_SIGNING_ALLOWED=NO strips the iCloud entitlement — regardless of which test target/suite is selected. bug-202 (2026-08-05) only ever observed this via MemberImportExportTests' explicit pushMember call; this session shows the crash is unconditional at app bootstrap now, a broader/updated understanding of the same underlying cause, not a new regression from this session's own changes (EventMembership work touched no launch-path code).",
+      "fix": "Not fixed — same standing limitation as bug-202: unsigned xcodebuild test in this sandbox cannot get past app launch at all now. No workaround applied here (this session verified correctness via `xcodebuild build` — BUILD SUCCEEDED — instead of running the test target). Same future options as bug-202: run tests from a properly signed context (Xcode GUI / signed CI runner) where the entitlement is present, or make CloudKitSync's CKContainer construction lazy/injectable so an unsigned test host never touches it at launch.",
+      "tags": [
+        "cloudkit",
+        "entitlements",
+        "test-crash",
+        "code-signing",
+        "simulator"
+      ],
+      "related_bugs": [
+        "bug-202"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T19:36:00.000Z"
+    },
+    {
+      "id": "bug-451",
+      "timestamp": "2026-09-12T17:42:02.521Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-12T17:42:02.521Z"
     }
   ]
 }

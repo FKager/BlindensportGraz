@@ -105,6 +105,17 @@ final class FullBackupTests: XCTestCase {
         XCTAssertEqual(dict["status"] as? String, "confirmed")
     }
 
+    func testEncodeEventMembershipRecordsRelationshipsByID() {
+        let event = SportEvent(title: "Weihnachtsfeier", sport: "Weihnachtsfeier", location: "Vereinsheim", startDate: .now, endDate: .now)
+        let member = Member(firstName: "Anna", lastName: "Berger")
+        let membership = EventMembership(member: member, event: event)
+        let dict = FullBackup.encode(membership)
+
+        XCTAssertEqual(dict["eventID"] as? String, event.id.uuidString)
+        XCTAssertEqual(dict["memberID"] as? String, member.id.uuidString)
+        XCTAssertTrue(dict["userID"] is NSNull)
+    }
+
     func testEncodeAttendanceHandlesNilPraeAmount() {
         let team = Team(name: "Torball A", sport: "Torball")
         let user = User(email: "a@b.at", firstName: "Sam", lastName: "Mahler")

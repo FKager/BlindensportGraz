@@ -38,6 +38,12 @@ class SportEvent {
     @Relationship(deleteRule: .cascade, inverse: \EventParticipation.event)
     var participations: [EventParticipation] = []
 
+    // Plain-Event-only roster (Training/Tournament keep using `teams` +
+    // `rosterAcrossTeams` below) — people picked directly by an admin/coach,
+    // not via a Team. See EventMembership.swift's doc comment.
+    @Relationship(deleteRule: .cascade, inverse: \EventMembership.event)
+    var directMembers: [EventMembership] = []
+
     @Relationship(deleteRule: .cascade, inverse: \EventImage.event)
     var images: [EventImage] = []
 

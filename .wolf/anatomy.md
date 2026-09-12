@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-10T18:22:54.567Z
-> Files: 269 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-12T17:42:02.510Z
+> Files: 272 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -174,7 +174,7 @@
 ## BlindensportGraz/
 
 - `AccountView.swift` — SwiftUI view: AccountView (~6808 tok)
-- `AppleSignIn.swift` — Struct: SignInResult (~540 tok)
+- `AppleSignIn.swift` — Struct: SignInResult (~647 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
 - `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)
@@ -186,11 +186,12 @@
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
 - `BlindensportGrazRelease.entitlements` (~199 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
-- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2780 tok)
+- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2886 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5703 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5958 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~1152 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
+- `CloudKitSync+EventMembership.swift` (~644 tok)
 - `CloudKitSync+EventParticipation.swift` (~530 tok)
 - `CloudKitSync+Events.swift` — / SportEvent/Training/Tournament kept together in one file — they share the (~3932 tok)
 - `CloudKitSync+ExpenseReceipt.swift` (~911 tok)
@@ -206,15 +207,17 @@
 - `EventImage.swift` — / A photo attached to a SportEvent (or, via inheritance, a Training or (~212 tok)
 - `EventImageService.swift` — Declares EventImageService (~227 tok)
 - `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1568 tok)
+- `EventMembership.swift` — / Direct person-to-event link for a plain `SportEvent` ("Event" kind only — (~479 tok)
+- `EventMembershipService.swift` — Declares EventMembershipService (~253 tok)
 - `EventParticipation.swift` — Class: EventParticipation (~156 tok)
 - `EventParticipationService.swift` — / No `delete` — see AttendanceService.swift's doc comment. (~139 tok)
 - `EventReminderService.swift` — / Minimal surface `EventReminderService` needs from a notification center — (~1212 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~4673 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~5537 tok)
 - `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
 - `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
-- `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3174 tok)
-- `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5330 tok)
+- `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3310 tok)
+- `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5680 tok)
 - `FullBackupView.swift` — / Admin-only whole-club export/restore screen — architecture-review.md §5 (~1226 tok)
 - `Info.plist` (~443 tok)
 - `KostZCalculation.swift` — KostZCalculator: monthly (Training-only) summary + summary(for tournament:) (~1500 tok)
@@ -231,7 +234,7 @@
 - `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
 - `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
 - `MembersViews.swift` — / The club's member roster ("Mitglieder"), pushed from `VereinView`'s (~8244 tok)
-- `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~366 tok)
+- `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~374 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1076 tok)
 - `PendingPush.swift` — / Durable outbox for CloudKit writes — architecture-review.md 2.2 / 2.3. (~1418 tok)
@@ -250,7 +253,7 @@
 - `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
-- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2169 tok)
+- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2259 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)
 - `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~379 tok)
@@ -271,7 +274,7 @@
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2695 tok)
-- `TrainingSeriesView.swift` — / Creates a weekly-recurring series of trainings from a `TrainingFavorite` (~1911 tok)
+- `TrainingSeriesView.swift` — / Creates a weekly-recurring series of trainings from a `TrainingFavorite` (~1955 tok)
 - `TrainingService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~1323 tok)
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
@@ -304,7 +307,7 @@
 - `EventReminderServiceTests.swift` — Class: FakeNotificationScheduling (~1755 tok)
 - `EventRosterTests.swift` — Class: EventRosterTests (~1028 tok)
 - `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
-- `FullBackupTests.swift` — Class: FullBackupTests (~2383 tok)
+- `FullBackupTests.swift` — Class: FullBackupTests (~2541 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
 - `MemberChangeRequestTests.swift` — Class: MemberChangeRequestTests (~1040 tok)

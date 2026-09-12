@@ -62,6 +62,10 @@ enum FullBackupImporter {
             var d = FetchDescriptor<EventParticipation>(predicate: #Predicate { $0.id == id }); d.fetchLimit = 1
             return !((try? modelContext.fetch(d)) ?? []).isEmpty
         }
+        func exists(_ id: UUID, in type: EventMembership.Type) -> Bool {
+            var d = FetchDescriptor<EventMembership>(predicate: #Predicate { $0.id == id }); d.fetchLimit = 1
+            return !((try? modelContext.fetch(d)) ?? []).isEmpty
+        }
         func exists(_ id: UUID, in type: Attendance.Type) -> Bool {
             var d = FetchDescriptor<Attendance>(predicate: #Predicate { $0.id == id }); d.fetchLimit = 1
             return !((try? modelContext.fetch(d)) ?? []).isEmpty
@@ -201,6 +205,18 @@ enum FullBackupImporter {
                                                    registeredAt: FullBackup.date(dict, "registeredAt") ?? .now)
             modelContext.insert(participation)
             return EventParticipationService.save(participation, modelContext: modelContext)
+        }
+
+        run(EventMembership.self, "EventMembership") { dict in
+            guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: EventMembership.self),
+                  let eventID = FullBackup.uuid(dict, "eventID"), let event = CloudKitSync.shared.findEvent(eventID, modelContext: modelContext) else { return false }
+            let user = FullBackup.uuid(dict, "userID").flatMap { CloudKitSync.shared.findUser($0, modelContext: modelContext) }
+            let member = FullBackup.uuid(dict, "memberID").flatMap { CloudKitSync.shared.findMember($0, modelContext: modelContext) }
+            guard user != nil || member != nil else { return false } // exactly one must resolve, matching the model's own invariant
+            let membership = EventMembership(id: id, user: user, member: member, event: event,
+                                             addedAt: FullBackup.date(dict, "addedAt") ?? .now)
+            modelContext.insert(membership)
+            return EventMembershipService.save(membership, modelContext: modelContext)
         }
 
         run(Attendance.self, "Attendance") { dict in

@@ -5,10 +5,11 @@ struct AddEventView: View {
     let currentUser: User?
         @Environment(\.modelContext) private var modelContext
         @Environment(\.dismiss) private var dismiss
-        @Query private var allTeams: [Team]
+        @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var allUsers: [User]
+        @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)]) private var allMembers: [Member]
 
        @State private var title = ""
-       @State private var sport = "Torball"
+       @State private var sport = EventsListView.eventTypes[0]
        @State private var location = "Graz"
        @State private var street = ""
        @State private var zip = ""
@@ -17,29 +18,20 @@ struct AddEventView: View {
        @State private var startDate = Date()
        @State private var endDate = Date().addingTimeInterval(3600)
        @State private var notes = ""
-       @State private var selectedTeamIDs: Set<UUID> = []
+       // Plain Events aren't Team-scoped (user request 2026-09-12) — people
+       // are picked directly instead, via these two id sets.
+       @State private var selectedUserIDs: Set<UUID> = []
+       @State private var selectedMemberIDs: Set<UUID> = []
        @State private var includesTime = true
        @State private var showDuplicateAlert = false
-
-    let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
-
-    // Admins manage every team, not just ones they personally joined — a team
-    // they just created via AddTeamView has no TeamMembership for them yet, so
-    // without this bypass it could never be assigned to anything.
-    var myTeams: [Team] {
-        guard let user = currentUser else { return [] }
-        if user.role == .admin { return allTeams }
-        let myTeamIDs = Set(user.memberships.map { $0.team.id })
-        return allTeams.filter { myTeamIDs.contains($0.id) }
-    }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Event") {
                     TextField("Titel", text: $title)
-                    Picker("Sportart", selection: $sport) {
-                        ForEach(sports, id: \.self) { Text($0) }
+                    Picker("Art der Veranstaltung", selection: $sport) {
+                        ForEach(EventsListView.eventTypes, id: \.self) { Text($0) }
                       }
                     // Relabeled from "Ort" to "Veranstaltungsort" (matches
                     // TournamentsViews' existing wording) so it doesn't
@@ -60,28 +52,36 @@ struct AddEventView: View {
                     DatePicker("Ende", selection: $endDate,
                                displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
                  }
-                if !myTeams.isEmpty {
-                    Section("Beteiligte Teams") {
-                        ForEach(myTeams) { team in
-                            Button {
-                                if selectedTeamIDs.contains(team.id) {
-                                    selectedTeamIDs.remove(team.id)
-                                } else {
-                                    selectedTeamIDs.insert(team.id)
-                                }
-                            } label: {
-                                HStack {
-                                    Text(team.name)
-                                        .foregroundStyle(.primary)
-                                    Spacer()
-                                    if selectedTeamIDs.contains(team.id) {
-                                        Image(systemName: "checkmark")
-                                            .foregroundStyle(.blue)
-                                            .accessibilityHidden(true)
+                // Plain Events pick people directly instead of Teams (user
+                // request 2026-09-12) — Training/Tournament keep the
+                // Team-based flow (AddTrainingView/AddTournamentView).
+                if !allUsers.isEmpty || !allMembers.isEmpty {
+                    Section("Mitglieder") {
+                        if !allUsers.isEmpty {
+                            Section("Registrierte Benutzer") {
+                                ForEach(allUsers) { user in
+                                    MemberSelectionRow(name: user.displayName, isSelected: selectedUserIDs.contains(user.id)) {
+                                        if selectedUserIDs.contains(user.id) {
+                                            selectedUserIDs.remove(user.id)
+                                        } else {
+                                            selectedUserIDs.insert(user.id)
+                                        }
                                     }
                                 }
                             }
-                            .accessibilityAddTraits(selectedTeamIDs.contains(team.id) ? .isSelected : [])
+                        }
+                        if !allMembers.isEmpty {
+                            Section("Mitglieder ohne Konto") {
+                                ForEach(allMembers) { member in
+                                    MemberSelectionRow(name: member.fullName, isSelected: selectedMemberIDs.contains(member.id)) {
+                                        if selectedMemberIDs.contains(member.id) {
+                                            selectedMemberIDs.remove(member.id)
+                                        } else {
+                                            selectedMemberIDs.insert(member.id)
+                                        }
+                                    }
+                                }
+                            }
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
@@ -118,11 +118,23 @@ struct AddEventView: View {
                             startDate: startDate,
                             endDate: endDate,
                             notes: notes,
-                            createdBy: currentUser?.id.uuidString ?? "",
-                            teams: myTeams.filter { selectedTeamIDs.contains($0.id) }
+                            createdBy: currentUser?.id.uuidString ?? ""
                             )
                         modelContext.insert(event)
                         SportEventService.save(event, modelContext: modelContext)
+
+                        // Directly-picked people (no Team involved) — see the
+                        // "Mitglieder" section above.
+                        for user in allUsers where selectedUserIDs.contains(user.id) {
+                            let membership = EventMembership(user: user, event: event)
+                            modelContext.insert(membership)
+                            EventMembershipService.save(membership, modelContext: modelContext)
+                        }
+                        for member in allMembers where selectedMemberIDs.contains(member.id) {
+                            let membership = EventMembership(member: member, event: event)
+                            modelContext.insert(membership)
+                            EventMembershipService.save(membership, modelContext: modelContext)
+                        }
                        dismiss()
                      }
                       .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -137,7 +149,42 @@ struct AddEventView: View {
         }
     }
 
+/// One toggleable row in a Users/Members multi-select list — shared by
+/// AddEventView and EventDetailView's "Mitglieder" section. Same
+/// Button+checkmark+`.isSelected` trait shape as the Team multi-select rows
+/// elsewhere in this app (AddTrainingView/AddTournamentView), just factored
+/// out since two call sites (Users, Members) needed it per screen here
+/// instead of one.
+struct MemberSelectionRow: View {
+    let name: String
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                Text(name)
+                    .foregroundStyle(.primary)
+                Spacer()
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .foregroundStyle(.blue)
+                        .accessibilityHidden(true)
+                }
+            }
+        }
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
 struct EventsListView: View {
+    // Plain-Event-only "Art der Veranstaltung" choices (user request
+    // 2026-09-12) — deliberately NOT the Sportart list Training/Tournament
+    // use (SportEvent.sport stays free text either way, see Sport.swift's
+    // doc comment; this is just a different, event-specific curated list of
+    // the same underlying field).
+    static let eventTypes = ["Langlaufkurs", "Tandemfahrt", "Generalversammlung", "Weihnachtsfeier", "ÖSTM Nordisch", "ÖM Torball"]
+
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
     // SportEvent is polymorphically fetchable (Training/Tournament subclass
@@ -250,9 +297,8 @@ struct EventDetailView: View {
       @Bindable var event: SportEvent
     let currentUser: User?
       @Environment(\.modelContext) private var modelContext
-      @Query private var users: [User]
-      @Query private var allTeams: [Team]
-      @State private var showMemberList = false
+      @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var allUsers: [User]
+      @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)]) private var allMembers: [Member]
       // Detail screens open read-only. Only an admin or the root account gets
       // the "Bearbeiten" toolbar toggle that flips this true and unlocks the
       // editable sections (user request 2026-09-08). "Selbst anmelden" below
@@ -260,22 +306,42 @@ struct EventDetailView: View {
       // not event data.
       @State private var isEditing = false
 
-    var isAdmin: Bool {
-        currentUser?.role == .admin
-    }
-
     // Who may leave read-only mode: admins and the club's root account.
     var canEdit: Bool {
         currentUser?.role == .admin || (currentUser?.isRoot ?? false)
     }
 
-    // Same admin-bypass as AddEventView.myTeams — an admin can reassign an
-    // event to any team, not just ones they personally joined.
-    var myTeams: [Team] {
-        guard let user = currentUser else { return [] }
-        if user.role == .admin { return allTeams }
-        let myTeamIDs = Set(user.memberships.map { $0.team.id })
-        return allTeams.filter { myTeamIDs.contains($0.id) }
+    // Direct-membership toggle helpers — event.directMembers is a to-many
+    // relationship, not a plain array like the old event.teams, so adding/
+    // removing needs a real EventMembership insert/delete, not just array
+    // mutation. Applied immediately on tap (like Anwesenheit toggles in
+    // TrainingDetailView/TournamentDetailView), not deferred to "Fertig".
+    private func directMembership(forUser id: UUID) -> EventMembership? {
+        event.directMembers.first { $0.user?.id == id }
+    }
+
+    private func directMembership(forMember id: UUID) -> EventMembership? {
+        event.directMembers.first { $0.member?.id == id }
+    }
+
+    private func toggleDirectUser(_ user: User) {
+        if let existing = directMembership(forUser: user.id) {
+            EventMembershipService.delete(existing, modelContext: modelContext)
+        } else {
+            let membership = EventMembership(user: user, event: event)
+            modelContext.insert(membership)
+            EventMembershipService.save(membership, modelContext: modelContext)
+        }
+    }
+
+    private func toggleDirectMember(_ member: Member) {
+        if let existing = directMembership(forMember: member.id) {
+            EventMembershipService.delete(existing, modelContext: modelContext)
+        } else {
+            let membership = EventMembership(member: member, event: event)
+            modelContext.insert(membership)
+            EventMembershipService.save(membership, modelContext: modelContext)
+        }
     }
 
     var body: some View {
@@ -285,7 +351,7 @@ struct EventDetailView: View {
 
             Section("Details") {
                 if !event.sport.isEmpty {
-                    LabeledContent("Sportart", value: event.sport)
+                    LabeledContent("Art der Veranstaltung", value: event.sport)
                 }
                 if !event.location.isEmpty {
                     LabeledContent("Veranstaltungsort", value: event.location)
@@ -304,38 +370,35 @@ struct EventDetailView: View {
              }
 
             if isEditing {
-                if !myTeams.isEmpty {
-                    Section("Beteiligte Teams") {
-                        ForEach(myTeams) { team in
-                            Button {
-                                if event.teams.contains(where: { $0.id == team.id }) {
-                                    event.teams.removeAll { $0.id == team.id }
-                                } else {
-                                    event.teams.append(team)
-                                }
-                            } label: {
-                                HStack {
-                                    Text(team.name)
-                                        .foregroundStyle(.primary)
-                                    Spacer()
-                                    if event.teams.contains(where: { $0.id == team.id }) {
-                                        Image(systemName: "checkmark")
-                                            .foregroundStyle(.blue)
-                                            .accessibilityHidden(true)
+                if !allUsers.isEmpty || !allMembers.isEmpty {
+                    Section("Mitglieder") {
+                        if !allUsers.isEmpty {
+                            Section("Registrierte Benutzer") {
+                                ForEach(allUsers) { user in
+                                    MemberSelectionRow(name: user.displayName, isSelected: directMembership(forUser: user.id) != nil) {
+                                        toggleDirectUser(user)
                                     }
                                 }
                             }
-                            .accessibilityAddTraits(event.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
+                        }
+                        if !allMembers.isEmpty {
+                            Section("Mitglieder ohne Konto") {
+                                ForEach(allMembers) { member in
+                                    MemberSelectionRow(name: member.fullName, isSelected: directMembership(forMember: member.id) != nil) {
+                                        toggleDirectMember(member)
+                                    }
+                                }
+                            }
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
                 }
-            } else if !event.teams.isEmpty {
-                Section("Beteiligte Teams") {
-                    ForEach(event.teams) { team in
-                        Text(team.name)
+            } else if !event.directMembers.isEmpty {
+                Section("Mitglieder") {
+                    ForEach(event.directMembers.sortedByLastName()) { membership in
+                        Text(membership.displayName)
                     }
                 }
             }
@@ -378,18 +441,6 @@ struct EventDetailView: View {
                     }
                 }
             }
-            if isAdmin {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showMemberList = true
-                    } label: {
-                        Label("Mitgliederliste", systemImage: "list.bullet.clipboard")
-                    }
-                }
-            }
-        }
-        .sheet(isPresented: $showMemberList) {
-            MemberListView(itemName: event.title, teams: event.teams)
         }
         .onDisappear {
             SportEventService.save(event, modelContext: modelContext)

@@ -36,7 +36,19 @@ import os
 final class CloudKitSync {
     static let shared = CloudKitSync()
 
-    let container = CKContainer(identifier: "iCloud.it.a11y.BlindensportGraz")
+    // Lazy, not eager (bug-450/bug-202): constructing a CKContainer without
+    // the iCloud-services entitlement hard-crashes the process at the
+    // CloudKit SDK level (not a catchable Swift error) — an eagerly-stored
+    // `let` here meant simply touching `CloudKitSync.shared` (e.g.
+    // `BlindensportGrazApp.init`'s `CloudKitSync.shared.modelContainer = ...`,
+    // which happens on every launch, test-hosted or not) crashed an unsigned
+    // `xcodebuild test` run at app bootstrap, before the test harness could
+    // even attach — regardless of which suite was selected, even one that
+    // never touches CloudKit (confirmed with FullBackupTests). Deferring
+    // construction to first real use restores the narrower, pre-existing
+    // failure mode: only a test that actually exercises a CloudKit push
+    // (e.g. MemberImportExportTests) crashes, not the whole run.
+    lazy var container = CKContainer(identifier: "iCloud.it.a11y.BlindensportGraz")
     var publicDB: CKDatabase { container.publicCloudDatabase }
     let logger = Logger(subsystem: "it.a11y.BlindensportGraz", category: "CloudKitSync")
 
@@ -398,6 +410,7 @@ final class CloudKitSync {
         await pullExpenseReceipts(modelContext: modelContext)
         try? modelContext.save()
         await pullParticipations(modelContext: modelContext)
+        await pullEventMemberships(modelContext: modelContext)
         try? modelContext.save()
         await pullAttendances(modelContext: modelContext)
         try? modelContext.save()

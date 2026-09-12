@@ -118,6 +118,15 @@ enum FullBackup {
         ]
     }
 
+    static func encode(_ membership: EventMembership) -> [String: Any] {
+        [
+            "id": membership.id.uuidString, "eventID": membership.event.id.uuidString,
+            "userID": membership.user.map { $0.id.uuidString } ?? NSNull(),
+            "memberID": membership.member.map { $0.id.uuidString } ?? NSNull(),
+            "addedAt": string(membership.addedAt),
+        ]
+    }
+
     static func encode(_ attendance: Attendance) -> [String: Any] {
         [
             "id": attendance.id.uuidString, "eventID": attendance.event.id.uuidString,
@@ -196,6 +205,7 @@ enum FullBackup {
             "EventImage": ((try? modelContext.fetch(FetchDescriptor<EventImage>())) ?? []).map(encode),
             "ExpenseReceipt": ((try? modelContext.fetch(FetchDescriptor<ExpenseReceipt>())) ?? []).map(encode),
             "EventParticipation": ((try? modelContext.fetch(FetchDescriptor<EventParticipation>())) ?? []).map(encode),
+            "EventMembership": ((try? modelContext.fetch(FetchDescriptor<EventMembership>())) ?? []).map(encode),
             "Attendance": ((try? modelContext.fetch(FetchDescriptor<Attendance>())) ?? []).map(encode),
             "TrainingFavorite": ((try? modelContext.fetch(FetchDescriptor<TrainingFavorite>())) ?? []).map(encode),
             "RoleChangeLog": ((try? modelContext.fetch(FetchDescriptor<RoleChangeLog>())) ?? []).map(encode),

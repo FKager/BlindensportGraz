@@ -114,6 +114,16 @@ enum CKSchema {
         static let registeredAt = "registeredAt"
     }
 
+    /// Direct person-to-event link for plain Events (not Training/Tournament,
+    /// which stay team-scoped) — see `EventMembership.swift`'s doc comment.
+    enum EventMembership {
+        static let recordType = "EventMembership"
+        static let userID = "userID"
+        static let memberID = "memberID"
+        static let eventID = "eventID"
+        static let addedAt = "addedAt"
+    }
+
     enum UserIdentity {
         static let recordType = "UserIdentity"
         static let firstName = "firstName"
