@@ -589,11 +589,25 @@ struct TrainingDetailView: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            // Swipe-to-select wheel, not free text entry —
-                            // PRAE is only ever paid in €5 steps from 0
-                            // to €90, so a wheel picker both constrains
-                            // input to valid amounts and matches the
-                            // "select via swipe" requirement.
+                            // Exact-amount fallback for when the desired
+                            // value doesn't land on the wheel's €5 steps —
+                            // user request 2026-09-14. The wheel below stays
+                            // the primary swipe input; this just covers
+                            // amounts the wheel can't express, still clamped
+                            // to the same 0...90 bound the wheel enforces.
+                            TextField("Betrag", value: Binding(
+                                get: { Int((attendance(for: membership)?.praeAmount ?? 0).rounded()) },
+                                set: { newValue in setPraeAmount(Double(min(90, max(0, newValue))), for: membership) }
+                            ), format: .number)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.trailing)
+                                .frame(width: 44)
+                                .textFieldStyle(.roundedBorder)
+                                .accessibilityLabel("PRAE Betrag genau eingeben")
+                            // Swipe-to-select wheel — PRAE is normally paid
+                            // in €5 steps from 0 to €90, so this covers the
+                            // common case; the TextField above handles
+                            // anything off that grid.
                             Picker("PRAE (€)", selection: Binding(
                                 get: {
                                     let amount = attendance(for: membership)?.praeAmount ?? 0
@@ -613,11 +627,11 @@ struct TrainingDetailView: View {
                         }
                     }
                 }
-                if totalPraeAmount > 0 {
+                if training.totalPraeAmount > 0 {
                     HStack {
                         Text("Gesamtkosten")
                         Spacer()
-                        Text("\(Int(totalPraeAmount)) €")
+                        Text("\(Int(training.totalPraeAmount)) €")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -684,11 +698,11 @@ struct TrainingDetailView: View {
                         }
                     }
                 }
-                if totalPraeAmount > 0 {
+                if training.totalPraeAmount > 0 {
                     HStack {
                         Text("Gesamtkosten")
                         Spacer()
-                        Text("\(Int(totalPraeAmount)) €")
+                        Text("\(Int(training.totalPraeAmount)) €")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -774,14 +788,6 @@ struct TrainingDetailView: View {
 
     private func attendance(for membership: TeamMembership) -> Attendance? {
         training.attendances.first { $0.membership.id == membership.id }
-    }
-
-    /// Sum of every PRAE amount entered for this training, shown as
-    /// "Gesamtkosten" under the Anwesenheit section — only when at least one
-    /// PRAE value is actually set (`praeAmount` is nil, not 0, when unset —
-    /// see `setPraeAmount`), matching every other conditional section here.
-    private var totalPraeAmount: Double {
-        training.attendances.compactMap { $0.praeAmount }.reduce(0, +)
     }
 
     private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
