@@ -68,4 +68,28 @@ extension Training {
         default: return status
         }
     }
+
+    /// Weekly-recurring start dates for AddTrainingView's optional repeat
+    /// range: one occurrence on `start`'s own weekday and time-of-day per
+    /// week, from `start` through `end` inclusive. `end` is compared by
+    /// calendar day only (AddTrainingView collects it via a date-only
+    /// DatePicker, same as Tournament's — see cerebrum's 2026-08-18 Uhrzeit
+    /// preference) so a same-day end date still includes that occurrence.
+    /// `end == nil` (or before `start`) means "just the one training" —
+    /// returns `[start]`, matching "when only a start date is specified,
+    /// only one training for this day should be created." Uses
+    /// `.weekOfYear` arithmetic, not repeated +7-day addition, so it stays
+    /// on the same weekday and wall-clock time across a DST boundary — same
+    /// reasoning as `TrainingFavorite.seriesStartDates`.
+    static func weeklyRangeDates(from start: Date, through end: Date?, calendar: Calendar = .current) -> [Date] {
+        guard let end, calendar.startOfDay(for: end) >= calendar.startOfDay(for: start) else { return [start] }
+        var dates: [Date] = [start]
+        var current = start
+        while let next = calendar.date(byAdding: .weekOfYear, value: 1, to: current),
+              calendar.startOfDay(for: next) <= calendar.startOfDay(for: end) {
+            dates.append(next)
+            current = next
+        }
+        return dates
+    }
 }

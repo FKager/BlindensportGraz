@@ -94,4 +94,30 @@ enum TrainingService {
         }
         return (created: open.count, skipped: taken.count)
     }
+
+    /// Creates one `Training` per free date in `startDates`, all sharing the
+    /// same title/sport/address/duration/focusArea/notes/teams — AddTrainingView's
+    /// weekly-range repeat option (`Training.weeklyRangeDates`). Mirrors
+    /// `createSeries` (which does the same for a saved `TrainingFavorite`)
+    /// but for a training entered by hand rather than a template. Skips any
+    /// date that collides with an existing event, same rule as a single
+    /// save's duplicate check.
+    @discardableResult
+    static func createWeeklySeries(title: String, sport: String, location: String,
+                                   street: String, zip: String, city: String, country: String,
+                                   startDates: [Date], durationMinutes: Int, focusArea: String, notes: String,
+                                   createdBy: String, teams: [Team], modelContext: ModelContext) -> (created: Int, skipped: Int) {
+        let (open, taken) = partitionSeriesDates(title: title, sport: sport, startDates: startDates, modelContext: modelContext)
+        for start in open {
+            let training = Training(
+                title: title, sport: sport, location: location,
+                street: street, zip: zip, city: city, country: country,
+                startDate: start, durationMinutes: durationMinutes, focusArea: focusArea, notes: notes,
+                createdBy: createdBy, teams: teams
+            )
+            modelContext.insert(training)
+            save(training, modelContext: modelContext)
+        }
+        return (created: open.count, skipped: taken.count)
+    }
 }

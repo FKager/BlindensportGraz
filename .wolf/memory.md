@@ -2878,3 +2878,18 @@
 | 21:45 | Edited BlindensportGraz/TeamsViews.swift | "Mitglieder" → "Benutzerverwaltung" | ~16 |
 | 21:46 | Edited BlindensportGraz/TeamsViews.swift | inline fix | ~22 |
 | 21:46 | Session end: 80 writes across 30 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 39 reads | ~130962 tok |
+| 21:51 | Session end: 80 writes across 30 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 39 reads | ~130962 tok |
+| 21:57 | Session end: 80 writes across 30 files (TournamentsViews.swift, EventsViews.swift, TrainingsViews.swift, AppleSignIn.swift, EventMembership.swift) | 39 reads | ~130962 tok |
+
+## Session: 2026-09-14 21:56
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:03 | Edited BlindensportGraz/Training.swift | modified weeklyRangeDates() | ~450 |
+| 22:03 | Edited BlindensportGraz/TrainingService.swift | modified createWeeklySeries() | ~447 |
+| 22:03 | Edited BlindensportGraz/TrainingsViews.swift | expanded (+12 lines) | ~292 |
+| 22:04 | Edited BlindensportGraz/TrainingsViews.swift | added nullish coalescing | ~541 |
+| 22:04 | Edited BlindensportGraz/TrainingsViews.swift | modified ToolbarItem() | ~2031 |
+| 22:04 | Edited BlindensportGrazTests/TrainingTests.swift | modified testRecomputeEndDateFollowsStartDateAndDuration() | ~982 |
+| 22:05 | Feature: AddTrainingView weekly-range repeat (start+optional end date, same weekday) | Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift | build succeeded (app + test target, xcodebuild build-for-testing) | ~1200 |
+| 22:05 | Session end: 6 writes across 4 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift) | 5 reads | ~24139 tok |
