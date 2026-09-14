@@ -30,8 +30,20 @@ struct AddTrainingView: View {
        @State private var selectedTeamIDs: Set<UUID> = []
        @State private var includesTime = true
        @State private var showDuplicateAlert = false
+       @State private var duplicateAlertMessage = "Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt."
        // Favorite whose weekly-recurring series is being set up (nil = sheet closed).
        @State private var seriesFavorite: TrainingFavorite?
+       // Optional weekly-range repeat, entered directly on this screen (not
+       // via a TrainingFavorite/TrainingSeriesView) — user request: "specify
+       // a range in which for every week a training with the known week day
+       // can be created... when only a start date is specified, only one
+       // training for this day should be created. the end range is
+       // optional." `isRecurring` off (the default) keeps the exact
+       // pre-existing single-training save path untouched.
+       @State private var isRecurring = false
+       @State private var repeatEndDate = Date()
+       @State private var showSeriesResultAlert = false
+       @State private var seriesResultMessage = ""
 
     let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
 
@@ -161,9 +173,33 @@ struct AddTrainingView: View {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
                     DatePicker("Start", selection: $startDate,
                                displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
+                        .onChange(of: startDate) {
+                            // Keeps the end date a valid bound for the
+                            // DatePicker below (`in: startDate...`) if the
+                            // start date moves past it.
+                            if repeatEndDate < startDate { repeatEndDate = startDate }
+                        }
                     Stepper("Dauer: \(durationMinutes) min", value: $durationMinutes, in: 15...240, step: 15)
                     TextField("Schwerpunkt", text: $focusArea)
                    }
+                Section("Wiederholung") {
+                    Toggle("Wöchentlich wiederholen", isOn: $isRecurring)
+                        .onChange(of: isRecurring) {
+                            // Defaults the end date to 8 weeks out the first
+                            // time this is switched on, same default the
+                            // favorite-based TrainingSeriesView uses.
+                            if isRecurring && repeatEndDate <= startDate {
+                                repeatEndDate = Calendar.current.date(byAdding: .weekOfYear, value: 8, to: startDate) ?? startDate
+                            }
+                        }
+                    if isRecurring {
+                        DatePicker("Enddatum", selection: $repeatEndDate, in: startDate...,
+                                   displayedComponents: [.date])
+                        Text("Ein Training wird jede Woche am \(startDate.formatted(.dateTime.weekday(.wide))) erstellt, bis einschließlich \(repeatEndDate.formatted(date: .abbreviated, time: .omitted)).")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 if !myTeams.isEmpty {
                     Section("Beteiligte Teams") {
                         ForEach(myTeams) { team in
@@ -210,12 +246,6 @@ struct AddTrainingView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
-                        // Same name + Sportart + Zeitpunkt as an existing
-                        // event of any kind → refuse, see SportEvent.duplicate.
-                        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, in: modelContext) != nil {
-                            showDuplicateAlert = true
-                            return
-                        }
                         var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
                         // Captured before auto-assigned teams are appended
                         // below — favorites store only the manually-checked
@@ -234,6 +264,57 @@ struct AddTrainingView: View {
                                     teams.append(team)
                                 }
                             }
+                        }
+
+                        if isRecurring {
+                            let dates = Training.weeklyRangeDates(from: startDate, through: repeatEndDate)
+                            let outcome = TrainingService.createWeeklySeries(
+                                title: title, sport: sport, location: location,
+                                street: street, zip: zip, city: city, country: country,
+                                startDates: dates, durationMinutes: durationMinutes, focusArea: focusArea, notes: notes,
+                                createdBy: currentUser?.id.uuidString ?? "", teams: teams, modelContext: modelContext
+                            )
+                            guard outcome.created > 0 else {
+                                duplicateAlertMessage = "Für den gewählten Zeitraum gibt es bereits an jedem Termin ein Training mit diesem Titel und dieser Sportart."
+                                showDuplicateAlert = true
+                                return
+                            }
+
+                            let (favorite, evictedID) = TrainingFavorite.recordUsage(
+                                title: title, sport: sport, startDate: startDate,
+                                durationMinutes: durationMinutes,
+                                location: location, street: street, zip: zip, city: city, country: country,
+                                teams: manuallySelectedTeams, in: modelContext
+                            )
+                            TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
+
+                            var message = "\(outcome.created) Training\(outcome.created == 1 ? "" : "s") erstellt."
+                            if outcome.skipped > 0 {
+                                message += " \(outcome.skipped) übersprungen (bereits vorhanden)."
+                            }
+                            seriesResultMessage = message
+
+                            NotificationCenter.default.post(
+                                name: NSNotification.Name("TrainingCreated"),
+                                object: nil,
+                                userInfo: [
+                                    "message": "\(outcome.created) neue Trainings erstellt!",
+                                    "title": title,
+                                    "sport": sport,
+                                    "location": location,
+                                    "durationMinutes": durationMinutes
+                                ]
+                            )
+                            showSeriesResultAlert = true
+                            return
+                        }
+
+                        // Same name + Sportart + Zeitpunkt as an existing
+                        // event of any kind → refuse, see SportEvent.duplicate.
+                        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, in: modelContext) != nil {
+                            duplicateAlertMessage = "Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt."
+                            showDuplicateAlert = true
+                            return
                         }
                         let training = Training(
                             title: title,
@@ -285,7 +366,12 @@ struct AddTrainingView: View {
             .alert("Bereits vorhanden", isPresented: $showDuplicateAlert) {
                 Button("OK", role: .cancel) {}
             } message: {
-                Text("Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt.")
+                Text(duplicateAlertMessage)
+            }
+            .alert("Serie erstellt", isPresented: $showSeriesResultAlert) {
+                Button("OK") { dismiss() }
+            } message: {
+                Text(seriesResultMessage)
             }
             .sheet(item: $seriesFavorite) { favorite in
                 TrainingSeriesView(favorite: favorite, allTeams: allTeams, currentUser: currentUser)
