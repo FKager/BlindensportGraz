@@ -2893,3 +2893,9 @@
 | 22:04 | Edited BlindensportGrazTests/TrainingTests.swift | modified testRecomputeEndDateFollowsStartDateAndDuration() | ~982 |
 | 22:05 | Feature: AddTrainingView weekly-range repeat (start+optional end date, same weekday) | Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift | build succeeded (app + test target, xcodebuild build-for-testing) | ~1200 |
 | 22:05 | Session end: 6 writes across 4 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift) | 5 reads | ~24139 tok |
+| 22:06 | Session end: 6 writes across 4 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift) | 5 reads | ~24139 tok |
+| 22:07 | Session end: 6 writes across 4 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift) | 5 reads | ~24139 tok |
+| 22:08 | Session end: 6 writes across 4 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift) | 5 reads | ~24139 tok |
+| 22:09 | Session end: 6 writes across 4 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift) | 5 reads | ~24139 tok |
+| 22:24 | Session end: 6 writes across 4 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift) | 5 reads | ~24139 tok |
+| 22:24 | Session end: 6 writes across 4 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift) | 5 reads | ~24139 tok |
