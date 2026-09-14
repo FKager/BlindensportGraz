@@ -2912,3 +2912,8 @@
 | 22:58 | Edited BlindensportGraz/TournamentsViews.swift | 8→8 lines | ~87 |
 | 22:58 | Edited BlindensportGraz/TournamentsViews.swift | expanded (+18 lines) | ~398 |
 | 22:59 | Session end: 13 writes across 7 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 15 reads | ~30510 tok |
+| 23:01 | Session end: 13 writes across 7 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 15 reads | ~30510 tok |
+| 23:04 | Edited BlindensportGraz/TrainingsViews.swift | expanded (+14 lines) | ~689 |
+| 23:04 | Edited BlindensportGraz/TournamentsViews.swift | expanded (+16 lines) | ~630 |
+| 23:04 | Edited BlindensportGraz/AddNewEventMemberView.swift | expanded (+10 lines) | ~311 |
+| 23:04 | Session end: 16 writes across 8 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 17 reads | ~44682 tok |

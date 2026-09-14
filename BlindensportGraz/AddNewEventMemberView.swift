@@ -59,6 +59,16 @@ struct AddNewEventMemberView: View {
                 }
                 if role.isHelfer {
                     Section("PRAE (€)") {
+                        // Exact-amount fallback for when the desired value
+                        // doesn't land on the wheel's €5 steps — user
+                        // request 2026-09-14, matches TrainingDetailView/
+                        // TournamentDetailView's identical addition.
+                        TextField("Betrag", value: Binding(
+                            get: { praeAmount },
+                            set: { newValue in praeAmount = min(praeMax, max(0, newValue)) }
+                        ), format: .number)
+                            .keyboardType(.numberPad)
+                            .accessibilityLabel("PRAE Betrag genau eingeben")
                         Picker("PRAE (€)", selection: $praeAmount) {
                             ForEach(Array(stride(from: 0, through: praeMax, by: 5)), id: \.self) { value in
                                 Text("\(value)").tag(value)

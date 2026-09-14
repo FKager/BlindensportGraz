@@ -434,6 +434,22 @@ struct TournamentDetailView: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Spacer()
+                            // Exact-amount fallback for when the desired
+                            // value doesn't land on the wheel's €5 steps —
+                            // user request 2026-09-14, matches
+                            // TrainingDetailView's identical addition. The
+                            // wheel stays the primary swipe input; this just
+                            // covers amounts it can't express, still clamped
+                            // to the same 0...maxPrae bound the wheel enforces.
+                            TextField("Betrag", value: Binding(
+                                get: { Int((attendance(for: membership)?.praeAmount ?? 0).rounded()) },
+                                set: { newValue in setPraeAmount(Double(min(maxPrae, max(0, newValue))), for: membership) }
+                            ), format: .number)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.trailing)
+                                .frame(width: 44)
+                                .textFieldStyle(.roundedBorder)
+                                .accessibilityLabel("PRAE Betrag genau eingeben")
                             Picker("PRAE (€)", selection: Binding(
                                 get: {
                                     let amount = attendance(for: membership)?.praeAmount ?? 0

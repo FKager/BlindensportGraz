@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-14T20:58:44.022Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-14T21:04:34.204Z
 > Files: 281 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -175,7 +175,7 @@
 ## BlindensportGraz/
 
 - `AccountView.swift` — SwiftUI view: AccountView (~6808 tok)
-- `AddNewEventMemberView.swift` — / Lets an admin/coach add someone who isn't in the roster yet directly from (~1770 tok)
+- `AddNewEventMemberView.swift` — / Lets an admin/coach add someone who isn't in the roster yet directly from (~1948 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~647 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
@@ -277,7 +277,7 @@
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9322 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9639 tok)
 - `Training.swift` — Class: Training (~1148 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -287,7 +287,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~13170 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~13447 tok)
 - `User.swift` — Class: User (~1280 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
