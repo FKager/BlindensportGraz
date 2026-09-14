@@ -7743,6 +7743,25 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-14T20:04:00.935Z"
+    },
+    {
+      "id": "bug-460",
+      "timestamp": "2026-09-14T20:35:00.000Z",
+      "error_message": "xcodebuild error: Unable to find a device matching the provided destination specifier (id:BD764E6D-...); underlying: CoreSimulator is out of date. Current version (1051.55.0) is older than build version (1171.7.0); DVTCoreDeviceCore plug-in failed to load (symbol not found).",
+      "file": ".github/workflows/ios-device-deploy.yml (self-hosted runner environment, not app code)",
+      "root_cause": "The runner Mac's Xcode needs an additional/updated CoreSimulator platform-support component installed, which requires interactive GUI authorization. `xcrun simctl list runtimes` (run here to diagnose) surfaced this directly: 'Install Failed: Es ist eine Autorisierung erforderlich, um das Paket installieren zu koennen.' Because CoreDevice/device-discovery shares this subsystem, even a plain physical-device build destination fails to resolve until the component is installed. `launchctl kickstart -k gui/<uid>/com.apple.CoreSimulator.CoreSimulatorService` did NOT fix it (service wasn't found under that domain) - the service was already running (PID visible in `launchctl list`), so a kickstart alone doesn't help when the real blocker is a missing/outdated platform-support package awaiting an admin install prompt.",
+      "fix": "Not fixed automatically - needs the user to interactively authorize the platform-support install (open Xcode and accept its 'install additional components' prompt, or run `xcodebuild -downloadPlatform iOS`/`xcrun simctl list runtimes` themselves in a GUI-authorized session) on the runner Mac, then retry the workflow.",
+      "tags": [
+        "ci",
+        "self-hosted-runner",
+        "xcodebuild",
+        "coresimulator",
+        "coredevice",
+        "device-deploy"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-14T20:35:00.000Z"
     }
   ]
 }
