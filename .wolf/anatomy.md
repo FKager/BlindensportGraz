@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-14T21:04:34.204Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-14T21:09:21.783Z
 > Files: 281 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -277,7 +277,7 @@
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9639 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9662 tok)
 - `Training.swift` — Class: Training (~1148 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)

@@ -211,13 +211,12 @@ struct TournamentRow: View {
                  .badge(tint: statusColor, opacity: Theme.emphasizedBadgeOpacity)
                  .foregroundStyle(statusColor)
           }
-          HStack {
-              Label(tournament.sport, systemImage: SportIcon.symbolName(for: tournament.sport))
-               Spacer()
-           Label("\(tournament.maxTeams) Teams", systemImage: "person.3.fill")
-          }
-          .font(.caption)
-          .foregroundStyle(.secondary)
+          // Team count removed from the overview per user request
+          // 2026-09-14 — still shown in TournamentDetailView's "Details"
+          // section (LabeledContent("Max. Teams", ...)), just not the row.
+          Label(tournament.sport, systemImage: SportIcon.symbolName(for: tournament.sport))
+              .font(.caption)
+              .foregroundStyle(.secondary)
 
          HStack {
             Image(systemName: "mappin.and.ellipse")
