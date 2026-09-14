@@ -182,4 +182,15 @@ extension SportEvent {
         let days = calendar.dateComponents([.day], from: start, to: end).day ?? 0
         return max(1, days + 1)
     }
+
+    /// Sum of every PRAE amount entered for this event's attendances, shown
+    /// as "Gesamtkosten" in TrainingDetailView/TournamentDetailView's
+    /// Anwesenheit section, and as the "cost" column in TournamentRow's
+    /// overview list (user request). Factored out of those two views (each
+    /// had its own identical private copy) so there's one source of truth —
+    /// `praeAmount` is nil, not 0, when unset (see `setPraeAmount`), so this
+    /// naturally excludes attendances nobody entered a PRAE amount for.
+    var totalPraeAmount: Double {
+        attendances.compactMap { $0.praeAmount }.reduce(0, +)
+    }
 }

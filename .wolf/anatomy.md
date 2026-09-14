@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-14T20:04:38.192Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-14T20:58:44.022Z
 > Files: 281 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -48,7 +48,7 @@
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
-- `MEMORY.md` — Memory (~205 tok)
+- `MEMORY.md` — Memory (~212 tok)
 - `project_cloudkit-prod-data-copy.md` — Declares from (~2155 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
 - `project_testflight-setup.md` — Declares systemCrashLogs (~2503 tok)
@@ -261,7 +261,7 @@
 - `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
-- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2259 tok)
+- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2426 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)
 - `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~379 tok)
@@ -277,7 +277,7 @@
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9169 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9322 tok)
 - `Training.swift` — Class: Training (~1148 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -287,7 +287,7 @@
 - `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~13273 tok)
+- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~13170 tok)
 - `User.swift` — Class: User (~1280 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)

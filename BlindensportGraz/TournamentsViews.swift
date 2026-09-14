@@ -222,10 +222,28 @@ struct TournamentRow: View {
          HStack {
             Image(systemName: "mappin.and.ellipse")
                 .accessibilityHidden(true)
-             Text(tournament.location)
+             // City alongside the venue name — user request: name, city,
+             // date, cost in the overview. Only appended when set, same
+             // "don't show an empty field" convention as elsewhere (e.g.
+             // SportEvent.locationWithCountry).
+             Text(tournament.city.isEmpty ? tournament.location : "\(tournament.location), \(tournament.city)")
           }
           .font(.caption)
           .foregroundStyle(.secondary)
+
+         // Cost — same "Gesamtkosten" figure (sum of PRAE amounts) shown in
+         // TournamentDetailView's Anwesenheit section, see
+         // SportEvent.totalPraeAmount. Only shown once something's actually
+         // been entered, matching that view's identical conditional.
+         if tournament.totalPraeAmount > 0 {
+             HStack {
+                 Image(systemName: "eurosign.circle")
+                     .accessibilityHidden(true)
+                 Text("\(Int(tournament.totalPraeAmount)) €")
+             }
+             .font(.caption)
+             .foregroundStyle(.secondary)
+         }
        }
 
       Spacer()
@@ -435,11 +453,11 @@ struct TournamentDetailView: View {
                         }
                     }
                 }
-                if totalPraeAmount > 0 {
+                if tournament.totalPraeAmount > 0 {
                     HStack {
                         Text("Gesamtkosten")
                         Spacer()
-                        Text("\(Int(totalPraeAmount)) €")
+                        Text("\(Int(tournament.totalPraeAmount)) €")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -516,11 +534,11 @@ struct TournamentDetailView: View {
                         }
                     }
                 }
-                if totalPraeAmount > 0 {
+                if tournament.totalPraeAmount > 0 {
                     HStack {
                         Text("Gesamtkosten")
                         Spacer()
-                        Text("\(Int(totalPraeAmount)) €")
+                        Text("\(Int(tournament.totalPraeAmount)) €")
                             .foregroundStyle(.secondary)
                     }
                 }
@@ -659,14 +677,6 @@ var body: some View {
         TournamentService.save(tournament, modelContext: modelContext)
     }
    }
-
-    /// Sum of every PRAE amount entered for this tournament, shown as
-    /// "Gesamtkosten" under the Anwesenheit section — only when at least one
-    /// PRAE value is actually set (`praeAmount` is nil, not 0, when unset —
-    /// see `setPraeAmount`), matching TrainingDetailView's identical field.
-    private var totalPraeAmount: Double {
-        tournament.attendances.compactMap { $0.praeAmount }.reduce(0, +)
-    }
 
     private func attendance(for membership: TeamMembership) -> Attendance? {
         tournament.attendances.first { $0.membership.id == membership.id }
