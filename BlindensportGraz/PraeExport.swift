@@ -164,12 +164,18 @@ enum PraeExporter {
     }
 
     /// Fills name (D4), SVNR (D5), Geburtsdatum (L5), address (D7), IBAN
-    /// (D33), the "im Monat:"/"Jahr:" header (B11/K11), and every deployment
-    /// day's amount in the day grid (see `dayGridAmountRef`) — see the
-    /// type-level doc comment for why the role checkboxes and signature
-    /// still stay manual.
+    /// (D33), the "im Monat:"/"Jahr:" header (B11/K11), the
+    /// "Verwendungszweck:" value (T11 — the bare training name, same kind of
+    /// value KostZ's C3 gets), every deployment day's amount in the day grid
+    /// (see `dayGridAmountRef`), and the "Übungsleiter:in" role checkbox
+    /// (see `uebungsleiterCheckboxShapeID`) — this club's trainings always
+    /// use that role. Every OTHER role/declaration checkbox and the
+    /// recipient's signature still stay manual (see the type-level doc
+    /// comment).
     static func exportMainForm(summary: PraeMonthSummary) throws -> URL {
-        try exportMainForm(person: summary.person, month: summary.month, year: summary.year, entries: summary.entries)
+        try exportMainForm(person: summary.person, month: summary.month, year: summary.year,
+                            entries: summary.entries, trainingName: summary.trainingName,
+                            checkedRoleShapeID: uebungsleiterCheckboxShapeID)
     }
 
     /// Same main form, filled from a single tournament's deployment days.
@@ -179,14 +185,42 @@ enum PraeExporter {
     /// which covers the common case of a tournament that doesn't straddle a
     /// month boundary; a multi-day tournament spanning two calendar months
     /// would still place every day's amount in the correct grid cell, just
-    /// under one (the tournament's starting) month header.
+    /// under one (the tournament's starting) month header. T11 is
+    /// unambiguous here: the tournament's own bare title. Checks the
+    /// "Trainer:in" role checkbox (`trainerCheckboxShapeID`, B9) instead of
+    /// Training's "Übungsleiter:in" — this club's tournament deployments are
+    /// always coaching, unlike trainings. Every other role/declaration
+    /// checkbox stays manual.
     static func exportMainForm(summary: PraeTournamentSummary) throws -> URL {
         let components = Calendar.current.dateComponents([.month, .year], from: summary.tournament.startDate)
         return try exportMainForm(person: summary.person, month: components.month ?? 1, year: components.year ?? 0,
-                                   entries: summary.entries)
+                                   entries: summary.entries, trainingName: summary.tournament.title,
+                                   checkedRoleShapeID: trainerCheckboxShapeID)
     }
 
-    private static func exportMainForm(person: PraeEligiblePerson, month: Int, year: Int, entries: [PraeDayEntry]) throws -> URL {
+    /// The real template's role checkboxes — genuine Excel Form-control
+    /// checkboxes (not ActiveX/OLE objects, confirmed by the template having
+    /// plain `xl/ctrlProps/*.xml` + `xl/drawings/vmlDrawing1.vml` entries and
+    /// no `activeX*.bin` blobs), each floating OVER its label cell rather
+    /// than living IN it (found via each shape's `<x:Anchor>` in the VML —
+    /// column/row pairs, 0-indexed). Neither has an `<x:FmlaLink>` to any
+    /// cell, so "checking" one means inserting `<x:Checked>1</x:Checked>`
+    /// into its own `<x:ClientData>` block — see `checkFormCheckbox`.
+    /// `uebungsleiterCheckboxShapeID` anchors at column 15/row 8 (0-indexed)
+    /// = cell **P9** ("Übungsleiter:in", shared string 74); `trainerCheckboxShapeID`
+    /// anchors at column 1/row 8 = cell **B9** ("Trainer:in", shared string
+    /// 72) — both row 9's role-checkbox row, confirmed against the real
+    /// template's `vmlDrawing1.vml`. Every other role checkbox on this row
+    /// (Sportler:in/A9, Lehrwart:in-Instruktor:in/H9, Masseur:in/X9, and row
+    /// 10's Sportarzt-Sportärztin/Zeugwart:in/Schieds-Kampfrichter:in/
+    /// Rennleiter:in) stays manual — this app only ever fills the ONE role
+    /// checkbox that always applies for the export's own scope (Training vs
+    /// Tournament).
+    private static let uebungsleiterCheckboxShapeID = "Kontrollkästchen_x0020_17"
+    private static let trainerCheckboxShapeID = "Kontrollkästchen_x0020_13"
+
+    private static func exportMainForm(person: PraeEligiblePerson, month: Int, year: Int, entries: [PraeDayEntry],
+                                        trainingName: String, checkedRoleShapeID: String?) throws -> URL {
         guard let templateURL = Bundle.main.url(forResource: "PRAE_Formular", withExtension: "xlsx") else {
             throw PraeExportError.templateNotFound
         }
@@ -197,7 +231,9 @@ enum PraeExporter {
         monthFormatter.locale = Locale(identifier: "de_AT")
         monthFormatter.dateFormat = "LLLL"
 
-        return try patchTemplate(templateURL: templateURL, outputPrefix: "PRAE-Formular") { xml in
+        return try patchTemplate(templateURL: templateURL, outputPrefix: "PRAE-Formular", vmlPatch: checkedRoleShapeID.map { shapeID in
+            { vml in checkFormCheckbox(in: vml, shapeID: shapeID) }
+        }) { xml in
             var patched = XLSXCellPatch.setText(in: xml, ref: "D4", value: person.praeFormName)
             patched = XLSXCellPatch.setText(in: patched, ref: "D5", value: person.member?.svnr ?? "")
             patched = XLSXCellPatch.setText(in: patched, ref: "D7", value: person.member?.fullAddress ?? "")
@@ -210,6 +246,7 @@ enum PraeExporter {
 
             patched = XLSXCellPatch.setText(in: patched, ref: "B11", value: monthFormatter.string(from: dateFor(month: month, year: year)).capitalized)
             patched = XLSXCellPatch.setText(in: patched, ref: "K11", value: String(year))
+            patched = XLSXCellPatch.setText(in: patched, ref: "T11", value: trainingName)
 
             for entry in entries {
                 guard let ref = dayGridAmountRef(day: entry.day) else { continue }
@@ -257,10 +294,16 @@ enum PraeExporter {
         return Calendar.current.date(from: components) ?? Date()
     }
 
-    /// Shared unzip → patch `xl/worksheets/sheet1.xml` → rezip pipeline used
-    /// by both templates in this file — every other zip entry (styles,
-    /// theme, ActiveX controls, drawings) is copied through byte-for-byte.
-    private static func patchTemplate(templateURL: URL, outputPrefix: String, patch: (String) throws -> String) throws -> URL {
+    /// Shared unzip → patch `xl/worksheets/sheet1.xml` (and, when `vmlPatch`
+    /// is given, `xl/drawings/vmlDrawing1.vml` too) → rezip pipeline used by
+    /// both templates in this file — every other zip entry (styles, theme,
+    /// control definitions, drawings) is copied through byte-for-byte.
+    /// `vmlPatch` only applies to `PRAE_Formular.xlsx` (the only template
+    /// with form checkboxes) — `exportDarstellung` never passes one, so its
+    /// template's lack of a `vmlDrawing1.vml` entry is a no-op, not an error.
+    private static func patchTemplate(templateURL: URL, outputPrefix: String,
+                                       vmlPatch: ((String) -> String)? = nil,
+                                       patch: (String) throws -> String) throws -> URL {
         let sourceArchive = try Archive(url: templateURL, accessMode: .read)
         let outputURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("\(outputPrefix)-\(UUID().uuidString).xlsx")
@@ -272,6 +315,8 @@ enum PraeExporter {
 
             if entry.path == "xl/worksheets/sheet1.xml", let xml = String(data: data, encoding: .utf8) {
                 data = Data(try patch(xml).utf8)
+            } else if entry.path == "xl/drawings/vmlDrawing1.vml", let vmlPatch, let vml = String(data: data, encoding: .utf8) {
+                data = Data(vmlPatch(vml).utf8)
             }
 
             try outputArchive.addEntry(
@@ -285,6 +330,26 @@ enum PraeExporter {
         }
 
         return outputURL
+    }
+
+    /// Checks a real Excel Form-control checkbox that floats OVER a cell
+    /// (positioned via its `<x:Anchor>`) rather than being tied to one via
+    /// `<x:FmlaLink>` — inserting `<x:Checked>1</x:Checked>` right after its
+    /// `<x:ClientData ObjectType="Checkbox">` opening tag is exactly what
+    /// Excel itself writes when a user ticks the box by hand. Scoped to the
+    /// one `<v:shape id="...">...</v:shape>` block matching `shapeID` first
+    /// (every shape's `<x:ClientData ObjectType="Checkbox">` opening tag is
+    /// byte-identical, so a plain string search without that scoping would
+    /// check the WRONG box — whichever happens to come first in the file).
+    private static func checkFormCheckbox(in vml: String, shapeID: String) -> String {
+        let shapeStartMarker = "<v:shape id=\"\(shapeID)\""
+        guard let shapeStart = vml.range(of: shapeStartMarker),
+              let shapeEnd = vml.range(of: "</v:shape>", range: shapeStart.lowerBound..<vml.endIndex) else { return vml }
+        let shapeRange = shapeStart.lowerBound..<shapeEnd.upperBound
+        var shapeBlock = String(vml[shapeRange])
+        guard let clientDataOpen = shapeBlock.range(of: "<x:ClientData ObjectType=\"Checkbox\">") else { return vml }
+        shapeBlock.replaceSubrange(clientDataOpen, with: "<x:ClientData ObjectType=\"Checkbox\"><x:Checked>1</x:Checked>")
+        return vml.replacingCharacters(in: shapeRange, with: shapeBlock)
     }
 }
 

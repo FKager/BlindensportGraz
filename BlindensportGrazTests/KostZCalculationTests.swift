@@ -15,14 +15,14 @@ final class KostZCalculationTests: XCTestCase {
         return try ModelContainer(for: schema, configurations: [config])
     }
 
-    private func makeTraining(_ context: ModelContext, title: String, day: Int, month: Int = 7, year: Int = 2026) -> Training {
+    private func makeTraining(_ context: ModelContext, title: String, day: Int, month: Int = 7, year: Int = 2026, sport: String = "Torball") -> Training {
         var components = DateComponents()
         components.year = year
         components.month = month
         components.day = day
         components.hour = 18
         let date = Calendar.current.date(from: components)!
-        let training = Training(title: title, sport: "Torball", location: "Graz", startDate: date)
+        let training = Training(title: title, sport: sport, location: "Graz", startDate: date)
         context.insert(training)
         return training
     }
@@ -249,6 +249,41 @@ final class KostZCalculationTests: XCTestCase {
         XCTAssertEqual(febBounds.dayCount, 28)
     }
 
+    // MARK: - trainingName
+
+    func testTrainingNameIsBareTitleForASingleTraining() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+
+        _ = makeTraining(context, title: "Montagstraining", day: 5)
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let summary = KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context)
+
+        XCTAssertEqual(summary.trainingName, "Montagstraining")
+    }
+
+    func testTrainingNameJoinsDistinctTitlesAcrossEveryTrainingType() throws {
+        // The monthly report covers every training type combined (not split
+        // by sport) — with more than one distinct title that month, they're
+        // comma-joined, in chronological first-occurrence order.
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+
+        _ = makeTraining(context, title: "Montagstraining", day: 3, sport: "Torball")
+        _ = makeTraining(context, title: "Showdown-Training", day: 10, sport: "Showdown")
+        _ = makeTraining(context, title: "Montagstraining", day: 17, sport: "Torball") // repeat title, not duplicated
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let summary = KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context)
+
+        XCTAssertEqual(summary.trainingName, "Montagstraining, Showdown-Training")
+    }
+
     // MARK: - Export round-trip (structural integrity, not visual layout)
 
     private func date(_ year: Int, _ month: Int, _ day: Int) -> Date {
@@ -269,7 +304,8 @@ final class KostZCalculationTests: XCTestCase {
         let summary = KostZMonthSummary(
             month: 7, year: 2026,
             personAmounts: [KostZPersonAmount(person: person, amount: 150)],
-            trainingDates: [date(2026, 7, 3), date(2026, 7, 10), date(2026, 7, 17), date(2026, 7, 24)]
+            trainingDates: [date(2026, 7, 3), date(2026, 7, 10), date(2026, 7, 17), date(2026, 7, 24)],
+            trainingName: "Montagstraining"
         )
 
         let url = try KostZExporter.export(summary: summary)
@@ -289,7 +325,9 @@ final class KostZCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
-        XCTAssertTrue(sheetXML.contains("Trainer:innen- und Helfer:innenhonorare Juli 2026"))
+        // C3 (BETRIFFT) is the bare training name, no prefix.
+        XCTAssertTrue(sheetXML.contains(">Montagstraining<"))
+        XCTAssertFalse(sheetXML.contains("Trainer:innen- und Helfer:innenhonorare"))
         XCTAssertTrue(sheetXML.contains("Graz")) // ORT (H3)
         XCTAssertTrue(sheetXML.contains("03.07.2026")) // first training, not the 1st
         XCTAssertTrue(sheetXML.contains("24.07.2026")) // last training, not the 31st
@@ -353,7 +391,9 @@ final class KostZCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
-        XCTAssertTrue(sheetXML.contains("Trainer:innen- und Helfer:innenhonorare Landesmeisterschaft"))
+        // C3 (BETRIFFT) is the bare tournament name, no prefix.
+        XCTAssertTrue(sheetXML.contains(">Landesmeisterschaft<"))
+        XCTAssertFalse(sheetXML.contains("Trainer:innen- und Helfer:innenhonorare"))
         XCTAssertTrue(sheetXML.contains("Wien")) // ORT (H3), from tournament.city
         XCTAssertFalse(sheetXML.contains("Stadthalle")) // location is NOT what ORT reads
         XCTAssertTrue(sheetXML.contains("10.07.2026"))

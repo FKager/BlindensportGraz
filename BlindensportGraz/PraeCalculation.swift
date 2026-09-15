@@ -65,6 +65,22 @@ struct PraeMonthSummary {
     let month: Int
     let year: Int
     let entries: [PraeDayEntry] // sorted by day
+    // Distinct training titles contributing to `entries`, first-occurrence
+    // order, joined with ", " — same dedup/join convention as
+    // PraeDayEntry.purpose, just aggregated across the whole summary instead
+    // of per day. Feeds the main PRAE form's "Verwendungszweck:" (T11)
+    // field. Normally a single bare name when `summary(for:month:year:sport:in:)`
+    // was called with a `sport` filter (the usual case from
+    // PraeCalculationView); without one it may list several.
+    let trainingName: String // defaulted so existing test fixtures that don't care about it still compile
+
+    init(person: PraeEligiblePerson, month: Int, year: Int, entries: [PraeDayEntry], trainingName: String = "") {
+        self.person = person
+        self.month = month
+        self.year = year
+        self.entries = entries
+        self.trainingName = trainingName
+    }
 
     var total: Double { entries.reduce(0) { $0 + $1.amount } }
     var exceedsMonthlyCap: Bool { total > PraeCalculator.monthlyCap }
@@ -124,11 +140,16 @@ enum PraeCalculator {
     }
 
     /// Fetches every attended, PRAE-amount-set Attendance across the given
-    /// person's memberships, filters to the requested calendar month, and
-    /// groups by day — summing amounts if the person had more than one
-    /// qualifying session on the same day (rare, but a real edge case:
-    /// PRAE's own form only allows one amount per calendar day per person).
-    static func summary(for person: PraeEligiblePerson, month: Int, year: Int, in context: ModelContext) -> PraeMonthSummary {
+    /// person's memberships, filters to the requested calendar month (and,
+    /// when given, a specific `sport` — see PraeCalculationView's
+    /// "Trainingsart" picker), and groups by day — summing amounts if the
+    /// person had more than one qualifying session on the same day (rare,
+    /// but a real edge case: PRAE's own form only allows one amount per
+    /// calendar day per person). `sport` defaults to `nil` (no filter,
+    /// covering every training that month) so every existing unscoped call
+    /// site (SammelabrechnungExporter, SammelabrechnungView) keeps its
+    /// current club-wide-per-month behavior unchanged.
+    static func summary(for person: PraeEligiblePerson, month: Int, year: Int, sport: String? = nil, in context: ModelContext) -> PraeMonthSummary {
         let membershipIDs = Set(person.membershipIDs)
         // Fetches everything and filters in plain Swift rather than a
         // #Predicate closure — this app has no existing precedent for
@@ -136,12 +157,15 @@ enum PraeCalculator {
         // Array.contains inside a #Predicate, and an Attendance table is
         // small enough (one club) that a client-side filter costs nothing.
         let allAttendances = (try? context.fetch(FetchDescriptor<Attendance>())) ?? []
-        let attendances = allAttendances.filter {
-            $0.attended && $0.praeAmount != nil && $0.event.kind == "training" && membershipIDs.contains($0.membership.id)
+        let attendances = allAttendances.filter { attendance -> Bool in
+            guard attendance.attended, attendance.praeAmount != nil, attendance.event.kind == "training",
+                  membershipIDs.contains(attendance.membership.id) else { return false }
+            return sport == nil || attendance.event.sport == sport
         }
 
         let calendar = Calendar.current
         var byDay: [Int: (amount: Double, purposes: [String])] = [:]
+        var trainingNames: [String] = []
         for attendance in attendances {
             let components = calendar.dateComponents([.day, .month, .year], from: attendance.event.startDate)
             guard components.month == month, components.year == year, let day = components.day,
@@ -152,13 +176,32 @@ enum PraeCalculator {
                 entry.purposes.append(attendance.event.title)
             }
             byDay[day] = entry
+            if !trainingNames.contains(attendance.event.title) {
+                trainingNames.append(attendance.event.title)
+            }
         }
 
         let entries = byDay.keys.sorted().map { day -> PraeDayEntry in
             let value = byDay[day]!
             return PraeDayEntry(day: day, amount: value.amount, purpose: value.purposes.joined(separator: ", "))
         }
-        return PraeMonthSummary(person: person, month: month, year: year, entries: entries)
+        return PraeMonthSummary(person: person, month: month, year: year, entries: entries,
+                                 trainingName: trainingNames.joined(separator: ", "))
+    }
+
+    /// Distinct `sport` values (raw, not lowercased — same precedent as
+    /// KostZCalculator.trainingGroups) among Trainings held in the given
+    /// month, sorted — feeds PraeCalculationView's "Trainingsart" picker.
+    static func trainingSports(month: Int, year: Int, in context: ModelContext) -> [String] {
+        let calendar = Calendar.current
+        let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
+        let sports = allTrainings
+            .filter {
+                let components = calendar.dateComponents([.month, .year], from: $0.startDate)
+                return components.month == month && components.year == year
+            }
+            .map(\.sport)
+        return Array(Set(sports)).sorted()
     }
 
     /// A single tournament's PRAE deployment days for one person, read

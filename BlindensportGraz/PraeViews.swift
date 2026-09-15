@@ -20,6 +20,7 @@ struct PraeCalculationView: View {
     @State private var selectedPersonID: UUID?
     @State private var month = Calendar.current.component(.month, from: .now)
     @State private var year = Calendar.current.component(.year, from: .now)
+    @State private var selectedSport: String?
     @State private var mainFormURL: URL?
     @State private var darstellungURL: URL?
     @State private var exportError: String?
@@ -32,9 +33,18 @@ struct PraeCalculationView: View {
         eligiblePeople.first { $0.id == selectedPersonID }
     }
 
+    // Distinct sports among that month's Trainings — feeds the
+    // "Trainingsart" picker below, so T11 (Verwendungszweck) on the
+    // exported PRAE-Formular can show a single bare training name instead
+    // of every differently-named training the person was deployed for that
+    // month (user request).
+    private var availableSports: [String] {
+        PraeCalculator.trainingSports(month: month, year: year, in: modelContext)
+    }
+
     private var summary: PraeMonthSummary? {
-        guard let person = selectedPerson else { return nil }
-        return PraeCalculator.summary(for: person, month: month, year: year, in: modelContext)
+        guard let person = selectedPerson, let sport = selectedSport else { return nil }
+        return PraeCalculator.summary(for: person, month: month, year: year, sport: sport, in: modelContext)
     }
 
     var body: some View {
@@ -58,6 +68,17 @@ struct PraeCalculationView: View {
                         }
                     }
                     Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
+                    if availableSports.isEmpty {
+                        Text("Keine Trainings in diesem Monat.")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Picker("Trainingsart", selection: $selectedSport) {
+                            Text("Bitte wählen").tag(String?.none)
+                            ForEach(availableSports, id: \.self) { sport in
+                                Text(sport).tag(Optional(sport))
+                            }
+                        }
+                    }
                 }
 
                 if let summary {
@@ -141,7 +162,7 @@ struct PraeCalculationView: View {
             } message: {
                 Text(exportError ?? "")
             }
-            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)") {
+            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)-\(selectedSport ?? "")") {
                 mainFormURL = nil
                 guard let summary else { return }
                 do {
@@ -150,7 +171,7 @@ struct PraeCalculationView: View {
                     exportError = error.localizedDescription
                 }
             }
-            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)") {
+            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)-\(selectedSport ?? "")") {
                 darstellungURL = nil
                 guard let summary, !summary.entries.isEmpty else { return }
                 do {

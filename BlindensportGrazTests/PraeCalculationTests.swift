@@ -221,6 +221,85 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertEqual(summary.entries.count, 1)
     }
 
+    func testSummaryTrainingNameIsBareTitleWhenFilteredBySport() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        let training = makeTraining(context, title: "Montagstraining", day: 5)
+        context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 40))
+
+        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
+        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, sport: "Torball", in: context)
+
+        XCTAssertEqual(summary.trainingName, "Montagstraining")
+    }
+
+    func testSummaryTrainingNameJoinsDistinctTitlesWithoutSportFilter() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        let training1 = makeTraining(context, title: "Montagstraining", day: 5)
+        let training2 = makeTraining(context, title: "Donnerstagstraining", day: 22)
+        context.insert(Attendance(event: training1, membership: membership, attended: true, praeAmount: 40))
+        context.insert(Attendance(event: training2, membership: membership, attended: true, praeAmount: 30))
+
+        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
+        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, in: context)
+
+        XCTAssertEqual(summary.trainingName, "Montagstraining, Donnerstagstraining")
+    }
+
+    func testSummarySportFilterExcludesOtherSportsAttendances() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        let torball = makeTraining(context, title: "Torball-Training", day: 5)
+        let showdown = Training(title: "Showdown-Training", sport: "Showdown", location: "Graz",
+                                 startDate: torball.startDate)
+        context.insert(showdown)
+        context.insert(Attendance(event: torball, membership: membership, attended: true, praeAmount: 40))
+        context.insert(Attendance(event: showdown, membership: membership, attended: true, praeAmount: 999))
+
+        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
+        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, sport: "Torball", in: context)
+
+        XCTAssertEqual(summary.total, 40)
+        XCTAssertEqual(summary.trainingName, "Torball-Training")
+    }
+
+    func testTrainingSportsReturnsDistinctSortedSportsForThatMonth() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        _ = makeTraining(context, title: "A", day: 3)
+        _ = makeTraining(context, title: "B", day: 10)
+        let showdown = Training(title: "Showdown-Training", sport: "Showdown", location: "Graz",
+                                 startDate: Calendar.current.date(from: DateComponents(year: 2026, month: 7, day: 15))!)
+        context.insert(showdown)
+        _ = makeTraining(context, title: "August", day: 3, month: 8) // different month, excluded
+
+        let sports = PraeCalculator.trainingSports(month: 7, year: 2026, in: context)
+
+        XCTAssertEqual(sports, ["Showdown", "Torball"])
+    }
+
     // MARK: - summary(for:tournament:)
 
     func testTournamentSummaryGroupsByDayForJustThatTournament() throws {
@@ -494,7 +573,7 @@ final class PraeCalculationTests: XCTestCase {
             PraeDayEntry(day: 1, amount: 30, purpose: "Training"),
             PraeDayEntry(day: 15, amount: 45, purpose: "Training"),
             PraeDayEntry(day: 31, amount: 60, purpose: "Training"),
-        ])
+        ], trainingName: "Montagstraining")
 
         let url = try PraeExporter.exportMainForm(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
@@ -503,9 +582,12 @@ final class PraeCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
-        // B11 ("im Monat:" value) / K11 ("Jahr:" value).
+        // B11 ("im Monat:" value) / K11 ("Jahr:" value) / T11
+        // ("Verwendungszweck:" value — the bare training name).
         XCTAssertTrue(sheetXML.contains("<t>Juli</t>"))
         XCTAssertTrue(sheetXML.contains("<t>2026</t>"))
+        XCTAssertTrue(sheetXML.contains("<c r=\"T11\""))
+        XCTAssertTrue(sheetXML.contains(">Montagstraining<"))
 
         // Day 1 -> C12, day 15 -> O13, day 31 -> C15 (each the top-left cell
         // of its merged amount box).
@@ -546,6 +628,88 @@ final class PraeCalculationTests: XCTestCase {
 
         XCTAssertTrue(sheetXML.contains("<v>0.0</v>"))
         XCTAssertFalse(sheetXML.range(of: "<c r=\"B18\"[^>]*><is>", options: .regularExpression) != nil)
+    }
+
+    func testExportMainFormForTournamentPutsBareTournamentNameInT11() throws {
+        let team = Team(name: "Torball 1", sport: "Torball")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
+                                     startDate: .now, endDate: .now)
+        let summary = PraeTournamentSummary(
+            person: person, tournament: tournament,
+            entries: [PraeDayEntry(day: 12, amount: 60, purpose: "Landesmeisterschaft")]
+        )
+
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+
+        XCTAssertTrue(sheetXML.contains("<c r=\"T11\""))
+        XCTAssertTrue(sheetXML.contains(">Landesmeisterschaft<"))
+    }
+
+    /// Extracts a specific `<v:shape id="...">...</v:shape>` block from an
+    /// exported PRAE-Formular's VML drawing, for asserting on ITS checked
+    /// state specifically — every checkbox shape's
+    /// `<x:ClientData ObjectType="Checkbox">` opening tag is byte-identical,
+    /// so a plain "does the file contain Checked" assertion would pass even
+    /// if the WRONG checkbox got checked.
+    private func checkboxBlock(from url: URL, shapeID: String) throws -> String {
+        let archive = try Archive(url: url, accessMode: .read)
+        var vmlData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/drawings/vmlDrawing1.vml"])) { vmlData.append($0) }
+        let vml = try XCTUnwrap(String(data: vmlData, encoding: .utf8))
+        let marker = "<v:shape id=\"\(shapeID)\""
+        let start = try XCTUnwrap(vml.range(of: marker))
+        let end = try XCTUnwrap(vml.range(of: "</v:shape>", range: start.lowerBound..<vml.endIndex))
+        return String(vml[start.lowerBound..<end.upperBound])
+    }
+
+    // Kontrollkästchen_x0020_17 = the checkbox floating over P9 ("Übungsleiter:in").
+    private let uebungsleiterCheckboxShapeID = "Kontrollkästchen_x0020_17"
+    // Kontrollkästchen_x0020_13 = the checkbox floating over B9 ("Trainer:in").
+    private let trainerCheckboxShapeID = "Kontrollkästchen_x0020_13"
+
+    func testExportMainFormChecksUebungsleiterBoxForTrainingsOnly() throws {
+        // User request: "In trainings in PRAE the cell P9 should be set" —
+        // P9 has no cell value of its own; it's where the real Excel
+        // Form-control checkbox labeled "Übungsleiter:in" floats (found via
+        // the template's own <x:Anchor> — see PraeExporter's doc comment).
+        let team = Team(name: "Torball 1", sport: "Torball")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        let summary = PraeMonthSummary(person: person, month: 7, year: 2026, entries: [])
+
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        XCTAssertTrue(try checkboxBlock(from: url, shapeID: uebungsleiterCheckboxShapeID).contains("<x:Checked>1</x:Checked>"))
+        XCTAssertFalse(try checkboxBlock(from: url, shapeID: trainerCheckboxShapeID).contains("<x:Checked>"))
+    }
+
+    func testExportMainFormChecksTrainerBoxForTournamentsOnly() throws {
+        // User request: "for tournaments, set B9 in a similar way in the
+        // PRAE" — B9 is where the "Trainer:in" checkbox floats.
+        let team = Team(name: "Torball 1", sport: "Torball")
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
+                                     startDate: .now, endDate: .now)
+        let summary = PraeTournamentSummary(person: person, tournament: tournament, entries: [])
+
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        XCTAssertTrue(try checkboxBlock(from: url, shapeID: trainerCheckboxShapeID).contains("<x:Checked>1</x:Checked>"))
+        XCTAssertFalse(try checkboxBlock(from: url, shapeID: uebungsleiterCheckboxShapeID).contains("<x:Checked>"))
     }
 
     func testExportMainFormLeavesPersonalDataBlankWithoutMember() throws {

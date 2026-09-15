@@ -27,6 +27,22 @@ struct KostZMonthSummary {
     // count of calendar days) fields — a training only happens on some days
     // of the month, so the plain calendar month bounds overstated both.
     let trainingDates: [Date]
+    // Distinct Training titles this month (every sport combined — the
+    // monthly report deliberately covers every training type), in
+    // chronological first-occurrence order, joined with ", ". Feeds the
+    // KostZ export's BETRIFFT (C3) field — bare names only, comma-separated
+    // when the month held differently-named trainings, no synthesized
+    // "<Month> <Year>" text. Defaulted so existing call sites/fixtures that
+    // don't care about it still compile.
+    let trainingName: String
+
+    init(month: Int, year: Int, personAmounts: [KostZPersonAmount], trainingDates: [Date], trainingName: String = "") {
+        self.month = month
+        self.year = year
+        self.personAmounts = personAmounts
+        self.trainingDates = trainingDates
+        self.trainingName = trainingName
+    }
 
     var total: Double { personAmounts.reduce(0) { $0 + $1.amount } }
     var personCount: Int { personAmounts.count }
@@ -88,15 +104,23 @@ enum KostZCalculator {
         // above) held in this month, independent of whether it has any
         // PRAE amount entered — see KostZMonthSummary.trainingDates.
         let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
-        let trainingDates = allTrainings
-            .map(\.startDate)
+        let trainingsInMonth = allTrainings
             .filter {
-                let components = calendar.dateComponents([.month, .year], from: $0)
+                let components = calendar.dateComponents([.month, .year], from: $0.startDate)
                 return components.month == month && components.year == year
             }
-            .sorted()
+            .sorted { $0.startDate < $1.startDate }
+        let trainingDates = trainingsInMonth.map(\.startDate)
 
-        return KostZMonthSummary(month: month, year: year, personAmounts: personAmounts, trainingDates: trainingDates)
+        // Distinct titles across every training type this month, in
+        // chronological first-occurrence order — see KostZMonthSummary.trainingName.
+        var trainingNames: [String] = []
+        for training in trainingsInMonth where !trainingNames.contains(training.title) {
+            trainingNames.append(training.title)
+        }
+
+        return KostZMonthSummary(month: month, year: year, personAmounts: personAmounts, trainingDates: trainingDates,
+                                  trainingName: trainingNames.joined(separator: ", "))
     }
 
     /// A single tournament's HONORARE total, read straight from its own

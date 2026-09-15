@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-14T21:09:21.783Z
-> Files: 281 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-15T20:55:11.836Z
+> Files: 282 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -41,6 +41,7 @@
 
 ## ../../.claude/plans/
 
+- `1-task-in-kostz-peppy-starfish.md` — KostZ: put the event's own name in C3, grouped per Training (~3825 tok)
 - `enumerated-greeting-stearns.md` — Plan: "Verein" tab — merge Teams + Benutzerverwaltung, and reorganize app accounts (~3281 tok)
 - `foamy-churning-widget.md` — Training-Favoriten (training template quick-fill) (~1731 tok)
 - `functional-inventing-dream.md` — Make SportEvent the base class for Training and Tournament (~3676 tok)
@@ -48,10 +49,10 @@
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
-- `MEMORY.md` — Memory (~212 tok)
+- `MEMORY.md` — Memory (~230 tok)
 - `project_cloudkit-prod-data-copy.md` — Declares from (~2155 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
-- `project_testflight-setup.md` — Declares systemCrashLogs (~2503 tok)
+- `project_testflight-setup.md` — Declares systemCrashLogs (~2811 tok)
 - `project_widget_prerequisites.md` (~688 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
@@ -228,8 +229,8 @@
 - `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5987 tok)
 - `FullBackupView.swift` — / Admin-only whole-club export/restore screen — architecture-review.md §5 (~1226 tok)
 - `Info.plist` (~443 tok)
-- `KostZCalculation.swift` — KostZCalculator: monthly (Training-only) summary + summary(for tournament:) (~1500 tok)
-- `KostZExport.swift` — KostZExporter: month export ORT="Graz"+training-date-derived period; tournament export ORT=tournament.city (~1700 tok)
+- `KostZCalculation.swift` — / One eligible person's summed amount for the requested month — see (~2323 tok)
+- `KostZExport.swift` — Declares KostZExportError (~1805 tok)
 - `KostZViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~3136 tok)
 - `Localizable.xcstrings` (~6958 tok)
 - `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~2790 tok)
@@ -247,9 +248,9 @@
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1076 tok)
 - `PendingPush.swift` — / Durable outbox for CloudKit writes — architecture-review.md 2.2 / 2.3. (~1418 tok)
 - `PersistenceService.swift` — / Shared save+sync core every per-model `*Service` (e.g. `TeamService`, (~968 tok)
-- `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3164 tok)
-- `PraeExport.swift` — Declares PraeExportError; D4/C3 name fields use person.praeFormName ("Nachname, Vorname"), not displayName (~5140 tok)
-- `PraeViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4262 tok)
+- `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3811 tok)
+- `PraeExport.swift` — Declares PraeExportError (~6388 tok)
+- `PraeViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4566 tok)
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
@@ -318,7 +319,7 @@
 - `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
 - `FullBackupTests.swift` — Class: FullBackupTests (~2744 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
-- `KostZCalculationTests.swift` — Class: KostZCalculationTests, incl. tournament-scoped summary/export tests (~3800 tok)
+- `KostZCalculationTests.swift` — Class: KostZCalculationTests (~6227 tok)
 - `MemberChangeRequestTests.swift` — Class: MemberChangeRequestTests (~1040 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
 - `MemberMembershipRequestTests.swift` — Class: MemberMembershipRequestTests (~1810 tok)
@@ -326,7 +327,7 @@
 - `NextEventLookupTests.swift` — Class: NextEventLookupTests (~1418 tok)
 - `PendingPushTests.swift` — Class: PendingPushTests (~1582 tok)
 - `PersistenceServiceTests.swift` — Struct: StubError (~1138 tok)
-- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~9646 tok)
+- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~12173 tok)
 - `QueryPredicateTests.swift` — Class: QueryPredicateTests (~772 tok)
 - `RoleAndSportEnumTests.swift` — Class: RoleAndSportEnumTests (~1546 tok)
 - `RoleChangeLogTests.swift` — Class: RoleChangeLogTests (~984 tok)

@@ -2924,3 +2924,101 @@
 | 23:09 | Session end: 17 writes across 8 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 17 reads | ~44791 tok |
 | 23:11 | Session end: 17 writes across 8 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 17 reads | ~44791 tok |
 | 23:11 | Session end: 17 writes across 8 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 17 reads | ~44791 tok |
+| 23:13 | Session end: 17 writes across 8 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 17 reads | ~44791 tok |
+| 23:17 | Session end: 17 writes across 8 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 19 reads | ~44791 tok |
+| 23:20 | Session end: 17 writes across 8 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 19 reads | ~44791 tok |
+| 23:21 | Session end: 17 writes across 8 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 19 reads | ~44791 tok |
+| 23:22 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | 1→3 lines | ~441 |
+| 23:22 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | inline fix | ~65 |
+| 23:22 | Session end: 19 writes across 9 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 19 reads | ~45333 tok |
+| 23:24 | Session end: 19 writes across 9 files (Training.swift, TrainingService.swift, TrainingsViews.swift, TrainingTests.swift, MEMORY.md) | 19 reads | ~45333 tok |
+
+## Session: 2026-09-15 21:08
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:23 | Created ../../.claude/plans/1-task-in-kostz-peppy-starfish.md | — | ~2569 |
+| 21:27 | Session end: 1 writes across 1 files (1-task-in-kostz-peppy-starfish.md) | 13 reads | ~41377 tok |
+| 21:30 | Edited ../../.claude/plans/1-task-in-kostz-peppy-starfish.md | modified resolution() | ~1708 |
+| 21:35 | Edited BlindensportGraz/KostZCalculation.swift | modified reduce() | ~364 |
+| 21:35 | Edited BlindensportGraz/KostZCalculation.swift | added nullish coalescing | ~1091 |
+| 21:37 | Edited BlindensportGraz/KostZExport.swift | modified export() | ~895 |
+| 21:37 | Edited BlindensportGraz/KostZViews.swift | summary() → trainingGroups() | ~116 |
+| 21:38 | Edited BlindensportGraz/KostZViews.swift | modified Section() | ~1063 |
+| 21:38 | Edited BlindensportGraz/SammelabrechnungExport.swift | modified export() | ~330 |
+| 21:38 | Edited BlindensportGraz/SammelabrechnungExport.swift | expanded (+7 lines) | ~270 |
+| 21:38 | Edited BlindensportGraz/SammelabrechnungViews.swift | expanded (+8 lines) | ~165 |
+| 21:38 | Edited BlindensportGraz/SammelabrechnungViews.swift | 2→2 lines | ~45 |
+| 21:39 | Edited BlindensportGrazTests/KostZCalculationTests.swift | modified testExportProducesValidReadableZipWithExpectedValues() | ~1074 |
+| 21:39 | Edited BlindensportGrazTests/KostZCalculationTests.swift | 2→4 lines | ~80 |
+| 21:39 | Edited BlindensportGrazTests/KostZCalculationTests.swift | KostZMonthSummary() → KostZTrainingGroupSummary() | ~61 |
+| 21:39 | Edited BlindensportGrazTests/KostZCalculationTests.swift | modified makeTraining() | ~143 |
+| 21:39 | Edited BlindensportGrazTests/KostZCalculationTests.swift | added optional chaining | ~1290 |
+| 21:40 | Edited BlindensportGrazTests/SammelabrechnungExportTests.swift | 10→11 lines | ~191 |
+| 21:40 | Edited BlindensportGrazTests/SammelabrechnungExportTests.swift | modified testExportForMonthWithNoEligiblePeopleStillProducesKostZOnly() | ~871 |
+| 21:41 | Edited BlindensportGrazTests/SammelabrechnungSeasonExportTests.swift | 3→3 lines | ~40 |
+| 21:41 | Edited BlindensportGraz/PraeCalculation.swift | modified reduce() | ~244 |
+| 21:41 | Edited BlindensportGraz/PraeCalculation.swift | modified summary() | ~975 |
+| 21:41 | Edited BlindensportGraz/PraeExport.swift | modified exportMainForm() | ~513 |
+| 21:41 | Edited BlindensportGraz/PraeCalculation.swift | 5→6 lines | ~115 |
+| 21:42 | Edited BlindensportGraz/PraeExport.swift | 2→3 lines | ~89 |
+| 21:42 | Edited BlindensportGraz/PraeViews.swift | expanded (+10 lines) | ~351 |
+| 21:42 | Edited BlindensportGraz/PraeViews.swift | added optional chaining | ~244 |
+| 21:42 | Edited BlindensportGraz/PraeViews.swift | modified monthName() | ~248 |
+| 21:42 | Edited BlindensportGraz/PraeCalculation.swift | modified init() | ~167 |
+| 21:43 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testSummaryTrainingNameIsBareTitleWhenFilteredBySport() | ~1130 |
+| 21:43 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 5→5 lines | ~90 |
+| 21:43 | Edited BlindensportGrazTests/PraeCalculationTests.swift | 3→6 lines | ~96 |
+| 21:43 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testExportMainFormForTournamentPutsBareTournamentNameInT11() | ~375 |
+| 21:46 | Feature (2 tasks, per plan /Users/franz/.claude/plans/1-task-in-kostz-peppy-starfish.md): (1) KostZ C3 is now the bare Training/Tournament name (no "Trainer:innen- und Helfer:innenhonorare " prefix); monthly Training KostZ split into KostZCalculator.trainingGroups (one KostZ export per distinct title+sport per month, title normalized/sport raw) instead of one club-wide monthly aggregate — KostZMonthSummary kept unchanged for its unrelated PRAE-toggle-list purpose. (2) PRAE main form's unused "Verwendungszweck:" field (T11) now filled: bare tournament title for the tournament export; for the monthly export, PraeCalculationView gained a required "Trainingsart" (sport) picker alongside Month, and PraeCalculator.summary gained an optional `sport` param (default nil, existing callers unaffected) that scopes the day-grouping and computes PraeMonthSummary.trainingName. Verified via xcodebuild build + build-for-testing (both SUCCEEDED, generic/iOS, CODE_SIGNING_ALLOWED=NO, no simulator per standing policy) — xcodebuild test not run, per standing no-simulator/no-test policy; user should run tests themselves. | KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift, SammelabrechnungViews.swift, PraeCalculation.swift, PraeExport.swift, PraeViews.swift, KostZCalculationTests.swift, SammelabrechnungExportTests.swift, SammelabrechnungSeasonExportTests.swift, PraeCalculationTests.swift | Done, not committed | ~large |
+| 21:45 | Session end: 32 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~73255 tok |
+| 22:09 | Session end: 32 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~73255 tok |
+| 22:11 | Session end: 32 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~73255 tok |
+| 22:15 | Edited BlindensportGraz/KostZCalculation.swift | modified init() | ~417 |
+| 22:15 | Edited BlindensportGraz/KostZCalculation.swift | modified contains() | ~345 |
+| 22:15 | Edited BlindensportGraz/KostZExport.swift | modified export() | ~381 |
+| 22:15 | Edited BlindensportGraz/KostZViews.swift | trainingGroups() → summary() | ~106 |
+| 22:16 | Edited BlindensportGraz/KostZViews.swift | modified Section() | ~876 |
+| 22:16 | Edited BlindensportGraz/SammelabrechnungExport.swift | modified export() | ~227 |
+| 22:16 | Edited BlindensportGraz/SammelabrechnungExport.swift | reduced (-7 lines) | ~60 |
+| 22:16 | Edited BlindensportGraz/SammelabrechnungViews.swift | reduced (-8 lines) | ~44 |
+| 22:16 | Edited BlindensportGraz/SammelabrechnungViews.swift | 2→2 lines | ~44 |
+| 22:16 | Edited BlindensportGrazTests/KostZCalculationTests.swift | modified testMonthBoundsComputesCorrectDayCount() | ~601 |
+| 22:17 | Edited BlindensportGrazTests/KostZCalculationTests.swift | KostZTrainingGroupSummary() → KostZMonthSummary() | ~234 |
+| 22:17 | Edited BlindensportGrazTests/KostZCalculationTests.swift | modified testExportWithNoTrainingsThatMonthFallsBackToCalendarBounds() | ~106 |
+| 22:17 | Edited BlindensportGrazTests/KostZCalculationTests.swift | KostZTrainingGroupSummary() → KostZMonthSummary() | ~47 |
+| 22:17 | Edited BlindensportGrazTests/SammelabrechnungExportTests.swift | 11→10 lines | ~157 |
+| 22:17 | Edited BlindensportGrazTests/SammelabrechnungExportTests.swift | modified testExportForMonthWithNoEligiblePeopleStillProducesKostZOnly() | ~762 |
+| 22:17 | Edited BlindensportGrazTests/SammelabrechnungSeasonExportTests.swift | 3→3 lines | ~34 |
+| 22:20 | Correction (user "thought more about it" after the KostZ-grouping feature above): reverted the per-(title,sport) KostZ split back to ONE monthly KostZ export (KostZMonthSummary/KostZCalculator.summary(month:) restored as the export source, KostZTrainingGroupSummary/trainingGroups deleted) — "the monthly training report should include all training types [combined]. If there are different titles, both should be used separated by a , sign." Added `KostZMonthSummary.trainingName` (distinct Training titles across every sport that month, chronological first-occurrence order, comma-joined) as C3's new bare-name value, replacing the old "<Month> <Year>" text. SammelabrechnungExport/Views and exportSeason reverted to one KostZ.xlsx/month. PRAE's T11 + Trainingsart picker (previous session block) intentionally left untouched — user explicitly said "only do the first step" (the KostZ revert), not PRAE or the planned "Abrechnung erstellen" training-detail button (both still pending). Verified via xcodebuild build + build-for-testing (both SUCCEEDED) — no test execution per standing policy. | KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift, SammelabrechnungViews.swift, KostZCalculationTests.swift, SammelabrechnungExportTests.swift, SammelabrechnungSeasonExportTests.swift | Done, not committed; PRAE-scope decision + Abrechnung button still open | ~large |
+| 22:18 | Session end: 48 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~82797 tok |
+| 22:21 | Edited BlindensportGraz/PraeCalculation.swift | modified summary() | ~327 |
+| 22:21 | Edited BlindensportGraz/PraeCalculation.swift | removed 16 lines | ~19 |
+| 22:21 | Edited BlindensportGraz/PraeCalculation.swift | 8→7 lines | ~131 |
+| 22:21 | Edited BlindensportGraz/PraeViews.swift | reduced (-10 lines) | ~208 |
+| 22:21 | Edited BlindensportGraz/PraeViews.swift | removed 13 lines | ~27 |
+| 22:21 | Edited BlindensportGraz/PraeViews.swift | 11→11 lines | ~136 |
+| 22:22 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testSummaryTrainingNameIsBareTitleForASingleTraining() | ~653 |
+| 22:25 | Correction: "the training title as it is in KostZ should also be set in prae in cell T11" — dropped PRAE's "Trainingsart" required picker/sport-filter (added earlier this session) so PRAE's monthly T11 now uses the exact same convention as KostZ's C3: PraeCalculator.summary(for:month:year:in:) reverted to no `sport` param, PraeMonthSummary.trainingName computed from ALL that person's Training attendances that month (every sport combined, comma-joined distinct titles) instead of one sport-filtered name. Deleted PraeCalculator.trainingSports (no longer used). PraeCalculationView's Trainingsart Picker/selectedSport state removed; Person+Month is again the only selection needed. PraeTournamentCalculationView/T11=tournament.title unaffected. Verified via xcodebuild build + build-for-testing (both SUCCEEDED). | PraeCalculation.swift, PraeViews.swift, PraeCalculationTests.swift | Done, not committed; "Abrechnung erstellen" training-detail button still the only open item from this thread | ~large |
+| 22:22 | Session end: 55 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~85609 tok |
+| 22:23 | Edited BlindensportGraz/PraeCalculation.swift | 7→8 lines | ~161 |
+| 22:23 | Edited BlindensportGraz/PraeCalculation.swift | modified summary() | ~468 |
+| 22:23 | Edited BlindensportGraz/PraeCalculation.swift | added nullish coalescing | ~270 |
+| 22:24 | Edited BlindensportGraz/PraeViews.swift | expanded (+10 lines) | ~351 |
+| 22:24 | Edited BlindensportGraz/PraeViews.swift | added optional chaining | ~186 |
+| 22:24 | Edited BlindensportGraz/PraeViews.swift | 11→11 lines | ~148 |
+| 22:24 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified testSummaryTrainingNameIsBareTitleWhenFilteredBySport() | ~1130 |
+| 22:27 | "revert this" — undid the immediately-preceding PRAE T11 change (comma-join-all-types) and restored PRAE's Trainingsart picker/sport-filter design (PraeCalculator.summary's sport param, trainingSports helper, PraeCalculationView's Picker). This is now the final PRAE state; KostZ's earlier revert (comma-joined trainingName, no grouping) is unaffected/still current. Verified via xcodebuild build + build-for-testing (both SUCCEEDED). | PraeCalculation.swift, PraeViews.swift, PraeCalculationTests.swift | Done, not committed; "Abrechnung erstellen" training-detail button still the only open item from this thread | ~large |
+| 22:25 | Session end: 62 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~88462 tok |
+| 22:29 | User: "no I don't want the Abrechnung erstellen button in TrainingDetailView any more. The Task for C3 and T11 in KostZ and PRAE should be done." — dropped the planned button (never implemented, confirmed via grep — no code to revert). KostZ/PRAE C3+T11 thread is CLOSED as of this session's final state: KostZ C3 = KostZMonthSummary.trainingName (comma-joined distinct titles, all sports, no grouping); PRAE T11 = PraeMonthSummary.trainingName scoped by PraeCalculationView's required Trainingsart picker (PraeCalculator.summary's sport param). No further action needed. | none (no code change) | Closed | ~1k |
+| 22:27 | Session end: 62 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~88462 tok |
+| 22:28 | Session end: 62 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~88462 tok |
+| 22:34 | Edited BlindensportGraz/PraeExport.swift | modified exportMainForm() | ~1123 |
+| 22:34 | Edited BlindensportGraz/PraeExport.swift | modified patchTemplate() | ~903 |
+| 22:34 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified uebungsleiterCheckboxBlock() | ~947 |
+| 22:36 | Feature: "In trainings in PRAE the cell P9 should be set." P9 has no cell value — it's where a real Excel Form-control checkbox ("Übungsleiter:in" role, shape id Kontrollkästchen_x0020_17) floats over the cell via its VML <x:Anchor> (col 15=P, row 8=row9), no <x:FmlaLink>. Added PraeExporter.checkFormCheckbox(in:shapeID:) — string-patches <x:Checked>1</x:Checked> into that one shape's <x:ClientData> block in xl/drawings/vmlDrawing1.vml, scoped to the shape via its own start/end markers (every checkbox shares an identical ClientData opening tag, so unscoped replace would hit the wrong box). patchTemplate gained an optional vmlPatch param. Wired to exportMainForm(summary: PraeMonthSummary) only (checkUebungsleiterBox: true) — NOT the Tournament overload (false), since a tournament role may differ. Manually verified the exact patch logic against the real bundled PRAE_Formular.xlsx via perl before trusting the Swift port. Verified via xcodebuild build + build-for-testing (both SUCCEEDED); new tests assert the checkbox IS checked (Training) / NOT checked (Tournament), scoped to the correct shape block specifically. | PraeExport.swift, PraeCalculationTests.swift | Done, not committed | ~large |
+| 22:36 | Session end: 65 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~92148 tok |
+| 22:39 | Edited BlindensportGraz/PraeExport.swift | modified exportMainForm() | ~1253 |
+| 22:55 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified checkboxBlock() | ~994 |
+| 22:57 | Feature: "for tournaments, set B9 in a similar way in the PRAE" — B9 is the "Trainer:in" role checkbox (shape Kontrollkästchen_x0020_13, verified via <x:Anchor> against the real template same as P9 was). Generalized PraeExporter's private exportMainForm from checkUebungsleiterBox:Bool to checkedRoleShapeID:String? so both role checkboxes reuse the same checkFormCheckbox mechanism — Training path checks P9/Übungsleiter:in, Tournament path checks B9/Trainer:in. Manually verified the B9 patch against the real bundled template via perl before trusting the Swift code (same technique as P9). Verified via xcodebuild build + build-for-testing (both SUCCEEDED); tests renamed/extended to assert each export checks its OWN box and leaves the other one unchecked. | PraeExport.swift, PraeCalculationTests.swift | Done, not committed | ~large |
+| 22:55 | Session end: 67 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~96469 tok |

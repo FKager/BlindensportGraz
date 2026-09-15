@@ -7778,6 +7778,294 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-14T21:04:17.718Z"
+    },
+    {
+      "id": "bug-462",
+      "timestamp": "2026-09-15T19:35:36.753Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/KostZCalculation.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T19:35:36.753Z"
+    },
+    {
+      "id": "bug-463",
+      "timestamp": "2026-09-15T19:38:33.260Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/SammelabrechnungExport.swift",
+      "root_cause": "11 lines replaced/restructured",
+      "fix": "Rewrote 14→18 lines (11 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T19:38:33.260Z"
+    },
+    {
+      "id": "bug-464",
+      "timestamp": "2026-09-15T19:39:57.476Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGrazTests/KostZCalculationTests.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T19:39:57.476Z"
+    },
+    {
+      "id": "bug-465",
+      "timestamp": "2026-09-15T19:41:06.631Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGrazTests/SammelabrechnungSeasonExportTests.swift",
+      "root_cause": "Had \"03-2026_KostZ.xlsx\"",
+      "fix": "Changed to \"03-2026_Training 5.3._Torball_KostZ.xlsx\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T19:41:06.631Z"
+    },
+    {
+      "id": "bug-466",
+      "timestamp": "2026-09-15T19:41:35.142Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/PraeCalculation.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 37→63 lines (6 removed) | Also: let attendances = allAttendances.filter {; $0.attended && $0.praeAmount != nil && $0.event.ki",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-15T19:41:58.349Z"
+    },
+    {
+      "id": "bug-467",
+      "timestamp": "2026-09-15T19:42:11.835Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/PraeViews.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 19→29 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T19:42:11.835Z"
+    },
+    {
+      "id": "bug-468",
+      "timestamp": "2026-09-15T19:42:16.709Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/PraeViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T19:42:16.709Z"
+    },
+    {
+      "id": "bug-469",
+      "timestamp": "2026-09-15T20:15:32.044Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/KostZCalculation.swift",
+      "root_cause": "57 lines replaced/restructured",
+      "fix": "Rewrote 91→24 lines (57 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T20:15:32.044Z"
+    },
+    {
+      "id": "bug-470",
+      "timestamp": "2026-09-15T20:16:14.501Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/SammelabrechnungExport.swift",
+      "root_cause": "15 lines replaced/restructured",
+      "fix": "Rewrote 18→14 lines (15 removed) | Also: // One KostZ file per distinct Training name+Sport; // month, not one aggregate file — see KostZCalcul",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-15T20:16:20.894Z"
+    },
+    {
+      "id": "bug-471",
+      "timestamp": "2026-09-15T20:16:26.769Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/SammelabrechnungViews.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 11→3 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T20:16:26.769Z"
+    },
+    {
+      "id": "bug-472",
+      "timestamp": "2026-09-15T20:16:54.771Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGrazTests/KostZCalculationTests.swift",
+      "root_cause": "49 lines replaced/restructured",
+      "fix": "Rewrote 115→49 lines (49 removed) | Also: // Defensive fallback only — a real KostZTrainingG; // has at least one training date by construction ",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-15T20:17:05.345Z"
+    },
+    {
+      "id": "bug-473",
+      "timestamp": "2026-09-15T20:17:36.825Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGrazTests/SammelabrechnungSeasonExportTests.swift",
+      "root_cause": "Had \"03-2026_Training 5.3._Torball_KostZ.xlsx\"",
+      "fix": "Changed to \"03-2026_KostZ.xlsx\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T20:17:36.825Z"
+    },
+    {
+      "id": "bug-474",
+      "timestamp": "2026-09-15T20:21:17.460Z",
+      "error_message": "Wrong operator: || should be &&",
+      "file": "BlindensportGraz/PraeCalculation.swift",
+      "root_cause": "Used \"||\" instead of \"&&\"",
+      "fix": "Changed operator || → &&",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-15T20:23:52.012Z"
+    },
+    {
+      "id": "bug-475",
+      "timestamp": "2026-09-15T20:21:37.552Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/PraeViews.swift",
+      "root_cause": "10 lines replaced/restructured",
+      "fix": "Rewrote 29→19 lines (10 removed) | Also: guard let person = selectedPerson else { return ni; return PraeCalculator.summary(for: person, month: ",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-15T20:24:07.500Z"
+    },
+    {
+      "id": "bug-476",
+      "timestamp": "2026-09-15T20:22:10.675Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGrazTests/PraeCalculationTests.swift",
+      "root_cause": "24 lines replaced/restructured",
+      "fix": "Rewrote 80→45 lines (24 removed) | Also: func testSummaryTrainingNameIsBareTitleForASingleT; func testSummaryTrainingNameJoinsDistinctTitlesAcr",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-15T20:24:36.620Z"
+    },
+    {
+      "id": "bug-477",
+      "timestamp": "2026-09-15T20:23:58.777Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/PraeCalculation.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T20:23:58.777Z"
+    },
+    {
+      "id": "bug-478",
+      "timestamp": "2026-09-15T20:24:10.825Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/PraeViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-15T20:24:10.825Z"
+    },
+    {
+      "id": "bug-479",
+      "timestamp": "2026-09-15T20:34:10.158Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/PraeExport.swift",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 38→63 lines (8 removed) | Also: /// Shared unzip → patch `xl/worksheets/sheet1.xml; /// by both templates in this file — every other z",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-15T20:34:24.934Z"
     }
   ]
 }
