@@ -8066,6 +8066,22 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-09-15T20:34:24.934Z"
+    },
+    {
+      "id": "bug-480",
+      "timestamp": "2026-09-16T15:36:21.077Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/TrainingsViews.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 14→56 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-16T15:36:21.077Z"
     }
   ]
 }

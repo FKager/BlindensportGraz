@@ -3022,3 +3022,13 @@
 | 22:55 | Edited BlindensportGrazTests/PraeCalculationTests.swift | modified checkboxBlock() | ~994 |
 | 22:57 | Feature: "for tournaments, set B9 in a similar way in the PRAE" — B9 is the "Trainer:in" role checkbox (shape Kontrollkästchen_x0020_13, verified via <x:Anchor> against the real template same as P9 was). Generalized PraeExporter's private exportMainForm from checkUebungsleiterBox:Bool to checkedRoleShapeID:String? so both role checkboxes reuse the same checkFormCheckbox mechanism — Training path checks P9/Übungsleiter:in, Tournament path checks B9/Trainer:in. Manually verified the B9 patch against the real bundled template via perl before trusting the Swift code (same technique as P9). Verified via xcodebuild build + build-for-testing (both SUCCEEDED); tests renamed/extended to assert each export checks its OWN box and leaves the other one unchecked. | PraeExport.swift, PraeCalculationTests.swift | Done, not committed | ~large |
 | 22:55 | Session end: 67 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~96469 tok |
+| 22:57 | Session end: 67 writes across 13 files (1-task-in-kostz-peppy-starfish.md, KostZCalculation.swift, KostZExport.swift, KostZViews.swift, SammelabrechnungExport.swift) | 16 reads | ~96469 tok |
+
+## Session: 2026-09-16 17:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:36 | Edited BlindensportGraz/TrainingsViews.swift | modified option() | ~148 |
+| 17:36 | Edited BlindensportGraz/TrainingsViews.swift | modified monthName() | ~628 |
+| 17:36 | Added month/type filter to Trainings list (defaults to all entries) | BlindensportGraz/TrainingsViews.swift | build succeeded (iphonesimulator SDK, no simulator launch) | ~15000 |
+| 17:37 | Session end: 2 writes across 1 files (TrainingsViews.swift) | 6 reads | ~28852 tok |

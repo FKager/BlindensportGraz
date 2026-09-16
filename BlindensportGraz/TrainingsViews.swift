@@ -832,6 +832,13 @@ struct TrainingsListView: View {
         @State private var exportURL: URL?
         @State private var showImporter = false
         @State private var importResultMessage: String?
+        // Filter option (user request 2026-09-16): "filtering option for
+        // month and type, default all entries listed". nil means unfiltered
+        // — both default to nil so the list shows everything until the user
+        // picks something, matching "as default all entries should be
+        // listed."
+        @State private var selectedMonth: Int?
+        @State private var selectedSport: String?
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
@@ -855,14 +862,56 @@ struct TrainingsListView: View {
         return sortedTrainings.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }
 
+    // Sportart choices for the "Sportart"-filter Picker — only sports that
+    // actually occur among visibleTrainings, not the fixed AddTrainingView
+    // list, so the picker never offers a sport nothing is filed under (and
+    // still surfaces free-text sports per Sport.swift's design).
+    var availableSports: [String] {
+        Array(Set(visibleTrainings.map(\.sport))).sorted()
+    }
+
+    var filteredTrainings: [Training] {
+        var result = visibleTrainings
+        if let selectedMonth {
+            let calendar = Calendar.current
+            result = result.filter { calendar.component(.month, from: $0.startDate) == selectedMonth }
+        }
+        if let selectedSport {
+            result = result.filter { $0.sport == selectedSport }
+        }
+        return result
+    }
+
+    private func monthName(_ month: Int) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "de_AT")
+        return formatter.monthSymbols[month - 1].capitalized
+    }
+
     var body: some View {
         List {
-           if visibleTrainings.isEmpty {
+           Section {
+               Picker("Monat", selection: $selectedMonth) {
+                   Text("Alle Monate").tag(nil as Int?)
+                   ForEach(1...12, id: \.self) { m in
+                       Text(monthName(m)).tag(m as Int?)
+                   }
+               }
+               .pickerStyle(.menu)
+               Picker("Sportart", selection: $selectedSport) {
+                   Text("Alle Sportarten").tag(nil as String?)
+                   ForEach(availableSports, id: \.self) { sport in
+                       Text(sport).tag(sport as String?)
+                   }
+               }
+               .pickerStyle(.menu)
+           }
+           if filteredTrainings.isEmpty {
                ContentUnavailableView("Keine Trainings",
                                       systemImage: "figure.run",
                                       description: Text("Lege ein neues Training an."))
               } else {
-                  ForEach(visibleTrainings) { training in
+                  ForEach(filteredTrainings) { training in
                     NavigationLink {
                         TrainingDetailView(training: training, currentUser: currentUser)
                           } label: {
