@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-16T15:36:21.069Z
-> Files: 282 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-16T21:11:03.350Z
+> Files: 284 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -175,8 +175,9 @@
 
 ## BlindensportGraz/
 
-- `AccountView.swift` — SwiftUI view: AccountView (~6808 tok)
+- `AccountView.swift` — SwiftUI view: AccountView (~7312 tok)
 - `AddNewEventMemberView.swift` — / Lets an admin/coach add someone who isn't in the roster yet directly from (~1948 tok)
+- `AnonymousLandingView.swift` — / Root screen for the "anonymous" account tier (account-tiers refactor) — (~1686 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~647 tok)
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
@@ -194,9 +195,9 @@
 - `BudgetSummary.swift` — / Year-scoped club finance summary — pure aggregation over `BudgetEntry` + (~717 tok)
 - `BudgetViews.swift` — / Admin-only club finance overview — pushed from the "Verein" tab's admin (~2851 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
-- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~2998 tok)
+- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~3172 tok)
 - `CLAUDE.md` — CLAUDE.md (~1390 tok)
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~5974 tok)
+- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~6054 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~1152 tok)
 - `CloudKitSync+BudgetEntry.swift` (~761 tok)
 - `CloudKitSync+EventImage.swift` (~1023 tok)
@@ -211,7 +212,7 @@
 - `CloudKitSync+Team.swift` (~1293 tok)
 - `CloudKitSync+TeamMembership.swift` (~881 tok)
 - `CloudKitSync+TrainingFavorite.swift` (~1138 tok)
-- `CloudKitSync+UserIdentity.swift` (~863 tok)
+- `CloudKitSync+UserIdentity.swift` (~1068 tok)
 - `DashboardView.swift` — SwiftUI view: DashboardView (~2519 tok)
 - `EventImage.swift` — / A photo attached to a SportEvent (or, via inheritance, a Training or (~212 tok)
 - `EventImageService.swift` — Declares EventImageService (~227 tok)
@@ -221,7 +222,7 @@
 - `EventParticipation.swift` — Class: EventParticipation (~156 tok)
 - `EventParticipationService.swift` — / No `delete` — see AttendanceService.swift's doc comment. (~139 tok)
 - `EventReminderService.swift` — / Minimal surface `EventReminderService` needs from a notification center — (~1212 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~5537 tok)
+- `EventsViews.swift` — SwiftUI view: AddEventView (~5693 tok)
 - `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
 - `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
@@ -245,7 +246,8 @@
 - `MembersViews.swift` — / The club's member roster, pushed from `VereinView`'s admin hub (see (~8471 tok)
 - `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~380 tok)
 - `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
-- `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1076 tok)
+- `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1251 tok)
+- `PasswordHashing.swift` — / Best-effort password hashing for a small trusted-club app with no backend (~516 tok)
 - `PendingPush.swift` — / Durable outbox for CloudKit writes — architecture-review.md 2.2 / 2.3. (~1418 tok)
 - `PersistenceService.swift` — / Shared save+sync core every per-model `*Service` (e.g. `TeamService`, (~968 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3811 tok)
@@ -254,7 +256,7 @@
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
-- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~5028 tok)
+- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~6860 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `SeasonDashboard.swift` — / Aggregate season stats — architecture-review.md §5 (P2). "Season" here (~881 tok)
@@ -289,9 +291,9 @@
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
 - `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~14003 tok)
-- `User.swift` — Class: User (~1280 tok)
+- `User.swift` — Class: User (~1657 tok)
 - `UserService.swift` — Declares UserService (~221 tok)
-- `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~898 tok)
+- `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~1070 tok)
 - `WidgetRefresher.swift` — / Bridges the app's SwiftData world to the widget: recompute "what's next" (~379 tok)
 - `WidgetShared.swift` — / The small payload the home-screen widget needs, shared between the app and (~503 tok)
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)

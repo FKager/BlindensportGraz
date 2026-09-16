@@ -20,6 +20,16 @@ final class User {
     // directly to CloudKit.
     var isRoot: Bool = false
 
+    // Salted-hash password material for LoginView's email+password form (the
+    // account-refactor's account-tiers work: anonymous/logged-in/admin).
+    // Synced via CloudKit like firstName/lastName (see CKSchema.UserIdentity
+    // and PasswordHashing.swift's doc comment for the security caveat this
+    // implies) so a member can log in with the same password from any
+    // device. Empty for every pre-refactor account — see LoginView's
+    // "Passwort festlegen" migration path.
+    var passwordHash: String = ""
+    var passwordSalt: String = ""
+
     // Opaque token gating this user's read-only webcal feed — see
     // CKSchema.UserIdentity.calendarToken's doc comment. Empty until
     // generated (AccountView); synced (non-sensitive) like firstName/
@@ -41,7 +51,9 @@ final class User {
          appleUserIdentifier: String = "",
          createdAt: Date = .now,
          isGrazerVSCMember: Bool = false,
-         isRoot: Bool = false) {
+         isRoot: Bool = false,
+         passwordHash: String = "",
+         passwordSalt: String = "") {
         self.id = id
         self.email = email
         self.firstName = firstName
@@ -51,6 +63,8 @@ final class User {
         self.createdAt = createdAt
         self.isGrazerVSCMember = isGrazerVSCMember
         self.isRoot = isRoot
+        self.passwordHash = passwordHash
+        self.passwordSalt = passwordSalt
     }
 }
 
@@ -103,4 +117,15 @@ extension User {
         return true
     }
 
+    /// Centralizes the GVSC-membership-or-elevated-role gate for the
+    /// account-tiers refactor (RSVP self-service, roster self-editing):
+    /// coaches get this unconditionally, matching every other role-based
+    /// gate already in the app (EventsListView/TeamsViews/TrainingsViews/
+    /// TournamentsViews' identical `canManageEvents`/`canManageTeams`, none
+    /// of which additionally require isGrazerVSCMember for a coach) — a
+    /// coach may well be an external trainer, not a club member, but
+    /// already has full CRUD rights over events/trainings/teams elsewhere.
+    var hasGVSCPrivileges: Bool {
+        isGrazerVSCMember || role == .coach || role == .admin || isRoot
+    }
 }

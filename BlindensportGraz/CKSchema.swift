@@ -143,6 +143,16 @@ enum CKSchema {
         static let role = "role"
         static let isGrazerVSCMember = "isGrazerVSCMember"
         static let isRoot = "isRoot"
+        /// Synced (unlike appleUserIdentifier, which stays device-local) so
+        /// LoginView's email+password form can look an account up from any
+        /// device — a deliberate reversal of this field's previous
+        /// device-local-only privacy stance, accepted as part of the
+        /// account-tiers refactor. See PasswordHashing.swift's doc comment
+        /// for the resulting trust-model caveat (CloudKit's public database
+        /// is technically readable by any client with API credentials).
+        static let email = "email"
+        static let passwordHash = "passwordHash"
+        static let passwordSalt = "passwordSalt"
         /// Opaque token gating this user's read-only webcal calendar feed
         /// (architecture-review.md §5 P2 — served by clubmembersapi's
         /// `/calendar/:token` route, deliberately outside its Basic Auth

@@ -65,6 +65,17 @@ enum NextEventLookup {
             .min { $0.startDate < $1.startDate }
     }
 
+    /// Soonest plain `SportEvent` (kind "event", not Training/Tournament —
+    /// see EventsListView's identical `kind == "event"` filter) starting at
+    /// or after `now` that `user` may see. Added for AnonymousLandingView's
+    /// preview (account-tiers refactor).
+    static func nextEvent(in context: ModelContext, for user: User?, now: Date = .now) -> SportEvent? {
+        let all = (try? context.fetch(FetchDescriptor<SportEvent>(predicate: #Predicate { $0.kind == "event" }))) ?? []
+        return all
+            .filter { $0.startDate >= now && isVisible(teams: $0.teams, to: user) }
+            .min { $0.startDate < $1.startDate }
+    }
+
     /// German one-liner for a Siri/Shortcuts spoken + shown answer.
     /// `includeTime` is false for tournaments (their date picker is
     /// day-only, so the stored time is meaningless — see SportEvent).

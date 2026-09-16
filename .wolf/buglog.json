@@ -8082,6 +8082,102 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-16T15:36:21.077Z"
+    },
+    {
+      "id": "bug-481",
+      "timestamp": "2026-09-16T21:07:46.167Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/CloudKitSync.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 3→7 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-16T21:07:46.167Z"
+    },
+    {
+      "id": "bug-482",
+      "timestamp": "2026-09-16T21:07:58.920Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/CloudKitSync+UserIdentity.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 19→28 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-16T21:07:58.920Z"
+    },
+    {
+      "id": "bug-483",
+      "timestamp": "2026-09-16T21:08:27.845Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 25→39 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-16T21:08:27.845Z"
+    },
+    {
+      "id": "bug-484",
+      "timestamp": "2026-09-16T21:08:39.663Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call | Also: MainTabView(currentUser: user, onLogout: {; // Clears the same two @AppStorage keys resolveAccount()",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-16T21:08:52.104Z"
+    },
+    {
+      "id": "bug-485",
+      "timestamp": "2026-09-16T21:09:32.953Z",
+      "error_message": "Wrong operator: && should be !=",
+      "file": "BlindensportGraz/RootView.swift",
+      "root_cause": "Used \"&&\" instead of \"!=\"",
+      "fix": "Changed operator && → !=",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-16T21:09:32.953Z"
+    },
+    {
+      "id": "bug-486",
+      "timestamp": "2026-09-16T21:10:56.829Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/AccountView.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 4→6 lines (3 removed) | Also: } footer: {; Text(\"E-Mail-Adressen werden aus Datenschutzgründe",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-16T21:11:03.356Z"
     }
   ]
 }

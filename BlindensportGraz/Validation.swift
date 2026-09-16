@@ -64,4 +64,16 @@ enum Validation {
         guard !digits.isEmpty else { return true }
         return digits.count == 10
     }
+
+    /// Minimum password strength for RegisterView / LoginView's "Passwort
+    /// festlegen" flow. Unlike every other check in this file, this one DOES
+    /// block submission — a blank/weak password isn't "already-saved messy
+    /// real-world data" the way an imported email/IBAN can be, so there's
+    /// nothing to stay permissive for. Kept intentionally simple
+    /// (length-only, no character-class requirement) — see
+    /// PasswordHashing.swift's doc comment for why this app doesn't invest
+    /// further in password strength.
+    static func passwordMeetsMinimumStrength(_ raw: String) -> Bool {
+        raw.count >= 8
+    }
 }

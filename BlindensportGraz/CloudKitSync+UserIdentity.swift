@@ -11,6 +11,9 @@ extension CloudKitSync {
         record[CKSchema.UserIdentity.isGrazerVSCMember] = user.isGrazerVSCMember
         record[CKSchema.UserIdentity.isRoot] = user.isRoot
         record[CKSchema.UserIdentity.calendarToken] = user.calendarToken
+        record[CKSchema.UserIdentity.email] = user.email
+        record[CKSchema.UserIdentity.passwordHash] = user.passwordHash
+        record[CKSchema.UserIdentity.passwordSalt] = user.passwordSalt
         save(record)
     }
 
@@ -42,20 +45,29 @@ extension CloudKitSync {
             let isGrazerVSCMember = record[CKSchema.UserIdentity.isGrazerVSCMember] as? Bool ?? false
             let isRoot = record[CKSchema.UserIdentity.isRoot] as? Bool ?? false
             let calendarToken = record[CKSchema.UserIdentity.calendarToken] as? String ?? ""
+            let email = record[CKSchema.UserIdentity.email] as? String ?? ""
+            let passwordHash = record[CKSchema.UserIdentity.passwordHash] as? String ?? ""
+            let passwordSalt = record[CKSchema.UserIdentity.passwordSalt] as? String ?? ""
 
             var descriptor = FetchDescriptor<User>(predicate: #Predicate { $0.id == id })
             descriptor.fetchLimit = 1
             if let existing = try? modelContext.fetch(descriptor).first {
-                // Local email/appleUserIdentifier are never published, so never overwritten here.
+                // appleUserIdentifier is the only field still never
+                // published/overwritten here — see CloudKitSync.swift's doc
+                // comment.
                 existing.firstName = firstName
                 existing.lastName = lastName
                 existing.role = role
                 existing.isGrazerVSCMember = isGrazerVSCMember
                 existing.isRoot = isRoot
                 existing.calendarToken = calendarToken
+                existing.email = email
+                existing.passwordHash = passwordHash
+                existing.passwordSalt = passwordSalt
             } else {
-                let user = User(id: id, email: "", firstName: firstName, lastName: lastName,
-                                 role: role, isGrazerVSCMember: isGrazerVSCMember, isRoot: isRoot)
+                let user = User(id: id, email: email, firstName: firstName, lastName: lastName,
+                                 role: role, isGrazerVSCMember: isGrazerVSCMember, isRoot: isRoot,
+                                 passwordHash: passwordHash, passwordSalt: passwordSalt)
                 user.calendarToken = calendarToken
                 modelContext.insert(user)
             }

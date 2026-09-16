@@ -11,9 +11,13 @@ import os
 /// instead, matching local SwiftData objects by their stable `id` (used as
 /// the CKRecord name).
 ///
-/// Only non-sensitive identity fields (firstName, lastName, role,
-/// isGrazerVSCMember) are ever published for a User — email and the Apple
-/// identifier stay device-local. The Member roster (name/address/contact
+/// firstName, lastName, role, isGrazerVSCMember, email, and salted password
+/// hash/salt are published for a User (email + password material sync
+/// deliberately, as of the account-tiers refactor, so LoginView's
+/// email+password form works from any device — see CKSchema.UserIdentity's
+/// doc comment for the accepted trade-off); only the Apple identifier stays
+/// device-local (it has no cross-device meaning — Sign in with Apple
+/// re-derives it per device anyway). The Member roster (name/address/contact
 /// details) is admin-managed data, synced so every admin's device and the
 /// account-creation match check see the same roster. The CKRecord type
 /// stays the historical "ClubMember" string (not renamed to "Member")

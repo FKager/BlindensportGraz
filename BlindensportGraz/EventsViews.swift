@@ -420,11 +420,21 @@ struct EventDetailView: View {
 
                        if let user = currentUser,
                            !event.participations.contains(where: { $0.user.id == user.id }) {
-                        Button("Selbst anmelden") {
-                            let participation = EventParticipation(user: user, event: event, status: "confirmed")
-                            modelContext.insert(participation)
-                            EventParticipationService.save(participation, modelContext: modelContext)
-                           }
+                        // GVSC-gated (account-tiers refactor, decision #6) —
+                        // a logged-in user who isn't a GVSC member/coach/
+                        // admin can view an Event's participant list but not
+                        // self-register for it.
+                        if user.hasGVSCPrivileges {
+                            Button("Selbst anmelden") {
+                                let participation = EventParticipation(user: user, event: event, status: "confirmed")
+                                modelContext.insert(participation)
+                                EventParticipationService.save(participation, modelContext: modelContext)
+                               }
+                        } else {
+                            Text("Nur für Grazer VSC Mitglieder")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
                        }
                   }
              }

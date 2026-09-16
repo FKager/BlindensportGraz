@@ -3032,3 +3032,40 @@
 | 17:36 | Edited BlindensportGraz/TrainingsViews.swift | modified monthName() | ~628 |
 | 17:36 | Added month/type filter to Trainings list (defaults to all entries) | BlindensportGraz/TrainingsViews.swift | build succeeded (iphonesimulator SDK, no simulator launch) | ~15000 |
 | 17:37 | Session end: 2 writes across 1 files (TrainingsViews.swift) | 6 reads | ~28852 tok |
+| 17:38 | Session end: 2 writes across 1 files (TrainingsViews.swift) | 6 reads | ~28852 tok |
+| 17:44 | Session end: 2 writes across 1 files (TrainingsViews.swift) | 13 reads | ~46278 tok |
+| 17:49 | Session end: 2 writes across 1 files (TrainingsViews.swift) | 17 reads | ~55421 tok |
+| 18:01 | Session end: 2 writes across 1 files (TrainingsViews.swift) | 17 reads | ~55421 tok |
+
+## Session: 2026-09-16 23:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:07 | Edited BlindensportGraz/User.swift | expanded (+10 lines) | ~174 |
+| 23:07 | Edited BlindensportGraz/User.swift | 13→17 lines | ~146 |
+| 23:07 | Edited BlindensportGraz/User.swift | modified elevateIfDesignatedRoot() | ~243 |
+| 23:07 | Created BlindensportGraz/PasswordHashing.swift | — | ~516 |
+| 23:07 | Edited BlindensportGraz/Validation.swift | modified isPlausibleAustrianSVNR() | ~227 |
+| 23:07 | Edited BlindensportGraz/CKSchema.swift | expanded (+10 lines) | ~249 |
+| 23:07 | Edited BlindensportGraz/CloudKitSync.swift | 3→7 lines | ~138 |
+| 23:07 | Edited BlindensportGraz/CloudKitSync+UserIdentity.swift | 3→6 lines | ~94 |
+| 23:07 | Edited BlindensportGraz/CloudKitSync+UserIdentity.swift | expanded (+9 lines) | ~441 |
+| 23:08 | Edited BlindensportGraz/NextEventLookup.swift | modified nextTournament() | ~266 |
+| 23:08 | Edited BlindensportGraz/RootView.swift | modified resolveAccount() | ~529 |
+| 23:08 | Edited BlindensportGraz/RootView.swift | modified triggerAnonymousBackgroundSync() | ~220 |
+| 23:08 | Edited BlindensportGraz/RootView.swift | reduced (-7 lines) | ~226 |
+| 23:09 | Edited BlindensportGraz/RootView.swift | modified onLogin() | ~395 |
+| 23:09 | Edited BlindensportGraz/RootView.swift | modified attemptLogin() | ~1571 |
+| 23:09 | Edited BlindensportGraz/RootView.swift | modified isPlausibleEmail() | ~317 |
+| 23:09 | Edited BlindensportGraz/RootView.swift | 4→7 lines | ~138 |
+| 23:09 | Edited BlindensportGraz/RootView.swift | 4→6 lines | ~115 |
+| 23:09 | Edited BlindensportGraz/RootView.swift | 4→6 lines | ~62 |
+| 23:10 | Created BlindensportGraz/AnonymousLandingView.swift | — | ~1686 |
+| 23:10 | Edited BlindensportGraz/EventsViews.swift | modified contains() | ~298 |
+| 23:10 | Edited BlindensportGraz/AccountView.swift | modified Button() | ~449 |
+| 23:10 | Edited BlindensportGraz/AccountView.swift | 4→5 lines | ~67 |
+| 23:10 | Edited BlindensportGraz/AccountView.swift | modified Button() | ~353 |
+| 23:10 | Edited BlindensportGraz/AccountView.swift | 4→6 lines | ~110 |
+| 23:11 | Edited BlindensportGraz/AccountView.swift | modified ForEach() | ~81 |
+| 23:15 | Account-tiers refactor: anonymous landing screen, password login, GVSC-gated RSVP/roster-edit, self-delete | RootView.swift, AccountView.swift, EventsViews.swift, User.swift, CKSchema.swift, CloudKitSync(+UserIdentity).swift, NextEventLookup.swift, Validation.swift, +PasswordHashing.swift, +AnonymousLandingView.swift | build + build-for-testing succeeded | ~180000 |
+| 23:12 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |

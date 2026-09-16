@@ -12,6 +12,7 @@ struct AccountView: View {
     @State private var showMyMember = false
     @State private var showMembershipTypeChoice = false
     @State private var requestedMember: Member?
+    @State private var showDeleteAccountConfirmation = false
 
     // Derived live from the roster @Query, not from the possibly-stale
     // user.isGrazerVSCMember flag (only recalculated at register/login) —
@@ -81,7 +82,11 @@ struct AccountView: View {
                         Label("Profil bearbeiten", systemImage: "pencil")
                     }
 
-                    if let member = matchedMember {
+                    // GVSC-gated (account-tiers refactor, decision #6) — a
+                    // logged-in user who somehow has a matchedMember but
+                    // isn't a GVSC member/coach/admin still only sees
+                    // "Mitgliedschaft beantragen", never direct edit access.
+                    if let member = matchedMember, user.hasGVSCPrivileges {
                         Button {
                             requestedMember = member
                             showMyMember = true
@@ -104,6 +109,16 @@ struct AccountView: View {
                     } label: {
                         Label("Abmelden", systemImage: "rectangle.portrait.and.arrow.right")
                     }
+                }
+
+                Section {
+                    Button(role: .destructive) {
+                        showDeleteAccountConfirmation = true
+                    } label: {
+                        Label("Konto löschen", systemImage: "trash")
+                    }
+                } footer: {
+                    Text("Löscht dein Konto endgültig, inklusive aller Team-Mitgliedschaften und Event-Teilnahmen.")
                 }
             } else {
                 ProgressView()
@@ -145,6 +160,25 @@ struct AccountView: View {
             Button("Abbrechen", role: .cancel) {}
         } message: {
             Text("Als Sportler:in oder als Helfer:in (Trainer:in/Betreuer:in) registrieren?")
+        }
+        // Self-service account deletion (account-tiers refactor, decision
+        // #7 — App Store guideline 5.1.1(v): any app offering in-app
+        // account creation must also let the user delete that account from
+        // within the app). Reuses the same UserService.delete UserListView
+        // already calls for admin-initiated deletion, then routes through
+        // onLogout — which also clears the appleUserIdentifier/localUserID
+        // @AppStorage keys (RootView), so a deleted account is never
+        // "resumed" on next launch.
+        .confirmationDialog("Konto löschen?", isPresented: $showDeleteAccountConfirmation, titleVisibility: .visible) {
+            Button("Löschen", role: .destructive) {
+                if let user = currentUser {
+                    UserService.delete(user, modelContext: modelContext)
+                }
+                onLogout()
+            }
+            Button("Abbrechen", role: .cancel) {}
+        } message: {
+            Text("Dein Konto wird endgültig gelöscht, inklusive aller Team-Mitgliedschaften und Event-Teilnahmen. Das kann nicht rückgängig gemacht werden.")
         }
     }
 
@@ -355,9 +389,11 @@ struct EditAccountView: View {
 /// under the name.
 ///
 /// Rows show whether the account fuzzily matches a `Member` roster entry
-/// (`Member.first(matching:)`). Email is shown only when non-blank: it's
-/// device-local and never pushed to CloudKit, so accounts pulled from
-/// another device legitimately have none — hence the footer note.
+/// (`Member.first(matching:)`). Email now syncs via CloudKit like every
+/// other identity field (account-tiers refactor, decision #4 — needed so
+/// LoginView's email+password form works from any device), so it's still
+/// shown only when non-blank but that's just ordinary "not filled in yet",
+/// not a device-locality caveat anymore.
 struct UserListView: View {
     let currentUser: User
     @Environment(\.modelContext) private var modelContext
@@ -397,8 +433,6 @@ struct UserListView: View {
                 .onDelete { offsets in
                     pendingDeletion = offsets.map { filteredUsers[$0] }.filter { $0.id != currentUser.id }
                 }
-            } footer: {
-                Text("E-Mail-Adressen werden aus Datenschutzgründen nicht zwischen Geräten synchronisiert und erscheinen daher nur für lokal erstellte Konten.")
             }
         }
         .navigationTitle("App-Konten")
