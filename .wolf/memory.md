@@ -3069,3 +3069,37 @@
 | 23:11 | Edited BlindensportGraz/AccountView.swift | modified ForEach() | ~81 |
 | 23:15 | Account-tiers refactor: anonymous landing screen, password login, GVSC-gated RSVP/roster-edit, self-delete | RootView.swift, AccountView.swift, EventsViews.swift, User.swift, CKSchema.swift, CloudKitSync(+UserIdentity).swift, NextEventLookup.swift, Validation.swift, +PasswordHashing.swift, +AnonymousLandingView.swift | build + build-for-testing succeeded | ~180000 |
 | 23:12 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |
+| 23:16 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |
+| 23:26 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |
+| 23:28 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |
+| 23:35 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |
+| 23:43 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |
+| 23:44 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |
+| 23:44 | Session end: 26 writes across 11 files (User.swift, PasswordHashing.swift, Validation.swift, CKSchema.swift, CloudKitSync.swift) | 8 reads | ~41047 tok |
+
+## Session: 2026-09-17 21:48
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:10 | Startup welcome-screen feature (WelcomeScreen.swift, RootView/TeamsViews wiring) built, then reverted at user's request — not what they wanted | WelcomeScreen.swift (deleted), RootView.swift, TeamsViews.swift, project.pbxproj (all restored via git checkout) | reverted | ~30551 |
+| 22:05 | Session end: 6 writes across 3 files (WelcomeScreen.swift, RootView.swift, TeamsViews.swift) | 8 reads | ~30551 tok |
+| 22:14 | Edited BlindensportGraz/BlindensportGraz.entitlements | 4→5 lines | ~40 |
+| 22:14 | Edited BlindensportGraz/BlindensportGrazRelease.entitlements | 4→5 lines | ~40 |
+| 22:15 | Edited BlindensportGraz/Info.plist | expanded (+12 lines) | ~142 |
+| 22:16 | Created BlindensportGraz/WelcomeContent.swift | — | ~600 |
+| 22:16 | Created BlindensportGraz/WelcomeContentService.swift | — | ~138 |
+| 22:17 | Created BlindensportGraz/CloudKitSync+WelcomeContent.swift | — | ~568 |
+| 22:17 | Edited BlindensportGraz/CKSchema.swift | expanded (+10 lines) | ~113 |
+| 22:17 | Edited BlindensportGraz/ModelSchema.swift | 1→2 lines | ~16 |
+| 22:17 | Edited BlindensportGraz/CloudKitSync.swift | 1→2 lines | ~34 |
+| 22:17 | Created BlindensportGraz/WelcomeScreen.swift | — | ~2532 |
+| 22:17 | Edited BlindensportGraz/RootView.swift | 3→5 lines | ~55 |
+| 22:18 | Edited BlindensportGraz/RootView.swift | modified syncWelcomeFileIfPresent() | ~440 |
+| 22:18 | Edited BlindensportGraz/RootView.swift | 6→8 lines | ~95 |
+| 22:18 | Edited BlindensportGraz/RootView.swift | 5→7 lines | ~68 |
+| 22:18 | Edited BlindensportGraz/TeamsViews.swift | modified Section() | ~121 |
+| 22:18 | Edited BlindensportGraz/TeamsViews.swift | 29→31 lines | ~345 |
+| 22:18 | Edited BlindensportGraz/TeamsViews.swift | 2→3 lines | ~42 |
+| 22:20 | Rebuilt startup welcome screen as CloudKit-shared content (WelcomeContent model + CKSchema/CloudKitSync+pull wired into syncAll + WelcomeContentService) with a WelcomeFileWatcher reading welcome.md from the app's own iCloud Drive container (CloudDocuments entitlement + NSUbiquitousContainers) — user rejected the earlier per-device security-scoped-bookmark version | WelcomeContent.swift, WelcomeContentService.swift, CloudKitSync+WelcomeContent.swift, WelcomeScreen.swift, CKSchema.swift, ModelSchema.swift, CloudKitSync.swift, RootView.swift, TeamsViews.swift, *.entitlements, Info.plist | xcodegen generate + xcodebuild build SUCCEEDED | ~55000 |
+| 22:20 | Session end: 23 writes across 12 files (WelcomeScreen.swift, RootView.swift, TeamsViews.swift, BlindensportGraz.entitlements, BlindensportGrazRelease.entitlements) | 18 reads | ~52577 tok |
+| 22:25 | Session end: 23 writes across 12 files (WelcomeScreen.swift, RootView.swift, TeamsViews.swift, BlindensportGraz.entitlements, BlindensportGrazRelease.entitlements) | 18 reads | ~52577 tok |

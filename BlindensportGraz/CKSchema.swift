@@ -240,6 +240,16 @@ enum CKSchema {
         static let lastUsedAt = "lastUsedAt"
     }
 
+    /// One shared welcome note, shown to every user on launch — see
+    /// `WelcomeContent.swift`'s doc comment for why this is a singleton
+    /// record rather than one-per-something.
+    enum WelcomeContent {
+        static let recordType = "WelcomeContent"
+        static let markdown = "markdown"
+        static let isEnabled = "isEnabled"
+        static let updatedAt = "updatedAt"
+    }
+
     enum RoleChangeLog {
         static let recordType = "RoleChangeLog"
         static let userID = "userID"

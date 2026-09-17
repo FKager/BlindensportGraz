@@ -24,6 +24,18 @@
     <true/>
     <key>UIFileSharingEnabled</key>
     <true/>
+    <key>NSUbiquitousContainers</key>
+    <dict>
+        <key>iCloud.it.a11y.BlindensportGraz</key>
+        <dict>
+            <key>NSUbiquitousContainerIsDocumentScopePublic</key>
+            <true/>
+            <key>NSUbiquitousContainerSupportedFolderLevels</key>
+            <string>Any</string>
+            <key>NSUbiquitousContainerName</key>
+            <string>Blindensport Graz</string>
+        </dict>
+    </dict>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>

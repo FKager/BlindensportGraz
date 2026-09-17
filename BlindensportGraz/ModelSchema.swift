@@ -22,6 +22,7 @@ enum AppModelSchema {
         TrainingFavorite.self,
         RoleChangeLog.self,
         ExpenseReceipt.self,
+        WelcomeContent.self,
         // Self-service roster edits awaiting admin review
         // (architecture-review.md §5 P2).
         MemberChangeRequest.self,

@@ -23,6 +23,8 @@ struct RootView: View {
     // resolveAccount can re-link to the same synced account instead of
     // silently minting a duplicate one below.
     @AppStorage("localUserID") private var storedUserID = ""
+    @State private var welcomeMarkdown = ""
+    @State private var showWelcome = false
 
     @Environment(\.modelContext) private var modelContext
     // Intentionally unfiltered (audit.md SwiftData & CloudKit Finding 6):
@@ -57,6 +59,35 @@ struct RootView: View {
         .task {
             await resolveAccount()
         }
+        .fullScreenCover(isPresented: $showWelcome) {
+            WelcomeView(markdown: welcomeMarkdown) { showWelcome = false }
+        }
+    }
+
+    /// If THIS device can see `welcome.md` in its own iCloud Drive (only
+    /// true for whichever admin device the file was actually placed on —
+    /// see `WelcomeFileWatcher`'s doc comment), pushes its content into the
+    /// shared `WelcomeContent` CloudKit record so every other user's device
+    /// picks it up on their own next sync. A no-op everywhere else.
+    private func syncWelcomeFileIfPresent() {
+        guard let localMarkdown = WelcomeFileWatcher.readLocalFile() else { return }
+        let content = WelcomeContent.fetchOrCreate(in: modelContext)
+        guard content.markdown != localMarkdown else { return }
+        content.markdown = localMarkdown
+        content.isEnabled = true
+        WelcomeContentService.save(content, modelContext: modelContext)
+    }
+
+    /// Shows the shared welcome note (already pulled by `syncAll` by the
+    /// time this runs — see `triggerBackgroundSync`/
+    /// `triggerAnonymousBackgroundSync`) once per app launch, on top of
+    /// whichever screen `resolveAccount()` landed on. No-ops if nothing has
+    /// been authored yet or an admin has it turned off.
+    private func loadWelcomeIfNeeded() {
+        guard let content = WelcomeContent.current(in: modelContext), content.isEnabled,
+              !content.markdown.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        welcomeMarkdown = content.markdown
+        showWelcome = true
     }
 
     /// Resumes a previously-resolved account from `@AppStorage` if there is
@@ -223,6 +254,8 @@ struct RootView: View {
             // Refresh the home-screen widget with whatever the sync just
             // pulled in (architecture-review.md §5).
             WidgetRefresher.refresh(modelContext: modelContext, for: currentUser)
+            syncWelcomeFileIfPresent()
+            loadWelcomeIfNeeded()
         }
         PushNotifications.requestAuthorizationIfNeeded()
     }
@@ -237,6 +270,8 @@ struct RootView: View {
             await SyncOrchestrationService.syncAll(modelContext: modelContext)
             await SyncOrchestrationService.ensureDefaultTeams(modelContext: modelContext)
             WidgetRefresher.refresh(modelContext: modelContext, for: nil)
+            syncWelcomeFileIfPresent()
+            loadWelcomeIfNeeded()
         }
     }
 }

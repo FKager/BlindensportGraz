@@ -508,6 +508,11 @@ private struct VereinHubList: View {
                 } label: {
                     Label("Datensicherung", systemImage: "externaldrive.badge.icloud")
                 }
+                NavigationLink {
+                    WelcomeScreenSettingsView()
+                } label: {
+                    Label("Willkommensbildschirm", systemImage: "hand.wave")
+                }
             }
 
             Section("Finanzen") {
@@ -543,7 +548,7 @@ struct VereinSplitView: View {
     @Environment(\.modelContext) private var modelContext
 
     enum Destination: String, CaseIterable, Identifiable, Hashable {
-        case teams, mitglieder, personen, konten, antraege, rollen, sicherung, budget
+        case teams, mitglieder, personen, konten, antraege, rollen, sicherung, willkommen, budget
         var id: String { rawValue }
 
         var title: String {
@@ -555,6 +560,7 @@ struct VereinSplitView: View {
             case .antraege: return "Änderungsanträge"
             case .rollen: return "Rollenänderungen"
             case .sicherung: return "Datensicherung"
+            case .willkommen: return "Willkommensbildschirm"
             case .budget: return "Vereinsbudget"
             }
         }
@@ -568,6 +574,7 @@ struct VereinSplitView: View {
             case .antraege: return "person.crop.circle.badge.checkmark"
             case .rollen: return "clock.arrow.circlepath"
             case .sicherung: return "externaldrive.badge.icloud"
+            case .willkommen: return "hand.wave"
             case .budget: return "eurosign.bank.building"
             }
         }
@@ -606,6 +613,7 @@ struct VereinSplitView: View {
         case .antraege: MemberChangeRequestsView(currentUser: currentUser)
         case .rollen: RoleChangeLogView()
         case .sicherung: FullBackupView()
+        case .willkommen: WelcomeScreenSettingsView()
         case .budget: BudgetView(currentUser: currentUser)
         }
     }
