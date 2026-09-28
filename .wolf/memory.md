@@ -3178,3 +3178,10 @@
 | 21:30 | Added Share Extension target so BlindensportGraz appears in iOS share sheet for files, auto-creates Tournament via existing importer | BlindensportGrazShareExtension/ (new target), BlindensportGraz/ShareExtensionBridge.swift (new), RootView.swift, TournamentsViews.swift, Info.plist, project.yml | done, xcodebuild build + build-for-testing SUCCEEDED (simulator) | ~4000 |
 | 21:30 | Registered it.a11y.BlindensportGraz.ShareExtension App ID + App Group + generated CI provisioning profile via scripted Safari automation; set IOS_CI_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 GitHub secret; updated ios-device-deploy.yml to install/pin the new profile | .github/workflows/ios-device-deploy.yml, Apple Developer Portal | done, verified profile UUID/entitlements/device via security cms -D | ~1500 |
 | 21:32 | Session end: 44 writes across 22 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 27 reads | ~86413 tok |
+| 21:49 | Session end: 44 writes across 22 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 27 reads | ~86413 tok |
+| 21:49 | Session end: 44 writes across 22 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 27 reads | ~86413 tok |
+| 21:50 | Edited RootCLI/Sources/rootcli/RootCLI.swift | 6→6 lines | ~105 |
+| 22:04 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | modified Production() | ~866 |
+| 22:04 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | inline fix | ~52 |
+| 22:04 | Synced CloudKit Development -> Production (rootcli copy-records): added WelcomeContent to copyableRecordTypes, deployed pending Production schema changes (UserIdentity.calendarToken + BudgetEntry/EventMembership types) via scripted Safari, re-ran copy | RootCLI/Sources/rootcli/RootCLI.swift, CloudKit Console (Production schema) | done, 334 copied 0 failed | ~1200 |
+| 22:05 | Session end: 47 writes across 24 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 29 reads | ~93150 tok |

@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T19:16:16.243Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T20:04:37.050Z
 > Files: 299 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -50,7 +50,7 @@
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
 - `MEMORY.md` — Memory (~230 tok)
-- `project_cloudkit-prod-data-copy.md` — Declares from (~2155 tok)
+- `project_cloudkit-prod-data-copy.md` — Declares from (~2988 tok)
 - `project_duplicate-names-investigation.md` (~928 tok)
 - `project_testflight-setup.md` — Declares systemCrashLogs (~2811 tok)
 - `project_widget_prerequisites.md` (~688 tok)
@@ -403,7 +403,7 @@
 
 ## RootCLI/Sources/rootcli/
 
-- `RootCLI.swift` — Struct: RootCLI (~5641 tok)
+- `RootCLI.swift` — Struct: RootCLI (~5646 tok)
 
 ## RootCLI/Tests/CloudKitS2SCoreTests/
 
