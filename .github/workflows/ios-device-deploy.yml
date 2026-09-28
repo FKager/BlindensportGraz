@@ -40,6 +40,13 @@ name: iOS Device Deploy
 #                                            it.a11y.BlindensportGraz that
 #                                            already includes this device's
 #                                            UDID
+#        IOS_CI_WIDGET_PROVISIONING_PROFILE_BASE64
+#                                            same, for it.a11y.BlindensportGraz.Widgets
+#                                            (App Group capability)
+#        IOS_CI_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64
+#                                            same, for it.a11y.BlindensportGraz.ShareExtension
+#                                            (App Group capability) — see
+#                                            ShareViewController.swift's doc comment
 #   5. If you ever pair a different iPhone, update DEVICE_ID below (get it
 #      from `xcrun devicectl list devices`) — it must also be in a
 #      provisioning profile you upload as IOS_CI_PROVISIONING_PROFILE_BASE64.
@@ -125,12 +132,18 @@ jobs:
           # WidgetKit extension), with the App Group capability. Required
           # since the widget target was added.
           IOS_CI_WIDGET_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_CI_WIDGET_PROVISIONING_PROFILE_BASE64 }}
+          # Same, for it.a11y.BlindensportGraz.ShareExtension (the Share
+          # Extension target — "Turnier aus Einladung erstellen" via the
+          # iOS share sheet). Required since that target was added.
+          IOS_CI_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_CI_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 }}
         run: |
           set -euo pipefail
           PP_PATH="$RUNNER_TEMP/profile.mobileprovision"
           WIDGET_PP_PATH="$RUNNER_TEMP/widget_profile.mobileprovision"
+          SHARE_EXTENSION_PP_PATH="$RUNNER_TEMP/share_extension_profile.mobileprovision"
           echo -n "$IOS_CI_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$PP_PATH"
           echo -n "$IOS_CI_WIDGET_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$WIDGET_PP_PATH"
+          echo -n "$IOS_CI_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64" | base64 --decode -o "$SHARE_EXTENSION_PP_PATH"
 
           # Writing security cms -D's output to a file rather than piping it
           # straight into PlistBuddy via /dev/stdin intermittently produced
@@ -139,6 +152,7 @@ jobs:
           # pipeline like this reliably avoids it.
           security cms -D -i "$PP_PATH" > "$RUNNER_TEMP/decoded_profile.plist"
           security cms -D -i "$WIDGET_PP_PATH" > "$RUNNER_TEMP/decoded_widget_profile.plist"
+          security cms -D -i "$SHARE_EXTENSION_PP_PATH" > "$RUNNER_TEMP/decoded_share_extension_profile.plist"
 
           PROFILES_DIR=~/Library/MobileDevice/"Provisioning Profiles"
           mkdir -p "$PROFILES_DIR"
@@ -153,10 +167,10 @@ jobs:
           # the Push Notifications/aps-environment entitlement was installed,
           # but the build still failed against a leftover profile from
           # 2026-07-15 that predated that capability. Delete every existing
-          # profile whose app-id contains this bundle id (so both the app's own
-          # profile AND the ".Widgets" extension profile are cleared) first so
-          # ours are always the only match; profiles for any OTHER app on this
-          # Mac are left untouched.
+          # profile whose app-id contains this bundle id (so the app's own
+          # profile AND both the ".Widgets"/".ShareExtension" extension
+          # profiles are cleared) first so ours are always the only match;
+          # profiles for any OTHER app on this Mac are left untouched.
           for existing in "$PROFILES_DIR"/*.mobileprovision; do
             [ -e "$existing" ] || continue
             security cms -D -i "$existing" > "$RUNNER_TEMP/existing_profile.plist" 2>/dev/null || continue
@@ -168,10 +182,13 @@ jobs:
 
           PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" "$RUNNER_TEMP/decoded_profile.plist")
           WIDGET_PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" "$RUNNER_TEMP/decoded_widget_profile.plist")
+          SHARE_EXTENSION_PROFILE_UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" "$RUNNER_TEMP/decoded_share_extension_profile.plist")
           cp "$PP_PATH" "$PROFILES_DIR/$PROFILE_UUID.mobileprovision"
           cp "$WIDGET_PP_PATH" "$PROFILES_DIR/$WIDGET_PROFILE_UUID.mobileprovision"
+          cp "$SHARE_EXTENSION_PP_PATH" "$PROFILES_DIR/$SHARE_EXTENSION_PROFILE_UUID.mobileprovision"
           echo "PROFILE_UUID=$PROFILE_UUID" >> "$GITHUB_ENV"
           echo "WIDGET_PROFILE_UUID=$WIDGET_PROFILE_UUID" >> "$GITHUB_ENV"
+          echo "SHARE_EXTENSION_PROFILE_UUID=$SHARE_EXTENSION_PROFILE_UUID" >> "$GITHUB_ENV"
 
       - name: Configure Manual signing on the app target
         run: |
@@ -224,6 +241,8 @@ jobs:
           # The WidgetKit extension target added alongside it needs the same
           # Manual-signing treatment against its OWN (.Widgets) profile — a
           # different UUID — so both the app and its embedded appex are pinned.
+          # The Share Extension target added later needs the same treatment
+          # against its OWN (.ShareExtension) profile.
           gem install xcodeproj --no-document
           ruby -e '
             require "xcodeproj"
@@ -231,6 +250,7 @@ jobs:
             pins = {
               ENV.fetch("SCHEME") => ENV.fetch("PROFILE_UUID"),
               "BlindensportGrazWidgets" => ENV.fetch("WIDGET_PROFILE_UUID"),
+              "BlindensportGrazShareExtension" => ENV.fetch("SHARE_EXTENSION_PROFILE_UUID"),
             }
             pins.each do |target_name, profile_uuid|
               target = project.targets.find { |t| t.name == target_name }

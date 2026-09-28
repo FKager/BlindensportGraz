@@ -3159,3 +3159,21 @@
 | 20:58 | Edited BlindensportGraz/TournamentInvitationImport.swift | 2→2 lines | ~41 |
 | 21:00 | Added "Turnier aus Einladung erstellen" (upload txt/docx/pdf, auto-fill fields via Apple Intelligence + heuristic fallback) | BlindensportGraz/TournamentInvitationImport.swift (new), TournamentsViews.swift, Sport.swift | done, xcodebuild build + build-for-testing both SUCCEEDED | ~4500 |
 | 21:00 | Session end: 31 writes across 15 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 22 reads | ~63705 tok |
+| 21:01 | Session end: 31 writes across 15 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 22 reads | ~63705 tok |
+| 21:12 | Created BlindensportGraz/ShareExtensionBridge.swift | — | ~1283 |
+| 21:12 | Edited BlindensportGraz/TournamentsViews.swift | modified process() | ~1214 |
+| 21:12 | Edited BlindensportGraz/RootView.swift | expanded (+14 lines) | ~290 |
+| 21:13 | Edited BlindensportGraz/RootView.swift | modified onChange() | ~402 |
+| 21:13 | Edited BlindensportGraz/Info.plist | expanded (+13 lines) | ~119 |
+| 21:13 | Created BlindensportGrazShareExtension/Info.plist | — | ~355 |
+| 21:13 | Created BlindensportGrazShareExtension/BlindensportGrazShareExtension.entitlements | — | ~86 |
+| 21:13 | Created BlindensportGrazShareExtension/ShareViewController.swift | — | ~1339 |
+| 21:13 | Edited project.yml | 3→4 lines | ~56 |
+| 21:14 | Edited project.yml | expanded (+34 lines) | ~520 |
+| 21:15 | Edited .github/workflows/ios-device-deploy.yml | modified secrets() | ~372 |
+| 21:16 | Edited .github/workflows/ios-device-deploy.yml | modified 04() | ~1290 |
+| 21:16 | Edited .github/workflows/ios-device-deploy.yml | 11→14 lines | ~228 |
+| 21:17 | Session end: 44 writes across 22 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 27 reads | ~86413 tok |
+| 21:19 | Session end: 44 writes across 22 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 27 reads | ~86413 tok |
+| 21:30 | Added Share Extension target so BlindensportGraz appears in iOS share sheet for files, auto-creates Tournament via existing importer | BlindensportGrazShareExtension/ (new target), BlindensportGraz/ShareExtensionBridge.swift (new), RootView.swift, TournamentsViews.swift, Info.plist, project.yml | done, xcodebuild build + build-for-testing SUCCEEDED (simulator) | ~4000 |
+| 21:30 | Registered it.a11y.BlindensportGraz.ShareExtension App ID + App Group + generated CI provisioning profile via scripted Safari automation; set IOS_CI_SHARE_EXTENSION_PROVISIONING_PROFILE_BASE64 GitHub secret; updated ios-device-deploy.yml to install/pin the new profile | .github/workflows/ios-device-deploy.yml, Apple Developer Portal | done, verified profile UUID/entitlements/device via security cms -D | ~1500 |

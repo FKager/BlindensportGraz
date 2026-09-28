@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T18:58:17.748Z
-> Files: 295 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T19:16:16.243Z
+> Files: 299 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -84,7 +84,7 @@
 - `goal.md` (~276 tok)
 - `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
 - `profile.plist` (~0 tok)
-- `project.yml` (~1404 tok)
+- `project.yml` (~1862 tok)
 
 ## .claude/
 
@@ -114,7 +114,7 @@
 ## .github/workflows/
 
 - `ios-build-deploy.yml` — CI: iOS Build and Deploy (~4552 tok)
-- `ios-device-deploy.yml` — CI: iOS Device Deploy (~4310 tok)
+- `ios-device-deploy.yml` — CI: iOS Device Deploy (~4812 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/
 
@@ -235,7 +235,7 @@
 - `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3446 tok)
 - `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5987 tok)
 - `FullBackupView.swift` — / Admin-only whole-club export/restore screen — architecture-review.md §5 (~1226 tok)
-- `Info.plist` (~556 tok)
+- `Info.plist` (~664 tok)
 - `KostZCalculation.swift` — / One eligible person's summed amount for the requested month — see (~2323 tok)
 - `KostZExport.swift` — Declares KostZExportError (~1805 tok)
 - `KostZViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~3136 tok)
@@ -262,13 +262,14 @@
 - `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
 - `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
 - `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
-- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~7341 tok)
+- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~7841 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
 - `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 - `SeasonDashboard.swift` — / Aggregate season stats — architecture-review.md §5 (P2). "Season" here (~881 tok)
 - `SeasonDashboardView.swift` — / Season (= one calendar year) recap — architecture-review.md §5 (P2): (~1790 tok)
 - `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
+- `ShareExtensionBridge.swift` — / Bridges a file shared into iOS's system share sheet ("Turnier aus (~1283 tok)
 - `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1129 tok)
 - `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2426 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
@@ -287,7 +288,7 @@
 - `Tournament.swift` — Class: Tournament (~274 tok)
 - `TournamentInvitationImport.swift` — / Prefilled values for a new `Tournament`, produced by (~3668 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~11368 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~11607 tok)
 - `Training.swift` — Class: Training (~1148 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
@@ -319,6 +320,12 @@
 ## BlindensportGraz/Assets.xcassets/AppIcon.appiconset/
 
 - `Contents.json` (~61 tok)
+
+## BlindensportGrazShareExtension/
+
+- `BlindensportGrazShareExtension.entitlements` (~86 tok)
+- `Info.plist` (~355 tok)
+- `ShareViewController.swift` — / Minimal Share Extension: this is the target that makes "Blindensport (~1339 tok)
 
 ## BlindensportGrazTests/
 

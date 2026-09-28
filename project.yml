@@ -39,6 +39,7 @@ targets:
       - sdk: WidgetKit.framework
       # Embedded into the .app's PlugIns automatically (app-extension type).
       - target: BlindensportGrazWidgets
+      - target: BlindensportGrazShareExtension
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz
@@ -106,6 +107,40 @@ targets:
           CODE_SIGN_ENTITLEMENTS: BlindensportGrazWidgets/BlindensportGrazWidgets.entitlements
         Release:
           CODE_SIGN_ENTITLEMENTS: BlindensportGrazWidgets/BlindensportGrazWidgets.entitlements
+  # Makes "Blindensport Graz" appear in iOS's system share sheet for a file —
+  # see ShareViewController.swift's doc comment. Hands off to the main app
+  # via ShareExtensionBridge + a custom URL scheme rather than doing any of
+  # TournamentInvitationImporter's actual work here.
+  BlindensportGrazShareExtension:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: BlindensportGrazShareExtension
+        excludes:
+          - "BlindensportGrazShareExtension.entitlements"
+          - "Info.plist"
+      # Shared with the main app — see that file's doc comment.
+      - path: BlindensportGraz/ShareExtensionBridge.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz.ShareExtension
+        # Same reasoning as BlindensportGrazWidgets above: the generated
+        # Info.plist can't express the nested NSExtension dict this needs.
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: BlindensportGrazShareExtension/Info.plist
+        INFOPLIST_KEY_CFBundleDisplayName: "Blindensport Graz"
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_EMIT_LOC_STRINGS: "YES"
+        SKIP_INSTALL: "NO"
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: "5Q57Y9YT8J"
+      configs:
+        Debug:
+          CODE_SIGN_ENTITLEMENTS: BlindensportGrazShareExtension/BlindensportGrazShareExtension.entitlements
+        Release:
+          CODE_SIGN_ENTITLEMENTS: BlindensportGrazShareExtension/BlindensportGrazShareExtension.entitlements
   BlindensportGrazTests:
     type: bundle.unit-test
     platform: iOS

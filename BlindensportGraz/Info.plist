@@ -36,6 +36,19 @@
             <string>Blindensport Graz</string>
         </dict>
     </dict>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>it.a11y.BlindensportGraz.shareimport</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>blindensportgraz</string>
+            </array>
+        </dict>
+    </array>
     <key>UIApplicationSceneManifest</key>
     <dict>
         <key>UIApplicationSupportsMultipleScenes</key>

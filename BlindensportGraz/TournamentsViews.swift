@@ -853,11 +853,20 @@ struct TournamentsListView: View {
 /// presented directly from TournamentsListView.
 struct TournamentInvitationImportView: View {
     let currentUser: User?
+    // Set when this view was opened by sharing a file into the app via the
+    // system share sheet (BlindensportGrazShareExtension +
+    // ShareExtensionBridge — user request), rather than the in-app "Datei
+    // auswählen" button below. When set, processing starts immediately
+    // instead of waiting for a tap, and the file is cleaned out of the
+    // shared App Group container once this view is done with it (one-shot
+    // hand-off, not a durable inbox — see ShareExtensionBridge.cleanup).
+    var sharedFileURL: URL? = nil
     @Environment(\.dismiss) private var dismiss
     @State private var showFileImporter = false
     @State private var isProcessing = false
     @State private var draft: TournamentDraft?
     @State private var errorMessage: String?
+    @State private var didStartSharedImport = false
 
     var body: some View {
         if let draft {
@@ -903,7 +912,12 @@ struct TournamentInvitationImportView: View {
                     isPresented: $showFileImporter,
                     allowedContentTypes: TournamentInvitationImporter.supportedContentTypes
                 ) { result in
-                    handle(result)
+                    switch result {
+                    case .failure(let error):
+                        errorMessage = error.localizedDescription
+                    case .success(let url):
+                        process(url)
+                    }
                 }
                 .alert("Import fehlgeschlagen", isPresented: Binding(
                     get: { errorMessage != nil },
@@ -913,28 +927,30 @@ struct TournamentInvitationImportView: View {
                 } message: {
                     Text(errorMessage ?? "")
                 }
+                .task {
+                    guard let sharedFileURL, !didStartSharedImport else { return }
+                    didStartSharedImport = true
+                    process(sharedFileURL)
+                }
             }
         }
     }
 
-    private func handle(_ result: Result<URL, Error>) {
-        switch result {
-        case .failure(let error):
-            errorMessage = error.localizedDescription
-        case .success(let url):
-            isProcessing = true
-            Task {
-                do {
-                    let extracted = try await TournamentInvitationImporter.draft(fromFileAt: url)
-                    await MainActor.run {
-                        isProcessing = false
-                        draft = extracted
-                    }
-                } catch {
-                    await MainActor.run {
-                        isProcessing = false
-                        errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-                    }
+    private func process(_ url: URL) {
+        isProcessing = true
+        Task {
+            do {
+                let extracted = try await TournamentInvitationImporter.draft(fromFileAt: url)
+                if url == sharedFileURL { ShareExtensionBridge.cleanup(url) }
+                await MainActor.run {
+                    isProcessing = false
+                    draft = extracted
+                }
+            } catch {
+                if url == sharedFileURL { ShareExtensionBridge.cleanup(url) }
+                await MainActor.run {
+                    isProcessing = false
+                    errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
                 }
             }
         }

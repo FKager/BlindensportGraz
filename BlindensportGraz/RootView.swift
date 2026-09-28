@@ -284,8 +284,22 @@ struct MainTabView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     private let networkMonitor = NetworkMonitor.shared
 
+    // Sharing a file into the app (BlindensportGrazShareExtension +
+    // ShareExtensionBridge, "Turnier aus Einladung erstellen" via iOS's
+    // share sheet — user request) lands here via .onOpenURL below,
+    // regardless of which tab is currently showing.
+    @State private var sharedInvitationURL: URL?
+    @State private var showSharedInvitationPermissionAlert = false
+
     private var isAdmin: Bool {
         currentUser.role == .admin || currentUser.isRoot
+    }
+
+    // Same gate TournamentsListView's own "Turnier aus Einladung erstellen"
+    // button uses (canManageEvents) — sharing a file into the app must not
+    // be a way to create a tournament that bypasses that permission check.
+    private var canManageEvents: Bool {
+        currentUser.role == .admin || currentUser.role == .coach
     }
 
     var body: some View {
@@ -336,6 +350,33 @@ struct MainTabView: View {
         .onChange(of: networkMonitor.isOnline) { _, isOnline in
             guard isOnline else { return }
             Task { await SyncOrchestrationService.drainOutbox() }
+        }
+        .onOpenURL { url in
+            guard let fileURL = ShareExtensionBridge.resolveIncoming(url) else { return }
+            guard canManageEvents else {
+                ShareExtensionBridge.cleanup(fileURL)
+                showSharedInvitationPermissionAlert = true
+                return
+            }
+            sharedInvitationURL = fileURL
+        }
+        .fullScreenCover(isPresented: Binding(
+            get: { sharedInvitationURL != nil },
+            set: { isPresented in
+                if !isPresented {
+                    if let url = sharedInvitationURL { ShareExtensionBridge.cleanup(url) }
+                    sharedInvitationURL = nil
+                }
+            }
+        )) {
+            if let sharedInvitationURL {
+                TournamentInvitationImportView(currentUser: currentUser, sharedFileURL: sharedInvitationURL)
+            }
+        }
+        .alert("Kein Zugriff", isPresented: $showSharedInvitationPermissionAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Nur Admins und Trainer:innen können auf diese Weise ein Turnier aus einer Einladung erstellen.")
         }
     }
 }
