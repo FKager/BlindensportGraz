@@ -152,7 +152,107 @@ proxy or load balancer (nginx, Caddy, a cloud provider's managed load
 balancer, etc.) and only expose the proxy's HTTPS endpoint, keeping
 `clubmembersapi` itself bound to `127.0.0.1`/an internal network the proxy
 forwards from. TLS is a **deployment responsibility**, not something this
-package does for you — audit.md Security Finding 8.
+package does for you — audit.md Security Finding 8. This still applies
+verbatim when running the container below — publish the container's port to
+`127.0.0.1` (or an internal Docker/Podman network) and put the proxy in
+front of that, never publish 8080 straight to a public interface.
+
+#### Running as a container (Docker or Podman)
+
+`RootCLI/Dockerfile` builds `clubmembersapi` as a container image (multi-stage
+Swift build, non-root runtime user, `Public/` webui baked in). Because
+`RootCLI/Package.swift` depends on the sibling `../Shared/ClubSchema`
+package, **the build context must be the repository root**, not `RootCLI/`:
+
+```bash
+# from the repository root
+docker build -f RootCLI/Dockerfile -t clubmembersapi .
+# or, identically, with Podman:
+podman build -f RootCLI/Dockerfile -t clubmembersapi .
+```
+
+**Recommended: `docker-compose.yml` at the repository root**, which bundles a
+[Caddy](https://caddyserver.com) reverse proxy that terminates TLS and is the
+only thing this deployment actually exposes to the internet — `clubmembersapi`
+itself has no published host port at all, reachable only from the `caddy`
+container over a compose-internal Docker network:
+
+```bash
+cp .env.example .env
+# edit .env: real CLOUDKIT_KEY_ID/API_USERNAME/API_PASSWORD, plus DOMAIN (a
+# real hostname whose DNS A/AAAA record points at this host) and ACME_EMAIL
+mkdir -p secrets && cp ~/.config/rootcli/rootcli_private_key_pkcs8.pem secrets/rootcli_private_key_pkcs8.pem
+# make sure ports 80 and 443 both reach this host from the internet — Caddy
+# needs 80 for the ACME HTTP-01 challenge, not just for the HTTP->HTTPS redirect
+docker compose up -d --build
+# or: podman-compose up -d --build
+```
+
+Caddy then automatically obtains and renews a real Let's Encrypt certificate
+for `DOMAIN` — no manual certificate handling. The webui is reachable at
+`https://<DOMAIN>/` once DNS + ports are correctly pointed at the host.
+`Caddyfile` (repository root) is the whole proxy config, three lines; edit it
+directly for anything beyond a single-domain reverse proxy (path-based
+routing to other services, etc.).
+
+Verified end-to-end (2026-09-28): built the image, ran the full compose stack
+with `DOMAIN=localhost` (Caddy falls back to its own internal CA for that
+one hostname, so this only proves the reverse-proxy wiring — real deployment
+still needs a real `DOMAIN` for a browser-trusted Let's Encrypt cert) and
+confirmed via `curl` that unauthenticated requests get 401, valid Basic Auth
+reaches both `/` and `/records.html` with 200, wrong credentials get 401, and
+`clubmembersapi`'s own port is genuinely unreachable from the host directly
+(connection refused — only `caddy` can reach it).
+
+**Standalone, without the bundled Caddy** (e.g. you already run your own
+nginx/Traefik/cloud load balancer elsewhere and just want the bare
+container): same required env vars as
+[`clubmembersapi` usage](#web-api--admin-page) below, plus mounting the
+private key file read-only:
+
+```bash
+docker run -d --name clubmembersapi \
+  -p 127.0.0.1:8080:8080 \
+  -e CLOUDKIT_KEY_ID=<key id> \
+  -e CLOUDKIT_ENVIRONMENT=production \
+  -e API_USERNAME=admin \
+  -e API_PASSWORD=<a real secret> \
+  -e CLOUDKIT_PRIVATE_KEY_PATH=/run/secrets/rootcli_private_key.pem \
+  -v ~/.config/rootcli/rootcli_private_key_pkcs8.pem:/run/secrets/rootcli_private_key.pem:ro \
+  clubmembersapi
+
+# Podman: identical, `podman run` accepts the same flags.
+```
+
+**Never publish 8080 (or any of clubmembersapi's ports) with a `0.0.0.0`
+binding directly** — it speaks plain HTTP only; see the mandatory-TLS rule
+above. `127.0.0.1` here means "your own external proxy on this same host can
+reach it"; point that proxy's HTTPS endpoint at it instead of exposing 8080
+itself.
+
+Notes specific to the container deployment:
+
+- The image sets `HOSTNAME=0.0.0.0` so the server listens on all interfaces
+  *inside* the container (Vapor's own default, `127.0.0.1`, would be
+  unreachable across the container network namespace) — this is not the same
+  as exposing it publicly; only the published-port/network config controls
+  that, and neither the bundled `docker-compose.yml` nor the standalone
+  `docker run` example above publish `clubmembersapi`'s own port to a public
+  interface.
+- `LoginAttemptLimiter` (Basic Auth rate limiting) keys on the client IP.
+  Behind the bundled Caddy setup, `Auth.swift`'s `clientAddress(for:)` reads
+  the real client IP from `X-Forwarded-For` (which Caddy's `reverse_proxy`
+  sets automatically) instead of `request.remoteAddress` (which would
+  otherwise always be Caddy's own container IP, collapsing every real client
+  into one shared failure-count bucket). This is only trustworthy because
+  `docker-compose.yml` gives `clubmembersapi` no other reachable network path
+  — **if you run the standalone `docker run` form behind your OWN proxy
+  instead, and that proxy is on a network `clubmembersapi` shares with
+  anything untrusted, `X-Forwarded-For` becomes attacker-forgeable and this
+  logic should not be trusted as-is.**
+- `.dockerignore` (repository root) excludes `.build/`, the iOS app target,
+  and anything matching `*.pem`/`.env*` from the build context — double
+  check it if you add new files that might contain secrets.
 
 ### 5. Build
 
@@ -296,7 +396,15 @@ swift run clubmembersapi serve
 ```
 
 Open `http://127.0.0.1:8080/` (browser will prompt for the Basic Auth
-credentials above) for the admin page, or call the REST API directly:
+credentials above) for the admin page, or call the REST API directly. The
+webui (`RootCLI/Public/index.html`) covers full CRUD on the roster, a
+live search/filter over the loaded list, a "JSON exportieren" button that
+downloads the current list as a file, and a JSON file-upload form for
+`/api/members/import` (results — succeeded/failed/messages — shown inline);
+`records.html`, linked from its nav bar, is the generic editor for every
+other record type (also with a live search/filter) — see
+[Generic record editor](#generic-record-editor-any-type-not-just-member)
+below.
 
 | Method | Path                | Body                              | Notes |
 |--------|---------------------|------------------------------------|-------|

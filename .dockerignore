@@ -1,0 +1,36 @@
+# Keep the container build context (repo root) small and secret-free — see
+# RootCLI/Dockerfile's header comment for why the build context is the repo
+# root rather than RootCLI/.
+
+# Swift build artifacts (huge, platform-specific, rebuilt fresh in-container)
+RootCLI/.build/
+Shared/ClubSchema/.build/
+.build/
+
+# iOS app / Xcode — not part of the clubmembersapi image
+BlindensportGraz/
+BlindensportGraz.xcodeproj/
+BlindensportGrazTests/
+BlindensportGrazWidgets/
+build/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Secrets — never send these into a build context
+*.pem
+.env
+.env.*
+
+# VCS / editor / OS cruft
+.git/
+.gitignore
+.DS_Store
+.claude/
+.wolf/
+.github/
+
+# Misc project scratch not needed to build the server
+data/
+fastlane/
+*.md

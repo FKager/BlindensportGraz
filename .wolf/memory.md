@@ -3103,3 +3103,48 @@
 | 22:20 | Rebuilt startup welcome screen as CloudKit-shared content (WelcomeContent model + CKSchema/CloudKitSync+pull wired into syncAll + WelcomeContentService) with a WelcomeFileWatcher reading welcome.md from the app's own iCloud Drive container (CloudDocuments entitlement + NSUbiquitousContainers) — user rejected the earlier per-device security-scoped-bookmark version | WelcomeContent.swift, WelcomeContentService.swift, CloudKitSync+WelcomeContent.swift, WelcomeScreen.swift, CKSchema.swift, ModelSchema.swift, CloudKitSync.swift, RootView.swift, TeamsViews.swift, *.entitlements, Info.plist | xcodegen generate + xcodebuild build SUCCEEDED | ~55000 |
 | 22:20 | Session end: 23 writes across 12 files (WelcomeScreen.swift, RootView.swift, TeamsViews.swift, BlindensportGraz.entitlements, BlindensportGrazRelease.entitlements) | 18 reads | ~52577 tok |
 | 22:25 | Session end: 23 writes across 12 files (WelcomeScreen.swift, RootView.swift, TeamsViews.swift, BlindensportGraz.entitlements, BlindensportGrazRelease.entitlements) | 18 reads | ~52577 tok |
+| 22:27 | Session end: 23 writes across 12 files (WelcomeScreen.swift, RootView.swift, TeamsViews.swift, BlindensportGraz.entitlements, BlindensportGrazRelease.entitlements) | 18 reads | ~52577 tok |
+
+## Session: 2026-09-28 19:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:44 | Edited BlindensportGraz/SportIcons.swift | "bell.fill" → "circle.fill" | ~12 |
+| 19:45 | Fixed wrong Torball icon: SportIcon.symbolName returned bell.fill (sound/hearing stereotype), changed to circle.fill (ball) | BlindensportGraz/SportIcons.swift | fixed | ~150 |
+| 19:45 | Session end: 1 writes across 1 files (SportIcons.swift) | 2 reads | ~3000 tok |
+| 19:51 | Edited RootCLI/Sources/clubmembersapi/Auth.swift | 2→6 lines | ~48 |
+| 19:51 | Edited RootCLI/Package.swift | 8→13 lines | ~175 |
+| 19:52 | Created RootCLI/Public/index.html | — | ~2792 |
+| 19:52 | Edited RootCLI/Public/index.html | 2→1 lines | ~34 |
+| 19:52 | Edited RootCLI/Public/records.html | 2→6 lines | ~113 |
+| 19:52 | Edited RootCLI/Public/records.html | 19→24 lines | ~302 |
+| 19:52 | Edited RootCLI/Public/records.html | 2→4 lines | ~57 |
+| 19:53 | Edited RootCLI/Public/records.html | added 1 condition(s) | ~436 |
+| 19:53 | Created RootCLI/Dockerfile | — | ~669 |
+| 19:53 | Created .dockerignore | — | ~195 |
+| 19:53 | Created docker-compose.yml | — | ~435 |
+| 19:53 | Edited .gitignore | 3→5 lines | ~18 |
+| 19:54 | Edited RootCLI/README.md | modified root() | ~998 |
+| 19:54 | Edited RootCLI/README.md | expanded (+8 lines) | ~172 |
+| 19:55 | Fixed Auth.swift CryptoKit import for Linux; added Crypto dep to clubmembersapi target | RootCLI/Package.swift, RootCLI/Sources/clubmembersapi/Auth.swift | fixed | ~300 |
+| 19:55 | Enhanced webui: shared nav, live search/filter, bulk-import UI, JSON export, aria-live status | RootCLI/Public/index.html, RootCLI/Public/records.html | done | ~2200 |
+| 19:55 | Added Docker/Podman container: multi-stage Dockerfile, compose file, .env template, .dockerignore, README docs | RootCLI/Dockerfile, docker-compose.yml, .env.example, .dockerignore, RootCLI/README.md | done | ~1800 |
+| 19:55 | Verified swift build -c release + smoke-tested running binary with curl (auth gating, static pages serve) | RootCLI | verified (docker/podman build itself untested — not installed locally) | ~200 |
+| 19:56 | Session end: 15 writes across 10 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 14 reads | ~30180 tok |
+| 20:05 | Edited RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift | added optional chaining | ~400 |
+| 20:05 | Edited RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift | inline fix | ~18 |
+| 20:05 | Edited RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift | inline fix | ~22 |
+| 20:15 | Installed colima+docker (brew), started local Docker daemon | (tooling, no repo files) | done | ~100 |
+| 20:15 | Ran real docker build; fixed 2 Linux-only bugs (URLSession.data(for:) missing, @retroactive needs Swift 6.0) | RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift, RootCLI/Dockerfile | fixed | ~1500 |
+| 20:15 | Verified full container end-to-end via docker run + curl (auth gating, static pages) | RootCLI/Dockerfile | verified | ~300 |
+| 20:15 | Session end: 18 writes across 11 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 15 reads | ~31320 tok |
+| 20:24 | Session end: 18 writes across 11 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 15 reads | ~31320 tok |
+| 20:33 | Created docker-compose.yml | — | ~860 |
+| 20:33 | Created Caddyfile | — | ~208 |
+| 20:33 | Edited RootCLI/Sources/clubmembersapi/Auth.swift | modified authenticate() | ~38 |
+| 20:33 | Edited RootCLI/Sources/clubmembersapi/Auth.swift | added optional chaining | ~606 |
+| 20:38 | Edited RootCLI/README.md | modified end() | ~1315 |
+| 20:38 | Added bundled Caddy TLS reverse proxy (docker-compose) for external webui access; clubmembersapi port no longer published to host | docker-compose.yml, Caddyfile, .env.example | done | ~1600 |
+| 20:38 | Fixed LoginAttemptLimiter's IP-key gap behind reverse proxy (X-Forwarded-For, scoped to the internal-network-only trust boundary) | RootCLI/Sources/clubmembersapi/Auth.swift | fixed | ~500 |
+| 20:38 | Installed docker-compose plugin (brew + cliPluginsExtraDirs); verified full docker compose up stack end-to-end via curl over HTTPS (localhost internal-CA test) | (tooling) | verified | ~300 |
+| 20:38 | Session end: 23 writes across 12 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 17 reads | ~35005 tok |

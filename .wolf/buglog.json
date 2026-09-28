@@ -8178,6 +8178,164 @@
       "related_bugs": [],
       "occurrences": 2,
       "last_seen": "2026-09-16T21:11:03.356Z"
+    },
+    {
+      "id": "bug-487",
+      "timestamp": "2026-09-28T17:44:58.835Z",
+      "error_message": "Incorrect value in code",
+      "file": "BlindensportGraz/SportIcons.swift",
+      "root_cause": "Had \"bell.fill\"",
+      "fix": "Changed to \"circle.fill\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T17:44:58.835Z"
+    },
+    {
+      "id": "bug-488",
+      "timestamp": "2026-09-28T17:52:39.496Z",
+      "error_message": "Incorrect value in code",
+      "file": "RootCLI/Public/index.html",
+      "root_cause": "Had \"visually-hidden\"",
+      "fix": "Changed to \"search\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T17:52:39.496Z"
+    },
+    {
+      "id": "bug-489",
+      "timestamp": "2026-09-28T17:52:52.965Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Public/records.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 19→24 lines (2 removed) | Also: const records = await api_request('/api/records/' ; records.forEach(r => body.appendChild(renderRow(r)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-09-28T17:53:06.235Z"
+    },
+    {
+      "id": "bug-490",
+      "timestamp": "2026-09-28T18:05:00.609Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:05:00.609Z"
+    },
+    {
+      "id": "bug-491",
+      "timestamp": "2026-09-28T18:14:00.000Z",
+      "error_message": "swift build: value of type 'URLSession' has no member 'data' (async data(for:) convenience API) when building for Linux inside the clubmembersapi Docker image",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "URLSession.shared.data(for:) async/await convenience method isn't available in FoundationNetworking on this Linux Swift toolchain (swift:6.0-jammy) even though it compiles fine on macOS's native Foundation — only discovered by actually running `docker build`, not by the macOS `swift build` used for all prior verification in this repo.",
+      "fix": "Added a portable performRequest(_:) helper using the completion-handler URLSession.dataTask(with:completionHandler:) wrapped in withCheckedThrowingContinuation, which works identically on Darwin and Linux; replaced both call sites (send(endpoint:body:) and uploadAsset).",
+      "tags": [
+        "swift",
+        "linux",
+        "docker",
+        "urlsession",
+        "cross-platform"
+      ],
+      "related_bugs": [
+        "bug-492",
+        "bug-493"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:14:00.000Z"
+    },
+    {
+      "id": "bug-492",
+      "timestamp": "2026-09-28T18:14:00.000Z",
+      "error_message": "swift build: unknown attribute 'retroactive' / inheritance from non-protocol type 'any Content' on `extension MemberRecord: @retroactive Content {}`",
+      "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
+      "root_cause": "The Dockerfile's build-stage image was swift:5.10-jammy, whose compiler predates Swift 6.0's @retroactive attribute (SE-0364) that Routes.swift already used. Package.swift's swift-tools-version 5.9 only sets the MINIMUM language mode, not the compiler version — it doesn't guarantee an older compiler can build syntax introduced later.",
+      "fix": "Bumped RootCLI/Dockerfile's build and runtime base images from swift:5.10-jammy/-slim to swift:6.0-jammy/-slim.",
+      "tags": [
+        "swift",
+        "docker",
+        "retroactive",
+        "compiler-version"
+      ],
+      "related_bugs": [
+        "bug-491",
+        "bug-493"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:14:00.000Z"
+    },
+    {
+      "id": "bug-493",
+      "timestamp": "2026-09-28T18:14:00.000Z",
+      "error_message": "clubmembersapi container: [ WARNING ] Could not read private key at /run/secrets/key.pem: NSCocoaErrorDomain Code=256 -- file read as an empty directory instead of the mounted file",
+      "file": "docker-compose.yml",
+      "root_cause": "Not a code bug: testing the container via colima (installed in this session to get a local docker daemon on macOS) with a bind-mount source path under /tmp failed silently because colima's default VM only mounts $HOME (virtiofs), not /tmp -- Docker silently created an empty directory at the mount target instead of erroring, since the host source path was invisible from inside the VM.",
+      "fix": "No code change needed; re-ran the smoke test with the dummy private key placed under the repo directory (inside $HOME) instead of /tmp, which colima mounts by default. Worth remembering for any future container testing on this machine via colima: host paths for bind mounts must be under $HOME (or an explicitly configured colima mount), not /tmp.",
+      "tags": [
+        "docker",
+        "colima",
+        "bind-mount",
+        "macos",
+        "gotcha"
+      ],
+      "related_bugs": [
+        "bug-491",
+        "bug-492"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:14:00.000Z"
+    },
+    {
+      "id": "bug-494",
+      "timestamp": "2026-09-28T18:33:40.695Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:33:40.695Z"
+    },
+    {
+      "id": "bug-495",
+      "timestamp": "2026-09-28T18:38:13.858Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/README.md",
+      "root_cause": "16 lines replaced/restructured",
+      "fix": "Rewrote 60→96 lines (16 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:38:13.858Z"
     }
   ]
 }

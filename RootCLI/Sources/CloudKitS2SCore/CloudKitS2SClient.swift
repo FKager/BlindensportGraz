@@ -54,6 +54,31 @@ public final class CloudKitS2SClient {
         "/database/1/\(config.containerID)/\(config.environment)/public/\(endpoint)"
     }
 
+    /// `URLSession.shared.data(for:)` (the async/await convenience API) isn't
+    /// available in `FoundationNetworking` on every Linux Swift toolchain —
+    /// confirmed missing ("value of type 'URLSession' has no member 'data'")
+    /// building this package's Docker/Podman container image (`swift:5.10-jammy`).
+    /// The completion-handler `dataTask(with:completionHandler:)` API is the
+    /// actual lowest common denominator across Darwin and Linux, so every
+    /// network call in this file goes through this continuation wrapper
+    /// instead of the async convenience method.
+    private func performRequest(_ request: URLRequest) async throws -> (Data, URLResponse) {
+        try await withCheckedThrowingContinuation { continuation in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                guard let data, let response else {
+                    continuation.resume(throwing: CLIError.message("No data/response received for \(request.url?.absoluteString ?? "request")."))
+                    return
+                }
+                continuation.resume(returning: (data, response))
+            }
+            task.resume()
+        }
+    }
+
     private func send(endpoint: String, body: [String: Any]) async throws -> [String: Any] {
         let path = requestPath(for: endpoint)
         let bodyData = try JSONSerialization.data(withJSONObject: body, options: [.sortedKeys])
@@ -79,7 +104,7 @@ public final class CloudKitS2SClient {
         request.setValue(date, forHTTPHeaderField: "X-Apple-CloudKit-Request-ISO8601Date")
         request.setValue(signatureBase64, forHTTPHeaderField: "X-Apple-CloudKit-Request-SignatureV1")
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await performRequest(request)
         guard let http = response as? HTTPURLResponse else {
             throw CLIError.message("No HTTP response from CloudKit.")
         }
@@ -235,7 +260,7 @@ public final class CloudKitS2SClient {
         uploadRequest.httpMethod = "POST"
         uploadRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         uploadRequest.httpBody = multipartBody
-        let (uploadData, uploadResponse) = try await URLSession.shared.data(for: uploadRequest)
+        let (uploadData, uploadResponse) = try await performRequest(uploadRequest)
         guard let http = uploadResponse as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             let body = String(data: uploadData, encoding: .utf8) ?? "unknown error"
             throw CLIError.message("Asset upload to CloudKit failed: \(body)")

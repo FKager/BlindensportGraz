@@ -1,0 +1,76 @@
+# Runs clubmembersapi (Vapor REST API + static admin webui) behind a bundled
+# Caddy reverse proxy that terminates TLS — this is what makes it safe to
+# expose to the internet (see RootCLI/README.md "Deployment / TLS": the app
+# itself speaks plain HTTP only, and must never be reachable directly).
+# Works with both `docker compose up` and `podman-compose up`.
+#
+# Network layout:
+#   internet --443/80--> caddy (published to 0.0.0.0) --8080--> clubmembersapi
+#                                                                 (internal
+#                                                                  network
+#                                                                  only, no
+#                                                                  host port
+#                                                                  published)
+#
+# Usage:
+#   1. cp .env.example .env   # fill in real CLOUDKIT_KEY_ID/API_USERNAME/
+#      API_PASSWORD; DOMAIN/ACME_EMAIL already default to a11y.it/dev@a11y.it
+#   2. Put your CloudKit private key on the host, e.g.
+#      ./secrets/rootcli_private_key_pkcs8.pem (already .gitignore'd via *.pem)
+#   3. Point DOMAIN's DNS A/AAAA record at this host, and make sure ports
+#      80+443 reach it (Caddy needs 80 for the ACME HTTP-01 challenge, not
+#      just 443) — Let's Encrypt cannot issue a certificate otherwise.
+#   4. docker compose up -d --build
+#      podman-compose up -d --build
+
+services:
+  clubmembersapi:
+    build:
+      context: .
+      dockerfile: RootCLI/Dockerfile
+    image: clubmembersapi:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Path INSIDE the container the private key is mounted at below —
+      # must match the target path of the volume mount, not a host path.
+      CLOUDKIT_PRIVATE_KEY_PATH: /run/secrets/rootcli_private_key.pem
+    volumes:
+      - ${CLOUDKIT_PRIVATE_KEY_HOST_PATH:-./secrets/rootcli_private_key_pkcs8.pem}:/run/secrets/rootcli_private_key.pem:ro
+    expose:
+      - "8080"
+    networks:
+      - internal
+    # Deliberately NO `ports:` mapping — this service must only be reachable
+    # from the `caddy` container over the internal compose network, never
+    # directly from the host or the internet. If you need to hit it directly
+    # for local debugging, use `docker compose exec` or temporarily add
+    # `ports: ["127.0.0.1:8080:8080"]`, never a 0.0.0.0 binding.
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      # The only two ports this deployment exposes to the outside world.
+      # 80 is required for Let's Encrypt's HTTP-01 challenge (Caddy also
+      # uses it to redirect plain HTTP to HTTPS), not just for convenience.
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - clubmembersapi
+    networks:
+      - internal
+
+networks:
+  internal:
+
+volumes:
+  caddy_data:
+  caddy_config:

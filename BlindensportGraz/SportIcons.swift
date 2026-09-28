@@ -14,7 +14,7 @@ enum SportIcon {
     /// "sportscourt.fill" for unrecognized/custom sport text.
     static func symbolName(for sport: String) -> String {
         switch Sport.normalize(sport) {
-        case .torball: return "bell.fill"
+        case .torball: return "circle.fill"
         case .goalball: return "sportscourt.fill"
         case .blindenfussball: return "figure.soccer"
         case .showdown: return "figure.table.tennis"

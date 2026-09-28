@@ -1,0 +1,18 @@
+# Caddy config for docker-compose.yml — terminates TLS for clubmembersapi.
+# {$DOMAIN}/{$ACME_EMAIL} come from .env via docker-compose.yml's env_file.
+#
+# For a real domain (the normal case — see .env.example's DOMAIN), Caddy
+# automatically obtains and renews a Let's Encrypt certificate; no manual
+# cert management needed. Requires DOMAIN's DNS to point at this host and
+# ports 80+443 reachable from the internet (see docker-compose.yml's header
+# comment). For DOMAIN=localhost (local testing only), Caddy instead uses
+# its own internal CA and issues a certificate browsers won't trust without
+# manually installing that CA — expected and fine for local smoke-testing,
+# not for real deployment.
+{
+	email {$ACME_EMAIL}
+}
+
+{$DOMAIN} {
+	reverse_proxy clubmembersapi:8080
+}

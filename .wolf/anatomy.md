@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-17T20:18:30.373Z
-> Files: 288 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T18:38:13.841Z
+> Files: 295 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -64,16 +64,21 @@
 
 ## ./
 
+- `.dockerignore` — Keep the container build context (repo root) small and secret-free — see (~195 tok)
+- `.dockerignore` — Build-context excludes for `docker build -f RootCLI/Dockerfile .` from repo root (~120 tok)
 - `.DS_Store` (~2186 tok)
-- `.gitignore` — Git ignore rules (~48 tok)
+- `.env.example` — Template for docker-compose's `.env` (CLOUDKIT_KEY_ID, private-key host path, API_USERNAME/PASSWORD) (~90 tok)
+- `.gitignore` — Git ignore rules (~52 tok)
 - `.mcp.json` (~7 tok)
 - `architecture-review.md` — BlindensportGraz — Architecture & Design Review (2026-09-08) (~4275 tok)
 - `architecture-review.md` — Architecture & design review 2026-09-08 (supersedes audit.md): 27 findings + 14 backlog items; top item = `CloudKitSync.fetchAll` doesn't paginate CloudKit results (~2600 tok)
 - `audit.md` — BlindensportGraz — Best-Practices Audit & Enhancement Backlog (2026-08-19; almost all implemented in the 2026-08-22 supergoal run) (~7450 tok)
 - `build_commands.md` — Build & deploy commands used (iPhone von Franz) (~776 tok)
+- `Caddyfile` — Caddy config for docker-compose.yml — terminates TLS for clubmembersapi. (~208 tok)
 - `ci_cert.md` — Fixing the CI provisioning profile (Push Notifications capability) (~1016 tok)
 - `CLAUDE.md` — OpenWolf (~129 tok)
 - `CLAUDE.mdes` — Requirements (~91 tok)
+- `docker-compose.yml` — clubmembersapi + bundled Caddy TLS reverse proxy; clubmembersapi has no published host port (~435 tok)
 - `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
 - `generate_app_icon.swift` — Regenerates BlindensportGraz/Assets.xcassets/AppIcon.appiconset/icon-1024.png (~3059 tok)
 - `goal.md` (~276 tok)
@@ -358,21 +363,22 @@
 
 ## RootCLI/
 
+- `Dockerfile` — Docker container definition (~669 tok)
 - `members.example.json` (~118 tok)
-- `Package.swift` — swift-tools-version:5.9 (~534 tok)
-- `README.md` — Project documentation (~5589 tok)
+- `Package.swift` — swift-tools-version:5.9 (~641 tok)
+- `README.md` — Project documentation (~7006 tok)
 
 ## RootCLI/Public/
 
-- `index.html` — Grazer VSC – Mitgliederverwaltung (~1624 tok)
-- `records.html` — CloudKit – Datensatzverwaltung (generisch) (~1942 tok)
+- `index.html` — Grazer VSC – Mitgliederverwaltung (~2771 tok)
+- `records.html` — CloudKit – Datensatzverwaltung (generisch) (~2287 tok)
 
 ## RootCLI/Sources/CloudKitS2SCore/
 
 - `CalendarFeed.swift` — / Server-side generation of one user's read-only calendar feed — (~1124 tok)
 - `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1757 tok)
 - `CKRecordDTO.swift` — / Minimal read-only view over a CloudKit Web Services JSON record — just (~517 tok)
-- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~4066 tok)
+- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~4418 tok)
 - `Config.swift` — Struct: Config (~739 tok)
 - `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3132 tok)
 - `MemberFillUpdate.swift` — / Non-destructive counterpart to `MemberBulkImport.run` — fills in fields (~1808 tok)
@@ -380,7 +386,7 @@
 
 ## RootCLI/Sources/clubmembersapi/
 
-- `Auth.swift` — Struct: APIUser (~892 tok)
+- `Auth.swift` — if canImport(CryptoKit) (~1415 tok)
 - `CalendarFeedRoutes.swift` — / `GET /calendar/:token[.ics]` — one user's read-only webcal feed (~788 tok)
 - `Configure.swift` (~492 tok)
 - `Entrypoint.swift` — @main entrypoint — deliberately NOT named main.swift (SPM special-cases that filename, see cerebrum Do-Not-Repeat 2026-07-16); wraps startup throw in do/catch for clean exit(1) instead of fatalError (~200 tok)

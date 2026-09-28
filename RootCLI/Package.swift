@@ -34,7 +34,12 @@ let package = Package(
             name: "clubmembersapi",
             dependencies: [
                 "CloudKitS2SCore",
-                .product(name: "Vapor", package: "vapor")
+                .product(name: "Vapor", package: "vapor"),
+                // Auth.swift's constant-time credential comparison needs this
+                // directly (not just transitively via CloudKitS2SCore) on
+                // Linux/the Docker/Podman container build — see its
+                // `#if canImport(CryptoKit)` import.
+                .product(name: "Crypto", package: "swift-crypto", condition: .when(platforms: [.linux, .windows, .android]))
             ],
             path: "Sources/clubmembersapi"
         ),

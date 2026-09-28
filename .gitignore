@@ -9,3 +9,5 @@ Shared/ClubSchema/.build/
 *.pem
 fastlane/report.xml
 .wolf/hooks/_session.json
+.env
+secrets/

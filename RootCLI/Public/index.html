@@ -8,6 +8,12 @@
   :root { color-scheme: light dark; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
   h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.1rem; margin-top: 2rem; }
+  nav.site { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; font-size: 0.95rem; }
+  nav.site a { text-decoration: none; }
+  nav.site a[aria-current="page"] { font-weight: 600; text-decoration: underline; }
+  .toolbar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin: 1rem 0; }
+  .toolbar input[type="search"] { font: inherit; padding: 0.4rem; flex: 1 1 16rem; }
   table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
   th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #8884; vertical-align: top; }
   th { font-weight: 600; }
@@ -20,12 +26,25 @@
   #status { min-height: 1.2rem; font-size: 0.9rem; }
   #status.error { color: #c0392b; }
   .row-actions button { margin-right: 0.4rem; }
+  #importSection { margin-top: 0.5rem; padding: 1rem; border: 1px solid #8884; border-radius: 8px; }
+  #importSection p.hint { opacity: 0.75; font-size: 0.85rem; margin-top: 0; }
+  #importResult { font-size: 0.85rem; white-space: pre-wrap; }
+  tr[hidden] { display: none; }
 </style>
 </head>
 <body>
+<nav class="site" aria-label="Seiten">
+  <a href="index.html" aria-current="page">Mitgliederverwaltung</a>
+  <a href="records.html">Erweiterte Datensatzverwaltung (alle CloudKit-Datentypen)</a>
+</nav>
 <h1>Grazer VSC – Mitgliederverwaltung</h1>
-<p><a href="records.html">Erweiterte Datensatzverwaltung (alle CloudKit-Datentypen) →</a></p>
-<p id="status"></p>
+<p id="status" role="status" aria-live="polite"></p>
+
+<div class="toolbar">
+  <input type="search" id="search" placeholder="Suchen nach Name, E-Mail, Mitgl.-Nr. …" aria-label="Mitglieder durchsuchen">
+  <button type="button" id="exportBtn">Als JSON exportieren</button>
+  <button type="button" id="reloadBtn">Neu laden</button>
+</div>
 
 <table id="membersTable">
   <thead>
@@ -52,13 +71,28 @@
   </div>
 </form>
 
+<h2>Mitglieder-Import (JSON)</h2>
+<div id="importSection">
+  <p class="hint">
+    Lädt eine JSON-Datei mit einem Array von Mitgliedern hoch (gleiches Format wie der
+    App-eigene Export bzw. <code>members.example.json</code>). Einträge mit vorhandener
+    <code>id</code> werden aktualisiert, neue Einträge angelegt; einzelne fehlerhafte
+    Zeilen (fehlender Vor-/Nachname) werden übersprungen, nicht die ganze Datei.
+  </p>
+  <input type="file" id="importFile" accept="application/json,.json">
+  <button type="button" id="importBtn">Importieren</button>
+  <p id="importResult" role="status" aria-live="polite"></p>
+</div>
+
 <script>
 const api = '/api/members';
 const statusEl = document.getElementById('status');
 const body = document.getElementById('membersBody');
 const form = document.getElementById('editForm');
 const formTitle = document.getElementById('formTitle');
+const searchInput = document.getElementById('search');
 const fields = ['firstName','lastName','street','zip','city','email','phone','memberNumber','notes'];
+let members = [];
 
 function setStatus(text, isError) {
   statusEl.textContent = text;
@@ -95,6 +129,8 @@ function renderRow(member) {
   const tr = document.createElement('tr');
   const address = [member.street, [member.zip, member.city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
   const contact = [member.email, member.phone].filter(Boolean).join(' / ');
+  tr.dataset.search = [member.firstName, member.lastName, member.email, member.phone, member.memberNumber, member.city]
+    .filter(Boolean).join(' ').toLowerCase();
   tr.innerHTML =
     '<td>' + escapeHtml(member.firstName + ' ' + member.lastName) + '</td>' +
     '<td>' + escapeHtml(address) + '</td>' +
@@ -110,12 +146,27 @@ function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 }
 
+function renderMembers() {
+  body.innerHTML = '';
+  members.forEach(m => body.appendChild(renderRow(m)));
+  applyFilter();
+}
+
+function applyFilter() {
+  const q = searchInput.value.trim().toLowerCase();
+  let visible = 0;
+  for (const tr of body.children) {
+    const match = !q || tr.dataset.search.includes(q);
+    tr.hidden = !match;
+    if (match) visible++;
+  }
+  setStatus((q ? visible + ' von ' + members.length : members.length) + ' Mitglieder' + (q ? ' gefunden.' : ' geladen.'), false);
+}
+
 async function loadMembers() {
   try {
-    const members = await api_request(api);
-    body.innerHTML = '';
-    members.forEach(m => body.appendChild(renderRow(m)));
-    setStatus(members.length + ' Mitglieder geladen.', false);
+    members = await api_request(api);
+    renderMembers();
   } catch (e) {
     setStatus('Fehler beim Laden: ' + e.message, true);
   }
@@ -153,6 +204,51 @@ form.addEventListener('submit', async (ev) => {
 });
 
 document.getElementById('cancelEdit').addEventListener('click', resetForm);
+document.getElementById('reloadBtn').addEventListener('click', loadMembers);
+searchInput.addEventListener('input', applyFilter);
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(members, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'grazer-vsc-mitglieder-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+});
+
+const importResult = document.getElementById('importResult');
+document.getElementById('importBtn').addEventListener('click', async () => {
+  const fileInput = document.getElementById('importFile');
+  const file = fileInput.files[0];
+  if (!file) {
+    importResult.textContent = 'Bitte zuerst eine JSON-Datei auswählen.';
+    importResult.className = 'error';
+    return;
+  }
+  importResult.className = '';
+  importResult.textContent = 'Importiere …';
+  try {
+    const text = await file.text();
+    const res = await fetch(api + '/import', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: text });
+    if (res.status === 401) throw new Error('Anmeldung erforderlich oder falsch.');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.reason || data.error || ('HTTP ' + res.status));
+    let report = data.succeeded + ' von ' + data.total + ' Einträgen importiert (' + data.failed + ' fehlgeschlagen).';
+    if (Array.isArray(data.messages) && data.messages.length) {
+      report += '\n' + data.messages.join('\n');
+    }
+    importResult.textContent = report;
+    importResult.className = data.failed > 0 ? 'error' : '';
+    fileInput.value = '';
+    await loadMembers();
+  } catch (e) {
+    importResult.textContent = 'Fehler beim Import: ' + e.message;
+    importResult.className = 'error';
+  }
+});
 
 loadMembers();
 </script>
