@@ -3185,3 +3185,10 @@
 | 22:04 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-prod-data-copy.md | inline fix | ~52 |
 | 22:04 | Synced CloudKit Development -> Production (rootcli copy-records): added WelcomeContent to copyableRecordTypes, deployed pending Production schema changes (UserIdentity.calendarToken + BudgetEntry/EventMembership types) via scripted Safari, re-ran copy | RootCLI/Sources/rootcli/RootCLI.swift, CloudKit Console (Production schema) | done, 334 copied 0 failed | ~1200 |
 | 22:05 | Session end: 47 writes across 24 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 29 reads | ~93150 tok |
+| 22:05 | Session end: 47 writes across 24 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 29 reads | ~93150 tok |
+| 22:06 | Session end: 47 writes across 24 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 29 reads | ~93150 tok |
+| 22:08 | Edited .github/workflows/ios-build-deploy.yml | 2→4 lines | ~111 |
+| 22:08 | Edited .github/workflows/ios-build-deploy.yml | 1→2 lines | ~35 |
+| 22:08 | Edited .github/workflows/ios-build-deploy.yml | 3→4 lines | ~100 |
+| 22:08 | Edited .github/workflows/ios-build-deploy.yml | expanded (+15 lines) | ~548 |
+| 22:08 | Edited .github/workflows/ios-build-deploy.yml | 7→9 lines | ~110 |
