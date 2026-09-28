@@ -8336,6 +8336,54 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-28T18:38:13.858Z"
+    },
+    {
+      "id": "bug-496",
+      "timestamp": "2026-09-28T18:56:40.753Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:56:40.753Z"
+    },
+    {
+      "id": "bug-497",
+      "timestamp": "2026-09-28T18:57:19.597Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "BlindensportGraz/TournamentsViews.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:57:19.597Z"
+    },
+    {
+      "id": "bug-498",
+      "timestamp": "2026-09-28T18:58:13.875Z",
+      "error_message": "Wrong reference: private should be fileprivate",
+      "file": "BlindensportGraz/TournamentInvitationImport.swift",
+      "root_cause": "Used \"private\" instead of \"fileprivate\"",
+      "fix": "Changed private → fileprivate",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-28T18:58:13.875Z"
     }
   ]
 }

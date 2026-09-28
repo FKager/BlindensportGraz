@@ -73,6 +73,13 @@ enum Sport: RawRepresentable, Hashable {
     /// but always returns the canonical German spelling via `rawValue`.
     /// Anything not recognized falls back to `.other(raw)` — the exact
     /// original text, untouched, never dropped or coerced.
+    /// Every known sport's canonical display string (`rawValue`) — used by
+    /// `TournamentInvitationImporter`'s pattern-matching fallback to detect
+    /// which sport an uploaded invitation mentions via keyword search.
+    static var knownRawValues: [String] {
+        knownCases.values.map { $0.rawValue }
+    }
+
     static func normalize(_ raw: String) -> Sport {
         let folded = raw
             .trimmingCharacters(in: .whitespacesAndNewlines)

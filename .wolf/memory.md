@@ -3148,3 +3148,14 @@
 | 20:38 | Fixed LoginAttemptLimiter's IP-key gap behind reverse proxy (X-Forwarded-For, scoped to the internal-network-only trust boundary) | RootCLI/Sources/clubmembersapi/Auth.swift | fixed | ~500 |
 | 20:38 | Installed docker-compose plugin (brew + cliPluginsExtraDirs); verified full docker compose up stack end-to-end via curl over HTTPS (localhost internal-CA test) | (tooling) | verified | ~300 |
 | 20:38 | Session end: 23 writes across 12 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 17 reads | ~35005 tok |
+| 20:43 | Session end: 23 writes across 12 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 17 reads | ~35005 tok |
+| 20:55 | Edited BlindensportGraz/Sport.swift | modified normalize() | ~99 |
+| 20:56 | Created BlindensportGraz/TournamentInvitationImport.swift | — | ~3673 |
+| 20:56 | Edited BlindensportGraz/TournamentsViews.swift | added nullish coalescing | ~508 |
+| 20:56 | Edited BlindensportGraz/TournamentsViews.swift | 2→3 lines | ~40 |
+| 20:57 | Edited BlindensportGraz/TournamentsViews.swift | modified ToolbarItem() | ~323 |
+| 20:57 | Edited BlindensportGraz/TournamentsViews.swift | added error handling | ~1331 |
+| 20:58 | Edited BlindensportGraz/TournamentInvitationImport.swift | 2→2 lines | ~16 |
+| 20:58 | Edited BlindensportGraz/TournamentInvitationImport.swift | 2→2 lines | ~41 |
+| 21:00 | Added "Turnier aus Einladung erstellen" (upload txt/docx/pdf, auto-fill fields via Apple Intelligence + heuristic fallback) | BlindensportGraz/TournamentInvitationImport.swift (new), TournamentsViews.swift, Sport.swift | done, xcodebuild build + build-for-testing both SUCCEEDED | ~4500 |
+| 21:00 | Session end: 31 writes across 15 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 22 reads | ~63705 tok |

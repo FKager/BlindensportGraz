@@ -8,22 +8,42 @@ struct AddTournamentView: View {
        @Environment(\.dismiss) private var dismiss
        @Query private var allTeams: [Team]
 
-        @State private var title = ""
-        @State private var sport = "Torball"
-        @State private var location = "Graz"
-        @State private var street = ""
-        @State private var zip = ""
-        @State private var city = ""
-        @State private var country = ""
-        @State private var startDate = Date()
-        @State private var endDate = Date().addingTimeInterval(86400)
-        @State private var maxTeams = 8
-        @State private var notes = ""
+        @State private var title: String
+        @State private var sport: String
+        @State private var location: String
+        @State private var street: String
+        @State private var zip: String
+        @State private var city: String
+        @State private var country: String
+        @State private var startDate: Date
+        @State private var endDate: Date
+        @State private var maxTeams: Int
+        @State private var notes: String
         @State private var selectedTeamIDs: Set<UUID> = []
         @State private var showDuplicateAlert = false
 
         let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
-        
+
+        // `draft` prefills every field from an uploaded invitation (see
+        // TournamentInvitationImportView below) — still a completely normal
+        // Add form otherwise, nothing here is saved until "Speichern".
+
+        init(currentUser: User?, draft: TournamentDraft? = nil) {
+            self.currentUser = currentUser
+            let draft = draft ?? TournamentDraft()
+            _title = State(initialValue: draft.title)
+            _sport = State(initialValue: draft.sport)
+            _location = State(initialValue: draft.location)
+            _street = State(initialValue: draft.street)
+            _zip = State(initialValue: draft.zip)
+            _city = State(initialValue: draft.city)
+            _country = State(initialValue: draft.country)
+            _startDate = State(initialValue: draft.startDate)
+            _endDate = State(initialValue: draft.endDate)
+            _maxTeams = State(initialValue: draft.maxTeams)
+            _notes = State(initialValue: draft.notes)
+        }
+
 // Admins manage every team, not just ones they personally joined — a team
     // they just created via AddTeamView has no TeamMembership for them yet, so
     // without this bypass it could never be assigned to anything.
@@ -734,6 +754,7 @@ struct TournamentsListView: View {
        // builds (bug-352). `visibleTournaments` sorts (newest first) in memory.
        @Query private var tournaments: [Tournament]
         @State private var showAdd = false
+        @State private var showImportInvitation = false
 
   var canManageEvents: Bool {
       guard let user = currentUser else { return false }
@@ -773,15 +794,29 @@ struct TournamentsListView: View {
            // toolbar), since each needs one specific tournament to scope to.
            if canManageEvents {
                ToolbarItem(placement: .topBarTrailing) {
-                   Button { showAdd = true } label: {
+                   // "Neues Turnier" is by far the more common path, so it
+                   // stays a single tap; "aus Einladung" (user request) is
+                   // one tap further in, inside the same menu, rather than a
+                   // second permanent toolbar icon crowding the bar.
+                   Menu {
+                       Button { showAdd = true } label: {
+                           Label("Neues Turnier", systemImage: "plus")
+                       }
+                       Button { showImportInvitation = true } label: {
+                           Label("Turnier aus Einladung erstellen", systemImage: "doc.text.magnifyingglass")
+                       }
+                   } label: {
                        Image(systemName: "plus")
                    }
-                   .accessibilityLabel("Neues Turnier")
+                   .accessibilityLabel("Turnier hinzufügen")
                }
            }
        }
        .sheet(isPresented: $showAdd) {
            AddTournamentView(currentUser: currentUser)
+       }
+       .sheet(isPresented: $showImportInvitation) {
+           TournamentInvitationImportView(currentUser: currentUser)
        }
     }
 
@@ -798,6 +833,110 @@ struct TournamentsListView: View {
             let tournament = shown[index]
             modelContext.delete(tournament)
             TournamentService.delete(tournament, modelContext: modelContext)
+        }
+    }
+}
+
+/// "Turnier aus Einladung erstellen" (user request) — lets an admin/coach
+/// upload an invitation (.txt/.docx/.pdf) and have `AddTournamentView` open
+/// prefilled from it instead of blank. See `TournamentInvitationImporter`
+/// for the actual text/field extraction; this view is just the file picker
+/// + progress/error UI around it.
+///
+/// Once a draft is extracted, this view's own body simply BECOMES
+/// `AddTournamentView(currentUser:draft:)` — not a second, separately
+/// presented sheet stacked on top of this one, which would risk the classic
+/// SwiftUI "dismiss one sheet and present another in the same tick" timing
+/// glitch. Since it's inline content of the sheet this view itself already
+/// is, `AddTournamentView`'s own "Speichern"/"Abbrechen" (which call
+/// `dismiss()`) close this whole sheet exactly the same way they would if
+/// presented directly from TournamentsListView.
+struct TournamentInvitationImportView: View {
+    let currentUser: User?
+    @Environment(\.dismiss) private var dismiss
+    @State private var showFileImporter = false
+    @State private var isProcessing = false
+    @State private var draft: TournamentDraft?
+    @State private var errorMessage: String?
+
+    var body: some View {
+        if let draft {
+            AddTournamentView(currentUser: currentUser, draft: draft)
+        } else {
+            NavigationStack {
+                VStack(spacing: 20) {
+                    Spacer()
+                    Image(systemName: "doc.text.magnifyingglass")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.blue)
+                        .accessibilityHidden(true)
+                    Text("Turnier aus Einladung erstellen")
+                        .font(.title3.bold())
+                    Text("Wähle eine Einladung als Text-, Word- (.docx) oder PDF-Datei. Titel, Sportart, Ort und Zeitraum werden automatisch ausgefüllt und können danach noch angepasst werden.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                    if isProcessing {
+                        ProgressView("Analysiere Einladung …")
+                            .padding(.top)
+                    } else {
+                        Button {
+                            showFileImporter = true
+                        } label: {
+                            Label("Datei auswählen", systemImage: "doc.badge.plus")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .padding(.top)
+                    }
+                    Spacer()
+                }
+                .padding()
+                .navigationTitle("Aus Einladung")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Abbrechen") { dismiss() }
+                    }
+                }
+                .fileImporter(
+                    isPresented: $showFileImporter,
+                    allowedContentTypes: TournamentInvitationImporter.supportedContentTypes
+                ) { result in
+                    handle(result)
+                }
+                .alert("Import fehlgeschlagen", isPresented: Binding(
+                    get: { errorMessage != nil },
+                    set: { if !$0 { errorMessage = nil } }
+                )) {
+                    Button("OK") { errorMessage = nil }
+                } message: {
+                    Text(errorMessage ?? "")
+                }
+            }
+        }
+    }
+
+    private func handle(_ result: Result<URL, Error>) {
+        switch result {
+        case .failure(let error):
+            errorMessage = error.localizedDescription
+        case .success(let url):
+            isProcessing = true
+            Task {
+                do {
+                    let extracted = try await TournamentInvitationImporter.draft(fromFileAt: url)
+                    await MainActor.run {
+                        isProcessing = false
+                        draft = extracted
+                    }
+                } catch {
+                    await MainActor.run {
+                        isProcessing = false
+                        errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+                    }
+                }
+            }
         }
     }
 }

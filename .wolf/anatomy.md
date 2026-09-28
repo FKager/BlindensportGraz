@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T18:38:13.841Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-28T18:58:17.748Z
 > Files: 295 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -269,7 +269,7 @@
 - `SeasonDashboardView.swift` — / Season (= one calendar year) recap — architecture-review.md §5 (P2): (~1790 tok)
 - `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 - `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
-- `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1043 tok)
+- `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1129 tok)
 - `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2426 tok)
 - `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)
@@ -285,8 +285,9 @@
 - `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 - `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
 - `Tournament.swift` — Class: Tournament (~274 tok)
+- `TournamentInvitationImport.swift` — / Prefilled values for a new `Tournament`, produced by (~3668 tok)
 - `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~9662 tok)
+- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~11368 tok)
 - `Training.swift` — Class: Training (~1148 tok)
 - `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
 - `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
