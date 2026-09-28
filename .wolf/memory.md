@@ -3192,3 +3192,6 @@
 | 22:08 | Edited .github/workflows/ios-build-deploy.yml | 3→4 lines | ~100 |
 | 22:08 | Edited .github/workflows/ios-build-deploy.yml | expanded (+15 lines) | ~548 |
 | 22:08 | Edited .github/workflows/ios-build-deploy.yml | 7→9 lines | ~110 |
+| 22:18 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | 1→4 lines | ~682 |
+| 22:18 | Shipped TestFlight v0.1.15 (build 214): fixed missing Share Extension App Store provisioning profile in ios-build-deploy.yml, tagged+pushed, CI archive/export/upload succeeded, assigned to Internal group with de-DE What-to-Test notes | .github/workflows/ios-build-deploy.yml, App Store Connect | done | ~2500 |
+| 22:18 | Session end: 53 writes across 26 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 31 reads | ~99336 tok |
