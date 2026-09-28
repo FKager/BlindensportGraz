@@ -263,7 +263,7 @@ struct RootCLI {
         "UserIdentity", "ClubMember", "Team", "TeamMembership",
         "SportEvent", "Training", "Tournament", "TrainingAttendance", "TournamentAttendance",
         "EventParticipation", "EventMembership", "EventImage", "TrainingFavorite", "RoleChangeLog",
-        "ExpenseReceipt", "MemberChangeRequest", "BudgetEntry",
+        "ExpenseReceipt", "MemberChangeRequest", "BudgetEntry", "WelcomeContent",
     ]
 
     /// Bulk-copies every record of the given types from the source CloudKit
