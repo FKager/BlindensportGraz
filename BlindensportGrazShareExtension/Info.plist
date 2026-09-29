@@ -9,7 +9,7 @@
         <key>NSExtensionAttributes</key>
         <dict>
             <!-- Accept any single shared file — TournamentInvitationImporter
-                 validates the actual type (.txt/.docx/.pdf) once handed off
+                 validates the actual type (.txt/.doc/.docx/.pdf) once handed off
                  to the main app and shows a friendly German error for
                  anything else, so the activation rule here is deliberately
                  broad rather than a finicky per-UTI NSPredicate string. -->

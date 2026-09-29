@@ -3,7 +3,7 @@ import SwiftData
 import Combine
 
 /// "Turnier aus Einladung erstellen" (user request) — lets an admin/coach
-/// upload an invitation (.txt/.docx/.pdf) and have `AddTournamentView` open
+/// upload an invitation (.txt/.doc/.docx/.pdf) and have `AddTournamentView` open
 /// prefilled from it instead of blank. See `TournamentInvitationImporter`
 /// for the actual text/field extraction; this view is just the file picker
 /// + progress/error UI around it.
@@ -44,7 +44,7 @@ struct TournamentInvitationImportView: View {
                              style: AnyShapeStyle(Theme.Palette.info))
                     Text("Turnier aus Einladung erstellen")
                         .font(.title3.bold())
-                    Text("Wähle eine Einladung als Text-, Word- (.docx) oder PDF-Datei. Titel, Sportart, Ort und Zeitraum werden automatisch ausgefüllt und können danach noch angepasst werden.")
+                    Text("Wähle eine Einladung als Text-, Word- (.doc, .docx) oder PDF-Datei. Titel, Sportart, Ort und Zeitraum werden automatisch ausgefüllt und können danach noch angepasst werden.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T09:39:27.653Z
-> Files: 356 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T10:58:41.038Z
+> Files: 361 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -323,6 +323,7 @@
 - `VereinView.swift` — Root of the "Verein" tab (see MainTabView) — the merge of the former (~1025 tok)
 
 ## BlindensportGraz/Features/Tournaments/
+- `WordDocTextExtractor.swift` — Legacy Word 97–2003 .doc → plain text: MS-CFB reader + FIB + piece table (cp1252/UTF-16), field-code stripping; pure Foundation (~3866 tok)
 
 - `AddTournamentView.swift` — Struct AddTournamentView (~2362 tok)
 - `TournamentDetailView.swift` — Struct TournamentDetailView (~5383 tok)
@@ -330,6 +331,7 @@
 - `TournamentInvitationImportView.swift` — "Turnier aus Einladung erstellen" (user request) — lets an admin/coach (~1375 tok)
 - `TournamentRow.swift` — Struct TournamentRow (~774 tok)
 - `TournamentsListView.swift` — Struct TournamentsListView (~1031 tok)
+- `WordDocTextExtractor.swift` — / Plain text of a legacy binary Word 97–2003 document (`.doc`) — iOS has no (~4124 tok)
 
 ## BlindensportGraz/Features/Trainings/
 
@@ -408,16 +410,16 @@
 - `WelcomeContentService.swift` — Declares WelcomeContentService (~138 tok)
 
 ## BlindensportGraz/Shared/
-- `HeroIcon.swift` — Large decorative header symbol, @ScaledMetric-scaled, brand gradient default, VoiceOver-hidden (~187 tok)
-- `CountBadge.swift` — Red filled number bubble (e.g. pending change requests) (~123 tok)
-- `TagLabel.swift` — Pill label for status/role/tag; Text-like inits (LocalizedStringKey vs verbatim), .caption, Palette tint (~362 tok)
-- `CardModifier.swift` — `.card(tint:)` standard card + `.badge(tint:)` pill fill (~253 tok)
 
+- `CardModifier.swift` — `.card(tint:)` standard card + `.badge(tint:)` pill fill (~253 tok)
+- `CountBadge.swift` — Red filled number bubble (e.g. pending change requests) (~123 tok)
+- `HeroIcon.swift` — Large decorative header symbol, @ScaledMetric-scaled, brand gradient default, VoiceOver-hidden (~187 tok)
 - `ImageProcessing.swift` — Downscales/compresses picked photo library assets before they ever hit (~224 tok)
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1251 tok)
 - `OptionalDatePicker.swift` — A DatePicker that can represent "no date set" via a toggle — SwiftUI's (~207 tok)
 - `ShareExtensionBridge.swift` — / Bridges a file shared into iOS's system share sheet ("Turnier aus (~1283 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)
+- `TagLabel.swift` — Pill label for status/role/tag; Text-like inits (LocalizedStringKey vs verbatim), .caption, Palette tint (~362 tok)
 - `Theme.swift` — Design tokens: Spacing (2…32), Radius, Palette (asset-backed WCAG-AA success/warning/danger/info), Fill (white-text fills), Accent per area, brandFill/brandInk gradients, card/badge fills (~750 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~1070 tok)
 - `WidgetRefresher.swift` — / Bridges the app's SwiftData world to the widget: recompute "what's next" (~379 tok)
@@ -461,6 +463,8 @@
 - `ShareViewController.swift` — / Minimal Share Extension: this is the target that makes "Blindensport (~1339 tok)
 
 ## BlindensportGrazTests/
+- `WordDocTextExtractorTests.swift` — .doc extraction tests against Fixtures/WordDoc*.doc (textutil-generated) (~700 tok)
+- `Fixtures/WordDoc{Invitation,Unicode,Long,Table}.doc` — Word 97 binary test fixtures (bundled as test resources)
 
 - `AttendanceTrendsTests.swift` — Class: AttendanceTrendsTests (~1543 tok)
 - `BudgetSummaryTests.swift` — Class: BudgetSummaryTests (~1024 tok)

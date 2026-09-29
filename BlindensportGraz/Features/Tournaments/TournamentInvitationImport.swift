@@ -30,14 +30,17 @@ nonisolated struct TournamentDraft: Identifiable {
 nonisolated enum TournamentInvitationError: LocalizedError {
     case unsupportedFileType
     case couldNotReadFile
+    case passwordProtected
     case emptyDocument
 
     var errorDescription: String? {
         switch self {
         case .unsupportedFileType:
-            return "Dieser Dateityp wird nicht unterstützt. Bitte Text, Word (.docx) oder PDF verwenden."
+            return "Dieser Dateityp wird nicht unterstützt. Bitte Text, Word (.doc oder .docx) oder PDF verwenden."
         case .couldNotReadFile:
             return "Die Datei konnte nicht gelesen werden."
+        case .passwordProtected:
+            return "Das Word-Dokument ist passwortgeschützt. Bitte ohne Kennwort speichern und erneut versuchen."
         case .emptyDocument:
             return "In der Datei wurde kein Text gefunden."
         }
@@ -45,7 +48,7 @@ nonisolated enum TournamentInvitationError: LocalizedError {
 }
 
 /// Extracts a best-effort `TournamentDraft` from an uploaded invitation
-/// document (.txt/.docx/.pdf). Two independent stages:
+/// document (.txt/.doc/.docx/.pdf). Two independent stages:
 ///
 /// 1. **Text extraction** (`extractText`) — format-specific, always runs:
 ///    plain read for .txt, PDFKit for .pdf, and a minimal tag-stripping walk
@@ -70,7 +73,8 @@ nonisolated enum TournamentInvitationImporter {
     static let supportedContentTypes: [UTType] = [
         .plainText,
         .pdf,
-        UTType(filenameExtension: "docx") ?? .data
+        UTType(filenameExtension: "docx") ?? .data,
+        UTType(filenameExtension: "doc") ?? .data
     ]
 
     /// `@concurrent`: PDF/.docx text extraction is synchronous and can be
@@ -99,6 +103,8 @@ nonisolated enum TournamentInvitationImporter {
             return try extractPDFText(from: url)
         case "docx":
             return try extractDocxText(from: url)
+        case "doc":
+            return try extractDocText(from: url)
         default:
             throw TournamentInvitationError.unsupportedFileType
         }
@@ -115,6 +121,17 @@ nonisolated enum TournamentInvitationImporter {
             }
         }
         return text
+    }
+
+    /// Legacy binary Word 97–2003 — see `WordDocTextExtractor`.
+    private static func extractDocText(from url: URL) throws -> String {
+        do {
+            return try WordDocTextExtractor.text(fromFileAt: url)
+        } catch WordDocTextExtractor.ExtractionError.encrypted {
+            throw TournamentInvitationError.passwordProtected
+        } catch {
+            throw TournamentInvitationError.couldNotReadFile
+        }
     }
 
     private static func extractDocxText(from url: URL) throws -> String {
