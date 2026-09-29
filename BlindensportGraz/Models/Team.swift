@@ -16,7 +16,7 @@ final class Team {
     // membership is always navigated the other way, filtering `.teams`
     // client-side) — this exists so deleteRule: .nullify protects any
     // assigned event/training/tournament from a dangling Team reference when
-    // a team is deleted (see TeamsViews.swift's delete). One relationship
+    // a team is deleted (see TeamsListView.swift's delete). One relationship
     // covers all three now that Training/Tournament are SportEvent subclasses.
     @Relationship(deleteRule: .nullify, inverse: \SportEvent.teams)
     var sportEvents: [SportEvent] = []

@@ -2,7 +2,7 @@ import Foundation
 
 /// Closed enum for `TeamMembership.role` (player/coach/assistant) —
 /// audit.md Architecture Finding 3's actual confirmed bug: a free-text
-/// `role` field let `TournamentsViews.swift`'s `!["coach","assistant"].contains(role)`-
+/// `role` field let `TournamentDetailView.swift`'s `!["coach","assistant"].contains(role)`-
 /// style check silently include anything that wasn't literally one of those
 /// two strings (including future typos) in "Sportler" filters that should
 /// only ever match `.player`. See `AppRole` (User.swift's app-level
@@ -61,7 +61,7 @@ enum MembershipRole: RawRepresentable, Hashable {
         }
     }
 
-    /// German display label, matching TeamsViews.swift's existing Picker/
+    /// German display label, matching AddTeamMemberView.swift's existing Picker/
     /// accessibility label vocabulary — `.other` shows its raw value
     /// verbatim rather than a generic placeholder.
     var displayLabel: String {

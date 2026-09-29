@@ -6,7 +6,7 @@ import FoundationModels
 
 /// Prefilled values for a new `Tournament`, produced by
 /// `TournamentInvitationImporter` from an uploaded invitation file — see
-/// `TournamentsViews.swift`'s `TournamentInvitationImportView` ("Turnier aus
+/// `TournamentInvitationImportView` ("Turnier aus
 /// Einladung erstellen" button on `TournamentsListView`, user request).
 /// Plain struct, not a model: only ever used to seed `AddTournamentView`'s
 /// `@State` on creation — nothing here is ever saved without the user

@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 /// Admin-only club finance overview — pushed from the "Verein" tab's admin
-/// hub (`VereinHubList`/`VereinSplitView` in TeamsViews.swift), so it doesn't
+/// hub (`VereinHubList`/`VereinSplitView` in VereinView.swift/VereinSplitView.swift), so it doesn't
 /// wrap its own NavigationStack (same convention as `RoleChangeLogView`,
 /// which made the identical move off a sheet earlier). Year-scoped (like
 /// SeasonDashboardView), combining logged `BudgetEntry` records with the
@@ -142,127 +142,6 @@ struct BudgetView: View {
     private func delete(_ offsets: IndexSet, from rows: [BudgetEntry]) {
         for index in offsets {
             BudgetEntryService.delete(rows[index], modelContext: modelContext)
-        }
-    }
-}
-
-/// Shared field set for adding/editing a BudgetEntry — matches this app's
-/// Add-view vs. Detail/edit-view split (e.g. AddEventView/EventDetailView)
-/// rather than one generic form: AddBudgetEntryView builds a brand-new
-/// instance from local @State, EditBudgetEntryView binds an existing
-/// @Bindable entry directly, same as TrainingDetailView's editable fields.
-private struct BudgetEntryFields: View {
-    @Binding var category: BudgetCategory
-    @Binding var amount: Double?
-    @Binding var date: Date
-    @Binding var note: String
-    @Binding var selectedEventID: UUID?
-    let allEvents: [SportEvent]
-
-    // Only the 4 real, admin-selectable categories — `.other` is
-    // corrupt/legacy-data-only and never offered here.
-    static let selectableCategories: [BudgetCategory] = [.fixedSubsidy, .donation, .eventCost, .otherExpense]
-
-    var body: some View {
-        Section("Eintrag") {
-            Picker("Kategorie", selection: $category) {
-                ForEach(Self.selectableCategories, id: \.self) { c in
-                    Text(c.displayLabel).tag(c)
-                }
-            }
-            TextField("Betrag (€)", value: $amount, format: .number)
-                .keyboardType(.decimalPad)
-            DatePicker("Datum", selection: $date, displayedComponents: .date)
-            TextField("Notiz", text: $note)
-        }
-        Section("Verknüpftes Ereignis") {
-            Picker("Ereignis", selection: $selectedEventID) {
-                Text("Kein Ereignis").tag(UUID?.none)
-                ForEach(allEvents.sorted { $0.startDate > $1.startDate }) { event in
-                    Text(event.title).tag(Optional(event.id))
-                }
-            }
-        }
-    }
-}
-
-struct AddBudgetEntryView: View {
-    let currentUser: User?
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Query private var allEvents: [SportEvent]
-
-    @State private var category: BudgetCategory = .otherExpense
-    @State private var amount: Double?
-    @State private var date = Date()
-    @State private var note = ""
-    @State private var selectedEventID: UUID?
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                BudgetEntryFields(category: $category, amount: $amount, date: $date, note: $note,
-                                  selectedEventID: $selectedEventID, allEvents: allEvents)
-            }
-            .navigationTitle("Neuer Eintrag")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") {
-                        guard let amount, amount > 0 else { return }
-                        let event = selectedEventID.flatMap { id in allEvents.first { $0.id == id } }
-                        let entry = BudgetEntry(category: category, amount: amount, date: date, note: note,
-                                                event: event, createdBy: currentUser?.id.uuidString ?? "")
-                        modelContext.insert(entry)
-                        BudgetEntryService.save(entry, modelContext: modelContext)
-                        dismiss()
-                    }
-                    .disabled((amount ?? 0) <= 0)
-                }
-            }
-        }
-    }
-}
-
-struct EditBudgetEntryView: View {
-    @Bindable var entry: BudgetEntry
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-    @Query private var allEvents: [SportEvent]
-
-    // Amount is bound as an Optional locally so the same BudgetEntryFields
-    // view (and its "must be > 0" disabled check) works identically for both
-    // Add and Edit, then written back to entry.amount only on save.
-    @State private var amount: Double?
-    @State private var selectedEventID: UUID?
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                BudgetEntryFields(category: $entry.category, amount: $amount, date: $entry.date, note: $entry.note,
-                                  selectedEventID: $selectedEventID, allEvents: allEvents)
-            }
-            .navigationTitle("Eintrag bearbeiten")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") {
-                        guard let amount, amount > 0 else { return }
-                        entry.amount = amount
-                        entry.event = selectedEventID.flatMap { id in allEvents.first { $0.id == id } }
-                        BudgetEntryService.save(entry, modelContext: modelContext)
-                        dismiss()
-                    }
-                    .disabled((amount ?? 0) <= 0)
-                }
-            }
-            .onAppear {
-                amount = entry.amount
-                selectedEventID = entry.event?.id
-            }
         }
     }
 }

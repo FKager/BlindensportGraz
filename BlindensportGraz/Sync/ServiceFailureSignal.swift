@@ -5,7 +5,7 @@ import Observation
 /// vanish into a bare `try?` with no user-facing trace at all. Wired
 /// specifically into admin-critical actions per audit.md's own stated
 /// priority: role changes (`UserListView`'s Picker) and roster edits
-/// (`Member`/`MembersViews.swift`) — NOT universally into every save in the
+/// (`Member`/`MembersListView.swift`) — NOT universally into every save in the
 /// app, which is a much bigger UX change than this phase's scope.
 ///
 /// `@Observable` singleton so any view can bind an `.alert(...)` to

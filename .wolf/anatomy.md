@@ -190,15 +190,20 @@
 - `settings.local.json` (~38 tok)
 
 ## BlindensportGraz/App/
-
+- `MainTabView.swift` — Struct MainTabView (~1182 tok)
+- `RootView.swift` — Records that the club's designated-root account was created or logged into (~3509 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
-- `RootView.swift` — / Records that the club's designated-root account was created or logged into (~7841 tok)
 - `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 
 ## BlindensportGraz/Features/Account/
-
-- `AccountView.swift` — SwiftUI view: AccountView (~7312 tok)
+- `AccountView.swift` — Struct AccountView (~3391 tok)
+- `EditAccountView.swift` — Struct EditAccountView (~1258 tok)
+- `LoginView.swift` — Struct LoginView (~835 tok)
+- `RegisterView.swift` — Struct RegisterView (~1216 tok)
+- `RoleChangeLogView.swift` — Admin-only view of `RoleChangeLog` entries, newest first — audit.md P0 (~533 tok)
+- `SetPasswordView.swift` — One-time migration step for an account created before password login (~668 tok)
+- `UserListView.swift` — The list of every app account (`User`), pushed from `VereinView`'s admin (~1695 tok)
 - `AnonymousLandingView.swift` — / Root screen for the "anonymous" account tier (account-tiers refactor) — (~1686 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~647 tok)
 - `PasswordHashing.swift` — / Best-effort password hashing for a small trusted-club app with no backend (~516 tok)
@@ -216,52 +221,65 @@
 - `FullBackupView.swift` — / Admin-only whole-club export/restore screen — architecture-review.md §5 (~1226 tok)
 
 ## BlindensportGraz/Features/Budget/
-
+- `AddBudgetEntryView.swift` — Struct AddBudgetEntryView (~444 tok)
+- `BudgetEntryFields.swift` — Shared field set for adding/editing a BudgetEntry — matches this app's (~433 tok)
+- `BudgetView.swift` — Admin-only club finance overview — pushed from the "Verein" tab's admin (~1404 tok)
+- `EditBudgetEntryView.swift` — Struct EditBudgetEntryView (~417 tok)
 - `BudgetSummary.swift` — / Year-scoped club finance summary — pure aggregation over `BudgetEntry` + (~717 tok)
-- `BudgetViews.swift` — / Admin-only club finance overview — pushed from the "Verein" tab's admin (~2851 tok)
 - `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
 
 ## BlindensportGraz/Features/Dashboard/
-
-- `DashboardView.swift` — SwiftUI view: DashboardView (~2519 tok)
+- `DashboardView.swift` — Struct DashboardView (~1906 tok)
+- `NextUpCard.swift` — Struct NextUpCard (~259 tok)
+- `StatCard.swift` — Struct StatCard (~211 tok)
 - `SeasonDashboard.swift` — / Aggregate season stats — architecture-review.md §5 (P2). "Season" here (~881 tok)
 - `SeasonDashboardView.swift` — / Season (= one calendar year) recap — architecture-review.md §5 (P2): (~1790 tok)
 
 ## BlindensportGraz/Features/Events/
-
+- `AddEventView.swift` — Struct AddEventView (~1932 tok)
+- `EventDetailView.swift` — Struct EventDetailView (~1999 tok)
+- `EventImageGalleryView.swift` — Struct EventImageGalleryView (~604 tok)
+- `EventImagesSection.swift` — Random-photo banner + upload + full gallery, embeddable in any Event/ (~662 tok)
+- `EventRow.swift` — Struct EventRow (~393 tok)
+- `EventsListView.swift` — Struct EventsListView (~794 tok)
+- `MemberSelectionRow.swift` — One toggleable row in a Users/Members multi-select list — shared by (~249 tok)
 - `AddNewEventMemberView.swift` — / Lets an admin/coach add someone who isn't in the roster yet directly from (~1948 tok)
 - `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
-- `EventImagesViews.swift` — / Downscales/compresses picked photo library assets before they ever hit (~1568 tok)
-- `EventsViews.swift` — SwiftUI view: AddEventView (~5693 tok)
 
 ## BlindensportGraz/Features/Members/
-
+- `AddMemberView.swift` — Struct AddMemberView (~1336 tok)
+- `MemberChangeRequestDetailView.swift` — One request's proposed fields vs. the member's current values, with an (~1341 tok)
+- `MemberChangeRequestsView.swift` — Admin review queue for self-service "Vereinsdaten" edits — architecture- (~932 tok)
+- `MemberDetailView.swift` — Struct MemberDetailView (~814 tok)
+- `MemberRow.swift` — Struct MemberRow (~475 tok)
+- `MembersListView.swift` — The club's member roster, pushed from `VereinView`'s admin hub (see (~1839 tok)
+- `MyMemberView.swift` — Self-service editing of a member's own Grazer VSC roster entry — reachable (~1828 tok)
+- `PersonenListView.swift` — Admin-only combined "Personen" list, pushed from `VereinView`'s hub — (~1533 tok)
 - `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
-- `MemberChangeRequestsView.swift` — / Admin review queue for self-service "Vereinsdaten" edits — architecture- (~2417 tok)
 - `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4825 tok)
 - `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1914 tok)
-- `MembersViews.swift` — / The club's member roster, pushed from `VereinView`'s admin hub (see (~8471 tok)
 
 ## BlindensportGraz/Features/Reports/
 
 - `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/Features/Reports/KostZ/
-
+- `KostZCalculationView.swift` — Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~1730 tok)
+- `KostZTournamentCalculationView.swift` — Admin-only screen (see TournamentDetailView's toolbar) that totals one (~1217 tok)
 - `KostZCalculation.swift` — / One eligible person's summed amount for the requested month — see (~2323 tok)
 - `KostZExport.swift` — Declares KostZExportError (~1805 tok)
-- `KostZViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~3136 tok)
 
 ## BlindensportGraz/Features/Reports/Prae/
-
+- `PraeCalculationView.swift` — Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~2434 tok)
+- `PraeTournamentCalculationView.swift` — Admin-only screen (see TournamentDetailView's toolbar) that picks one of (~1856 tok)
 - `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3811 tok)
 - `PraeExport.swift` — Declares PraeExportError (~6388 tok)
-- `PraeViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~4566 tok)
 
 ## BlindensportGraz/Features/Reports/Sammelabrechnung/
-
+- `SammelabrechnungSeasonView.swift` — Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~877 tok)
+- `SammelabrechnungTournamentView.swift` — Admin-only screen (see TournamentDetailView's toolbar) that bundles a (~2311 tok)
+- `SammelabrechnungView.swift` — Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~1999 tok)
 - `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
-- `SammelabrechnungViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~5519 tok)
 
 ## BlindensportGraz/Features/Reports/Teilnehmerliste/
 
@@ -274,24 +292,37 @@
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
 
 ## BlindensportGraz/Features/Teams/
-
+- `AddTeamMemberView.swift` — Assigns an existing `User` (registered app account) or roster `Member` to (~1312 tok)
+- `AddTeamView.swift` — Struct AddTeamView (~441 tok)
+- `TeamDetailView.swift` — Struct TeamDetailView (~1387 tok)
+- `TeamRow.swift` — Struct TeamRow (~350 tok)
+- `TeamsListView.swift` — Struct TeamsListView (~1093 tok)
+- `VereinSplitView.swift` — iPad (regular-width) admin console for the Verein tab — architecture- (~983 tok)
+- `VereinView.swift` — Root of the "Verein" tab (see MainTabView) — the merge of the former (~1025 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3220 tok)
-- `TeamsViews.swift` — SwiftUI view: TeamsListView (~6941 tok)
 
 ## BlindensportGraz/Features/Tournaments/
-
+- `AddTournamentView.swift` — Struct AddTournamentView (~2362 tok)
+- `TournamentDetailView.swift` — Struct TournamentDetailView (~5383 tok)
+- `TournamentInvitationImportView.swift` — "Turnier aus Einladung erstellen" (user request) — lets an admin/coach (~1375 tok)
+- `TournamentRow.swift` — Struct TournamentRow (~774 tok)
+- `TournamentsListView.swift` — Struct TournamentsListView (~1031 tok)
 - `TournamentInvitationImport.swift` — / Prefilled values for a new `Tournament`, produced by (~3668 tok)
-- `TournamentsViews.swift` — SwiftUI view: AddTournamentView (~11607 tok)
 
 ## BlindensportGraz/Features/Trainings/
-
+- `AddTrainingView.swift` — Struct AddTrainingView (~5269 tok)
+- `TrainingDetailView.swift` — Struct TrainingDetailView (~4186 tok)
+- `TrainingRow.swift` — Struct TrainingRow (~589 tok)
+- `TrainingsListView.swift` — Struct TrainingsListView (~3139 tok)
 - `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2695 tok)
 - `TrainingSeriesView.swift` — / Creates a weekly-recurring series of trainings from a `TrainingFavorite` (~1955 tok)
-- `TrainingsViews.swift` — SwiftUI view: AddTrainingView (~14003 tok)
 
 ## BlindensportGraz/Features/Welcome/
+- `MarkdownContentView.swift` — Minimal line-based Markdown renderer for the welcome screen's content — (~569 tok)
+- `WelcomeFileWatcher.swift` — Watches this app's own iCloud Drive "Documents" folder (visible in the (~683 tok)
+- `WelcomeScreenSettingsView.swift` — Admin settings screen (pushed from `VereinHubList`/`VereinSplitView`) (~853 tok)
+- `WelcomeView.swift` — Full-screen welcome note shown by `RootView` on launch (when enabled and (~291 tok)
 
-- `WelcomeScreen.swift` — / Watches this app's own iCloud Drive "Documents" folder (visible in the (~2532 tok)
 
 ## BlindensportGraz/Models/
 
@@ -353,7 +384,8 @@
 - `WelcomeContentService.swift` — Declares WelcomeContentService (~138 tok)
 
 ## BlindensportGraz/Shared/
-
+- `ImageProcessing.swift` — Downscales/compresses picked photo library assets before they ever hit (~224 tok)
+- `OptionalDatePicker.swift` — A DatePicker that can represent "no date set" via a toggle — SwiftUI's (~207 tok)
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1251 tok)
 - `ShareExtensionBridge.swift` — / Bridges a file shared into iOS's system share sheet ("Turnier aus (~1283 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)

@@ -46,12 +46,14 @@ MainTabView -> TabView (Dashboard, Events, Tournaments, Trainings, Teams, Accoun
 
 Each tab uses `@Query` for data fetching from SwiftData and displays different views:
 
-1. **DashboardView.swift**: Overview dashboard with stats cards and upcoming items
-2. **EventsViews.swift**: Event management (create/edit/delete events)
-3. **TournamentsViews.swift**: Tournament management (list, details, create)
-4. **TrainingsViews.swift**: Training session management
-5. **TeamsViews.swift**: Team management and member assignments
-6. **AccountView.swift**: User profile management and account settings
+1. **Features/Dashboard/**: Overview dashboard with stats cards and upcoming items
+2. **Features/Events/**: Event management (create/edit/delete events)
+3. **Features/Tournaments/**: Tournament management (list, details, create)
+4. **Features/Trainings/**: Training session management
+5. **Features/Teams/**: Team management, member assignments, and the admin "Verein" hub
+6. **Features/Account/**: Login/registration, user profile and account settings
+
+One SwiftUI view type per file, named after the type (e.g. `TrainingDetailView.swift`); small `private` helper types stay in the file of the view that uses them.
 
 ### Data Flow Pattern
 ```swift
