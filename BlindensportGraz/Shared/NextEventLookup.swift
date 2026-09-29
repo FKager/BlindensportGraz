@@ -32,6 +32,14 @@ enum NextEventLookup {
     /// The account last used on this device — `RootView` persists its id under
     /// `"localUserID"`. `nil` (no one logged in) falls back to "only
     /// unscoped events are visible".
+    /// Whether `user` may see more than name, date and location — see
+    /// `AccessPolicy`. Anonymous (nil) never does.
+    static func hasFullAccess(_ user: User?, in context: ModelContext) -> Bool {
+        guard let user else { return false }
+        let roster = (try? context.fetch(FetchDescriptor<Member>())) ?? []
+        return AccessPolicy.hasFullAccess(user, roster: roster)
+    }
+
     static func currentUser(in context: ModelContext) -> User? {
         guard let raw = UserDefaults.standard.string(forKey: "localUserID"),
               let id = UUID(uuidString: raw) else { return nil }

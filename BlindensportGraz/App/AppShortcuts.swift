@@ -23,7 +23,8 @@ struct NextTrainingIntent: AppIntent {
         }
         return .result(dialog: IntentDialog(stringLiteral: NextEventLookup.spokenLine(
             kind: "Training", title: training.title, date: training.startDate,
-            location: training.location, includeTime: true
+            // Time only for full access — others get name, date and location (AccessPolicy).
+            location: training.location, includeTime: NextEventLookup.hasFullAccess(user, in: context)
         )))
     }
 }

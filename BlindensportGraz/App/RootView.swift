@@ -33,6 +33,8 @@ struct RootView: View {
     // very-first-account bootstrap — there's no subset of users that would
     // still answer either question correctly.
     @Query private var users: [User]
+    /// The Benutzerverwaltung roster — decides full vs. schedule-only access.
+    @Query private var members: [Member]
 
     private let appleSignIn = AppleSignInCoordinator()
 
@@ -41,17 +43,11 @@ struct RootView: View {
             if isResolvingAccount {
                 ProgressView()
             } else if let user = currentUser {
-                MainTabView(currentUser: user, onLogout: {
-                    // Clears the same two @AppStorage keys resolveAccount()
-                    // resumes from — logout used to leave these set, which
-                    // is exactly the class of bug self-delete (AccountView)
-                    // would otherwise reintroduce (next launch tries to
-                    // "resume" an account that's gone / was just logged out
-                    // of, per cerebrum's bug-164/bug-373 notes).
-                    storedAppleUserIdentifier = ""
-                    storedUserID = ""
-                    currentUser = nil
-                })
+                if AccessPolicy.hasFullAccess(user, roster: members) {
+                    MainTabView(currentUser: user, onLogout: logOut)
+                } else {
+                    RestrictedTabView(currentUser: user, onLogout: logOut)
+                }
             } else {
                 AnonymousLandingView(onLogin: onLogin, onAppleSignIn: { await performAppleSignIn() })
             }
@@ -62,6 +58,17 @@ struct RootView: View {
         .fullScreenCover(isPresented: $showWelcome) {
             WelcomeView(markdown: welcomeMarkdown) { showWelcome = false }
         }
+    }
+
+    /// Clears the same two @AppStorage keys resolveAccount() resumes from —
+    /// logout used to leave these set, which is exactly the class of bug
+    /// self-delete (AccountView) would otherwise reintroduce (next launch
+    /// tries to "resume" an account that's gone / was just logged out of,
+    /// per cerebrum's bug-164/bug-373 notes).
+    private func logOut() {
+        storedAppleUserIdentifier = ""
+        storedUserID = ""
+        currentUser = nil
     }
 
     /// If THIS device can see `welcome.md` in its own iCloud Drive (only

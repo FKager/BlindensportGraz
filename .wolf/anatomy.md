@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T11:06:48.119Z
-> Files: 364 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T11:57:11.210Z
+> Files: 366 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -190,6 +190,7 @@
 - `settings.local.json` (~38 tok)
 
 ## BlindensportGraz/App/
+- `RestrictedTabView.swift` — Schedule-only tabs (Termine + Account) for signed-in users without full access (~370 tok)
 
 - `AppRoute.swift` — AppRoute enum (all pushed screens) + `.appRouteDestinations(currentUser:)` registered once per NavigationStack root (~900 tok)
 - `AppRoute.swift` — / Every screen that gets pushed onto a `NavigationStack`. Links use (~882 tok)
@@ -202,7 +203,7 @@
 ## BlindensportGraz/Features/Account/
 
 - `AccountView.swift` — Struct AccountView (~3391 tok)
-- `AnonymousLandingView.swift` — / Root screen for the "anonymous" account tier (account-tiers refactor) — (~1686 tok)
+- `AnonymousLandingView.swift` — / Root screen for the "anonymous" account tier (account-tiers refactor) — (~780 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~647 tok)
 - `EditAccountView.swift` — Struct EditAccountView (~1258 tok)
 - `LoginView.swift` — Struct LoginView (~835 tok)
@@ -323,9 +324,9 @@
 - `VereinView.swift` — Root of the "Verein" tab (see MainTabView) — the merge of the former (~1025 tok)
 
 ## BlindensportGraz/Features/Tournaments/
-- `InvitationDateSelector.swift` — Picks tournament dates among many in an invitation: NSDataDetector + d.m.yyyy regex, per-line keyword scoring, letter-date/past/deadline rejection (~1813 tok)
 
 - `AddTournamentView.swift` — Struct AddTournamentView (~2362 tok)
+- `InvitationDateSelector.swift` — Picks tournament dates among many in an invitation: NSDataDetector + d.m.yyyy regex, per-line keyword scoring, letter-date/past/deadline rejection (~1813 tok)
 - `InvitationDateSelector.swift` — / Picks the tournament's own dates out of an invitation that mentions many (~1935 tok)
 - `TournamentDetailView.swift` — Struct TournamentDetailView (~5383 tok)
 - `TournamentInvitationImport.swift` — / Prefilled values for a new `Tournament`, produced by (~3668 tok)
@@ -412,6 +413,7 @@
 - `WelcomeContentService.swift` — Declares WelcomeContentService (~138 tok)
 
 ## BlindensportGraz/Shared/
+- `AccessPolicy.swift` — Full app only for admin/root/accounts listed in Benutzerverwaltung (Member.first(matching:)); others schedule-only (~183 tok)
 
 - `CardModifier.swift` — `.card(tint:)` standard card + `.badge(tint:)` pill fill (~253 tok)
 - `CountBadge.swift` — Red filled number bubble (e.g. pending change requests) (~123 tok)
@@ -465,7 +467,7 @@
 - `ShareViewController.swift` — / Minimal Share Extension: this is the target that makes "Blindensport (~1339 tok)
 
 ## BlindensportGrazTests/
-- `InvitationDateSelectorTests.swift` — 8 invitation date scenarios + 4 AI cross-check tests (~1200 tok)
+- `AccessPolicyTests.swift` — AccessPolicy: listed by email/name, not listed, admin (~334 tok)
 
 - `AttendanceTrendsTests.swift` — Class: AttendanceTrendsTests (~1543 tok)
 - `BudgetSummaryTests.swift` — Class: BudgetSummaryTests (~1024 tok)
@@ -476,6 +478,7 @@
 - `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
 - `FullBackupTests.swift` — Class: FullBackupTests (~2744 tok)
 - `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
+- `InvitationDateSelectorTests.swift` — 8 invitation date scenarios + 4 AI cross-check tests (~1200 tok)
 - `KostZCalculationTests.swift` — Class: KostZCalculationTests (~6227 tok)
 - `MemberChangeRequestTests.swift` — Class: MemberChangeRequestTests (~1040 tok)
 - `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
@@ -572,3 +575,8 @@
 
 - `Appfile` — app_identifier it.a11y.BlindensportGraz, team 5Q57Y9YT8J (~30 tok)
 - `Fastfile` (~493 tok)
+
+
+## BlindensportGraz/Features/Schedule/
+- `ScheduleRow.swift` — Schedule row: title, day or day range, location; combined for VoiceOver (~317 tok)
+- `UpcomingScheduleSections.swift` — Read-only upcoming trainings/tournaments/events List sections: name, date, location; cancelled trainings hidden; isVisible team rule (~623 tok)
