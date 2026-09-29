@@ -9,6 +9,9 @@ import SwiftUI
 /// Event) plus "Registrieren"/"Anmelden" calls to action — full
 /// browsing/RSVP/admin features all require logging in.
 struct AnonymousLandingView: View {
+    /// Icon column in the preview rows; grows with Dynamic Type.
+    @ScaledMetric(relativeTo: .title3) private var previewIconWidth = 28.0
+
     let onLogin: (User) -> Void
     let onAppleSignIn: () async -> Void
 
@@ -43,20 +46,16 @@ struct AnonymousLandingView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
-                    VStack(spacing: 8) {
-                        Image(systemName: "figure.run.circle.fill")
-                            .font(.system(size: 56))
-                            .foregroundStyle(
-                                LinearGradient(colors: [.blue, .purple],
-                                               startPoint: .topLeading, endPoint: .bottomTrailing))
+                VStack(spacing: Theme.Spacing.xxl) {
+                    VStack(spacing: Theme.Spacing.s) {
+                        HeroIcon(systemName: "figure.run.circle.fill")
                         Text("Blindensport Graz")
                             .font(.title2)
                             .bold()
                     }
-                    .padding(.top, 32)
+                    .padding(.top, Theme.Spacing.hero)
 
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.m) {
                         Text("Demnächst")
                             .font(.headline)
                         if nextTraining == nil, nextTournament == nil, nextEvent == nil {
@@ -83,7 +82,7 @@ struct AnonymousLandingView: View {
                     }
                     .padding(.horizontal)
 
-                    VStack(spacing: 12) {
+                    VStack(spacing: Theme.Spacing.m) {
                         Button {
                             showRegister = true
                         } label: {
@@ -101,7 +100,7 @@ struct AnonymousLandingView: View {
                         .buttonStyle(.bordered)
                     }
                     .padding(.horizontal)
-                    .padding(.top, 8)
+                    .padding(.top, Theme.Spacing.s)
 
                     Spacer(minLength: 24)
                 }
@@ -117,12 +116,12 @@ struct AnonymousLandingView: View {
 
     @ViewBuilder
     private func previewRow(kind: String, systemImage: String, title: String, date: Date, location: String) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Theme.Spacing.m) {
             Image(systemName: systemImage)
                 .font(.title3)
-                .foregroundStyle(.blue)
-                .frame(width: 28)
-            VStack(alignment: .leading, spacing: 2) {
+                .foregroundStyle(Theme.Palette.info)
+                .frame(width: previewIconWidth)
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 Text(title).font(.subheadline).bold()
                 Text("\(kind) · \(date.formatted(date: .abbreviated, time: .shortened))\(location.isEmpty ? "" : " · \(location)")")
                     .font(.caption)
@@ -131,6 +130,6 @@ struct AnonymousLandingView: View {
             Spacer()
         }
         .padding()
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12))
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
     }
 }

@@ -216,7 +216,7 @@ struct AddTrainingView: View {
                                     Spacer()
                                     if selectedTeamIDs.contains(team.id) {
                                         Image(systemName: "checkmark")
-                                            .foregroundStyle(.blue)
+                                            .foregroundStyle(Theme.Palette.info)
                                             .accessibilityHidden(true)
                                     }
                                 }

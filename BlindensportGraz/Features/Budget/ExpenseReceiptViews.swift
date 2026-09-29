@@ -46,7 +46,7 @@ struct ExpenseReceiptsSection: View {
                     .foregroundStyle(.secondary)
             } else {
                 ForEach(receipts.sorted { $0.uploadedAt > $1.uploadedAt }) { receipt in
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.s) {
                         Button {
                             expandedReceiptID = (expandedReceiptID == receipt.id) ? nil : receipt.id
                         } label: {
@@ -56,7 +56,7 @@ struct ExpenseReceiptsSection: View {
                                         .resizable()
                                         .scaledToFill()
                                         .frame(width: 44, height: 44)
-                                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                                        .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.small))
                                         .accessibilityHidden(true)
                                 }
                                 Text(receipt.note.isEmpty ? "Beleg" : receipt.note)

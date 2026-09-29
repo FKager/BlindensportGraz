@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T09:27:35.099Z
-> Files: 350 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T09:39:27.653Z
+> Files: 356 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -200,7 +200,6 @@
 - `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 
 ## BlindensportGraz/Features/Account/
-- `UserRolePicker.swift` — Root-only app-role picker on UserListView rows — saves User + RoleChangeLog only on user pick (~409 tok)
 
 - `AccountView.swift` — Struct AccountView (~3391 tok)
 - `AnonymousLandingView.swift` — / Root screen for the "anonymous" account tier (account-tiers refactor) — (~1686 tok)
@@ -212,16 +211,17 @@
 - `RoleChangeLogView.swift` — Admin-only view of `RoleChangeLog` entries, newest first — audit.md P0 (~533 tok)
 - `SetPasswordView.swift` — One-time migration step for an account created before password login (~668 tok)
 - `UserListView.swift` — The list of every app account (`User`), pushed from `VereinView`'s admin (~1695 tok)
+- `UserRolePicker.swift` — Root-only app-role picker on UserListView rows — saves User + RoleChangeLog only on user pick (~409 tok)
 - `UserRolePicker.swift` — / App-role picker (Mitglied / Trainer:in / Admin) on a `UserListView` row. (~437 tok)
 
 ## BlindensportGraz/Features/Attendance/
-- `PraeAmountRow.swift` — PRAE € wheel (5-steps) + exact TextField, clamped 0...maxPrae, local-state pattern (~745 tok)
-- `AttendanceRow.swift` — Attendance toggle row (Training/Tournament detail) — local @State, saves only on user edit; shows PraeAmountRow for present helpers (~452 tok)
 
 - `AttendanceRollCallView.swift` — / Distraction-free "roll call" for one Training or Tournament — (~1520 tok)
+- `AttendanceRow.swift` — Attendance toggle row (Training/Tournament detail) — local @State, saves only on user edit; shows PraeAmountRow for present helpers (~452 tok)
 - `AttendanceRow.swift` — / One person in a Training's "Anwesenheit" / Tournament's "Teilnehmer:innen" (~483 tok)
 - `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
+- `PraeAmountRow.swift` — PRAE € wheel (5-steps) + exact TextField, clamped 0...maxPrae, local-state pattern (~745 tok)
 - `PraeAmountRow.swift` — / PRAE amount for one present helper/coach: a swipe-to-select wheel in €5 (~795 tok)
 
 ## BlindensportGraz/Features/Backup/
@@ -309,11 +309,11 @@
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
 
 ## BlindensportGraz/Features/Teams/
-- `MembershipRoleCapsule.swift` — Tinted badge showing a membership's role value (~94 tok)
-- `MembershipRoleMenu.swift` — Role menu/picker on TeamDetailView roster rows — saves TeamMembership only on user pick (~365 tok)
 
 - `AddTeamMemberView.swift` — Assigns an existing `User` (registered app account) or roster `Member` to (~1312 tok)
 - `AddTeamView.swift` — Struct AddTeamView (~441 tok)
+- `MembershipRoleCapsule.swift` — Tinted badge showing a membership's role value (~94 tok)
+- `MembershipRoleMenu.swift` — Role menu/picker on TeamDetailView roster rows — saves TeamMembership only on user pick (~365 tok)
 - `MembershipRoleMenu.swift` — / Tappable role capsule on a `TeamDetailView` roster row; opens a menu to (~388 tok)
 - `TeamDetailView.swift` — Struct TeamDetailView (~1387 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3220 tok)
@@ -341,9 +341,9 @@
 - `TrainingsListView.swift` — Struct TrainingsListView (~3139 tok)
 
 ## BlindensportGraz/Features/Welcome/
-- `WelcomeEnabledToggle.swift` — 'Für alle Mitglieder anzeigen' switch for WelcomeContent — saves only on user flip (~226 tok)
 
 - `MarkdownContentView.swift` — Minimal line-based Markdown renderer for the welcome screen's content — (~569 tok)
+- `WelcomeEnabledToggle.swift` — 'Für alle Mitglieder anzeigen' switch for WelcomeContent — saves only on user flip (~226 tok)
 - `WelcomeFileWatcher.swift` — Watches this app's own iCloud Drive "Documents" folder (visible in the (~683 tok)
 - `WelcomeScreenSettingsView.swift` — Admin settings screen (pushed from `VereinHubList`/`VereinSplitView`) (~853 tok)
 - `WelcomeView.swift` — Full-screen welcome note shown by `RootView` on launch (when enabled and (~291 tok)
@@ -408,13 +408,17 @@
 - `WelcomeContentService.swift` — Declares WelcomeContentService (~138 tok)
 
 ## BlindensportGraz/Shared/
+- `HeroIcon.swift` — Large decorative header symbol, @ScaledMetric-scaled, brand gradient default, VoiceOver-hidden (~187 tok)
+- `CountBadge.swift` — Red filled number bubble (e.g. pending change requests) (~123 tok)
+- `TagLabel.swift` — Pill label for status/role/tag; Text-like inits (LocalizedStringKey vs verbatim), .caption, Palette tint (~362 tok)
+- `CardModifier.swift` — `.card(tint:)` standard card + `.badge(tint:)` pill fill (~253 tok)
 
 - `ImageProcessing.swift` — Downscales/compresses picked photo library assets before they ever hit (~224 tok)
 - `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1251 tok)
 - `OptionalDatePicker.swift` — A DatePicker that can represent "no date set" via a toggle — SwiftUI's (~207 tok)
 - `ShareExtensionBridge.swift` — / Bridges a file shared into iOS's system share sheet ("Turnier aus (~1283 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)
-- `Theme.swift` — / First slice of a shared design system (architecture-review.md §3.1) — (~775 tok)
+- `Theme.swift` — Design tokens: Spacing (2…32), Radius, Palette (asset-backed WCAG-AA success/warning/danger/info), Accent per area, brandGradient, card/badge fills (~750 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~1070 tok)
 - `WidgetRefresher.swift` — / Bridges the app's SwiftData world to the widget: recompute "what's next" (~379 tok)
 - `WidgetShared.swift` — / The small payload the home-screen widget needs, shared between the app and (~503 tok)

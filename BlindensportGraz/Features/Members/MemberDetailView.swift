@@ -42,7 +42,7 @@ struct MemberDetailView: View {
                 if !Validation.isPlausibleAustrianSVNR(member.svnr) {
                     Label("SVNR-Format ungewöhnlich", systemImage: "exclamationmark.triangle")
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.Palette.warning)
                 }
                 TextField("IBAN", text: $member.iban)
                     .textInputAutocapitalization(.characters)
@@ -50,7 +50,7 @@ struct MemberDetailView: View {
                 if !Validation.ibanChecksumIsValid(member.iban) {
                     Label("IBAN-Prüfsumme ungültig", systemImage: "exclamationmark.triangle")
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.Palette.warning)
                 }
                 OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $member.lastMedicalExamination)
                 TextField("Standardfunktion", text: $member.defaultFunction)

@@ -14,7 +14,7 @@ struct MarkdownContentView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.m) {
             ForEach(Array(lines.enumerated()), id: \.offset) { _, line in
                 blockView(for: line)
             }
@@ -33,14 +33,14 @@ struct MarkdownContentView: View {
         } else if line.hasPrefix("# ") {
             inlineText(String(line.dropFirst(2))).font(.largeTitle.bold())
         } else if line.hasPrefix("- ") || line.hasPrefix("* ") {
-            HStack(alignment: .top, spacing: 8) {
+            HStack(alignment: .top, spacing: Theme.Spacing.s) {
                 Text("•")
                 inlineText(String(line.dropFirst(2)))
             }
         } else if let dotRange = line.range(of: ". "),
                   !line[..<dotRange.lowerBound].isEmpty,
                   line[..<dotRange.lowerBound].allSatisfy(\.isNumber) {
-            HStack(alignment: .top, spacing: 8) {
+            HStack(alignment: .top, spacing: Theme.Spacing.s) {
                 Text(String(line[..<dotRange.upperBound]))
                 inlineText(String(line[dotRange.upperBound...]))
             }

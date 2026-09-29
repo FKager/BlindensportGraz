@@ -71,7 +71,7 @@ struct TrainingDetailView: View {
             Section {
                 Label("Ein anderer Eintrag hat bereits diesen Titel, diese Sportart und diesen Zeitpunkt. Bitte Titel oder Zeit ändern.", systemImage: "exclamationmark.triangle.fill")
                     .font(.caption)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Theme.Palette.warning)
             }
         }
 
@@ -122,7 +122,7 @@ struct TrainingDetailView: View {
                             Spacer()
                             if training.teams.contains(where: { $0.id == team.id }) {
                                 Image(systemName: "checkmark")
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(Theme.Palette.info)
                                     .accessibilityHidden(true)
                             }
                         }

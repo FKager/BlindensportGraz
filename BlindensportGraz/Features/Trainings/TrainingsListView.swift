@@ -119,7 +119,7 @@ struct TrainingsListView: View {
                                } label: {
                                    Label("Abgesagt", systemImage: "xmark.circle")
                                }
-                               .tint(.orange)
+                               .tint(Theme.Palette.warning)
                            }
                        }
                        }

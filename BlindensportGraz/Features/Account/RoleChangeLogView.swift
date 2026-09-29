@@ -17,7 +17,7 @@ struct RoleChangeLogView: View {
                                        description: Text("Änderungen an Benutzerrollen erscheinen hier."))
             } else {
                 ForEach(entries) { entry in
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                         Text("\(displayName(for: entry.userID)): \(entry.oldRole) → \(entry.newRole)")
                             .font(.body)
                         Text("Geändert von \(changedByLabel(entry.changedBy)) am \(entry.changedAt.formatted(date: .abbreviated, time: .shortened))")

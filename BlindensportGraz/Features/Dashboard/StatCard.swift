@@ -8,7 +8,7 @@ struct StatCard: View {
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.s) {
             // Decorative — see sectionHeader's identical treatment above;
             // `value`/`title` right below already say everything this card
             // needs to communicate.

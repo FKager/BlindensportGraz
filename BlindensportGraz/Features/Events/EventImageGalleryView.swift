@@ -8,7 +8,7 @@ struct EventImageGalleryView: View {
     let onDelete: (EventImage) -> Void
     @Environment(\.dismiss) private var dismiss
 
-    private let columns = [GridItem(.adaptive(minimum: 100), spacing: 4)]
+    private let columns = [GridItem(.adaptive(minimum: 100), spacing: Theme.Spacing.xs)]
 
     private func canDelete(_ image: EventImage) -> Bool {
         guard let user = currentUser else { return false }
@@ -18,7 +18,7 @@ struct EventImageGalleryView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVGrid(columns: columns, spacing: 4) {
+                LazyVGrid(columns: columns, spacing: Theme.Spacing.xs) {
                     ForEach(images.sorted { $0.uploadedAt > $1.uploadedAt }) { image in
                         if let uiImage = UIImage(data: image.imageData) {
                             ZStack(alignment: .topTrailing) {
@@ -36,7 +36,7 @@ struct EventImageGalleryView: View {
                                         Image(systemName: "xmark.circle.fill")
                                             .symbolRenderingMode(.palette)
                                             .foregroundStyle(.white, .black.opacity(0.6))
-                                            .padding(4)
+                                            .padding(Theme.Spacing.xs)
                                     }
                                     .accessibilityLabel("Bild löschen")
                                 }
@@ -44,7 +44,7 @@ struct EventImageGalleryView: View {
                         }
                     }
                 }
-                .padding(4)
+                .padding(Theme.Spacing.xs)
             }
             .navigationTitle("Bilder")
             .navigationBarTitleDisplayMode(.inline)

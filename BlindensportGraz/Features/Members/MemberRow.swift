@@ -7,8 +7,8 @@ struct MemberRow: View {
     let isLinked: Bool
 
     var body: some View {
-        HStack(spacing: 12) {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(spacing: Theme.Spacing.m) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(member.fullName)
                     .font(.headline)
                 if !member.fullAddress.isEmpty {
@@ -28,12 +28,12 @@ struct MemberRow: View {
             // member" negative marker.
             if member.memberOfGVSC {
                 Image(systemName: "checkmark.seal.fill")
-                    .foregroundStyle(.blue)
+                    .foregroundStyle(Theme.Palette.info)
                     .accessibilityLabel("Mitglied bei Grazer VSC")
             }
             if isLinked {
                 Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
+                    .foregroundStyle(Theme.Palette.success)
                     .help("Mit einem Benutzerkonto verknüpft")
                     // .help() only reaches pointer/Catalyst UIs — this icon is the
                     // only place this status is conveyed, so VoiceOver needs its
@@ -41,6 +41,6 @@ struct MemberRow: View {
                     .accessibilityLabel("Mit einem Benutzerkonto verknüpft")
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
     }
 }

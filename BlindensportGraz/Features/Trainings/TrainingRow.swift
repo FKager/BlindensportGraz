@@ -4,6 +4,9 @@ import Combine
 import UniformTypeIdentifiers
 
 struct TrainingRow: View {
+    /// Width of the date column; grows with Dynamic Type so the date never clips.
+    @ScaledMetric(relativeTo: .caption) private var dateColumnWidth = 44.0
+
      let training: Training
 
     // Mirrors TournamentRow.statusColor — deliberately not shown at all for
@@ -11,37 +14,32 @@ struct TrainingRow: View {
     // just be visual noise; only the two states worth calling out get one).
     var statusColor: Color {
         switch training.status {
-        case Training.heldStatus: return .green
-        case Training.cancelledStatus: return .red
+        case Training.heldStatus: return Theme.Palette.success
+        case Training.cancelledStatus: return Theme.Palette.danger
         default: return .secondary
         }
     }
 
     var body: some View {
         // Column order per user request: date, then name, then time.
-        HStack(alignment: .center, spacing: 12) {
-            VStack(alignment: .leading, spacing: 2) {
+        HStack(alignment: .center, spacing: Theme.Spacing.m) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 Text(training.startDate, format: .dateTime.weekday(.abbreviated))
                 Text(training.startDate, format: .dateTime.day().month(.abbreviated))
             }
             .font(.caption)
             .foregroundStyle(.secondary)
-            .frame(width: 44, alignment: .leading)
+            .frame(width: dateColumnWidth, alignment: .leading)
 
             SportGlyph(sport: training.sport, size: 32)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 HStack {
                     Text(training.title)
                        .font(.headline)
                     if training.status != Training.openStatus {
                         Spacer()
-                        Text(training.statusLabel)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .badge(tint: statusColor, opacity: Theme.emphasizedBadgeOpacity)
-                            .foregroundStyle(statusColor)
+                        TagLabel(training.statusLabel, tint: statusColor, emphasized: true)
                     }
                 }
                 HStack {
@@ -59,6 +57,6 @@ struct TrainingRow: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
-       .padding(.vertical, 4)
+       .padding(.vertical, Theme.Spacing.xs)
     }
 }

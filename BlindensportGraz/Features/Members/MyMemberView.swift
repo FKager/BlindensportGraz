@@ -72,7 +72,7 @@ struct MyMemberView: View {
                     Label("Eine frühere Änderung wartet noch auf Bestätigung durch eine Administration. Weitere Anpassungen hier aktualisieren diesen Antrag.",
                           systemImage: "clock.badge.checkmark")
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.Palette.warning)
                 }
             }
             Section("Mitglied") {
@@ -110,7 +110,7 @@ struct MyMemberView: View {
                 if !Validation.isPlausibleAustrianSVNR(draft.svnr) {
                     Label("SVNR-Format ungewöhnlich", systemImage: "exclamationmark.triangle")
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.Palette.warning)
                 }
                 TextField("IBAN", text: bindingFor(\.iban, on: draft))
                     .textInputAutocapitalization(.characters)
@@ -118,7 +118,7 @@ struct MyMemberView: View {
                 if !Validation.ibanChecksumIsValid(draft.iban) {
                     Label("IBAN-Prüfsumme ungültig", systemImage: "exclamationmark.triangle")
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.Palette.warning)
                 }
                 OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: bindingFor(\.lastMedicalExamination, on: draft))
             }

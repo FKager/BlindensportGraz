@@ -36,7 +36,7 @@ struct EditAccountView: View {
                     if !Validation.isPlausibleEmail(user.email) {
                         Label("Ungültige E-Mail-Adresse", systemImage: "exclamationmark.triangle")
                             .font(.caption)
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(Theme.Palette.warning)
                     }
                 }
                 Section {

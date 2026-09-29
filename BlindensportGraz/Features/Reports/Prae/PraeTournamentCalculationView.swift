@@ -8,6 +8,9 @@ import SwiftData
 /// KostZTournamentCalculationView's relationship to KostZCalculationView.
 /// No month/year picker: the tournament supplies its own period.
 struct PraeTournamentCalculationView: View {
+    /// Width of the "12." day column; grows with Dynamic Type.
+    @ScaledMetric(relativeTo: .body) private var dayColumnWidth = 32.0
+
     let tournament: Tournament
     @Environment(\.dismiss) private var dismiss
     @Query private var allMemberships: [TeamMembership]
@@ -63,13 +66,13 @@ struct PraeTournamentCalculationView: View {
                             ForEach(summary.entries) { entry in
                                 HStack {
                                     Text("\(entry.day).")
-                                        .frame(width: 32, alignment: .leading)
+                                        .frame(width: dayColumnWidth, alignment: .leading)
                                     Text(entry.purpose)
                                         .foregroundStyle(.secondary)
                                         .lineLimit(1)
                                     Spacer()
                                     Text(entry.amount, format: .currency(code: "EUR"))
-                                        .foregroundStyle(entry.amount > PraeCalculator.dailyCap ? .red : .primary)
+                                        .foregroundStyle(entry.amount > PraeCalculator.dailyCap ? Theme.Palette.danger : .primary)
                                 }
                             }
                             HStack {
@@ -77,18 +80,18 @@ struct PraeTournamentCalculationView: View {
                                 Spacer()
                                 Text(summary.total, format: .currency(code: "EUR"))
                                     .bold()
-                                    .foregroundStyle(summary.exceedsMonthlyCap ? .red : .primary)
+                                    .foregroundStyle(summary.exceedsMonthlyCap ? Theme.Palette.danger : .primary)
                             }
                             if summary.exceedsMonthlyCap {
                                 Label("Monatliche Höchstgrenze von € 720,- überschritten.", systemImage: "exclamationmark.triangle.fill")
                                     .font(.caption)
-                                    .foregroundStyle(.red)
+                                    .foregroundStyle(Theme.Palette.danger)
                             }
                             if !summary.daysExceedingDailyCap.isEmpty {
                                 Label("Tageshöchstsatz von € 120,- überschritten an Tag(en): \(summary.daysExceedingDailyCap.map(String.init).joined(separator: ", ")).",
                                       systemImage: "exclamationmark.triangle.fill")
                                     .font(.caption)
-                                    .foregroundStyle(.red)
+                                    .foregroundStyle(Theme.Palette.danger)
                             }
                         }
                     }

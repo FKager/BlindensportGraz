@@ -65,7 +65,14 @@ enum SportIcon {
 /// VoiceOver — see cerebrum's standing VoiceOver preference notes.
 struct SportGlyph: View {
     let sport: String
-    var size: CGFloat = 32
+    /// Diameter at the default text size.
+    var size: Double = 32
+
+    /// Grows the glyph with Dynamic Type (capped at 2×, so rows stay usable
+    /// at the largest accessibility sizes).
+    @ScaledMetric(relativeTo: .body) private var textScale = 1.0
+
+    private var diameter: Double { size * min(textScale, 2) }
 
     var body: some View {
         ZStack {
@@ -75,16 +82,16 @@ struct SportGlyph: View {
                 SportPictogram(sport: sport)
                     .stroke(
                         SportIcon.color(for: sport),
-                        style: StrokeStyle(lineWidth: max(1.5, size * 0.07), lineCap: .round, lineJoin: .round)
+                        style: StrokeStyle(lineWidth: max(1.5, diameter * 0.07), lineCap: .round, lineJoin: .round)
                     )
-                    .padding(size * 0.22)
+                    .padding(diameter * 0.22)
             } else {
                 Image(systemName: SportIcon.symbolName(for: sport))
-                    .font(.system(size: size * 0.42, weight: .semibold))
+                    .font(.system(size: diameter * 0.42, weight: .semibold))
                     .foregroundStyle(SportIcon.color(for: sport))
             }
         }
-        .frame(width: size, height: size)
+        .frame(width: diameter, height: diameter)
         .accessibilityHidden(true)
     }
 }

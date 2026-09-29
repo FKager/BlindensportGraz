@@ -20,7 +20,7 @@ struct MemberSelectionRow: View {
                 Spacer()
                 if isSelected {
                     Image(systemName: "checkmark")
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(Theme.Palette.info)
                         .accessibilityHidden(true)
                 }
             }

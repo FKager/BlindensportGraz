@@ -115,18 +115,18 @@ struct PersonenListView: View {
 
     @ViewBuilder
     private func rowLabel(_ row: PersonEntry) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             Text(row.name).font(.headline)
-            HStack(spacing: 6) {
-                if row.hasAccount { capsuleTag("Konto", .blue) }
-                if row.onRoster { capsuleTag("Kartei", .green) }
+            HStack(spacing: Theme.Spacing.s) {
+                if row.hasAccount { TagLabel("Konto", tint: Theme.Palette.info, emphasized: true) }
+                if row.onRoster { TagLabel("Kartei", tint: Theme.Palette.success, emphasized: true) }
                 if row.memberOfGVSC {
                     Image(systemName: "checkmark.seal.fill")
-                        .foregroundStyle(.green)
+                        .foregroundStyle(Theme.Palette.success)
                         .accessibilityLabel("Grazer VSC")
                 }
             }
-            HStack(spacing: 8) {
+            HStack(spacing: Theme.Spacing.s) {
                 if let roleLabel = row.roleLabel {
                     Text(roleLabel)
                 }
@@ -135,15 +135,7 @@ struct PersonenListView: View {
             .font(.caption)
             .foregroundStyle(.secondary)
         }
-        .padding(.vertical, 2)
-    }
-
-    private func capsuleTag(_ text: String, _ color: Color) -> some View {
-        Text(text)
-            .font(.caption2).bold()
-            .padding(.horizontal, 6).padding(.vertical, 1)
-            .badge(tint: color)
-            .foregroundStyle(color)
+        .padding(.vertical, Theme.Spacing.xxs)
     }
 }
 

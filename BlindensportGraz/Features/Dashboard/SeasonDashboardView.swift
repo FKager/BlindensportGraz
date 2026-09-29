@@ -65,7 +65,7 @@ struct SeasonDashboardView: View {
                                 x: .value("Monat", point.period, unit: .month),
                                 y: .value("Quote", point.rate)
                             )
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(Theme.Palette.info)
                             .accessibilityLabel(monthLabel(point.period))
                             .accessibilityValue("\(Int((point.rate * 100).rounded())) Prozent, \(point.attendedCount) von \(point.totalCount) anwesend")
                         }

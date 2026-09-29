@@ -59,12 +59,7 @@ private struct VereinHubList: View {
                         Label("Änderungsanträge", systemImage: "person.crop.circle.badge.checkmark")
                         if pendingChangeRequestCount > 0 {
                             Spacer()
-                            Text("\(pendingChangeRequestCount)")
-                                .font(.caption.bold())
-                                .foregroundStyle(.white)
-                                .padding(.horizontal, 7)
-                                .padding(.vertical, 2)
-                                .background(.red, in: Capsule())
+                            CountBadge(count: pendingChangeRequestCount)
                         }
                     }
                 }

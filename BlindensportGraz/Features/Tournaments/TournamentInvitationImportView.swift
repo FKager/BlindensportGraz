@@ -38,12 +38,10 @@ struct TournamentInvitationImportView: View {
             AddTournamentView(currentUser: currentUser, draft: draft)
         } else {
             NavigationStack {
-                VStack(spacing: 20) {
+                VStack(spacing: Theme.Spacing.xl) {
                     Spacer()
-                    Image(systemName: "doc.text.magnifyingglass")
-                        .font(.system(size: 48))
-                        .foregroundStyle(.blue)
-                        .accessibilityHidden(true)
+                    HeroIcon(systemName: "doc.text.magnifyingglass", size: 48,
+                             style: AnyShapeStyle(Theme.Palette.info))
                     Text("Turnier aus Einladung erstellen")
                         .font(.title3.bold())
                     Text("Wähle eine Einladung als Text-, Word- (.docx) oder PDF-Datei. Titel, Sportart, Ort und Zeitraum werden automatisch ausgefüllt und können danach noch angepasst werden.")

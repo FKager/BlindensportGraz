@@ -30,12 +30,10 @@ struct AccountView: View {
         Form {
             if let user = currentUser {
                 Section {
-                    HStack(spacing: 16) {
+                    HStack(spacing: Theme.Spacing.l) {
                         ZStack {
                             Circle()
-                                .fill(LinearGradient(colors: [.blue, .purple],
-                                                     startPoint: .topLeading,
-                                                     endPoint: .bottomTrailing))
+                                .fill(Theme.brandGradient)
                             Text(user.displayName.prefix(1).uppercased())
                                 .font(.title)
                                 .bold()
@@ -43,21 +41,17 @@ struct AccountView: View {
                         }
                         .frame(width: 70, height: 70)
 
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                             Text(user.displayName)
                                 .font(.title3)
                                 .bold()
                             Text(user.email)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                            Text(roleLabel(user.role.rawValue))
-                                .font(.caption)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .badge(tint: .blue)
+                            TagLabel(roleLabel(user.role.rawValue))
                         }
                     }
-                    .padding(.vertical, 8)
+                    .padding(.vertical, Theme.Spacing.s)
                 }
 
                 Section("Kontoinformationen") {
@@ -69,7 +63,7 @@ struct AccountView: View {
                     LabeledContent("Grazer VSC") {
                         Label(user.isGrazerVSCMember ? "Mitglied" : "Kein Mitglied",
                               systemImage: user.isGrazerVSCMember ? "checkmark.seal.fill" : "xmark.seal")
-                            .foregroundStyle(user.isGrazerVSCMember ? .green : .secondary)
+                            .foregroundStyle(user.isGrazerVSCMember ? Theme.Palette.success : .secondary)
                     }
                 }
 
@@ -258,7 +252,7 @@ struct AccountView: View {
                     Label("Der Server für den Kalender-Abgleich ist noch nicht eingerichtet — die URL oben zeigt einen Platzhalter.",
                           systemImage: "exclamationmark.triangle")
                         .font(.caption)
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.Palette.warning)
                 }
             }
         }

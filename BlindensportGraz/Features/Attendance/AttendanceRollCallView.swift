@@ -43,10 +43,10 @@ struct AttendanceRollCallView: View {
                                 Button {
                                     setPresent(!isPresent(membership), membership)
                                 } label: {
-                                    HStack(spacing: 14) {
+                                    HStack(spacing: Theme.Spacing.l) {
                                         Image(systemName: isPresent(membership) ? "checkmark.circle.fill" : "circle")
                                             .font(.title2)
-                                            .foregroundStyle(isPresent(membership) ? Color.green : Color.secondary)
+                                            .foregroundStyle(isPresent(membership) ? Theme.Palette.success : Color.secondary)
                                             .accessibilityHidden(true)
                                         Text(membership.displayName)
                                             .foregroundStyle(.primary)
@@ -63,7 +63,7 @@ struct AttendanceRollCallView: View {
                                     Button { setPresent(true, membership) } label: {
                                         Label("Anwesend", systemImage: "checkmark")
                                     }
-                                    .tint(.green)
+                                    .tint(Theme.Palette.success)
                                 }
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button { setPresent(false, membership) } label: {

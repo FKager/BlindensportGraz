@@ -2,10 +2,13 @@ import SwiftUI
 import SwiftData
 
 struct EventRow: View {
+    /// Width of the day/month badge; grows with Dynamic Type.
+    @ScaledMetric(relativeTo: .title2) private var dateBadgeWidth = 50.0
+
     let event: SportEvent
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Theme.Spacing.m) {
             VStack {
                 Text(event.startDate, format: .dateTime.day())
                       .font(.title2)
@@ -21,13 +24,13 @@ struct EventRow: View {
                       .minimumScaleFactor(0.5)
                       .lineLimit(1)
               }
-              .frame(width: 50)
-              .padding(.vertical, 4)
-              .background(.blue.opacity(Theme.badgeOpacity), in: RoundedRectangle(cornerRadius: 8))
+              .frame(width: dateBadgeWidth)
+              .padding(.vertical, Theme.Spacing.xs)
+              .background(Theme.Accent.events.opacity(Theme.badgeOpacity), in: RoundedRectangle(cornerRadius: Theme.Radius.small))
 
             SportGlyph(sport: event.sport, size: 28)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(event.title)
                       .font(.headline)
                 Text(event.sport)
@@ -38,6 +41,6 @@ struct EventRow: View {
                       .foregroundStyle(.secondary)
               }
           }
-          .padding(.vertical, 4)
+          .padding(.vertical, Theme.Spacing.xs)
       }
 }

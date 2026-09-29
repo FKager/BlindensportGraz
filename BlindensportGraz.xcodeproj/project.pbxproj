@@ -39,6 +39,7 @@
 		2058FA09D772ADB9592164CC /* NetworkMonitorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E311FD2552040187DB7B8D4D /* NetworkMonitorTests.swift */; };
 		209D276D049F16000C3023FE /* BlindensportGrazApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A8573B9E1983BD8D7B9680 /* BlindensportGrazApp.swift */; };
 		216504F4603C91E942E45CF1 /* VereinView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5DA86D4F875860FD8B0988 /* VereinView.swift */; };
+		222677C4C70D815C6F76168A /* TagLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01759B4DD200269D929AC192 /* TagLabel.swift */; };
 		223D6634BFA7C7061E043361 /* AttendanceTrendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167B287FA0A9F04F9AF287EE /* AttendanceTrendsView.swift */; };
 		233405E2C4FBB43CE63BA39E /* PasswordHashing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32721347FFDD370E8051591B /* PasswordHashing.swift */; };
 		23494C983B368EC11C866B64 /* BudgetSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDFE4CDC68E6A85046FEDC3 /* BudgetSummary.swift */; };
@@ -109,6 +110,7 @@
 		70642E6CE26BBBA7B289AAFA /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336F6D138B4853E1ADAB229A /* NetworkMonitor.swift */; };
 		7126944015812B8964283BB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D67DEC7D915A66947A9B3EE5 /* Assets.xcassets */; };
 		71EE76DC72C36A133D5024B4 /* BlindensportGrazWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714939FF80A1EF84FBC7C1B3 /* BlindensportGrazWidgets.swift */; };
+		72FFCCD76728D588A0BB9121 /* HeroIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA9392339B5E75D6EE7B13D /* HeroIcon.swift */; };
 		742FB4CCF73A427DAEE4FC6E /* TournamentInvitationImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8FD58472CEC14B549438AE /* TournamentInvitationImportView.swift */; };
 		743A38ED832FA0CB0228D80F /* CloudKitSync+MemberChangeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61F0702589A77A5A15184937 /* CloudKitSync+MemberChangeRequest.swift */; };
 		746DF2717BB82DDF95BF84B1 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = A214338B12D918B771269754 /* ZIPFoundation */; };
@@ -117,6 +119,7 @@
 		79608A3F34CD94ACA2DD7413 /* TrainingSeriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 754DC121A9438D6FD1827A9F /* TrainingSeriesView.swift */; };
 		79BCA96629BBB19619849C18 /* AddTeamMemberView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261BF808E3D6B7B141729B65 /* AddTeamMemberView.swift */; };
 		7A3EE39D18FAFF9E13E0F687 /* UserListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23949BEFC7EF4DDE0CB66B83 /* UserListView.swift */; };
+		7AB2C51DB6B826277CD2F683 /* CardModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F535042C502CBFB57D6FB49B /* CardModifier.swift */; };
 		7AF3984EC8EEB78E40134145 /* AttendanceTrends.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27C8820236CCFA2FEADCE405 /* AttendanceTrends.swift */; };
 		7B3749865346B1B08F5310AD /* EventRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1052747FCE27874BCD82E88D /* EventRow.swift */; };
 		7C3D22C9272F5C53E0561E74 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F8AAE5D6A64CE88C97B90C /* MainTabView.swift */; };
@@ -181,6 +184,7 @@
 		B620A5CA93BA09766B58DF0E /* RoleAndSportEnumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51E45E7A5DCDB652047890D /* RoleAndSportEnumTests.swift */; };
 		B6AA8D2593443BDDC31365EB /* EventImageGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A738DE4FB2D379F19A53128 /* EventImageGalleryView.swift */; };
 		B94B31B77A4562859C174F45 /* CalendarEventExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB696A6769854DF75117D6F /* CalendarEventExportTests.swift */; };
+		BF2699E7A3DB4F648CDF5B28 /* CountBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A877F7BF8CCC2EDB7C3F9E /* CountBadge.swift */; };
 		BF345AFDF7FA85D0B0C733C5 /* BlindensportGrazWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AC0F05D1DE4165C10EEB3DBF /* BlindensportGrazWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BF4898D2C12354648CCBE014 /* MemberDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3038940BF292B84D777EB7F /* MemberDetailView.swift */; };
 		C014E8706A0ED6031A2BB385 /* NextUpCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D941E1D0E574BF3BC68C78 /* NextUpCard.swift */; };
@@ -274,6 +278,7 @@
 
 /* Begin PBXFileReference section */
 		001413339F431B6D617302FD /* EventsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListView.swift; sourceTree = "<group>"; };
+		01759B4DD200269D929AC192 /* TagLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagLabel.swift; sourceTree = "<group>"; };
 		01B8903A0C989CC628343A80 /* NextEventLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextEventLookup.swift; sourceTree = "<group>"; };
 		03606CE086B0FC315F2B9807 /* SeasonDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonDashboardView.swift; sourceTree = "<group>"; };
 		04C24E8CCB253F70DFDC7AA0 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
@@ -353,6 +358,7 @@
 		57556A329ADF06C866AEC1E3 /* PRAE_Darstellung_Vorlage.xlsx */ = {isa = PBXFileReference; path = PRAE_Darstellung_Vorlage.xlsx; sourceTree = "<group>"; };
 		57A34C5BD3C8D1E4CA891A7D /* AttendanceRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceRow.swift; sourceTree = "<group>"; };
 		5921FF0EC7262CAC1B349579 /* AddTrainingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTrainingView.swift; sourceTree = "<group>"; };
+		59A877F7BF8CCC2EDB7C3F9E /* CountBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountBadge.swift; sourceTree = "<group>"; };
 		5A06F85A8B5B08C5B88BF9A4 /* XLSXCellPatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XLSXCellPatch.swift; sourceTree = "<group>"; };
 		5A295360023A2F97D708F995 /* TrainingsfrequenzlisteCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsfrequenzlisteCalculationTests.swift; sourceTree = "<group>"; };
 		5AE508B2294E07AD7E4BD44F /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
@@ -371,6 +377,7 @@
 		6BA4CA288AD96E0CAF4B1494 /* SammelabrechnungSeasonExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SammelabrechnungSeasonExportTests.swift; sourceTree = "<group>"; };
 		6BE2A47D6A8A0EC4ED804E42 /* MemberChangeRequestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberChangeRequestService.swift; sourceTree = "<group>"; };
 		6C6A72C7856B6345DD0554A4 /* WelcomeFileWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeFileWatcher.swift; sourceTree = "<group>"; };
+		6DA9392339B5E75D6EE7B13D /* HeroIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroIcon.swift; sourceTree = "<group>"; };
 		6EC8FAA60C7474DA29E4638D /* FullBackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullBackupTests.swift; sourceTree = "<group>"; };
 		70D5136ACDC65BAB10C0F67F /* PersistenceServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceServiceTests.swift; sourceTree = "<group>"; };
 		714939FF80A1EF84FBC7C1B3 /* BlindensportGrazWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindensportGrazWidgets.swift; sourceTree = "<group>"; };
@@ -485,6 +492,7 @@
 		F2441D549FF70392CCDA8F5C /* RoleChangeLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleChangeLog.swift; sourceTree = "<group>"; };
 		F3038940BF292B84D777EB7F /* MemberDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberDetailView.swift; sourceTree = "<group>"; };
 		F37F65D2EE769602215E4E63 /* Attendance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Attendance.swift; sourceTree = "<group>"; };
+		F535042C502CBFB57D6FB49B /* CardModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardModifier.swift; sourceTree = "<group>"; };
 		F9D1F1FC27680CA38A83DB98 /* PushNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
 		FA2D4C251E4C527F6F61763E /* SyncState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncState.swift; sourceTree = "<group>"; };
 		FA568EA455C38E372C41A3FA /* MemberBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberBackup.swift; sourceTree = "<group>"; };
@@ -982,11 +990,15 @@
 		F9153F5B86E1D53F72595988 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				F535042C502CBFB57D6FB49B /* CardModifier.swift */,
+				59A877F7BF8CCC2EDB7C3F9E /* CountBadge.swift */,
+				6DA9392339B5E75D6EE7B13D /* HeroIcon.swift */,
 				B9C1E51941A32D106EEE8D36 /* ImageProcessing.swift */,
 				01B8903A0C989CC628343A80 /* NextEventLookup.swift */,
 				36978453722C59EFC1D3B444 /* OptionalDatePicker.swift */,
 				FC6F7109DFD273AD58AE759F /* ShareExtensionBridge.swift */,
 				2F85E03960AC18D4A5FADBA7 /* SportIcons.swift */,
+				01759B4DD200269D929AC192 /* TagLabel.swift */,
 				69C50588D830BD20FBEA4A28 /* Theme.swift */,
 				FB537BABCA7D86107D875257 /* Validation.swift */,
 				74257B843D2DFE0227E8F6E2 /* WidgetRefresher.swift */,
@@ -1199,6 +1211,7 @@
 				ED5EE84AB196BCBFD84AC306 /* BudgetView.swift in Sources */,
 				C85041125AE89C7846B56FDF /* CKSchema.swift in Sources */,
 				A98E45309CFDA8A86ED73042 /* CalendarEventExport.swift in Sources */,
+				7AB2C51DB6B826277CD2F683 /* CardModifier.swift in Sources */,
 				1800B8CC9F7A2ADF6F11936D /* CloudKitSync+Attendance.swift in Sources */,
 				B4E6F283AD39BF02A04484EF /* CloudKitSync+BudgetEntry.swift in Sources */,
 				5C6C13E0D1258051EDEED420 /* CloudKitSync+EventImage.swift in Sources */,
@@ -1216,6 +1229,7 @@
 				56C272D9DC6E5B09FD45E1DA /* CloudKitSync+UserIdentity.swift in Sources */,
 				67740F2E37067A548116F7C2 /* CloudKitSync+WelcomeContent.swift in Sources */,
 				4961D72943B05BB569738D9E /* CloudKitSync.swift in Sources */,
+				BF2699E7A3DB4F648CDF5B28 /* CountBadge.swift in Sources */,
 				3825639C3A156658022CE184 /* DashboardView.swift in Sources */,
 				C987E0E6D423B6898501A17F /* EditAccountView.swift in Sources */,
 				0714DDADF63342FBC3C7382D /* EditBudgetEntryView.swift in Sources */,
@@ -1237,6 +1251,7 @@
 				E09AB6461B63FCA7D0F9D864 /* FullBackup.swift in Sources */,
 				E7F3C36485964772C7876D2A /* FullBackupImporter.swift in Sources */,
 				25C891758404439BBD2F95A9 /* FullBackupView.swift in Sources */,
+				72FFCCD76728D588A0BB9121 /* HeroIcon.swift in Sources */,
 				37F1DF95D4CB60E898F71617 /* ImageProcessing.swift in Sources */,
 				2C77F02D41FDC1264BE91725 /* KostZCalculation.swift in Sources */,
 				A373E4708F32F5C037B74BD5 /* KostZCalculationView.swift in Sources */,
@@ -1300,6 +1315,7 @@
 				1ABA2639283BA1D8BCBD3926 /* SyncOrchestrationService.swift in Sources */,
 				C1C8ACD93B713447CE6E2E72 /* SyncState.swift in Sources */,
 				D460D5F42A63E9983581BA9B /* SyncStatusBanner.swift in Sources */,
+				222677C4C70D815C6F76168A /* TagLabel.swift in Sources */,
 				5E3F33B9A90DA04CDA2CE505 /* Team.swift in Sources */,
 				8A0BE1651CFF6545C42231A7 /* TeamDetailView.swift in Sources */,
 				5BD62E70B13686FBF4B71BB7 /* TeamImportExport.swift in Sources */,

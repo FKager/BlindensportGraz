@@ -10,12 +10,8 @@ struct WelcomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    Image(systemName: "hand.wave.fill")
-                        .font(.system(size: 44))
-                        .foregroundStyle(
-                            LinearGradient(colors: [.blue, .purple],
-                                           startPoint: .topLeading, endPoint: .bottomTrailing))
+                VStack(alignment: .leading, spacing: Theme.Spacing.l) {
+                    HeroIcon(systemName: "hand.wave.fill", size: 44)
                         .frame(maxWidth: .infinity)
 
                     MarkdownContentView(markdown: markdown)

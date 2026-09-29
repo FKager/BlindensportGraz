@@ -10,6 +10,9 @@ import SwiftData
 /// of the local values; model changes (e.g. from a sync pull) only update
 /// what's displayed.
 struct PraeAmountRow: View {
+    /// Width of the exact-amount field; fits two to three digits at any text size.
+    @ScaledMetric(relativeTo: .body) private var amountFieldWidth = 44.0
+
     let attendance: Attendance
     let maxPrae: Int
 
@@ -32,7 +35,7 @@ struct PraeAmountRow: View {
             TextField("Betrag", value: $amount, format: .number)
                 .keyboardType(.numberPad)
                 .multilineTextAlignment(.trailing)
-                .frame(width: 44)
+                .frame(width: amountFieldWidth)
                 .textFieldStyle(.roundedBorder)
                 .accessibilityLabel("PRAE Betrag genau eingeben")
             Picker("PRAE (€)", selection: $wheelStep) {

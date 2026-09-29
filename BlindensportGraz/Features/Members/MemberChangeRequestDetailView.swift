@@ -55,7 +55,7 @@ struct MemberChangeRequestDetailView: View {
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(changes) { diff in
-                            VStack(alignment: .leading, spacing: 2) {
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                 Text(diff.label)
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
@@ -78,7 +78,7 @@ struct MemberChangeRequestDetailView: View {
                 Section {
                     Label("Zugehöriges Mitglied nicht gefunden — vermutlich zwischenzeitlich gelöscht.",
                           systemImage: "exclamationmark.triangle")
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.Palette.warning)
                 }
             }
 

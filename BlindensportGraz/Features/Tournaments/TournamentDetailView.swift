@@ -96,7 +96,7 @@ struct TournamentDetailView: View {
             Section {
                 Label("Ein anderer Eintrag hat bereits diesen Titel, diese Sportart und diesen Zeitpunkt. Bitte Namen oder Zeit ändern.", systemImage: "exclamationmark.triangle.fill")
                     .font(.caption)
-                    .foregroundStyle(.orange)
+                    .foregroundStyle(Theme.Palette.warning)
             }
         }
 
@@ -139,7 +139,7 @@ struct TournamentDetailView: View {
                             Spacer()
                             if tournament.teams.contains(where: { $0.id == team.id }) {
                                 Image(systemName: "checkmark")
-                                    .foregroundStyle(.blue)
+                                    .foregroundStyle(Theme.Palette.info)
                                     .accessibilityHidden(true)
                             }
                         }

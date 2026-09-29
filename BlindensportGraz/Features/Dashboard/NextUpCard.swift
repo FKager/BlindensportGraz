@@ -9,12 +9,12 @@ struct NextUpCard: View {
     let tint: Color
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: Theme.Spacing.l) {
             Image(systemName: icon)
                 .font(.title)
                 .foregroundStyle(tint)
                 .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(kind)
                     .font(.caption)
                     .foregroundStyle(.secondary)

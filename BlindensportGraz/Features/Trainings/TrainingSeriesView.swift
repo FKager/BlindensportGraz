@@ -62,7 +62,7 @@ struct TrainingSeriesView: View {
                         Label("\(takenDates.count) von \(weeks) Terminen existieren bereits und werden übersprungen.",
                               systemImage: "exclamationmark.triangle.fill")
                             .font(.caption)
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(Theme.Palette.warning)
                     }
                 }
 

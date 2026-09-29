@@ -45,23 +45,23 @@ struct DashboardView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xl) {
                 headerSection
 
                 nextUpNavigationLink
 
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: Theme.Spacing.m) {
                     NavigationLink(value: AppRoute.eventsList) {
-                        StatCard(icon: "calendar", title: "Events", value: "\(upcomingEvents.count)", color: .blue)
+                        StatCard(icon: "calendar", title: "Events", value: "\(upcomingEvents.count)", color: Theme.Accent.events)
                     }
                     NavigationLink(value: AppRoute.tournamentsList) {
-                        StatCard(icon: "trophy.fill", title: "Turniere", value: "\(activeTournaments.count)", color: .yellow)
+                        StatCard(icon: "trophy.fill", title: "Turniere", value: "\(activeTournaments.count)", color: Theme.Accent.tournaments)
                     }
                     NavigationLink(value: AppRoute.trainingsList) {
-                        StatCard(icon: "figure.run", title: "Trainings", value: "\(upcomingTrainings.count)", color: .green)
+                        StatCard(icon: "figure.run", title: "Trainings", value: "\(upcomingTrainings.count)", color: Theme.Accent.trainings)
                     }
                     NavigationLink(value: AppRoute.teamsList) {
-                        StatCard(icon: "person.3.fill", title: "Teams", value: "\(visibleTeams.count)", color: .purple)
+                        StatCard(icon: "person.3.fill", title: "Teams", value: "\(visibleTeams.count)", color: Theme.Accent.teams)
                     }
                 }
                 .buttonStyle(.plain)
@@ -107,7 +107,7 @@ struct DashboardView: View {
     }
 
     private var headerSection: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             Text("Willkommen, \(currentUser?.displayName ?? String(localized: "Sportler"))")
                 .font(.title2)
                 .bold()
@@ -132,7 +132,7 @@ struct DashboardView: View {
             NavigationLink(value: AppRoute.training(training)) {
                 NextUpCard(icon: "figure.run", kind: "Nächstes Training",
                            title: training.title, subtitle: training.startDate.formatted(.dateTime.weekday(.wide).day().month().hour().minute()),
-                           tint: .green)
+                           tint: Theme.Accent.trainings)
             }
             .buttonStyle(.plain)
             .padding(.horizontal)
@@ -140,7 +140,7 @@ struct DashboardView: View {
             NavigationLink(value: AppRoute.tournament(tournament)) {
                 NextUpCard(icon: "trophy.fill", kind: "Nächstes Turnier",
                            title: tournament.title, subtitle: tournament.startDate.formatted(.dateTime.weekday(.wide).day().month()),
-                           tint: .yellow)
+                           tint: Theme.Accent.tournaments)
             }
             .buttonStyle(.plain)
             .padding(.horizontal)
@@ -159,6 +159,6 @@ struct DashboardView: View {
                 .font(.headline)
         }
         .padding(.horizontal)
-        .padding(.top, 8)
+        .padding(.top, Theme.Spacing.s)
     }
 }

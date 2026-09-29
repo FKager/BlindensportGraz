@@ -32,7 +32,7 @@ struct LoginView: View {
                     if let errorMessage {
                         Label(errorMessage, systemImage: "exclamationmark.triangle")
                             .font(.caption)
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(Theme.Palette.warning)
                     }
                     Button("Anmelden") { attemptLogin() }
                         .disabled(email.trimmingCharacters(in: .whitespaces).isEmpty || password.isEmpty)

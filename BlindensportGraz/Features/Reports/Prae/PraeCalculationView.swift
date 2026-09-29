@@ -13,6 +13,9 @@ import SwiftData
 /// twice. Self-contained NavigationStack + dismiss button since it's
 /// sheet-presented, not tab-hosted (matches MembersListView).
 struct PraeCalculationView: View {
+    /// Width of the "12." day column; grows with Dynamic Type.
+    @ScaledMetric(relativeTo: .body) private var dayColumnWidth = 32.0
+
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Query private var allMemberships: [TeamMembership]
@@ -90,13 +93,13 @@ struct PraeCalculationView: View {
                             ForEach(summary.entries) { entry in
                                 HStack {
                                     Text("\(entry.day).")
-                                        .frame(width: 32, alignment: .leading)
+                                        .frame(width: dayColumnWidth, alignment: .leading)
                                     Text(entry.purpose)
                                         .foregroundStyle(.secondary)
                                         .lineLimit(1)
                                     Spacer()
                                     Text(entry.amount, format: .currency(code: "EUR"))
-                                        .foregroundStyle(entry.amount > PraeCalculator.dailyCap ? .red : .primary)
+                                        .foregroundStyle(entry.amount > PraeCalculator.dailyCap ? Theme.Palette.danger : .primary)
                                 }
                             }
                             HStack {
@@ -104,18 +107,18 @@ struct PraeCalculationView: View {
                                 Spacer()
                                 Text(summary.total, format: .currency(code: "EUR"))
                                     .bold()
-                                    .foregroundStyle(summary.exceedsMonthlyCap ? .red : .primary)
+                                    .foregroundStyle(summary.exceedsMonthlyCap ? Theme.Palette.danger : .primary)
                             }
                             if summary.exceedsMonthlyCap {
                                 Label("Monatliche Höchstgrenze von € 720,- überschritten.", systemImage: "exclamationmark.triangle.fill")
                                     .font(.caption)
-                                    .foregroundStyle(.red)
+                                    .foregroundStyle(Theme.Palette.danger)
                             }
                             if !summary.daysExceedingDailyCap.isEmpty {
                                 Label("Tageshöchstsatz von € 120,- überschritten an Tag(en): \(summary.daysExceedingDailyCap.map(String.init).joined(separator: ", ")).",
                                       systemImage: "exclamationmark.triangle.fill")
                                     .font(.caption)
-                                    .foregroundStyle(.red)
+                                    .foregroundStyle(Theme.Palette.danger)
                             }
                         }
                     }

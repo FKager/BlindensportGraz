@@ -30,7 +30,7 @@ struct FullBackupView: View {
                     }
                 } else if let exportError {
                     Label(exportError, systemImage: "exclamationmark.triangle")
-                        .foregroundStyle(.orange)
+                        .foregroundStyle(Theme.Palette.warning)
                 } else {
                     ProgressView()
                 }

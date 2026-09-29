@@ -30,12 +30,12 @@ struct SetPasswordView: View {
                     if !password.isEmpty, !Validation.passwordMeetsMinimumStrength(password) {
                         Label("Passwort muss mindestens 8 Zeichen haben", systemImage: "exclamationmark.triangle")
                             .font(.caption)
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(Theme.Palette.warning)
                     }
                     if !passwordConfirm.isEmpty, password != passwordConfirm {
                         Label("Passwörter stimmen nicht überein", systemImage: "exclamationmark.triangle")
                             .font(.caption)
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(Theme.Palette.warning)
                     }
                 }
             }

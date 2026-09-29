@@ -6,12 +6,10 @@ struct TeamRow: View {
     let team: Team
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Theme.Spacing.m) {
             ZStack {
                 Circle()
-                    .fill(LinearGradient(colors: [.blue, .purple],
-                                         startPoint: .topLeading,
-                                         endPoint: .bottomTrailing))
+                    .fill(Theme.brandGradient)
                 Text(team.name.prefix(1).uppercased())
                     .font(.title2)
                     .bold()
@@ -24,7 +22,7 @@ struct TeamRow: View {
             }
             .frame(width: 50, height: 50)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(team.name)
                     .font(.headline)
                 Text(team.sport)
@@ -35,6 +33,6 @@ struct TeamRow: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Spacing.xs)
     }
 }

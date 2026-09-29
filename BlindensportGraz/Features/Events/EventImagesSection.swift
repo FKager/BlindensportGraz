@@ -27,11 +27,11 @@ struct EventImagesSection: View {
                         .scaledToFill()
                         .frame(height: 180)
                         .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.card))
                 }
                 .buttonStyle(.plain)
                 .listRowInsets(EdgeInsets())
-                .padding(4)
+                .padding(Theme.Spacing.xs)
             } else if images.isEmpty {
                 Text("Noch keine Bilder")
                     .foregroundStyle(.secondary)

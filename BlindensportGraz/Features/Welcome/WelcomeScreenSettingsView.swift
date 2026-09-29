@@ -17,7 +17,7 @@ struct WelcomeScreenSettingsView: View {
             Section {
                 if localFileFound {
                     Label("welcome.md auf diesem Gerät gefunden", systemImage: "checkmark.icloud.fill")
-                        .foregroundStyle(.green)
+                        .foregroundStyle(Theme.Palette.success)
                 } else {
                     Label("Keine welcome.md in der iCloud Drive dieses Geräts gefunden", systemImage: "xmark.icloud")
                         .foregroundStyle(.secondary)

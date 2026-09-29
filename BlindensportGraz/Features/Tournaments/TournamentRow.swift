@@ -3,41 +3,39 @@ import SwiftData
 import Combine
 
 struct TournamentRow: View {
+    /// Width of the date column; grows with Dynamic Type so the date never clips.
+    @ScaledMetric(relativeTo: .caption) private var dateColumnWidth = 44.0
+
    let tournament: Tournament
 
   var statusColor: Color {
       switch tournament.status {
-       case "planned": return .blue
-        case "ongoing": return .green
-         case "finished": return .gray
+       case "planned": return Theme.Palette.info
+        case "ongoing": return Theme.Palette.success
+         case "finished": return .secondary
           default: return .secondary
            }
      }
 
   var body: some View {
     // Column order matches TrainingRow, per user request: date, then name, then time.
-    HStack(alignment: .center, spacing: 12) {
-      VStack(alignment: .leading, spacing: 2) {
+    HStack(alignment: .center, spacing: Theme.Spacing.m) {
+      VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
           Text(tournament.startDate, format: .dateTime.weekday(.abbreviated))
           Text(tournament.startDate, format: .dateTime.day().month(.abbreviated))
       }
       .font(.caption)
       .foregroundStyle(.secondary)
-      .frame(width: 44, alignment: .leading)
+      .frame(width: dateColumnWidth, alignment: .leading)
 
       SportGlyph(sport: tournament.sport, size: 32)
 
-      VStack(alignment: .leading, spacing: 6) {
+      VStack(alignment: .leading, spacing: Theme.Spacing.s) {
           HStack {
               Text(tournament.title)
                 .font(.headline)
                Spacer()
-             Text(tournament.status)
-                 .font(.caption)
-                 .padding(.horizontal, 8)
-                 .padding(.vertical, 2)
-                 .badge(tint: statusColor, opacity: Theme.emphasizedBadgeOpacity)
-                 .foregroundStyle(statusColor)
+             TagLabel(tournament.status, tint: statusColor, emphasized: true)
           }
           // Team count removed from the overview per user request
           // 2026-09-14 — still shown in TournamentDetailView's "Details"
@@ -79,6 +77,6 @@ struct TournamentRow: View {
           .font(.subheadline)
           .foregroundStyle(.secondary)
       }
-       .padding(.vertical, 4)
+       .padding(.vertical, Theme.Spacing.xs)
     }
 }

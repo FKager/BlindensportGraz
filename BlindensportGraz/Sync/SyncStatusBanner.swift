@@ -27,13 +27,13 @@ struct SyncStatusBanner: View {
                 banner(
                     text: pendingSuffix("Offline – Änderungen werden synchronisiert, sobald wieder eine Verbindung besteht."),
                     systemImage: "wifi.slash",
-                    color: .orange
+                    color: Theme.Palette.warning
                 )
             } else if syncState.status == .failed {
                 banner(
                     text: pendingSuffix("Synchronisierung fehlgeschlagen."),
                     systemImage: "exclamationmark.triangle.fill",
-                    color: .red,
+                    color: Theme.Palette.danger,
                     showsRetry: true
                 )
             } else if syncState.status == .syncing || isRetrying {
@@ -46,7 +46,7 @@ struct SyncStatusBanner: View {
                 banner(
                     text: pendingText(syncState.pendingCount),
                     systemImage: "arrow.triangle.2.circlepath.circle",
-                    color: .orange,
+                    color: Theme.Palette.warning,
                     showsRetry: true
                 )
             }
@@ -67,7 +67,7 @@ struct SyncStatusBanner: View {
     }
 
     private func banner(text: String, systemImage: String, color: Color, showsRetry: Bool = false) -> some View {
-        HStack(spacing: 8) {
+        HStack(spacing: Theme.Spacing.s) {
             Label(text, systemImage: systemImage)
                 .font(.caption)
                 .foregroundStyle(color)
@@ -85,7 +85,7 @@ struct SyncStatusBanner: View {
             }
         }
         .padding(.horizontal)
-        .padding(.vertical, 6)
+        .padding(.vertical, Theme.Spacing.s)
         .background(Theme.tintedCardFill(color))
     }
 

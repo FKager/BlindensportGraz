@@ -45,7 +45,7 @@ struct BudgetView: View {
                 }
                 LabeledContent("Saldo") {
                     Text(summary.netBalance, format: .currency(code: "EUR"))
-                        .foregroundStyle(summary.netBalance < 0 ? .red : .primary)
+                        .foregroundStyle(summary.netBalance < 0 ? Theme.Palette.danger : .primary)
                         .bold()
                 }
             }
@@ -119,10 +119,10 @@ struct BudgetView: View {
             editingEntry = entry
         } label: {
             HStack {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                     Text(entry.note.isEmpty ? entry.category.displayLabel : entry.note)
                         .foregroundStyle(.primary)
-                    HStack(spacing: 4) {
+                    HStack(spacing: Theme.Spacing.xs) {
                         Text(entry.date, format: .dateTime.day().month().year())
                         if let title = entry.event?.title {
                             Text("· \(title)")

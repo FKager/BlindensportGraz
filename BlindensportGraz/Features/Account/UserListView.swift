@@ -78,17 +78,11 @@ struct UserListView: View {
     @ViewBuilder
     private func row(for user: User) -> some View {
         HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 6) {
+            VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
+                HStack(spacing: Theme.Spacing.s) {
                     Text(user.displayName)
                     if user.isRoot {
-                        Text("ROOT")
-                            .font(.caption2)
-                            .bold()
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 1)
-                            .badge(tint: .orange, opacity: Theme.emphasizedBadgeOpacity)
-                            .foregroundStyle(.orange)
+                        TagLabel("ROOT", tint: Theme.Palette.warning, emphasized: true)
                     }
                 }
                 Text(user.role.displayLabel)
@@ -97,7 +91,7 @@ struct UserListView: View {
                 if user.isGrazerVSCMember {
                     Label("Grazer VSC", systemImage: "checkmark.seal.fill")
                         .font(.caption)
-                        .foregroundStyle(.green)
+                        .foregroundStyle(Theme.Palette.success)
                 }
                 Text("Konto seit " + user.createdAt.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
@@ -110,7 +104,7 @@ struct UserListView: View {
                 if Member.first(matching: user, in: members) != nil {
                     Label("Mit Vereinsmitglied verknüpft", systemImage: "checkmark.circle.fill")
                         .font(.caption)
-                        .foregroundStyle(.green)
+                        .foregroundStyle(Theme.Palette.success)
                         .accessibilityLabel("Mit einem Vereinsmitglied verknüpft")
                 }
             }
