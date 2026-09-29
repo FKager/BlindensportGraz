@@ -51,7 +51,7 @@ jobs:
     runs-on: macos-26
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Select Xcode
         # The project is in Swift 6 language mode with Swift 6.2+ build
@@ -100,7 +100,7 @@ jobs:
     runs-on: macos-26
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Select Xcode
         # See the identical step in the build job above for why this can't
@@ -329,7 +329,7 @@ jobs:
       # build shipped through this workflow before this step existed.
       - name: Upload dSYMs artifact
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dSYMs-${{ env.MARKETING_VERSION }}-${{ env.BUILD_NUMBER }}
           path: ${{ runner.temp }}/app.xcarchive/dSYMs
