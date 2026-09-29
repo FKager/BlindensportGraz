@@ -8,7 +8,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-### Core Models (Models.swift)
+### Folder Layout
+Sources are grouped by feature (XcodeGen picks up subfolders; run `xcodegen generate` after adding files):
+
+- `App/` — app entry, `RootView`/`MainTabView`, App Intents, server config
+- `Models/` — one `@Model` per file, `ModelSchema`, role/sport enums
+- `Services/` — `*Service` persistence/business logic, `PersistenceService`
+- `Sync/` — sync state, outbox (`PendingPush`), network/push; `Sync/CloudKit/` — `CloudKitSync+*`, `CKSchema`
+- `Features/<Feature>/` — views + feature-specific import/export (Dashboard, Events, Tournaments, Trainings, Teams, Members, Account, Attendance, Budget, Welcome, Backup)
+- `Features/Reports/<Report>/` — Prae, KostZ, Sammelabrechnung, Trainingsfrequenzliste, Teilnehmerliste (+ shared `XLSXCellPatch`)
+- `Shared/` — theme, icons, validation, files shared with the widget/share extensions (paths referenced in `project.yml`)
+- `Resources/` — asset catalog, `Localizable.xcstrings`, `.xlsx` templates
+- Root: `Info.plist`, entitlements, this file (excluded from the app bundle in `project.yml`)
+
+### Core Models (`Models/`)
 All data models use SwiftData's `@Model` protocol with iCloud sync via `ModelContainer`:
 
 - **User**: App accounts with email, display name, and role (member/coach/admin)

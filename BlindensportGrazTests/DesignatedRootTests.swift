@@ -101,7 +101,9 @@ final class DesignatedRootTests: XCTestCase {
             .deletingLastPathComponent() // BlindensportGrazTests/
             .deletingLastPathComponent() // repo root
             .appendingPathComponent("BlindensportGraz")
-        let swiftFiles = try FileManager.default.contentsOfDirectory(at: sourceDir, includingPropertiesForKeys: nil)
+        // Recursive: sources live in feature subfolders (App/, Features/…, Sync/…).
+        let enumerator = try XCTUnwrap(FileManager.default.enumerator(at: sourceDir, includingPropertiesForKeys: nil))
+        let swiftFiles = enumerator.compactMap { $0 as? URL }
             .filter { $0.pathExtension == "swift" }
         XCTAssertFalse(swiftFiles.isEmpty, "sanity check: expected to find BlindensportGraz/*.swift source files at \(sourceDir.path)")
 
