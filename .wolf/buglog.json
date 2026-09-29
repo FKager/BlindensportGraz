@@ -8434,6 +8434,39 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-502",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "White text on Palette colours unreadable in dark mode (CountBadge, swipe-action tints) ~2.5:1",
+      "file": "BlindensportGraz/Shared/CountBadge.swift",
+      "root_cause": "Theme.Palette colours are text colours: they turn LIGHT in dark mode, so using them as a fill behind white text fails contrast",
+      "fix": "Added Theme.Fill.success/warning/danger/info/neutral (asset colorsets, dark in both modes, white ≥4.8:1); CountBadge, swipe .tint and borderedProminent buttons use Fill",
+      "tags": [
+        "contrast",
+        "dark-mode",
+        "design-system",
+        "a11y"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-503",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "Palette text inside its own tinted pill/banner dropped to 3.7–4.3:1",
+      "file": "BlindensportGraz/Resources/Assets.xcassets",
+      "root_cause": "Palette colours were only verified against plain backgrounds; TagLabel (15–20%) and SyncStatusBanner (12%) put the text on a tint of itself",
+      "fix": "Re-solved Success/Warning/Danger/InfoText so the worst of plain/12%/20% self-tint on all system backgrounds is ≥4.6:1 (HC light ≥6.5, HC dark ≥5.5 keeping hue)",
+      "tags": [
+        "contrast",
+        "design-system",
+        "a11y"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
     }
   ]
 }

@@ -42,6 +42,20 @@ enum Theme {
         static let info = Color(.infoText)
     }
 
+    /// Solid fills behind WHITE text or symbols — swipe actions, prominent
+    /// buttons, count badges. The `Palette` colours turn light in dark mode
+    /// (right for text, wrong behind white), so these stay dark in both
+    /// modes: white reaches at least 4.8:1 on each (7:1 with Increase
+    /// Contrast). The system colours they replace were 2.2–4.0:1.
+    enum Fill {
+        static let success = Color(.successFill)
+        static let warning = Color(.warningFill)
+        static let danger = Color(.dangerFill)
+        static let info = Color(.infoFill)
+        /// Neutral action, e.g. "abwesend" — replaces system gray (3.3:1).
+        static let neutral = Color(.neutralFill)
+    }
+
     /// Accent per app area — icons on tinted tiles (Dashboard stat tiles,
     /// "Nächster Termin" card, event date badge), always next to a text
     /// label (never the only carrier of meaning). Asset-catalog colours with

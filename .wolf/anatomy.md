@@ -418,7 +418,7 @@
 - `OptionalDatePicker.swift` — A DatePicker that can represent "no date set" via a toggle — SwiftUI's (~207 tok)
 - `ShareExtensionBridge.swift` — / Bridges a file shared into iOS's system share sheet ("Turnier aus (~1283 tok)
 - `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)
-- `Theme.swift` — Design tokens: Spacing (2…32), Radius, Palette (asset-backed WCAG-AA success/warning/danger/info), Accent per area, brandFill/brandInk gradients, card/badge fills (~750 tok)
+- `Theme.swift` — Design tokens: Spacing (2…32), Radius, Palette (asset-backed WCAG-AA success/warning/danger/info), Fill (white-text fills), Accent per area, brandFill/brandInk gradients, card/badge fills (~750 tok)
 - `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~1070 tok)
 - `WidgetRefresher.swift` — / Bridges the app's SwiftData world to the widget: recompute "what's next" (~379 tok)
 - `WidgetShared.swift` — / The small payload the home-screen widget needs, shared between the app and (~503 tok)

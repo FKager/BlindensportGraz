@@ -52,12 +52,14 @@ struct AnonymousLandingView: View {
                         Text("Blindensport Graz")
                             .font(.title2)
                             .bold()
+                            .accessibilityAddTraits(.isHeader)
                     }
                     .padding(.top, Theme.Spacing.hero)
 
                     VStack(alignment: .leading, spacing: Theme.Spacing.m) {
                         Text("Demnächst")
                             .font(.headline)
+                            .accessibilityAddTraits(.isHeader)
                         if nextTraining == nil, nextTournament == nil, nextEvent == nil {
                             ContentUnavailableView("Noch nichts geplant",
                                                     systemImage: "calendar",
@@ -90,6 +92,7 @@ struct AnonymousLandingView: View {
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.borderedProminent)
+                        .tint(Theme.Fill.info)
 
                         Button {
                             showLogin = true
@@ -121,6 +124,7 @@ struct AnonymousLandingView: View {
                 .font(.title3)
                 .foregroundStyle(Theme.Palette.info)
                 .frame(width: previewIconWidth)
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                 Text(title).font(.subheadline).bold()
                 Text("\(kind) · \(date.formatted(date: .abbreviated, time: .shortened))\(location.isEmpty ? "" : " · \(location)")")
@@ -131,5 +135,6 @@ struct AnonymousLandingView: View {
         }
         .padding()
         .background(.thinMaterial, in: RoundedRectangle(cornerRadius: Theme.Radius.card))
+        .accessibilityElement(children: .combine)
     }
 }

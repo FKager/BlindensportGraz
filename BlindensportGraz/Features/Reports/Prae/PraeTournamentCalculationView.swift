@@ -71,6 +71,12 @@ struct PraeTournamentCalculationView: View {
                                         .foregroundStyle(.secondary)
                                         .lineLimit(1)
                                     Spacer()
+                                    // Over the daily cap: icon + wording, not colour alone.
+                                    if entry.amount > PraeCalculator.dailyCap {
+                                        Image(systemName: "exclamationmark.triangle.fill")
+                                            .foregroundStyle(Theme.Palette.danger)
+                                            .accessibilityLabel("Über Tageshöchstsatz")
+                                    }
                                     Text(entry.amount, format: .currency(code: "EUR"))
                                         .foregroundStyle(entry.amount > PraeCalculator.dailyCap ? Theme.Palette.danger : .primary)
                                 }

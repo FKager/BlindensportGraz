@@ -28,6 +28,7 @@ struct EventImageGalleryView: View {
                                     .frame(height: 100)
                                     .frame(maxWidth: .infinity)
                                     .clipped()
+                                    .accessibilityLabel("Bild vom \(image.uploadedAt.formatted(date: .abbreviated, time: .shortened))")
 
                                 if canDelete(image) {
                                     Button {
@@ -37,6 +38,9 @@ struct EventImageGalleryView: View {
                                             .symbolRenderingMode(.palette)
                                             .foregroundStyle(.white, .black.opacity(0.6))
                                             .padding(Theme.Spacing.xs)
+                                            // 44×44 pt minimum tap target.
+                                            .frame(minWidth: 44, minHeight: 44)
+                                            .contentShape(.rect)
                                     }
                                     .accessibilityLabel("Bild löschen")
                                 }

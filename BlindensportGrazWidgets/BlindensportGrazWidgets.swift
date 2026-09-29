@@ -53,7 +53,7 @@ struct NextUpWidgetView: View {
         return VStack(alignment: .leading, spacing: 4) {
             Label(isTraining ? "Nächstes Training" : "Nächstes Turnier",
                   systemImage: isTraining ? "figure.run" : "trophy.fill")
-                .font(.caption2)
+                .font(.caption)
                 .foregroundStyle(.secondary)
             Text(snapshot.title)
                 .font(.headline)
@@ -63,13 +63,15 @@ struct NextUpWidgetView: View {
                 .foregroundStyle(.secondary)
             if family != .systemSmall, !snapshot.location.isEmpty {
                 Label(snapshot.location, systemImage: "mappin.and.ellipse")
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
             }
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        // One VoiceOver element: "Nächstes Training, <title>, <date>, <location>".
+        .accessibilityElement(children: .combine)
     }
 
     private var empty: some View {
@@ -77,6 +79,7 @@ struct NextUpWidgetView: View {
             Image(systemName: "calendar")
                 .font(.title2)
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
             Text("Kein bevorstehender Termin")
                 .font(.caption)
                 .foregroundStyle(.secondary)

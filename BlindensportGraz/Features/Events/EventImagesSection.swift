@@ -30,6 +30,8 @@ struct EventImagesSection: View {
                         .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.card))
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Bilder anzeigen")
+                .accessibilityHint(images.count == 1 ? "1 Bild" : "\(images.count) Bilder")
                 .listRowInsets(EdgeInsets())
                 .padding(Theme.Spacing.xs)
             } else if images.isEmpty {

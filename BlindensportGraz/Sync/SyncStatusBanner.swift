@@ -51,6 +51,24 @@ struct SyncStatusBanner: View {
                 )
             }
         }
+        // The banner appears without VoiceOver focus moving to it, so speak
+        // the important states — going offline, a failed sync — when they
+        // start. Syncing/pending states stay silent to avoid chatter.
+        .onChange(of: announcement) { _, message in
+            guard let message else { return }
+            AccessibilityNotification.Announcement(message).post()
+        }
+    }
+
+    /// What to announce to VoiceOver for the current state, if anything.
+    private var announcement: String? {
+        if !networkMonitor.isOnline {
+            return String(localized: "Offline – Änderungen werden synchronisiert, sobald wieder eine Verbindung besteht.")
+        }
+        if syncState.status == .failed {
+            return String(localized: "Synchronisierung fehlgeschlagen.")
+        }
+        return nil
     }
 
     private func pendingText(_ count: Int) -> String {
@@ -78,9 +96,12 @@ struct SyncStatusBanner: View {
                 .accessibilityElement(children: .combine)
 
             if showsRetry {
-                Button("Jetzt synchronisieren") { retry() }
+                Button("Jetzt synchronisieren", action: retry)
                     .font(.caption.bold())
                     .buttonStyle(.borderless)
+                    // 44 pt minimum tap target despite the small caption font.
+                    .frame(minHeight: 44)
+                    .contentShape(.rect)
                     .disabled(isRetrying || !networkMonitor.isOnline)
             }
         }

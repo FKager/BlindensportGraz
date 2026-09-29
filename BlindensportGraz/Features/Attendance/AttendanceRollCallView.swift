@@ -63,13 +63,13 @@ struct AttendanceRollCallView: View {
                                     Button { setPresent(true, membership) } label: {
                                         Label("Anwesend", systemImage: "checkmark")
                                     }
-                                    .tint(Theme.Palette.success)
+                                    .tint(Theme.Fill.success)
                                 }
                                 .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                     Button { setPresent(false, membership) } label: {
                                         Label("Abwesend", systemImage: "xmark")
                                     }
-                                    .tint(.gray)
+                                    .tint(Theme.Fill.neutral)
                                 }
                             }
                         } header: {

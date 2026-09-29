@@ -85,6 +85,7 @@ struct ExpenseReceiptsSection: View {
                             } label: {
                                 Label("Löschen", systemImage: "trash")
                             }
+                            .tint(Theme.Fill.danger)
                             .accessibilityLabel("Beleg löschen")
                         }
                     }

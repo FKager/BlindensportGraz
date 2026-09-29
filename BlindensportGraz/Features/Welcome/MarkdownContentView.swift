@@ -28,10 +28,13 @@ struct MarkdownContentView: View {
             Spacer().frame(height: 4)
         } else if line.hasPrefix("### ") {
             inlineText(String(line.dropFirst(4))).font(.title3.bold())
+                .accessibilityAddTraits(.isHeader)
         } else if line.hasPrefix("## ") {
             inlineText(String(line.dropFirst(3))).font(.title2.bold())
+                .accessibilityAddTraits(.isHeader)
         } else if line.hasPrefix("# ") {
             inlineText(String(line.dropFirst(2))).font(.largeTitle.bold())
+                .accessibilityAddTraits(.isHeader)
         } else if line.hasPrefix("- ") || line.hasPrefix("* ") {
             HStack(alignment: .top, spacing: Theme.Spacing.s) {
                 Text("•")

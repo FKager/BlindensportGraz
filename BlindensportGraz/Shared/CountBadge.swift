@@ -11,6 +11,6 @@ struct CountBadge: View {
             .foregroundStyle(.white)
             .padding(.horizontal, Theme.Spacing.s)
             .padding(.vertical, Theme.Spacing.xxs)
-            .background(Theme.Palette.danger, in: .capsule)
+            .background(Theme.Fill.danger, in: .capsule)
     }
 }

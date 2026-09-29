@@ -59,6 +59,7 @@ struct TournamentInvitationImportView: View {
                             Label("Datei auswählen", systemImage: "doc.badge.plus")
                         }
                         .buttonStyle(.borderedProminent)
+                        .tint(Theme.Fill.info)
                         .padding(.top)
                     }
                     Spacer()

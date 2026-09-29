@@ -113,13 +113,14 @@ struct TrainingsListView: View {
                            } label: {
                                Label("Löschen", systemImage: "trash")
                            }
+                           .tint(Theme.Fill.danger)
                            if training.status != Training.cancelledStatus {
                                Button {
                                    markCancelled(training)
                                } label: {
                                    Label("Abgesagt", systemImage: "xmark.circle")
                                }
-                               .tint(Theme.Palette.warning)
+                               .tint(Theme.Fill.warning)
                            }
                        }
                        }

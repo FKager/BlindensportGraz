@@ -158,6 +158,9 @@ struct DashboardView: View {
             Text(title)
                 .font(.headline)
         }
+        // VoiceOver rotor "Überschriften" jumps between these sections.
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
         .padding(.horizontal)
         .padding(.top, Theme.Spacing.s)
     }
