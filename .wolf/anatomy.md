@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T08:45:39.320Z
-> Files: 345 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T09:27:35.099Z
+> Files: 350 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -190,8 +190,8 @@
 - `settings.local.json` (~38 tok)
 
 ## BlindensportGraz/App/
-- `AppRoute.swift` — AppRoute enum (all pushed screens) + `.appRouteDestinations(currentUser:)` registered once per NavigationStack root (~900 tok)
 
+- `AppRoute.swift` — AppRoute enum (all pushed screens) + `.appRouteDestinations(currentUser:)` registered once per NavigationStack root (~900 tok)
 - `AppRoute.swift` — / Every screen that gets pushed onto a `NavigationStack`. Links use (~882 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
@@ -200,6 +200,7 @@
 - `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 
 ## BlindensportGraz/Features/Account/
+- `UserRolePicker.swift` — Root-only app-role picker on UserListView rows — saves User + RoleChangeLog only on user pick (~409 tok)
 
 - `AccountView.swift` — Struct AccountView (~3391 tok)
 - `AnonymousLandingView.swift` — / Root screen for the "anonymous" account tier (account-tiers refactor) — (~1686 tok)
@@ -211,12 +212,17 @@
 - `RoleChangeLogView.swift` — Admin-only view of `RoleChangeLog` entries, newest first — audit.md P0 (~533 tok)
 - `SetPasswordView.swift` — One-time migration step for an account created before password login (~668 tok)
 - `UserListView.swift` — The list of every app account (`User`), pushed from `VereinView`'s admin (~1695 tok)
+- `UserRolePicker.swift` — / App-role picker (Mitglied / Trainer:in / Admin) on a `UserListView` row. (~437 tok)
 
 ## BlindensportGraz/Features/Attendance/
+- `PraeAmountRow.swift` — PRAE € wheel (5-steps) + exact TextField, clamped 0...maxPrae, local-state pattern (~745 tok)
+- `AttendanceRow.swift` — Attendance toggle row (Training/Tournament detail) — local @State, saves only on user edit; shows PraeAmountRow for present helpers (~452 tok)
 
 - `AttendanceRollCallView.swift` — / Distraction-free "roll call" for one Training or Tournament — (~1520 tok)
+- `AttendanceRow.swift` — / One person in a Training's "Anwesenheit" / Tournament's "Teilnehmer:innen" (~483 tok)
 - `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
 - `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
+- `PraeAmountRow.swift` — / PRAE amount for one present helper/coach: a swipe-to-select wheel in €5 (~795 tok)
 
 ## BlindensportGraz/Features/Backup/
 
@@ -303,9 +309,12 @@
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
 
 ## BlindensportGraz/Features/Teams/
+- `MembershipRoleCapsule.swift` — Tinted badge showing a membership's role value (~94 tok)
+- `MembershipRoleMenu.swift` — Role menu/picker on TeamDetailView roster rows — saves TeamMembership only on user pick (~365 tok)
 
 - `AddTeamMemberView.swift` — Assigns an existing `User` (registered app account) or roster `Member` to (~1312 tok)
 - `AddTeamView.swift` — Struct AddTeamView (~441 tok)
+- `MembershipRoleMenu.swift` — / Tappable role capsule on a `TeamDetailView` roster row; opens a menu to (~388 tok)
 - `TeamDetailView.swift` — Struct TeamDetailView (~1387 tok)
 - `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3220 tok)
 - `TeamRow.swift` — Struct TeamRow (~350 tok)
@@ -332,6 +341,7 @@
 - `TrainingsListView.swift` — Struct TrainingsListView (~3139 tok)
 
 ## BlindensportGraz/Features/Welcome/
+- `WelcomeEnabledToggle.swift` — 'Für alle Mitglieder anzeigen' switch for WelcomeContent — saves only on user flip (~226 tok)
 
 - `MarkdownContentView.swift` — Minimal line-based Markdown renderer for the welcome screen's content — (~569 tok)
 - `WelcomeFileWatcher.swift` — Watches this app's own iCloud Drive "Documents" folder (visible in the (~683 tok)

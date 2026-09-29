@@ -116,33 +116,8 @@ struct UserListView: View {
             }
             Spacer()
             if currentUser.isRoot && user.id != currentUser.id {
-                Picker("Rolle", selection: roleBinding(for: user)) {
-                    Text("Mitglied").tag("member")
-                    Text("Trainer:in").tag("coach")
-                    Text("Admin").tag("admin")
-                }
-                .labelsHidden()
+                UserRolePicker(user: user, currentUser: currentUser)
             }
         }
-    }
-
-    /// Only a root user reaches this binding (see the `currentUser.isRoot` gate above),
-    /// and never for their own row — so this can never be used for self-promotion.
-    /// Still `Binding<String>` — the Picker's `.tag(...)` values below are plain
-    /// strings ("member"/"coach"/"admin"), so this bridges to/from `AppRole` at
-    /// the edges rather than changing the Picker's own tag type.
-    private func roleBinding(for user: User) -> Binding<String> {
-        Binding(
-            get: { user.role.rawValue },
-            set: { newRoleRaw in
-                let oldRole = user.role
-                let newRole = AppRole.normalize(newRoleRaw)
-                guard newRole != oldRole else { return }
-                user.role = newRole
-                guard UserService.save(user, modelContext: modelContext) else { return }
-                RoleChangeLogService.log(userID: user.id, oldRole: oldRole.rawValue, newRole: newRole.rawValue,
-                                          changedBy: currentUser.id.uuidString, modelContext: modelContext)
-            }
-        )
     }
 }

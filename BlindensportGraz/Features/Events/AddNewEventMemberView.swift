@@ -63,12 +63,13 @@ struct AddNewEventMemberView: View {
                         // doesn't land on the wheel's €5 steps — user
                         // request 2026-09-14, matches TrainingDetailView/
                         // TournamentDetailView's identical addition.
-                        TextField("Betrag", value: Binding(
-                            get: { praeAmount },
-                            set: { newValue in praeAmount = min(praeMax, max(0, newValue)) }
-                        ), format: .number)
+                        TextField("Betrag", value: $praeAmount, format: .number)
                             .keyboardType(.numberPad)
                             .accessibilityLabel("PRAE Betrag genau eingeben")
+                            .onChange(of: praeAmount) { _, amount in
+                                let clamped = min(praeMax, max(0, amount))
+                                if clamped != amount { praeAmount = clamped }
+                            }
                         Picker("PRAE (€)", selection: $praeAmount) {
                             ForEach(Array(stride(from: 0, through: praeMax, by: 5)), id: \.self) { value in
                                 Text("\(value)").tag(value)

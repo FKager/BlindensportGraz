@@ -50,19 +50,9 @@ struct TeamDetailView: View {
                             }
                             Spacer()
                             if canManageTeams {
-                                Menu {
-                                    Picker("Rolle", selection: roleBinding(for: m)) {
-                                        Text("Spieler:in").tag("player")
-                                        Text("Trainer:in").tag("coach")
-                                        Text("Assistent:in").tag("assistant")
-                                    }
-                                } label: {
-                                    roleCapsule(m.role.rawValue)
-                                }
-                                .accessibilityLabel("Rolle: \(roleLabel(m.role.rawValue))")
-                                .accessibilityHint("Doppeltippen, um die Rolle zu ändern")
+                                MembershipRoleMenu(membership: m)
                             } else {
-                                roleCapsule(m.role.rawValue)
+                                MembershipRoleCapsule(role: m.role)
                             }
                         }
                     }
@@ -92,38 +82,5 @@ struct TeamDetailView: View {
         .sheet(isPresented: $showAddMember) {
             AddTeamMemberView(team: team, availableUsers: availableUsers, availableMembers: availableMembers)
         }
-    }
-
-    /// Two-way binding straight onto the `TeamMembership.role` stored
-    /// property (a `@Model` reference, so mutating it in place is safe even
-    /// though `m` here is a `let` from `ForEach`) — the `Picker`'s selection
-    /// writes through this on every change, persists, and re-pushes so the
-    /// role edit syncs the same way every other membership write does.
-    private func roleBinding(for membership: TeamMembership) -> Binding<String> {
-        Binding(
-            get: { membership.role.rawValue },
-            set: { newRoleRaw in
-                let newRole = MembershipRole.normalize(newRoleRaw)
-                guard newRole != membership.role else { return }
-                membership.role = newRole
-                TeamMembershipService.save(membership, modelContext: modelContext)
-            }
-        )
-    }
-
-    private func roleLabel(_ role: String) -> String {
-        switch role {
-        case "coach": return "Trainer:in"
-        case "assistant": return "Assistent:in"
-        default: return "Spieler:in"
-        }
-    }
-
-    private func roleCapsule(_ role: String) -> some View {
-        Text(role)
-            .font(.caption)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 2)
-            .badge(tint: .blue)
     }
 }

@@ -35,13 +35,7 @@ struct WelcomeScreenSettingsView: View {
 
             if let content {
                 Section {
-                    Toggle("Für alle Mitglieder anzeigen", isOn: Binding(
-                        get: { content.isEnabled },
-                        set: { newValue in
-                            content.isEnabled = newValue
-                            WelcomeContentService.save(content, modelContext: modelContext)
-                        }
-                    ))
+                    WelcomeEnabledToggle(content: content)
                     if !content.markdown.isEmpty {
                         Button {
                             showPreview = true

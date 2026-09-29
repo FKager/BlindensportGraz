@@ -137,58 +137,7 @@ struct TrainingDetailView: View {
         Section("Anwesenheit") {
             if !allMemberships.isEmpty {
                 ForEach(allMemberships) { membership in
-                    Toggle(isOn: Binding(
-                        get: { attendance(for: membership)?.attended ?? false },
-                        set: { newValue in setAttendance(newValue, for: membership) }
-                    )) {
-                        Text(membership.displayName)
-                    }
-                    // PRAE amount only for helpers/coaches (role "assistant"/
-                    // "coach") who were actually present — see Attendance.praeAmount.
-                    if membership.role.isHelfer,
-                       attendance(for: membership)?.attended == true {
-                        HStack {
-                            Text("PRAE (€)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            // Exact-amount fallback for when the desired
-                            // value doesn't land on the wheel's €5 steps —
-                            // user request 2026-09-14. The wheel below stays
-                            // the primary swipe input; this just covers
-                            // amounts the wheel can't express, still clamped
-                            // to the same 0...90 bound the wheel enforces.
-                            TextField("Betrag", value: Binding(
-                                get: { Int((attendance(for: membership)?.praeAmount ?? 0).rounded()) },
-                                set: { newValue in setPraeAmount(Double(min(90, max(0, newValue))), for: membership) }
-                            ), format: .number)
-                                .keyboardType(.numberPad)
-                                .multilineTextAlignment(.trailing)
-                                .frame(width: 44)
-                                .textFieldStyle(.roundedBorder)
-                                .accessibilityLabel("PRAE Betrag genau eingeben")
-                            // Swipe-to-select wheel — PRAE is normally paid
-                            // in €5 steps from 0 to €90, so this covers the
-                            // common case; the TextField above handles
-                            // anything off that grid.
-                            Picker("PRAE (€)", selection: Binding(
-                                get: {
-                                    let amount = attendance(for: membership)?.praeAmount ?? 0
-                                    let step = (amount / 5).rounded()
-                                    return min(90, max(0, Int(step) * 5))
-                                },
-                                set: { newValue in setPraeAmount(Double(newValue), for: membership) }
-                            )) {
-                                ForEach(Array(stride(from: 0, through: 90, by: 5)), id: \.self) { value in
-                                    Text("\(value)").tag(value)
-                                }
-                            }
-                            .labelsHidden()
-                            .pickerStyle(.wheel)
-                            .frame(width: 100, height: 90)
-                            .clipped()
-                        }
-                    }
+                    AttendanceRow(membership: membership, event: training, maxPrae: 90)
                 }
                 if training.totalPraeAmount > 0 {
                     HStack {
@@ -351,16 +300,6 @@ struct TrainingDetailView: View {
 
     private func attendance(for membership: TeamMembership) -> Attendance? {
         training.attendances.first { $0.membership.id == membership.id }
-    }
-
-    private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
-        AttendanceService.setAttended(attended, for: membership, at: training, modelContext: modelContext)
-    }
-
-    private func setPraeAmount(_ amount: Double, for membership: TeamMembership) {
-        guard let record = attendance(for: membership) else { return }
-        record.praeAmount = amount > 0 ? amount : nil
-        AttendanceService.save(record, modelContext: modelContext)
     }
 
     private func addImage(_ data: Data) {

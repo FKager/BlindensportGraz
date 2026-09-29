@@ -154,66 +154,13 @@ struct TournamentDetailView: View {
         Section("Teilnehmer:innen") {
             if !allMemberships.isEmpty {
                 ForEach(allMemberships) { membership in
-                    Toggle(isOn: Binding(
-                        get: { attendance(for: membership)?.attended ?? false },
-                        set: { newValue in setAttendance(newValue, for: membership) }
-                    )) {
-                        Text(membership.displayName)
-                    }
-                    // PRAE amount only for helpers/coaches (role "assistant"/
-                    // "coach") who were actually present — see Attendance.praeAmount.
-                    if membership.role.isHelfer,
-                       attendance(for: membership)?.attended == true {
-                        // Swipe-to-select wheel, not free text entry — same
-                        // "select via swipe" requirement as Trainings, but
-                        // the max scales with the tournament's length: PRAE's
-                        // €120/day cap (PraeCalculator.dailyCap) times the
-                        // number of days this tournament spans
-                        // (SportEvent.dayCount), since the single amount
-                        // entered here is spread evenly across every
-                        // deployment day of the tournament, not charged
-                        // entirely to one day — see
-                        // PraeCalculator.summary(for:tournament:).
-                        let maxPrae = Int(PraeCalculator.dailyCap) * tournament.dayCount
-                        HStack {
-                            Text("PRAE (€)")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            // Exact-amount fallback for when the desired
-                            // value doesn't land on the wheel's €5 steps —
-                            // user request 2026-09-14, matches
-                            // TrainingDetailView's identical addition. The
-                            // wheel stays the primary swipe input; this just
-                            // covers amounts it can't express, still clamped
-                            // to the same 0...maxPrae bound the wheel enforces.
-                            TextField("Betrag", value: Binding(
-                                get: { Int((attendance(for: membership)?.praeAmount ?? 0).rounded()) },
-                                set: { newValue in setPraeAmount(Double(min(maxPrae, max(0, newValue))), for: membership) }
-                            ), format: .number)
-                                .keyboardType(.numberPad)
-                                .multilineTextAlignment(.trailing)
-                                .frame(width: 44)
-                                .textFieldStyle(.roundedBorder)
-                                .accessibilityLabel("PRAE Betrag genau eingeben")
-                            Picker("PRAE (€)", selection: Binding(
-                                get: {
-                                    let amount = attendance(for: membership)?.praeAmount ?? 0
-                                    let step = (amount / 5).rounded()
-                                    return min(maxPrae, max(0, Int(step) * 5))
-                                },
-                                set: { newValue in setPraeAmount(Double(newValue), for: membership) }
-                            )) {
-                                ForEach(Array(stride(from: 0, through: maxPrae, by: 5)), id: \.self) { value in
-                                    Text("\(value)").tag(value)
-                                }
-                            }
-                            .labelsHidden()
-                            .pickerStyle(.wheel)
-                            .frame(width: 100, height: 90)
-                            .clipped()
-                        }
-                    }
+                    // PRAE max scales with the tournament's length: PRAE's
+                    // €120/day cap (PraeCalculator.dailyCap) times the number
+                    // of days it spans (SportEvent.dayCount), since the single
+                    // amount entered here is spread evenly across every
+                    // deployment day — see PraeCalculator.summary(for:tournament:).
+                    AttendanceRow(membership: membership, event: tournament,
+                                  maxPrae: Int(PraeCalculator.dailyCap) * tournament.dayCount)
                 }
                 if tournament.totalPraeAmount > 0 {
                     HStack {
@@ -442,24 +389,6 @@ var body: some View {
 
     private func attendance(for membership: TeamMembership) -> Attendance? {
         tournament.attendances.first { $0.membership.id == membership.id }
-    }
-
-    private func setAttendance(_ attended: Bool, for membership: TeamMembership) {
-        let record: Attendance
-        if let existing = attendance(for: membership) {
-            existing.attended = attended
-            record = existing
-        } else {
-            record = Attendance(event: tournament, membership: membership, attended: attended)
-            modelContext.insert(record)
-        }
-        AttendanceService.save(record, modelContext: modelContext)
-    }
-
-    private func setPraeAmount(_ amount: Double, for membership: TeamMembership) {
-        guard let record = attendance(for: membership) else { return }
-        record.praeAmount = amount > 0 ? amount : nil
-        AttendanceService.save(record, modelContext: modelContext)
     }
 
     private func addImage(_ data: Data) {
