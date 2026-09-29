@@ -7,6 +7,7 @@ struct EventDetailView: View {
       @Environment(\.modelContext) private var modelContext
       @Query(sort: [SortDescriptor(\User.lastName), SortDescriptor(\User.firstName)]) private var allUsers: [User]
       @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)]) private var allMembers: [Member]
+      @Query private var approvals: [AccountApproval]
       // Detail screens open read-only. Only an admin or the root account gets
       // the "Bearbeiten" toolbar toggle that flips this true and unlocks the
       // editable sections (user request 2026-09-08). "Selbst anmelden" below
@@ -132,7 +133,8 @@ struct EventDetailView: View {
                         // a logged-in user who isn't a GVSC member/coach/
                         // admin can view an Event's participant list but not
                         // self-register for it.
-                        if user.hasGVSCPrivileges {
+                        if user.hasGVSCPrivileges(approved: AccessPolicy.approvedMember(
+                            for: user, roster: allMembers, approvals: approvals, users: allUsers) != nil) {
                             Button("Selbst anmelden") {
                                 let participation = EventParticipation(user: user, event: event, status: "confirmed")
                                 modelContext.insert(participation)

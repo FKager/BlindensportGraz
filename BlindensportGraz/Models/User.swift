@@ -125,7 +125,10 @@ nonisolated extension User {
     /// of which additionally require isGrazerVSCMember for a coach) — a
     /// coach may well be an external trainer, not a club member, but
     /// already has full CRUD rights over events/trainings/teams elsewhere.
-    var hasGVSCPrivileges: Bool {
-        isGrazerVSCMember || role == .coach || role == .admin || isRoot
+    /// `approved`: an admin has linked this account to the Benutzerverwaltung
+    /// (`AccessPolicy.approvedMember`) — checked live by the caller instead of
+    /// the stored `isGrazerVSCMember` flag, which is only refreshed at login.
+    func hasGVSCPrivileges(approved: Bool) -> Bool {
+        approved || role == .coach || role == .admin || isRoot
     }
 }

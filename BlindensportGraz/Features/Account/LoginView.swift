@@ -49,7 +49,7 @@ struct LoginView: View {
                 RegisterView(onRegister: onLogin)
             }
             .sheet(item: $userNeedingPassword) { user in
-                SetPasswordView(user: user, onComplete: onLogin)
+                SetPasswordView(user: user, requiresActivationCode: true, onComplete: onLogin)
             }
         }
     }
@@ -61,12 +61,10 @@ struct LoginView: View {
             errorMessage = "Kein Konto mit dieser E-Mail-Adresse gefunden."
             return
         }
-        // Migration path for every pre-password-login account (passwordHash
-        // empty). KNOWN LIMITATION: since there's no email verification or
-        // backend to check against, anyone who knows/guesses this email can
-        // claim the account by being first to set a password for it —
-        // accepted trade-off for a small trusted-club app with no server,
-        // see PasswordHashing.swift's doc comment.
+        // Account from before password login (passwordHash empty): setting
+        // its first password needs a one-time activation code from an admin
+        // (SetPasswordView) — knowing the email alone must not be enough to
+        // claim someone else's account.
         guard !match.passwordHash.isEmpty else {
             userNeedingPassword = match
             return

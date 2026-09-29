@@ -7,9 +7,8 @@ struct RegisterView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    // Intentionally unfiltered — only ever read via `users.isEmpty` (the
-    // very-first-account bootstrap check below), which needs the full set
-    // to answer correctly.
+    // Intentionally unfiltered — read for the very-first-account bootstrap
+    // check and the duplicate-email check below, which need the full set.
     @Query private var users: [User]
 
     @State private var email = ""
@@ -18,6 +17,7 @@ struct RegisterView: View {
     @State private var password = ""
     @State private var passwordConfirm = ""
     @State private var isCreating = false
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
@@ -31,6 +31,11 @@ struct RegisterView: View {
                         .autocorrectionDisabled()
                     if !Validation.isPlausibleEmail(email) {
                         Label("Ungültige E-Mail-Adresse", systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(Theme.Palette.warning)
+                    }
+                    if let errorMessage {
+                        Label(errorMessage, systemImage: "exclamationmark.triangle")
                             .font(.caption)
                             .foregroundStyle(Theme.Palette.warning)
                     }
@@ -59,7 +64,29 @@ struct RegisterView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Erstellen") {
                         isCreating = true
+                        errorMessage = nil
                         Task {
+                            // Emails must be unique: they identify accounts at
+                            // login and the club's root account. Checked locally
+                            // AND in CloudKit (this device may not be synced) —
+                            // registration needs a connection for that check.
+                            if AccessPolicy.isEmailTaken(email, by: users) {
+                                errorMessage = String(localized: "Für diese E-Mail-Adresse gibt es bereits ein Konto. Bitte melde dich an.")
+                                isCreating = false
+                                return
+                            }
+                            switch await SyncOrchestrationService.userIdentityExists(email: email) {
+                            case .some(true):
+                                errorMessage = String(localized: "Für diese E-Mail-Adresse gibt es bereits ein Konto. Bitte melde dich an.")
+                                isCreating = false
+                                return
+                            case .none:
+                                errorMessage = String(localized: "Keine Verbindung zu iCloud. Bitte versuche es später noch einmal.")
+                                isCreating = false
+                                return
+                            case .some(false):
+                                break
+                            }
                             let salt = PasswordHashing.makeSalt()
                             let user = User(email: email, firstName: firstName, lastName: lastName,
                                              passwordHash: PasswordHashing.hash(password: password, salt: salt),

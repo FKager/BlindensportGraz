@@ -21,6 +21,8 @@ nonisolated enum AppModelSchema {
         Attendance.self,
         TrainingFavorite.self,
         RoleChangeLog.self,
+        AccountApproval.self,
+        RoleAssignment.self,
         ExpenseReceipt.self,
         WelcomeContent.self,
         // Self-service roster edits awaiting admin review

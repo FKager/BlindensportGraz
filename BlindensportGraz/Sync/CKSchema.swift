@@ -250,6 +250,24 @@ enum CKSchema {
         static let updatedAt = "updatedAt"
     }
 
+    enum RoleAssignment {
+        static let recordType = "RoleAssignment"
+        static let userID = "userID"
+        static let role = "role"
+        static let assignedBy = "assignedBy"
+        static let assignedAt = "assignedAt"
+    }
+
+    enum AccountApproval {
+        static let recordType = "AccountApproval"
+        static let userID = "userID"
+        static let memberID = "memberID"
+        static let approvedBy = "approvedBy"
+        static let approvedAt = "approvedAt"
+        static let activationCodeHash = "activationCodeHash"
+        static let activationCodeSalt = "activationCodeSalt"
+    }
+
     enum RoleChangeLog {
         static let recordType = "RoleChangeLog"
         static let userID = "userID"

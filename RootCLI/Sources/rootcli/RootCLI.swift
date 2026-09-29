@@ -90,7 +90,26 @@ struct RootCLI {
         let oldRole = user.stringField("role") ?? "member"
         try await client.updateRecord(user, fields: ["role": ["value": role]])
         print("Updated \(fullName(user)): role -> \(role)")
+        await recordRoleAssignment(client: client, userRecordName: user.recordName, role: role)
         await logRoleChange(client: client, userRecordName: user.recordName, oldRole: oldRole, newRole: role)
+    }
+
+    /// The app works out roles from `RoleAssignment` records (latest trusted
+    /// one wins — see the app's RoleAssignmentResolver), so a RootCLI change
+    /// must also be recorded as one; otherwise an older in-app assignment
+    /// would override it on every device. Best-effort like `logRoleChange`.
+    private static func recordRoleAssignment(client: CloudKitS2SClient, userRecordName: String, role: String) async {
+        let fields: [String: Any] = [
+            "userID": ["value": userRecordName],
+            "role": ["value": role],
+            "assignedBy": ["value": "system:rootcli"],
+            "assignedAt": ["value": Int64(Date().timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
+        ]
+        do {
+            try await client.createOrReplaceRecord(recordType: "RoleAssignment", recordName: UUID().uuidString, fields: fields)
+        } catch {
+            FileHandle.standardError.write("Warning: role changed but RoleAssignment write failed: \(error)\n".data(using: .utf8)!)
+        }
     }
 
     /// Mirrors the app's own `CloudKitSync.logRoleChange` — RootCLI-issued

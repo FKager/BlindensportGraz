@@ -7,8 +7,11 @@ import SwiftData
 /// Picker (and never for their own row); everyone else sees roles read-only
 /// under the name.
 ///
-/// Rows show whether the account fuzzily matches a `Member` roster entry
-/// (`Member.first(matching:)`). Email now syncs via CloudKit like every
+/// Rows show each account's approval: full access needs an admin's approval
+/// linking it to a Benutzerverwaltung entry (`AccountApproval`,
+/// `UserApprovalControls`); a matching name/email is only a suggestion.
+/// "E-Mail-Vorschläge bestätigen" approves every account whose email matches
+/// a roster entry in one go (e.g. once after this approval step was added). Email now syncs via CloudKit like every
 /// other identity field (account-tiers refactor, decision #4 — needed so
 /// LoginView's email+password form works from any device), so it's still
 /// shown only when non-blank but that's just ordinary "not filled in yet",
@@ -20,6 +23,10 @@ struct UserListView: View {
     @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)]) private var members: [Member]
     @State private var searchText = ""
     @State private var pendingDeletion: [User] = []
+    @Query private var approvals: [AccountApproval]
+    @State private var pickingMemberFor: User?
+    @State private var activationCodeInfo: (user: String, code: String)?
+    @State private var showBulkApproval = false
     // Role changes are one of audit.md's two explicitly-prioritized areas
     // for visible save/sync failure signaling (alongside roster edits, see
     // MembersListView) — see ServiceFailureSignal.swift.
@@ -43,6 +50,21 @@ struct UserListView: View {
         Binding(get: { failureSignal.message != nil }, set: { if !$0 { failureSignal.clear() } })
     }
 
+    /// Unapproved non-admin accounts whose email matches a roster entry.
+    private var emailSuggestions: [(user: User, member: Member)] {
+        users.compactMap { user in
+            guard user.role != .admin, !user.isRoot,
+                  AccessPolicy.approvedMember(for: user, roster: members, approvals: approvals, users: users) == nil,
+                  let suggestion = AccessPolicy.suggestedMember(for: user, roster: members), suggestion.byEmail
+            else { return nil }
+            return (user, suggestion.member)
+        }
+    }
+
+    private var activationCodeShown: Binding<Bool> {
+        Binding(get: { activationCodeInfo != nil }, set: { if !$0 { activationCodeInfo = nil } })
+    }
+
     var body: some View {
         List {
             Section {
@@ -56,6 +78,31 @@ struct UserListView: View {
         }
         .navigationTitle("App-Konten")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if !emailSuggestions.isEmpty {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("E-Mail-Vorschläge bestätigen", systemImage: "checkmark.seal") {
+                        showBulkApproval = true
+                    }
+                    .confirmationDialog("\(emailSuggestions.count) Konten freigeben?", isPresented: $showBulkApproval,
+                                        titleVisibility: .visible) {
+                        Button("Freigeben", action: approveEmailSuggestions)
+                        Button("Abbrechen", role: .cancel) {}
+                    } message: {
+                        Text("Jedes Konto wird mit dem Eintrag in der Benutzerverwaltung verknüpft, der dieselbe E-Mail-Adresse hat.")
+                    }
+                }
+            }
+        }
+        .sheet(item: $pickingMemberFor) { user in
+            ApprovalMemberPicker(user: user, admin: currentUser)
+        }
+        .alert("Aktivierungscode", isPresented: activationCodeShown) {
+        } message: {
+            if let activationCodeInfo {
+                Text("Code für \(activationCodeInfo.user): \(activationCodeInfo.code)\n\nBitte persönlich weitergeben. Der Code wird nur jetzt angezeigt; damit kann einmalig ein Passwort festgelegt werden.")
+            }
+        }
         .searchable(text: $searchText, prompt: "Name oder E-Mail")
         .confirmationDialog("Konto löschen?", isPresented: deletionDialogShown, titleVisibility: .visible) {
             Button("Löschen", role: .destructive) {
@@ -88,11 +135,6 @@ struct UserListView: View {
                 Text(user.role.displayLabel)
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                if user.isGrazerVSCMember {
-                    Label("Grazer VSC", systemImage: "checkmark.seal.fill")
-                        .font(.caption)
-                        .foregroundStyle(Theme.Palette.success)
-                }
                 Text("Konto seit " + user.createdAt.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -101,17 +143,20 @@ struct UserListView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                if Member.first(matching: user, in: members) != nil {
-                    Label("Mit Vereinsmitglied verknüpft", systemImage: "checkmark.circle.fill")
-                        .font(.caption)
-                        .foregroundStyle(Theme.Palette.success)
-                        .accessibilityLabel("Mit einem Vereinsmitglied verknüpft")
-                }
+                UserApprovalControls(user: user, currentUser: currentUser,
+                                     onPickMember: { pickingMemberFor = user },
+                                     onActivationCode: { activationCodeInfo = (user.displayName, $0) })
             }
             Spacer()
             if currentUser.isRoot && user.id != currentUser.id {
                 UserRolePicker(user: user, currentUser: currentUser)
             }
+        }
+    }
+
+    private func approveEmailSuggestions() {
+        for suggestion in emailSuggestions {
+            AccountApprovalService.approve(suggestion.user, as: suggestion.member, by: currentUser, modelContext: modelContext)
         }
     }
 }

@@ -37,7 +37,9 @@ enum NextEventLookup {
     static func hasFullAccess(_ user: User?, in context: ModelContext) -> Bool {
         guard let user else { return false }
         let roster = (try? context.fetch(FetchDescriptor<Member>())) ?? []
-        return AccessPolicy.hasFullAccess(user, roster: roster)
+        let approvals = (try? context.fetch(FetchDescriptor<AccountApproval>())) ?? []
+        let users = (try? context.fetch(FetchDescriptor<User>())) ?? []
+        return AccessPolicy.hasFullAccess(user, roster: roster, approvals: approvals, users: users)
     }
 
     static func currentUser(in context: ModelContext) -> User? {

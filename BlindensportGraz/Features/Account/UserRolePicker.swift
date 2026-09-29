@@ -5,8 +5,8 @@ import SwiftData
 /// Only a root user sees it, and never on their own row (see the gate in
 /// `UserListView`), so it can't be used for self-promotion.
 ///
-/// Bound to local `@State`, not the model: only a user's pick saves the user
-/// and writes a `RoleChangeLog` entry. A role written into the same `User`
+/// Bound to local `@State`, not the model: only a user's pick records a
+/// `RoleAssignment` and writes a `RoleChangeLog` entry. A role written into the same `User`
 /// by a CloudKit pull just updates the display — otherwise every synced role
 /// change would be re-pushed and logged again as if this viewer had made it.
 struct UserRolePicker: View {
@@ -31,12 +31,11 @@ struct UserRolePicker: View {
         }
     }
 
+    /// Recorded as a `RoleAssignment` owned by the root user — writing the
+    /// other account's own record would be rejected by iCloud (creator-only
+    /// writes), so the change used to stay on this device.
     private func changeRole(to newRole: AppRole) {
-        let oldRole = user.role
-        guard newRole != oldRole else { return }
-        user.role = newRole
-        guard UserService.save(user, modelContext: modelContext) else { return }
-        RoleChangeLogService.log(userID: user.id, oldRole: oldRole.rawValue, newRole: newRole.rawValue,
-                                 changedBy: currentUser.id.uuidString, modelContext: modelContext)
+        guard newRole != user.role else { return }
+        RoleAssignmentService.assign(newRole, to: user, by: currentUser, modelContext: modelContext)
     }
 }

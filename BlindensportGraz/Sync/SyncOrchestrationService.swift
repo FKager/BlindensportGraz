@@ -24,6 +24,11 @@ enum SyncOrchestrationService {
         await CloudKitSync.shared.hasAnyUserIdentity()
     }
 
+    /// See `CloudKitSync.userIdentityExists(email:)` — nil if CloudKit is unreachable.
+    static func userIdentityExists(email: String) async -> Bool? {
+        await CloudKitSync.shared.userIdentityExists(email: email)
+    }
+
     static func ensureDefaultTeams(modelContext: ModelContext) async {
         await CloudKitSync.shared.ensureDefaultTeams(modelContext: modelContext)
     }

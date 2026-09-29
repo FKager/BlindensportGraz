@@ -133,9 +133,12 @@ nonisolated extension Member {
     /// the local Member roster and updates its `isGrazerVSCMember` flag
     /// accordingly.
     static func checkMembership(for user: User, modelContext: ModelContext) {
+        // Only an admin-approved roster link counts (see AccessPolicy) — a
+        // matching name/email alone is unverified.
         let roster = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
-        user.isGrazerVSCMember = matches(email: user.email, firstName: user.firstName,
-                                          lastName: user.lastName, in: roster)
+        let approvals = (try? modelContext.fetch(FetchDescriptor<AccountApproval>())) ?? []
+        let users = (try? modelContext.fetch(FetchDescriptor<User>())) ?? []
+        user.isGrazerVSCMember = AccessPolicy.approvedMember(for: user, roster: roster, approvals: approvals, users: users) != nil
     }
 
     /// Matches a new account's email or first+last name against the roster, case-

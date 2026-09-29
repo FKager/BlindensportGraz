@@ -7,23 +7,29 @@ struct AccountView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var allUsers: [User]
     @Query private var members: [Member]
+    @Query private var approvals: [AccountApproval]
 
     @State private var showEdit = false
     @State private var showMyMember = false
     @State private var showMembershipTypeChoice = false
     @State private var requestedMember: Member?
     @State private var showDeleteAccountConfirmation = false
+    @State private var showSetPassword = false
+    @State private var showRequestSent = false
 
-    // Derived live from the roster @Query, not from the possibly-stale
-    // user.isGrazerVSCMember flag (only recalculated at register/login) —
-    // gating "Vereinsdaten bearbeiten" vs. "Mitgliedschaft beantragen" on a
-    // stale flag risks the exact User+Member duplicate-record scenario the
-    // duplicate-names investigation is chasing (two independent
-    // TeamMembership rows for the same real person, one keyed by user, one
-    // by member): re-checking here before ever creating a new Member is
-    // what keeps requestMembership() safe against that.
-    private var matchedMember: Member? {
-        currentUser.flatMap { Member.first(matching: $0, in: members) }
+    /// The Benutzerverwaltung entry an admin confirmed as this account's
+    /// (`AccessPolicy.approvedMember`). A name/email match alone is not
+    /// enough — registration verifies neither, so without an approval nobody
+    /// may open (or edit) a roster entry's personal data from here.
+    private var approvedMember: Member? {
+        currentUser.flatMap { AccessPolicy.approvedMember(for: $0, roster: members, approvals: approvals, users: allUsers) }
+    }
+
+    /// An unapproved account that plausibly belongs to a roster entry (or has
+    /// requested membership) — shown "Freigabe ausstehend", never the data.
+    private var awaitingApproval: Bool {
+        guard let user = currentUser, approvedMember == nil else { return false }
+        return AccessPolicy.suggestedMember(for: user, roster: members) != nil
     }
 
     var body: some View {
@@ -61,9 +67,10 @@ struct AccountView: View {
                     LabeledContent("Teams", value: "\(user.memberships.count)")
                     LabeledContent("Teilnahmen", value: "\(user.participations.count)")
                     LabeledContent("Grazer VSC") {
-                        Label(user.isGrazerVSCMember ? "Mitglied" : "Kein Mitglied",
-                              systemImage: user.isGrazerVSCMember ? "checkmark.seal.fill" : "xmark.seal")
-                            .foregroundStyle(user.isGrazerVSCMember ? Theme.Palette.success : .secondary)
+                        let isMember = approvedMember?.memberOfGVSC ?? false
+                        Label(isMember ? "Mitglied" : "Kein Mitglied",
+                              systemImage: isMember ? "checkmark.seal.fill" : "xmark.seal")
+                            .foregroundStyle(isMember ? Theme.Palette.success : .secondary)
                     }
                 }
 
@@ -76,17 +83,27 @@ struct AccountView: View {
                         Label("Profil bearbeiten", systemImage: "pencil")
                     }
 
-                    // GVSC-gated (account-tiers refactor, decision #6) — a
-                    // logged-in user who somehow has a matchedMember but
-                    // isn't a GVSC member/coach/admin still only sees
-                    // "Mitgliedschaft beantragen", never direct edit access.
-                    if let member = matchedMember, user.hasGVSCPrivileges {
+                    // Only an admin-approved link opens roster data (see
+                    // `approvedMember`); a plausible but unapproved match just
+                    // says it's waiting for an admin.
+                    if user.passwordHash.isEmpty {
+                        Button {
+                            showSetPassword = true
+                        } label: {
+                            Label("Passwort festlegen", systemImage: "key")
+                        }
+                    }
+                    if let member = approvedMember {
                         Button {
                             requestedMember = member
                             showMyMember = true
                         } label: {
                             Label("Vereinsdaten bearbeiten", systemImage: "square.and.pencil")
                         }
+                    } else if awaitingApproval {
+                        Label("Freigabe ausstehend: Ein Admin muss bestätigen, dass dieses Konto zu deinem Eintrag in der Benutzerverwaltung gehört.",
+                              systemImage: "hourglass")
+                            .foregroundStyle(.secondary)
                     } else {
                         Button {
                             showMembershipTypeChoice = true
@@ -119,6 +136,17 @@ struct AccountView: View {
             }
         }
         .navigationTitle("Account")
+        .sheet(isPresented: $showSetPassword) {
+            if let user = currentUser {
+                // Already signed in (e.g. via Apple on this device) — no
+                // activation code needed.
+                SetPasswordView(user: user, requiresActivationCode: false) { _ in }
+            }
+        }
+        .alert("Antrag gesendet", isPresented: $showRequestSent) {
+        } message: {
+            Text("Ein Admin prüft deinen Antrag und bestätigt dein Konto.")
+        }
         .sheet(isPresented: $showEdit) {
             if let user = currentUser {
                 EditAccountView(user: user)
@@ -195,18 +223,20 @@ struct AccountView: View {
     /// without waiting for the next login.
     private func requestMembership(for user: User, as role: MembershipRole) {
         switch Member.resolveMembershipRequest(for: user, in: members, defaultFunction: role.rawValue) {
-        case .existing(let member):
-            requestedMember = member
+        case .existing:
+            // A roster entry already matches by name/email — never open its
+            // data for an unapproved account; an admin links it instead.
+            showRequestSent = true
         case .new(let member):
             modelContext.insert(member)
             guard MemberService.save(member, modelContext: modelContext) else { return }
             let allMembers = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
             MemberBackup.snapshot(members: allMembers)
+            // The person's own brand-new entry — fine to fill in; full access
+            // still needs an admin's approval.
             requestedMember = member
+            showMyMember = true
         }
-        Member.checkMembership(for: user, modelContext: modelContext)
-        _ = UserService.save(user, modelContext: modelContext)
-        showMyMember = true
     }
 
     private func roleLabel(_ role: String) -> LocalizedStringKey {

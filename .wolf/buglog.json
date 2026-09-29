@@ -8521,6 +8521,74 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-507",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "SECURITY: full access / Vereinsdaten by registering with a Benutzerverwaltung member's NAME (or email) — no verification; 'Mitgliedschaft beantragen' also created a roster entry = instant full access and opened an existing matched member's personal data (SVNR/IBAN) in MyMemberView",
+      "file": "BlindensportGraz/Shared/AccessPolicy.swift",
+      "root_cause": "AccessPolicy (9f7c9a5) and AccountView trusted Member.first(matching:) (email OR first+last name), and registration verifies neither; requestMembership's .existing path opened MyMemberView for the matched entry",
+      "fix": "New admin-owned AccountApproval record (CloudKit WRITE _creator ⇒ admin can't flag another user's UserIdentity). Full access + Vereinsdaten only via approvedMember (approval by current admin/root, member still in roster); name/email matches are admin-only suggestions (UserApprovalControls, bulk 'E-Mail-Vorschläge bestätigen'); requestMembership no longer opens an existing entry; hasGVSCPrivileges(approved:) checked live. 10 tests run on macOS.",
+      "tags": [
+        "security",
+        "access-control",
+        "registration",
+        "cloudkit"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-508",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "SECURITY: anyone could claim an account without password (pre-password-login accounts) by entering its email first and setting a password",
+      "file": "BlindensportGraz/Features/Account/LoginView.swift",
+      "root_cause": "LoginView routed passwordHash-empty accounts straight to SetPasswordView (documented 'known limitation'); appleUserIdentifier is not synced, so Apple ownership can't be checked on other devices",
+      "fix": "SetPasswordView(requiresActivationCode: true) from login: needs a one-time admin-issued ActivationCode (8 chars, hash+salt in AccountApproval, issuer must be admin/root). From AccountView (already signed in, e.g. via Apple) no code needed.",
+      "tags": [
+        "security",
+        "login",
+        "account-takeover"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-509",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "SECURITY: registering (or editing own profile) with the hardcoded designated-root identity (Blindensport / Graz / blindensport.gvsc@gmail.com) made the account ROOT + ADMIN",
+      "file": "BlindensportGraz/Features/Account/EditAccountView.swift",
+      "root_cause": "Registration never checked for an existing account with the same email; EditAccountView ran elevateIfDesignatedRoot on every keystroke of name/email",
+      "fix": "Emails now unique: RegisterView checks local users + CloudKit (userIdentityExists, typed+lowercased; registration refuses when offline); EditAccountView blocks an email used by another account; edit-time root grant removed (grant only at creation/login of the genuine account).",
+      "tags": [
+        "security",
+        "privilege-escalation",
+        "root"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-510",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "Role changes made by root in App-Konten (UserRolePicker) most likely never reached iCloud / other devices",
+      "file": "BlindensportGraz/Features/Account/UserRolePicker.swift",
+      "root_cause": "UserRolePicker wrote the new role into the OTHER account's UserIdentity record; CloudKit public DB schema is WRITE _creator, so only that account's own iCloud user may modify it — the push is rejected, role change stays local (unverified on device, derived from schema).",
+      "fix": "Role changes are now root-owned RoleAssignment records (RoleAssignmentService); RoleAssignmentResolver applies the latest trusted assignment (root user or system:rootcli) to local User.role after pullUserIdentities; rootcli set-role also writes a RoleAssignment. 4 resolver tests + 10 access tests run on macOS (14/14). RoleAssignment added to Development schema.",
+      "tags": [
+        "cloudkit",
+        "permissions",
+        "roles",
+        "creator-write"
+      ],
+      "related_bugs": [
+        "bug-509"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
     }
   ]
 }

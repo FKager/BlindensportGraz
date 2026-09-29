@@ -5,6 +5,7 @@ struct EditAccountView: View {
     @Bindable var user: User
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Query private var allUsers: [User]
 
     // Snapshot of the fields this screen actually lets you edit, captured
     // when the screen appears (bug-373 follow-up). `onDisappear` used to
@@ -38,6 +39,12 @@ struct EditAccountView: View {
                             .font(.caption)
                             .foregroundStyle(Theme.Palette.warning)
                     }
+                    if emailIsTaken {
+                        Label("Diese E-Mail-Adresse wird bereits von einem anderen Konto verwendet.",
+                              systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(Theme.Palette.warning)
+                    }
                 }
                 Section {
                     LabeledContent("Rolle", value: roleLabel(user.role.rawValue))
@@ -51,7 +58,7 @@ struct EditAccountView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Fertig") { dismiss() }
-                        .disabled(nameIsBlank)
+                        .disabled(nameIsBlank || emailIsTaken)
                 }
             }
             // Blocks swipe-to-dismiss too, not just the toolbar button — a
@@ -59,14 +66,12 @@ struct EditAccountView: View {
             // this person (e.g. Trainingsfrequenzliste), unlike every other
             // name-entry point in the app (RegisterView, AddMemberView),
             // which already disable their save action the same way.
-            .interactiveDismissDisabled(nameIsBlank)
-            // Catches the case where firstName/lastName/email are edited into a
-            // match for the club's designated root account (Models.swift's
-            // elevateIfDesignatedRoot) -- that account is always created manually,
-            // so this is the only place besides creation where the grant can fire.
-            .onChange(of: user.firstName) { _, _ in applyDesignatedRootGrantIfNeeded() }
-            .onChange(of: user.lastName) { _, _ in applyDesignatedRootGrantIfNeeded() }
-            .onChange(of: user.email) { _, _ in applyDesignatedRootGrantIfNeeded() }
+            .interactiveDismissDisabled(nameIsBlank || emailIsTaken)
+            // No root grant here any more: typing the club account's name and
+            // email into your own profile used to make you root + admin on
+            // the spot. The club account already exists, and emails are now
+            // unique, so the grant only happens where that account is created
+            // or signs in (RegisterView, RootView).
             .onAppear {
                 originalFirstName = user.firstName
                 originalLastName = user.lastName
@@ -81,13 +86,10 @@ struct EditAccountView: View {
         }
     }
 
-    private func applyDesignatedRootGrantIfNeeded() {
-        let oldRole = user.role
-        if user.elevateIfDesignatedRoot() {
-            UserService.save(user, modelContext: modelContext)
-            RoleChangeLogService.log(userID: user.id, oldRole: oldRole.rawValue, newRole: user.role.rawValue,
-                                      changedBy: "system:designatedRoot", modelContext: modelContext)
-        }
+    /// Emails identify accounts (login, the club's root account), so they
+    /// must stay unique.
+    private var emailIsTaken: Bool {
+        user.email != originalEmail && AccessPolicy.isEmailTaken(user.email, by: allUsers, except: user)
     }
 
     private var nameIsBlank: Bool {

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T11:57:11.210Z
-> Files: 366 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T13:21:00.240Z
+> Files: 375 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -80,6 +80,8 @@
 - `CLAUDE.mdes` — Requirements (~91 tok)
 - `docker-compose.yml` — clubmembersapi + bundled Caddy TLS reverse proxy; clubmembersapi has no published host port (~435 tok)
 - `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
+- `firebase.md` — Analysis (2026-09-29): implications of moving from CloudKit to Firebase — access model, rules sketch, data model split, GDPR (Auth US-only), costs (Blaze), migration (passwords can't be imported), phases, alternatives (Supabase, CKShare) (~5924 tok)
+- `firebase.md` — Moving Blindensport Graz from CloudKit to Firebase — Implications (~5925 tok)
 - `generate_app_icon.swift` — Regenerates BlindensportGraz/Assets.xcassets/AppIcon.appiconset/icon-1024.png (~3059 tok)
 - `goal.md` (~276 tok)
 - `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
@@ -190,27 +192,31 @@
 - `settings.local.json` (~38 tok)
 
 ## BlindensportGraz/App/
-- `RestrictedTabView.swift` — Schedule-only tabs (Termine + Account) for signed-in users without full access (~370 tok)
 
 - `AppRoute.swift` — AppRoute enum (all pushed screens) + `.appRouteDestinations(currentUser:)` registered once per NavigationStack root (~900 tok)
 - `AppRoute.swift` — / Every screen that gets pushed onto a `NavigationStack`. Links use (~882 tok)
 - `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
 - `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
 - `MainTabView.swift` — Struct MainTabView (~1182 tok)
+- `RestrictedTabView.swift` — Schedule-only tabs (Termine + Account) for signed-in users without full access (~370 tok)
 - `RootView.swift` — Records that the club's designated-root account was created or logged into (~3509 tok)
 - `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 
 ## BlindensportGraz/Features/Account/
+- `UserApprovalControls.swift` — App-Konten row: approval status + Freigabe menu (approve/suggestion/pick/revoke/activation code) (~1067 tok)
+- `ApprovalMemberPicker.swift` — Admin picks the Benutzerverwaltung entry to approve an account for (~614 tok)
 
 - `AccountView.swift` — Struct AccountView (~3391 tok)
 - `AnonymousLandingView.swift` — / Root screen for the "anonymous" account tier (account-tiers refactor) — (~780 tok)
 - `AppleSignIn.swift` — Struct: SignInResult (~647 tok)
+- `ApprovalMemberPicker.swift` — / Admin picks which Benutzerverwaltung entry an app account belongs to (~656 tok)
 - `EditAccountView.swift` — Struct EditAccountView (~1258 tok)
 - `LoginView.swift` — Struct LoginView (~835 tok)
 - `PasswordHashing.swift` — / Best-effort password hashing for a small trusted-club app with no backend (~516 tok)
 - `RegisterView.swift` — Struct RegisterView (~1216 tok)
 - `RoleChangeLogView.swift` — Admin-only view of `RoleChangeLog` entries, newest first — audit.md P0 (~533 tok)
 - `SetPasswordView.swift` — One-time migration step for an account created before password login (~668 tok)
+- `UserApprovalControls.swift` — / Approval status and admin actions for one account in "App-Konten": (~1139 tok)
 - `UserListView.swift` — The list of every app account (`User`), pushed from `VereinView`'s admin (~1695 tok)
 - `UserRolePicker.swift` — Root-only app-role picker on UserListView rows — saves User + RoleChangeLog only on user pick (~409 tok)
 - `UserRolePicker.swift` — / App-role picker (Mitglied / Trainer:in / Admin) on a `UserListView` row. (~437 tok)
@@ -309,6 +315,11 @@
 - `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
 - `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
 
+## BlindensportGraz/Features/Schedule/
+
+- `ScheduleRow.swift` — Schedule row: title, day or day range, location; combined for VoiceOver (~317 tok)
+- `UpcomingScheduleSections.swift` — Read-only upcoming trainings/tournaments/events List sections: name, date, location; cancelled trainings hidden; isVisible team rule (~623 tok)
+
 ## BlindensportGraz/Features/Teams/
 
 - `AddTeamMemberView.swift` — Assigns an existing `User` (registered app account) or roster `Member` to (~1312 tok)
@@ -354,6 +365,8 @@
 - `WelcomeView.swift` — Full-screen welcome note shown by `RootView` on launch (when enabled and (~291 tok)
 
 ## BlindensportGraz/Models/
+- `RoleAssignment.swift` — Root-owned role decision for an account (userID, role, assignedBy, assignedAt) (~292 tok)
+- `AccountApproval.swift` — Admin-owned approval linking a User to a Member (full access) + optional one-time activation code hash (~471 tok)
 
 - `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
 - `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)
@@ -391,6 +404,8 @@
 - `Contents.json` (~61 tok)
 
 ## BlindensportGraz/Services/
+- `RoleAssignmentService.swift` — assign(role, to:, by:) — creates RoleAssignment, applies locally, logs RoleChangeLog (~327 tok)
+- `AccountApprovalService.swift` — approve / revoke / createActivationCode (admin actions) (~622 tok)
 
 - `AttendanceService.swift` — Declares AttendanceService (~1063 tok)
 - `BudgetEntryService.swift` — Declares BudgetEntryService (~242 tok)
@@ -413,8 +428,10 @@
 - `WelcomeContentService.swift` — Declares WelcomeContentService (~138 tok)
 
 ## BlindensportGraz/Shared/
-- `AccessPolicy.swift` — Full app only for admin/root/accounts listed in Benutzerverwaltung (Member.first(matching:)); others schedule-only (~183 tok)
+- `RoleAssignmentResolver.swift` — Latest trusted RoleAssignment (root user or system:rootcli) → local User.role; apply(in:) (~435 tok)
+- `ActivationCode.swift` — 8-char one-time activation codes (generate/normalize/matches, issuer must be admin/root) (~404 tok)
 
+- `AccessPolicy.swift` — Full app only for admin/root/accounts listed in Benutzerverwaltung (Member.first(matching:)); others schedule-only (~183 tok)
 - `CardModifier.swift` — `.card(tint:)` standard card + `.badge(tint:)` pill fill (~253 tok)
 - `CountBadge.swift` — Red filled number bubble (e.g. pending change requests) (~123 tok)
 - `HeroIcon.swift` — Large decorative header symbol, @ScaledMetric-scaled, brand gradient default, VoiceOver-hidden (~187 tok)
@@ -441,6 +458,8 @@
 - `SyncStatusBanner.swift` — / Visible sync/offline indicator — audit.md SwiftData & CloudKit Finding 3 (~1120 tok)
 
 ## BlindensportGraz/Sync/CloudKit/
+- `CloudKitSync+RoleAssignment.swift` — push/pull RoleAssignment; pull applies resolver (~535 tok)
+- `CloudKitSync+AccountApproval.swift` — push/pull(with deletion)/delete AccountApproval; userIdentityExists(email:) for unique emails (~994 tok)
 
 - `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~6070 tok)
 - `CloudKitSync+Attendance.swift` — Declares via (~1152 tok)
@@ -467,8 +486,9 @@
 - `ShareViewController.swift` — / Minimal Share Extension: this is the target that makes "Blindensport (~1339 tok)
 
 ## BlindensportGrazTests/
-- `AccessPolicyTests.swift` — AccessPolicy: listed by email/name, not listed, admin (~334 tok)
+- `RoleAssignmentResolverTests.swift` — Resolver: latest trusted wins, non-root ignored, rootcli trusted, apply on in-memory store (~586 tok)
 
+- `AccessPolicyTests.swift` — Class: AccessPolicyTests (~1424 tok)
 - `AttendanceTrendsTests.swift` — Class: AttendanceTrendsTests (~1543 tok)
 - `BudgetSummaryTests.swift` — Class: BudgetSummaryTests (~1024 tok)
 - `CalendarEventExportTests.swift` — Class: CalendarEventExportTests (~1200 tok)
@@ -575,8 +595,3 @@
 
 - `Appfile` — app_identifier it.a11y.BlindensportGraz, team 5Q57Y9YT8J (~30 tok)
 - `Fastfile` (~493 tok)
-
-
-## BlindensportGraz/Features/Schedule/
-- `ScheduleRow.swift` — Schedule row: title, day or day range, location; combined for VoiceOver (~317 tok)
-- `UpcomingScheduleSections.swift` — Read-only upcoming trainings/tournaments/events List sections: name, date, location; cancelled trainings hidden; isVisible team rule (~623 tok)

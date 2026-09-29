@@ -2,12 +2,24 @@ import SwiftUI
 import SwiftData
 import AuthenticationServices
 
-/// One-time migration step for an account created before password login
-/// existed (passwordHash empty) — see LoginView.attemptLogin's doc comment
-/// for the trust-model caveat this implies.
+/// Sets the first password for an account created before password login
+/// existed (passwordHash empty).
+///
+/// Coming from the login screen (`requiresActivationCode`), the person must
+/// first enter a one-time activation code an admin created for this account
+/// (`AccountApproval`, "App-Konten") — otherwise anyone who knows the email
+/// could claim the account by being first to set a password. From the
+/// Account tab the person is already signed in (e.g. via Apple on their own
+/// iPhone), so no code is needed.
 struct SetPasswordView: View {
     let user: User
+    let requiresActivationCode: Bool
     let onComplete: (User) -> Void
+
+    @Query private var approvals: [AccountApproval]
+    @Query private var users: [User]
+    @State private var activationCode = ""
+    @State private var codeRejected = false
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
@@ -23,6 +35,22 @@ struct SetPasswordView: View {
                         .foregroundStyle(.secondary)
                 } header: {
                     Text("Passwort festlegen")
+                }
+                if requiresActivationCode {
+                    Section {
+                        TextField("Aktivierungscode", text: $activationCode)
+                            .textInputAutocapitalization(.characters)
+                            .autocorrectionDisabled()
+                        if codeRejected {
+                            Label("Der Aktivierungscode stimmt nicht.", systemImage: "exclamationmark.triangle")
+                                .font(.caption)
+                                .foregroundStyle(Theme.Palette.warning)
+                        }
+                    } header: {
+                        Text("Aktivierungscode")
+                    } footer: {
+                        Text("Den Code bekommst du von einem Admin (Verein → App-Konten). Er schützt dein Konto davor, dass jemand anderer mit deiner E-Mail-Adresse ein Passwort festlegt.")
+                    }
                 }
                 Section {
                     SecureField("Passwort", text: $password)
@@ -47,6 +75,11 @@ struct SetPasswordView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Speichern") {
+                        if requiresActivationCode,
+                           !ActivationCode.matches(activationCode, for: user, approvals: approvals, users: users) {
+                            codeRejected = true
+                            return
+                        }
                         let salt = PasswordHashing.makeSalt()
                         user.passwordSalt = salt
                         user.passwordHash = PasswordHashing.hash(password: password, salt: salt)
@@ -54,7 +87,8 @@ struct SetPasswordView: View {
                         dismiss()
                         onComplete(user)
                     }
-                    .disabled(!Validation.passwordMeetsMinimumStrength(password) || password != passwordConfirm)
+                    .disabled(!Validation.passwordMeetsMinimumStrength(password) || password != passwordConfirm
+                              || (requiresActivationCode && ActivationCode.normalized(activationCode).count != 8))
                 }
             }
         }

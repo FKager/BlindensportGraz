@@ -33,8 +33,10 @@ struct RootView: View {
     // very-first-account bootstrap — there's no subset of users that would
     // still answer either question correctly.
     @Query private var users: [User]
-    /// The Benutzerverwaltung roster — decides full vs. schedule-only access.
+    /// The Benutzerverwaltung roster + admin approvals — decide full vs.
+    /// schedule-only access (see `AccessPolicy`).
     @Query private var members: [Member]
+    @Query private var approvals: [AccountApproval]
 
     private let appleSignIn = AppleSignInCoordinator()
 
@@ -43,7 +45,7 @@ struct RootView: View {
             if isResolvingAccount {
                 ProgressView()
             } else if let user = currentUser {
-                if AccessPolicy.hasFullAccess(user, roster: members) {
+                if AccessPolicy.hasFullAccess(user, roster: members, approvals: approvals, users: users) {
                     MainTabView(currentUser: user, onLogout: logOut)
                 } else {
                     RestrictedTabView(currentUser: user, onLogout: logOut)
