@@ -8,7 +8,7 @@ struct HeroIcon: View {
     let systemName: String
     /// Point size at the default text size; scaled with the user's setting.
     var size: Double = 56
-    var style: AnyShapeStyle = AnyShapeStyle(Theme.brandGradient)
+    var style: AnyShapeStyle = AnyShapeStyle(Theme.brandInk)
 
     @ScaledMetric(relativeTo: .largeTitle) private var scale = 1.0
 

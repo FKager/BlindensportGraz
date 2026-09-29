@@ -33,7 +33,7 @@ struct AccountView: View {
                     HStack(spacing: Theme.Spacing.l) {
                         ZStack {
                             Circle()
-                                .fill(Theme.brandGradient)
+                                .fill(Theme.brandFill)
                             Text(user.displayName.prefix(1).uppercased())
                                 .font(.title)
                                 .bold()

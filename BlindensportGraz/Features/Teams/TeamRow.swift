@@ -9,7 +9,7 @@ struct TeamRow: View {
         HStack(spacing: Theme.Spacing.m) {
             ZStack {
                 Circle()
-                    .fill(Theme.brandGradient)
+                    .fill(Theme.brandFill)
                 Text(team.name.prefix(1).uppercased())
                     .font(.title2)
                     .bold()

@@ -57,9 +57,18 @@ enum Theme {
         static let teams = Color(.teamsAccent)
     }
 
-    /// Brand gradient for avatars and hero icons.
-    static let brandGradient = LinearGradient(colors: [.blue, .purple],
-                                              startPoint: .topLeading, endPoint: .bottomTrailing)
+    /// Brand gradient (blue → purple) as a FILL behind white text — the
+    /// Team/Account avatar initials. Dark enough in every mode for white
+    /// text at ≥ 4.8:1 (7:1 with Increase Contrast); the system blue/purple
+    /// it replaces was 4.0:1 (3.5:1 in dark mode).
+    static let brandFill = LinearGradient(colors: [Color(.brandFillStart), Color(.brandFillEnd)],
+                                          startPoint: .topLeading, endPoint: .bottomTrailing)
+
+    /// Brand gradient as INK on the page background — hero icons. Dark in
+    /// light mode, light in dark mode, so the whole gradient stays at
+    /// ≥ 4.5:1 against the background (≈ 7:1 with Increase Contrast).
+    static let brandInk = LinearGradient(colors: [Color(.brandInkStart), Color(.brandInkEnd)],
+                                         startPoint: .topLeading, endPoint: .bottomTrailing)
 
     /// Fill behind an untinted card. `.quaternary` follows the system fill
     /// hierarchy in both colour schemes.
