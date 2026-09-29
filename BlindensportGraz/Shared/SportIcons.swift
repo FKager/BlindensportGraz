@@ -27,20 +27,25 @@ enum SportIcon {
         }
     }
 
-    /// Accent color paired with each sport's icon, echoing the tinted-circle
-    /// style already used by StatCard/EventRow elsewhere in the app.
+    /// Accent color paired with each sport's icon, drawn on a 15% tint of
+    /// itself (`SportGlyph`). Asset-catalog colours (`Sport*` colorsets) with
+    /// dark and Increase Contrast variants: each glyph reaches at least 4.6:1
+    /// against its tinted circle on list and dashboard backgrounds (6:1 with
+    /// Increase Contrast). Hues match the original system colours so sports
+    /// stay recognisable; only lightness was adjusted (the system colours
+    /// were 1.3–4.1:1 in light mode).
     static func color(for sport: String) -> Color {
         switch Sport.normalize(sport) {
-        case .torball: return .orange
-        case .goalball: return .green
-        case .blindenfussball: return .mint
-        case .showdown: return .purple
-        case .judo: return .red
-        case .leichtathletik: return .yellow
-        case .schwimmen: return .cyan
-        case .ski: return .indigo
-        case .radfahren: return .pink
-        case .other: return .blue
+        case .torball: Color(.sportTorball)
+        case .goalball: Color(.sportGoalball)
+        case .blindenfussball: Color(.sportBlindenfussball)
+        case .showdown: Color(.sportShowdown)
+        case .judo: Color(.sportJudo)
+        case .leichtathletik: Color(.sportLeichtathletik)
+        case .schwimmen: Color(.sportSchwimmen)
+        case .ski: Color(.sportSki)
+        case .radfahren: Color(.sportRadfahren)
+        case .other: Color(.sportOther)
         }
     }
 
