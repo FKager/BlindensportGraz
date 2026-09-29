@@ -3195,3 +3195,82 @@
 | 22:18 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_testflight-setup.md | 1→4 lines | ~682 |
 | 22:18 | Shipped TestFlight v0.1.15 (build 214): fixed missing Share Extension App Store provisioning profile in ios-build-deploy.yml, tagged+pushed, CI archive/export/upload succeeded, assigned to Internal group with de-DE What-to-Test notes | .github/workflows/ios-build-deploy.yml, App Store Connect | done | ~2500 |
 | 22:18 | Session end: 53 writes across 26 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 31 reads | ~99336 tok |
+| 22:18 | Session end: 53 writes across 26 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 31 reads | ~99336 tok |
+| 22:19 | Session end: 53 writes across 26 files (SportIcons.swift, Auth.swift, Package.swift, index.html, records.html) | 31 reads | ~99336 tok |
+
+## Session: 2026-09-29 10:28
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:32 | Code analysis + SwiftUI best-practices + directory-structure review (report only, no code changes) | BlindensportGraz/*, project.yml | findings reported in chat | ~45k |
+| 10:37 | Edited BlindensportGrazTests/DesignatedRootTests.swift | 2→4 lines | ~85 |
+| 10:38 | Excluded CLAUDE.md from app bundle; reorganized 130 app files into App/Models/Services/Sync/Features/Shared/Resources folders; updated project.yml, DesignatedRootTests, anatomy | project.yml, BlindensportGraz/**, DesignatedRootTests.swift | xcodegen + build-for-testing OK | ~30k |
+| 10:38 | Edited BlindensportGraz/CLAUDE.md | modified feature() | ~292 |
+| 10:38 | Session end: 2 writes across 2 files (DesignatedRootTests.swift, CLAUDE.md) | 1 reads | ~533 tok |
+| 10:42 | Committed feature-folder reorg (ecf5594); split 15 multi-type view files into 60 one-type files, fixed stale filename refs, updated CLAUDE.md/anatomy | BlindensportGraz/Features/**, App/, Shared/ | checksum-verified, xcodegen + build-for-testing OK | ~35k |
+| 10:42 | Session end: 2 writes across 2 files (DesignatedRootTests.swift, CLAUDE.md) | 1 reads | ~533 tok |
+| 10:45 | Created BlindensportGraz/App/AppRoute.swift | — | ~882 |
+| 10:46 | Value-based navigation (AppRoute + navigationDestination, 26 links converted) and Tab API in MainTabView | App/AppRoute.swift, App/MainTabView.swift, 9 list/hub views, VereinSplitView | build-for-testing OK, uncommitted | ~25k |
+| 10:46 | Session end: 3 writes across 3 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift) | 1 reads | ~1478 tok |
+| 10:48 | Pushed 3 commits (ecf5594, 7b7ac36, 0d84fe0); iOS Device Deploy run 36545007507 succeeded | — | deployed to iPhone | ~3k |
+| 10:48 | Session end: 3 writes across 3 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift) | 1 reads | ~1478 tok |
+| 10:57 | Swift 6 migration (Swift 6 mode, MainActor default + approachable concurrency for app; nonisolated model enums/extensions; @MainActor tests; GCD/sleep(nanoseconds)/MainActor.run removed; @concurrent invitation import) | project.yml + ~45 files | clean build-for-testing 0 errors 0 warnings, uncommitted | ~60k |
+| 10:57 | Session end: 3 writes across 3 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift) | 1 reads | ~1478 tok |
+| 11:16 | TestFlight workflow → macos-26/Xcode 26.6; committed 4856133 (Swift 6) + 5dcd4f0 (workflow); pushed; device deploy 36547747387 OK, hosted build 36547747295 OK on Xcode 26.6 | .github/workflows/ios-build-deploy.yml | deployed | ~8k |
+| 11:16 | Session end: 3 writes across 3 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift) | 1 reads | ~1478 tok |
+| 11:26 | Created BlindensportGraz/Features/Attendance/AttendanceRow.swift | — | ~483 |
+| 11:26 | Created BlindensportGraz/Features/Attendance/PraeAmountRow.swift | — | ~758 |
+| 11:26 | Edited BlindensportGraz/Features/Attendance/PraeAmountRow.swift | modified onChange() | ~54 |
+| 11:27 | Created BlindensportGraz/Features/Teams/MembershipRoleMenu.swift | — | ~388 |
+| 11:27 | Created BlindensportGraz/Features/Account/UserRolePicker.swift | — | ~437 |
+| 11:28 | actions/checkout + upload-artifact v4→v7 (Node 24; runner 2.337.0 ok). Replaced model-row Binding(get:set:) with row views (AttendanceRow, PraeAmountRow, MembershipRoleMenu/Capsule, UserRolePicker, WelcomeEnabledToggle) using local-state + onChange | .github/workflows/*, Features/** | build-for-testing 0/0, uncommitted | ~30k |
+| 11:28 | Session end: 8 writes across 7 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~3749 tok |
+| 11:34 | Committed 4ae96eb (actions v7) + 5efe7cc (row views); deploy 36549656372 OK, hosted build 36549656541 checked | — | deployed | ~4k |
+| 11:34 | Session end: 8 writes across 7 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~3749 tok |
+| 11:39 | Created BlindensportGraz/Shared/Theme.swift | — | ~801 |
+| 11:41 | Design system: Theme tokens (spacing/radius/palette/accent/gradient), WCAG-AA asset colours, TagLabel/CountBadge/HeroIcon, 50 colour + ~60 spacing literals replaced, Dynamic Type widths/glyphs | Shared/*, Resources/Assets.xcassets, ~45 views | build-for-testing 0/0, uncommitted | ~70k |
+| 11:41 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~4607 tok |
+| 11:46 | Committed a38eab0 (design system); deploy 36550950005 failed at launch (iPhone locked, install OK); redeploy 36551225464 via workflow_dispatch succeeded; hosted build 36550950289 OK | — | deployed | ~5k |
+| 11:46 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~4607 tok |
+| 11:48 | Area accents → contrast-safe asset colorsets (≥4.6:1 on tinted tiles, all modes) | Shared/Theme.swift, Resources/Assets.xcassets | build 0/0, uncommitted | ~6k |
+| 11:48 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~4607 tok |
+| 11:51 | Committed 86fac2e (accents); deploy 36551577373 OK; hosted build 36551577355 checked | — | deployed | ~3k |
+| 11:51 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~4607 tok |
+| 11:53 | Sport icon colours → 10 contrast-safe Sport* asset colorsets (≥4.6:1 light/dark, ≥6:1 HC, hues kept) | Shared/SportIcons.swift, Resources/Assets.xcassets | build 0/0, uncommitted | ~6k |
+| 11:53 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~4607 tok |
+| 11:56 | Committed bfa1ff4 (sport colours); deploy 36552235810 OK; hosted build 36552235881 checked | — | deployed | ~3k |
+| 11:57 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~4607 tok |
+| 12:04 | Brand gradient → brandFill (avatars, white text ≥4.8) + brandInk (hero icons, ≥4.5 on bg) asset colorsets | Shared/Theme.swift, HeroIcon, TeamRow, AccountView, Assets | build 0/0, uncommitted | ~6k |
+| 12:04 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~4607 tok |
+| 12:09 | Committed 89845c9 (brand gradient); deploy 36553463991 OK; hosted build 36553464131 checked | — | deployed | ~3k |
+| 12:09 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 1 reads | ~4607 tok |
+| 12:15 | Colour completion (Theme.Fill, global AccentColor, palette re-solved vs self-tint) + static a11y audit fixes (headings, photo labels, 44pt targets, PRAE non-colour cue, VoiceOver announcements, widget combine/caption) | Theme, Assets, project.yml, ~12 views, widget | build 0/0, uncommitted | ~45k |
+| 12:16 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 2 reads | ~5727 tok |
+| 12:19 | Committed a7adaa8 (colour completion + a11y fixes); deploy 36554610605 OK; hosted build 36554610681 checked | — | deployed | ~3k |
+| 12:19 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 2 reads | ~5727 tok |
+| 12:20 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 2 reads | ~5727 tok |
+| 12:29 | Fixed share extension not opening app (NSExtensionContext.open unsupported): responder-chain open + App Group inbox pickup in MainTabView + persistent spoken messages | ShareViewController, ShareExtensionBridge, MainTabView | build 0/0, uncommitted | ~25k |
+| 12:29 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 3 reads | ~7066 tok |
+| 12:55 | Committed 6745f80 (share extension fix); deploy 36558376217 OK; hosted build 36558376248 checked; awaiting user on-device share test | — | deployed | ~3k |
+| 12:56 | Session end: 9 writes across 8 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 3 reads | ~7066 tok |
+| 12:58 | Created BlindensportGraz/Features/Tournaments/WordDocTextExtractor.swift | — | ~4124 |
+| 13:00 | .doc (Word 97–2003) support for tournament invitations: WordDocTextExtractor (CFB+FIB+piece table), importer/picker/error/UI text, 6 unit tests + 4 fixtures; validated on macOS vs textutil (4/4 pass) | Features/Tournaments/*, BlindensportGrazTests | build 0/0, uncommitted | ~35k |
+| 13:00 | Session end: 10 writes across 9 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 3 reads | ~11485 tok |
+| 13:02 | Committed e738be4 (.doc support); deploy 36559120081 OK; hosted build 36559120090 checked | — | deployed | ~3k |
+| 13:02 | Session end: 10 writes across 9 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 3 reads | ~11485 tok |
+| 13:06 | Created BlindensportGraz/Features/Tournaments/InvitationDateSelector.swift | — | ~1935 |
+| 13:08 | Fixed wrong tournament date from multi-date invitations: InvitationDateSelector (context scoring), heuristic + AI cross-check, AI guides; 12 tests; 7+5 scenarios pass on macOS | Features/Tournaments/*, tests | build 0/0, uncommitted | ~30k |
+| 13:08 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 3 reads | ~13558 tok |
+| 13:12 | Arrival day (Anreise/Ankunft) → tournament start date (≤7 days before, not a deadline line), AI guides + cross-check; 17 tests executed on macOS via shim, all pass | InvitationDateSelector, TournamentInvitationImport, tests | build 0/0, uncommitted | ~15k |
+| 13:12 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 3 reads | ~13558 tok |
+| 13:16 | Committed 64f3627 (invitation dates + arrival start); deploy 36560361797 OK; hosted build 36560361785 checked | — | deployed | ~3k |
+| 13:16 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 3 reads | ~13558 tok |
+| 13:26 | Fixed regression (start=today): date verification instead of shape filter, extra range/year-less patterns, document-year inference, 'kein Datum gefunden' warning in AddTournamentView; 20/20 formats, 18/18 tests on macOS | InvitationDateSelector, TournamentInvitationImport, AddTournamentView, tests | build 0/0, uncommitted | ~30k |
+| 13:26 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 4 reads | ~15371 tok |
+| 13:28 | .doc reader now reads all stories (headers/footers, text boxes, notes) — likely cause of 'start = today' for user's dd.mm.yyyy doc; fixtures still pass; build 0/0; uncommitted (together with regression fix) | WordDocTextExtractor | ~10k |
+| 13:28 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 4 reads | ~15371 tok |
+| 13:30 | Committed 9b80c9a (all .doc stories + date verification + no-date warning); deploy 36562030839 OK; hosted build 36562031042 checked; awaiting user re-test | — | deployed | ~3k |
+| 13:30 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 4 reads | ~15371 tok |
+| 13:32 | User confirmed on device: .doc invitation import now picks the right dates (share sheet + .doc + dates + arrival start all working) | — | confirmed | ~2k |
+| 13:32 | SESSION SUMMARY 2026-09-29: code review; feature-folder reorg; one-type-per-file split; AppRoute value navigation + Tab API; Swift 6 + MainActor default; TestFlight → macos-26; actions v7; @State row views; design system + WCAG palette/fills/accents/sport/brand colours; a11y audit fixes; share extension fix (NSExtensionContext.open unsupported → responder chain + inbox); .doc support (CFB/FIB/all stories); invitation date selection (context scoring, arrival=start, no silent today). All deployed; last commit 9b80c9a. | many | done | — |
+| 13:33 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 4 reads | ~15371 tok |
