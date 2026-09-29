@@ -95,7 +95,7 @@ struct SportGlyph: View {
 /// hand-authored SVG path uses, just expressed as a native SwiftUI `Shape`
 /// instead of an imported vector asset (no asset-catalog/SVG-import step
 /// needed, and it's guaranteed to compile/render since it's plain code).
-private struct SportPictogram: Shape {
+private nonisolated struct SportPictogram: Shape {
     let sport: String
 
     func path(in rect: CGRect) -> Path {

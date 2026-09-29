@@ -20,7 +20,7 @@ import Foundation
 /// with a graceful, data-preserving fallback for anything else. See
 /// `SportIcon.swift`, refactored in this same phase to use this shared
 /// enum instead of its own private, duplicated normalize+switch logic.
-enum Sport: RawRepresentable, Hashable {
+nonisolated enum Sport: RawRepresentable, Hashable {
     case torball
     case goalball
     case blindenfussball

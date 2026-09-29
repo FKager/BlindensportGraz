@@ -72,7 +72,7 @@ final class MemberChangeRequest {
     }
 }
 
-extension MemberChangeRequest {
+nonisolated extension MemberChangeRequest {
     static let pendingStatus = "pending"
     static let approvedStatus = "approved"
     static let rejectedStatus = "rejected"

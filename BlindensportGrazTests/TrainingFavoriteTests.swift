@@ -2,6 +2,7 @@ import XCTest
 import SwiftData
 @testable import BlindensportGraz
 
+@MainActor
 final class TrainingFavoriteTests: XCTestCase {
 
     private func makeContainer() throws -> ModelContainer {

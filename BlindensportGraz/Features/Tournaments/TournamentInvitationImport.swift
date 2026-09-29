@@ -12,7 +12,7 @@ import FoundationModels
 /// `@State` on creation — nothing here is ever saved without the user
 /// reviewing/editing the normal form first, same as every other manually
 /// created Tournament.
-struct TournamentDraft: Identifiable {
+nonisolated struct TournamentDraft: Identifiable {
     let id = UUID()
     var title: String = ""
     var sport: String = "Torball"
@@ -27,7 +27,7 @@ struct TournamentDraft: Identifiable {
     var notes: String = ""
 }
 
-enum TournamentInvitationError: LocalizedError {
+nonisolated enum TournamentInvitationError: LocalizedError {
     case unsupportedFileType
     case couldNotReadFile
     case emptyDocument
@@ -66,13 +66,17 @@ enum TournamentInvitationError: LocalizedError {
 ///    starting point: `AddTournamentView` opens with every field still
 ///    editable, nothing is saved until the user reviews and taps
 ///    "Speichern", same as manually creating a tournament.
-enum TournamentInvitationImporter {
+nonisolated enum TournamentInvitationImporter {
     static let supportedContentTypes: [UTType] = [
         .plainText,
         .pdf,
         UTType(filenameExtension: "docx") ?? .data
     ]
 
+    /// `@concurrent`: PDF/.docx text extraction is synchronous and can be
+    /// slow for large files, so it runs off the main actor (the app target
+    /// defaults to MainActor isolation).
+    @concurrent
     static func draft(fromFileAt url: URL) async throws -> TournamentDraft {
         let didAccess = url.startAccessingSecurityScopedResource()
         defer { if didAccess { url.stopAccessingSecurityScopedResource() } }

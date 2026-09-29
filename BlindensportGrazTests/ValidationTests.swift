@@ -6,6 +6,7 @@ import XCTest
 /// these tests only verify the pure functions' own correctness, not any UI
 /// wiring (see MemberImportExportTests for confirmation the import path
 /// keeps accepting malformed data unchanged).
+@MainActor
 final class ValidationTests: XCTestCase {
 
     // MARK: - isPlausibleEmail

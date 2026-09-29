@@ -10,6 +10,7 @@ import SwiftData
 /// 2026-07-19/2026-08-02 entries). Each test below maps to a real failure
 /// mode from that history or a documented edge case in the current
 /// firstName+lastName+email match, not a generic happy-path check.
+@MainActor
 final class DesignatedRootTests: XCTestCase {
 
     // No ModelContainer needed for these tests — elevateIfDesignatedRoot()

@@ -16,7 +16,7 @@ import Foundation
 /// (not coach/assistant) everywhere the app branches on that distinction —
 /// same fail-safe default the removed `!isHelfer` bug already should have
 /// had.
-enum MembershipRole: RawRepresentable, Hashable {
+nonisolated enum MembershipRole: RawRepresentable, Hashable {
     case player
     case coach
     case assistant
@@ -74,7 +74,7 @@ enum MembershipRole: RawRepresentable, Hashable {
     }
 }
 
-extension MembershipRole: Codable {
+nonisolated extension MembershipRole: Codable {
     init(from decoder: Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)
         self = MembershipRole.normalize(raw)

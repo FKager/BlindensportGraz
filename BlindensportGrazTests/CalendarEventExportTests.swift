@@ -1,6 +1,7 @@
 import XCTest
 @testable import BlindensportGraz
 
+@MainActor
 final class CalendarEventExportTests: XCTestCase {
 
     private func makeDate(_ year: Int, _ month: Int, _ day: Int, _ hour: Int, _ minute: Int) -> Date {

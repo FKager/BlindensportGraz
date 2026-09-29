@@ -98,7 +98,7 @@ final class CloudKitSync {
     /// to decide whether to clear it or leave it for `drainOutbox`.
     @discardableResult
     func performWithRetry(_ description: String, operation: () async throws -> Void) async -> Bool {
-        let backoffs: [UInt64] = [500_000_000, 1_000_000_000, 2_000_000_000] // 0.5s, 1s, 2s
+        let backoffs: [Duration] = [.milliseconds(500), .seconds(1), .seconds(2)]
         var lastError: Error?
         for attempt in 0...backoffs.count {
             do {
@@ -111,7 +111,7 @@ final class CloudKitSync {
             } catch {
                 lastError = error
                 guard attempt < backoffs.count else { break }
-                try? await Task.sleep(nanoseconds: backoffs[attempt])
+                try? await Task.sleep(for: backoffs[attempt])
             }
         }
         logger.error("\(description, privacy: .public) failed after \(backoffs.count + 1) attempts: \(String(describing: lastError), privacy: .public)")

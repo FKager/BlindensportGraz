@@ -107,16 +107,12 @@ struct TournamentInvitationImportView: View {
             do {
                 let extracted = try await TournamentInvitationImporter.draft(fromFileAt: url)
                 if url == sharedFileURL { ShareExtensionBridge.cleanup(url) }
-                await MainActor.run {
-                    isProcessing = false
-                    draft = extracted
-                }
+                isProcessing = false
+                draft = extracted
             } catch {
                 if url == sharedFileURL { ShareExtensionBridge.cleanup(url) }
-                await MainActor.run {
-                    isProcessing = false
-                    errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
-                }
+                isProcessing = false
+                errorMessage = (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
             }
         }
     }

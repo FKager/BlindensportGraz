@@ -9,8 +9,8 @@ import SwiftData
 @MainActor
 final class WidgetBridgeTests: XCTestCase {
 
-    override func setUp() { super.setUp(); WidgetBridge.write(nil) }
-    override func tearDown() { WidgetBridge.write(nil); super.tearDown() }
+    override func setUp() async throws { try await super.setUp(); WidgetBridge.write(nil) }
+    override func tearDown() async throws { WidgetBridge.write(nil); try await super.tearDown() }
 
     private func makeContext() throws -> ModelContext {
         let config = ModelConfiguration(schema: AppModelSchema.schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none)

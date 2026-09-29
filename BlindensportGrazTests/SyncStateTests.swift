@@ -9,11 +9,11 @@ import XCTest
 @MainActor
 final class SyncStateTests: XCTestCase {
 
-    override func tearDown() {
+    override func tearDown() async throws {
         // SyncState.shared is a singleton — leave it in a clean, idle-ish
         // state for whichever test runs next.
         SyncState.shared.markSynced()
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func testMarkSyncingSetsStatusToSyncing() {

@@ -34,7 +34,7 @@ final class Team {
     }
 }
 
-extension Team {
+nonisolated extension Team {
     /// The club's standing teams, expected to always exist — recreated
     /// automatically by `CloudKitSync.ensureDefaultTeams` on every launch if
     /// missing (e.g. very first launch ever, or a local store rebuilt from a

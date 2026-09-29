@@ -10,7 +10,7 @@ import Observation
 protocol ReachabilitySource {
     /// Starts observing reachability, calling `onChange` with the current
     /// state immediately and again on every subsequent change.
-    func start(onChange: @escaping (Bool) -> Void)
+    func start(onChange: @escaping @Sendable (Bool) -> Void)
 }
 
 /// Real implementation, backed by `NWPathMonitor`.
@@ -18,7 +18,7 @@ final class NWPathReachabilitySource: ReachabilitySource {
     private let monitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "it.a11y.BlindensportGraz.NWPathReachabilitySource")
 
-    func start(onChange: @escaping (Bool) -> Void) {
+    func start(onChange: @escaping @Sendable (Bool) -> Void) {
         monitor.pathUpdateHandler = { path in
             onChange(path.status == .satisfied)
         }

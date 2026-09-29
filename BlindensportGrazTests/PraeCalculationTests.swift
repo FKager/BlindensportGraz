@@ -3,6 +3,7 @@ import SwiftData
 import ZIPFoundation
 @testable import BlindensportGraz
 
+@MainActor
 final class PraeCalculationTests: XCTestCase {
 
     private func makeContainer() throws -> ModelContainer {

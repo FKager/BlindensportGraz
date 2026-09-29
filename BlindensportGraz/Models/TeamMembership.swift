@@ -40,7 +40,7 @@ final class TeamMembership {
     }
 }
 
-extension TeamMembership {
+nonisolated extension TeamMembership {
     var displayName: String {
         user?.displayName ?? member?.fullName ?? "?"
     }
@@ -63,7 +63,7 @@ extension TeamMembership {
     }
 }
 
-extension Sequence where Element == TeamMembership {
+nonisolated extension Sequence where Element == TeamMembership {
     /// Standard sort order for every member list in the app: lastName, then
     /// firstName as a tiebreaker — matches how User/Member rosters are
     /// already sorted (RootView.LoginView, MembersListView).

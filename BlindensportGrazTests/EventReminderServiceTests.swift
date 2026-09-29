@@ -23,6 +23,7 @@ final class FakeNotificationScheduling: NotificationScheduling {
     }
 }
 
+@MainActor
 final class EventReminderServiceTests: XCTestCase {
 
     private let referenceNow = ISO8601DateFormatter().date(from: "2026-08-22T10:00:00Z")!

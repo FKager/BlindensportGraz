@@ -17,6 +17,7 @@ import SwiftData
 /// on internally, so this still exercises the real failure-handling logic.
 struct StubError: Error {}
 
+@MainActor
 final class PersistenceServiceTests: XCTestCase {
 
     private func makeContainer() throws -> ModelContainer {
@@ -29,16 +30,14 @@ final class PersistenceServiceTests: XCTestCase {
         return try ModelContainer(for: schema, configurations: [config])
     }
 
-    @MainActor
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         ServiceFailureSignal.shared.clear()
     }
 
-    @MainActor
-    override func tearDown() {
+    override func tearDown() async throws {
         ServiceFailureSignal.shared.clear()
-        super.tearDown()
+        try await super.tearDown()
     }
 
     @MainActor

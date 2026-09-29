@@ -10,6 +10,7 @@ import CloudKit
 /// and `CKAsset` themselves need no container/entitlement — they're plain
 /// local value objects — so encoding into one, staging a real temp-file
 /// asset, and decoding back out is safe to test directly.
+@MainActor
 final class ExpenseReceiptCloudKitRoundTripTests: XCTestCase {
 
     /// Mirrors `pushExpenseReceipt`'s field assignments exactly (minus the

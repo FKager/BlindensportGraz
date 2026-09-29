@@ -1,5 +1,6 @@
 import UIKit
 import UserNotifications
+import os
 
 /// Registers this device for push notifications so CloudKit's
 /// `CKQuerySubscription`s (see `CloudKitSync.ensureTrainingTournamentSubscriptions`)
@@ -24,13 +25,15 @@ enum PushNotifications {
     /// the permission prompt (only shown once by the OS) and the
     /// registration call are idempotent no-ops on subsequent calls.
     static func requestAuthorizationIfNeeded() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, error in
-            if let error {
-                print("PushNotifications authorization request failed: \(error)")
+        Task {
+            do {
+                _ = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+            } catch {
+                logger.error("Push authorization request failed: \(String(describing: error), privacy: .public)")
             }
-            DispatchQueue.main.async {
-                UIApplication.shared.registerForRemoteNotifications()
-            }
+            UIApplication.shared.registerForRemoteNotifications()
         }
     }
+
+    private static let logger = Logger(subsystem: "it.a11y.BlindensportGraz", category: "PushNotifications")
 }

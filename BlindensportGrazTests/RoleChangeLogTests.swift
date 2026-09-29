@@ -10,6 +10,7 @@ import SwiftData
 /// TrainingImportExportTests are excluded from the baseline). What's under
 /// test here is the same local insert + old/new role capture logic every
 /// call site performs before handing off to CloudKitSync.
+@MainActor
 final class RoleChangeLogTests: XCTestCase {
 
     private func makeContainer() throws -> ModelContainer {

@@ -2,31 +2,26 @@ import XCTest
 import SwiftData
 @testable import BlindensportGraz
 
+@MainActor
 final class TeilnehmerlisteExportTests: XCTestCase {
 
-    /// Runs `body` on a background queue and fails (instead of hanging the whole
-    /// test run forever) if it doesn't return within `timeout` seconds — this is
-    /// the whole point: a genuine infinite loop in the export path should show up
-    /// here as a clear test failure, not as this test process hanging too.
-    private func runWithTimeout(_ timeout: TimeInterval, _ label: String, _ body: @escaping () throws -> Void) {
-        let sem = DispatchSemaphore(value: 0)
-        var caught: Error?
-        let start = Date()
-        DispatchQueue.global().async {
-            do { try body() } catch { caught = error }
-            sem.signal()
-        }
-        let result = sem.wait(timeout: .now() + timeout)
-        let elapsed = Date().timeIntervalSince(start)
-        if result == .timedOut {
-            XCTFail("\(label): TIMED OUT after \(timeout)s — likely infinite loop/hang")
+    /// Runs `body` and fails if it takes longer than `timeout` seconds — a
+    /// guard against a pathological slowdown in the export path. `body` runs
+    /// on the main actor: it touches SwiftData model objects, which must stay
+    /// on their context's actor (the earlier background-queue version was a
+    /// data race that Swift 6 mode rejects). The trade-off: a true infinite
+    /// loop now hangs the test instead of failing after `timeout`.
+    private func runWithTimeout(_ timeout: TimeInterval, _ label: String, _ body: () throws -> Void) {
+        let clock = ContinuousClock()
+        let start = clock.now
+        do {
+            try body()
+        } catch {
+            XCTFail("\(label): threw \(error)")
             return
         }
-        if let caught {
-            XCTFail("\(label): threw \(caught)")
-            return
-        }
-        print("\(label): completed in \(String(format: "%.3f", elapsed))s")
+        let elapsed = clock.now - start
+        XCTAssertLessThan(elapsed, .seconds(timeout), "\(label): took \(elapsed), limit \(timeout)s — likely a hang/regression")
     }
 
     private func makeContainer() throws -> ModelContainer {

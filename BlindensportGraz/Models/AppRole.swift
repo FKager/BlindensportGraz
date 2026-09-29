@@ -15,7 +15,7 @@ import Foundation
 /// this migration). `.other` is deliberately treated as non-admin/non-coach
 /// everywhere access is gated — an unrecognized role must never be
 /// interpreted as elevated access.
-enum AppRole: RawRepresentable, Hashable {
+nonisolated enum AppRole: RawRepresentable, Hashable {
     case member
     case coach
     case admin
@@ -62,7 +62,7 @@ enum AppRole: RawRepresentable, Hashable {
     }
 }
 
-extension AppRole: Codable {
+nonisolated extension AppRole: Codable {
     init(from decoder: Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)
         self = AppRole.normalize(raw)

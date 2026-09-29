@@ -9,7 +9,7 @@ final class FakeReachabilitySource: ReachabilitySource {
     private var onChange: ((Bool) -> Void)?
     private(set) var startCallCount = 0
 
-    func start(onChange: @escaping (Bool) -> Void) {
+    func start(onChange: @escaping @Sendable (Bool) -> Void) {
         startCallCount += 1
         self.onChange = onChange
         onChange(true) // matches NWPathMonitor's real behavior: reports current state immediately

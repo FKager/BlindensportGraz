@@ -5,7 +5,7 @@ import SwiftData
 /// read-only `ModelContainer` on the same store — currently the App Shortcuts
 /// intents in `AppShortcuts.swift`, later a WidgetKit timeline provider —
 /// stay in lockstep instead of hand-maintaining parallel model lists.
-enum AppModelSchema {
+nonisolated enum AppModelSchema {
     static let schema = Schema([
         User.self,
         SportEvent.self,

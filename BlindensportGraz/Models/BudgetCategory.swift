@@ -8,7 +8,7 @@ import Foundation
 ///
 /// `.other` retains the original string exactly, same "never silently drop
 /// or coerce unrecognized data" rule `AppRole.normalize` documents.
-enum BudgetCategory: RawRepresentable, Hashable {
+nonisolated enum BudgetCategory: RawRepresentable, Hashable {
     /// Fixed annual subsidy (e.g. city/state funding) — the amount varies
     /// year to year, but it's still just a regular ledger entry, not a
     /// special single-value-per-year field (user confirmed one entry per
@@ -80,7 +80,7 @@ enum BudgetCategory: RawRepresentable, Hashable {
     }
 }
 
-extension BudgetCategory: Codable {
+nonisolated extension BudgetCategory: Codable {
     init(from decoder: Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)
         self = BudgetCategory.normalize(raw)

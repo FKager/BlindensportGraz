@@ -69,7 +69,7 @@ final class ShareViewController: UIViewController {
         attachment.loadFileRepresentation(forTypeIdentifier: dataType) { [weak self] url, error in
             guard let self else { return }
             guard let url, error == nil else {
-                DispatchQueue.main.async {
+                Task { @MainActor in
                     self.finish(errorMessage: "Datei konnte nicht gelesen werden.")
                 }
                 return
@@ -79,7 +79,7 @@ final class ShareViewController: UIViewController {
             // returns) — copy it into the App Group container synchronously
             // before doing anything else.
             let deepLink = ShareExtensionBridge.store(fileAt: url)
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 guard let deepLink else {
                     self.finish(errorMessage: "Datei konnte nicht übergeben werden.")
                     return
@@ -96,7 +96,7 @@ final class ShareViewController: UIViewController {
     /// `UIApplication` instance to call `.open(_:)` on directly).
     private func openHostApp(_ url: URL) {
         extensionContext?.open(url) { [weak self] _ in
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self?.extensionContext?.completeRequest(returningItems: nil)
             }
         }
@@ -105,7 +105,8 @@ final class ShareViewController: UIViewController {
     private func finish(errorMessage: String) {
         statusLabel.text = errorMessage
         activityIndicator.stopAnimating()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(1.5))
             self?.extensionContext?.completeRequest(returningItems: nil)
         }
     }

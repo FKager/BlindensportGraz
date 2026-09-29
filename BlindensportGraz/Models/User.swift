@@ -68,7 +68,7 @@ final class User {
     }
 }
 
-extension User {
+nonisolated extension User {
     /// Combines firstName/lastName for display; not stored, so it can't be
     /// used as a @Query sort key path — sort by lastName/firstName instead.
     /// Mirrors Member.fullName's pattern so existing display call sites

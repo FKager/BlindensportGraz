@@ -116,7 +116,7 @@ extension CloudKitSync {
         // one-shot async throwing call, the exact shape `performWithRetry`
         // was built for.
         await performWithRetry("subscription save for \(subscriptionID)") {
-            try await self.publicDB.save(subscription)
+            _ = try await self.publicDB.save(subscription)
         }
     }
 }

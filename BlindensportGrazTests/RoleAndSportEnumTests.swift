@@ -14,6 +14,7 @@ import SwiftData
 /// and crashes unsigned test runs — see cerebrum.md's 2026-08-22 "never
 /// call CloudKitSync from new tests" entry).
 @available(iOS 26, *)
+@MainActor
 final class RoleAndSportEnumTests: XCTestCase {
 
     private func makeContainer() throws -> ModelContainer {

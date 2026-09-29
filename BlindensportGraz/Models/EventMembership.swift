@@ -33,7 +33,7 @@ final class EventMembership {
     }
 }
 
-extension EventMembership {
+nonisolated extension EventMembership {
     // Same user/member fallback chain as TeamMembership.displayName.
     var displayName: String {
         user?.displayName ?? member?.fullName ?? "?"
@@ -43,7 +43,7 @@ extension EventMembership {
     var firstName: String { user?.firstName ?? member?.firstName ?? "" }
 }
 
-extension Sequence where Element == EventMembership {
+nonisolated extension Sequence where Element == EventMembership {
     // Same sort convention as TeamMembership's identically-named helper.
     func sortedByLastName() -> [EventMembership] {
         sorted { ($0.lastName, $0.firstName) < ($1.lastName, $1.firstName) }

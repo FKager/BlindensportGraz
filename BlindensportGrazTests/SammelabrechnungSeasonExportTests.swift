@@ -5,6 +5,7 @@ import ZIPFoundation
 
 /// Season-rollup orchestration tests — reuses SammelabrechnungExportTests'
 /// container/fixture patterns (phase-16 spec).
+@MainActor
 final class SammelabrechnungSeasonExportTests: XCTestCase {
 
     private func makeContainer() throws -> ModelContainer {

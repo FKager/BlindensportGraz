@@ -7,6 +7,7 @@ import SwiftData
 /// view code built on top of them. See .wolf/cerebrum.md and the plan this
 /// refactor was built from for the reasoning behind each assertion.
 @available(iOS 26, *)
+@MainActor
 final class InheritanceQueryTests: XCTestCase {
 
     private func makeContainer() throws -> ModelContainer {

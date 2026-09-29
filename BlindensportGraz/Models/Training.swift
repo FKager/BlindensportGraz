@@ -51,7 +51,7 @@ final class Training: SportEvent {
     }
 }
 
-extension Training {
+nonisolated extension Training {
     static let openStatus = "open"
     static let heldStatus = "held"
     static let cancelledStatus = "cancelled"

@@ -8,6 +8,7 @@ import SwiftData
 /// `CKRecord` archive round-trip. Deliberately does NOT touch
 /// `CloudKitSync.shared` or the network (cerebrum's standing rule); the
 /// actual drain against CloudKit stays uncovered like the rest of that class.
+@MainActor
 final class PendingPushTests: XCTestCase {
 
     private func makeContext() throws -> ModelContext {

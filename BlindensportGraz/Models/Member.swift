@@ -94,7 +94,7 @@ final class Member {
     }
 }
 
-extension Member {
+nonisolated extension Member {
     /// Combines firstName/lastName for display and matching; not stored, so it
     /// can't be used as a @Query sort key path — sort by lastName/firstName instead.
     var fullName: String {
@@ -128,7 +128,7 @@ extension Member {
     }
 }
 
-extension Member {
+nonisolated extension Member {
     /// Checks a newly created (or edited) account's email/first+last name against
     /// the local Member roster and updates its `isGrazerVSCMember` flag
     /// accordingly.

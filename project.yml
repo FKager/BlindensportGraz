@@ -7,7 +7,8 @@ options:
   developmentLanguage: de
 settings:
   base:
-    SWIFT_VERSION: "5.0"
+    # Swift 6 language mode: data races are compile-time errors.
+    SWIFT_VERSION: "6.0"
     DEVELOPMENT_TEAM: "5Q57Y9YT8J"
     CODE_SIGN_STYLE: Automatic
     IPHONEOS_DEPLOYMENT_TARGET: "26.0"
@@ -45,6 +46,11 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz
+        # Swift 6.2 "approachable concurrency" for a UI app: code is
+        # @MainActor unless marked `nonisolated`/`@concurrent`, and
+        # nonisolated async functions run on the caller's actor.
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor
+        SWIFT_APPROACHABLE_CONCURRENCY: YES
         GENERATE_INFOPLIST_FILE: YES
         # CFBundleShortVersionString / CFBundleVersion. Local + Debug builds use
         # these as-is; the TestFlight workflow overrides them per run (marketing
@@ -153,6 +159,9 @@ targets:
       - target: BlindensportGraz
     settings:
       base:
+        # No MainActor default here — XCTestCase's initializers are
+        # nonisolated. Test classes that touch app code are `@MainActor`.
+        SWIFT_APPROACHABLE_CONCURRENCY: YES
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: "5Q57Y9YT8J"

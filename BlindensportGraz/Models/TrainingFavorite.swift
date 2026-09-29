@@ -61,7 +61,7 @@ final class TrainingFavorite {
     }
 }
 
-extension TrainingFavorite {
+nonisolated extension TrainingFavorite {
     static let maxCount = 5
 
     /// Called from AddTrainingView's save action every time a training is

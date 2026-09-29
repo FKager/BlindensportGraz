@@ -81,7 +81,7 @@ class SportEvent {
     }
 }
 
-extension SportEvent {
+nonisolated extension SportEvent {
     /// The club's uniqueness rule for anything on the calendar: an event is
     /// identified by its name + Sportart + Zeitpunkt, so the *same* training,
     /// tournament or plain event can never be entered twice. Returns an

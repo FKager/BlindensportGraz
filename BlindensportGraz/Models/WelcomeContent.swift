@@ -26,7 +26,7 @@ final class WelcomeContent {
     }
 }
 
-extension WelcomeContent {
+nonisolated extension WelcomeContent {
     /// Fixed well-known id — the app only ever has one welcome note, shared
     /// by every user, so every device's push/pull targets the exact same
     /// CKRecord instead of each admin device minting its own.

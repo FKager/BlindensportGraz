@@ -8401,6 +8401,39 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-500",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "Swift 6: capture of non-Sendable '(Bool) -> Void' in @Sendable closure (NWPathMonitor.pathUpdateHandler)",
+      "file": "BlindensportGraz/Sync/NetworkMonitor.swift",
+      "root_cause": "ReachabilitySource.start's callback is invoked on NWPathMonitor's background queue but wasn't declared @Sendable",
+      "fix": "onChange is now `@escaping @Sendable (Bool) -> Void` (protocol, real source, test fake)",
+      "tags": [
+        "swift6",
+        "sendable",
+        "concurrency"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-501",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "Swift 6: TeilnehmerlisteExportTests.runWithTimeout ran a SwiftData export on DispatchQueue.global (data race)",
+      "file": "BlindensportGrazTests/TeilnehmerlisteExportTests.swift",
+      "root_cause": "Test helper executed model-touching export code on a background queue while the ModelContext belongs to the main actor",
+      "fix": "Helper now runs body on the main actor and asserts elapsed time with ContinuousClock (true hangs now hang instead of timing out)",
+      "tags": [
+        "swift6",
+        "swiftdata",
+        "data-race",
+        "tests"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
     }
   ]
 }
