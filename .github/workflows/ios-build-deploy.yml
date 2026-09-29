@@ -48,23 +48,23 @@ env:
 jobs:
   build:
     name: Build (unsigned, simulator)
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Select Xcode
-        # macos-15 runners default /Applications/Xcode.app to Xcode 16.4,
-        # which tops out at the iOS 18.5 SDK. This project's SwiftData
-        # @Model class hierarchy (SportEvent/Training/Tournament) needs the
-        # iOS 26 SDK's SwiftData macro to support class inheritance at all
-        # (see .wolf/cerebrum.md's 2026-07-18 entry) — Xcode 16.4's older
-        # macro expands a subclassed @Model into broken/duplicate code
-        # ("redundant conformance...", "required initializer... must be
-        # provided by subclass") instead of a clean compiler error, which is
-        # what actually failed here. Pick the newest installed Xcode 26.x
-        # dynamically rather than hardcoding a patch version, since GitHub
-        # periodically changes which exact 26.x builds ship on this image.
+        # The project is in Swift 6 language mode with Swift 6.2+ build
+        # settings (SWIFT_DEFAULT_ACTOR_ISOLATION, SWIFT_APPROACHABLE_CONCURRENCY,
+        # `@concurrent`), and its SwiftData @Model class hierarchy
+        # (SportEvent/Training/Tournament) needs the iOS 26 SDK's SwiftData
+        # macro for class inheritance (see .wolf/cerebrum.md's 2026-07-18
+        # entry). So: macos-26 image, newest installed Xcode 26.x (26.6 /
+        # Swift 6.3 as of 2026-09-29), picked dynamically rather than
+        # hardcoding a patch version since GitHub periodically changes which
+        # 26.x builds ship on the image. Local builds and the self-hosted
+        # device deploy use Xcode 27 (Swift 6.4) — hosted runners don't offer
+        # it yet; switch the glob once they do.
         run: |
           set -euo pipefail
           XCODE_PATH=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
@@ -97,7 +97,7 @@ jobs:
     name: Archive, sign and upload to TestFlight
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - name: Checkout
         uses: actions/checkout@v4
