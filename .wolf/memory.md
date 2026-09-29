@@ -3274,3 +3274,39 @@
 | 13:32 | User confirmed on device: .doc invitation import now picks the right dates (share sheet + .doc + dates + arrival start all working) | — | confirmed | ~2k |
 | 13:32 | SESSION SUMMARY 2026-09-29: code review; feature-folder reorg; one-type-per-file split; AppRoute value navigation + Tab API; Swift 6 + MainActor default; TestFlight → macos-26; actions v7; @State row views; design system + WCAG palette/fills/accents/sport/brand colours; a11y audit fixes; share extension fix (NSExtensionContext.open unsupported → responder chain + inbox); .doc support (CFB/FIB/all stories); invitation date selection (context scoring, arrival=start, no silent today). All deployed; last commit 9b80c9a. | many | done | — |
 | 13:33 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 4 reads | ~15371 tok |
+| 13:33 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 4 reads | ~15371 tok |
+| 13:50 | TestFlight v0.1.16 = build 229 (run 36563294877, id ec864718…) VALID, de-DE notes + Internal group assigned; memory note updated | — | shipped | ~6k |
+| 13:50 | Session end: 11 writes across 10 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 4 reads | ~15371 tok |
+| 13:57 | Created BlindensportGraz/Features/Account/AnonymousLandingView.swift | — | ~780 |
+| 13:58 | Access tiers: anonymous + non-roster users → schedule-only (name/date/location, all upcoming); AccessPolicy, RestrictedTabView, UpcomingScheduleSections/ScheduleRow, landing rewrite, Siri time gated; 4 tests | App/, Shared/, Features/Schedule, Features/Account, tests | build 0/0, uncommitted | ~30k |
+| 13:58 | Session end: 12 writes across 11 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~17892 tok |
+| 14:03 | Session end: 12 writes across 11 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~17892 tok |
+| 14:09 | Committed 9f7c9a5 (schedule-only access tiers); deploy 36565918390 OK; hosted build 36565918543 checked. Discussed CloudKit protection options (security roles recommended; not started) | — | deployed | ~3k |
+| 14:09 | Session end: 12 writes across 11 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~17892 tok |
+| 14:14 | CloudKit security-role investigation (read-only): schema export, Apple docs/forums, app+RootCLI code review; findings in cerebrum + memory/project_cloudkit-security-roles.md | — | report pending decision | ~40k |
+| 14:14 | Session end: 12 writes across 11 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~17892 tok |
+| 14:20 | Session end: 12 writes across 11 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~17892 tok |
+| 14:23 | Session end: 12 writes across 11 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~17892 tok |
+| 14:27 | Research: roles + public/private data in other projects (TeamSnap, Spond, Firebase, Supabase, CloudKit CKShare, DSGVO guidance); appended to memory/project_cloudkit-security-roles.md | — | report | ~15k |
+| 14:28 | Session end: 12 writes across 11 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~17892 tok |
+| 14:38 | Created firebase.md | — | ~6320 |
+| 14:38 | Wrote firebase.md (CloudKit→Firebase implications, verified facts: Auth US-only, Blaze for Storage, no password import, no Swift Admin SDK) | firebase.md | done, uncommitted | ~20k |
+| 14:39 | Session end: 13 writes across 12 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~24664 tok |
+| 15:04 | Session end: 13 writes across 12 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~24664 tok |
+| 15:07 | Session end: 13 writes across 12 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~24664 tok |
+| 15:09 | Session end: 13 writes across 12 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~24664 tok |
+| 15:19 | Created BlindensportGraz/Features/Account/ApprovalMemberPicker.swift | — | ~656 |
+| 15:20 | Created BlindensportGraz/Features/Account/UserApprovalControls.swift | — | ~1139 |
+| 15:21 | Created BlindensportGrazTests/AccessPolicyTests.swift | — | ~1424 |
+| 15:23 | Fixed paths 1+2 + root-identity escalation: AccountApproval (admin-owned), approval-based AccessPolicy/Vereinsdaten, activation codes for passwordless accounts, unique emails, no edit-time root grant; dev schema import; 10 tests pass on macOS; build 0/0 | ~15 files | uncommitted | ~90k |
+| 15:23 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
+| 15:27 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
+| 15:33 | Role-assignment fix: RoleAssignment (root-owned) + resolver applied after identity pull, UserRolePicker via RoleAssignmentService, rootcli set-role writes RoleAssignment; dev schema import; 14/14 tests on macOS; app build 0/0, RootCLI build ok | ~10 files | uncommitted | ~35k |
+| 15:33 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
+| 15:38 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
+| 15:47 | Committed 4c119a4 (approvals/activation codes/unique emails/role assignments) + 7506711 (firebase.md); deploy 36577246075 OK; hosted build 36577246245 checked | — | deployed | ~4k |
+| 15:47 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
+| 15:50 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
+| 15:53 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
+| 15:55 | Deployed AccountApproval + RoleAssignment to Production via Safari-scripted Console (confirm dialog checked: 2 types, 12 indexes, default role grants); verified prod schema == dev | CloudKit Production schema | success | ~8k |
+| 15:55 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
