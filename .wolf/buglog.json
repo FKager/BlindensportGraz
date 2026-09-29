@@ -8467,6 +8467,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-504",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "User: shared a Word document to Blindensport Graz via the share sheet — sheet closed, app didn't open, no tournament created",
+      "file": "BlindensportGrazShareExtension/ShareViewController.swift",
+      "root_cause": "Hand-off used NSExtensionContext.open(_:completionHandler:), which Apple only supports for Today/iMessage extensions; from a Share extension it silently fails. Completion ignored the result and completed the request. The feature (2026-09-28) was only verified to build/sign/install, never exercised on device.",
+      "fix": "Extension opens the app via responder-chain UIApplication + ObjC-runtime openURL:options:completionHandler: (compile-time extension-unavailable API); on failure/any error it stays open with a spoken message + Fertig button. App side: ShareExtensionBridge.nextPendingFile() inbox, checked by MainTabView on scenePhase .active and after each import closes (7-day expiry), so the share works even if auto-open fails.",
+      "tags": [
+        "share-extension",
+        "deep-link",
+        "NSExtensionContext",
+        "app-group",
+        "voiceover"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
     }
   ]
 }

@@ -7,8 +7,9 @@ import Foundation
 ///
 /// Deliberately just a file copy through the same App Group container
 /// `WidgetBridge` already uses for the home-screen widget (see that file's
-/// doc comment for the underlying reasoning) plus a custom-URL-scheme
-/// hand-off — NOT SwiftData/CloudKit access from inside the extension
+/// doc comment for the underlying reasoning), which doubles as an inbox the
+/// main app checks whenever it becomes active (`nextPendingFile()`), plus a
+/// best-effort custom-URL-scheme hand-off that opens the app right away — NOT SwiftData/CloudKit access from inside the extension
 /// itself. Share Extension processes are short-lived and memory-
 /// constrained, and none of `TournamentInvitationImporter`'s work (Apple
 /// Intelligence, PDFKit, ZIPFoundation, eventual SwiftData insert) is worth
@@ -46,9 +47,9 @@ enum ShareExtensionBridge {
     /// returns) into the App Group container under a fresh unique name,
     /// preserving the original extension since `TournamentInvitationImporter
     /// .extractText` dispatches on `url.pathExtension`. Returns the deep
-    /// link to hand off to the host app via `NSExtensionContext.open(_:
-    /// completionHandler:)`, or nil if the App Group container or the copy
-    /// itself failed.
+    /// link the extension uses to open the main app, or nil if the App Group
+    /// container or the copy itself failed. The copied file stays in the
+    /// inbox either way, so the app finds it even if the deep link fails.
     static func store(fileAt sourceURL: URL) -> URL? {
         guard let dir = containerDirectory else { return nil }
         let destinationName = UUID().uuidString + "." + sourceURL.pathExtension
@@ -83,10 +84,35 @@ enum ShareExtensionBridge {
         return fileURL
     }
 
-    /// App side: one-shot hand-off, not a durable inbox — removes the file
-    /// once `TournamentInvitationImportView` is done with it (success,
-    /// failure, or the user dismissing without finishing).
+    /// App side: removes the file once `TournamentInvitationImportView` is
+    /// done with it (success, failure, or the user dismissing without
+    /// finishing), so each shared file is offered exactly once.
     static func cleanup(_ url: URL) {
         try? FileManager.default.removeItem(at: url)
+    }
+
+    /// Files older than this are dropped instead of offered — a share the
+    /// user never followed up on shouldn't pop up weeks later.
+    private static let maxPendingAge: TimeInterval = 7 * 24 * 60 * 60
+
+    /// App side: the oldest shared file still waiting in the inbox, if any.
+    /// `MainTabView` calls this whenever the app becomes active, so a share
+    /// is picked up even when the extension couldn't open the app directly.
+    static func nextPendingFile() -> URL? {
+        guard let dir = containerDirectory,
+              let files = try? FileManager.default.contentsOfDirectory(
+                at: dir, includingPropertiesForKeys: [.creationDateKey], options: [.skipsHiddenFiles]
+              ) else { return nil }
+        let cutoff = Date.now.addingTimeInterval(-maxPendingAge)
+        var pending: [(url: URL, created: Date)] = []
+        for file in files {
+            let created = (try? file.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
+            if created < cutoff {
+                cleanup(file)
+            } else {
+                pending.append((file, created))
+            }
+        }
+        return pending.min { $0.created < $1.created }?.url
     }
 }

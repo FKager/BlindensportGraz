@@ -89,25 +89,79 @@ final class ShareViewController: UIViewController {
         }
     }
 
-    /// `NSExtensionContext.open(_:completionHandler:)` is the App Extension
-    /// Programming Guide's sanctioned way for an extension to bring its own
-    /// containing app to the foreground with a deep link — no private
-    /// `UIApplication` workaround needed (extensions don't have a
-    /// `UIApplication` instance to call `.open(_:)` on directly).
+    /// Brings the main app to the foreground with the deep link.
+    ///
+    /// `NSExtensionContext.open(_:completionHandler:)` does NOT work here —
+    /// Apple only supports it for Today and iMessage extensions; from a Share
+    /// extension it silently fails (that was the original bug: the sheet
+    /// closed and the app never opened). Instead this walks the responder
+    /// chain to the process's `UIApplication` and calls
+    /// `open(_:options:completionHandler:)` through the Objective-C runtime,
+    /// since that API is marked unavailable to extensions at compile time.
+    /// It's best effort: the file is already in the App Group inbox, and the
+    /// app picks it up the next time it's opened even if this fails.
     private func openHostApp(_ url: URL) {
-        extensionContext?.open(url) { [weak self] _ in
-            Task { @MainActor in
-                self?.extensionContext?.completeRequest(returningItems: nil)
-            }
+        guard openViaApplication(url) else {
+            showOpenAppHint()
+            return
         }
     }
 
-    private func finish(errorMessage: String) {
-        statusLabel.text = errorMessage
-        activityIndicator.stopAnimating()
-        Task { [weak self] in
-            try? await Task.sleep(for: .seconds(1.5))
-            self?.extensionContext?.completeRequest(returningItems: nil)
+    private func openViaApplication(_ url: URL) -> Bool {
+        typealias OpenURLFunction = @convention(c) (
+            AnyObject, Selector, NSURL, NSDictionary, (@convention(block) (Bool) -> Void)?
+        ) -> Void
+        let selector = NSSelectorFromString("openURL:options:completionHandler:")
+
+        var responder: UIResponder? = self
+        while let current = responder {
+            if let application = current as? UIApplication, application.responds(to: selector) {
+                let open = unsafeBitCast(application.method(for: selector), to: OpenURLFunction.self)
+                let completion: @convention(block) (Bool) -> Void = { [weak self] opened in
+                    Task { @MainActor in
+                        if opened {
+                            self?.extensionContext?.completeRequest(returningItems: nil)
+                        } else {
+                            self?.showOpenAppHint()
+                        }
+                    }
+                }
+                open(application, selector, url as NSURL, NSDictionary(), completion)
+                return true
+            }
+            responder = current.next
         }
+        return false
     }
+
+    /// Fallback when the app couldn't be opened directly: the file is safely
+    /// in the inbox, so just tell the user to open the app themselves.
+    private func showOpenAppHint() {
+        showMessage("Die Datei wurde übergeben. Öffne jetzt Blindensport Graz – das Turnier wird dort vorbereitet.")
+    }
+
+    private func finish(errorMessage: String) {
+        showMessage(errorMessage)
+    }
+
+    /// Shows a message and a "Fertig" button instead of closing on a timer, so
+    /// VoiceOver users hear it and can dismiss it themselves.
+    private func showMessage(_ message: String) {
+        activityIndicator.stopAnimating()
+        activityIndicator.isHidden = true
+        statusLabel.text = message
+        if doneButton.superview == nil, let stack = statusLabel.superview as? UIStackView {
+            stack.addArrangedSubview(doneButton)
+        }
+        UIAccessibility.post(notification: .screenChanged, argument: statusLabel)
+    }
+
+    private lazy var doneButton: UIButton = {
+        var configuration = UIButton.Configuration.borderedProminent()
+        configuration.title = "Fertig"
+        let button = UIButton(configuration: configuration, primaryAction: UIAction { [weak self] _ in
+            self?.extensionContext?.completeRequest(returningItems: nil)
+        })
+        return button
+    }()
 }

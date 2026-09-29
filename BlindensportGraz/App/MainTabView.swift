@@ -8,6 +8,7 @@ struct MainTabView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.scenePhase) private var scenePhase
     private let networkMonitor = NetworkMonitor.shared
 
     // Sharing a file into the app (BlindensportGrazShareExtension +
@@ -103,12 +104,17 @@ struct MainTabView: View {
         }
         .onOpenURL { url in
             guard let fileURL = ShareExtensionBridge.resolveIncoming(url) else { return }
-            guard canManageEvents else {
-                ShareExtensionBridge.cleanup(fileURL)
-                showSharedInvitationPermissionAlert = true
-                return
-            }
-            sharedInvitationURL = fileURL
+            presentSharedInvitation(fileURL)
+        }
+        // The share extension can't always open the app itself, so the
+        // shared file also waits in the App Group inbox: pick it up whenever
+        // the app becomes active, and after each import closes (in case more
+        // than one file was shared).
+        .onChange(of: scenePhase, initial: true) { _, phase in
+            if phase == .active { presentNextPendingInvitation() }
+        }
+        .onChange(of: sharedInvitationURL) { _, url in
+            if url == nil { presentNextPendingInvitation() }
         }
         .fullScreenCover(isPresented: Binding(
             get: { sharedInvitationURL != nil },
@@ -128,5 +134,21 @@ struct MainTabView: View {
         } message: {
             Text("Nur Admins und Trainer:innen können auf diese Weise ein Turnier aus einer Einladung erstellen.")
         }
+    }
+
+    private func presentNextPendingInvitation() {
+        guard sharedInvitationURL == nil, let fileURL = ShareExtensionBridge.nextPendingFile() else { return }
+        presentSharedInvitation(fileURL)
+    }
+
+    /// Opens the "Turnier aus Einladung erstellen" import for a shared file —
+    /// or, for users who may not create tournaments, discards it and says so.
+    private func presentSharedInvitation(_ fileURL: URL) {
+        guard canManageEvents else {
+            ShareExtensionBridge.cleanup(fileURL)
+            showSharedInvitationPermissionAlert = true
+            return
+        }
+        sharedInvitationURL = fileURL
     }
 }
