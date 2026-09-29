@@ -8485,6 +8485,23 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-505",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "User: tournament created from a .doc invitation got the wrong date — the document contained several dates",
+      "file": "BlindensportGraz/Features/Tournaments/TournamentInvitationImport.swift",
+      "root_cause": "Heuristic path used earliest/latest of ALL NSDataDetector dates (letter date → start); NSDataDetector also turns times like '9:00 Uhr' into TODAY's date and misses d.m.yyyy without leading zeros ('5.3.2026'). AI path's guide only said 'start date', so the model could pick the Anmeldeschluss/letter date.",
+      "fix": "New InvitationDateSelector: candidates must contain day+month (drops times), extra d.m.yyyy regex, Jänner/Feber normalisation, per-line keyword scoring (+Termin/Turnier/Spieltag/findet statt, −Anmeldeschluss/Frist/Zahlung/Anreise/Hotel), −letter date, −past, +range; best score wins. Heuristic uses it; AI guides/instructions exclude deadlines and AI dates are overruled when they match a rejected candidate or no candidate. 12 unit tests; scenarios verified on macOS.",
+      "tags": [
+        "invitation-import",
+        "dates",
+        "NSDataDetector",
+        "foundation-models"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
     }
   ]
 }

@@ -202,9 +202,9 @@ nonisolated enum TournamentInvitationImporter {
         var city: String
         @Guide(description: "Country of the venue's postal address. Empty string if not mentioned — never guess.")
         var country: String
-        @Guide(description: "Start date, ISO 8601 format YYYY-MM-DD. Empty string if not mentioned.")
+        @Guide(description: "Start of the tournament, ISO 8601 YYYY-MM-DD: the arrival day (Anreise/Ankunft) if the invitation names one, otherwise the first playing day. NOT the registration deadline (Anmeldeschluss, Meldeschluss, Nennschluss), payment deadline, hotel booking date or the date the letter was written. Empty string if not mentioned.")
         var startDate: String
-        @Guide(description: "End date, ISO 8601 format YYYY-MM-DD — same as start date for a single-day tournament. Empty string if not mentioned.")
+        @Guide(description: "Last day on which the tournament is played, ISO 8601 YYYY-MM-DD — same as the first playing day for a single-day tournament. NOT the departure day, deadlines or the letter date. Empty string if not mentioned.")
         var endDate: String
         @Guide(description: "Maximum number of participating teams, only if explicitly stated in the text, otherwise 0.")
         var maxTeams: Int
@@ -215,7 +215,10 @@ nonisolated enum TournamentInvitationImporter {
         let session = LanguageModelSession(instructions: """
             Extrahiere Turnier-Informationen aus dieser Einladung für ein Blindensport-Turnier. \
             Antworte nur mit den angeforderten Feldern. Erfinde keine Angaben, die im Text nicht \
-            vorkommen — lasse ein Feld leer (bzw. bei maxTeams 0), wenn es unklar ist.
+            vorkommen — lasse ein Feld leer (bzw. bei maxTeams 0), wenn es unklar ist. \
+            Einladungen enthalten oft mehrere Daten: Datum des Schreibens, Anmeldeschluss, \
+            Zahlungsfrist, Anreise. startDate ist der Anreisetag, falls einer genannt ist, sonst der \
+            erste Spieltag; endDate ist der letzte Spieltag.
             """)
         do {
             let response = try await session.respond(to: text, generating: InvitationExtraction.self)
@@ -233,9 +236,12 @@ nonisolated enum TournamentInvitationImporter {
             formatter.formatOptions = [.withFullDate]
             let start = formatter.date(from: content.startDate)
             let end = formatter.date(from: content.endDate)
-            if let start {
-                draft.startDate = start
-                draft.endDate = end ?? start
+            // Cross-check the model's dates against the text: if it picked a
+            // deadline, the letter date, a past date or a date that isn't in
+            // the text at all, use the rule-based choice instead.
+            if let dates = checkedEventDates(aiStart: start, aiEnd: end, text: text) {
+                draft.startDate = dates.start
+                draft.endDate = dates.end
             }
             if content.maxTeams > 0 { draft.maxTeams = content.maxTeams }
             return draft
@@ -268,30 +274,25 @@ nonisolated enum TournamentInvitationImporter {
             draft.sport = matchedSport
         }
 
-        // Dates + venue address, both via NSDataDetector — deterministic, no
-        // network, available on every iOS version (unlike the AI path above).
-        let detectorTypes: NSTextCheckingResult.CheckingType = [.date, .address]
-        if let detector = try? NSDataDetector(types: detectorTypes.rawValue) {
+        // Tournament dates: scored by context, not simply earliest/latest —
+        // invitations also carry deadlines, the letter date and arrival dates.
+        if let dates = InvitationDateSelector.eventDates(in: text) {
+            draft.startDate = dates.start
+            draft.endDate = dates.end
+        }
+
+        // Venue address via NSDataDetector — deterministic, no network,
+        // available on every iOS version (unlike the AI path above).
+        if let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.address.rawValue) {
             let range = NSRange(text.startIndex..., in: text)
-            var foundDates: [Date] = []
             detector.enumerateMatches(in: text, range: range) { match, _, _ in
                 guard let match else { return }
-                if let date = match.date {
-                    foundDates.append(date)
-                    if match.duration > 0 {
-                        foundDates.append(date.addingTimeInterval(match.duration))
-                    }
-                }
                 if let components = match.addressComponents {
                     if let street = components[.street], draft.street.isEmpty { draft.street = street }
                     if let city = components[.city], draft.city.isEmpty { draft.city = city }
                     if let zip = components[.zip], draft.zip.isEmpty { draft.zip = zip }
                     if let country = components[.country], draft.country.isEmpty { draft.country = country }
                 }
-            }
-            if let earliest = foundDates.min() {
-                draft.startDate = earliest
-                draft.endDate = foundDates.max() ?? earliest
             }
         }
 
@@ -303,6 +304,22 @@ nonisolated enum TournamentInvitationImporter {
         }
 
         return draft
+    }
+
+    /// The AI's dates if they hold up against the text, otherwise the
+    /// rule-based `InvitationDateSelector` choice (nil if neither has one).
+    static func checkedEventDates(aiStart: Date?, aiEnd: Date?, text: String,
+                                  now: Date = .now, calendar: Calendar = .current) -> (start: Date, end: Date)? {
+        let ruleBased = InvitationDateSelector.eventDates(in: text, now: now, calendar: calendar)
+        guard let aiStart else { return ruleBased }
+        let start = calendar.startOfDay(for: aiStart)
+        let end = max(start, calendar.startOfDay(for: aiEnd ?? aiStart))
+        let candidates = InvitationDateSelector.candidates(in: text, now: now, calendar: calendar)
+        let match = candidates.first { start >= $0.start && start <= $0.end }
+        guard let match, !match.isRejected else { return ruleBased ?? (start, end) }
+        // Model gave the first playing day but the text names an arrival day.
+        let arrival = InvitationDateSelector.arrivalDate(in: text, before: start, now: now, calendar: calendar)
+        return (arrival ?? start, end)
     }
 
     private static func title(fromInvitationLine line: String) -> String {

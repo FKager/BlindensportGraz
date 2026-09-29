@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T10:58:41.038Z
-> Files: 361 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T11:06:48.119Z
+> Files: 364 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -323,14 +323,16 @@
 - `VereinView.swift` — Root of the "Verein" tab (see MainTabView) — the merge of the former (~1025 tok)
 
 ## BlindensportGraz/Features/Tournaments/
-- `WordDocTextExtractor.swift` — Legacy Word 97–2003 .doc → plain text: MS-CFB reader + FIB + piece table (cp1252/UTF-16), field-code stripping; pure Foundation (~3866 tok)
+- `InvitationDateSelector.swift` — Picks tournament dates among many in an invitation: NSDataDetector + d.m.yyyy regex, per-line keyword scoring, letter-date/past/deadline rejection (~1813 tok)
 
 - `AddTournamentView.swift` — Struct AddTournamentView (~2362 tok)
+- `InvitationDateSelector.swift` — / Picks the tournament's own dates out of an invitation that mentions many (~1935 tok)
 - `TournamentDetailView.swift` — Struct TournamentDetailView (~5383 tok)
 - `TournamentInvitationImport.swift` — / Prefilled values for a new `Tournament`, produced by (~3668 tok)
 - `TournamentInvitationImportView.swift` — "Turnier aus Einladung erstellen" (user request) — lets an admin/coach (~1375 tok)
 - `TournamentRow.swift` — Struct TournamentRow (~774 tok)
 - `TournamentsListView.swift` — Struct TournamentsListView (~1031 tok)
+- `WordDocTextExtractor.swift` — Legacy Word 97–2003 .doc → plain text: MS-CFB reader + FIB + piece table (cp1252/UTF-16), field-code stripping; pure Foundation (~3866 tok)
 - `WordDocTextExtractor.swift` — / Plain text of a legacy binary Word 97–2003 document (`.doc`) — iOS has no (~4124 tok)
 
 ## BlindensportGraz/Features/Trainings/
@@ -463,8 +465,7 @@
 - `ShareViewController.swift` — / Minimal Share Extension: this is the target that makes "Blindensport (~1339 tok)
 
 ## BlindensportGrazTests/
-- `WordDocTextExtractorTests.swift` — .doc extraction tests against Fixtures/WordDoc*.doc (textutil-generated) (~700 tok)
-- `Fixtures/WordDoc{Invitation,Unicode,Long,Table}.doc` — Word 97 binary test fixtures (bundled as test resources)
+- `InvitationDateSelectorTests.swift` — 8 invitation date scenarios + 4 AI cross-check tests (~1200 tok)
 
 - `AttendanceTrendsTests.swift` — Class: AttendanceTrendsTests (~1543 tok)
 - `BudgetSummaryTests.swift` — Class: BudgetSummaryTests (~1024 tok)
@@ -499,6 +500,7 @@
 - `TrainingTests.swift` — Class: TrainingTests (~1317 tok)
 - `ValidationTests.swift` — Class: ValidationTests (~684 tok)
 - `WidgetBridgeTests.swift` — Class: WidgetBridgeTests (~905 tok)
+- `WordDocTextExtractorTests.swift` — .doc extraction tests against Fixtures/WordDoc*.doc (textutil-generated) (~700 tok)
 
 ## BlindensportGrazWidgets/
 
