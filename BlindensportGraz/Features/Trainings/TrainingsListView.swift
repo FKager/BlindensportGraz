@@ -104,9 +104,7 @@ struct TrainingsListView: View {
                                       description: Text("Lege ein neues Training an."))
               } else {
                   ForEach(filteredTrainings) { training in
-                    NavigationLink {
-                        TrainingDetailView(training: training, currentUser: currentUser)
-                          } label: {
+                    NavigationLink(value: AppRoute.training(training)) {
                            TrainingRow(training: training)
                          }
                        .swipeActions(edge: .trailing) {

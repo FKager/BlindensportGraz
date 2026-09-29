@@ -58,9 +58,7 @@ struct MembersListView: View {
                                        description: Text("Lege ein neues Mitglied an."))
             } else {
                 ForEach(members) { member in
-                    NavigationLink {
-                        MemberDetailView(member: member)
-                    } label: {
+                    NavigationLink(value: AppRoute.member(member)) {
                         MemberRow(member: member, isLinked: hasMatchingAccount(member))
                     }
                 }

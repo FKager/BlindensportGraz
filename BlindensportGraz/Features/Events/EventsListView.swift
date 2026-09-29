@@ -38,9 +38,7 @@ struct EventsListView: View {
                                        description: Text("Lege ein neues Event an."))
             } else {
                 ForEach(visibleEvents) { event in
-                    NavigationLink {
-                        EventDetailView(event: event, currentUser: currentUser)
-                    } label: {
+                    NavigationLink(value: AppRoute.event(event)) {
                         EventRow(event: event)
                     }
                 }

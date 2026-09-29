@@ -98,7 +98,7 @@ struct PersonenListView: View {
             } else {
                 ForEach(people) { row in
                     if let member = row.member {
-                        NavigationLink { MemberDetailView(member: member) } label: { rowLabel(row) }
+                        NavigationLink(value: AppRoute.member(member)) { rowLabel(row) }
                     } else {
                         rowLabel(row)
                     }

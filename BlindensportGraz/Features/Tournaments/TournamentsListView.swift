@@ -32,9 +32,7 @@ struct TournamentsListView: View {
                                     description: Text("Lege ein neues Turnier an."))
           } else {
               ForEach(visibleTournaments) { tournament in
-                  NavigationLink {
-                      TournamentDetailView(tournament: tournament, currentUser: currentUser)
-                  } label: {
+                  NavigationLink(value: AppRoute.tournament(tournament)) {
                       TournamentRow(tournament: tournament)
                   }
               }.onDelete(perform: deleteTournaments)

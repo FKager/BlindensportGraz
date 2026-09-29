@@ -37,9 +37,7 @@ struct MemberChangeRequestsView: View {
                 if !pendingRequests.isEmpty {
                     Section("Offen (\(pendingRequests.count))") {
                         ForEach(pendingRequests) { request in
-                            NavigationLink {
-                                MemberChangeRequestDetailView(request: request, member: member(for: request), currentUser: currentUser)
-                            } label: {
+                            NavigationLink(value: AppRoute.memberChangeRequest(request, member: member(for: request))) {
                                 row(for: request)
                             }
                         }
@@ -48,9 +46,7 @@ struct MemberChangeRequestsView: View {
                 if !decidedRequests.isEmpty {
                     Section("Entschieden") {
                         ForEach(decidedRequests.prefix(50)) { request in
-                            NavigationLink {
-                                MemberChangeRequestDetailView(request: request, member: member(for: request), currentUser: currentUser)
-                            } label: {
+                            NavigationLink(value: AppRoute.memberChangeRequest(request, member: member(for: request))) {
                                 row(for: request)
                             }
                         }

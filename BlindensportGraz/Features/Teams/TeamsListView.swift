@@ -31,9 +31,7 @@ struct TeamsListView: View {
                                        description: Text("Lege ein neues Team an."))
             } else {
                 ForEach(teams) { team in
-                    NavigationLink {
-                        TeamDetailView(team: team, currentUser: currentUser)
-                    } label: {
+                    NavigationLink(value: AppRoute.team(team)) {
                         TeamRow(team: team)
                     }
                 }

@@ -51,16 +51,16 @@ struct DashboardView: View {
                 nextUpNavigationLink
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                    NavigationLink { EventsListView(currentUser: currentUser) } label: {
+                    NavigationLink(value: AppRoute.eventsList) {
                         StatCard(icon: "calendar", title: "Events", value: "\(upcomingEvents.count)", color: .blue)
                     }
-                    NavigationLink { TournamentsListView(currentUser: currentUser) } label: {
+                    NavigationLink(value: AppRoute.tournamentsList) {
                         StatCard(icon: "trophy.fill", title: "Turniere", value: "\(activeTournaments.count)", color: .yellow)
                     }
-                    NavigationLink { TrainingsListView(currentUser: currentUser) } label: {
+                    NavigationLink(value: AppRoute.trainingsList) {
                         StatCard(icon: "figure.run", title: "Trainings", value: "\(upcomingTrainings.count)", color: .green)
                     }
-                    NavigationLink { TeamsListView(currentUser: currentUser) } label: {
+                    NavigationLink(value: AppRoute.teamsList) {
                         StatCard(icon: "person.3.fill", title: "Teams", value: "\(visibleTeams.count)", color: .purple)
                     }
                 }
@@ -70,7 +70,7 @@ struct DashboardView: View {
                 if !upcomingEvents.isEmpty {
                     sectionHeader("Nächste Events", systemImage: "calendar")
                     ForEach(upcomingEvents.prefix(3)) { event in
-                        NavigationLink { EventDetailView(event: event, currentUser: currentUser) } label: {
+                        NavigationLink(value: AppRoute.event(event)) {
                             EventRow(event: event)
                         }
                         .buttonStyle(.plain)
@@ -81,7 +81,7 @@ struct DashboardView: View {
                 if !upcomingTrainings.isEmpty {
                     sectionHeader("Kommende Trainings", systemImage: "figure.run")
                     ForEach(upcomingTrainings.prefix(3)) { training in
-                        NavigationLink { TrainingDetailView(training: training, currentUser: currentUser) } label: {
+                        NavigationLink(value: AppRoute.training(training)) {
                             TrainingRow(training: training)
                         }
                         .buttonStyle(.plain)
@@ -92,7 +92,7 @@ struct DashboardView: View {
                 if !activeTournaments.isEmpty {
                     sectionHeader("Aktive Turniere", systemImage: "trophy.fill")
                     ForEach(activeTournaments.prefix(3)) { tournament in
-                        NavigationLink { TournamentDetailView(tournament: tournament, currentUser: currentUser) } label: {
+                        NavigationLink(value: AppRoute.tournament(tournament)) {
                             TournamentRow(tournament: tournament)
                         }
                         .buttonStyle(.plain)
@@ -129,9 +129,7 @@ struct DashboardView: View {
             EmptyView()
         } else if let training = nextTraining,
                   nextTournament == nil || training.startDate <= (nextTournament?.startDate ?? .distantFuture) {
-            NavigationLink {
-                TrainingDetailView(training: training, currentUser: currentUser)
-            } label: {
+            NavigationLink(value: AppRoute.training(training)) {
                 NextUpCard(icon: "figure.run", kind: "Nächstes Training",
                            title: training.title, subtitle: training.startDate.formatted(.dateTime.weekday(.wide).day().month().hour().minute()),
                            tint: .green)
@@ -139,9 +137,7 @@ struct DashboardView: View {
             .buttonStyle(.plain)
             .padding(.horizontal)
         } else if let tournament = nextTournament {
-            NavigationLink {
-                TournamentDetailView(tournament: tournament, currentUser: currentUser)
-            } label: {
+            NavigationLink(value: AppRoute.tournament(tournament)) {
                 NextUpCard(icon: "trophy.fill", kind: "Nächstes Turnier",
                            title: tournament.title, subtitle: tournament.startDate.formatted(.dateTime.weekday(.wide).day().month()),
                            tint: .yellow)

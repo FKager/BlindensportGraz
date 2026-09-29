@@ -70,6 +70,7 @@ struct VereinSplitView: View {
             // instead of replacing the sidebar/detail split.
             NavigationStack {
                 detail(for: selection ?? .teams)
+                    .appRouteDestinations(currentUser: currentUser)
             }
         }
         .navigationSplitViewStyle(.balanced)

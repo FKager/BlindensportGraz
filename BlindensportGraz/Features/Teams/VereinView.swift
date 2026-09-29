@@ -39,32 +39,22 @@ private struct VereinHubList: View {
     var body: some View {
         List {
             Section("Teams") {
-                NavigationLink {
-                    TeamsListView(currentUser: currentUser)
-                } label: {
+                NavigationLink(value: AppRoute.teamsList) {
                     Label("Teams", systemImage: "person.3.fill")
                 }
             }
 
             Section("Verwaltung") {
-                NavigationLink {
-                    MembersListView(currentUser: currentUser)
-                } label: {
+                NavigationLink(value: AppRoute.membersList) {
                     Label("Benutzerverwaltung", systemImage: "list.bullet.rectangle")
                 }
-                NavigationLink {
-                    PersonenListView()
-                } label: {
+                NavigationLink(value: AppRoute.personenList) {
                     Label("Personen", systemImage: "person.crop.rectangle.stack")
                 }
-                NavigationLink {
-                    UserListView(currentUser: currentUser)
-                } label: {
+                NavigationLink(value: AppRoute.userList) {
                     Label("App-Konten", systemImage: "person.2.badge.key")
                 }
-                NavigationLink {
-                    MemberChangeRequestsView(currentUser: currentUser)
-                } label: {
+                NavigationLink(value: AppRoute.memberChangeRequests) {
                     HStack {
                         Label("Änderungsanträge", systemImage: "person.crop.circle.badge.checkmark")
                         if pendingChangeRequestCount > 0 {
@@ -78,27 +68,19 @@ private struct VereinHubList: View {
                         }
                     }
                 }
-                NavigationLink {
-                    RoleChangeLogView()
-                } label: {
+                NavigationLink(value: AppRoute.roleChangeLog) {
                     Label("Rollenänderungen", systemImage: "clock.arrow.circlepath")
                 }
-                NavigationLink {
-                    FullBackupView()
-                } label: {
+                NavigationLink(value: AppRoute.fullBackup) {
                     Label("Datensicherung", systemImage: "externaldrive.badge.icloud")
                 }
-                NavigationLink {
-                    WelcomeScreenSettingsView()
-                } label: {
+                NavigationLink(value: AppRoute.welcomeSettings) {
                     Label("Willkommensbildschirm", systemImage: "hand.wave")
                 }
             }
 
             Section("Finanzen") {
-                NavigationLink {
-                    BudgetView(currentUser: currentUser)
-                } label: {
+                NavigationLink(value: AppRoute.budget) {
                     Label("Vereinsbudget", systemImage: "eurosign.bank.building")
                 }
             }

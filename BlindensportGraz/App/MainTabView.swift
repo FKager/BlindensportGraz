@@ -30,17 +30,35 @@ struct MainTabView: View {
 
     var body: some View {
         TabView {
-            NavigationStack { DashboardView(currentUser: currentUser) }
-                .tabItem { Label("Übersicht", systemImage: "house.fill") }
+            // Each stack registers the shared AppRoute destinations once, at
+            // its root — see AppRoute.swift.
+            Tab("Übersicht", systemImage: "house.fill") {
+                NavigationStack {
+                    DashboardView(currentUser: currentUser)
+                        .appRouteDestinations(currentUser: currentUser)
+                }
+            }
 
-            NavigationStack { EventsListView(currentUser: currentUser) }
-                .tabItem { Label("Events", systemImage: "calendar") }
+            Tab("Events", systemImage: "calendar") {
+                NavigationStack {
+                    EventsListView(currentUser: currentUser)
+                        .appRouteDestinations(currentUser: currentUser)
+                }
+            }
 
-            NavigationStack { TournamentsListView(currentUser: currentUser) }
-                .tabItem { Label("Turniere", systemImage: "trophy.fill") }
+            Tab("Turniere", systemImage: "trophy.fill") {
+                NavigationStack {
+                    TournamentsListView(currentUser: currentUser)
+                        .appRouteDestinations(currentUser: currentUser)
+                }
+            }
 
-            NavigationStack { TrainingsListView(currentUser: currentUser) }
-                .tabItem { Label("Trainings", systemImage: "figure.run") }
+            Tab("Trainings", systemImage: "figure.run") {
+                NavigationStack {
+                    TrainingsListView(currentUser: currentUser)
+                        .appRouteDestinations(currentUser: currentUser)
+                }
+            }
 
             // On iPad (regular width) an admin/root gets a real sidebar +
             // detail console instead of a pushed list — the admin roster/
@@ -48,17 +66,23 @@ struct MainTabView: View {
             // (architecture-review.md §3.3). Everyone else (iPhone, or a
             // non-admin on any size) keeps the existing pushed-list
             // NavigationStack unchanged.
-            Group {
+            Tab("Verein", systemImage: "building.2.fill") {
                 if horizontalSizeClass == .regular, isAdmin {
                     VereinSplitView(currentUser: currentUser)
                 } else {
-                    NavigationStack { VereinView(currentUser: currentUser) }
+                    NavigationStack {
+                        VereinView(currentUser: currentUser)
+                            .appRouteDestinations(currentUser: currentUser)
+                    }
                 }
             }
-            .tabItem { Label("Verein", systemImage: "building.2.fill") }
 
-            NavigationStack { AccountView(currentUser: currentUser, onLogout: onLogout) }
-                .tabItem { Label("Account", systemImage: "person.crop.circle") }
+            Tab("Account", systemImage: "person.crop.circle") {
+                NavigationStack {
+                    AccountView(currentUser: currentUser, onLogout: onLogout)
+                        .appRouteDestinations(currentUser: currentUser)
+                }
+            }
         }
         // One banner for the whole tab bar, not per-screen — see
         // SyncStatusBanner.swift's doc comment.
