@@ -25,6 +25,9 @@ nonisolated struct TournamentDraft: Identifiable {
     var endDate: Date = Date().addingTimeInterval(86400)
     var maxTeams: Int = 8
     var notes: String = ""
+    /// False when the invitation had no recognisable tournament date — the
+    /// form then warns instead of silently showing today's date.
+    var datesFound = true
 }
 
 nonisolated enum TournamentInvitationError: LocalizedError {
@@ -242,6 +245,8 @@ nonisolated enum TournamentInvitationImporter {
             if let dates = checkedEventDates(aiStart: start, aiEnd: end, text: text) {
                 draft.startDate = dates.start
                 draft.endDate = dates.end
+            } else {
+                draft.datesFound = false
             }
             if content.maxTeams > 0 { draft.maxTeams = content.maxTeams }
             return draft
@@ -279,6 +284,8 @@ nonisolated enum TournamentInvitationImporter {
         if let dates = InvitationDateSelector.eventDates(in: text) {
             draft.startDate = dates.start
             draft.endDate = dates.end
+        } else {
+            draft.datesFound = false
         }
 
         // Venue address via NSDataDetector — deterministic, no network,

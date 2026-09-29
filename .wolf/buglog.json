@@ -8502,6 +8502,25 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-506",
+      "timestamp": "2026-09-29T00:00:00Z",
+      "error_message": "User: after the date fix, the imported tournament's start date was TODAY — a date that isn't in the document (regression)",
+      "file": "BlindensportGraz/Features/Tournaments/InvitationDateSelector.swift",
+      "root_cause": "My containsDayAndMonth filter (regex requiring 'd.' + 'm.'/month name) dropped valid detector dates: '14 März 2026' (no dot), '14/03/2026', 'Sa, 14.3' (detector match excludes trailing dot), '15 März', English forms → no candidates → TournamentDraft kept its default Date() silently. Also NSDataDetector misreads 'von Samstag, 14. bis Sonntag, 15. März 2026' as 14 Nov + 121 days.",
+      "fix": "Replaced the shape filter with verification: a detector date counts only if its day number AND month (number after ./- or name/alias incl. Mrz/Mär/English) are written in the matched text (drops times + misreadings, keeps every real format); own regexes for '14. bis Sonntag, 15. März'/'14 und 15 März' ranges and year-less 'Sa, 14.3.' (weekday/keyword context); year-less dates use the document's most common year; TournamentDraft.datesFound=false → AddTournamentView shows a warning footer instead of silently using today. 19-format unit test; 18/18 tests pass on macOS shim.",
+      "tags": [
+        "invitation-import",
+        "dates",
+        "NSDataDetector",
+        "regression"
+      ],
+      "related_bugs": [
+        "bug-505"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-09-29T00:00:00Z"
     }
   ]
 }

@@ -13,8 +13,10 @@ import Foundation
 /// 4. Word's control characters become plain whitespace; field instructions
 ///    are dropped while their visible results (e.g. a date) are kept.
 ///
-/// Only the main document text is returned (no headers, footnotes or
-/// comments) — that's where an invitation's date, place and title live.
+/// All of the document's text is returned, in Word's own order: main text,
+/// then footnotes, headers/footers, comments, endnotes and text boxes.
+/// Invitations often put the date or venue in a header or a text box
+/// (flyer-style layouts), so reading only the main text can miss them.
 /// Encrypted documents are rejected. Pure Foundation, no UI or actor needs.
 nonisolated enum WordDocTextExtractor {
     enum ExtractionError: Error, Equatable {
@@ -39,7 +41,7 @@ nonisolated enum WordDocTextExtractor {
             throw ExtractionError.malformed
         }
         let pieces = try Piece.table(in: table, offset: fib.clxOffset, length: fib.clxLength)
-        let raw = try decode(pieces, from: wordDocument, characterCount: fib.mainTextLength)
+        let raw = try decode(pieces, from: wordDocument, characterCount: fib.totalTextLength)
         return plainText(fromWordCharacters: raw)
     }
 
@@ -100,7 +102,11 @@ nonisolated enum WordDocTextExtractor {
     private struct FileInformationBlock {
         let isEncrypted: Bool
         let usesTable1: Bool
-        let mainTextLength: Int
+        /// Characters in all text stories together: main text (ccpText),
+        /// footnotes, headers/footers, comments, endnotes, text boxes and
+        /// header text boxes — plus the one closing paragraph mark Word adds
+        /// when any story besides the main text exists.
+        let totalTextLength: Int
         let clxOffset: Int
         let clxLength: Int
 
@@ -116,7 +122,12 @@ nonisolated enum WordDocTextExtractor {
             let cslwOffset = 34 + csw * 2
             let cslw = Int(try reader.uint16(at: cslwOffset))
             let fibRgLw = cslwOffset + 2
-            mainTextLength = Int(try reader.uint32(at: fibRgLw + 3 * 4))   // ccpText
+            // FibRgLw97 indexes 3…10: ccpText, ccpFtn, ccpHdd, ccpMcr,
+            // ccpAtn, ccpEdn, ccpTxbx, ccpHdrTxbx.
+            guard cslw >= 11 else { throw ExtractionError.malformed }
+            let storyLengths = try (3...10).map { max(0, Int(Int32(bitPattern: try reader.uint32(at: fibRgLw + $0 * 4)))) }
+            let otherStories = storyLengths.dropFirst().reduce(0, +)
+            totalTextLength = storyLengths[0] + otherStories + (otherStories > 0 ? 1 : 0)
             let cbRgFcLcbOffset = fibRgLw + cslw * 4
             let cbRgFcLcb = Int(try reader.uint16(at: cbRgFcLcbOffset))
             guard cbRgFcLcb >= 68 else { throw ExtractionError.malformed }

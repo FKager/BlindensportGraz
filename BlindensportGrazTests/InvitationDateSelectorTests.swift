@@ -102,6 +102,44 @@ final class InvitationDateSelectorTests: XCTestCase {
             """, start: day(2026, 3, 14), end: day(2026, 3, 15))
     }
 
+    /// Every common way of writing the tournament date, inside an invitation
+    /// that also has a letter date, a start time and a deadline.
+    func testRecognisesCommonDateFormats() {
+        let cases: [(written: String, start: Date, end: Date)] = [
+            ("14 März 2026", day(2026, 3, 14), day(2026, 3, 14)),
+            ("Samstag 14 März 2026", day(2026, 3, 14), day(2026, 3, 14)),
+            ("14/03/2026", day(2026, 3, 14), day(2026, 3, 14)),
+            ("14.03.26", day(2026, 3, 14), day(2026, 3, 14)),
+            ("Sa, 14.3.", day(2026, 3, 14), day(2026, 3, 14)),
+            ("14. März", day(2026, 3, 14), day(2026, 3, 14)),
+            ("Samstag, 14.03.", day(2026, 3, 14), day(2026, 3, 14)),
+            ("14.–15.3.2026", day(2026, 3, 14), day(2026, 3, 15)),
+            ("14. und 15. März 2026", day(2026, 3, 14), day(2026, 3, 15)),
+            ("14 und 15 März 2026", day(2026, 3, 14), day(2026, 3, 15)),
+            ("14.3.-15.3.2026", day(2026, 3, 14), day(2026, 3, 15)),
+            ("14th March 2026", day(2026, 3, 14), day(2026, 3, 14)),
+            ("March 14, 2026", day(2026, 3, 14), day(2026, 3, 14)),
+            ("2026-03-14", day(2026, 3, 14), day(2026, 3, 14)),
+            ("14. 03. 2026", day(2026, 3, 14), day(2026, 3, 14)),
+            ("Sa. 14.03.2026 – So. 15.03.2026", day(2026, 3, 14), day(2026, 3, 15)),
+            ("von Samstag, 14. bis Sonntag, 15. März 2026", day(2026, 3, 14), day(2026, 3, 15)),
+            ("14.-15. Mär. 2026", day(2026, 3, 14), day(2026, 3, 15)),
+            ("14.–15. Mrz. 2026", day(2026, 3, 14), day(2026, 3, 15)),
+        ]
+        for item in cases {
+            let text = """
+                Graz, 12. Jänner 2026
+                Einladung zum Torball-Turnier
+                Termin: \(item.written)
+                Spielbeginn: 9:00 Uhr
+                Anmeldeschluss: 28. Februar 2026
+                """
+            let dates = InvitationDateSelector.eventDates(in: text, now: now, calendar: calendar)
+            XCTAssertEqual(dates?.start, item.start, "start for \"\(item.written)\"")
+            XCTAssertEqual(dates?.end, item.end, "end for \"\(item.written)\"")
+        }
+    }
+
     func testNoDatesGivesNil() {
         XCTAssertNil(InvitationDateSelector.eventDates(in: "Beginn 9:00 Uhr, Samstag", now: now, calendar: calendar))
     }

@@ -21,6 +21,8 @@ struct AddTournamentView: View {
         @State private var notes: String
         @State private var selectedTeamIDs: Set<UUID> = []
         @State private var showDuplicateAlert = false
+        /// Imported from an invitation that had no recognisable date.
+        private let datesMissingFromInvitation: Bool
 
         let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
 
@@ -31,6 +33,7 @@ struct AddTournamentView: View {
         init(currentUser: User?, draft: TournamentDraft? = nil) {
             self.currentUser = currentUser
             let draft = draft ?? TournamentDraft()
+            datesMissingFromInvitation = !draft.datesFound
             _title = State(initialValue: draft.title)
             _sport = State(initialValue: draft.sport)
             _location = State(initialValue: draft.location)
@@ -72,10 +75,18 @@ struct AddTournamentView: View {
                     TextField("Ort", text: $city)
                     TextField("Land", text: $country)
                 }
-                Section("Zeitraum") {
+                Section {
                     DatePicker("Start", selection: $startDate, displayedComponents: [.date])
                     DatePicker("Ende", selection: $endDate, displayedComponents: [.date])
-                      }
+                } header: {
+                    Text("Zeitraum")
+                } footer: {
+                    if datesMissingFromInvitation {
+                        Label("In der Einladung wurde kein Turnierdatum gefunden. Bitte Start und Ende eintragen.",
+                              systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(Theme.Palette.warning)
+                    }
+                }
                 Section("Details") {
                     Stepper("Max. Teams: \(maxTeams)", value: $maxTeams, in: 2...64)
                        }
