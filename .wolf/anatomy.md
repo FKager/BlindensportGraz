@@ -1,597 +1,232 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-09-29T13:21:00.240Z
-> Files: 375 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-04T18:10:16.109Z
+> Files: 12 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
-- `generate_app_icon.swift` — Renders the 1024x1024 App Store marketing icon: a diagonal blue->purple (~742 tok)
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/9310fa5d-a462-4776-b78e-97a4d735b7da/scratchpad/
 
-- `add_bug320.py` (~709 tok)
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/f77275b7-eb9b-48cf-a257-42428c82e0cc/scratchpad/cktool/
 
-- `dev-schema.ckdb` (~2434 tok)
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/fb41bc4a-fcd5-49ae-960d-e0a64acb5c99/scratchpad/
 
-- `makeicon.swift` (~789 tok)
 
 ## ../../../../tmp/
 
-- `append_bug.py` (~878 tok)
-- `append_bug2.py` (~774 tok)
-- `append_bug3.py` (~491 tok)
-- `append_bug4.py` (~1281 tok)
-- `append_bug5.py` (~897 tok)
-- `append_bug6.py` (~1010 tok)
-- `append_bug7.py` (~574 tok)
+
+## ../../../Users/franz/.claude/plans/
+
+- `frolicking-stirring-breeze.md` — Migrate Authentication & Role Management to Supabase (~4385 tok)
+
+## ../../../Users/franz/.claude/projects/C--dev-iOS-BlindensportGraz/memory/
+
+- `MEMORY.md` — Memory (~45 tok)
+- `project_supabase-auth-migration.md` — Current State (2026-10-04) (~960 tok)
 
 ## ../../.claude/jobs/53286a7d/tmp/export_test/Sources/ExportTest/
 
-- `main.swift` — Struct: Entry (~843 tok)
 
 ## ../../.claude/jobs/a920fb1f/tmp/
 
-- `execute_merge.py` — load, resolve_team, completeness, resolve_member (~3086 tok)
-- `execute_merge2.py` — parse_concat_json, load, completeness, resolve_member (~1868 tok)
-- `execute_orphan_fix.py` — load, parse_concat_json, resolve_team, resolve_membership (~2663 tok)
 
 ## ../../.claude/plans/
 
-- `1-task-in-kostz-peppy-starfish.md` — KostZ: put the event's own name in C3, grouped per Training (~3825 tok)
-- `enumerated-greeting-stearns.md` — Plan: "Verein" tab — merge Teams + Benutzerverwaltung, and reorganize app accounts (~3281 tok)
-- `foamy-churning-widget.md` — Training-Favoriten (training template quick-fill) (~1731 tok)
-- `functional-inventing-dream.md` — Make SportEvent the base class for Training and Tournament (~3676 tok)
-- `greedy-moseying-parasol.md` — Club Budget ("Vereinsbudget") Feature (~2832 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
-- `MEMORY.md` — Memory (~230 tok)
-- `project_cloudkit-prod-data-copy.md` — Declares from (~2988 tok)
-- `project_duplicate-names-investigation.md` (~928 tok)
-- `project_testflight-setup.md` — Declares systemCrashLogs (~3440 tok)
-- `project_widget_prerequisites.md` (~688 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
-- `feedback_deploy_via_github_actions.md` (~571 tok)
-- `feedback_no_clarifying_questions.md` (~384 tok)
-- `feedback_test_on_physical_device.md` (~580 tok)
-- `MEMORY.md` — Memory (~135 tok)
 
 ## ./
 
-- `.dockerignore` — Keep the container build context (repo root) small and secret-free — see (~195 tok)
-- `.dockerignore` — Build-context excludes for `docker build -f RootCLI/Dockerfile .` from repo root (~120 tok)
-- `.DS_Store` (~2186 tok)
-- `.env.example` — Template for docker-compose's `.env` (CLOUDKIT_KEY_ID, private-key host path, API_USERNAME/PASSWORD) (~90 tok)
-- `.gitignore` — Git ignore rules (~52 tok)
-- `.mcp.json` (~7 tok)
-- `architecture-review.md` — BlindensportGraz — Architecture & Design Review (2026-09-08) (~4275 tok)
-- `architecture-review.md` — Architecture & design review 2026-09-08 (supersedes audit.md): 27 findings + 14 backlog items; top item = `CloudKitSync.fetchAll` doesn't paginate CloudKit results (~2600 tok)
-- `audit.md` — BlindensportGraz — Best-Practices Audit & Enhancement Backlog (2026-08-19; almost all implemented in the 2026-08-22 supergoal run) (~7450 tok)
-- `build_commands.md` — Build & deploy commands used (iPhone von Franz) (~776 tok)
-- `Caddyfile` — Caddy config for docker-compose.yml — terminates TLS for clubmembersapi. (~208 tok)
-- `ci_cert.md` — Fixing the CI provisioning profile (Push Notifications capability) (~1016 tok)
-- `CLAUDE.md` — OpenWolf (~129 tok)
-- `CLAUDE.mdes` — Requirements (~91 tok)
-- `docker-compose.yml` — clubmembersapi + bundled Caddy TLS reverse proxy; clubmembersapi has no published host port (~435 tok)
-- `download_certificate.sh` — One-time helper: exports your local "Apple Development" signing identity (~511 tok)
-- `firebase.md` — Analysis (2026-09-29): implications of moving from CloudKit to Firebase — access model, rules sketch, data model split, GDPR (Auth US-only), costs (Blaze), migration (passwords can't be imported), phases, alternatives (Supabase, CKShare) (~5924 tok)
-- `firebase.md` — Moving Blindensport Graz from CloudKit to Firebase — Implications (~5925 tok)
-- `generate_app_icon.swift` — Regenerates BlindensportGraz/Assets.xcassets/AppIcon.appiconset/icon-1024.png (~3059 tok)
-- `goal.md` (~276 tok)
-- `kloudkit.md` — Getting CLOUDKIT_KEY_ID (~641 tok)
-- `profile.plist` (~0 tok)
-- `project.yml` (~1862 tok)
+- `project.yml` (~2248 tok)
 
 ## .claude/
 
-- `settings.json` (~441 tok)
-- `settings.local.json` (~2430 tok)
 
 ## .claude/commands/
 
-- `deploy.md` (~664 tok)
 
 ## .claude/rules/
 
-- `openwolf.md` (~313 tok)
 
 ## .claude/worktrees/reactive-watching-lemon/.wolf/
 
-- `cerebrum.md` — Cerebrum (~52889 tok)
 
 ## .claude/worktrees/reactive-watching-lemon/BlindensportGraz/
 
-- `Models.swift` — Class: User (~9261 tok)
 
 ## .claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/
 
-- `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~3699 tok)
 
 ## .github/workflows/
 
-- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~5070 tok)
-- `ios-device-deploy.yml` — CI: iOS Device Deploy (~4812 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/
 
-- `applied-memories.md` — Applied memories (~372 tok)
-- `ROADMAP.md` — Roadmap: Implement audit.md fixes & enhancements — BlindensportGraz (~13101 tok)
-- `STATE.md` — State: Implement audit.md fixes & enhancements — BlindensportGraz (~2322 tok)
-- `THINKING.md` — Thinking: Implement audit.md fixes & enhancements — BlindensportGraz (~1795 tok)
-- `tools.md` — Tools detected this session (~462 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/phases/
 
-- `phase-1.md` — Why (~1570 tok)
-- `phase-10.md` — Why (~1062 tok)
-- `phase-11.md` — Why (~885 tok)
-- `phase-12.md` — Why (~1470 tok)
-- `phase-13.md` — Why (~910 tok)
-- `phase-14.md` — Why (~1023 tok)
-- `phase-15.md` — Why (~987 tok)
-- `phase-16.md` — Why (~975 tok)
-- `phase-17.md` — Why (~1059 tok)
-- `phase-18.md` — Why (~1037 tok)
-- `phase-19.md` — Why (~1722 tok)
-- `phase-2.md` — Why (~1207 tok)
-- `phase-3.md` — Why (~1223 tok)
-- `phase-4.md` — Why (~1203 tok)
-- `phase-5.md` — Why (~1013 tok)
-- `phase-6.md` — Why (~1263 tok)
-- `phase-7.md` — Why (~1368 tok)
-- `phase-8.md` — Why (~1335 tok)
-- `phase-9.md` — Why (~1385 tok)
 
 ## .supergoal/ios-best-practices-review-vR4hEq/
 
-- `applied-memories.md` — Applied memories (~507 tok)
-- `ROADMAP.md` — Roadmap: iOS best-practices review & enhancement suggestions — BlindensportGraz (~4734 tok)
-- `STATE.md` — State: iOS best-practices review & enhancement suggestions — BlindensportGraz (~405 tok)
-- `THINKING.md` — Thinking: iOS best-practices review & enhancement suggestions — BlindensportGraz (~1802 tok)
 
 ## .supergoal/ios-best-practices-review-vR4hEq/phases/
 
-- `phase-1.md` — Why (~1302 tok)
-- `phase-2.md` — Why (~1429 tok)
-- `phase-3.md` — Why (~2018 tok)
-- `phase-4.md` — Why (~1673 tok)
-- `phase-5.md` — Why (~1929 tok)
-- `phase-6.md` — Why (~1754 tok)
 
 ## BlindensportGraz.xcodeproj/
 
-- `project.pbxproj` — !$*UTF8*$! (~4369 tok)
 
 ## BlindensportGraz.xcodeproj/project.xcworkspace/
 
-- `contents.xcworkspacedata` (~36 tok)
 
 ## BlindensportGraz.xcodeproj/project.xcworkspace/xcuserdata/franz.xcuserdatad/
 
-- `UserInterfaceState.xcuserstate` (~2439 tok)
 
 ## BlindensportGraz.xcodeproj/xcuserdata/franz.xcuserdatad/xcschemes/
 
-- `xcschememanagement.plist` (~94 tok)
 
 ## BlindensportGraz/
 
-- `BlindensportGraz.entitlements` (~210 tok)
-- `BlindensportGrazRelease.entitlements` (~210 tok)
-- `CLAUDE.md` — CLAUDE.md (~1652 tok)
-- `Info.plist` (~664 tok)
 
 ## BlindensportGraz/.claude/
 
-- `settings.local.json` (~38 tok)
 
 ## BlindensportGraz/App/
 
-- `AppRoute.swift` — AppRoute enum (all pushed screens) + `.appRouteDestinations(currentUser:)` registered once per NavigationStack root (~900 tok)
-- `AppRoute.swift` — / Every screen that gets pushed onto a `NavigationStack`. Links use (~882 tok)
-- `AppShortcuts.swift` — / Siri / Shortcuts / Spotlight entry points (architecture-review.md §5). (~873 tok)
-- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2084 tok)
-- `MainTabView.swift` — Struct MainTabView (~1182 tok)
-- `RestrictedTabView.swift` — Schedule-only tabs (Termine + Account) for signed-in users without full access (~370 tok)
-- `RootView.swift` — Records that the club's designated-root account was created or logged into (~3509 tok)
-- `ServerConfig.swift` — / Where `clubmembersapi` (`RootCLI/Sources/clubmembersapi`) is reachable — (~208 tok)
 
 ## BlindensportGraz/Features/Account/
-- `UserApprovalControls.swift` — App-Konten row: approval status + Freigabe menu (approve/suggestion/pick/revoke/activation code) (~1067 tok)
-- `ApprovalMemberPicker.swift` — Admin picks the Benutzerverwaltung entry to approve an account for (~614 tok)
 
-- `AccountView.swift` — Struct AccountView (~3391 tok)
-- `AnonymousLandingView.swift` — / Root screen for the "anonymous" account tier (account-tiers refactor) — (~780 tok)
-- `AppleSignIn.swift` — Struct: SignInResult (~647 tok)
-- `ApprovalMemberPicker.swift` — / Admin picks which Benutzerverwaltung entry an app account belongs to (~656 tok)
-- `EditAccountView.swift` — Struct EditAccountView (~1258 tok)
-- `LoginView.swift` — Struct LoginView (~835 tok)
-- `PasswordHashing.swift` — / Best-effort password hashing for a small trusted-club app with no backend (~516 tok)
-- `RegisterView.swift` — Struct RegisterView (~1216 tok)
-- `RoleChangeLogView.swift` — Admin-only view of `RoleChangeLog` entries, newest first — audit.md P0 (~533 tok)
-- `SetPasswordView.swift` — One-time migration step for an account created before password login (~668 tok)
-- `UserApprovalControls.swift` — / Approval status and admin actions for one account in "App-Konten": (~1139 tok)
-- `UserListView.swift` — The list of every app account (`User`), pushed from `VereinView`'s admin (~1695 tok)
-- `UserRolePicker.swift` — Root-only app-role picker on UserListView rows — saves User + RoleChangeLog only on user pick (~409 tok)
-- `UserRolePicker.swift` — / App-role picker (Mitglied / Trainer:in / Admin) on a `UserListView` row. (~437 tok)
 
 ## BlindensportGraz/Features/Attendance/
 
-- `AttendanceRollCallView.swift` — / Distraction-free "roll call" for one Training or Tournament — (~1520 tok)
-- `AttendanceRow.swift` — Attendance toggle row (Training/Tournament detail) — local @State, saves only on user edit; shows PraeAmountRow for present helpers (~452 tok)
-- `AttendanceRow.swift` — / One person in a Training's "Anwesenheit" / Tournament's "Teilnehmer:innen" (~483 tok)
-- `AttendanceTrends.swift` — / One bucket in an attendance-rate trend — audit.md Enhancement #6. (~606 tok)
-- `AttendanceTrendsView.swift` — / Attendance-rate trend chart (audit.md Enhancement #6) — `Attendance` (~1930 tok)
-- `PraeAmountRow.swift` — PRAE € wheel (5-steps) + exact TextField, clamped 0...maxPrae, local-state pattern (~745 tok)
-- `PraeAmountRow.swift` — / PRAE amount for one present helper/coach: a swipe-to-select wheel in €5 (~795 tok)
 
 ## BlindensportGraz/Features/Backup/
 
-- `FullBackup.swift` — / Whole-store JSON backup — architecture-review.md §5 P2, generalizing (~3446 tok)
-- `FullBackupImporter.swift` — / Restores a `FullBackup.export(...)` JSON file — architecture-review.md (~5987 tok)
-- `FullBackupView.swift` — / Admin-only whole-club export/restore screen — architecture-review.md §5 (~1226 tok)
 
 ## BlindensportGraz/Features/Budget/
 
-- `AddBudgetEntryView.swift` — Struct AddBudgetEntryView (~444 tok)
-- `BudgetEntryFields.swift` — Shared field set for adding/editing a BudgetEntry — matches this app's (~433 tok)
-- `BudgetSummary.swift` — / Year-scoped club finance summary — pure aggregation over `BudgetEntry` + (~717 tok)
-- `BudgetView.swift` — Admin-only club finance overview — pushed from the "Verein" tab's admin (~1404 tok)
-- `EditBudgetEntryView.swift` — Struct EditBudgetEntryView (~417 tok)
-- `ExpenseReceiptViews.swift` — / Upload/view/delete UI for KostZ expense receipts (audit.md Enhancement (~1443 tok)
 
 ## BlindensportGraz/Features/Dashboard/
 
-- `DashboardView.swift` — Struct DashboardView (~1906 tok)
-- `NextUpCard.swift` — Struct NextUpCard (~259 tok)
-- `SeasonDashboard.swift` — / Aggregate season stats — architecture-review.md §5 (P2). "Season" here (~881 tok)
-- `SeasonDashboardView.swift` — / Season (= one calendar year) recap — architecture-review.md §5 (P2): (~1790 tok)
-- `StatCard.swift` — Struct StatCard (~211 tok)
 
 ## BlindensportGraz/Features/Events/
 
-- `AddEventView.swift` — Struct AddEventView (~1932 tok)
-- `AddNewEventMemberView.swift` — / Lets an admin/coach add someone who isn't in the roster yet directly from (~1948 tok)
-- `CalendarEventExport.swift` — / Maps a Training/Tournament (any `SportEvent`) to calendar-event fields (~1388 tok)
-- `EventDetailView.swift` — Struct EventDetailView (~1999 tok)
-- `EventImageGalleryView.swift` — Struct EventImageGalleryView (~604 tok)
-- `EventImagesSection.swift` — Random-photo banner + upload + full gallery, embeddable in any Event/ (~662 tok)
-- `EventRow.swift` — Struct EventRow (~393 tok)
-- `EventsListView.swift` — Struct EventsListView (~794 tok)
-- `MemberSelectionRow.swift` — One toggleable row in a Users/Members multi-select list — shared by (~249 tok)
 
 ## BlindensportGraz/Features/Members/
 
-- `AddMemberView.swift` — Struct AddMemberView (~1336 tok)
-- `MemberBackup.swift` — / Automatic, silent JSON snapshots of the whole Member roster, taken (~851 tok)
-- `MemberChangeRequestDetailView.swift` — One request's proposed fields vs. the member's current values, with an (~1341 tok)
-- `MemberChangeRequestsView.swift` — Admin review queue for self-service "Vereinsdaten" edits — architecture- (~932 tok)
-- `MemberDetailView.swift` — Struct MemberDetailView (~814 tok)
-- `MemberImportExport.swift` — / JSON shape for one roster member, shared by export and import. Field names (~4825 tok)
-- `MemberListView.swift` — / Admin-only member list for a SportEvent, Tournament, or Training, derived (~1914 tok)
-- `MemberRow.swift` — Struct MemberRow (~475 tok)
-- `MembersListView.swift` — The club's member roster, pushed from `VereinView`'s admin hub (see (~1839 tok)
-- `MyMemberView.swift` — Self-service editing of a member's own Grazer VSC roster entry — reachable (~1828 tok)
-- `PersonenListView.swift` — Admin-only combined "Personen" list, pushed from `VereinView`'s hub — (~1533 tok)
 
 ## BlindensportGraz/Features/Reports/
 
-- `XLSXCellPatch.swift` — / Shared cell-rewriting helpers for patching blank cells inside a real (~1644 tok)
 
 ## BlindensportGraz/Features/Reports/KostZ/
 
-- `KostZCalculation.swift` — / One eligible person's summed amount for the requested month — see (~2323 tok)
-- `KostZCalculationView.swift` — Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~1730 tok)
-- `KostZExport.swift` — Declares KostZExportError (~1805 tok)
-- `KostZTournamentCalculationView.swift` — Admin-only screen (see TournamentDetailView's toolbar) that totals one (~1217 tok)
 
 ## BlindensportGraz/Features/Reports/Prae/
 
-- `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~3811 tok)
-- `PraeCalculationView.swift` — Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~2434 tok)
-- `PraeExport.swift` — Declares PraeExportError (~6388 tok)
-- `PraeTournamentCalculationView.swift` — Admin-only screen (see TournamentDetailView's toolbar) that picks one of (~1856 tok)
 
 ## BlindensportGraz/Features/Reports/Sammelabrechnung/
 
-- `SammelabrechnungExport.swift` — / Bundles one accounting period's full PRAE/KostZ paperwork into a single (~3022 tok)
-- `SammelabrechnungSeasonView.swift` — Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~877 tok)
-- `SammelabrechnungTournamentView.swift` — Admin-only screen (see TournamentDetailView's toolbar) that bundles a (~2311 tok)
-- `SammelabrechnungView.swift` — Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that (~1999 tok)
 
 ## BlindensportGraz/Features/Reports/Teilnehmerliste/
 
-- `TeilnehmerlisteExport.swift` — / One row of the exported TeilnehmerInnenliste. (~2242 tok)
 
 ## BlindensportGraz/Features/Reports/Trainingsfrequenzliste/
 
-- `TrainingsfrequenzlisteCalculation.swift` — / One roster row of the Trainingsfrequenzliste: a team member plus their (~2942 tok)
-- `TrainingsfrequenzlisteExport.swift` — / Exports the Sport-Austria-federation-style "Trainingsfrequenzliste" (~2768 tok)
-- `TrainingsfrequenzlisteViews.swift` — / Admin-only screen (see TrainingsListView's "Berichte" toolbar menu, (~1902 tok)
 
 ## BlindensportGraz/Features/Schedule/
 
-- `ScheduleRow.swift` — Schedule row: title, day or day range, location; combined for VoiceOver (~317 tok)
-- `UpcomingScheduleSections.swift` — Read-only upcoming trainings/tournaments/events List sections: name, date, location; cancelled trainings hidden; isVisible team rule (~623 tok)
 
 ## BlindensportGraz/Features/Teams/
 
-- `AddTeamMemberView.swift` — Assigns an existing `User` (registered app account) or roster `Member` to (~1312 tok)
-- `AddTeamView.swift` — Struct AddTeamView (~441 tok)
-- `MembershipRoleCapsule.swift` — Tinted badge showing a membership's role value (~94 tok)
-- `MembershipRoleMenu.swift` — Role menu/picker on TeamDetailView roster rows — saves TeamMembership only on user pick (~365 tok)
-- `MembershipRoleMenu.swift` — / Tappable role capsule on a `TeamDetailView` roster row; opens a menu to (~388 tok)
-- `TeamDetailView.swift` — Struct TeamDetailView (~1387 tok)
-- `TeamImportExport.swift` — / JSON shape for one team-roster row within a `TeamIO.members` array. Person (~3220 tok)
-- `TeamRow.swift` — Struct TeamRow (~350 tok)
-- `TeamsListView.swift` — Struct TeamsListView (~1093 tok)
-- `VereinSplitView.swift` — iPad (regular-width) admin console for the Verein tab — architecture- (~983 tok)
-- `VereinView.swift` — Root of the "Verein" tab (see MainTabView) — the merge of the former (~1025 tok)
 
 ## BlindensportGraz/Features/Tournaments/
 
-- `AddTournamentView.swift` — Struct AddTournamentView (~2362 tok)
-- `InvitationDateSelector.swift` — Picks tournament dates among many in an invitation: NSDataDetector + d.m.yyyy regex, per-line keyword scoring, letter-date/past/deadline rejection (~1813 tok)
-- `InvitationDateSelector.swift` — / Picks the tournament's own dates out of an invitation that mentions many (~1935 tok)
-- `TournamentDetailView.swift` — Struct TournamentDetailView (~5383 tok)
-- `TournamentInvitationImport.swift` — / Prefilled values for a new `Tournament`, produced by (~3668 tok)
-- `TournamentInvitationImportView.swift` — "Turnier aus Einladung erstellen" (user request) — lets an admin/coach (~1375 tok)
-- `TournamentRow.swift` — Struct TournamentRow (~774 tok)
-- `TournamentsListView.swift` — Struct TournamentsListView (~1031 tok)
-- `WordDocTextExtractor.swift` — Legacy Word 97–2003 .doc → plain text: MS-CFB reader + FIB + piece table (cp1252/UTF-16), field-code stripping; pure Foundation (~3866 tok)
-- `WordDocTextExtractor.swift` — / Plain text of a legacy binary Word 97–2003 document (`.doc`) — iOS has no (~4124 tok)
 
 ## BlindensportGraz/Features/Trainings/
 
-- `AddTrainingView.swift` — Struct AddTrainingView (~5269 tok)
-- `TrainingDetailView.swift` — Struct TrainingDetailView (~4186 tok)
-- `TrainingImportExport.swift` — / JSON shape for one Training export/import row. Field names mirror (~2695 tok)
-- `TrainingRow.swift` — Struct TrainingRow (~589 tok)
-- `TrainingSeriesView.swift` — / Creates a weekly-recurring series of trainings from a `TrainingFavorite` (~1955 tok)
-- `TrainingsListView.swift` — Struct TrainingsListView (~3139 tok)
 
 ## BlindensportGraz/Features/Welcome/
 
-- `MarkdownContentView.swift` — Minimal line-based Markdown renderer for the welcome screen's content — (~569 tok)
-- `WelcomeEnabledToggle.swift` — 'Für alle Mitglieder anzeigen' switch for WelcomeContent — saves only on user flip (~226 tok)
-- `WelcomeFileWatcher.swift` — Watches this app's own iCloud Drive "Documents" folder (visible in the (~683 tok)
-- `WelcomeScreenSettingsView.swift` — Admin settings screen (pushed from `VereinHubList`/`VereinSplitView`) (~853 tok)
-- `WelcomeView.swift` — Full-screen welcome note shown by `RootView` on launch (when enabled and (~291 tok)
 
 ## BlindensportGraz/Models/
-- `RoleAssignment.swift` — Root-owned role decision for an account (userID, role, assignedBy, assignedAt) (~292 tok)
-- `AccountApproval.swift` — Admin-owned approval linking a User to a Member (full access) + optional one-time activation code hash (~471 tok)
 
-- `AppRole.swift` — / Closed enum for `User.role` (app-level account role: member/coach/admin) — (~716 tok)
-- `Attendance.swift` — / Attendance record for one team-roster entry (TeamMembership) at one (~432 tok)
-- `BudgetCategory.swift` — / Closed enum for `BudgetEntry.category` — mirrors `AppRole`/`MembershipRole` (~988 tok)
-- `BudgetEntry.swift` — / One club-finance ledger line for a given calendar year: the fixed annual (~497 tok)
-- `EventImage.swift` — / A photo attached to a SportEvent (or, via inheritance, a Training or (~212 tok)
-- `EventMembership.swift` — / Direct person-to-event link for a plain `SportEvent` ("Event" kind only — (~479 tok)
-- `EventParticipation.swift` — Class: EventParticipation (~156 tok)
-- `ExpenseReceipt.swift` — / An expense-receipt photo attached to a KostZ/PRAE accounting period — (~548 tok)
-- `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~2790 tok)
-- `MemberChangeRequest.swift` — / A club member's own edit to their roster ("Vereinsdaten") data, awaiting (~1486 tok)
-- `MembershipRole.swift` — / Closed enum for `TeamMembership.role` (player/coach/assistant) — (~875 tok)
-- `ModelSchema.swift` — / The one place the app's SwiftData `Schema` is declared, so the app (~388 tok)
-- `RoleChangeLog.swift` — / Audit trail entry for a `User.role`/`isRoot` change — added per audit.md's (~477 tok)
-- `Sport.swift` — / Closed enum for the app's known sports — audit.md Architecture Finding 3 (~1129 tok)
-- `SportEvent.swift` — / Base type for anything that's fundamentally "a sport happening at a place (~2426 tok)
-- `Team.swift` — Class: Team (~909 tok)
-- `TeamMembership.swift` — / Exactly one of `user`/`member` is set, never both/neither. `user` covers (~804 tok)
-- `Tournament.swift` — Class: Tournament (~274 tok)
-- `Training.swift` — Class: Training (~1148 tok)
-- `TrainingFavorite.swift` — / A shared, capped (max 5) quick-fill shortcut for AddTrainingView, keyed by (~3173 tok)
-- `User.swift` — Class: User (~1657 tok)
-- `WelcomeContent.swift` — / Singleton-style shared welcome note, shown to every logged-in user on (~600 tok)
 
 ## BlindensportGraz/Resources/
 
-- `Localizable.xcstrings` (~6958 tok)
 
 ## BlindensportGraz/Resources/Assets.xcassets/
 
-- `Contents.json` (~18 tok)
 
 ## BlindensportGraz/Resources/Assets.xcassets/AppIcon.appiconset/
 
-- `Contents.json` (~61 tok)
 
 ## BlindensportGraz/Services/
-- `RoleAssignmentService.swift` — assign(role, to:, by:) — creates RoleAssignment, applies locally, logs RoleChangeLog (~327 tok)
-- `AccountApprovalService.swift` — approve / revoke / createActivationCode (admin actions) (~622 tok)
 
-- `AttendanceService.swift` — Declares AttendanceService (~1063 tok)
-- `BudgetEntryService.swift` — Declares BudgetEntryService (~242 tok)
-- `EventImageService.swift` — Declares EventImageService (~227 tok)
-- `EventMembershipService.swift` — Declares EventMembershipService (~253 tok)
-- `EventParticipationService.swift` — / No `delete` — see AttendanceService.swift's doc comment. (~139 tok)
-- `EventReminderService.swift` — / Minimal surface `EventReminderService` needs from a notification center — (~1212 tok)
-- `ExpenseReceiptService.swift` — Declares ExpenseReceiptService (~246 tok)
-- `MemberChangeRequestService.swift` — / Self-service roster edits awaiting admin review — architecture-review.md (~506 tok)
-- `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~476 tok)
-- `PersistenceService.swift` — / Shared save+sync core every per-model `*Service` (e.g. `TeamService`, (~968 tok)
-- `RoleChangeLogService.swift` — / Supersedes `CloudKitSync.logRoleChange` (Phase 2) — same shape, but now (~291 tok)
-- `SportEventService.swift` — / No `delete` — `CloudKitSync` never had a delete path for plain (~166 tok)
-- `TeamMembershipService.swift` — Declares TeamMembershipService (~245 tok)
-- `TeamService.swift` — / Thin wrapper over `PersistenceService` for `Team` — see that file's doc (~543 tok)
-- `TournamentService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~411 tok)
-- `TrainingFavoriteService.swift` — Declares TrainingFavoriteService (~389 tok)
-- `TrainingService.swift` — / `delete` only cancels the local reminder (see `EventReminderService`) and (~1752 tok)
-- `UserService.swift` — Declares UserService (~221 tok)
-- `WelcomeContentService.swift` — Declares WelcomeContentService (~138 tok)
 
 ## BlindensportGraz/Shared/
-- `RoleAssignmentResolver.swift` — Latest trusted RoleAssignment (root user or system:rootcli) → local User.role; apply(in:) (~435 tok)
-- `ActivationCode.swift` — 8-char one-time activation codes (generate/normalize/matches, issuer must be admin/root) (~404 tok)
 
-- `AccessPolicy.swift` — Full app only for admin/root/accounts listed in Benutzerverwaltung (Member.first(matching:)); others schedule-only (~183 tok)
-- `CardModifier.swift` — `.card(tint:)` standard card + `.badge(tint:)` pill fill (~253 tok)
-- `CountBadge.swift` — Red filled number bubble (e.g. pending change requests) (~123 tok)
-- `HeroIcon.swift` — Large decorative header symbol, @ScaledMetric-scaled, brand gradient default, VoiceOver-hidden (~187 tok)
-- `ImageProcessing.swift` — Downscales/compresses picked photo library assets before they ever hit (~224 tok)
-- `NextEventLookup.swift` — / Read-only "what's next" lookups over the app's SwiftData store, shared by (~1251 tok)
-- `OptionalDatePicker.swift` — A DatePicker that can represent "no date set" via a toggle — SwiftUI's (~207 tok)
-- `ShareExtensionBridge.swift` — / Bridges a file shared into iOS's system share sheet ("Turnier aus (~1283 tok)
-- `SportIcons.swift` — / Central place for sport-specific iconography, used anywhere a Training/ (~1944 tok)
-- `TagLabel.swift` — Pill label for status/role/tag; Text-like inits (LocalizedStringKey vs verbatim), .caption, Palette tint (~362 tok)
-- `Theme.swift` — Design tokens: Spacing (2…32), Radius, Palette (asset-backed WCAG-AA success/warning/danger/info), Fill (white-text fills), Accent per area, brandFill/brandInk gradients, card/badge fills (~750 tok)
-- `Validation.swift` — / Lightweight, dependency-free validation helpers shared across the app's (~1070 tok)
-- `WidgetRefresher.swift` — / Bridges the app's SwiftData world to the widget: recompute "what's next" (~379 tok)
-- `WidgetShared.swift` — / The small payload the home-screen widget needs, shared between the app and (~503 tok)
+
+## BlindensportGraz/Supabase/
+
+- `LegacyAuthMigrator.swift` — One-way migration bridge for users registered before Supabase. (~972 tok)
+- `SupabaseApprovalService.swift` — Struct: SupabaseApproval (~1218 tok)
+- `SupabaseAuthService.swift` — Declares SupabaseAuthService (~837 tok)
+- `SupabaseClientSingleton.swift` — Holds the single shared SupabaseClient for the lifetime of the app. (~177 tok)
+- `SupabaseConfig.swift` — Fill in these values from your Supabase project dashboard (Settings → API). (~109 tok)
+- `SupabaseProfileService.swift` — Wire shape for the Supabase `profiles` table. (~1239 tok)
+- `SupabaseRoleChangeLogService.swift` — Writes to the Supabase `role_change_log` table (admin-read, root-insert RLS). (~247 tok)
+- `SupabaseRoleService.swift` — Struct: SupabaseRoleAssignment (~849 tok)
 
 ## BlindensportGraz/Sync/
 
-- `CKSchema.swift` — / Centralized CKRecord type/field name constants for every record type this (~3278 tok)
-- `NetworkMonitor.swift` — / Abstraction over "is the network reachable" — audit.md Enhancement #4 (~587 tok)
-- `PendingPush.swift` — / Durable outbox for CloudKit writes — architecture-review.md 2.2 / 2.3. (~1418 tok)
-- `PushNotifications.swift` — / Registers this device for push notifications so CloudKit's (~488 tok)
-- `ServiceFailureSignal.swift` — / App-wide failure signal for the persistence service layer (audit.md (~262 tok)
-- `SyncOrchestrationService.swift` — / Thin passthrough for `CloudKitSync`'s app-level orchestration calls — (~379 tok)
-- `SyncState.swift` — / App-wide sync state — audit.md SwiftData & CloudKit Finding 3 ("no (~804 tok)
-- `SyncStatusBanner.swift` — / Visible sync/offline indicator — audit.md SwiftData & CloudKit Finding 3 (~1120 tok)
 
 ## BlindensportGraz/Sync/CloudKit/
-- `CloudKitSync+RoleAssignment.swift` — push/pull RoleAssignment; pull applies resolver (~535 tok)
-- `CloudKitSync+AccountApproval.swift` — push/pull(with deletion)/delete AccountApproval; userIdentityExists(email:) for unique emails (~994 tok)
 
-- `CloudKitSync.swift` — / Shares Team/Event/Training/Tournament/Membership/Participation/Member/ (~6070 tok)
-- `CloudKitSync+Attendance.swift` — Declares via (~1152 tok)
-- `CloudKitSync+BudgetEntry.swift` (~761 tok)
-- `CloudKitSync+EventImage.swift` (~1023 tok)
-- `CloudKitSync+EventMembership.swift` (~644 tok)
-- `CloudKitSync+EventParticipation.swift` (~530 tok)
-- `CloudKitSync+Events.swift` — / SportEvent/Training/Tournament kept together in one file — they share the (~3932 tok)
-- `CloudKitSync+ExpenseReceipt.swift` (~911 tok)
-- `CloudKitSync+Member.swift` (~1495 tok)
-- `CloudKitSync+MemberChangeRequest.swift` (~1560 tok)
-- `CloudKitSync+RoleChangeLog.swift` (~540 tok)
-- `CloudKitSync+Subscriptions.swift` — Struct: this (~2203 tok)
-- `CloudKitSync+Team.swift` (~1293 tok)
-- `CloudKitSync+TeamMembership.swift` (~881 tok)
-- `CloudKitSync+TrainingFavorite.swift` (~1138 tok)
-- `CloudKitSync+UserIdentity.swift` (~1068 tok)
-- `CloudKitSync+WelcomeContent.swift` — Declares rather (~568 tok)
 
 ## BlindensportGrazShareExtension/
 
-- `BlindensportGrazShareExtension.entitlements` (~86 tok)
-- `Info.plist` (~355 tok)
-- `ShareViewController.swift` — / Minimal Share Extension: this is the target that makes "Blindensport (~1339 tok)
 
 ## BlindensportGrazTests/
-- `RoleAssignmentResolverTests.swift` — Resolver: latest trusted wins, non-root ignored, rootcli trusted, apply on in-memory store (~586 tok)
 
-- `AccessPolicyTests.swift` — Class: AccessPolicyTests (~1424 tok)
-- `AttendanceTrendsTests.swift` — Class: AttendanceTrendsTests (~1543 tok)
-- `BudgetSummaryTests.swift` — Class: BudgetSummaryTests (~1024 tok)
-- `CalendarEventExportTests.swift` — Class: CalendarEventExportTests (~1200 tok)
-- `DesignatedRootTests.swift` — Class: DesignatedRootTests (~1601 tok)
-- `EventReminderServiceTests.swift` — Class: FakeNotificationScheduling (~1755 tok)
-- `EventRosterTests.swift` — Class: EventRosterTests (~1028 tok)
-- `ExpenseReceiptCloudKitRoundTripTests.swift` — Class: ExpenseReceiptCloudKitRoundTripTests (~1351 tok)
-- `FullBackupTests.swift` — Class: FullBackupTests (~2744 tok)
-- `InheritanceQueryTests.swift` — Class: InheritanceQueryTests (~3261 tok)
-- `InvitationDateSelectorTests.swift` — 8 invitation date scenarios + 4 AI cross-check tests (~1200 tok)
-- `KostZCalculationTests.swift` — Class: KostZCalculationTests (~6227 tok)
-- `MemberChangeRequestTests.swift` — Class: MemberChangeRequestTests (~1040 tok)
-- `MemberImportExportTests.swift` — Class: MemberImportExportTests (~3105 tok)
-- `MemberMembershipRequestTests.swift` — Class: MemberMembershipRequestTests (~1810 tok)
-- `NetworkMonitorTests.swift` — Class: FakeReachabilitySource (~524 tok)
-- `NextEventLookupTests.swift` — Class: NextEventLookupTests (~1418 tok)
-- `PendingPushTests.swift` — Class: PendingPushTests (~1582 tok)
-- `PersistenceServiceTests.swift` — Struct: StubError (~1138 tok)
-- `PraeCalculationTests.swift` — Class: PraeCalculationTests (~12173 tok)
-- `QueryPredicateTests.swift` — Class: QueryPredicateTests (~772 tok)
-- `RoleAndSportEnumTests.swift` — Class: RoleAndSportEnumTests (~1546 tok)
-- `RoleChangeLogTests.swift` — Class: RoleChangeLogTests (~984 tok)
-- `SammelabrechnungExportTests.swift` — Class: SammelabrechnungExportTests (~3253 tok)
-- `SammelabrechnungSeasonExportTests.swift` — Class: SammelabrechnungSeasonExportTests (~1676 tok)
-- `SeasonDashboardTests.swift` — Class: SeasonDashboardTests (~1240 tok)
-- `SyncStateTests.swift` — Class: SyncStateTests (~449 tok)
-- `TeilnehmerlisteExportTests.swift` — Class: TeilnehmerlisteExportTests (~1983 tok)
-- `TrainingFavoriteTests.swift` — Class: TrainingFavoriteTests (~4440 tok)
-- `TrainingImportExportTests.swift` — Class: TrainingImportExportTests (~2398 tok)
-- `TrainingSeriesTests.swift` — Class: TrainingSeriesTests (~1339 tok)
-- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~7238 tok)
-- `TrainingTests.swift` — Class: TrainingTests (~1317 tok)
-- `ValidationTests.swift` — Class: ValidationTests (~684 tok)
-- `WidgetBridgeTests.swift` — Class: WidgetBridgeTests (~905 tok)
-- `WordDocTextExtractorTests.swift` — .doc extraction tests against Fixtures/WordDoc*.doc (textutil-generated) (~700 tok)
 
 ## BlindensportGrazWidgets/
 
-- `BlindensportGrazWidgets.entitlements` (~86 tok)
-- `BlindensportGrazWidgets.swift` — / Home-screen widget: the user's next training or tournament (~1059 tok)
-- `Info.plist` (~85 tok)
 
 ## RootCLI/
 
-- `Dockerfile` — Docker container definition (~669 tok)
-- `members.example.json` (~118 tok)
-- `Package.swift` — swift-tools-version:5.9 (~641 tok)
-- `README.md` — Project documentation (~7006 tok)
 
 ## RootCLI/Public/
 
-- `index.html` — Grazer VSC – Mitgliederverwaltung (~2771 tok)
-- `records.html` — CloudKit – Datensatzverwaltung (generisch) (~2287 tok)
 
 ## RootCLI/Sources/CloudKitS2SCore/
 
-- `CalendarFeed.swift` — / Server-side generation of one user's read-only calendar feed — (~1124 tok)
-- `CKFieldCoding.swift` — / Generic bridge between plain JSON/Swift values and CloudKit Web Services' (~1757 tok)
-- `CKRecordDTO.swift` — / Minimal read-only view over a CloudKit Web Services JSON record — just (~517 tok)
-- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~4418 tok)
-- `Config.swift` — Struct: Config (~739 tok)
-- `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3132 tok)
-- `MemberFillUpdate.swift` — / Non-destructive counterpart to `MemberBulkImport.run` — fills in fields (~1808 tok)
-- `MemberRecord.swift` — / `MemberRecord` is now a thin alias over the shared `ClubMemberRecord` (~1414 tok)
 
 ## RootCLI/Sources/clubmembersapi/
 
-- `Auth.swift` — if canImport(CryptoKit) (~1415 tok)
-- `CalendarFeedRoutes.swift` — / `GET /calendar/:token[.ics]` — one user's read-only webcal feed (~788 tok)
-- `Configure.swift` (~492 tok)
-- `Entrypoint.swift` — @main entrypoint — deliberately NOT named main.swift (SPM special-cases that filename, see cerebrum Do-Not-Repeat 2026-07-16); wraps startup throw in do/catch for clean exit(1) instead of fatalError (~200 tok)
-- `LoginAttemptLimiter.swift` — / In-memory sliding-window limiter for failed Basic Auth attempts on (~523 tok)
-- `Routes.swift` — `MemberRecord` is a typealias for `ClubSchema.ClubMemberRecord` (Phase 9) — (~2813 tok)
 
 ## RootCLI/Sources/rootcli/
 
-- `RootCLI.swift` — Struct: RootCLI (~5646 tok)
 
 ## RootCLI/Tests/CloudKitS2SCoreTests/
 
-- `CalendarFeedTests.swift` — Class: CalendarFeedTests (~840 tok)
 
 ## Shared/ClubSchema/
 
-- `Package.swift` — swift-tools-version:5.9 (~296 tok)
 
 ## Shared/ClubSchema/Sources/ClubSchema/
 
-- `ClubMemberRecord.swift` — / Plain data shape for one Member/ClubMember record — the shared source of (~831 tok)
-- `MemberField.swift` — / Closed enum of every field on the Member/ClubMember CKRecord — the (~288 tok)
 
 ## Shared/ClubSchema/Tests/ClubSchemaTests/
 
-- `ClubMemberRecordTests.swift` — Class: ClubMemberRecordTests (~336 tok)
 
 ## data/
 
-- `club-members-import.json` — Merged Person-Sport.json + Person-Others.json (50 records), ready for `rootcli import-members` (~2900 tok)
-- `Person-Others.json` — Source roster: 7 coach/helper records, same shape as Person-Sport.json plus defaultFunction="COACH" (~750 tok)
-- `Person-Sport.json` — Source roster: 43 Grazer VSC athlete records (gender/title/firstName/lastName/birthDate/street/zip/city/phone/email/sportId/svnr/iban/lastMedicalExamination) (~2800 tok)
-- `person.new.json` — Updated/extended roster, 58 records, same ClubMemberBulkInput-compatible shape as Person-Sport/Others.json; some entries overlap by name with club-members-import.json — use `rootcli update-members` (fill-blanks-only), not `import-members`, to avoid clobbering/duplicating existing data (~2900 tok)
 
 ## fastlane/
 
-- `Appfile` — app_identifier it.a11y.BlindensportGraz, team 5Q57Y9YT8J (~30 tok)
-- `Fastfile` (~493 tok)

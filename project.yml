@@ -23,6 +23,11 @@ packages:
   # also depended on by RootCLI/Package.swift, see Shared/ClubSchema/Package.swift.
   ClubSchema:
     path: Shared/ClubSchema
+  # Supabase Auth + PostgREST — replaces CloudKit auth/role/approval sync.
+  # Auth-only migration: events/trainings/teams remain on CloudKit.
+  Supabase:
+    url: https://github.com/supabase/supabase-swift.git
+    from: 2.0.0
 targets:
   BlindensportGraz:
     type: application
@@ -39,6 +44,8 @@ targets:
     dependencies:
       - package: ZIPFoundation
       - package: ClubSchema
+      - package: Supabase
+        product: Supabase
       - sdk: WidgetKit.framework
       # Embedded into the .app's PlugIns automatically (app-extension type).
       - target: BlindensportGrazWidgets

@@ -3,6 +3,8 @@
 > Chronological action log. Hooks and AI append to this file automatically.
 > Old sessions are consolidated by the daemon weekly.
 
+| 2026-10-04 | Planned + started Supabase auth migration (Phase 1): created 8 new files in BlindensportGraz/Supabase/, updated project.yml with supabase-swift 2.0.0 | SupabaseConfig/ClientSingleton/AuthService/ProfileService/RoleService/ApprovalService/RoleChangeLogService/LegacyAuthMigrator.swift, project.yml | Files written; xcodegen + xcodebuild NOT yet run (user switched to Mac) | ~35000 |
+
 | 14:44 | Added Team+members JSON import/export (ShareLink/.fileImporter in TeamsListView toolbar) | TeamImportExport.swift (new), TeamsViews.swift | xcodebuild build + build-for-testing succeeded | ~28000 |
 | 14:50 | Auto-seed 3 default teams (Damen/Herren Torball, Blindenfußball) on launch via CloudKit existence check | Models.swift, CloudKitSync.swift, RootView.swift | xcodebuild build + build-for-testing succeeded | ~15000 |
 | 15:02 | Added 4th default team "Helfer" (no sport, cross-team helpers/coaches) | Models.swift | xcodebuild build succeeded | ~3000 |
@@ -3310,3 +3312,24 @@
 | 15:53 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
 | 15:55 | Deployed AccountApproval + RoleAssignment to Production via Safari-scripted Console (confirm dialog checked: 2 types, 12 indexes, default role grants); verified prod schema == dev | CloudKit Production schema | success | ~8k |
 | 15:55 | Session end: 16 writes across 15 files (DesignatedRootTests.swift, CLAUDE.md, AppRoute.swift, AttendanceRow.swift, PraeAmountRow.swift) | 5 reads | ~28112 tok |
+
+## Session: 2026-10-04 19:37
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:52 | Created ../../../Users/franz/.claude/plans/frolicking-stirring-breeze.md | — | ~4677 |
+| 20:00 | Edited project.yml | 8→13 lines | ~151 |
+| 20:00 | Edited project.yml | 4→6 lines | ~46 |
+| 20:00 | Created BlindensportGraz/Supabase/SupabaseConfig.swift | — | ~109 |
+| 20:00 | Created BlindensportGraz/Supabase/SupabaseClientSingleton.swift | — | ~177 |
+| 20:00 | Created BlindensportGraz/Supabase/SupabaseAuthService.swift | — | ~837 |
+| 20:00 | Created BlindensportGraz/Supabase/SupabaseProfileService.swift | — | ~1209 |
+| 20:00 | Created BlindensportGraz/Supabase/SupabaseRoleService.swift | — | ~849 |
+| 20:01 | Created BlindensportGraz/Supabase/SupabaseApprovalService.swift | — | ~1218 |
+| 20:01 | Created BlindensportGraz/Supabase/SupabaseRoleChangeLogService.swift | — | ~247 |
+| 20:01 | Created BlindensportGraz/Supabase/LegacyAuthMigrator.swift | — | ~956 |
+| 20:02 | Created BlindensportGraz/Supabase/LegacyAuthMigrator.swift | — | ~972 |
+| 20:03 | Created BlindensportGraz/Supabase/SupabaseProfileService.swift | — | ~1239 |
+| 20:10 | Created ../../../Users/franz/.claude/projects/C--dev-iOS-BlindensportGraz/memory/project_supabase-auth-migration.md | — | ~1003 |
+| 20:10 | Created ../../../Users/franz/.claude/projects/C--dev-iOS-BlindensportGraz/memory/MEMORY.md | — | ~48 |
+| 20:10 | Session end: 15 writes across 12 files (frolicking-stirring-breeze.md, project.yml, SupabaseConfig.swift, SupabaseClientSingleton.swift, SupabaseAuthService.swift) | 42 reads | ~14706 tok |
