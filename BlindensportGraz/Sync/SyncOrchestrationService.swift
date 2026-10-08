@@ -2,7 +2,7 @@ import Foundation
 import SwiftData
 
 /// Thin passthrough for `CloudKitSync`'s app-level orchestration calls —
-/// `syncAll`/`hasAnyUserIdentity`/`ensureDefaultTeams`/
+/// `syncAll`/`ensureDefaultTeams`/
 /// `ensureTrainingTournamentSubscriptions` aren't per-model create/update/
 /// delete mutations like the other `*Service` types, but view files calling
 /// `CloudKitSync.shared` directly for these was part of the same audit.md
@@ -18,15 +18,6 @@ enum SyncOrchestrationService {
     /// pass — used when the network comes back (architecture-review.md 2.2).
     static func drainOutbox() async {
         await CloudKitSync.shared.drainOutbox()
-    }
-
-    static func hasAnyUserIdentity() async -> Bool {
-        await CloudKitSync.shared.hasAnyUserIdentity()
-    }
-
-    /// See `CloudKitSync.userIdentityExists(email:)` — nil if CloudKit is unreachable.
-    static func userIdentityExists(email: String) async -> Bool? {
-        await CloudKitSync.shared.userIdentityExists(email: email)
     }
 
     static func ensureDefaultTeams(modelContext: ModelContext) async {

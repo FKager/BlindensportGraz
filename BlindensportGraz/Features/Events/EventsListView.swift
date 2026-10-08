@@ -21,11 +21,11 @@ struct EventsListView: View {
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
-        return user.role == .admin || user.role == .coach
+        return user.can(.eventsManage)
     }
 
     var visibleEvents: [SportEvent] {
-        if currentUser?.role == .admin { return events }
+        if (currentUser?.can(.clubManage) ?? false) { return events }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
         return events.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }

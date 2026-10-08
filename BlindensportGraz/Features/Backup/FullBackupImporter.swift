@@ -267,10 +267,10 @@ enum FullBackupImporter {
                                       newRole: FullBackup.string(dict, "newRole"), changedBy: FullBackup.string(dict, "changedBy"),
                                       changedAt: FullBackup.date(dict, "changedAt") ?? .now)
             modelContext.insert(entry)
+            // Legacy CloudKit-era log, restored locally only; the live audit
+            // log is Supabase `role_change_log`.
             return PersistenceService.saveAndPush(modelContext: modelContext, modelName: "RoleChangeLog",
-                                                  failureMessage: "Rollenänderung konnte nicht gespeichert werden.") {
-                CloudKitSync.shared.pushRoleChangeLog(entry)
-            }
+                                                  failureMessage: "Rollenänderung konnte nicht gespeichert werden.") {}
         }
 
         run(MemberChangeRequest.self, "MemberChangeRequest") { dict in

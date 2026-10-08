@@ -400,8 +400,6 @@ final class CloudKitSync {
         // before pulling, so a full pass doesn't overwrite local edits that
         // never made it out (architecture-review.md 2.2).
         await drainOutbox()
-        await pullUserIdentities(modelContext: modelContext)
-        await pullRoleAssignments(modelContext: modelContext)
         await pullMembers(modelContext: modelContext)
         await pullTeams(modelContext: modelContext)
         try? modelContext.save()
@@ -421,8 +419,6 @@ final class CloudKitSync {
         await pullAttendances(modelContext: modelContext)
         try? modelContext.save()
         await pullTrainingFavorites(modelContext: modelContext)
-        await pullRoleChangeLogs(modelContext: modelContext)
-        await pullAccountApprovals(modelContext: modelContext)
         await pullMemberChangeRequests(modelContext: modelContext)
         await pullWelcomeContent(modelContext: modelContext)
         // Outside the Phase 8 service layer deliberately: this saves data

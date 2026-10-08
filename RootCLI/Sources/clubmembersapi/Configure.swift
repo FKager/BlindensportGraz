@@ -4,6 +4,8 @@ import CloudKitS2SCore
 func configure(_ app: Application) throws {
     let cloudKitConfig = try Config.fromEnvironment()
     let client = try CloudKitS2SClient(config: cloudKitConfig)
+    // Calendar tokens and roles live in Supabase (profiles / user_roles).
+    let supabase = try SupabaseAdminClient.fromEnvironment()
 
     // Basic Auth gate. This server holds a CloudKit S2S key that can read/write
     // every club member's PII (address, phone, email) — see RootCLI/README.md's
@@ -34,6 +36,6 @@ func configure(_ app: Application) throws {
         app.http.server.configuration.hostname = hostname
     }
 
-    calendarFeedRoutes(app, client: client)
+    calendarFeedRoutes(app, client: client, supabase: supabase)
     try routes(app, client: client)
 }

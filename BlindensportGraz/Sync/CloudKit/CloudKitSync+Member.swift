@@ -20,11 +20,13 @@ extension CloudKitSync {
         record[CKSchema.ClubMember.notes] = member.notes
         record[CKSchema.ClubMember.gender] = member.gender
         record[CKSchema.ClubMember.title] = member.title
-        record[CKSchema.ClubMember.birthDate] = member.birthDate
         record[CKSchema.ClubMember.sportId] = member.sportId
-        record[CKSchema.ClubMember.svnr] = member.svnr
-        record[CKSchema.ClubMember.iban] = member.iban
-        record[CKSchema.ClubMember.lastMedicalExamination] = member.lastMedicalExamination
+        // Sensitive fields live in Supabase `member_private` (RLS). Writing nil
+        // here also scrubs values older app versions put in the public DB.
+        record[CKSchema.ClubMember.birthDate] = nil
+        record[CKSchema.ClubMember.svnr] = nil
+        record[CKSchema.ClubMember.iban] = nil
+        record[CKSchema.ClubMember.lastMedicalExamination] = nil
         record[CKSchema.ClubMember.defaultFunction] = member.defaultFunction
         record[CKSchema.ClubMember.memberOfGVSC] = member.memberOfGVSC
         save(record)
@@ -52,11 +54,7 @@ extension CloudKitSync {
             let notes = record[CKSchema.ClubMember.notes] as? String ?? ""
             let gender = record[CKSchema.ClubMember.gender] as? String ?? ""
             let title = record[CKSchema.ClubMember.title] as? String ?? ""
-            let birthDate = record[CKSchema.ClubMember.birthDate] as? Date
             let sportId = record[CKSchema.ClubMember.sportId] as? String ?? ""
-            let svnr = record[CKSchema.ClubMember.svnr] as? String ?? ""
-            let iban = record[CKSchema.ClubMember.iban] as? String ?? ""
-            let lastMedicalExamination = record[CKSchema.ClubMember.lastMedicalExamination] as? Date
             let defaultFunction = record[CKSchema.ClubMember.defaultFunction] as? String ?? ""
             // Missing on records pushed before this flag existed — default true,
             // matching every pre-existing roster entry's implicit membership.
@@ -77,19 +75,17 @@ extension CloudKitSync {
                 existing.notes = notes
                 existing.gender = gender
                 existing.title = title
-                existing.birthDate = birthDate
                 existing.sportId = sportId
-                existing.svnr = svnr
-                existing.iban = iban
-                existing.lastMedicalExamination = lastMedicalExamination
+                // birthDate/svnr/iban/lastMedicalExamination: from Supabase
+                // (AuthContext → SupabaseMemberPrivateService), never CloudKit.
                 existing.defaultFunction = defaultFunction
                 existing.memberOfGVSC = memberOfGVSC
             } else {
                 let member = Member(id: id, firstName: firstName, lastName: lastName, street: street,
                                      zip: zip, city: city, country: country, email: email, phone: phone,
                                      memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
-                                     gender: gender, title: title, birthDate: birthDate, sportId: sportId,
-                                     svnr: svnr, iban: iban, lastMedicalExamination: lastMedicalExamination,
+                                     gender: gender, title: title, birthDate: nil, sportId: sportId,
+                                     svnr: "", iban: "", lastMedicalExamination: nil,
                                      defaultFunction: defaultFunction, memberOfGVSC: memberOfGVSC)
                 modelContext.insert(member)
             }

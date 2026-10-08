@@ -2,129 +2,124 @@ import Foundation
 import Supabase
 import SwiftData
 
-// Wire shape for the Supabase `profiles` table.
-// nonisolated so JSONDecoder can call init(from:) from any executor
-// (same pattern as Models/*.swift under SWIFT_DEFAULT_ACTOR_ISOLATION=MainActor).
-nonisolated struct SupabaseProfile: Codable {
+// Wire shape of `profiles` joined with the caller-visible role/approval.
+// nonisolated so JSONDecoder can call init(from:) from any executor.
+nonisolated struct SupabaseProfile: Codable, Identifiable, Hashable {
     let id: UUID
-    let supabaseUID: UUID?
     let email: String
     let firstName: String
     let lastName: String
-    let role: String
-    let isRoot: Bool
     let isGVSCMember: Bool
     let calendarToken: String
-    let legacyMigrated: Bool
+    let createdAt: Date
 
     enum CodingKeys: String, CodingKey {
-        case id, email, role
-        case supabaseUID    = "supabase_uid"
-        case firstName      = "first_name"
-        case lastName       = "last_name"
-        case isRoot         = "is_root"
-        case isGVSCMember   = "is_gvsc_member"
-        case calendarToken  = "calendar_token"
-        case legacyMigrated = "legacy_migrated"
+        case id, email
+        case firstName     = "first_name"
+        case lastName      = "last_name"
+        case isGVSCMember  = "is_gvsc_member"
+        case calendarToken = "calendar_token"
+        case createdAt     = "created_at"
+    }
+
+    var displayName: String {
+        let name = "\(firstName) \(lastName)".trimmingCharacters(in: .whitespaces)
+        return name.isEmpty ? email : name
     }
 }
 
 @MainActor
 enum SupabaseProfileService {
 
-    // Called right after signUp — inserts via the SECURITY DEFINER
-    // `create_profile` RPC so the insert-forbidden RLS policy is bypassed
-    // only through trusted server-side SQL. First account gets role=admin
-    // and is_root=true (handled inside the function).
-    static func createProfile(
-        userID: UUID,
-        email: String,
-        firstName: String,
-        lastName: String
-    ) async throws {
-        nonisolated struct Params: Encodable {
-            let p_id: String
-            let p_email: String
-            let p_first_name: String
-            let p_last_name: String
-        }
-        try await SupabaseClientSingleton.shared.client
-            .rpc("create_profile", params: Params(
-                p_id: userID.uuidString,
-                p_email: email,
-                p_first_name: firstName,
-                p_last_name: lastName
-            ))
-            .execute()
-    }
+    private static var client: SupabaseClient { SupabaseClientSingleton.shared.client }
 
+    // Own profile for every user; all profiles for users.approve (RLS).
     static func fetchProfile(userID: UUID) async throws -> SupabaseProfile? {
-        try? await SupabaseClientSingleton.shared.client
+        let rows: [SupabaseProfile] = try await client
             .from("profiles")
             .select()
             .eq("id", value: userID.uuidString)
             .limit(1)
-            .single()
             .execute()
             .value
+        return rows.first
     }
 
     static func fetchAllProfiles() async throws -> [SupabaseProfile] {
-        try await SupabaseClientSingleton.shared.client
+        try await client
             .from("profiles")
             .select()
+            .order("last_name")
             .execute()
             .value
     }
 
-    // Updates non-privileged profile fields. Role / isRoot changes go only
-    // through SupabaseRoleService (RLS prevents self-promotion).
-    static func upsertProfile(_ user: User) async throws {
-        // Read all model properties on @MainActor before the await so we
-        // never cross an actor boundary with a live @Model reference.
-        let profile = SupabaseProfile(
-            id: user.id,
-            supabaseUID: nil,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role.rawValue,
-            isRoot: user.isRoot,
-            isGVSCMember: user.isGrazerVSCMember,
-            calendarToken: user.calendarToken,
-            legacyMigrated: true
-        )
-        try await SupabaseClientSingleton.shared.client
-            .from("profiles")
-            .upsert(profile, onConflict: "id")
-            .execute()
+    nonisolated struct DirectoryEntry: Decodable {
+        let id: UUID
+        let first_name: String
+        let last_name: String
+        let created_at: Date
     }
 
-    // Writes a remote profile into the local SwiftData store.
-    // Called during syncAll. Never touches role/isRoot — those come from
-    // SupabaseRoleService after profiles are applied.
-    static func applyToLocalUser(_ profile: SupabaseProfile, modelContext: ModelContext) {
-        var descriptor = FetchDescriptor<User>(
-            predicate: #Predicate { $0.id == profile.id })
+    // Names of all accounts, for approved users (RPC `account_directory`).
+    static func fetchDirectory() async throws -> [DirectoryEntry] {
+        try await client.rpc("account_directory").execute().value
+    }
+
+    // Name-only local User rows so participations / team memberships of
+    // other accounts resolve. Never overwrites an existing email.
+    static func applyDirectory(_ entries: [DirectoryEntry], modelContext: ModelContext) {
+        let users = (try? modelContext.fetch(FetchDescriptor<User>())) ?? []
+        let byID = Dictionary(users.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        for entry in entries {
+            if let user = byID[entry.id] {
+                user.firstName = entry.first_name
+                user.lastName = entry.last_name
+            } else {
+                let user = User(id: entry.id, email: "", firstName: entry.first_name, lastName: entry.last_name)
+                user.createdAt = entry.created_at
+                modelContext.insert(user)
+            }
+        }
+        try? modelContext.save()
+    }
+
+    // Only first/last name are client-writable (column grants).
+    static func updateName(userID: UUID, firstName: String, lastName: String) async throws {
+        try await SupabaseAuthService.saveName(firstName: firstName, lastName: lastName, userID: userID)
+    }
+
+    static func rotateCalendarToken() async throws -> String {
+        try await client.rpc("rotate_calendar_token").execute().value
+    }
+
+    // Keeps the local SwiftData `User` as a cache keyed by the auth uid, so
+    // team memberships / participations (CloudKit) keep resolving.
+    // Role and approval are not stored here — AuthContext owns them.
+    @discardableResult
+    static func applyToLocalUser(_ profile: SupabaseProfile, role: AppRole?,
+                                 modelContext: ModelContext) -> User {
+        let id = profile.id
+        var descriptor = FetchDescriptor<User>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
+        let user: User
         if let existing = try? modelContext.fetch(descriptor).first {
-            existing.firstName         = profile.firstName
-            existing.lastName          = profile.lastName
-            existing.email             = profile.email
-            existing.isGrazerVSCMember = profile.isGVSCMember
-            existing.calendarToken     = profile.calendarToken
+            user = existing
         } else {
-            let user = User(
-                id: profile.id,
-                email: profile.email,
-                firstName: profile.firstName,
-                lastName: profile.lastName,
-                role: AppRole.normalize(profile.role),
-                isGrazerVSCMember: profile.isGVSCMember,
-                isRoot: profile.isRoot
-            )
-            user.calendarToken = profile.calendarToken
+            user = User(id: profile.id, email: profile.email,
+                        firstName: profile.firstName, lastName: profile.lastName)
             modelContext.insert(user)
         }
+        user.email             = profile.email
+        user.firstName         = profile.firstName
+        user.lastName          = profile.lastName
+        user.isGrazerVSCMember = profile.isGVSCMember
+        user.calendarToken     = profile.calendarToken
+        user.role              = role ?? .member
+        user.isRoot            = role == .root
+        user.passwordHash      = ""
+        user.passwordSalt      = ""
+        try? modelContext.save()
+        return user
     }
 }

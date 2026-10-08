@@ -3333,3 +3333,50 @@
 | 20:10 | Created ../../../Users/franz/.claude/projects/C--dev-iOS-BlindensportGraz/memory/project_supabase-auth-migration.md | — | ~1003 |
 | 20:10 | Created ../../../Users/franz/.claude/projects/C--dev-iOS-BlindensportGraz/memory/MEMORY.md | — | ~48 |
 | 20:10 | Session end: 15 writes across 12 files (frolicking-stirring-breeze.md, project.yml, SupabaseConfig.swift, SupabaseClientSingleton.swift, SupabaseAuthService.swift) | 42 reads | ~14706 tok |
+
+## Session: 2026-10-08 20:01
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 20:17 | Created ../../.claude/plans/woolly-toasting-lobster.md | — | ~3892 |
+| 20:20 | Created supabase/migrations/20261008000001_rbac.sql | — | ~1780 |
+| 20:20 | Created supabase/migrations/20261008000002_auth_hook.sql | — | ~714 |
+| 20:20 | Edited supabase/migrations/20261008000002_auth_hook.sql | 1→2 lines | ~29 |
+| 20:21 | Created supabase/migrations/20261008000003_rls.sql | — | ~1167 |
+| 20:21 | Created supabase/migrations/20261008000004_rpcs.sql | — | ~1909 |
+| 20:21 | Created supabase/functions/delete-account/index.ts | — | ~431 |
+| 20:21 | Created supabase/seed.sql | — | ~338 |
+| 20:21 | Edited supabase/functions/delete-account/index.ts | added 2 condition(s) | ~184 |
+| 20:22 | Created supabase/tests/rbac_test.sql | — | ~2543 |
+| 20:22 | Edited supabase/tests/rbac_test.sql | 2→1 lines | ~26 |
+| 20:30 | Created BlindensportGraz/Supabase/SupabaseConfig.swift | — | ~255 |
+| 20:30 | Created BlindensportGraz/Supabase/SupabaseClientSingleton.swift | — | ~296 |
+| 20:30 | Created BlindensportGraz/Supabase/SupabaseAuthService.swift | — | ~991 |
+| 20:30 | Created BlindensportGraz/Supabase/SupabaseProfileService.swift | — | ~911 |
+| 20:31 | Created BlindensportGraz/Supabase/SupabaseRoleService.swift | — | ~829 |
+| 20:31 | Created BlindensportGraz/Supabase/SupabaseApprovalService.swift | — | ~942 |
+| 20:31 | Created BlindensportGraz/Supabase/SupabaseMemberPrivateService.swift | — | ~1392 |
+| 20:31 | Created BlindensportGraz/Shared/AccessClaims.swift | — | ~739 |
+| 20:32 | Created BlindensportGraz/Shared/AuthContext.swift | — | ~1578 |
+| 20:32 | Edited BlindensportGraz/Shared/AuthContext.swift | modified launch() | ~84 |
+| 20:32 | Created supabase/migrations/20261008000005_member_private_self.sql | — | ~908 |
+| 20:33 | Created supabase/tests/member_private_test.sql | — | ~864 |
+| 20:34 | Created BlindensportGraz/Supabase/AuthErrorMessage.swift | — | ~461 |
+| 20:34 | Created BlindensportGraz/Features/Account/LoginView.swift | — | ~845 |
+| 20:34 | Created BlindensportGraz/Features/Account/ResetPasswordRequestView.swift | — | ~622 |
+| 20:34 | Created BlindensportGraz/Features/Account/RegisterView.swift | — | ~1409 |
+| 20:34 | Created BlindensportGraz/Features/Account/SetPasswordView.swift | — | ~775 |
+| 20:34 | Created BlindensportGraz/Features/Account/RedeemActivationCodeView.swift | — | ~630 |
+| 20:36 | Created BlindensportGraz/Features/Account/EditAccountView.swift | — | ~848 |
+| 20:36 | Created supabase/migrations/20261008000006_directory.sql | — | ~222 |
+| 20:37 | Created BlindensportGraz/Features/Account/UserApprovalControls.swift | — | ~1142 |
+| 20:37 | Created BlindensportGraz/Features/Account/UserRolePicker.swift | — | ~478 |
+| 20:38 | Created BlindensportGraz/Features/Account/RoleChangeLogView.swift | — | ~721 |
+| 20:43 | Created BlindensportGrazTests/AccessClaimsTests.swift | — | ~917 |
+| 20:45 | Created RootCLI/Sources/CloudKitS2SCore/SupabaseAdminClient.swift | — | ~1795 |
+| 20:45 | Created RootCLI/Sources/rootcli/SupabaseMigrate.swift | — | ~3504 |
+| 21:05 | Supabase auth/RBAC migration Phases A–D implemented: 6 migrations + 48 pgTAP tests (pass), delete-account edge fn, app AuthContext/permission checks/admin RPC wiring/member PII to Supabase, RootCLI supabase-migrate/send-resets/scrub/set-role/list + calendar feed via Supabase; app build + build-for-testing OK | supabase/, BlindensportGraz/{Supabase,Shared,Features/Account,...}, RootCLI | hosted project + rollout pending (needs user) | ~250k |
+| 20:49 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_supabase-auth-migration.md | — | ~490 |
+| 20:50 | Edited BlindensportGraz/CLAUDE.md | 4→7 lines | ~174 |
+| 20:50 | Session end: 39 writes across 35 files (woolly-toasting-lobster.md, 20261008000001_rbac.sql, 20261008000002_auth_hook.sql, 20261008000003_rls.sql, 20261008000004_rpcs.sql) | 2 reads | ~40490 tok |
+| 21:00 | Created ../../.claude/plans/woolly-toasting-lobster.md | — | ~2374 |

@@ -24,19 +24,19 @@ struct TournamentDetailView: View {
    @State private var isEditing = false
 
    var isAdmin: Bool {
-       currentUser?.role == .admin
+       (currentUser?.can(.clubManage) ?? false)
    }
 
    // Who may leave read-only mode: admins and the club's root account.
    var canEdit: Bool {
-       currentUser?.role == .admin || (currentUser?.isRoot ?? false)
+       (currentUser?.can(.clubManage) ?? false)
    }
 
    // Same admin-bypass as AddTournamentView.myTeams — an admin can reassign a
    // tournament to any team, not just ones they personally joined.
    var myTeams: [Team] {
        guard let user = currentUser else { return [] }
-       if user.role == .admin { return allTeams }
+       if user.can(.clubManage) { return allTeams }
        let myTeamIDs = Set(user.memberships.map { $0.team.id })
        return allTeams.filter { myTeamIDs.contains($0.id) }
    }

@@ -1,8 +1,9 @@
 import XCTest
 @testable import BlindensportGraz
 
-/// Full app only for admins, root and accounts an admin approved for a
-/// Benutzerverwaltung entry. A matching name or email alone must NOT grant
+/// Local mirror of the server rule: full app only for admins, root and
+/// accounts an admin approved for a Benutzerverwaltung entry (approvals are
+/// written only by Supabase RPCs, so every mirrored row is trusted). A matching name or email alone must NOT grant
 /// access — registration verifies neither.
 @MainActor
 final class AccessPolicyTests: XCTestCase {
@@ -35,12 +36,6 @@ final class AccessPolicyTests: XCTestCase {
                                                    users: [admin, account])?.id, member.id)
     }
 
-    func testApprovalByNonAdminIsIgnored() {
-        let account = user()
-        let approval = AccountApproval(userID: account.id, memberID: member.id, approvedBy: account.id.uuidString)
-        XCTAssertFalse(AccessPolicy.hasFullAccess(account, roster: [member], approvals: [approval], users: [admin, account]))
-    }
-
     func testApprovalForDeletedRosterEntryGivesNoAccess() {
         let account = user()
         let approval = AccountApproval(userID: account.id, memberID: member.id, approvedBy: admin.id.uuidString)
@@ -49,7 +44,7 @@ final class AccessPolicyTests: XCTestCase {
 
     func testAdminAndRootAlwaysHaveFullAccess() {
         XCTAssertTrue(AccessPolicy.hasFullAccess(admin, roster: [], approvals: [], users: [admin]))
-        let root = User(email: "root@example.at", firstName: "R", lastName: "Oot", isRoot: true)
+        let root = User(email: "root@example.at", firstName: "R", lastName: "Oot", role: .root)
         XCTAssertTrue(AccessPolicy.hasFullAccess(root, roster: [], approvals: [], users: [root]))
     }
 
@@ -72,30 +67,9 @@ final class AccessPolicyTests: XCTestCase {
         XCTAssertFalse(AccessPolicy.isEmailTaken("new@example.at", by: [account]))
     }
 
-    // MARK: Path 2 — activation codes
+    // MARK: Activation codes (generated/checked server-side)
 
-    func testActivationCodeFormatAndNormalisation() {
-        let code = ActivationCode.generate()
-        XCTAssertEqual(code.count, 9)
-        XCTAssertEqual(Array(code)[4], "-")
+    func testActivationCodeNormalisation() {
         XCTAssertEqual(ActivationCode.normalized(" abcd-efgh "), "ABCDEFGH")
-    }
-
-    func testActivationCodeMatchesOnlyTheIssuedCodeFromAnAdmin() {
-        let account = user()
-        let code = ActivationCode.generate()
-        let salt = PasswordHashing.makeSalt()
-        let hash = PasswordHashing.hash(password: ActivationCode.normalized(code), salt: salt)
-        let byAdmin = AccountApproval(userID: account.id, memberID: nil, approvedBy: admin.id.uuidString,
-                                      activationCodeHash: hash, activationCodeSalt: salt)
-        XCTAssertTrue(ActivationCode.matches(code.lowercased(), for: account, approvals: [byAdmin], users: [admin, account]))
-        XCTAssertFalse(ActivationCode.matches("AAAA-BBBB", for: account, approvals: [byAdmin], users: [admin, account]))
-
-        let selfIssued = AccountApproval(userID: account.id, memberID: nil, approvedBy: account.id.uuidString,
-                                         activationCodeHash: hash, activationCodeSalt: salt)
-        XCTAssertFalse(ActivationCode.matches(code, for: account, approvals: [selfIssued], users: [admin, account]))
-
-        let otherAccount = user(email: "other@example.at")
-        XCTAssertFalse(ActivationCode.matches(code, for: otherAccount, approvals: [byAdmin], users: [admin, otherAccount]))
     }
 }

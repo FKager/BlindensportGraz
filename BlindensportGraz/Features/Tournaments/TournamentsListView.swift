@@ -14,12 +14,12 @@ struct TournamentsListView: View {
 
   var canManageEvents: Bool {
       guard let user = currentUser else { return false }
-      return user.role == .admin || user.role == .coach
+      return user.can(.eventsManage)
        }
 
     var visibleTournaments: [Tournament] {
         let sorted = tournaments.sorted { $0.startDate > $1.startDate }
-        if currentUser?.role == .admin { return sorted }
+        if (currentUser?.can(.clubManage) ?? false) { return sorted }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
         return sorted.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }

@@ -73,7 +73,9 @@ enum Validation {
     /// (length-only, no character-class requirement) — see
     /// PasswordHashing.swift's doc comment for why this app doesn't invest
     /// further in password strength.
+    /// Matches the Supabase Auth policy (supabase/config.toml:
+    /// minimum_password_length = 10, password_requirements = letters_digits).
     static func passwordMeetsMinimumStrength(_ raw: String) -> Bool {
-        raw.count >= 8
+        raw.count >= 10 && raw.contains(where: \.isLetter) && raw.contains(where: \.isNumber)
     }
 }

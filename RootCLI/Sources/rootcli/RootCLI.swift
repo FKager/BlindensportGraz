@@ -23,9 +23,13 @@ struct RootCLI {
         case "list":
             try await runList()
         case "set-role":
-            try await runSetRole(rest)
-        case "set-root":
-            try await runSetRoot(rest)
+            try await SupabaseMigrate.runSetRole(rest)
+        case "supabase-migrate":
+            try await SupabaseMigrate.runMigrate(rest, cloudKit: try makeClient())
+        case "supabase-send-resets":
+            try await SupabaseMigrate.runSendResets(rest)
+        case "supabase-scrub-cloudkit":
+            try await SupabaseMigrate.runScrub(rest, cloudKit: try makeClient())
         case "import-members":
             try await runImportMembers(rest)
         case "update-members":
@@ -46,102 +50,26 @@ struct RootCLI {
     }
 
     private static func runList() async throws {
-        let client = try makeClient()
-        let users = try await client.queryRecords(recordType: "UserIdentity")
-        guard !users.isEmpty else {
-            print("No UserIdentity records found.")
-            return
-        }
-        let sorted = users.sorted { fullName($0) < fullName($1) }
+        let supabase = try SupabaseAdminClient.fromEnvironment()
+        let profiles = try await supabase.select(table: "profiles", columns: "id,email,first_name,last_name")
+        let roles = try await supabase.select(table: "user_roles", columns: "user_id,role")
+        let approved = Set(try await supabase.select(table: "account_approvals", columns: "user_id")
+            .compactMap { $0["user_id"] as? String })
+        let roleByUser = Dictionary(roles.compactMap { row -> (String, String)? in
+            guard let id = row["user_id"] as? String, let role = row["role"] as? String else { return nil }
+            return (id, role)
+        }, uniquingKeysWith: { a, _ in a })
 
         func pad(_ text: String, _ width: Int) -> String {
             text.count >= width ? String(text.prefix(width - 1)) + " " : text.padding(toLength: width, withPad: " ", startingAt: 0)
         }
-
-        print(pad("Name", 28) + pad("Role", 9) + pad("Root", 6) + "Email")
-        for user in sorted {
-            let name = fullName(user)
-            let role = user.stringField("role") ?? "member"
-            let root = user.boolField("isRoot") ? "yes" : ""
-            print(pad(name, 28) + pad(role, 9) + pad(root, 6) + "n/a — email is never synced to CloudKit, see RootCLI/README.md")
+        print(pad("Name", 28) + pad("Role", 9) + pad("Approved", 10) + "Email")
+        for profile in profiles.sorted(by: { ($0["last_name"] as? String ?? "") < ($1["last_name"] as? String ?? "") }) {
+            let id = profile["id"] as? String ?? ""
+            let name = "\(profile["first_name"] as? String ?? "") \(profile["last_name"] as? String ?? "")"
+            print(pad(name, 28) + pad(roleByUser[id] ?? "pending", 9) + pad(approved.contains(id) ? "yes" : "", 10)
+                  + (profile["email"] as? String ?? ""))
         }
-    }
-
-    /// Joins a UserIdentity record's firstName/lastName fields, matching
-    /// User.displayName's own formatting in the app (Models.swift).
-    private static func fullName(_ user: CKRecordDTO) -> String {
-        let name = [user.stringField("firstName") ?? "", user.stringField("lastName") ?? ""]
-            .filter { !$0.isEmpty }
-            .joined(separator: " ")
-        return name.isEmpty ? "?" : name
-    }
-
-    private static func runSetRole(_ args: [String]) async throws {
-        guard args.count == 2 else {
-            throw CLIError.message("Usage: rootcli set-role <full name|id> <member|coach|admin>")
-        }
-        let identifier = args[0]
-        let role = args[1]
-        guard ["member", "coach", "admin"].contains(role) else {
-            throw CLIError.message("Role must be one of: member, coach, admin")
-        }
-        let client = try makeClient()
-        let user = try await client.findUser(matching: identifier)
-        let oldRole = user.stringField("role") ?? "member"
-        try await client.updateRecord(user, fields: ["role": ["value": role]])
-        print("Updated \(fullName(user)): role -> \(role)")
-        await recordRoleAssignment(client: client, userRecordName: user.recordName, role: role)
-        await logRoleChange(client: client, userRecordName: user.recordName, oldRole: oldRole, newRole: role)
-    }
-
-    /// The app works out roles from `RoleAssignment` records (latest trusted
-    /// one wins — see the app's RoleAssignmentResolver), so a RootCLI change
-    /// must also be recorded as one; otherwise an older in-app assignment
-    /// would override it on every device. Best-effort like `logRoleChange`.
-    private static func recordRoleAssignment(client: CloudKitS2SClient, userRecordName: String, role: String) async {
-        let fields: [String: Any] = [
-            "userID": ["value": userRecordName],
-            "role": ["value": role],
-            "assignedBy": ["value": "system:rootcli"],
-            "assignedAt": ["value": Int64(Date().timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
-        ]
-        do {
-            try await client.createOrReplaceRecord(recordType: "RoleAssignment", recordName: UUID().uuidString, fields: fields)
-        } catch {
-            FileHandle.standardError.write("Warning: role changed but RoleAssignment write failed: \(error)\n".data(using: .utf8)!)
-        }
-    }
-
-    /// Mirrors the app's own `CloudKitSync.logRoleChange` — RootCLI-issued
-    /// role changes get the same audit trail as in-app ones (audit.md P0
-    /// enhancement #2). Best-effort: a failure here doesn't roll back or fail
-    /// the role change itself, it's only ever printed as a warning, matching
-    /// this file's other best-effort side-writes.
-    private static func logRoleChange(client: CloudKitS2SClient, userRecordName: String, oldRole: String, newRole: String) async {
-        guard oldRole != newRole else { return }
-        let fields: [String: Any] = [
-            "userID": ["value": userRecordName],
-            "oldRole": ["value": oldRole],
-            "newRole": ["value": newRole],
-            "changedBy": ["value": "system:rootcli"],
-            "changedAt": ["value": Int64(Date().timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
-        ]
-        do {
-            try await client.createOrReplaceRecord(recordType: "RoleChangeLog", recordName: UUID().uuidString, fields: fields)
-        } catch {
-            FileHandle.standardError.write("Warning: role changed but RoleChangeLog write failed: \(error)\n".data(using: .utf8)!)
-        }
-    }
-
-    private static func runSetRoot(_ args: [String]) async throws {
-        guard args.count == 2, let flag = Bool(args[1].lowercased()) else {
-            throw CLIError.message("Usage: rootcli set-root <full name|id> <true|false>")
-        }
-        let identifier = args[0]
-        let client = try makeClient()
-        let user = try await client.findUser(matching: identifier)
-        try await client.updateRecord(user, fields: ["isRoot": ["value": flag ? 1 : 0, "type": "INT64"]])
-        print("Updated \(fullName(user)): isRoot -> \(flag)")
     }
 
     private static func runImportMembers(_ args: [String]) async throws {
@@ -382,14 +310,16 @@ struct RootCLI {
 
     private static func printUsage() {
         print("""
-        rootcli — manage BlindensportGraz user roles and the Grazer VSC roster
-        directly in CloudKit, via Server-to-Server auth. Does not require the
-        app or an account in it.
+        rootcli — manage BlindensportGraz accounts/roles (Supabase, service key)
+        and the Grazer VSC roster directly in CloudKit (Server-to-Server auth).
+        Does not require the app or an account in it.
 
         USAGE:
           rootcli list
-          rootcli set-role <full name|id> <member|coach|admin>
-          rootcli set-root <full name|id> <true|false>
+          rootcli set-role <email|user id> <member|coach|admin|root>
+          rootcli supabase-migrate [--dry-run|--apply]
+          rootcli supabase-send-resets [--dry-run|--apply]
+          rootcli supabase-scrub-cloudkit [--dry-run|--apply]
           rootcli import-members <file.json>
           rootcli update-members <file.json>
           rootcli record list <type>
@@ -432,7 +362,20 @@ struct RootCLI {
           CLOUDKIT_TARGET_ENVIRONMENT=production CLOUDKIT_TARGET_KEY_ID=<prod> CLOUDKIT_TARGET_PRIVATE_KEY_PATH=<prod.pem> \\
           rootcli copy-records --dry-run
 
+        list / set-role work on Supabase: set-role writes user_roles with the
+        service key (logged as "System" in role_change_log; the last root can't
+        be removed). supabase-migrate copies CloudKit accounts (same ids, email
+        confirmed), effective roles (isRoot / designated club account → root),
+        approvals and protected roster fields (svnr, iban, birthDate,
+        lastMedicalExamination) to Supabase. supabase-send-resets emails every
+        account a password-reset link. supabase-scrub-cloudkit removes the
+        protected fields from ClubMember/MemberChangeRequest and deletes
+        UserIdentity/RoleAssignment/AccountApproval records. All three are dry
+        runs unless --apply.
+
         ENVIRONMENT:
+          SUPABASE_URL                    Supabase project URL (https://<ref>.supabase.co)
+          SUPABASE_SERVICE_KEY            service_role / sb_secret key — never commit, never ship in the app
           CLOUDKIT_CONTAINER              default: iCloud.it.a11y.BlindensportGraz
           CLOUDKIT_ENVIRONMENT            development | production (default: development)
           CLOUDKIT_KEY_ID                 required — Server-to-Server key id from CloudKit Dashboard

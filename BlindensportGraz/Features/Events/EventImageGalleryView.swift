@@ -12,7 +12,7 @@ struct EventImageGalleryView: View {
 
     private func canDelete(_ image: EventImage) -> Bool {
         guard let user = currentUser else { return false }
-        return user.role == .admin || image.uploadedBy == user.id.uuidString
+        return user.can(.clubManage) || image.uploadedBy == user.id.uuidString
     }
 
     var body: some View {

@@ -19,12 +19,16 @@ nonisolated enum AppRole: RawRepresentable, Hashable {
     case member
     case coach
     case admin
+    /// Super-user (assigns roles). Comes from Supabase `user_roles`; replaces
+    /// the separate `User.isRoot` flag as the source of truth.
+    case root
     case other(String)
 
     private static let knownCases: [String: AppRole] = [
         "member": .member,
         "coach": .coach,
         "admin": .admin,
+        "root": .root,
     ]
 
     init?(rawValue: String) {
@@ -36,6 +40,7 @@ nonisolated enum AppRole: RawRepresentable, Hashable {
         case .member: return "member"
         case .coach: return "coach"
         case .admin: return "admin"
+        case .root: return "root"
         case .other(let raw): return raw
         }
     }
@@ -57,6 +62,7 @@ nonisolated enum AppRole: RawRepresentable, Hashable {
         case .member: return "Mitglied"
         case .coach: return "Trainer:in"
         case .admin: return "Admin"
+        case .root: return "Root"
         case .other(let raw): return raw
         }
     }

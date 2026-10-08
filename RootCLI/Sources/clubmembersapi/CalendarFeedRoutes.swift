@@ -11,25 +11,33 @@ import CloudKitS2SCore
 /// calendar clients care about the extension for content-type sniffing, so
 /// AccountView's generated URL includes one; the route strips it before
 /// looking the token up, so both forms work.
-func calendarFeedRoutes(_ app: RoutesBuilder, client: CloudKitS2SClient) {
+func calendarFeedRoutes(_ app: RoutesBuilder, client: CloudKitS2SClient, supabase: SupabaseAdminClient) {
     app.get("calendar", ":token") { req async throws -> Response in
         let raw = try req.parameters.require("token")
         let token = raw.hasSuffix(".ics") ? String(raw.dropLast(4)) : raw
-        guard !token.isEmpty else { throw Abort(.notFound) }
+        // Tokens are hex (profiles.calendar_token / legacy UUIDs); anything
+        // else can't match and must not reach the PostgREST filter.
+        guard !token.isEmpty, token.allSatisfy({ $0.isHexDigit || $0 == "-" }) else { throw Abort(.notFound) }
 
-        let users = try await client.queryRecords(recordType: "UserIdentity")
-        guard let user = users.first(where: { $0.stringField("calendarToken") == token }) else {
+        let profiles = try await supabase.select(table: "profiles", columns: "id",
+                                                 filters: [("calendar_token", "eq.\(token)")])
+        guard let userID = profiles.first?["id"] as? String else {
             // Deliberately the same 404 shape as an unknown path — doesn't
             // hint at whether a token ever existed.
             throw Abort(.notFound)
         }
-        let role = user.stringField("role") ?? "member"
+        let roles = try await supabase.select(table: "user_roles", columns: "role",
+                                              filters: [("user_id", "eq.\(userID)")])
+        let storedRole = roles.first?["role"] as? String ?? "member"
+        // CalendarFeed knows member/coach/admin; root sees everything too.
+        let role = storedRole == "root" ? "admin" : storedRole
+        let userRecordName = userID.uppercased()
 
         var userTeamIDs: Set<String> = []
         if role != "admin" {
             let memberships = try await client.queryRecords(recordType: "TeamMembership")
             userTeamIDs = Set(memberships
-                .filter { $0.stringField("userID") == user.recordName }
+                .filter { $0.stringField("userID")?.uppercased() == userRecordName }
                 .compactMap { $0.stringField("teamID") })
         }
 

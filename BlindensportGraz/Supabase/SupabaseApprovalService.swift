@@ -2,124 +2,85 @@ import Foundation
 import Supabase
 import SwiftData
 
-nonisolated struct SupabaseApproval: Codable {
-    let id: UUID
+nonisolated struct SupabaseApproval: Codable, Hashable {
     let userID: UUID
-    let memberID: UUID?
-    let approvedBy: String
+    let memberID: UUID
+    let approvedBy: UUID?
     let approvedAt: Date
-    let activationCodeHash: String
-    let activationCodeSalt: String
 
     enum CodingKeys: String, CodingKey {
-        case id
-        case userID             = "user_id"
-        case memberID           = "member_id"
-        case approvedBy         = "approved_by"
-        case approvedAt         = "approved_at"
-        case activationCodeHash = "activation_code_hash"
-        case activationCodeSalt = "activation_code_salt"
+        case userID     = "user_id"
+        case memberID   = "member_id"
+        case approvedBy = "approved_by"
+        case approvedAt = "approved_at"
     }
 }
 
+// All writes go through SECURITY DEFINER RPCs that re-check users.approve
+// against the tables; activation codes are generated and hashed server-side.
 @MainActor
 enum SupabaseApprovalService {
 
-    @discardableResult
-    static func approve(
-        userID: UUID,
-        memberID: UUID,
-        byAdminID adminID: String
-    ) async throws -> SupabaseApproval {
-        nonisolated struct Row: Encodable {
-            let user_id: String
-            let member_id: String
-            let approved_by: String
-        }
-        return try await SupabaseClientSingleton.shared.client
-            .from("account_approvals")
-            .insert(Row(user_id: userID.uuidString,
-                        member_id: memberID.uuidString,
-                        approved_by: adminID))
-            .select()
-            .single()
+    private static var client: SupabaseClient { SupabaseClientSingleton.shared.client }
+
+    static func approve(userID: UUID, memberID: UUID) async throws {
+        nonisolated struct Params: Encodable { let target: UUID; let p_member_id: UUID }
+        try await client
+            .rpc("approve_account", params: Params(target: userID, p_member_id: memberID))
+            .execute()
+    }
+
+    static func revoke(userID: UUID) async throws {
+        nonisolated struct Params: Encodable { let target: UUID }
+        try await client.rpc("revoke_approval", params: Params(target: userID)).execute()
+    }
+
+    // Returns the plain code ("ABCD-EFGH") exactly once, for the admin to
+    // hand over. Redeeming it approves the account for `memberID`, if given.
+    static func createActivationCode(forUserID userID: UUID, memberID: UUID?) async throws -> String {
+        nonisolated struct Params: Encodable { let target: UUID; let p_member_id: UUID? }
+        return try await client
+            .rpc("create_activation_code", params: Params(target: userID, p_member_id: memberID))
             .execute()
             .value
     }
 
-    static func revoke(approvalID: UUID) async throws {
-        try await SupabaseClientSingleton.shared.client
-            .from("account_approvals")
-            .delete()
-            .eq("id", value: approvalID.uuidString)
-            .execute()
-    }
-
-    // Creates an activation-code-only approval (no memberID yet) and returns
-    // the plain-text code for the admin to hand to the user.
-    static func createActivationCode(
-        forUserID userID: UUID,
-        byAdminID adminID: String
-    ) async throws -> String {
-        let code = ActivationCode.generate()
-        let salt = PasswordHashing.makeSalt()
-        let hash = PasswordHashing.hash(
-            password: ActivationCode.normalized(code), salt: salt)
-        nonisolated struct Row: Encodable {
-            let user_id: String
-            let approved_by: String
-            let activation_code_hash: String
-            let activation_code_salt: String
-        }
-        try await SupabaseClientSingleton.shared.client
-            .from("account_approvals")
-            .insert(Row(user_id: userID.uuidString,
-                        approved_by: adminID,
-                        activation_code_hash: hash,
-                        activation_code_salt: salt))
-            .execute()
-        return code
-    }
-
-    // Pulls all approvals this device is entitled to see (RLS filters for
-    // non-admins) and upserts them into the local SwiftData store.
-    // Also removes local AccountApproval rows that no longer exist in Supabase
-    // (revoked approvals take effect on all devices immediately).
-    static func pullAll(modelContext: ModelContext) async {
-        guard let rows: [SupabaseApproval] = try? await SupabaseClientSingleton.shared.client
-            .from("account_approvals")
-            .select()
+    // For the signed-in user. Returns false for an unknown, used, expired or
+    // someone else's code.
+    static func redeemActivationCode(_ code: String) async throws -> Bool {
+        nonisolated struct Params: Encodable { let code: String }
+        return try await client
+            .rpc("redeem_activation_code", params: Params(code: code))
             .execute()
             .value
-        else { return }
+    }
 
-        let remoteIDs = Set(rows.map(\.id))
+    // Own row for everyone; all rows for users.approve (RLS).
+    static func fetchAll() async throws -> [SupabaseApproval] {
+        try await client.from("account_approvals").select().execute().value
+    }
 
+    // Mirrors the visible approvals into the device-local AccountApproval
+    // cache (AccessPolicy, widget). Removes rows that were revoked.
+    static func applyToLocal(_ rows: [SupabaseApproval], modelContext: ModelContext) {
+        let local = (try? modelContext.fetch(FetchDescriptor<AccountApproval>())) ?? []
+        var byUser = Dictionary(grouping: local, by: \.userID)
         for row in rows {
-            var descriptor = FetchDescriptor<AccountApproval>(
-                predicate: #Predicate { $0.id == row.id })
-            descriptor.fetchLimit = 1
-            if let existing = try? modelContext.fetch(descriptor).first {
-                existing.userID             = row.userID
-                existing.memberID           = row.memberID
-                existing.approvedBy         = row.approvedBy
-                existing.approvedAt         = row.approvedAt
-                existing.activationCodeHash = row.activationCodeHash
-                existing.activationCodeSalt = row.activationCodeSalt
-            } else {
-                modelContext.insert(AccountApproval(
-                    id: row.id,
-                    userID: row.userID,
-                    memberID: row.memberID,
-                    approvedBy: row.approvedBy,
-                    approvedAt: row.approvedAt,
-                    activationCodeHash: row.activationCodeHash,
-                    activationCodeSalt: row.activationCodeSalt))
-            }
+            var existing = byUser.removeValue(forKey: row.userID) ?? []
+            let keep = existing.popLast() ?? {
+                let approval = AccountApproval(userID: row.userID, memberID: row.memberID,
+                                               approvedBy: "")
+                modelContext.insert(approval)
+                return approval
+            }()
+            keep.memberID   = row.memberID
+            keep.approvedBy = row.approvedBy?.uuidString ?? "system"
+            keep.approvedAt = row.approvedAt
+            keep.activationCodeHash = ""
+            keep.activationCodeSalt = ""
+            existing.forEach(modelContext.delete)
         }
-        let allLocal = (try? modelContext.fetch(FetchDescriptor<AccountApproval>())) ?? []
-        for local in allLocal where !remoteIDs.contains(local.id) {
-            modelContext.delete(local)
-        }
+        byUser.values.flatMap { $0 }.forEach(modelContext.delete)
+        try? modelContext.save()
     }
 }

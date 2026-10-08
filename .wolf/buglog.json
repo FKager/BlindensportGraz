@@ -8589,6 +8589,133 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-09-29T00:00:00Z"
+    },
+    {
+      "id": "bug-511",
+      "timestamp": "2026-10-08T18:21:58.584Z",
+      "error_message": "Missing guard clause",
+      "file": "supabase/functions/delete-account/index.ts",
+      "root_cause": "No early return/throw for edge case: rootsError",
+      "fix": "Added guard clause: if (rootsError)",
+      "tags": [
+        "auto-detected",
+        "guard-clause",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-08T18:21:58.584Z"
+    },
+    {
+      "id": "bug-512",
+      "timestamp": "2026-10-08T20:49:40+02:00",
+      "error_message": "custom_access_token_hook would return NULL claims for accounts without a role",
+      "file": "supabase/migrations/20261008000002_auth_hook.sql",
+      "root_cause": "`coalesce(is_approved,false) or the_role in (...)` is NULL when the_role is NULL; jsonb_set with NULL value returns NULL",
+      "fix": "coalesce the role comparison too before to_jsonb",
+      "tags": [
+        "supabase",
+        "postgres",
+        "auth-hook",
+        "null"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-08T20:49:40+02:00"
+    },
+    {
+      "id": "bug-513",
+      "timestamp": "2026-10-08T20:49:40+02:00",
+      "error_message": "pgTAP fixture failed: cannot remove the last root account",
+      "file": "supabase/tests/rbac_test.sql",
+      "root_cause": "fixture deleted the seed root before the test root row was inserted (guard trigger working as intended)",
+      "fix": "insert test roles first, then delete the seed root",
+      "tags": [
+        "supabase",
+        "pgtap",
+        "fixtures"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-08T20:49:40+02:00"
+    },
+    {
+      "id": "bug-514",
+      "timestamp": "2026-10-08T20:49:40+02:00",
+      "error_message": "pgTAP: expected throws_ok on RLS-blocked UPDATE / member seeing own row",
+      "file": "supabase/tests/*.sql",
+      "root_cause": "RLS filters UPDATE rows silently; new 'read own' policy legitimately returns the member's row",
+      "fix": "assert unchanged value; update expected counts",
+      "tags": [
+        "supabase",
+        "pgtap",
+        "rls"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-08T20:49:40+02:00"
+    },
+    {
+      "id": "bug-515",
+      "timestamp": "2026-10-08T20:49:40+02:00",
+      "error_message": "FullBackupImporter: value of type 'CloudKitSync' has no member 'pushRoleChangeLog'",
+      "file": "BlindensportGraz/Features/Backup/FullBackupImporter.swift",
+      "root_cause": "CloudKit role-log sync removed in Supabase migration",
+      "fix": "restore legacy log locally only (no push)",
+      "tags": [
+        "build",
+        "supabase-migration"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-08T20:49:40+02:00"
+    },
+    {
+      "id": "bug-516",
+      "timestamp": "2026-10-08T20:49:40+02:00",
+      "error_message": "call to main actor-isolated static method 'granted(to:)' in a synchronous nonisolated context",
+      "file": "BlindensportGraz/Shared/AccessClaims.swift",
+      "root_cause": "User (@Model) extension is nonisolated; Permission.serverTable is @MainActor",
+      "fix": "mark User.can @MainActor",
+      "tags": [
+        "swift6",
+        "concurrency",
+        "build"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-08T20:49:40+02:00"
+    },
+    {
+      "id": "bug-517",
+      "timestamp": "2026-10-08T20:49:40+02:00",
+      "error_message": "Tests referenced removed RoleAssignmentResolver / designated-root APIs",
+      "file": "BlindensportGrazTests/*",
+      "root_cause": "Supabase migration removed client-side role resolution and elevation",
+      "fix": "deleted RoleAssignmentResolverTests/DesignatedRootTests, added NoClientRoleGrantTests + AccessClaimsTests, updated AccessPolicyTests/RoleChangeLogTests",
+      "tags": [
+        "tests",
+        "supabase-migration"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-08T20:49:40+02:00"
+    },
+    {
+      "id": "bug-518",
+      "timestamp": "2026-10-08T18:50:01.036Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/CLAUDE.md",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 4→7 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-08T18:50:01.036Z"
     }
   ]
 }

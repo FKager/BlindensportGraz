@@ -263,6 +263,32 @@ swift build -c release
 
 Binaries land at `.build/release/rootcli` and `.build/release/clubmembersapi`.
 
+## Supabase (accounts, roles, protected member data)
+
+Since October 2026, accounts, roles, approvals and the protected roster
+fields (`svnr`, `iban`, `birthDate`, `lastMedicalExamination`) live in
+Supabase (EU, project defined in `../supabase/`), not in CloudKit. `rootcli
+list`/`set-role` and the webcal feed of `clubmembersapi` use the Supabase
+admin API with:
+
+```bash
+export SUPABASE_URL=https://<project-ref>.supabase.co
+export SUPABASE_SERVICE_KEY=<service_role or sb_secret key>   # bypasses RLS — keep out of git
+```
+
+One-time migration from CloudKit (each step is a dry run without `--apply`):
+
+```bash
+rootcli supabase-migrate            # review: accounts, roles, approvals, skipped rows
+rootcli supabase-migrate --apply    # same user ids, email confirmed, roles + approvals + member_private
+rootcli supabase-send-resets --apply   # password-reset email to every account (needs SMTP in Supabase)
+# after the new app build is installed on every device:
+rootcli supabase-scrub-cloudkit --apply   # remove protected fields + delete UserIdentity/RoleAssignment/AccountApproval
+```
+
+Role changes are logged by the database (`role_change_log`, "System" for
+RootCLI). The last `root` account cannot be removed or demoted.
+
 ## rootcli usage
 
 ```bash

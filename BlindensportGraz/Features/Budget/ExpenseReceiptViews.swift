@@ -36,7 +36,7 @@ struct ExpenseReceiptsSection: View {
 
     private func canDelete(_ receipt: ExpenseReceipt) -> Bool {
         guard let user = currentUser else { return false }
-        return user.role == .admin || receipt.uploadedBy == user.id.uuidString
+        return user.can(.budgetManage) || receipt.uploadedBy == user.id.uuidString
     }
 
     var body: some View {

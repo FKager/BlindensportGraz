@@ -5,6 +5,7 @@ struct AccountView: View {
     let currentUser: User?
     let onLogout: () -> Void
     @Environment(\.modelContext) private var modelContext
+    @Environment(AuthContext.self) private var authContext
     @Query private var allUsers: [User]
     @Query private var members: [Member]
     @Query private var approvals: [AccountApproval]
@@ -16,6 +17,8 @@ struct AccountView: View {
     @State private var showDeleteAccountConfirmation = false
     @State private var showSetPassword = false
     @State private var showRequestSent = false
+    @State private var showRedeemCode = false
+    @State private var errorMessage: String?
 
     /// The Benutzerverwaltung entry an admin confirmed as this account's
     /// (`AccessPolicy.approvedMember`). A name/email match alone is not
@@ -54,7 +57,7 @@ struct AccountView: View {
                             Text(user.email)
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                            TagLabel(roleLabel(user.role.rawValue))
+                            TagLabel(roleLabel)
                         }
                     }
                     .padding(.vertical, Theme.Spacing.s)
@@ -86,11 +89,17 @@ struct AccountView: View {
                     // Only an admin-approved link opens roster data (see
                     // `approvedMember`); a plausible but unapproved match just
                     // says it's waiting for an admin.
-                    if user.passwordHash.isEmpty {
+                    Button {
+                        showSetPassword = true
+                    } label: {
+                        Label("Passwort ändern", systemImage: "key")
+                    }
+                    .accessibilityHint("Auch für Konten, die bisher nur „Mit Apple anmelden“ nutzen.")
+                    if !authContext.hasFullAccess {
                         Button {
-                            showSetPassword = true
+                            showRedeemCode = true
                         } label: {
-                            Label("Passwort festlegen", systemImage: "key")
+                            Label("Aktivierungscode einlösen", systemImage: "number.square")
                         }
                     }
                     if let member = approvedMember {
@@ -140,8 +149,17 @@ struct AccountView: View {
             if let user = currentUser {
                 // Already signed in (e.g. via Apple on this device) — no
                 // activation code needed.
-                SetPasswordView(user: user, requiresActivationCode: false) { _ in }
+                SetPasswordView(title: "Passwort ändern") {}
             }
+        }
+        .sheet(isPresented: $showRedeemCode) {
+            RedeemActivationCodeView()
+        }
+        .alert("Fehler", isPresented: Binding(get: { errorMessage != nil },
+                                              set: { if !$0 { errorMessage = nil } })) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
         }
         .alert("Antrag gesendet", isPresented: $showRequestSent) {
         } message: {
@@ -186,17 +204,11 @@ struct AccountView: View {
         // Self-service account deletion (account-tiers refactor, decision
         // #7 — App Store guideline 5.1.1(v): any app offering in-app
         // account creation must also let the user delete that account from
-        // within the app). Reuses the same UserService.delete UserListView
-        // already calls for admin-initiated deletion, then routes through
-        // onLogout — which also clears the appleUserIdentifier/localUserID
-        // @AppStorage keys (RootView), so a deleted account is never
-        // "resumed" on next launch.
+        // within the app). Deletes the Supabase account; the SDK clears the
+        // Keychain session, so AuthContext switches to the anonymous screen.
         .confirmationDialog("Konto löschen?", isPresented: $showDeleteAccountConfirmation, titleVisibility: .visible) {
             Button("Löschen", role: .destructive) {
-                if let user = currentUser {
-                    UserService.delete(user, modelContext: modelContext)
-                }
-                onLogout()
+                Task { await deleteAccount() }
             }
             Button("Abbrechen", role: .cancel) {}
         } message: {
@@ -239,11 +251,27 @@ struct AccountView: View {
         }
     }
 
-    private func roleLabel(_ role: String) -> LocalizedStringKey {
-        switch role {
-        case "admin": return "Administrator"
-        case "coach": return "Trainer:in"
-        default: return "Mitglied"
+    private var roleLabel: LocalizedStringKey {
+        switch authContext.role {
+        case .root: return "Root"
+        case .admin: return "Administrator"
+        case .coach: return "Trainer:in"
+        case .member: return "Mitglied"
+        case .other, .none: return "Freigabe ausstehend"
+        }
+    }
+
+    /// Deletes the Supabase account (Edge Function `delete-account`; all
+    /// server rows cascade), then the local cache. The last root account is
+    /// refused server-side.
+    private func deleteAccount() async {
+        do {
+            try await SupabaseAuthService.deleteAccount()
+            if let user = currentUser {
+                UserService.delete(user, modelContext: modelContext)
+            }
+        } catch {
+            errorMessage = String(localized: "Das Konto konnte nicht gelöscht werden. Das letzte Root-Konto kann nicht gelöscht werden; sonst bitte später noch einmal versuchen.")
         }
     }
 
@@ -297,8 +325,16 @@ struct AccountView: View {
         return "webcal://\(host)/calendar/\(user.calendarToken).ics"
     }
 
+    /// New random token from the server (`rotate_calendar_token`); the old
+    /// feed URL stops working immediately.
     private func generateCalendarToken(for user: User) {
-        user.calendarToken = UUID().uuidString
-        UserService.save(user, modelContext: modelContext)
+        Task {
+            do {
+                user.calendarToken = try await SupabaseProfileService.rotateCalendarToken()
+                UserService.save(user, modelContext: modelContext)
+            } catch {
+                errorMessage = AuthErrorMessage.text(for: error)
+            }
+        }
     }
 }

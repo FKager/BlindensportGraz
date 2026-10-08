@@ -17,7 +17,7 @@ struct EventDetailView: View {
 
     // Who may leave read-only mode: admins and the club's root account.
     var canEdit: Bool {
-        currentUser?.role == .admin || (currentUser?.isRoot ?? false)
+        (currentUser?.can(.clubManage) ?? false)
     }
 
     // Direct-membership toggle helpers — event.directMembers is a to-many

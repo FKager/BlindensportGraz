@@ -15,7 +15,7 @@ struct VereinView: View {
     let currentUser: User
 
     private var isAdmin: Bool {
-        currentUser.role == .admin || currentUser.isRoot
+        currentUser.can(.clubManage)
     }
 
     var body: some View {

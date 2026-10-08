@@ -1,62 +1,28 @@
 import SwiftUI
-import SwiftData
-import AuthenticationServices
 
-/// Sets the first password for an account created before password login
-/// existed (passwordHash empty).
-///
-/// Coming from the login screen (`requiresActivationCode`), the person must
-/// first enter a one-time activation code an admin created for this account
-/// (`AccountApproval`, "App-Konten") — otherwise anyone who knows the email
-/// could claim the account by being first to set a password. From the
-/// Account tab the person is already signed in (e.g. via Apple on their own
-/// iPhone), so no code is needed.
+/// Sets a new password for the signed-in Supabase account — after opening a
+/// password-reset link (`AuthContext.isPasswordRecovery`), or from the
+/// Account tab (e.g. an account that so far only used Sign in with Apple).
 struct SetPasswordView: View {
-    let user: User
-    let requiresActivationCode: Bool
-    let onComplete: (User) -> Void
+    var title: LocalizedStringKey = "Passwort festlegen"
+    let onComplete: () -> Void
 
-    @Query private var approvals: [AccountApproval]
-    @Query private var users: [User]
-    @State private var activationCode = ""
-    @State private var codeRejected = false
-
-    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var password = ""
     @State private var passwordConfirm = ""
+    @State private var isSaving = false
+    @State private var errorMessage: String?
 
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    Text("Für \(user.displayName) wurde noch kein Passwort festgelegt. Bitte jetzt eines vergeben.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                } header: {
-                    Text("Passwort festlegen")
-                }
-                if requiresActivationCode {
-                    Section {
-                        TextField("Aktivierungscode", text: $activationCode)
-                            .textInputAutocapitalization(.characters)
-                            .autocorrectionDisabled()
-                        if codeRejected {
-                            Label("Der Aktivierungscode stimmt nicht.", systemImage: "exclamationmark.triangle")
-                                .font(.caption)
-                                .foregroundStyle(Theme.Palette.warning)
-                        }
-                    } header: {
-                        Text("Aktivierungscode")
-                    } footer: {
-                        Text("Den Code bekommst du von einem Admin (Verein → App-Konten). Er schützt dein Konto davor, dass jemand anderer mit deiner E-Mail-Adresse ein Passwort festlegt.")
-                    }
-                }
-                Section {
-                    SecureField("Passwort", text: $password)
+                    SecureField("Neues Passwort", text: $password)
+                        .textContentType(.newPassword)
                     SecureField("Passwort wiederholen", text: $passwordConfirm)
+                        .textContentType(.newPassword)
                     if !password.isEmpty, !Validation.passwordMeetsMinimumStrength(password) {
-                        Label("Passwort muss mindestens 8 Zeichen haben", systemImage: "exclamationmark.triangle")
+                        Label("Mindestens 10 Zeichen, mit Buchstaben und Ziffern", systemImage: "exclamationmark.triangle")
                             .font(.caption)
                             .foregroundStyle(Theme.Palette.warning)
                     }
@@ -65,32 +31,41 @@ struct SetPasswordView: View {
                             .font(.caption)
                             .foregroundStyle(Theme.Palette.warning)
                     }
+                    if let errorMessage {
+                        Label(errorMessage, systemImage: "exclamationmark.triangle")
+                            .font(.caption)
+                            .foregroundStyle(Theme.Palette.warning)
+                    }
                 }
             }
-            .navigationTitle("Passwort festlegen")
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
+                    Button("Abbrechen") {
+                        dismiss()
+                        onComplete()
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") {
-                        if requiresActivationCode,
-                           !ActivationCode.matches(activationCode, for: user, approvals: approvals, users: users) {
-                            codeRejected = true
-                            return
-                        }
-                        let salt = PasswordHashing.makeSalt()
-                        user.passwordSalt = salt
-                        user.passwordHash = PasswordHashing.hash(password: password, salt: salt)
-                        UserService.save(user, modelContext: modelContext)
-                        dismiss()
-                        onComplete(user)
-                    }
-                    .disabled(!Validation.passwordMeetsMinimumStrength(password) || password != passwordConfirm
-                              || (requiresActivationCode && ActivationCode.normalized(activationCode).count != 8))
+                    Button("Speichern") { Task { await save() } }
+                        .disabled(isSaving || !Validation.passwordMeetsMinimumStrength(password)
+                                  || password != passwordConfirm)
                 }
             }
+        }
+    }
+
+    private func save() async {
+        errorMessage = nil
+        isSaving = true
+        defer { isSaving = false }
+        do {
+            try await SupabaseAuthService.updatePassword(password)
+            dismiss()
+            onComplete()
+        } catch {
+            errorMessage = AuthErrorMessage.text(for: error)
         }
     }
 }

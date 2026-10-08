@@ -52,7 +52,7 @@ enum NextEventLookup {
 
     static func isVisible(teams: [Team], to user: User?) -> Bool {
         guard let user else { return teams.isEmpty }
-        if user.role == .admin { return true }
+        if user.can(.clubManage) { return true }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return teams.isEmpty || teams.contains { myTeamIDs.contains($0.id) }
     }

@@ -15,7 +15,9 @@ extension CloudKitSync {
         record[CKSchema.MemberChangeRequest.lastName] = request.lastName
         record[CKSchema.MemberChangeRequest.title] = request.title
         record[CKSchema.MemberChangeRequest.gender] = request.gender
-        record[CKSchema.MemberChangeRequest.birthDate] = request.birthDate
+        // Private fields go to Supabase `member_private_requests`; nil also
+        // scrubs values pushed by older app versions.
+        record[CKSchema.MemberChangeRequest.birthDate] = nil
         record[CKSchema.MemberChangeRequest.street] = request.street
         record[CKSchema.MemberChangeRequest.zip] = request.zip
         record[CKSchema.MemberChangeRequest.city] = request.city
@@ -23,9 +25,9 @@ extension CloudKitSync {
         record[CKSchema.MemberChangeRequest.email] = request.email
         record[CKSchema.MemberChangeRequest.phone] = request.phone
         record[CKSchema.MemberChangeRequest.sportId] = request.sportId
-        record[CKSchema.MemberChangeRequest.svnr] = request.svnr
-        record[CKSchema.MemberChangeRequest.iban] = request.iban
-        record[CKSchema.MemberChangeRequest.lastMedicalExamination] = request.lastMedicalExamination
+        record[CKSchema.MemberChangeRequest.svnr] = nil
+        record[CKSchema.MemberChangeRequest.iban] = nil
+        record[CKSchema.MemberChangeRequest.lastMedicalExamination] = nil
         save(record)
     }
 
@@ -43,7 +45,6 @@ extension CloudKitSync {
             let lastName = record[CKSchema.MemberChangeRequest.lastName] as? String ?? ""
             let title = record[CKSchema.MemberChangeRequest.title] as? String ?? ""
             let gender = record[CKSchema.MemberChangeRequest.gender] as? String ?? ""
-            let birthDate = record[CKSchema.MemberChangeRequest.birthDate] as? Date
             let street = record[CKSchema.MemberChangeRequest.street] as? String ?? ""
             let zip = record[CKSchema.MemberChangeRequest.zip] as? String ?? ""
             let city = record[CKSchema.MemberChangeRequest.city] as? String ?? ""
@@ -51,9 +52,13 @@ extension CloudKitSync {
             let email = record[CKSchema.MemberChangeRequest.email] as? String ?? ""
             let phone = record[CKSchema.MemberChangeRequest.phone] as? String ?? ""
             let sportId = record[CKSchema.MemberChangeRequest.sportId] as? String ?? ""
-            let svnr = record[CKSchema.MemberChangeRequest.svnr] as? String ?? ""
-            let iban = record[CKSchema.MemberChangeRequest.iban] as? String ?? ""
-            let lastMedicalExamination = record[CKSchema.MemberChangeRequest.lastMedicalExamination] as? Date
+            // Private fields are not in CloudKit: keep the local values, and
+            // start new requests from the member's current ones so the review
+            // shows no private change until the Supabase proposal is loaded
+            // (MemberChangeRequestDetailView).
+            var memberDescriptor = FetchDescriptor<Member>(predicate: #Predicate { $0.id == memberID })
+            memberDescriptor.fetchLimit = 1
+            let member = try? modelContext.fetch(memberDescriptor).first
 
             var descriptor = FetchDescriptor<MemberChangeRequest>(predicate: #Predicate { $0.id == id })
             descriptor.fetchLimit = 1
@@ -68,7 +73,6 @@ extension CloudKitSync {
                 existing.lastName = lastName
                 existing.title = title
                 existing.gender = gender
-                existing.birthDate = birthDate
                 existing.street = street
                 existing.zip = zip
                 existing.city = city
@@ -76,16 +80,14 @@ extension CloudKitSync {
                 existing.email = email
                 existing.phone = phone
                 existing.sportId = sportId
-                existing.svnr = svnr
-                existing.iban = iban
-                existing.lastMedicalExamination = lastMedicalExamination
             } else {
                 let request = MemberChangeRequest(
                     id: id, memberID: memberID, requestedBy: requestedBy, requestedAt: requestedAt,
                     status: status, reviewedBy: reviewedBy, reviewedAt: reviewedAt,
-                    firstName: firstName, lastName: lastName, title: title, gender: gender, birthDate: birthDate,
+                    firstName: firstName, lastName: lastName, title: title, gender: gender, birthDate: member?.birthDate,
                     street: street, zip: zip, city: city, country: country, email: email, phone: phone,
-                    sportId: sportId, svnr: svnr, iban: iban, lastMedicalExamination: lastMedicalExamination
+                    sportId: sportId, svnr: member?.svnr ?? "", iban: member?.iban ?? "",
+                    lastMedicalExamination: member?.lastMedicalExamination
                 )
                 modelContext.insert(request)
             }

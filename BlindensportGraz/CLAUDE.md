@@ -175,9 +175,12 @@ All UI text is in German. Common terms:
 - "Admin" = Administrator
 
 ## Role Hierarchy
-1. **admin** - Full access to all features
-2. **coach** - Can create/manage events and trainings for their team
-3. **member** - Basic user, can participate in events
+Accounts, roles and approvals live in **Supabase** (`../supabase/`), not CloudKit. Roles come from `user_roles`; permissions from `role_permissions` (check with `user.can(.permission)` / `authContext.can(.permission)`, never compare roles directly). The server enforces everything via RLS and RPCs.
+1. **root** - admin + assigns roles (`roles.assign`)
+2. **admin** - Full access to all features, approves accounts, reads protected member data
+3. **coach** - Can create/manage events, trainings and teams
+4. **member** - Basic user, can participate in events
+5. *(no role)* - pending: schedule only until an admin approves the account
 
 ## Database Schema
 All data is stored using SwiftData's persistence layer with relationships:

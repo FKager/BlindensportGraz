@@ -12,29 +12,18 @@ final class User {
     var createdAt: Date = Date.now
     // Set automatically on account creation by matching against the Member roster.
     var isGrazerVSCMember: Bool = false
-    // Super-user flag, distinct from `role`. Only a root account can change another
-    // account's `role`; nobody (including root) can change their own via the app —
-    // see EditAccountView/UserListView. Set by RootView on first-ever account
-    // creation, automatically for the club's designated account (see
-    // elevateIfDesignatedRoot below), or externally via the RootCLI tool talking
-    // directly to CloudKit.
+    // Legacy super-user flag. Root is now `role == .root` (Supabase
+    // `user_roles`); kept in the schema and mirrored by AuthContext so no
+    // SwiftData migration is needed. Don't read it for access decisions.
     var isRoot: Bool = false
 
-    // Salted-hash password material for LoginView's email+password form (the
-    // account-refactor's account-tiers work: anonymous/logged-in/admin).
-    // Synced via CloudKit like firstName/lastName (see CKSchema.UserIdentity
-    // and PasswordHashing.swift's doc comment for the security caveat this
-    // implies) so a member can log in with the same password from any
-    // device. Empty for every pre-refactor account — see LoginView's
-    // "Passwort festlegen" migration path.
+    // Legacy (pre-Supabase) password material — always blanked now;
+    // passwords live only in Supabase Auth. Kept to avoid a schema migration.
     var passwordHash: String = ""
     var passwordSalt: String = ""
 
-    // Opaque token gating this user's read-only webcal feed — see
-    // CKSchema.UserIdentity.calendarToken's doc comment. Empty until
-    // generated (AccountView); synced (non-sensitive) like firstName/
-    // lastName/role, unlike email/appleUserIdentifier which never leave
-    // this device.
+    // Webcal feed token, generated/rotated server-side
+    // (`profiles.calendar_token`, RPC `rotate_calendar_token`).
     var calendarToken: String = ""
 
     @Relationship(deleteRule: .cascade, inverse: \TeamMembership.user)
@@ -78,44 +67,9 @@ nonisolated extension User {
         [firstName, lastName].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
     }
 
-    // Grants root/admin automatically to the club's designated account, matched
-    // by firstName + lastName + email together — no Apple Sign-In/
-    // appleUserIdentifier gate. Originally gated on a verified Apple email
-    // (see RootView's old designatedRootEmail), but that account has no real
-    // Apple ID and is always created via RegisterView's manual form, so an
-    // Apple-verification requirement could never fire. Requiring all three
-    // fields (not email alone) keeps the bar for typing your way to root
-    // reasonably high even without Apple's server-side verification. Called
-    // from every place these three fields can be set/edited: RootView's
-    // account-resolution/login paths, RegisterView's manual creation, and
-    // EditAccountView whenever firstName/lastName/email change.
-    static let designatedRootFirstName = "Blindensport"
-    static let designatedRootLastName = "Graz"
+    /// The club's own account; made root on the server by
+    /// `rootcli supabase-migrate` (never granted by the app).
     static let designatedRootEmail = "blindensport.gvsc@gmail.com"
-
-    /// @AppStorage/UserDefaults key holding the `id` of the designated-root
-    /// account as it was created or logged into on *this* device. The club
-    /// account syncs via CloudKit like every other `User`, so without this
-    /// flag it would appear in every device's LoginView account picker —
-    /// see RootView's `LoginView`.
-    static let localDesignatedRootIDKey = "localDesignatedRootUserID"
-
-    /// True when this account carries the club's designated-root identity
-    /// (firstName + lastName + email all match). Mirrors
-    /// `elevateIfDesignatedRoot`'s field checks, without the `!isRoot` guard.
-    var isDesignatedRootIdentity: Bool {
-        firstName.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(User.designatedRootFirstName) == .orderedSame
-            && lastName.trimmingCharacters(in: .whitespaces).caseInsensitiveCompare(User.designatedRootLastName) == .orderedSame
-            && email.trimmingCharacters(in: .whitespaces).lowercased() == User.designatedRootEmail
-    }
-
-    @discardableResult
-    func elevateIfDesignatedRoot() -> Bool {
-        guard isDesignatedRootIdentity, !isRoot else { return false }
-        isRoot = true
-        role = .admin
-        return true
-    }
 
     /// Centralizes the GVSC-membership-or-elevated-role gate for the
     /// account-tiers refactor (RSVP self-service, roster self-editing):
@@ -129,6 +83,6 @@ nonisolated extension User {
     /// (`AccessPolicy.approvedMember`) — checked live by the caller instead of
     /// the stored `isGrazerVSCMember` flag, which is only refreshed at login.
     func hasGVSCPrivileges(approved: Bool) -> Bool {
-        approved || role == .coach || role == .admin || isRoot
+        approved || role == .coach || role == .admin || role == .root
     }
 }

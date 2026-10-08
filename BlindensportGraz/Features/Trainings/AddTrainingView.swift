@@ -52,7 +52,7 @@ struct AddTrainingView: View {
     // without this bypass it could never be assigned to anything.
     var myTeams: [Team] {
         guard let user = currentUser else { return [] }
-        if user.role == .admin { return allTeams }
+        if user.can(.clubManage) { return allTeams }
         let myTeamIDs = Set(user.memberships.map { $0.team.id })
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }

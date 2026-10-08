@@ -3,7 +3,8 @@ import SwiftData
 
 /// Roster edits — one of audit.md's two explicitly-prioritized areas for
 /// visible failure signaling (alongside role changes), since a silently
-/// failed roster save is real club-member data loss.
+/// failed roster save is real club-member data loss. Sensitive fields go to
+/// Supabase (`MemberPrivateSync`), the rest to CloudKit.
 @MainActor
 enum MemberService {
     @discardableResult
@@ -11,6 +12,7 @@ enum MemberService {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "Member",
                                         failureMessage: "Mitglied konnte nicht gespeichert werden.") {
             CloudKitSync.shared.pushMember(member)
+            MemberPrivateSync.push([member])
         }
     }
 
@@ -25,6 +27,7 @@ enum MemberService {
             for member in members {
                 CloudKitSync.shared.pushMember(member)
             }
+            MemberPrivateSync.push(members)
         }
     }
 
@@ -35,6 +38,7 @@ enum MemberService {
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Member",
                                                  failureMessage: "Mitglied konnte nicht gelöscht werden.") {
             CloudKitSync.shared.deleteMember(id)
+            MemberPrivateSync.delete(memberID: id)
         }
     }
 }

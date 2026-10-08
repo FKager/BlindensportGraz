@@ -19,14 +19,14 @@ struct MainTabView: View {
     @State private var showSharedInvitationPermissionAlert = false
 
     private var isAdmin: Bool {
-        currentUser.role == .admin || currentUser.isRoot
+        currentUser.can(.clubManage)
     }
 
     // Same gate TournamentsListView's own "Turnier aus Einladung erstellen"
     // button uses (canManageEvents) — sharing a file into the app must not
     // be a way to create a tournament that bypasses that permission check.
     private var canManageEvents: Bool {
-        currentUser.role == .admin || currentUser.role == .coach
+        currentUser.can(.eventsManage)
     }
 
     var body: some View {

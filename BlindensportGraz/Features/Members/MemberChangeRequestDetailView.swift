@@ -9,6 +9,7 @@ struct MemberChangeRequestDetailView: View {
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @State private var privateProposalLoaded = false
 
     private struct FieldDiff: Identifiable {
         let id = UUID()
@@ -92,14 +93,17 @@ struct MemberChangeRequestDetailView: View {
             if request.status == MemberChangeRequest.pendingStatus, let member {
                 Section {
                     Button {
-                        MemberChangeRequestService.approve(request, member: member,
-                                                            reviewedBy: currentUser?.id.uuidString ?? "", modelContext: modelContext)
+                        if MemberChangeRequestService.approve(request, member: member,
+                                                               reviewedBy: currentUser?.id.uuidString ?? "", modelContext: modelContext) {
+                            clearPrivateProposal()
+                        }
                         dismiss()
                     } label: {
                         Label("Annehmen", systemImage: "checkmark.circle.fill")
                     }
                     Button(role: .destructive) {
                         MemberChangeRequestService.reject(request, reviewedBy: currentUser?.id.uuidString ?? "", modelContext: modelContext)
+                        clearPrivateProposal()
                         dismiss()
                     } label: {
                         Label("Ablehnen", systemImage: "xmark.circle")
@@ -113,5 +117,24 @@ struct MemberChangeRequestDetailView: View {
         }
         .navigationTitle(member?.fullName ?? "Änderungsantrag")
         .navigationBarTitleDisplayMode(.inline)
+        .task { await loadPrivateProposal() }
+    }
+
+    /// Private fields are proposed through Supabase (`member_private_requests`),
+    /// not the CloudKit request — copy them into the local request so the
+    /// diff and "Annehmen" (→ MemberService → MemberPrivateSync) include them.
+    private func loadPrivateProposal() async {
+        guard !privateProposalLoaded, request.status == MemberChangeRequest.pendingStatus else { return }
+        guard let proposal = try? await SupabaseMemberPrivateService.fetchRequest(memberID: request.memberID) else { return }
+        privateProposalLoaded = true
+        request.svnr = proposal.svnr
+        request.iban = proposal.iban
+        request.birthDate = proposal.birthDate
+        request.lastMedicalExamination = proposal.lastMedicalExamination
+    }
+
+    private func clearPrivateProposal() {
+        let memberID = request.memberID
+        Task { try? await SupabaseMemberPrivateService.deleteRequest(memberID: memberID) }
     }
 }

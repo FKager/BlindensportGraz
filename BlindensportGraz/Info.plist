@@ -36,6 +36,10 @@
             <string>Blindensport Graz</string>
         </dict>
     </dict>
+    <key>SupabaseURL</key>
+    <string>$(SUPABASE_URL)</string>
+    <key>SupabaseAnonKey</key>
+    <string>$(SUPABASE_ANON_KEY)</string>
     <key>CFBundleURLTypes</key>
     <array>
         <dict>

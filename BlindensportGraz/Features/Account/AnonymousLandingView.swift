@@ -10,9 +10,6 @@ import SwiftUI
 /// "Registrieren"/"Anmelden" — everything else requires an account that's
 /// listed in the Benutzerverwaltung (see `AccessPolicy`).
 struct AnonymousLandingView: View {
-    let onLogin: (User) -> Void
-    let onAppleSignIn: () async -> Void
-
     @Environment(\.modelContext) private var modelContext
     @State private var showLogin = false
     @State private var showRegister = false
@@ -59,10 +56,10 @@ struct AnonymousLandingView: View {
                 await SyncOrchestrationService.syncAll(modelContext: modelContext)
             }
             .sheet(isPresented: $showRegister) {
-                RegisterView(onRegister: onLogin)
+                RegisterView()
             }
             .sheet(isPresented: $showLogin) {
-                LoginView(onLogin: onLogin, onAppleSignIn: onAppleSignIn)
+                LoginView()
             }
         }
     }

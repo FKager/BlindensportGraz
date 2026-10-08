@@ -53,6 +53,11 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz
+        # Supabase (auth, roles, protected member data). Publishable/anon key
+        # only — RLS enforces access. The service-role key never ships in the app.
+        # TODO(supabase): fill in after the hosted project is created.
+        SUPABASE_URL: ""
+        SUPABASE_ANON_KEY: ""
         # Swift 6.2 "approachable concurrency" for a UI app: code is
         # @MainActor unless marked `nonisolated`/`@concurrent`, and
         # nonisolated async functions run on the caller's actor.

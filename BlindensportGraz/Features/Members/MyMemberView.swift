@@ -30,7 +30,15 @@ struct MyMemberView: View {
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(AuthContext.self) private var authContext
     @Query private var allRequests: [MemberChangeRequest]
+
+    /// Private fields (Geburtsdatum, SVNR, IBAN, Untersuchung) are proposed
+    /// via Supabase `member_private_requests`, which needs an approved
+    /// account and this session's own values loaded.
+    private var privateEditable: Bool {
+        authContext.hasFullAccess && authContext.privateDataLoaded
+    }
 
     @State private var draft: MemberChangeRequest?
 
@@ -84,7 +92,9 @@ struct MyMemberView: View {
                     Text("weiblich").tag("f")
                     Text("männlich").tag("m")
                 }
-                OptionalDatePicker(label: "Geburtsdatum", date: bindingFor(\.birthDate, on: draft))
+                if privateEditable {
+                    OptionalDatePicker(label: "Geburtsdatum", date: bindingFor(\.birthDate, on: draft))
+                }
                 TextField("Straße", text: bindingFor(\.street, on: draft))
                 TextField("PLZ", text: bindingFor(\.zip, on: draft))
                     .keyboardType(.numberPad)
@@ -104,8 +114,23 @@ struct MyMemberView: View {
             // doc comment) — kept as its own section rather than folded into
             // "Kontakt" since these are federation/payout data, not everyday
             // contact info.
-            Section("Sportverband & Zahlungsdaten") {
+            Section {
                 TextField("Sport-ID", text: bindingFor(\.sportId, on: draft))
+                if privateEditable {
+                    privateFields(for: draft)
+                }
+            } header: {
+                Text("Sportverband & Zahlungsdaten")
+            } footer: {
+                if !privateEditable {
+                    Text("Geburtsdatum, SVNR, IBAN und Untersuchungsdatum kannst du eintragen, sobald dein Konto freigegeben ist.")
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func privateFields(for draft: MemberChangeRequest) -> some View {
                 TextField("SVNR", text: bindingFor(\.svnr, on: draft))
                 if !Validation.isPlausibleAustrianSVNR(draft.svnr) {
                     Label("SVNR-Format ungewöhnlich", systemImage: "exclamationmark.triangle")
@@ -121,8 +146,6 @@ struct MyMemberView: View {
                         .foregroundStyle(Theme.Palette.warning)
                 }
                 OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: bindingFor(\.lastMedicalExamination, on: draft))
-            }
-        }
     }
 
     /// `draft` is a plain `let` (not `@Bindable`), deliberately — it can be
@@ -137,10 +160,28 @@ struct MyMemberView: View {
 
     private func submitIfChanged() {
         guard let draft, draft.differs(from: member) else { return }
+        if privateEditable, privateDiffers(draft) {
+            let proposal = MemberPrivateData(memberID: member.id, svnr: draft.svnr, iban: draft.iban,
+                                             birthDate: draft.birthDate,
+                                             lastMedicalExamination: draft.lastMedicalExamination)
+            Task {
+                do { try await SupabaseMemberPrivateService.submitRequest(proposal) }
+                catch {
+                    ServiceFailureSignal.shared.report(
+                        String(localized: "Änderung der geschützten Daten konnte nicht gesendet werden: \(AuthErrorMessage.text(for: error))"))
+                }
+            }
+        }
         if draft.modelContext == nil {
             modelContext.insert(draft)
         }
         draft.requestedAt = .now
         MemberChangeRequestService.save(draft, modelContext: modelContext)
+    }
+
+    private func privateDiffers(_ draft: MemberChangeRequest) -> Bool {
+        draft.svnr != member.svnr || draft.iban != member.iban
+            || draft.birthDate != member.birthDate
+            || draft.lastMedicalExamination != member.lastMedicalExamination
     }
 }

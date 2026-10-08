@@ -34,13 +34,13 @@ struct TrainingsListView: View {
 
     var canManageEvents: Bool {
         guard let user = currentUser else { return false }
-        return user.role == .admin || user.role == .coach
+        return user.can(.eventsManage)
        }
 
     // Matches the gating the Trainingsfrequenzliste button used in AccountView
     // before it moved here (see TrainingsfrequenzlisteView's doc comment).
     var isAdmin: Bool {
-        currentUser?.role == .admin || (currentUser?.isRoot ?? false)
+        (currentUser?.can(.clubManage) ?? false)
        }
 
     // Newest-first, matching the old @Query(order: .reverse).
@@ -49,7 +49,7 @@ struct TrainingsListView: View {
     }
 
     var visibleTrainings: [Training] {
-        if currentUser?.role == .admin { return sortedTrainings }
+        if (currentUser?.can(.clubManage) ?? false) { return sortedTrainings }
         let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
         return sortedTrainings.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
     }

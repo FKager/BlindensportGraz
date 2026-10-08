@@ -41,32 +41,6 @@ final class RoleChangeLogTests: XCTestCase {
         XCTAssertEqual(fetched.first?.changedBy, "system:designatedRoot")
     }
 
-    /// Same shape the RootView/AccountView call sites use: capture
-    /// `oldRole` before calling `elevateIfDesignatedRoot()`, then only
-    /// build a log entry when the grant actually fired.
-    func testElevateIfDesignatedRootProducesACorrectlyValuedLogEntry() throws {
-        let container = try makeContainer()
-        let context = ModelContext(container)
-
-        let user = User(email: User.designatedRootEmail,
-                         firstName: User.designatedRootFirstName,
-                         lastName: User.designatedRootLastName)
-        context.insert(user)
-
-        let oldRole = user.role
-        let didElevate = user.elevateIfDesignatedRoot()
-        XCTAssertTrue(didElevate)
-
-        let entry = RoleChangeLog(userID: user.id, oldRole: oldRole.rawValue, newRole: user.role.rawValue,
-                                   changedBy: "system:designatedRoot")
-        context.insert(entry)
-        try context.save()
-
-        XCTAssertEqual(entry.oldRole, "member")
-        XCTAssertEqual(entry.newRole, "admin")
-        XCTAssertEqual(entry.userID, user.id)
-    }
-
     /// A no-op role "change" (same value) shouldn't be mistaken for a real
     /// one by anything constructing a log entry from before/after snapshots
     /// — mirrors the `guard newRole != oldRole` short-circuit in

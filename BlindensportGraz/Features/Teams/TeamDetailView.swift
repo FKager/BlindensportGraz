@@ -22,7 +22,7 @@ struct TeamDetailView: View {
 
     var canManageTeams: Bool {
         guard let user = currentUser else { return false }
-        return user.role == .admin || user.role == .coach
+        return user.can(.teamsManage)
     }
 
     var body: some View {

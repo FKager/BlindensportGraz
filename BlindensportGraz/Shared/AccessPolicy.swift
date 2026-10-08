@@ -4,8 +4,11 @@ import Foundation
 /// accounts without an admin approval — only sees the upcoming schedule
 /// (name, date, location; `UpcomingScheduleSections`).
 ///
-/// Full access needs an `AccountApproval` from an admin linking the account to
-/// an entry in the Benutzerverwaltung. A matching name or email alone is NOT
+/// Full access needs an approval from an admin linking the account to an
+/// entry in the Benutzerverwaltung. Approvals live in Supabase
+/// (`account_approvals`, writable only via RPC by `users.approve`); the local
+/// `AccountApproval` rows are a read-only mirror, so every row is trusted.
+/// The authoritative check is the `approved` JWT claim (`AuthContext`). A matching name or email alone is NOT
 /// enough: registration verifies neither, so anyone could register with a
 /// member's name. Such matches are only offered to admins as suggestions
 /// (`suggestedMember`).
@@ -14,7 +17,7 @@ nonisolated enum AccessPolicy {
     /// account can never lock itself out); anyone else needs an approval by
     /// an admin/root for a Benutzerverwaltung entry that still exists.
     static func hasFullAccess(_ user: User, roster: [Member], approvals: [AccountApproval], users: [User]) -> Bool {
-        user.role == .admin || user.isRoot
+        user.role == .admin || user.role == .root
             || approvedMember(for: user, roster: roster, approvals: approvals, users: users) != nil
     }
 
@@ -22,7 +25,7 @@ nonisolated enum AccessPolicy {
     /// only entry "Vereinsdaten bearbeiten" may open.
     static func approvedMember(for user: User, roster: [Member], approvals: [AccountApproval], users: [User]) -> Member? {
         let approvedIDs = approvals
-            .filter { $0.userID == user.id && isTrustedApprover($0.approvedBy, users: users) }
+            .filter { $0.userID == user.id }
             .sorted { $0.approvedAt > $1.approvedAt }
             .compactMap(\.memberID)
         for id in approvedIDs {
@@ -35,7 +38,7 @@ nonisolated enum AccessPolicy {
     static func activeApproval(for user: User, roster: [Member], approvals: [AccountApproval], users: [User]) -> AccountApproval? {
         guard let member = approvedMember(for: user, roster: roster, approvals: approvals, users: users) else { return nil }
         return approvals
-            .filter { $0.userID == user.id && $0.memberID == member.id && isTrustedApprover($0.approvedBy, users: users) }
+            .filter { $0.userID == user.id && $0.memberID == member.id }
             .max { $0.approvedAt < $1.approvedAt }
     }
 
@@ -49,11 +52,6 @@ nonisolated enum AccessPolicy {
             return (member, true)
         }
         return Member.first(matching: user, in: roster).map { ($0, false) }
-    }
-
-    /// Approvals only count when made by someone who is admin or root now.
-    static func isTrustedApprover(_ approverID: String, users: [User]) -> Bool {
-        users.contains { $0.id.uuidString == approverID && ($0.role == .admin || $0.isRoot) }
     }
 
     /// Whether another account already uses this email (case-insensitive).

@@ -38,7 +38,7 @@ struct DashboardView: View {
 
     var visibleTeams: [Team] {
         guard let currentUser else { return teams }
-        if currentUser.role == .admin { return teams }
+        if currentUser.can(.clubManage) { return teams }
         let mine = Set(currentUser.memberships.map { $0.team.id })
         return teams.filter { mine.contains($0.id) }
     }
