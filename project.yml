@@ -53,11 +53,6 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: it.a11y.BlindensportGraz
-        # Supabase (auth, roles, protected member data). Publishable/anon key
-        # only — RLS enforces access. The service-role key never ships in the app.
-        # TODO(supabase): fill in after the hosted project is created.
-        SUPABASE_URL: ""
-        SUPABASE_ANON_KEY: ""
         # Swift 6.2 "approachable concurrency" for a UI app: code is
         # @MainActor unless marked `nonisolated`/`@concurrent`, and
         # nonisolated async functions run on the caller's actor.
@@ -92,10 +87,21 @@ targets:
         # environment; Release/TestFlight/App Store builds must use the
         # production aps-environment or the App Store provisioning profile
         # won't match the app's entitlements at archive/export time.
+        #
+        # Supabase (auth, roles, protected member data): Debug/on-device builds
+        # pair CloudKit Development with the *staging* project, Release/
+        # TestFlight pairs CloudKit Production with *production*. Publishable/
+        # anon keys only — RLS enforces access; the service-role key never
+        # ships in the app.
+        # TODO(supabase): fill in once both hosted projects exist.
         Debug:
           CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGraz.entitlements
+          SUPABASE_URL: ""
+          SUPABASE_ANON_KEY: ""
         Release:
           CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGrazRelease.entitlements
+          SUPABASE_URL: ""
+          SUPABASE_ANON_KEY: ""
   BlindensportGrazWidgets:
     type: app-extension
     platform: iOS

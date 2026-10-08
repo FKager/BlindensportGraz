@@ -373,7 +373,6 @@
 		401DEC882A1342C320FDC3D3 /* TrainingFavoriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingFavoriteTests.swift; sourceTree = "<group>"; };
 		419EDFA15F291E31EDCEA740 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		422A033FF7F782C561B72DA4 /* EditBudgetEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditBudgetEntryView.swift; sourceTree = "<group>"; };
-		43192C9B2984565B27D4A8A9 /* cli-latest */ = {isa = PBXFileReference; path = "cli-latest"; sourceTree = "<group>"; };
 		43B753CA641AE4978495DE55 /* RedeemActivationCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedeemActivationCodeView.swift; sourceTree = "<group>"; };
 		44EBC50E9038ADA28F7C081A /* SammelabrechnungTournamentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SammelabrechnungTournamentView.swift; sourceTree = "<group>"; };
 		45BAA8A422CADB1AA7BC86F3 /* PendingPush.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPush.swift; sourceTree = "<group>"; };
@@ -972,14 +971,6 @@
 			path = Teams;
 			sourceTree = "<group>";
 		};
-		A118EF892A9F6D297C932ECF /* .temp */ = {
-			isa = PBXGroup;
-			children = (
-				43192C9B2984565B27D4A8A9 /* cli-latest */,
-			);
-			path = .temp;
-			sourceTree = "<group>";
-		};
 		A2E25369E96C897A24D30EA5 /* Welcome */ = {
 			isa = PBXGroup;
 			children = (
@@ -1044,7 +1035,6 @@
 				E2ADECBE2E67001745F7E0BD /* SupabaseMemberPrivateService.swift */,
 				F79831D8849D6E6C4FA9DD50 /* SupabaseProfileService.swift */,
 				6085BB63FC6189A9E83001C6 /* SupabaseRoleService.swift */,
-				A118EF892A9F6D297C932ECF /* .temp */,
 			);
 			path = Supabase;
 			sourceTree = "<group>";

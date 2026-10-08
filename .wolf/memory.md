@@ -3380,3 +3380,4 @@
 | 20:50 | Edited BlindensportGraz/CLAUDE.md | 4→7 lines | ~174 |
 | 20:50 | Session end: 39 writes across 35 files (woolly-toasting-lobster.md, 20261008000001_rbac.sql, 20261008000002_auth_hook.sql, 20261008000003_rls.sql, 20261008000004_rpcs.sql) | 2 reads | ~40490 tok |
 | 21:00 | Created ../../.claude/plans/woolly-toasting-lobster.md | — | ~2374 |
+| 21:07 | Created .github/workflows/supabase-maintenance.yml | — | ~1133 |

@@ -78,13 +78,16 @@ public struct SupabaseAdminClient {
 
     // MARK: - PostgREST
 
-    /// Insert-or-update rows (`Prefer: resolution=merge-duplicates`).
-    public func upsert(table: String, rows: [[String: Any]], onConflict: String) async throws {
+    /// Insert-or-update rows (`resolution=merge-duplicates`), or with
+    /// `ignoreDuplicates` insert only rows whose key doesn't exist yet.
+    public func upsert(table: String, rows: [[String: Any]], onConflict: String,
+                       ignoreDuplicates: Bool = false) async throws {
         guard !rows.isEmpty else { return }
+        let resolution = ignoreDuplicates ? "ignore-duplicates" : "merge-duplicates"
         let (data, status) = try await request("POST", "rest/v1/\(table)",
                                                query: [("on_conflict", onConflict)],
                                                json: rows,
-                                               headers: ["Prefer": "resolution=merge-duplicates,return=minimal"])
+                                               headers: ["Prefer": "resolution=\(resolution),return=minimal"])
         try check(status, data, "upsert \(table)")
     }
 

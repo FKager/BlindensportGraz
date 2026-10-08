@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-08T19:00:32.920Z
-> Files: 40 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-08T19:07:48.718Z
+> Files: 41 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -68,6 +68,7 @@
 
 ## .github/workflows/
 
+- `supabase-maintenance.yml` — Supabase maintenance for the Free-plan projects (staging + production): (~1133 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/
 

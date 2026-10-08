@@ -6,7 +6,8 @@ import CloudKitS2SCore
 /// and the CloudKit scrub. Every command is a dry run unless `--apply`.
 ///
 /// Needs both the CloudKit S2S variables (CLOUDKIT_*) and SUPABASE_URL /
-/// SUPABASE_SERVICE_KEY.
+/// SUPABASE_SERVICE_KEY. Safe to re-run: existing accounts, roles, approvals
+/// and protected rows are left untouched.
 enum SupabaseMigrate {
     static let redirectURL = "blindensportgraz://auth-callback"
     static let designatedRootEmail = "blindensport.gvsc@gmail.com"
@@ -97,12 +98,15 @@ enum SupabaseMigrate {
             print("Dry run — nothing written. Re-run with --apply.")
             return
         }
-        // Roots first, so the last-root guard never sees zero roots.
-        let sortedRoles = roleRows.sorted { ($0["role"] as? String == "root") && !($1["role"] as? String == "root") }
-        try await supabase.upsert(table: "user_roles", rows: sortedRoles, onConflict: "user_id")
+        // Insert-if-missing only: a re-run (e.g. for accounts registered on
+        // old app builds) never overwrites roles, approvals or protected
+        // data already changed in Supabase.
+        try await supabase.upsert(table: "user_roles", rows: roleRows, onConflict: "user_id",
+                                  ignoreDuplicates: true)
         try await supabase.upsert(table: "account_approvals", rows: dedupe(approvalRows, key: "user_id"),
-                                  onConflict: "user_id")
-        try await supabase.upsert(table: "member_private", rows: privateRows, onConflict: "member_id")
+                                  onConflict: "user_id", ignoreDuplicates: true)
+        try await supabase.upsert(table: "member_private", rows: privateRows, onConflict: "member_id",
+                                  ignoreDuplicates: true)
         print("Done: \(migrated.count) accounts in Supabase.")
     }
 

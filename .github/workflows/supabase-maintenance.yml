@@ -1,0 +1,100 @@
+# Supabase maintenance for the Free-plan projects (staging + production):
+#
+#   keepalive - calls rpc/ping on both projects twice a week. Free projects
+#               pause after 7 days without traffic, which would break logins
+#               during a quiet week (e.g. summer break).
+#   backup    - weekly dump of the production database (auth + public
+#               schemas). The dump contains protected member data (SVNR, IBAN),
+#               so it is encrypted with `age` before it leaves the runner;
+#               only the holder of the matching private key can read it.
+#
+# Repository variables (Settings → Secrets and variables → Actions → Variables):
+#   SUPABASE_STAGING_URL, SUPABASE_STAGING_ANON_KEY,
+#   SUPABASE_PROD_URL,    SUPABASE_PROD_ANON_KEY       (anon keys are public)
+# Repository secrets:
+#   SUPABASE_PROD_DB_URL  postgres://… connection string (session pooler)
+#   AGE_RECIPIENT         public key from `age-keygen` (age1…); keep the
+#                         private key offline, never in GitHub
+#
+# Runs on GitHub-hosted Linux only — never on the self-hosted macOS runner.
+name: Supabase Maintenance
+
+on:
+  schedule:
+    - cron: "17 4 * * 1,4"   # Mon + Thu, 04:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping staging and production
+        env:
+          STAGING_URL: ${{ vars.SUPABASE_STAGING_URL }}
+          STAGING_KEY: ${{ vars.SUPABASE_STAGING_ANON_KEY }}
+          PROD_URL: ${{ vars.SUPABASE_PROD_URL }}
+          PROD_KEY: ${{ vars.SUPABASE_PROD_ANON_KEY }}
+        run: |
+          set -euo pipefail
+          ping() {
+            if [ -z "$2" ] || [ -z "$3" ]; then echo "$1: not configured, skipped"; return; fi
+            curl -fsS -X POST "$2/rest/v1/rpc/ping" \
+              -H "apikey: $3" -H "Content-Type: application/json" -d '{}'
+            echo "  ← $1 ok"
+          }
+          ping staging "$STAGING_URL" "$STAGING_KEY"
+          ping production "$PROD_URL" "$PROD_KEY"
+
+  backup:
+    # Once a week (Monday run) or on manual dispatch.
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 4 * * 1,4'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Skip unless configured
+        id: check
+        env:
+          DB_URL: ${{ secrets.SUPABASE_PROD_DB_URL }}
+          RECIPIENT: ${{ secrets.AGE_RECIPIENT }}
+        run: |
+          if [ -n "$DB_URL" ] && [ -n "$RECIPIENT" ]; then echo "run=true" >> "$GITHUB_OUTPUT"
+          else echo "Backup secrets not set; skipping."; fi
+
+      - name: Only on Mondays (scheduled runs)
+        id: day
+        if: steps.check.outputs.run == 'true'
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$(date -u +%u)" = "1" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: supabase/setup-cli@v1
+        if: steps.day.outputs.run == 'true'
+        with:
+          version: 2.120.0
+
+      - name: Dump and encrypt
+        if: steps.day.outputs.run == 'true'
+        env:
+          DB_URL: ${{ secrets.SUPABASE_PROD_DB_URL }}
+          RECIPIENT: ${{ secrets.AGE_RECIPIENT }}
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y --no-install-recommends age >/dev/null
+          mkdir -p backup
+          supabase db dump --db-url "$DB_URL" -f backup/schema.sql
+          supabase db dump --db-url "$DB_URL" --role-only -f backup/roles.sql
+          supabase db dump --db-url "$DB_URL" --data-only --schema auth,public -f backup/data.sql
+          stamp=$(date -u +%Y-%m-%d)
+          tar czf - backup | age -r "$RECIPIENT" > "supabase-prod-$stamp.tar.gz.age"
+          shred -u backup/*.sql
+          echo "STAMP=$stamp" >> "$GITHUB_ENV"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.day.outputs.run == 'true'
+        with:
+          name: supabase-prod-${{ env.STAMP }}
+          path: supabase-prod-*.tar.gz.age
+          retention-days: 30
