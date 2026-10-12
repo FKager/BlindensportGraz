@@ -100,8 +100,8 @@ targets:
           SUPABASE_ANON_KEY: "sb_publishable_7qPsIG5f92h-IZINz_qQIg_bbMzMZrO"
         Release:
           CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGrazRelease.entitlements
-          SUPABASE_URL: ""
-          SUPABASE_ANON_KEY: ""
+          SUPABASE_URL: "https://dehtuoejbnunehevchtg.supabase.co"
+          SUPABASE_ANON_KEY: "sb_publishable_94kVc4kr24j-M2f1vI9bCA_r9C1k8ky"
   BlindensportGrazWidgets:
     type: app-extension
     platform: iOS

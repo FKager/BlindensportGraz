@@ -443,3 +443,15 @@ user = "resend"
 pass = "env(RESEND_SMTP_KEY)"
 admin_email = "no-reply@mail.a11y.it"
 sender_name = "Blindensport Graz"
+
+[remotes.production]
+project_id = "dehtuoejbnunehevchtg"
+
+[remotes.production.auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_SMTP_KEY)"
+admin_email = "no-reply@mail.a11y.it"
+sender_name = "Blindensport Graz"
