@@ -180,7 +180,7 @@ enum SupabaseMigrate {
     static func runScrub(_ args: [String], cloudKit: CloudKitS2SClient) async throws {
         let apply = try applyFlag(args, usage: "rootcli supabase-scrub-cloudkit --dry-run|--apply")
         for type in ["ClubMember", "MemberChangeRequest"] {
-            let records = try await cloudKit.queryRecords(recordType: type)
+            let records = try await existingRecords(type, cloudKit: cloudKit)
             let dirty = records.filter { record in memberPrivateFields.contains { record.fields[$0] != nil } }
             print("\(type): \(dirty.count) of \(records.count) records carry protected fields")
             guard apply else { continue }
@@ -190,7 +190,7 @@ enum SupabaseMigrate {
             }
         }
         for type in ["UserIdentity", "RoleAssignment", "AccountApproval"] {
-            let records = try await cloudKit.queryRecords(recordType: type)
+            let records = try await existingRecords(type, cloudKit: cloudKit)
             print("\(type): \(records.count) records to delete")
             guard apply else { continue }
             for record in records {
@@ -198,6 +198,17 @@ enum SupabaseMigrate {
             }
         }
         if !apply { print("Dry run — nothing changed. Re-run with --apply.") }
+    }
+
+    /// A record type that was never saved in this environment's schema
+    /// (e.g. MemberChangeRequest) has nothing to scrub.
+    private static func existingRecords(_ type: String, cloudKit: CloudKitS2SClient) async throws -> [CKRecordDTO] {
+        do {
+            return try await cloudKit.queryRecords(recordType: type)
+        } catch let error as CLIError where "\(error)".contains("could not find record_type") {
+            print("\(type): record type not in this environment, skipped")
+            return []
+        }
     }
 
     // MARK: - set-role
