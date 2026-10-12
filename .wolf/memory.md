@@ -3381,3 +3381,30 @@
 | 20:50 | Session end: 39 writes across 35 files (woolly-toasting-lobster.md, 20261008000001_rbac.sql, 20261008000002_auth_hook.sql, 20261008000003_rls.sql, 20261008000004_rpcs.sql) | 2 reads | ~40490 tok |
 | 21:00 | Created ../../.claude/plans/woolly-toasting-lobster.md | — | ~2374 |
 | 21:07 | Created .github/workflows/supabase-maintenance.yml | — | ~1133 |
+| 21:40 | Rollout Step 0 done: keepalive migration+test (50/50 pass), maintenance workflow, German email templates (verified via local Mailpit), per-config Supabase keys, insert-only migrate; committed 6d834c1 on feature/supabase-auth | supabase/, .github/workflows/supabase-maintenance.yml, project.yml, RootCLI | waiting on user for Resend + projects | ~30k |
+| 21:08 | Session end: 41 writes across 36 files (woolly-toasting-lobster.md, 20261008000001_rbac.sql, 20261008000002_auth_hook.sql, 20261008000003_rls.sql, 20261008000004_rpcs.sql) | 2 reads | ~44167 tok |
+| 21:12 | Session end: 41 writes across 36 files (woolly-toasting-lobster.md, 20261008000001_rbac.sql, 20261008000002_auth_hook.sql, 20261008000003_rls.sql, 20261008000004_rpcs.sql) | 2 reads | ~44167 tok |
+| 21:35 | Session end: 41 writes across 36 files (woolly-toasting-lobster.md, 20261008000001_rbac.sql, 20261008000002_auth_hook.sql, 20261008000003_rls.sql, 20261008000004_rpcs.sql) | 2 reads | ~44167 tok |
+| 22:10 | Session paused: resume notes written (memory project_supabase-auth-migration, plan status); waiting on user sign-ins | memory, plan | paused | ~5k |
+| 21:42 | Session end: 41 writes across 36 files (woolly-toasting-lobster.md, 20261008000001_rbac.sql, 20261008000002_auth_hook.sql, 20261008000003_rls.sql, 20261008000004_rpcs.sql) | 2 reads | ~44167 tok |
+
+## Session: 2026-10-12 18:38
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-10-12 19:36
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:42 | Resend domain mail.a11y.it created (eu-west-1); DNS pending at GoDaddy | resend | waiting on user | ~3k |
+| 20:09 | Resend mail.a11y.it verified (DNS via gddy) | resend/gddy | done | ~8k |
+| 20:22 | Supabase staging configured + CloudKit Dev migrated | supabase/, project.yml | done, resets pending user | ~40k |
+| 20:40 | Edited BlindensportGraz/Features/Account/RegisterView.swift | 2→7 lines | ~149 |
+| 20:40 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
+| 20:44 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
+| 20:46 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
+| 20:48 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
+| 20:58 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
+| 21:02 | Supabase prod created+configured, CloudKit Prod migrated, 2 roots | supabase/, project.yml | done | ~30k |
+| 21:02 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |

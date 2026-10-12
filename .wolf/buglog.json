@@ -8716,6 +8716,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-08T18:50:01.036Z"
+    },
+    {
+      "id": "bug-518",
+      "timestamp": "2026-10-12T20:40:53.045959",
+      "error_message": "mail sending does not work (registration on staging sent no email)",
+      "file": "BlindensportGraz/Features/Account/RegisterView.swift",
+      "root_cause": "User registered with an email the migration had already pre-created; Supabase/GoTrue returns success and sends nothing for existing addresses (anti-enumeration). SMTP itself works.",
+      "fix": "Added neutral hint on the post-signup screen pointing existing users to 'Passwort vergessen'.",
+      "tags": [
+        "supabase",
+        "auth",
+        "email",
+        "signup",
+        "resend"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-12T20:40:53.045959"
     }
   ]
 }

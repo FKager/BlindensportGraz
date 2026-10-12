@@ -1,6 +1,6 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-08T19:07:48.718Z
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-12T18:40:35.368Z
 > Files: 41 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
@@ -109,7 +109,7 @@
 - `EditAccountView.swift` — / Edits the own name in the Supabase profile (the only client-writable (~848 tok)
 - `LoginView.swift` — / Email + password or Sign in with Apple, both against Supabase Auth. (~845 tok)
 - `RedeemActivationCodeView.swift` — / A pending account enters the one-time code an admin created for it (~630 tok)
-- `RegisterView.swift` — / Creates a Supabase Auth account. Name goes into the sign-up metadata (the (~1409 tok)
+- `RegisterView.swift` — / Creates a Supabase Auth account. Name goes into the sign-up metadata (the (~1536 tok)
 - `ResetPasswordRequestView.swift` — / "Passwort vergessen": Supabase emails a link that opens the app (~622 tok)
 - `RoleChangeLogView.swift` — / Role-change audit log from Supabase (`role_change_log`, written by a (~721 tok)
 - `SetPasswordView.swift` — / Sets a new password for the signed-in Supabase account — after opening a (~775 tok)
