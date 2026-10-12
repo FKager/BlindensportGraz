@@ -23,6 +23,11 @@ struct RegisterView: View {
                     Section {
                         Label("Fast geschafft! Wir haben dir eine E-Mail an \(email) geschickt. Öffne den Link darin auf diesem iPhone, um dein Konto zu bestätigen.",
                               systemImage: "envelope.badge")
+                        // Supabase answers "OK" without sending anything when
+                        // the address is already registered (no account
+                        // enumeration), so point existing users to the reset.
+                        Text("Keine E-Mail bekommen? Wenn du schon ein Konto hast (auch aus der früheren App-Version), melde dich nicht neu an, sondern tippe beim Anmelden auf „Passwort vergessen“.")
+                            .font(.footnote)
                     }
                 } else {
                     Section("Konto") {
