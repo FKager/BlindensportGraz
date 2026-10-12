@@ -96,8 +96,8 @@ targets:
         # TODO(supabase): fill in once both hosted projects exist.
         Debug:
           CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGraz.entitlements
-          SUPABASE_URL: ""
-          SUPABASE_ANON_KEY: ""
+          SUPABASE_URL: "https://xlllxpmkxmcolukmcmoi.supabase.co"
+          SUPABASE_ANON_KEY: "sb_publishable_7qPsIG5f92h-IZINz_qQIg_bbMzMZrO"
         Release:
           CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGrazRelease.entitlements
           SUPABASE_URL: ""

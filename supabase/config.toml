@@ -232,7 +232,7 @@ enable_confirmations = true
 # than 24h would need an emailed re-auth code first.
 secure_password_change = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
-max_frequency = "1s"
+max_frequency = "60s"
 # Number of characters used in the email OTP.
 otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
@@ -315,8 +315,8 @@ max_enrolled_factors = 10
 
 # Control MFA via App Authenticator (TOTP)
 [auth.mfa.totp]
-enroll_enabled = false
-verify_enabled = false
+enroll_enabled = true
+verify_enabled = true
 
 # Configure MFA via Phone Messaging
 [auth.mfa.phone]
@@ -428,3 +428,18 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# Hosted projects: Resend SMTP (domain mail.a11y.it, EU). The password is a
+# send-only Resend key, passed only via the environment at `config push`
+# time — never stored in git. Local development keeps using Mailpit.
+[remotes.staging]
+project_id = "xlllxpmkxmcolukmcmoi"
+
+[remotes.staging.auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_SMTP_KEY)"
+admin_email = "no-reply@mail.a11y.it"
+sender_name = "Blindensport Graz"
