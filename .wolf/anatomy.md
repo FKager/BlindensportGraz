@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-12T20:36:27.378Z
-> Files: 47 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-13T18:55:45.221Z
+> Files: 67 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -33,12 +33,17 @@
 ## ../../.claude/jobs/a920fb1f/tmp/
 
 
+## ../../.claude/jobs/ad96dfdd/tmp/
+
+- `limiter-e2e.sh` — Fix 1 check: a valid non-admin login must not reset the failure window. (~163 tok)
+
 ## ../../.claude/plans/
 
 - `woolly-toasting-lobster.md` — Plan: Roll out the Supabase auth & role migration (~2226 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
+- `MEMORY.md` — Memory (~364 tok)
 - `project_supabase-auth-migration.md` (~488 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
@@ -57,6 +62,39 @@
 ## .claude/rules/
 
 
+## .claude/worktrees/docker-container-fixes/
+
+- `docker-compose.yml` — Docker Compose services (~944 tok)
+
+## .claude/worktrees/docker-container-fixes/RootCLI/
+
+- `Dockerfile` — Docker container definition (~711 tok)
+
+## .claude/worktrees/pr9-review-fixes/.wolf/
+
+- `buglog.json` (~117806 tok)
+
+## .claude/worktrees/pr9-review-fixes/RootCLI/Public/
+
+- `admin-session.css` — Styles: 2 rules (~162 tok)
+- `index.html` — Grazer VSC – Mitgliederverwaltung (~3294 tok)
+- `records.html` — CloudKit – Datensatzverwaltung (generisch) (~2300 tok)
+
+## .claude/worktrees/pr9-review-fixes/RootCLI/Sources/CloudKitS2SCore/
+
+- `MemberBulkImport.swift` — / Loose, per-row-tolerant input shape for bulk Member import — shared by (~3531 tok)
+- `MemberFillUpdate.swift` — / Non-destructive counterpart to `MemberBulkImport.run` — fills in fields (~2650 tok)
+- `MemberPrivateStore.swift` — / The protected part of a roster entry — SVNR, IBAN, birth date, last (~1931 tok)
+
+## .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/
+
+- `Auth.swift` — / A signed-in club admin. Accounts, roles and permissions come from (~2919 tok)
+- `Routes.swift` — `MemberRecord` is a typealias for `ClubSchema.ClubMemberRecord` (Phase 9) — (~4253 tok)
+
+## .claude/worktrees/pr9-review-fixes/RootCLI/Sources/rootcli/
+
+- `RootCLI.swift` — Struct: RootCLI (~5779 tok)
+
 ## .claude/worktrees/reactive-watching-lemon/.wolf/
 
 
@@ -65,6 +103,14 @@
 
 ## .claude/worktrees/reactive-watching-lemon/BlindensportGrazTests/
 
+
+## .claude/worktrees/web-admin-session-race/.wolf/
+
+- `buglog.json` (~116570 tok)
+
+## .claude/worktrees/web-admin-session-race/RootCLI/Sources/clubmembersapi/
+
+- `Auth.swift` — / A signed-in club admin. Accounts, roles and permissions come from (~2670 tok)
 
 ## .github/workflows/
 
@@ -219,13 +265,13 @@
 
 
 ## RootCLI/Public/
-- `admin-session.js` — shared sign-in for the admin pages (Supabase account, session cookie, X-Requested-With header, AdminSession.request/can) (~900 tok)
 
+- `admin-session.js` — shared sign-in for the admin pages (Supabase account, session cookie, X-Requested-With header, AdminSession.request/can) (~900 tok)
 - `admin-session.js` — Sign-in for the admin pages. Admins use their own Blindensport Graz (~1134 tok)
 
 ## RootCLI/Sources/CloudKitS2SCore/
-- `MemberPrivateStore.swift` — MemberPrivate (svnr/iban/dates), Supabase member_private read/write, CloudKitWriteGuard (~1500 tok)
 
+- `MemberPrivateStore.swift` — MemberPrivate (svnr/iban/dates), Supabase member_private read/write, CloudKitWriteGuard (~1500 tok)
 - `MemberPrivateStore.swift` — / The protected part of a roster entry — SVNR, IBAN, birth date, last (~1484 tok)
 - `SupabaseAdminClient.swift` — if canImport(FoundationNetworking) (~2382 tok)
 
@@ -240,8 +286,8 @@
 - `SupabaseMigrate.swift` — / One-off move of accounts, roles, approvals and sensitive member data from (~3504 tok)
 
 ## RootCLI/Tests/CloudKitS2SCoreTests/
-- `MemberPrivateTests.swift` — protected fields never in ckFields, Supabase row format, CloudKitWriteGuard (~600 tok)
 
+- `MemberPrivateTests.swift` — protected fields never in ckFields, Supabase row format, CloudKitWriteGuard (~600 tok)
 - `MemberPrivateTests.swift` — Class: MemberPrivateTests (~722 tok)
 
 ## Shared/ClubSchema/
@@ -268,7 +314,6 @@
 - `index.ts` — Deletes the calling user's auth account. All rows in public.* cascade (~521 tok)
 
 ## supabase/migrations/
-- `20261012000001_member_private_updated_by.sql` — touch trigger keeps updated_by supplied by the service role (~200 tok)
 
 - `20261008000001_rbac.sql` — Accounts, roles, permissions, approvals and protected member data. (~1780 tok)
 - `20261008000002_auth_hook.sql` — Custom Access Token Hook: adds `user_role` (text or null) and `approved` (~722 tok)
@@ -276,6 +321,7 @@
 - `20261008000004_rpcs.sql` — Write paths for roles and approvals. Every function is SECURITY DEFINER (~1909 tok)
 - `20261008000005_member_private_self.sql` — Members see their own protected data (via their approval's roster entry) (~908 tok)
 - `20261008000006_directory.sql` — Name-only directory of accounts for approved users (participant lists, (~222 tok)
+- `20261012000001_member_private_updated_by.sql` — touch trigger keeps updated_by supplied by the service role (~200 tok)
 
 ## supabase/tests/
 

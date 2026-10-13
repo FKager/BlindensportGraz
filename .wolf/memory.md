@@ -3428,3 +3428,78 @@
 | 19:05 | Reviewed web admin auth; committed staged work on web-admin-supabase-auth; fixed AdminSessionStore reentrancy race | RootCLI/Sources/clubmembersapi/Auth.swift | tests 11/11, build ok | ~6k |
 | 19:40 | Docker review: Dockerfile copies Package.resolved before resolve; caddy gets only DOMAIN/ACME_EMAIL (no .env secrets) | RootCLI/Dockerfile, docker-compose.yml, Caddyfile | compose config ok | ~4k |
 | 20:30 | Fixed 8 ultrareview findings on PR #9 (limiter reset, recheck race, session sweep, orphaned member_private, date clearing, write order, fill-update snapshot, shared CSS) | RootCLI/Sources/{clubmembersapi,CloudKitS2SCore,rootcli}, RootCLI/Public | build ok, tests 11/11, limiter e2e ok | ~25k |
+
+## Session: 2026-10-13 18:43
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-10-13 18:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-10-13 18:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-10-13 18:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-10-13 18:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:57 | Edited .claude/worktrees/web-admin-session-race/RootCLI/Sources/clubmembersapi/Auth.swift | 4→7 lines | ~81 |
+| 19:00 | Edited .claude/worktrees/web-admin-session-race/.wolf/buglog.json | expanded (+19 lines) | ~235 |
+| 19:01 | Session end: 2 writes across 2 files (Auth.swift, buglog.json) | 2 reads | ~2932 tok |
+| 19:01 | Session end: 2 writes across 2 files (Auth.swift, buglog.json) | 2 reads | ~2932 tok |
+| 19:01 | Session end: 2 writes across 2 files (Auth.swift, buglog.json) | 2 reads | ~2932 tok |
+| 19:04 | Session end: 2 writes across 2 files (Auth.swift, buglog.json) | 2 reads | ~2932 tok |
+| 19:06 | Session end: 2 writes across 2 files (Auth.swift, buglog.json) | 2 reads | ~2932 tok |
+| 19:07 | Edited ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md | inline fix | ~34 |
+| 19:07 | Session end: 3 writes across 3 files (Auth.swift, buglog.json, MEMORY.md) | 3 reads | ~2968 tok |
+| 19:11 | Session end: 3 writes across 3 files (Auth.swift, buglog.json, MEMORY.md) | 3 reads | ~2968 tok |
+| 19:13 | Edited .claude/worktrees/docker-container-fixes/RootCLI/Dockerfile | 2→4 lines | ~77 |
+| 19:13 | Edited .claude/worktrees/docker-container-fixes/docker-compose.yml | 5→9 lines | ~108 |
+| 19:14 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 19:15 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 19:16 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 19:18 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 19:21 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 19:31 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 19:33 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 19:35 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 19:47 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 20:02 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 20:24 | Session end: 5 writes across 5 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 3 reads | ~3159 tok |
+| 20:50 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Auth.swift | modified create() | ~642 |
+| 20:50 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Auth.swift | modified notice() | ~161 |
+| 20:51 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/CloudKitS2SCore/MemberPrivateStore.swift | modified delete() | ~175 |
+| 20:51 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Routes.swift | added error handling | ~186 |
+| 20:51 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Routes.swift | modified get() | ~194 |
+| 20:51 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Routes.swift | inline fix | ~30 |
+| 20:51 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Routes.swift | 1→2 lines | ~48 |
+| 20:51 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Routes.swift | added error handling | ~205 |
+| 20:51 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Routes.swift | modified nullKeys() | ~183 |
+| 20:51 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Public/index.html | modified for() | ~143 |
+| 20:52 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/CloudKitS2SCore/MemberBulkImport.swift | added error handling | ~255 |
+| 20:52 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/rootcli/RootCLI.swift | added optional chaining | ~147 |
+| 20:52 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/CloudKitS2SCore/MemberFillUpdate.swift | added error handling | ~342 |
+| 20:52 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Sources/CloudKitS2SCore/MemberFillUpdate.swift | added error handling | ~187 |
+| 20:52 | Created .claude/worktrees/pr9-review-fixes/RootCLI/Public/admin-session.css | — | ~162 |
+| 20:52 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Public/records.html | removed 8 lines | ~27 |
+| 20:52 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Public/index.html | removed 7 lines | ~25 |
+| 20:52 | Edited .claude/worktrees/pr9-review-fixes/RootCLI/Public/index.html | 2→3 lines | ~27 |
+| 20:54 | Created ../../.claude/jobs/ad96dfdd/tmp/limiter-e2e.sh | — | ~163 |
+| 20:55 | Edited .claude/worktrees/pr9-review-fixes/.wolf/buglog.json | expanded (+72 lines) | ~1252 |
+| 20:56 | Session end: 25 writes across 14 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 6 reads | ~17736 tok |
+| 21:00 | Session end: 25 writes across 14 files (Auth.swift, buglog.json, MEMORY.md, Dockerfile, docker-compose.yml) | 6 reads | ~17736 tok |
+
+## Session: 2026-10-13 21:44
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|

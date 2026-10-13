@@ -8845,8 +8845,15 @@
       "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
       "root_cause": "POST /api/session called limiter.recordSuccess right after verifyPassword, before the members.manage check",
       "fix": "recordSuccess only after the permission check passes; verified e2e against local Supabase (4x401, non-admin 403, 401, then 429)",
-      "tags": ["clubmembersapi", "auth", "rate-limit", "security"],
-      "related_bugs": ["bug-522"],
+      "tags": [
+        "clubmembersapi",
+        "auth",
+        "rate-limit",
+        "security"
+      ],
+      "related_bugs": [
+        "bug-522"
+      ],
       "occurrences": 1,
       "last_seen": "2026-10-13T20:30:00Z"
     },
@@ -8857,8 +8864,16 @@
       "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
       "root_cause": "AdminSessionStore.user(for:) wrote its pre-await entry copy back; bug-522's fix only guarded removal, not a newer lastChecked",
       "fix": "Re-read the entry after the await; if its lastChecked moved on, keep that result. Also sweep expired sessions in create() (unbounded dictionary)",
-      "tags": ["swift", "actor", "reentrancy", "session", "security"],
-      "related_bugs": ["bug-522"],
+      "tags": [
+        "swift",
+        "actor",
+        "reentrancy",
+        "session",
+        "security"
+      ],
+      "related_bugs": [
+        "bug-522"
+      ],
       "occurrences": 1,
       "last_seen": "2026-10-13T20:30:00Z"
     },
@@ -8869,7 +8884,12 @@
       "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
       "root_cause": "Only DELETE /api/members/:id deleted the Supabase row; /api/records and rootcli record delete only touched CloudKit",
       "fix": "ClubMember deletes in both paths also call MemberPrivateStore.delete; rootcli builds the store before deleting so missing Supabase config aborts first",
-      "tags": ["clubmembersapi", "rootcli", "pii", "supabase"],
+      "tags": [
+        "clubmembersapi",
+        "rootcli",
+        "pii",
+        "supabase"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-13T20:30:00Z"
@@ -8881,7 +8901,12 @@
       "file": "RootCLI/Public/index.html",
       "root_cause": "Form omitted empty date keys; Codable treats omitted and null alike and PUT falls back to the stored value",
       "fix": "Form sends null for a blank date; PUT reads raw-JSON null keys for the two dates and clears them. Form only sends protected fields with read+write (hidden empty fields would wipe data)",
-      "tags": ["clubmembersapi", "webui", "codable", "dates"],
+      "tags": [
+        "clubmembersapi",
+        "webui",
+        "codable",
+        "dates"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-13T20:30:00Z"
@@ -8893,7 +8918,13 @@
       "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
       "root_cause": "Protected fields moved to a second store; create/update/import wrote CloudKit first and Supabase second without rollback",
       "fix": "Write member_private first, then CloudKit; on CloudKit failure MemberPrivateStore.restore puts back the previous row (or deletes it). Same in MemberBulkImport and MemberFillUpdate",
-      "tags": ["clubmembersapi", "rootcli", "consistency", "supabase", "cloudkit"],
+      "tags": [
+        "clubmembersapi",
+        "rootcli",
+        "consistency",
+        "supabase",
+        "cloudkit"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-13T20:30:00Z"
@@ -8905,10 +8936,207 @@
       "file": "RootCLI/Sources/CloudKitS2SCore/MemberFillUpdate.swift",
       "root_cause": "existingPrivate snapshot taken once before the loop; save() upserts the whole row",
       "fix": "Update existingPrivate after each successful save",
-      "tags": ["rootcli", "import", "supabase", "stale-snapshot"],
+      "tags": [
+        "rootcli",
+        "import",
+        "supabase",
+        "stale-snapshot"
+      ],
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-13T20:30:00Z"
+    },
+    {
+      "id": "bug-525",
+      "timestamp": "2026-10-13T17:00:17.605Z",
+      "error_message": "Missing await",
+      "file": ".claude/worktrees/web-admin-session-race/.wolf/buglog.json",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "json"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T17:00:17.605Z"
+    },
+    {
+      "id": "bug-527",
+      "timestamp": "2026-10-13T17:13:57.824Z",
+      "error_message": "Significant refactor of ",
+      "file": ".claude/worktrees/docker-container-fixes/docker-compose.yml",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→9 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T17:13:57.824Z"
+    },
+    {
+      "id": "bug-528",
+      "timestamp": "2026-10-13T18:50:32.964Z",
+      "error_message": "Wrong operator: != should be ||",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Auth.swift",
+      "root_cause": "Used \"!=\" instead of \"||\"",
+      "fix": "Changed operator != → ||",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T18:50:32.964Z"
+    },
+    {
+      "id": "bug-529",
+      "timestamp": "2026-10-13T18:51:08.848Z",
+      "error_message": "Missing error handling in unknown",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Routes.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block | Also: // Protected row first, put back if the CloudKit update then; // (e.g. a change-tag conflict) — see POST above.",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-10-13T18:51:26.882Z"
+    },
+    {
+      "id": "bug-536",
+      "timestamp": "2026-10-13T18:51:26.535Z",
+      "error_message": "Significant refactor of ",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Sources/clubmembersapi/Routes.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 7→10 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T18:51:26.535Z"
+    },
+    {
+      "id": "bug-537",
+      "timestamp": "2026-10-13T18:51:47.834Z",
+      "error_message": "Significant refactor of ",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Public/index.html",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 7→10 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T18:51:47.834Z"
+    },
+    {
+      "id": "bug-538",
+      "timestamp": "2026-10-13T18:52:03.148Z",
+      "error_message": "Missing error handling in unknown",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Sources/CloudKitS2SCore/MemberBulkImport.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T18:52:03.148Z"
+    },
+    {
+      "id": "bug-539",
+      "timestamp": "2026-10-13T18:52:13.783Z",
+      "error_message": "Null/undefined access in ",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T18:52:13.783Z"
+    },
+    {
+      "id": "bug-540",
+      "timestamp": "2026-10-13T18:52:26.471Z",
+      "error_message": "Missing error handling in unknown",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Sources/CloudKitS2SCore/MemberFillUpdate.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block | Also: // Protected row first (new id, so nothing to put back but t; let hasPrivate = privateStore != nil && !input.privateData.i",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-10-13T18:52:26.588Z"
+    },
+    {
+      "id": "bug-541",
+      "timestamp": "2026-10-13T18:52:45.323Z",
+      "error_message": "Significant refactor of ",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Public/records.html",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 8→3 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T18:52:45.323Z"
+    },
+    {
+      "id": "bug-542",
+      "timestamp": "2026-10-13T18:52:51.916Z",
+      "error_message": "Incorrect value in code",
+      "file": ".claude/worktrees/pr9-review-fixes/RootCLI/Public/index.html",
+      "root_cause": "Had \"admin-session.js\"",
+      "fix": "Changed to \"stylesheet\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "html"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T18:52:51.916Z"
+    },
+    {
+      "id": "bug-543",
+      "timestamp": "2026-10-13T18:55:45.229Z",
+      "error_message": "Missing await",
+      "file": ".claude/worktrees/pr9-review-fixes/.wolf/buglog.json",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "json"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T18:55:45.229Z"
     }
   ]
 }
