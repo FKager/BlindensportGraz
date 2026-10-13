@@ -19,7 +19,9 @@ FROM swift:6.0-jammy AS build
 WORKDIR /build
 
 # Resolve dependencies first so they're cached separately from source changes.
-COPY RootCLI/Package.swift RootCLI/Package.swift
+# Package.resolved pins the versions — without it this layer resolves to the
+# newest releases and the build re-resolves once the full sources land.
+COPY RootCLI/Package.swift RootCLI/Package.resolved RootCLI/
 COPY Shared/ClubSchema/Package.swift Shared/ClubSchema/Package.swift
 RUN cd RootCLI && swift package resolve
 
