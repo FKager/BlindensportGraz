@@ -155,22 +155,17 @@ create table public.events (
   duration_minutes integer,
   focus_area       text,
   max_teams        integer,
+  -- Teams the event belongs to (pushes, calendar feed, "my teams" filter).
+  -- A list on the row, like CloudKit's teamIDs: one write per event and no
+  -- separate link rows for offline caches to reconcile.
+  team_ids         uuid[] not null default '{}',
   created_by       text not null default '',
   created_at       timestamptz not null default now(),
   updated_at       timestamptz not null default now(),
   updated_by       uuid references auth.users (id) on delete set null
 );
 create index events_start on public.events (start_date);
-
-create table public.event_teams (
-  -- Own id so the deletions log and outbox treat it like any other row.
-  id       uuid primary key default gen_random_uuid(),
-  event_id uuid not null references public.events (id) on delete cascade,
-  team_id  uuid not null references public.teams (id) on delete cascade,
-  updated_at timestamptz not null default now(),
-  updated_by uuid references auth.users (id) on delete set null,
-  unique (event_id, team_id)
-);
+create index events_team_ids on public.events using gin (team_ids);
 
 create table public.attendances (
   id            uuid primary key,
@@ -310,7 +305,7 @@ declare
   t text;
 begin
   foreach t in array array[
-    'members', 'member_contacts', 'teams', 'team_memberships', 'events', 'event_teams',
+    'members', 'member_contacts', 'teams', 'team_memberships', 'events',
     'attendances', 'event_participations', 'event_memberships', 'budget_entries',
     'training_favorites', 'welcome_content', 'member_change_requests', 'event_images',
     'expense_receipts'
@@ -347,7 +342,6 @@ begin
       ('teams',                'teams.manage'),
       ('team_memberships',     'teams.manage'),
       ('events',               'events.manage'),
-      ('event_teams',          'events.manage'),
       ('attendances',          'events.manage'),
       ('event_memberships',    'events.manage'),
       ('training_favorites',   'events.manage'),
@@ -458,6 +452,22 @@ select id, kind, title, sport, location, city, start_date, end_date, status, upd
 
 revoke all on public.public_schedule from anon, authenticated;
 grant select on public.public_schedule to anon, authenticated;
+
+-- A deleted team disappears from the events and favourites listing it.
+create function public.remove_team_from_lists()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update public.events set team_ids = array_remove(team_ids, old.id) where old.id = any (team_ids);
+  update public.training_favorites set team_ids = array_remove(team_ids, old.id) where old.id = any (team_ids);
+  return old;
+end;
+$$;
+create trigger remove_team_from_lists after delete on public.teams
+  for each row execute function public.remove_team_from_lists();
 
 -- ------------------------------------------------------- team names ---
 

@@ -8,6 +8,17 @@ public struct CKRecordDTO {
     public let recordType: String
     public let changeTag: String
     public let fields: [String: Any]
+    /// Server modification time (`modified.timestamp`, ms since epoch); nil
+    /// if the response didn't include it.
+    public let modifiedAt: Date?
+
+    public init(recordName: String, recordType: String, fields: [String: Any], modifiedAt: Date? = nil) {
+        self.recordName = recordName
+        self.recordType = recordType
+        self.changeTag = ""
+        self.fields = fields
+        self.modifiedAt = modifiedAt
+    }
 
     public init?(_ dict: [String: Any]) {
         guard let recordName = dict["recordName"] as? String,
@@ -18,6 +29,8 @@ public struct CKRecordDTO {
         self.recordType = recordType
         self.changeTag = changeTag
         self.fields = fields
+        self.modifiedAt = ((dict["modified"] as? [String: Any])?["timestamp"] as? NSNumber)
+            .map { Date(timeIntervalSince1970: $0.doubleValue / 1000) }
     }
 
     public func stringField(_ name: String) -> String? {
@@ -35,6 +48,11 @@ public struct CKRecordDTO {
         guard let value = (fields[name] as? [String: Any])?["value"] else { return nil }
         guard let number = value as? NSNumber else { return nil }
         return Date(timeIntervalSince1970: number.doubleValue / 1000)
+    }
+
+    /// Reads an INT64 or DOUBLE field.
+    public func numberField(_ name: String) -> NSNumber? {
+        (fields[name] as? [String: Any])?["value"] as? NSNumber
     }
 
     /// Reads a CloudKit STRING_LIST field (e.g. `teamIDs` on Training/

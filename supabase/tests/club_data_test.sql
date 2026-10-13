@@ -4,7 +4,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(30);
+select plan(31);
 
 -- ------------------------------------------------------------- fixtures ---
 create function pg_temp.mk_user(uid uuid, mail text) returns void language sql as $$
@@ -57,11 +57,10 @@ insert into public.teams (id, name, sport) values ('77777777-0000-0000-0000-0000
 insert into public.team_memberships (id, team_id, member_id, user_id) values
   ('77777777-0000-0000-0000-000000000002', '77777777-0000-0000-0000-000000000001',
    '66666666-0000-0000-0000-000000000001', '55555555-0000-0000-0000-000000000003');
-insert into public.events (id, kind, title, start_date, end_date, notes, status) values
+insert into public.events (id, kind, title, start_date, end_date, notes, status, team_ids) values
   ('88888888-0000-0000-0000-000000000001', 'training', 'Torball Training',
-   now() + interval '1 day', now() + interval '1 day 2 hours', 'internal note', 'open');
-insert into public.event_teams (event_id, team_id) values
-  ('88888888-0000-0000-0000-000000000001', '77777777-0000-0000-0000-000000000001');
+   now() + interval '1 day', now() + interval '1 day 2 hours', 'internal note', 'open',
+   array['77777777-0000-0000-0000-000000000001'::uuid]);
 insert into public.attendances (id, event_id, membership_id, attended) values
   ('88888888-0000-0000-0000-000000000002', '88888888-0000-0000-0000-000000000001',
    '77777777-0000-0000-0000-000000000002', true);
@@ -135,6 +134,13 @@ select is((select array_agg(table_name::text order by table_name) from public.de
   array['attendances', 'events'], 'deleting an event logs it and its cascaded attendance');
 select throws_ok($$insert into public.teams (id, name) values (gen_random_uuid(), ' test team')$$,
   '23505', null, 'team names are unique (case and spaces ignored)');
+
+insert into public.events (id, kind, title, start_date, end_date, team_ids) values
+  ('88888888-0000-0000-0000-000000000003', 'training', 'T2', now(), now(),
+   array['77777777-0000-0000-0000-000000000001'::uuid]);
+delete from public.teams where id = '77777777-0000-0000-0000-000000000001';
+select is((select team_ids from public.events where id = '88888888-0000-0000-0000-000000000003'),
+  '{}'::uuid[], 'a deleted team is removed from event team lists');
 
 -- ---------------------------------------------------------------- admin ---
 select pg_temp.act_as('55555555-0000-0000-0000-000000000001');

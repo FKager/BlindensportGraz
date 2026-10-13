@@ -26,6 +26,8 @@ struct RootCLI {
             try await SupabaseMigrate.runSetRole(rest)
         case "supabase-migrate":
             try await SupabaseMigrate.runMigrate(rest, cloudKit: try makeClient())
+        case "cloudkit-copy-to-supabase":
+            try await CloudKitCopyCommand.run(rest, cloudKit: try makeClient())
         case "supabase-send-resets":
             try await SupabaseMigrate.runSendResets(rest)
         case "supabase-scrub-cloudkit":
@@ -345,6 +347,7 @@ struct RootCLI {
           rootcli supabase-migrate [--dry-run|--apply]
           rootcli supabase-send-resets [--dry-run|--apply]
           rootcli supabase-scrub-cloudkit [--dry-run|--apply]
+          rootcli cloudkit-copy-to-supabase [--dry-run|--apply] [--since <ISO8601>]
           rootcli import-members <file.json>
           rootcli update-members <file.json>
           rootcli record list <type>
