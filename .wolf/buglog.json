@@ -8734,6 +8734,90 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-12T20:40:53.045959"
+    },
+    {
+      "id": "bug-519",
+      "timestamp": "2026-10-12T22:11:29.891475",
+      "error_message": "CloudKit request to records/query failed (HTTP 404): ObjectNotFoundException: could not find record_type with name 'MemberChangeRequest'",
+      "file": "RootCLI/Sources/rootcli/SupabaseMigrate.swift",
+      "root_cause": "CloudKit returns 404 for a record type that was never saved in that environment's schema; scrub treated it as fatal",
+      "fix": "existingRecords() helper returns [] for 'could not find record_type'",
+      "tags": [
+        "rootcli",
+        "cloudkit",
+        "scrub",
+        "supabase"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-12T22:11:29.891475"
+    },
+    {
+      "id": "bug-521",
+      "timestamp": "2026-10-12T20:30:47.523Z",
+      "error_message": "Missing await",
+      "file": "RootCLI/Sources/CloudKitS2SCore/SupabaseAdminClient.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call | Also: public func delete(table: String, filters: [(String, String); let (data, status) = try await request(\"DELETE\", \"rest/v1/\\(",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-10-12T20:30:47.643Z"
+    },
+    {
+      "id": "bug-522",
+      "timestamp": "2026-10-12T20:33:32.414Z",
+      "error_message": "Null/undefined access in ",
+      "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-12T20:33:32.414Z"
+    },
+    {
+      "id": "bug-520",
+      "timestamp": "2026-10-12T22:42:15.550508",
+      "error_message": "member_private.updated_by stayed null for edits made through clubmembersapi",
+      "file": "supabase/migrations/20261012000001_member_private_updated_by.sql",
+      "root_cause": "touch_member_private trigger always set updated_by := auth.uid(), which is null for the service role the server uses",
+      "fix": "Trigger keeps the supplied updated_by only for service_role; app users still always get auth.uid(); pgTAP tests added",
+      "tags": [
+        "supabase",
+        "trigger",
+        "audit",
+        "clubmembersapi"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-12T22:42:15.550508"
+    },
+    {
+      "id": "bug-521",
+      "timestamp": "2026-10-12T22:42:15.550508",
+      "error_message": "Web admin API and imports still wrote svnr/iban/birthDate/lastMedicalExamination to CloudKit after the scrub",
+      "file": "RootCLI/Sources/CloudKitS2SCore/MemberRecord.swift",
+      "root_cause": "ClubMemberRecord.ckFields and MemberFillUpdate still included the protected fields; the Supabase migration only covered the app",
+      "fix": "ckFields excludes protected fields; MemberPrivateStore writes them to member_private; CloudKitWriteGuard blocks them in generic record tools",
+      "tags": [
+        "rootcli",
+        "clubmembersapi",
+        "pii",
+        "supabase",
+        "cloudkit"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-12T22:42:15.550508"
     }
   ]
 }

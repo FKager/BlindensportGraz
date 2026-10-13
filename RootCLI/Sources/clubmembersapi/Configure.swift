@@ -4,29 +4,21 @@ import CloudKitS2SCore
 func configure(_ app: Application) throws {
     let cloudKitConfig = try Config.fromEnvironment()
     let client = try CloudKitS2SClient(config: cloudKitConfig)
-    // Calendar tokens and roles live in Supabase (profiles / user_roles).
+    // Accounts, roles, calendar tokens and protected member data live in
+    // Supabase; this server uses the service key, so it must check each
+    // admin's permissions itself (see Auth.swift and Routes.swift).
     let supabase = try SupabaseAdminClient.fromEnvironment()
+    let privateStore = MemberPrivateStore(supabase: supabase)
+    let sessions = AdminSessionStore(supabase: supabase)
 
-    // Basic Auth gate. This server holds a CloudKit S2S key that can read/write
-    // every club member's PII (address, phone, email) — see RootCLI/README.md's
-    // warning about that key. Both the API and the static admin page below sit
-    // behind these credentials by default; there is no "no auth" mode.
     let env = ProcessInfo.processInfo.environment
-    guard let apiUsername = env["API_USERNAME"], !apiUsername.isEmpty,
-          let apiPassword = env["API_PASSWORD"], !apiPassword.isEmpty else {
-        throw CLIError.message("""
-            Missing required environment variables API_USERNAME / API_PASSWORD.
-            clubmembersapi always requires HTTP Basic Auth credentials — it has no \
-            unauthenticated mode, since it exposes club members' address/phone/email. \
-            See RootCLI/README.md.
-            """)
-    }
+    // The session cookie is Secure by default (Caddy terminates TLS in front
+    // of this server). Only for local testing over plain http://localhost:
+    // SESSION_COOKIE_SECURE=false.
+    let secureCookie = env["SESSION_COOKIE_SECURE"]?.lowercased() != "false"
 
-    app.middleware.use(ClubMembersAuthenticator(username: apiUsername, password: apiPassword,
-                                                 limiter: LoginAttemptLimiter()))
-    // Requires authentication for every route EXCEPT /calendar/* — see
-    // RequireAPIUserExceptCalendarFeed's doc comment.
-    app.middleware.use(RequireAPIUserExceptCalendarFeed())
+    app.middleware.use(AdminSessionAuthenticator(store: sessions))
+    app.middleware.use(RequireAdminForAPI())
     app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory, defaultFile: "index.html"))
 
     if let portString = env["PORT"], let port = Int(portString) {
@@ -36,6 +28,8 @@ func configure(_ app: Application) throws {
         app.http.server.configuration.hostname = hostname
     }
 
+    AdminLogin.routes(app, supabase: supabase, store: sessions, limiter: LoginAttemptLimiter(),
+                      secureCookie: secureCookie)
     calendarFeedRoutes(app, client: client, supabase: supabase)
-    try routes(app, client: client)
+    try routes(app, client: client, privateStore: privateStore)
 }

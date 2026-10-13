@@ -3,7 +3,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(11);
+select plan(13);
 
 create function pg_temp.mk_user(uid uuid, mail text) returns void language sql as $$
   insert into auth.users (instance_id, id, aud, role, email, created_at, updated_at)
@@ -64,5 +64,23 @@ reset role;
 select pg_temp.mk_user('33333333-0000-0000-0000-000000000009', 'p@mp.test');
 select pg_temp.act_as('33333333-0000-0000-0000-000000000009');
 select is((select count(*)::int from public.account_directory()), 0, 'pending account sees no directory');
+
+-- updated_by: the service role (clubmembersapi) may name the admin it acts
+-- for; an app user always gets their own id, whatever they send.
+reset role;
+select set_config('request.jwt.claims', json_build_object('role', 'service_role')::text, true);
+set local role service_role;
+update public.member_private set updated_by = '33333333-0000-0000-0000-000000000001'
+  where member_id = '44444444-0000-0000-0000-000000000003';
+reset role;
+select is((select updated_by from public.member_private where member_id = '44444444-0000-0000-0000-000000000003'),
+  '33333333-0000-0000-0000-000000000001'::uuid, 'service role keeps the supplied updated_by');
+
+select pg_temp.act_as('33333333-0000-0000-0000-000000000001');
+update public.member_private set svnr = 'x', updated_by = '33333333-0000-0000-0000-000000000002'
+  where member_id = '44444444-0000-0000-0000-000000000003';
+reset role;
+select is((select updated_by from public.member_private where member_id = '44444444-0000-0000-0000-000000000003'),
+  '33333333-0000-0000-0000-000000000001'::uuid, 'an app user cannot set someone else as updated_by');
 select * from finish();
 rollback;

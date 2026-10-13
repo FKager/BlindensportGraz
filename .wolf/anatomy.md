@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-12T18:40:35.368Z
-> Files: 41 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-12T20:36:27.378Z
+> Files: 47 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -219,21 +219,30 @@
 
 
 ## RootCLI/Public/
+- `admin-session.js` — shared sign-in for the admin pages (Supabase account, session cookie, X-Requested-With header, AdminSession.request/can) (~900 tok)
 
+- `admin-session.js` — Sign-in for the admin pages. Admins use their own Blindensport Graz (~1134 tok)
 
 ## RootCLI/Sources/CloudKitS2SCore/
+- `MemberPrivateStore.swift` — MemberPrivate (svnr/iban/dates), Supabase member_private read/write, CloudKitWriteGuard (~1500 tok)
 
-- `SupabaseAdminClient.swift` — if canImport(FoundationNetworking) (~1795 tok)
+- `MemberPrivateStore.swift` — / The protected part of a roster entry — SVNR, IBAN, birth date, last (~1484 tok)
+- `SupabaseAdminClient.swift` — if canImport(FoundationNetworking) (~2382 tok)
 
 ## RootCLI/Sources/clubmembersapi/
 
+- `Auth.swift` — / A signed-in club admin. Accounts, roles and permissions come from (~2610 tok)
+- `Configure.swift` (~439 tok)
+- `Routes.swift` — `MemberRecord` is a typealias for `ClubSchema.ClubMemberRecord` (Phase 9) — (~3802 tok)
 
 ## RootCLI/Sources/rootcli/
 
 - `SupabaseMigrate.swift` — / One-off move of accounts, roles, approvals and sensitive member data from (~3504 tok)
 
 ## RootCLI/Tests/CloudKitS2SCoreTests/
+- `MemberPrivateTests.swift` — protected fields never in ckFields, Supabase row format, CloudKitWriteGuard (~600 tok)
 
+- `MemberPrivateTests.swift` — Class: MemberPrivateTests (~722 tok)
 
 ## Shared/ClubSchema/
 
@@ -259,6 +268,7 @@
 - `index.ts` — Deletes the calling user's auth account. All rows in public.* cascade (~521 tok)
 
 ## supabase/migrations/
+- `20261012000001_member_private_updated_by.sql` — touch trigger keeps updated_by supplied by the service role (~200 tok)
 
 - `20261008000001_rbac.sql` — Accounts, roles, permissions, approvals and protected member data. (~1780 tok)
 - `20261008000002_auth_hook.sql` — Custom Access Token Hook: adds `user_role` (text or null) and `approved` (~722 tok)

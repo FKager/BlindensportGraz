@@ -146,7 +146,14 @@ public enum MemberBulkImport {
     /// those records in place; omitting `id` mints a fresh UUID each time, so
     /// re-importing an id-less file duplicates rather than updates. Bad rows
     /// (empty name, non-UUID id) are skipped individually, never abort the batch.
-    public static func run(_ inputs: [MemberBulkInput], client: CloudKitS2SClient) async -> MemberBulkImportResult {
+    ///
+    /// Protected fields (svnr, iban, birthDate, lastMedicalExamination) go to
+    /// Supabase via `privateStore`, never to CloudKit. A row without any of
+    /// them leaves an existing protected record untouched. A row that has
+    /// them while `privateStore` is nil fails — callers must not silently
+    /// drop protected data.
+    public static func run(_ inputs: [MemberBulkInput], client: CloudKitS2SClient,
+                           privateStore: MemberPrivateStore?, updatedBy: UUID? = nil) async -> MemberBulkImportResult {
         var result = MemberBulkImportResult()
         for input in inputs {
             let firstName = (input.firstName ?? "").trimmingCharacters(in: .whitespaces)
@@ -194,8 +201,18 @@ public enum MemberBulkImport {
                 memberOfGVSC: input.memberOfGVSC ?? true
             )
 
+            let privateData = input.privateData
+            if !privateData.isEmpty, privateStore == nil {
+                result.failed += 1
+                result.messages.append("Skipped \(fullName): has protected fields but Supabase is not configured.")
+                continue
+            }
+
             do {
                 try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
+                if let privateStore, !privateData.isEmpty {
+                    try await privateStore.save(memberID: recordName, privateData, updatedBy: updatedBy)
+                }
                 result.succeeded += 1
                 result.messages.append("Imported \(fullName) (\(recordName))")
             } catch {

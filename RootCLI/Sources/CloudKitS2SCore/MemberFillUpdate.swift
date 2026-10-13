@@ -13,12 +13,19 @@ import Foundation
 /// Bool with no "blank" state, so it's only ever set on creation (defaulting
 /// true) — never touched by the fill-update path for an existing match.
 public enum MemberFillUpdate {
-    public static func run(_ inputs: [MemberBulkInput], client: CloudKitS2SClient) async -> MemberBulkImportResult {
+    ///
+    /// Protected fields are filled the same way, but in Supabase
+    /// (`privateStore`) — never in CloudKit. Rows carrying them fail when
+    /// `privateStore` is nil.
+    public static func run(_ inputs: [MemberBulkInput], client: CloudKitS2SClient,
+                           privateStore: MemberPrivateStore?, updatedBy: UUID? = nil) async -> MemberBulkImportResult {
         var result = MemberBulkImportResult()
 
         let existingRecords: [CKRecordDTO]
+        var existingPrivate: [String: MemberPrivate] = [:]
         do {
             existingRecords = try await client.queryRecords(recordType: "ClubMember")
+            if let privateStore { existingPrivate = try await privateStore.all() }
         } catch {
             result.failed = inputs.count
             result.messages.append("Could not fetch existing Member records, aborting: \(error)")
@@ -47,8 +54,16 @@ public enum MemberFillUpdate {
                 continue
             }
 
+            let incomingPrivate = input.privateData
+            if !incomingPrivate.isEmpty, privateStore == nil {
+                result.failed += 1
+                result.messages.append("Skipped \(fullName): has protected fields but Supabase is not configured.")
+                continue
+            }
+
             guard let existing = byName[nameKey(firstName, lastName)] else {
-                await create(input, firstName: firstName, lastName: lastName, fullName: fullName, client: client, result: &result)
+                await create(input, firstName: firstName, lastName: lastName, fullName: fullName, client: client,
+                             privateStore: privateStore, updatedBy: updatedBy, result: &result)
                 continue
             }
 
@@ -79,19 +94,31 @@ public enum MemberFillUpdate {
             fillString("gender", input.gender)
             fillString("title", input.title)
             fillString("sportId", input.sportId)
-            fillString("svnr", input.svnr)
-            fillString("iban", input.iban)
             fillString("defaultFunction", input.defaultFunction)
-            fillDate("birthDate", MemberBulkImport.parseFlexibleDate(input.birthDate))
-            fillDate("lastMedicalExamination", MemberBulkImport.parseFlexibleDate(input.lastMedicalExamination))
 
-            guard !fieldsToSet.isEmpty else {
+            // Protected fields: fill blanks in the Supabase row the same way.
+            var privateData = existingPrivate[existing.recordName.uppercased()] ?? MemberPrivate()
+            let privateBefore = privateData
+            if privateData.svnr.isEmpty, !incomingPrivate.svnr.isEmpty { privateData.svnr = incomingPrivate.svnr; filled.append("svnr") }
+            if privateData.iban.isEmpty, !incomingPrivate.iban.isEmpty { privateData.iban = incomingPrivate.iban; filled.append("iban") }
+            if privateData.birthDate == nil, let date = incomingPrivate.birthDate { privateData.birthDate = date; filled.append("birthDate") }
+            if privateData.lastMedicalExamination == nil, let date = incomingPrivate.lastMedicalExamination {
+                privateData.lastMedicalExamination = date
+                filled.append("lastMedicalExamination")
+            }
+
+            guard !fieldsToSet.isEmpty || privateData != privateBefore else {
                 result.messages.append("No blank fields to fill for \(fullName) — already up to date.")
                 continue
             }
 
             do {
-                try await client.updateRecord(existing, fields: fieldsToSet)
+                if !fieldsToSet.isEmpty {
+                    try await client.updateRecord(existing, fields: fieldsToSet)
+                }
+                if let privateStore, privateData != privateBefore {
+                    try await privateStore.save(memberID: existing.recordName, privateData, updatedBy: updatedBy)
+                }
                 result.succeeded += 1
                 result.messages.append("Filled \(fullName) (\(existing.recordName)): \(filled.joined(separator: ", "))")
             } catch {
@@ -104,7 +131,8 @@ public enum MemberFillUpdate {
 
     private static func create(
         _ input: MemberBulkInput, firstName: String, lastName: String, fullName: String,
-        client: CloudKitS2SClient, result: inout MemberBulkImportResult
+        client: CloudKitS2SClient, privateStore: MemberPrivateStore?, updatedBy: UUID?,
+        result: inout MemberBulkImportResult
     ) async {
         let recordName = UUID().uuidString
         let record = MemberRecord(
@@ -132,6 +160,9 @@ public enum MemberFillUpdate {
         )
         do {
             try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
+            if let privateStore, !input.privateData.isEmpty {
+                try await privateStore.save(memberID: recordName, input.privateData, updatedBy: updatedBy)
+            }
             result.succeeded += 1
             result.messages.append("Created \(fullName) (\(recordName)) — no existing match.")
         } catch {

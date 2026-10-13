@@ -57,12 +57,12 @@ extension ClubMemberRecord {
 
     /// Field dict as CloudKit Web Services expects it for a create/update
     /// (`records/modify`). Excludes `id`, which is the CKRecord name, not a
-    /// field. `birthDate`/`lastMedicalExamination` are omitted entirely when
-    /// nil, rather than sent as a null/placeholder value — CloudKit Web
-    /// Services treats an absent key as "leave unset", matching `dateField`'s
-    /// read-side handling of a missing key as nil.
+    /// field, and the protected fields (svnr, iban, birthDate,
+    /// lastMedicalExamination): CloudKit's public database is readable by
+    /// every app install, so those live only in Supabase — see
+    /// `MemberPrivateStore`.
     public var ckFields: [String: Any] {
-        var fields: [String: Any] = [
+        let fields: [String: Any] = [
             MemberField.firstName.rawValue: ["value": firstName],
             MemberField.lastName.rawValue: ["value": lastName],
             MemberField.street.rawValue: ["value": street],
@@ -77,17 +77,21 @@ extension ClubMemberRecord {
             MemberField.gender.rawValue: ["value": gender],
             MemberField.title.rawValue: ["value": title],
             MemberField.sportId.rawValue: ["value": sportId],
-            MemberField.svnr.rawValue: ["value": svnr],
-            MemberField.iban.rawValue: ["value": iban],
             MemberField.defaultFunction.rawValue: ["value": defaultFunction],
             MemberField.memberOfGVSC.rawValue: ["value": memberOfGVSC ? 1 : 0, "type": "INT64"]
         ]
-        if let birthDate {
-            fields[MemberField.birthDate.rawValue] = ["value": Int64(birthDate.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
-        }
-        if let lastMedicalExamination {
-            fields[MemberField.lastMedicalExamination.rawValue] = ["value": Int64(lastMedicalExamination.timeIntervalSince1970 * 1000), "type": "TIMESTAMP"]
-        }
         return fields
+    }
+
+    /// The protected fields carried by this value (from an API body or an
+    /// import row); stored via `MemberPrivateStore`, never in CloudKit.
+    public var privateData: MemberPrivate {
+        get { MemberPrivate(svnr: svnr, iban: iban, birthDate: birthDate, lastMedicalExamination: lastMedicalExamination) }
+        set {
+            svnr = newValue.svnr
+            iban = newValue.iban
+            birthDate = newValue.birthDate
+            lastMedicalExamination = newValue.lastMedicalExamination
+        }
     }
 }
