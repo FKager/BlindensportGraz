@@ -98,9 +98,17 @@ func routes(_ app: Application, client: CloudKitS2SClient, privateStore: MemberP
             defaultFunction: input.defaultFunction ?? "",
             memberOfGVSC: input.memberOfGVSC ?? true
         )
-        try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: record.id, fields: record.ckFields)
+        // Two stores, no transaction: write the protected row first (keyed by
+        // the id we just generated) and take it back if CloudKit then fails,
+        // so a failed request never leaves a half-created member.
         if !record.privateData.isEmpty {
             try await privateStore.save(memberID: record.id, record.privateData, updatedBy: admin.id)
+        }
+        do {
+            try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: record.id, fields: record.ckFields)
+        } catch {
+            if !record.privateData.isEmpty { await privateStore.restore(memberID: record.id, previous: nil) }
+            throw error
         }
         let response = try await record.encodeResponse(status: .created, for: req)
         return response
@@ -115,11 +123,14 @@ func routes(_ app: Application, client: CloudKitS2SClient, privateStore: MemberP
         }
         let input = try req.content.decode(MemberInput.self)
         try validate(input)
-        if input.carriesPrivateData { try admin.require("members.private.write") }
         // Protected fields come from Supabase; an omitted field keeps its
-        // stored value, like every other field here.
+        // stored value, like every other field here. The two dates can't be
+        // cleared with "" like svnr/iban, so an explicit JSON null clears them.
+        let clearedDates = nullKeys(in: req).intersection(["birthDate", "lastMedicalExamination"])
+        let touchesPrivate = input.carriesPrivateData || !clearedDates.isEmpty
+        if touchesPrivate { try admin.require("members.private.write") }
         var existingRecord = MemberRecord(dto: existingDTO)
-        let existingPrivate = input.carriesPrivateData ? try await privateStore.get(memberID: id) : nil
+        let existingPrivate = touchesPrivate ? try await privateStore.get(memberID: id) : nil
         if let existingPrivate { existingRecord?.privateData = existingPrivate }
         var record = MemberRecord(
             id: id,
@@ -136,21 +147,30 @@ func routes(_ app: Application, client: CloudKitS2SClient, privateStore: MemberP
             notes: input.notes ?? "",
             gender: input.gender ?? existingRecord?.gender ?? "",
             title: input.title ?? existingRecord?.title ?? "",
-            birthDate: input.birthDate ?? existingRecord?.birthDate,
+            birthDate: clearedDates.contains("birthDate") ? nil : input.birthDate ?? existingRecord?.birthDate,
             sportId: input.sportId ?? existingRecord?.sportId ?? "",
             svnr: input.svnr ?? existingRecord?.svnr ?? "",
             iban: input.iban ?? existingRecord?.iban ?? "",
-            lastMedicalExamination: input.lastMedicalExamination ?? existingRecord?.lastMedicalExamination,
+            lastMedicalExamination: clearedDates.contains("lastMedicalExamination")
+                ? nil : input.lastMedicalExamination ?? existingRecord?.lastMedicalExamination,
             defaultFunction: input.defaultFunction ?? existingRecord?.defaultFunction ?? "",
             memberOfGVSC: input.memberOfGVSC ?? existingRecord?.memberOfGVSC ?? true
         )
-        try await client.updateRecord(existingDTO, fields: record.ckFields)
-        if input.carriesPrivateData, record.privateData != (existingPrivate ?? MemberPrivate()) {
+        // Protected row first, put back if the CloudKit update then fails
+        // (e.g. a change-tag conflict) — see POST above.
+        let privateChanged = touchesPrivate && record.privateData != (existingPrivate ?? MemberPrivate())
+        if privateChanged {
             try await privateStore.save(memberID: id, record.privateData, updatedBy: admin.id)
+        }
+        do {
+            try await client.updateRecord(existingDTO, fields: record.ckFields)
+        } catch {
+            if privateChanged { await privateStore.restore(memberID: id, previous: existingPrivate) }
+            throw error
         }
         if !admin.permissions.contains("members.private.read") {
             record.privateData = MemberPrivate()
-        } else if !input.carriesPrivateData {
+        } else if !touchesPrivate {
             record.privateData = try await privateStore.get(memberID: id) ?? MemberPrivate()
         }
         return record
@@ -267,8 +287,20 @@ func routes(_ app: Application, client: CloudKitS2SClient, privateStore: MemberP
             throw Abort(.notFound, reason: "No \(type) record with id \(id).")
         }
         try await client.deleteRecord(recordType: type, recordName: id)
+        // Same as DELETE /api/members/:id: no orphaned protected data.
+        if type == "ClubMember" { try await privateStore.delete(memberID: id) }
         return .noContent
     }
+}
+
+/// Keys the JSON body sets to null. Codable decodes those the same as an
+/// omitted key, but for the protected dates null means "clear it".
+private func nullKeys(in req: Request) -> Set<String> {
+    guard let buffer = req.body.data,
+          let json = try? JSONSerialization.jsonObject(with: Data(buffer: buffer)) as? [String: Any] else {
+        return []
+    }
+    return Set(json.filter { $0.value is NSNull }.keys)
 }
 
 private func jsonResponse(_ object: Any) throws -> Response {

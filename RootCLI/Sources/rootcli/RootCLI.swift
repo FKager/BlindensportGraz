@@ -207,7 +207,13 @@ struct RootCLI {
             guard rest.count == 2 else {
                 throw CLIError.message("Usage: rootcli record delete <type> <id>")
             }
+            // A member's protected data goes with it (Supabase member_private),
+            // so a ClubMember delete needs Supabase configured before anything
+            // is removed from CloudKit.
+            let privateStore = rest[0] == "ClubMember"
+                ? MemberPrivateStore(supabase: try SupabaseAdminClient.fromEnvironment()) : nil
             try await client.deleteRecord(recordType: rest[0], recordName: rest[1])
+            try await privateStore?.delete(memberID: rest[1])
             print("Deleted \(rest[0]) \(rest[1]).")
 
         default:

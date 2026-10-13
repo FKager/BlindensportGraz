@@ -52,8 +52,11 @@ actor AdminSessionStore {
     }
 
     func create(_ user: AdminUser) -> String {
-        let token = [UInt8].random(count: 32).map { String(format: "%02x", $0) }.joined()
         let now = Date()
+        // Sessions are otherwise only expired when their token is presented
+        // again; drop abandoned ones here so the dictionary stays bounded.
+        sessions = sessions.filter { !Self.isExpired($0.value, at: now) }
+        let token = [UInt8].random(count: 32).map { String(format: "%02x", $0) }.joined()
         sessions[token] = Entry(user: user, created: now, lastSeen: now, lastChecked: now)
         return token
     }
@@ -61,29 +64,44 @@ actor AdminSessionStore {
     /// The session's admin, or nil if unknown, expired, or no longer allowed
     /// to use the admin tool (role removed or downgraded).
     func user(for token: String) async -> AdminUser? {
-        guard var entry = sessions[token] else { return nil }
+        guard let entry = sessions[token] else { return nil }
         let now = Date()
-        guard now.timeIntervalSince(entry.lastSeen) < Self.idleTimeout,
-              now.timeIntervalSince(entry.created) < Self.absoluteTimeout else {
+        guard !Self.isExpired(entry, at: now) else {
             sessions[token] = nil
             return nil
         }
         if now.timeIntervalSince(entry.lastChecked) >= Self.recheckInterval {
-            guard let access = try? await supabase.access(for: entry.user.id),
-                  let role = access.role, access.permissions.contains(AdminLogin.requiredPermission) else {
+            let access = try? await supabase.access(for: entry.user.id)
+            // Actor reentrancy: while we awaited, the session may have been
+            // signed out, or a concurrent request may have finished a newer
+            // recheck — never write an older result over either.
+            guard var current = sessions[token] else { return nil }
+            if current.lastChecked > entry.lastChecked {
+                current.lastSeen = now
+                sessions[token] = current
+                return current.user
+            }
+            guard let access, let role = access.role,
+                  access.permissions.contains(AdminLogin.requiredPermission) else {
                 sessions[token] = nil
                 return nil
             }
-            // Actor reentrancy: a sign-out may have removed the session while
-            // we awaited the recheck — don't write it back.
-            guard sessions[token] != nil else { return nil }
-            entry.user = AdminUser(id: entry.user.id, email: entry.user.email, role: role,
-                                   permissions: access.permissions)
-            entry.lastChecked = now
+            current.user = AdminUser(id: entry.user.id, email: entry.user.email, role: role,
+                                     permissions: access.permissions)
+            current.lastChecked = now
+            current.lastSeen = now
+            sessions[token] = current
+            return current.user
         }
-        entry.lastSeen = now
-        sessions[token] = entry
-        return entry.user
+        var updated = entry
+        updated.lastSeen = now
+        sessions[token] = updated
+        return updated.user
+    }
+
+    private static func isExpired(_ entry: Entry, at now: Date) -> Bool {
+        now.timeIntervalSince(entry.lastSeen) >= idleTimeout
+            || now.timeIntervalSince(entry.created) >= absoluteTimeout
     }
 
     func remove(_ token: String) {
@@ -166,12 +184,14 @@ enum AdminLogin {
                 await limiter.recordFailure(client: client)
                 throw Abort(.unauthorized, reason: "E-Mail oder Passwort falsch.")
             }
-            await limiter.recordSuccess(client: client)
             let access = try await supabase.access(for: account.id)
             guard let role = access.role, access.permissions.contains(requiredPermission) else {
                 req.logger.notice("Admin sign-in refused for \(email): role \(access.role ?? "pending")")
                 throw Abort(.forbidden, reason: "Dieses Konto hat keinen Zugriff auf die Mitgliederverwaltung.")
             }
+            // Only an admin sign-in clears the failure history: any member's
+            // correct password must not reset the brute-force window.
+            await limiter.recordSuccess(client: client)
             let user = AdminUser(id: account.id, email: account.email ?? email, role: role,
                                  permissions: access.permissions)
             let token = await store.create(user)

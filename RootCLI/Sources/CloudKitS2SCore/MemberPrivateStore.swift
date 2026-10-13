@@ -105,6 +105,17 @@ public struct MemberPrivateStore: Sendable {
         try await supabase.delete(table: "member_private", filters: [("member_id", "eq.\(id)")])
     }
 
+    /// Puts back what was stored before a write whose CloudKit half then
+    /// failed (`previous` nil = there was no row). Best effort: the CloudKit
+    /// error is what the caller reports.
+    public func restore(memberID: String, previous: MemberPrivate?) async {
+        if let previous {
+            try? await save(memberID: memberID, previous)
+        } else {
+            try? await delete(memberID: memberID)
+        }
+    }
+
     private static func key(_ memberID: String) -> String? {
         UUID(uuidString: memberID).map { $0.uuidString.lowercased() }
     }
