@@ -3408,3 +3408,21 @@
 | 20:58 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
 | 21:02 | Supabase prod created+configured, CloudKit Prod migrated, 2 roots | supabase/, project.yml | done | ~30k |
 | 21:02 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
+| 21:07 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
+| 21:22 | Session end: 1 writes across 1 files (RegisterView.swift) | 1 reads | ~1569 tok |
+
+## Session: 2026-10-12 21:49
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:26 | Supabase rollout complete: CloudKit scrubbed both envs, 17 old TF builds expired | RootCLI, asc | done | ~20k |
+| 22:30 | Edited RootCLI/Sources/CloudKitS2SCore/SupabaseAdminClient.swift | modified verifyPassword() | ~453 |
+| 22:30 | Edited RootCLI/Sources/CloudKitS2SCore/SupabaseAdminClient.swift | modified delete() | ~95 |
+| 22:31 | Created RootCLI/Sources/CloudKitS2SCore/MemberPrivateStore.swift | — | ~1484 |
+| 22:32 | Created RootCLI/Sources/clubmembersapi/Auth.swift | — | ~2610 |
+| 22:32 | Created RootCLI/Sources/clubmembersapi/Configure.swift | — | ~439 |
+| 22:33 | Edited RootCLI/Sources/clubmembersapi/Routes.swift | added nullish coalescing | ~76 |
+| 22:33 | Created RootCLI/Public/admin-session.js | — | ~1134 |
+| 22:36 | Created RootCLI/Tests/CloudKitS2SCoreTests/MemberPrivateTests.swift | — | ~722 |
+| 22:42 | Web admin: Supabase sign-in + protected fields to member_private; migration updated_by on staging+prod | RootCLI/, supabase/ | done, E2E verified locally | ~90k |
+| 19:05 | Reviewed web admin auth; committed staged work on web-admin-supabase-auth; fixed AdminSessionStore reentrancy race | RootCLI/Sources/clubmembersapi/Auth.swift | tests 11/11, build ok | ~6k |

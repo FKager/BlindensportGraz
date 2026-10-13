@@ -1,11 +1,10 @@
 import Foundation
 
-/// In-memory sliding-window limiter for failed Basic Auth attempts on
-/// `clubmembersapi` (audit.md Security Finding 9). Keyed by client IP, not
-/// username — this server has a single shared operator credential
-/// (API_USERNAME/API_PASSWORD, see Auth.swift), so keying by username would
-/// only ever have one bucket anyway, and IP-keying also throttles attempts
-/// against usernames that don't even match. Deliberately a plain in-memory
+/// In-memory sliding-window limiter for failed sign-ins on `clubmembersapi`
+/// (audit.md Security Finding 9, `POST /api/session` in Auth.swift). Keyed
+/// by client IP, not email, so guessing across many addresses is throttled
+/// too (Supabase Auth adds its own per-project rate limits on top).
+/// Deliberately a plain in-memory
 /// actor with no database or external dependency — this is small internal
 /// tooling, not a public API, and state resetting on process restart is an
 /// acceptable tradeoff for a mechanism whose job is slowing down brute-force

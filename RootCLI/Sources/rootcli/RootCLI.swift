@@ -83,7 +83,7 @@ struct RootCLI {
         }
 
         let client = try makeClient()
-        let result = await MemberBulkImport.run(inputs, client: client)
+        let result = await MemberBulkImport.run(inputs, client: client, privateStore: try privateStore(for: inputs))
         for message in result.messages { print(message) }
         print("Done: \(result.succeeded) imported, \(result.failed) failed, out of \(inputs.count).")
     }
@@ -103,9 +103,25 @@ struct RootCLI {
         }
 
         let client = try makeClient()
-        let result = await MemberFillUpdate.run(inputs, client: client)
+        let result = await MemberFillUpdate.run(inputs, client: client, privateStore: try privateStore(for: inputs))
         for message in result.messages { print(message) }
         print("Done: \(result.succeeded) updated/created, \(result.failed) failed, out of \(inputs.count).")
+    }
+
+    /// Protected fields (svnr, iban, dates) are stored in Supabase only, so a
+    /// file carrying them needs SUPABASE_URL/SUPABASE_SERVICE_KEY. Files
+    /// without them run on CloudKit credentials alone.
+    private static func privateStore(for inputs: [MemberBulkInput]) throws -> MemberPrivateStore? {
+        let env = ProcessInfo.processInfo.environment
+        let configured = !(env["SUPABASE_URL"] ?? "").isEmpty && !(env["SUPABASE_SERVICE_KEY"] ?? "").isEmpty
+        if configured { return MemberPrivateStore(supabase: try SupabaseAdminClient.fromEnvironment()) }
+        guard inputs.allSatisfy({ $0.privateData.isEmpty }) else {
+            throw CLIError.message("""
+                The file contains protected fields (svnr, iban, birthDate, lastMedicalExamination), \
+                which are stored in Supabase. Set SUPABASE_URL and SUPABASE_SERVICE_KEY and run again.
+                """)
+        }
+        return nil
     }
 
     /// Generic insert/update/read/delete for ANY CloudKit record type this
@@ -153,6 +169,9 @@ struct RootCLI {
             let recordType = rest[0]
             let id = rest[1]
             let assignments = Array(rest.dropFirst(2))
+            try CloudKitWriteGuard.check(recordType: recordType, fieldNames: assignments.map {
+                String($0.prefix { $0 != "=" && $0 != ":" })
+            })
 
             // ASSET assignments need an async upload (assets/upload + a
             // pre-authorized POST, see CloudKitS2SClient.uploadAsset) and

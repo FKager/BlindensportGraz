@@ -145,7 +145,7 @@ import can lock out legitimate writes too.
 `clubmembersapi` (see [Web API & admin page](#web-api--admin-page) below)
 speaks plain HTTP by default — Vapor does not terminate TLS for you. **This
 server must never be run as a bare, unencrypted origin server reachable from
-outside `localhost`.** Basic Auth credentials and every club member's PII
+outside `localhost`.** Sign-in passwords, session cookies and every club member's PII
 (address, phone, email, and for some entries SVNR/IBAN) travel in the clear
 over an unencrypted connection; deploy it behind a TLS-terminating reverse
 proxy or load balancer (nginx, Caddy, a cloud provider's managed load
@@ -179,7 +179,7 @@ container over a compose-internal Docker network:
 
 ```bash
 cp .env.example .env
-# edit .env: real CLOUDKIT_KEY_ID/API_USERNAME/API_PASSWORD, plus DOMAIN (a
+# edit .env: real CLOUDKIT_KEY_ID/SUPABASE_URL/SUPABASE_SERVICE_KEY, plus DOMAIN (a
 # real hostname whose DNS A/AAAA record points at this host) and ACME_EMAIL
 mkdir -p secrets && cp ~/.config/rootcli/rootcli_private_key_pkcs8.pem secrets/rootcli_private_key_pkcs8.pem
 # make sure ports 80 and 443 both reach this host from the internet — Caddy
@@ -199,8 +199,9 @@ Verified end-to-end (2026-09-28): built the image, ran the full compose stack
 with `DOMAIN=localhost` (Caddy falls back to its own internal CA for that
 one hostname, so this only proves the reverse-proxy wiring — real deployment
 still needs a real `DOMAIN` for a browser-trusted Let's Encrypt cert) and
-confirmed via `curl` that unauthenticated requests get 401, valid Basic Auth
-reaches both `/` and `/records.html` with 200, wrong credentials get 401, and
+confirmed via `curl` that unauthenticated requests get 401, valid credentials
+(then: Basic Auth; since v0.2.0: Supabase sign-in) reach both `/` and
+`/records.html` with 200, wrong credentials get 401, and
 `clubmembersapi`'s own port is genuinely unreachable from the host directly
 (connection refused — only `caddy` can reach it).
 
@@ -215,8 +216,8 @@ docker run -d --name clubmembersapi \
   -p 127.0.0.1:8080:8080 \
   -e CLOUDKIT_KEY_ID=<key id> \
   -e CLOUDKIT_ENVIRONMENT=production \
-  -e API_USERNAME=admin \
-  -e API_PASSWORD=<a real secret> \
+  -e SUPABASE_URL=https://<project-ref>.supabase.co \
+  -e SUPABASE_SERVICE_KEY=<sb_secret key> \
   -e CLOUDKIT_PRIVATE_KEY_PATH=/run/secrets/rootcli_private_key.pem \
   -v ~/.config/rootcli/rootcli_private_key_pkcs8.pem:/run/secrets/rootcli_private_key.pem:ro \
   clubmembersapi
@@ -239,8 +240,8 @@ Notes specific to the container deployment:
   that, and neither the bundled `docker-compose.yml` nor the standalone
   `docker run` example above publish `clubmembersapi`'s own port to a public
   interface.
-- `LoginAttemptLimiter` (Basic Auth rate limiting) keys on the client IP.
-  Behind the bundled Caddy setup, `Auth.swift`'s `clientAddress(for:)` reads
+- `LoginAttemptLimiter` (sign-in rate limiting) keys on the client IP.
+  Behind the bundled Caddy setup, `Auth.swift`'s `AdminLogin.clientAddress(for:)` reads
   the real client IP from `X-Forwarded-For` (which Caddy's `reverse_proxy`
   sets automatically) instead of `request.remoteAddress` (which would
   otherwise always be Caddy's own container IP, collapsing every real client
@@ -325,6 +326,12 @@ non-UUID `id`) are skipped with a message rather than aborting the whole file;
 the final line reports how many
 succeeded/failed out of the total.
 
+Protected fields in the file (`svnr`, `iban`, `birthDate`,
+`lastMedicalExamination`) are written to Supabase (`member_private`), never
+to CloudKit, so such a file needs `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` as
+well; without them the command stops before writing anything. A row without
+protected fields leaves that member's stored protected data untouched.
+
 Changes made this way reach app instances the same way any other cross-device
 change does: on next login or pull-to-refresh, via `CloudKitSync.syncAll`.
 Newly-imported members are also matched retroactively the next time someone
@@ -339,6 +346,11 @@ currently blank there, leaving anything already set untouched. Rows with no
 existing name match are created fresh, same as `import-members`. Use this
 instead of `import-members` when re-importing an updated/extended roster file
 where some people already exist with data you don't want clobbered.
+Protected fields are filled the same way, in Supabase.
+
+`rootcli record set` refuses protected member fields and the retired account
+record types (`UserIdentity`, `RoleAssignment`, `AccountApproval`) — those
+live in Supabase now.
 
 ### Generic record insert/update (any type, not just Member)
 
@@ -390,30 +402,46 @@ plus a single static HTML/JS page for CRUD on the Grazer VSC roster
 (`Member` records, CKRecord type `ClubMember`), built on the same
 `CloudKitS2SClient` as `rootcli`.
 
-**Every request requires HTTP Basic Auth — there is no unauthenticated mode.**
-This server holds an S2S key that can read/write every member's address,
-phone, and email; unauthenticated CRUD over that would be a real PII exposure,
-so `API_USERNAME`/`API_PASSWORD` are required environment variables and the
-process refuses to start without them. This is a single shared operator
-credential (like `rootcli`'s key), not a per-member login system — don't
-expose this server directly to club members.
+**Every API call requires a signed-in admin — there is no shared password and
+no unauthenticated mode.** Admins sign in on the web pages (or via
+`POST /api/session`) with their own Blindensport Graz account — the same
+Supabase account they use in the app. The server checks the password with
+Supabase Auth and reads the account's role and permissions from the database:
 
-Repeated failed Basic Auth attempts from the same client IP are rate-limited
-(audit.md Security Finding 9): after 5 failures within a 5-minute sliding
-window, that client gets `429 Too Many Requests` regardless of what
-credentials it sends next, until the window clears. A successful login
-always resets that client's failure count immediately — this only ever
-slows down guessing, it never locks out a client using the real credentials.
-See `LoginAttemptLimiter.swift`; in-memory only (resets on restart), no
-database — deliberately simple for a small internal tool, see that file's
-doc comment for the reasoning.
+| Permission (`app_permission`) | Allows |
+|---|---|
+| `members.manage` | signing in at all; list/create/edit/delete roster entries, import |
+| `members.private.read` | seeing `svnr`, `iban`, `birthDate`, `lastMedicalExamination` |
+| `members.private.write` | changing them (also needed for imports that contain them) |
+| `club.manage` | the generic `/api/records` editor |
+
+Admins and root have all four; coaches and members can't sign in. The session
+is an opaque random token in an `HttpOnly`, `Secure`, `SameSite=Strict`
+cookie, held in memory (a restart signs everyone out). It ends after 30
+minutes idle or 12 hours, and the role is re-read every 5 minutes, so a role
+change or removal takes effect quickly. Changing requests must also send
+`X-Requested-With: blindensport-admin` (anti-CSRF; the pages do this).
+
+**Protected member data lives only in Supabase** (`member_private`, since app
+v0.2.0). The API reads and writes it there with the service key — never in
+CloudKit, whose public database every app install can read — and records the
+signed-in admin as `updated_by`. Deleting a member also deletes their
+protected row. The generic records API rejects those fields and the retired
+account record types (`UserIdentity`, `RoleAssignment`, `AccountApproval`).
+
+Failed sign-ins from the same client IP are rate-limited (audit.md Security
+Finding 9): after 5 failures within a 5-minute sliding window, that client
+gets `429 Too Many Requests` until the window clears; a successful sign-in
+resets the count. See `LoginAttemptLimiter.swift` — in-memory only, by
+design. Supabase Auth applies its own rate limits on top.
 
 ```bash
 export CLOUDKIT_KEY_ID=<key id>
 export CLOUDKIT_PRIVATE_KEY_PATH=~/.config/rootcli/rootcli_private_key_pkcs8.pem
 export CLOUDKIT_ENVIRONMENT=development   # or production
-export API_USERNAME=admin
-export API_PASSWORD=<a real secret, not this>
+export SUPABASE_URL=https://<project-ref>.supabase.co
+export SUPABASE_SERVICE_KEY=<sb_secret key>   # keep out of git
+export SESSION_COOKIE_SECURE=false            # only for plain http://127.0.0.1 testing
 # optional: PORT (default 8080), HOSTNAME (default 127.0.0.1)
 
 cd RootCLI
@@ -421,8 +449,9 @@ swift run clubmembersapi serve
 # or: .build/release/clubmembersapi serve
 ```
 
-Open `http://127.0.0.1:8080/` (browser will prompt for the Basic Auth
-credentials above) for the admin page, or call the REST API directly. The
+Open `http://127.0.0.1:8080/` and sign in with an admin account, or call
+the REST API directly (sign in with `POST /api/session` first and keep the
+cookie). The
 webui (`RootCLI/Public/index.html`) covers full CRUD on the roster, a
 live search/filter over the loaded list, a "JSON exportieren" button that
 downloads the current list as a file, and a JSON file-upload form for
@@ -434,6 +463,9 @@ below.
 
 | Method | Path                | Body                              | Notes |
 |--------|---------------------|------------------------------------|-------|
+| POST   | `/api/session`      | `{"email", "password"}`             | Sign in; sets the session cookie, returns `{email, role, permissions}`. 401 wrong credentials, 403 no `members.manage` |
+| GET    | `/api/session`      | —                                   | Current admin, 401 if not signed in |
+| DELETE | `/api/session`      | —                                   | Sign out |
 | GET    | `/api/members`      | —                                   | List all, sorted by last/first name |
 | GET    | `/api/members/:id`  | —                                   | 404 if not found |
 | POST   | `/api/members`      | `Member` fields, `firstName`/`lastName` required | 201, returns the created record with its new `id` |
@@ -445,16 +477,20 @@ Field names match `members.example.json` (`firstName`, `lastName`, `street`,
 `zip`, `city`, `country`, `email`, `phone`, `memberNumber`, `joinedAt`, `notes`), plus
 `gender`/`title`/`birthDate`/`sportId`/`svnr`/`iban`/`lastMedicalExamination`/
 `defaultFunction`/`memberOfGVSC` (the last defaults to `true` when omitted);
-`id` is assigned server-side on create and is otherwise read-only.
+`id` is assigned server-side on create and is otherwise read-only. The
+protected fields (`svnr`, `iban`, `birthDate`, `lastMedicalExamination`) are
+returned empty without `members.private.read`, and sending them needs
+`members.private.write`; on `PUT`, an omitted field keeps its stored value.
 
 `/api/members/import` accepts exactly the same array-of-objects shape as
 `rootcli import-members`/the app's own JSON export (a file on iCloud Drive,
 say) — no per-record scripting needed, just post the whole file:
 
 ```bash
-curl -u admin:<password> \
-  -X POST https://your-host:8080/api/members/import \
-  -H "Content-Type: application/json" \
+curl -c cookies.txt -H "Content-Type: application/json" -H "X-Requested-With: blindensport-admin" \
+  -d '{"email":"admin@example.org","password":"…"}' https://your-host/api/session
+curl -b cookies.txt -X POST https://your-host/api/members/import \
+  -H "Content-Type: application/json" -H "X-Requested-With: blindensport-admin" \
   --data-binary @roster.json
 ```
 
@@ -478,13 +514,12 @@ training/tournament schedule as a single RFC 5545 `.ics` file
 (`Content-Type: text/calendar`), for subscribing from a system calendar app
 via `webcal://your-host/calendar/<token>.ics`.
 
-This is the **only** route in this server that doesn't require the Basic Auth
-credentials above — a webcal subscription can't present a username/password
-prompt in most calendar clients, so each member's own opaque, unguessable,
-regenerable `calendarToken` (stored on their `UserIdentity` CKRecord, set
-from the app's Account tab → "Kalender-Abo") is the credential instead,
-checked inside the route handler. See `Auth.swift`'s
-`RequireAPIUserExceptCalendarFeed` and `CloudKitS2SCore/CalendarFeed.swift`'s
+This is the **only** data route in this server that doesn't require a signed-in
+admin — a webcal subscription can't sign in, so each member's own opaque,
+unguessable, regenerable calendar token (`profiles.calendar_token` in
+Supabase, set from the app's Account tab → "Kalender-Abo") is the credential
+instead, checked inside the route handler. See `Auth.swift`'s
+`RequireAdminForAPI` and `CloudKitS2SCore/CalendarFeed.swift`'s
 doc comments for the full reasoning. The feed only ever includes
 title/time/venue — the same data that member could already see in the app —
 filtered by the same admin-sees-everything / everyone-else-sees-their-own-

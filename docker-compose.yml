@@ -13,8 +13,8 @@
 #                                                                  published)
 #
 # Usage:
-#   1. cp .env.example .env   # fill in real CLOUDKIT_KEY_ID/API_USERNAME/
-#      API_PASSWORD; DOMAIN/ACME_EMAIL already default to a11y.it/dev@a11y.it
+#   1. cp .env.example .env   # fill in real CLOUDKIT_KEY_ID/SUPABASE_URL/
+#      SUPABASE_SERVICE_KEY; DOMAIN/ACME_EMAIL already default to a11y.it/dev@a11y.it
 #   2. Put your CloudKit private key on the host, e.g.
 #      ./secrets/rootcli_private_key_pkcs8.pem (already .gitignore'd via *.pem)
 #   3. Point DOMAIN's DNS A/AAAA record at this host, and make sure ports
