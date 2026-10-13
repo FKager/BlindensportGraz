@@ -8818,6 +8818,25 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-12T22:42:15.550508"
+    },
+    {
+      "id": "bug-522",
+      "timestamp": "2026-10-13T19:05:00Z",
+      "error_message": "Code review: signed-out admin session could be resurrected",
+      "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
+      "root_cause": "AdminSessionStore.user(for:) awaited the Supabase permission recheck, then wrote the session back unconditionally; actor reentrancy let a concurrent DELETE /api/session be overwritten",
+      "fix": "Re-check sessions[token] != nil after the await before writing the entry back",
+      "tags": [
+        "swift",
+        "actor",
+        "reentrancy",
+        "session",
+        "clubmembersapi",
+        "security"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T19:05:00Z"
     }
   ]
 }

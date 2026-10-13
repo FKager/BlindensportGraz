@@ -74,6 +74,9 @@ actor AdminSessionStore {
                 sessions[token] = nil
                 return nil
             }
+            // Actor reentrancy: a sign-out may have removed the session while
+            // we awaited the recheck — don't write it back.
+            guard sessions[token] != nil else { return nil }
             entry.user = AdminUser(id: entry.user.id, email: entry.user.email, role: role,
                                    permissions: access.permissions)
             entry.lastChecked = now
