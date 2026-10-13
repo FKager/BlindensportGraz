@@ -51,8 +51,12 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
-    env_file:
-      - .env
+    # Only what the Caddyfile needs — not env_file: .env, which would also
+    # hand the proxy SUPABASE_SERVICE_KEY and the CloudKit key id. Compose
+    # reads these from .env for interpolation.
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
     ports:
       # The only two ports this deployment exposes to the outside world.
       # 80 is required for Let's Encrypt's HTTP-01 challenge (Caddy also
