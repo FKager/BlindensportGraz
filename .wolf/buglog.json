@@ -8837,6 +8837,78 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-13T19:05:00Z"
+    },
+    {
+      "id": "bug-530",
+      "timestamp": "2026-10-13T20:30:00Z",
+      "error_message": "Ultrareview PR #9: any valid (non-admin) Supabase login reset the IP's brute-force failure window",
+      "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
+      "root_cause": "POST /api/session called limiter.recordSuccess right after verifyPassword, before the members.manage check",
+      "fix": "recordSuccess only after the permission check passes; verified e2e against local Supabase (4x401, non-admin 403, 401, then 429)",
+      "tags": ["clubmembersapi", "auth", "rate-limit", "security"],
+      "related_bugs": ["bug-522"],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T20:30:00Z"
+    },
+    {
+      "id": "bug-531",
+      "timestamp": "2026-10-13T20:30:00Z",
+      "error_message": "Ultrareview PR #9: concurrent permission rechecks could write an older (more permissive) result over a newer one",
+      "file": "RootCLI/Sources/clubmembersapi/Auth.swift",
+      "root_cause": "AdminSessionStore.user(for:) wrote its pre-await entry copy back; bug-522's fix only guarded removal, not a newer lastChecked",
+      "fix": "Re-read the entry after the await; if its lastChecked moved on, keep that result. Also sweep expired sessions in create() (unbounded dictionary)",
+      "tags": ["swift", "actor", "reentrancy", "session", "security"],
+      "related_bugs": ["bug-522"],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T20:30:00Z"
+    },
+    {
+      "id": "bug-532",
+      "timestamp": "2026-10-13T20:30:00Z",
+      "error_message": "Ultrareview PR #9: generic record delete / rootcli record delete left member_private (SVNR/IBAN) rows orphaned",
+      "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
+      "root_cause": "Only DELETE /api/members/:id deleted the Supabase row; /api/records and rootcli record delete only touched CloudKit",
+      "fix": "ClubMember deletes in both paths also call MemberPrivateStore.delete; rootcli builds the store before deleting so missing Supabase config aborts first",
+      "tags": ["clubmembersapi", "rootcli", "pii", "supabase"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T20:30:00Z"
+    },
+    {
+      "id": "bug-533",
+      "timestamp": "2026-10-13T20:30:00Z",
+      "error_message": "Ultrareview PR #9: clearing birth date / last medical exam in the web admin had no effect",
+      "file": "RootCLI/Public/index.html",
+      "root_cause": "Form omitted empty date keys; Codable treats omitted and null alike and PUT falls back to the stored value",
+      "fix": "Form sends null for a blank date; PUT reads raw-JSON null keys for the two dates and clears them. Form only sends protected fields with read+write (hidden empty fields would wipe data)",
+      "tags": ["clubmembersapi", "webui", "codable", "dates"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T20:30:00Z"
+    },
+    {
+      "id": "bug-534",
+      "timestamp": "2026-10-13T20:30:00Z",
+      "error_message": "Ultrareview PR #9: CloudKit write then Supabase write with no compensation left half-saved members",
+      "file": "RootCLI/Sources/clubmembersapi/Routes.swift",
+      "root_cause": "Protected fields moved to a second store; create/update/import wrote CloudKit first and Supabase second without rollback",
+      "fix": "Write member_private first, then CloudKit; on CloudKit failure MemberPrivateStore.restore puts back the previous row (or deletes it). Same in MemberBulkImport and MemberFillUpdate",
+      "tags": ["clubmembersapi", "rootcli", "consistency", "supabase", "cloudkit"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T20:30:00Z"
+    },
+    {
+      "id": "bug-535",
+      "timestamp": "2026-10-13T20:30:00Z",
+      "error_message": "Ultrareview PR #9: fill-update with duplicate names reverted protected fields filled earlier in the same batch",
+      "file": "RootCLI/Sources/CloudKitS2SCore/MemberFillUpdate.swift",
+      "root_cause": "existingPrivate snapshot taken once before the loop; save() upserts the whole row",
+      "fix": "Update existingPrivate after each successful save",
+      "tags": ["rootcli", "import", "supabase", "stale-snapshot"],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T20:30:00Z"
     }
   ]
 }

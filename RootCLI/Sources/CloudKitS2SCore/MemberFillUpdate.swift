@@ -113,12 +113,26 @@ public enum MemberFillUpdate {
             }
 
             do {
-                if !fieldsToSet.isEmpty {
-                    try await client.updateRecord(existing, fields: fieldsToSet)
-                }
-                if let privateStore, privateData != privateBefore {
+                // Protected row first, put back if the CloudKit update fails.
+                let privateChanged = privateStore != nil && privateData != privateBefore
+                if let privateStore, privateChanged {
                     try await privateStore.save(memberID: existing.recordName, privateData, updatedBy: updatedBy)
                 }
+                if !fieldsToSet.isEmpty {
+                    do {
+                        try await client.updateRecord(existing, fields: fieldsToSet)
+                    } catch {
+                        if let privateStore, privateChanged {
+                            let previous = existingPrivate[existing.recordName.uppercased()]
+                            await privateStore.restore(memberID: existing.recordName, previous: previous)
+                        }
+                        throw error
+                    }
+                }
+                // Later rows in this batch for the same member (duplicate
+                // names) must see what this row just filled, not the snapshot
+                // from before the loop — save() writes the whole row.
+                if privateChanged { existingPrivate[existing.recordName.uppercased()] = privateData }
                 result.succeeded += 1
                 result.messages.append("Filled \(fullName) (\(existing.recordName)): \(filled.joined(separator: ", "))")
             } catch {
@@ -159,9 +173,16 @@ public enum MemberFillUpdate {
             memberOfGVSC: input.memberOfGVSC ?? true
         )
         do {
-            try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
-            if let privateStore, !input.privateData.isEmpty {
+            // Protected row first (new id, so nothing to put back but the row).
+            let hasPrivate = privateStore != nil && !input.privateData.isEmpty
+            if let privateStore, hasPrivate {
                 try await privateStore.save(memberID: recordName, input.privateData, updatedBy: updatedBy)
+            }
+            do {
+                try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
+            } catch {
+                if let privateStore, hasPrivate { await privateStore.restore(memberID: recordName, previous: nil) }
+                throw error
             }
             result.succeeded += 1
             result.messages.append("Created \(fullName) (\(recordName)) — no existing match.")

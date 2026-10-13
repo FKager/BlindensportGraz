@@ -3427,3 +3427,4 @@
 | 22:42 | Web admin: Supabase sign-in + protected fields to member_private; migration updated_by on staging+prod | RootCLI/, supabase/ | done, E2E verified locally | ~90k |
 | 19:05 | Reviewed web admin auth; committed staged work on web-admin-supabase-auth; fixed AdminSessionStore reentrancy race | RootCLI/Sources/clubmembersapi/Auth.swift | tests 11/11, build ok | ~6k |
 | 19:40 | Docker review: Dockerfile copies Package.resolved before resolve; caddy gets only DOMAIN/ACME_EMAIL (no .env secrets) | RootCLI/Dockerfile, docker-compose.yml, Caddyfile | compose config ok | ~4k |
+| 20:30 | Fixed 8 ultrareview findings on PR #9 (limiter reset, recheck race, session sweep, orphaned member_private, date clearing, write order, fill-update snapshot, shared CSS) | RootCLI/Sources/{clubmembersapi,CloudKitS2SCore,rootcli}, RootCLI/Public | build ok, tests 11/11, limiter e2e ok | ~25k |

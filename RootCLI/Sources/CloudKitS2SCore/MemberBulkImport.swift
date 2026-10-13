@@ -209,9 +209,20 @@ public enum MemberBulkImport {
             }
 
             do {
-                try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
+                // Protected row first, put back if the CloudKit write fails, so
+                // a row reported as failed never leaves a half-imported member.
+                var previousPrivate: MemberPrivate?
                 if let privateStore, !privateData.isEmpty {
+                    previousPrivate = try await privateStore.get(memberID: recordName)
                     try await privateStore.save(memberID: recordName, privateData, updatedBy: updatedBy)
+                }
+                do {
+                    try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
+                } catch {
+                    if let privateStore, !privateData.isEmpty {
+                        await privateStore.restore(memberID: recordName, previous: previousPrivate)
+                    }
+                    throw error
                 }
                 result.succeeded += 1
                 result.messages.append("Imported \(fullName) (\(recordName))")
