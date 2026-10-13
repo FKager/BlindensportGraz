@@ -54,9 +54,20 @@ services:
     # Only what the Caddyfile needs — not env_file: .env, which would also
     # hand the proxy SUPABASE_SERVICE_KEY and the CloudKit key id. Compose
     # reads these from .env for interpolation.
+    #
+    # `:-` (not `:?`): Compose interpolates this file for EVERY subcommand,
+    # so a required-variable guard here would also break `down`/`ps`/`logs`
+    # on an incomplete .env. The check runs when Caddy starts instead.
     environment:
-      DOMAIN: ${DOMAIN:?set DOMAIN in .env}
-      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
+      DOMAIN: ${DOMAIN:-}
+      ACME_EMAIL: ${ACME_EMAIL:-}
+    command:
+      - sh
+      - -c
+      - |
+        [ -n "$$DOMAIN" ] || { echo "caddy: set DOMAIN in .env" >&2; exit 1; }
+        [ -n "$$ACME_EMAIL" ] || { echo "caddy: set ACME_EMAIL in .env" >&2; exit 1; }
+        exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
     ports:
       # The only two ports this deployment exposes to the outside world.
       # 80 is required for Let's Encrypt's HTTP-01 challenge (Caddy also
