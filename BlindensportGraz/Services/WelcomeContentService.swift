@@ -8,7 +8,7 @@ enum WelcomeContentService {
         content.updatedAt = .now
         return PersistenceService.saveAndPush(modelContext: modelContext, modelName: "WelcomeContent",
                                                failureMessage: "Willkommenstext konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushWelcomeContent(content)
+            SupabaseSync.shared.pushWelcomeContent(content)
         }
     }
 }

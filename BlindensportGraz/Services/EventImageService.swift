@@ -7,7 +7,7 @@ enum EventImageService {
     static func save(_ image: EventImage, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "EventImage",
                                         failureMessage: "Foto konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushEventImage(image)
+            SupabaseSync.shared.pushEventImage(image)
         }
     }
 
@@ -17,7 +17,7 @@ enum EventImageService {
         modelContext.delete(image)
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "EventImage",
                                                  failureMessage: "Foto konnte nicht gelöscht werden.") {
-            CloudKitSync.shared.deleteEventImage(id)
+            SupabaseSync.shared.deleteEventImage(id)
         }
     }
 }

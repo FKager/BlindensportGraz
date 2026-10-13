@@ -12,8 +12,8 @@ enum TrainingFavoriteService {
     static func saveResult(favorite: TrainingFavorite?, evictedID: UUID?, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "TrainingFavorite",
                                         failureMessage: "Trainings-Favorit konnte nicht gespeichert werden.") {
-            if let favorite { CloudKitSync.shared.pushTrainingFavorite(favorite) }
-            if let evictedID { CloudKitSync.shared.deleteTrainingFavorite(evictedID) }
+            if let favorite { SupabaseSync.shared.pushTrainingFavorite(favorite) }
+            if let evictedID { SupabaseSync.shared.deleteTrainingFavorite(evictedID) }
         }
     }
 
@@ -23,7 +23,7 @@ enum TrainingFavoriteService {
         modelContext.delete(favorite)
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "TrainingFavorite",
                                                  failureMessage: "Trainings-Favorit konnte nicht gelöscht werden.") {
-            CloudKitSync.shared.deleteTrainingFavorite(id)
+            SupabaseSync.shared.deleteTrainingFavorite(id)
         }
     }
 }

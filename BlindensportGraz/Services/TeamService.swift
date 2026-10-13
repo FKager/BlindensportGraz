@@ -10,7 +10,7 @@ enum TeamService {
     static func save(_ team: Team, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "Team",
                                         failureMessage: "Team konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushTeam(team)
+            SupabaseSync.shared.pushTeam(team)
         }
     }
 
@@ -24,9 +24,9 @@ enum TeamService {
                                  modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "Team (batch import)",
                                         failureMessage: "Team-Import konnte nicht gespeichert werden.") {
-            for team in teams { CloudKitSync.shared.pushTeam(team) }
-            for membership in memberships { CloudKitSync.shared.pushMembership(membership) }
-            for member in members { CloudKitSync.shared.pushMember(member) }
+            for team in teams { SupabaseSync.shared.pushTeam(team) }
+            for membership in memberships { SupabaseSync.shared.pushMembership(membership) }
+            for member in members { SupabaseSync.shared.pushMember(member) }
         }
     }
 
@@ -36,7 +36,7 @@ enum TeamService {
         modelContext.delete(team)
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Team",
                                                  failureMessage: "Team konnte nicht gelöscht werden.") {
-            CloudKitSync.shared.deleteTeam(id)
+            SupabaseSync.shared.deleteTeam(id)
         }
     }
 }

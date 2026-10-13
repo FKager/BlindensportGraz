@@ -11,7 +11,7 @@ enum MemberService {
     static func save(_ member: Member, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "Member",
                                         failureMessage: "Mitglied konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushMember(member)
+            SupabaseSync.shared.pushMember(member)
             MemberPrivateSync.push([member])
         }
     }
@@ -25,7 +25,7 @@ enum MemberService {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "Member (batch)",
                                         failureMessage: "Mitglieder-Import konnte nicht gespeichert werden.") {
             for member in members {
-                CloudKitSync.shared.pushMember(member)
+                SupabaseSync.shared.pushMember(member)
             }
             MemberPrivateSync.push(members)
         }
@@ -37,7 +37,7 @@ enum MemberService {
         modelContext.delete(member)
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Member",
                                                  failureMessage: "Mitglied konnte nicht gelöscht werden.") {
-            CloudKitSync.shared.deleteMember(id)
+            SupabaseSync.shared.deleteMember(id)
             MemberPrivateSync.delete(memberID: id)
         }
     }

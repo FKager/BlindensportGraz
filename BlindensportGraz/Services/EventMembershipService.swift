@@ -7,7 +7,7 @@ enum EventMembershipService {
     static func save(_ membership: EventMembership, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "EventMembership",
                                         failureMessage: "Mitglied konnte nicht hinzugefügt werden.") {
-            CloudKitSync.shared.pushEventMembership(membership)
+            SupabaseSync.shared.pushEventMembership(membership)
         }
     }
 
@@ -17,7 +17,7 @@ enum EventMembershipService {
         modelContext.delete(membership)
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "EventMembership",
                                                  failureMessage: "Mitglied konnte nicht entfernt werden.") {
-            CloudKitSync.shared.deleteEventMembership(id)
+            SupabaseSync.shared.deleteEventMembership(id)
         }
     }
 }

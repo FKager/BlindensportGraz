@@ -55,7 +55,7 @@ enum FullBackupImporter {
         // call site — a KeyPath value passed through a generic parameter
         // fails to compile ("subscript(keyPath:) is not supported in this
         // predicate"), so unlike a generic helper, each type gets its own
-        // tiny existence check. Where `CloudKitSync.shared` already has a
+        // tiny existence check. Where `SupabaseSync.shared` already has a
         // `findX` resolver (used below for relationships too), that's
         // reused instead of duplicating the predicate.
         func exists(_ id: UUID, in type: EventParticipation.Type) -> Bool {
@@ -96,7 +96,7 @@ enum FullBackupImporter {
         }
 
         run(User.self, "User") { dict in
-            guard let id = FullBackup.uuid(dict, "id"), CloudKitSync.shared.findUser(id, modelContext: modelContext) == nil else { return false }
+            guard let id = FullBackup.uuid(dict, "id"), SupabaseSync.shared.findUser(id, modelContext: modelContext) == nil else { return false }
             let user = User(id: id, email: "", firstName: FullBackup.string(dict, "firstName"),
                             lastName: FullBackup.string(dict, "lastName"),
                             role: AppRole.normalize(FullBackup.string(dict, "role")),
@@ -109,7 +109,7 @@ enum FullBackupImporter {
         }
 
         run(Member.self, "Member") { dict in
-            guard let id = FullBackup.uuid(dict, "id"), CloudKitSync.shared.findMember(id, modelContext: modelContext) == nil else { return false }
+            guard let id = FullBackup.uuid(dict, "id"), SupabaseSync.shared.findMember(id, modelContext: modelContext) == nil else { return false }
             let member = Member(id: id, firstName: FullBackup.string(dict, "firstName"), lastName: FullBackup.string(dict, "lastName"),
                                 street: FullBackup.string(dict, "street"), zip: FullBackup.string(dict, "zip"),
                                 city: FullBackup.string(dict, "city"), country: FullBackup.string(dict, "country"),
@@ -127,7 +127,7 @@ enum FullBackupImporter {
         }
 
         run(Team.self, "Team") { dict in
-            guard let id = FullBackup.uuid(dict, "id"), CloudKitSync.shared.findTeam(id, modelContext: modelContext) == nil else { return false }
+            guard let id = FullBackup.uuid(dict, "id"), SupabaseSync.shared.findTeam(id, modelContext: modelContext) == nil else { return false }
             let team = Team(id: id, name: FullBackup.string(dict, "name"), sport: FullBackup.string(dict, "sport"),
                             descriptionText: FullBackup.string(dict, "descriptionText"),
                             createdAt: FullBackup.date(dict, "createdAt") ?? .now)
@@ -136,11 +136,11 @@ enum FullBackupImporter {
         }
 
         run(TeamMembership.self, "TeamMembership") { dict in
-            guard let id = FullBackup.uuid(dict, "id"), CloudKitSync.shared.findMembership(id, modelContext: modelContext) == nil,
+            guard let id = FullBackup.uuid(dict, "id"), SupabaseSync.shared.findMembership(id, modelContext: modelContext) == nil,
                   let teamID = FullBackup.uuid(dict, "teamID"),
-                  let team = CloudKitSync.shared.findTeam(teamID, modelContext: modelContext) else { return false }
-            let user = FullBackup.uuid(dict, "userID").flatMap { CloudKitSync.shared.findUser($0, modelContext: modelContext) }
-            let member = FullBackup.uuid(dict, "memberID").flatMap { CloudKitSync.shared.findMember($0, modelContext: modelContext) }
+                  let team = SupabaseSync.shared.findTeam(teamID, modelContext: modelContext) else { return false }
+            let user = FullBackup.uuid(dict, "userID").flatMap { SupabaseSync.shared.findUser($0, modelContext: modelContext) }
+            let member = FullBackup.uuid(dict, "memberID").flatMap { SupabaseSync.shared.findMember($0, modelContext: modelContext) }
             guard user != nil || member != nil else { return false } // exactly one must resolve, matching the model's own invariant
             let membership = TeamMembership(id: id, user: user, member: member, team: team,
                                             role: MembershipRole.normalize(FullBackup.string(dict, "role")),
@@ -150,9 +150,9 @@ enum FullBackupImporter {
         }
 
         func restoreEvent(_ dict: [String: Any]) -> SportEvent? {
-            guard let id = FullBackup.uuid(dict, "id"), CloudKitSync.shared.findEvent(id, modelContext: modelContext) == nil else { return nil }
+            guard let id = FullBackup.uuid(dict, "id"), SupabaseSync.shared.findEvent(id, modelContext: modelContext) == nil else { return nil }
             let teams = FullBackup.stringList(dict, "teamIDs").compactMap { UUID(uuidString: $0) }
-                .compactMap { CloudKitSync.shared.findTeam($0, modelContext: modelContext) }
+                .compactMap { SupabaseSync.shared.findTeam($0, modelContext: modelContext) }
             let event = SportEvent(id: id, title: FullBackup.string(dict, "title"), sport: FullBackup.string(dict, "sport"),
                                    location: FullBackup.string(dict, "location"), street: FullBackup.string(dict, "street"),
                                    zip: FullBackup.string(dict, "zip"), city: FullBackup.string(dict, "city"),
@@ -171,7 +171,7 @@ enum FullBackupImporter {
         run(Training.self, "Training") { dict in
             guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: Training.self) else { return false }
             let teams = FullBackup.stringList(dict, "teamIDs").compactMap { UUID(uuidString: $0) }
-                .compactMap { CloudKitSync.shared.findTeam($0, modelContext: modelContext) }
+                .compactMap { SupabaseSync.shared.findTeam($0, modelContext: modelContext) }
             let statusRaw = FullBackup.string(dict, "status")
             let training = Training(id: id, title: FullBackup.string(dict, "title"), sport: FullBackup.string(dict, "sport"),
                                     location: FullBackup.string(dict, "location"), street: FullBackup.string(dict, "street"),
@@ -188,7 +188,7 @@ enum FullBackupImporter {
         run(Tournament.self, "Tournament") { dict in
             guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: Tournament.self) else { return false }
             let teams = FullBackup.stringList(dict, "teamIDs").compactMap { UUID(uuidString: $0) }
-                .compactMap { CloudKitSync.shared.findTeam($0, modelContext: modelContext) }
+                .compactMap { SupabaseSync.shared.findTeam($0, modelContext: modelContext) }
             let tournament = Tournament(id: id, title: FullBackup.string(dict, "title"), sport: FullBackup.string(dict, "sport"),
                                         location: FullBackup.string(dict, "location"), street: FullBackup.string(dict, "street"),
                                         zip: FullBackup.string(dict, "zip"), city: FullBackup.string(dict, "city"),
@@ -203,8 +203,8 @@ enum FullBackupImporter {
 
         run(EventParticipation.self, "EventParticipation") { dict in
             guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: EventParticipation.self),
-                  let userID = FullBackup.uuid(dict, "userID"), let user = CloudKitSync.shared.findUser(userID, modelContext: modelContext),
-                  let eventID = FullBackup.uuid(dict, "eventID"), let event = CloudKitSync.shared.findEvent(eventID, modelContext: modelContext) else { return false }
+                  let userID = FullBackup.uuid(dict, "userID"), let user = SupabaseSync.shared.findUser(userID, modelContext: modelContext),
+                  let eventID = FullBackup.uuid(dict, "eventID"), let event = SupabaseSync.shared.findEvent(eventID, modelContext: modelContext) else { return false }
             let participation = EventParticipation(id: id, user: user, event: event, status: FullBackup.string(dict, "status"),
                                                    registeredAt: FullBackup.date(dict, "registeredAt") ?? .now)
             modelContext.insert(participation)
@@ -213,9 +213,9 @@ enum FullBackupImporter {
 
         run(EventMembership.self, "EventMembership") { dict in
             guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: EventMembership.self),
-                  let eventID = FullBackup.uuid(dict, "eventID"), let event = CloudKitSync.shared.findEvent(eventID, modelContext: modelContext) else { return false }
-            let user = FullBackup.uuid(dict, "userID").flatMap { CloudKitSync.shared.findUser($0, modelContext: modelContext) }
-            let member = FullBackup.uuid(dict, "memberID").flatMap { CloudKitSync.shared.findMember($0, modelContext: modelContext) }
+                  let eventID = FullBackup.uuid(dict, "eventID"), let event = SupabaseSync.shared.findEvent(eventID, modelContext: modelContext) else { return false }
+            let user = FullBackup.uuid(dict, "userID").flatMap { SupabaseSync.shared.findUser($0, modelContext: modelContext) }
+            let member = FullBackup.uuid(dict, "memberID").flatMap { SupabaseSync.shared.findMember($0, modelContext: modelContext) }
             guard user != nil || member != nil else { return false } // exactly one must resolve, matching the model's own invariant
             let membership = EventMembership(id: id, user: user, member: member, event: event,
                                              addedAt: FullBackup.date(dict, "addedAt") ?? .now)
@@ -225,7 +225,7 @@ enum FullBackupImporter {
 
         run(BudgetEntry.self, "BudgetEntry") { dict in
             guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: BudgetEntry.self) else { return false }
-            let event = FullBackup.uuid(dict, "eventID").flatMap { CloudKitSync.shared.findEvent($0, modelContext: modelContext) }
+            let event = FullBackup.uuid(dict, "eventID").flatMap { SupabaseSync.shared.findEvent($0, modelContext: modelContext) }
             let entry = BudgetEntry(id: id, category: BudgetCategory.normalize(FullBackup.string(dict, "category")),
                                     amount: FullBackup.double(dict, "amount") ?? 0, date: FullBackup.date(dict, "date") ?? .now,
                                     note: FullBackup.string(dict, "note"), event: event,
@@ -236,9 +236,9 @@ enum FullBackupImporter {
 
         run(Attendance.self, "Attendance") { dict in
             guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: Attendance.self),
-                  let eventID = FullBackup.uuid(dict, "eventID"), let event = CloudKitSync.shared.findEvent(eventID, modelContext: modelContext),
+                  let eventID = FullBackup.uuid(dict, "eventID"), let event = SupabaseSync.shared.findEvent(eventID, modelContext: modelContext),
                   let membershipID = FullBackup.uuid(dict, "membershipID"),
-                  let membership = CloudKitSync.shared.findMembership(membershipID, modelContext: modelContext) else { return false }
+                  let membership = SupabaseSync.shared.findMembership(membershipID, modelContext: modelContext) else { return false }
             let attendance = Attendance(id: id, event: event, membership: membership, attended: FullBackup.bool(dict, "attended"),
                                         recordedAt: FullBackup.date(dict, "recordedAt") ?? .now, praeAmount: FullBackup.double(dict, "praeAmount"))
             modelContext.insert(attendance)
@@ -248,7 +248,7 @@ enum FullBackupImporter {
         run(TrainingFavorite.self, "TrainingFavorite") { dict in
             guard let id = FullBackup.uuid(dict, "id"), !exists(id, in: TrainingFavorite.self) else { return false }
             let teams = FullBackup.stringList(dict, "teamIDs").compactMap { UUID(uuidString: $0) }
-                .compactMap { CloudKitSync.shared.findTeam($0, modelContext: modelContext) }
+                .compactMap { SupabaseSync.shared.findTeam($0, modelContext: modelContext) }
             let favorite = TrainingFavorite(id: id, title: FullBackup.string(dict, "title"), sport: FullBackup.string(dict, "sport"),
                                             startHour: FullBackup.int(dict, "startHour"), startMinute: FullBackup.int(dict, "startMinute"),
                                             endHour: FullBackup.int(dict, "endHour"), endMinute: FullBackup.int(dict, "endMinute"),

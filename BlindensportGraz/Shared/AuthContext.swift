@@ -82,6 +82,7 @@ final class AuthContext {
     }
 
     func signOut() async {
+        await PushRegistration.shared.unregister()
         try? await SupabaseAuthService.signOut()
     }
 

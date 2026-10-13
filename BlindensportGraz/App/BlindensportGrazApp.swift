@@ -4,6 +4,7 @@ import os
 
 @main
 struct BlindensportGrazApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     let modelContainer: ModelContainer
 
     init() {
@@ -42,10 +43,10 @@ struct BlindensportGrazApp: App {
 
         do {
             modelContainer = try ModelContainer(for: schema, configurations: [config])
-            // Give the CloudKit layer a container handle for its PendingPush
+            // Give the sync layer a container handle for its PendingPush
             // outbox (architecture-review.md 2.2). Done here, before any view
             // exists, so the very first push of the session is already durable.
-            CloudKitSync.shared.modelContainer = modelContainer
+            SupabaseSync.shared.modelContainer = modelContainer
         } catch {
             // The SportEvent/Training/Tournament inheritance refactor is a
             // bigger schema shape change than SwiftData's automatic

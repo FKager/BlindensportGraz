@@ -7,7 +7,7 @@ enum ExpenseReceiptService {
     static func save(_ receipt: ExpenseReceipt, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "ExpenseReceipt",
                                         failureMessage: "Beleg konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushExpenseReceipt(receipt)
+            SupabaseSync.shared.pushExpenseReceipt(receipt)
         }
     }
 
@@ -17,7 +17,7 @@ enum ExpenseReceiptService {
         modelContext.delete(receipt)
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "ExpenseReceipt",
                                                  failureMessage: "Beleg konnte nicht gelöscht werden.") {
-            CloudKitSync.shared.deleteExpenseReceipt(id)
+            SupabaseSync.shared.deleteExpenseReceipt(id)
         }
     }
 }

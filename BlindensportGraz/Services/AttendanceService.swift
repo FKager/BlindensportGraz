@@ -7,7 +7,7 @@ enum AttendanceService {
     static func save(_ attendance: Attendance, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "Attendance",
                                         failureMessage: "Anwesenheit konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushAttendance(attendance)
+            SupabaseSync.shared.pushAttendance(attendance)
         }
     }
 
@@ -57,7 +57,7 @@ enum AttendanceService {
         let isTournamentEvent = attendance.event.kind == "tournament"
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Attendance",
                                                  failureMessage: "Anwesenheit konnte nicht gelöscht werden.") {
-            CloudKitSync.shared.deleteAttendance(id: id, isTournamentEvent: isTournamentEvent)
+            SupabaseSync.shared.deleteAttendance(id: id, isTournamentEvent: isTournamentEvent)
         }
     }
 
