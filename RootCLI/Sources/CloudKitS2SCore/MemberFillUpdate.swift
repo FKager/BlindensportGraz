@@ -1,9 +1,8 @@
 import Foundation
 
 /// Non-destructive counterpart to `MemberBulkImport.run` — fills in fields
-/// that are currently blank on an existing `Member` record instead of
-/// overwriting the whole record (`createOrReplaceRecord`/forceReplace, which
-/// `MemberBulkImport` uses, always clobbers every field regardless of
+/// that are currently blank on an existing roster entry instead of
+/// overwriting the whole entry (which `MemberBulkImport` does, regardless of
 /// whether the incoming value is empty). Matching is by firstName+lastName
 /// (case/whitespace-insensitive), the same identity rule `Member.matches`
 /// uses in the app (Models.swift) — this package has no access to `svnr`/
@@ -13,22 +12,17 @@ import Foundation
 /// Bool with no "blank" state, so it's only ever set on creation (defaulting
 /// true) — never touched by the fill-update path for an existing match.
 public enum MemberFillUpdate {
-    ///
-    /// Protected fields are filled the same way, but in Supabase
-    /// (`privateStore`) — never in CloudKit. Rows carrying them fail when
-    /// `privateStore` is nil.
-    public static func run(_ inputs: [MemberBulkInput], client: CloudKitS2SClient,
-                           privateStore: MemberPrivateStore?, updatedBy: UUID? = nil) async -> MemberBulkImportResult {
+    /// Protected fields are filled the same way (in `member_private`).
+    public static func run(_ inputs: [MemberBulkInput], store: MemberStore,
+                           updatedBy: UUID? = nil) async -> MemberBulkImportResult {
         var result = MemberBulkImportResult()
 
-        let existingRecords: [CKRecordDTO]
-        var existingPrivate: [String: MemberPrivate] = [:]
+        let existingRecords: [MemberRecord]
         do {
-            existingRecords = try await client.queryRecords(recordType: "ClubMember")
-            if let privateStore { existingPrivate = try await privateStore.all() }
+            existingRecords = try await store.all(includePrivate: true)
         } catch {
             result.failed = inputs.count
-            result.messages.append("Could not fetch existing Member records, aborting: \(error)")
+            result.messages.append("Could not fetch existing members, aborting: \(error)")
             return result
         }
 
@@ -36,12 +30,9 @@ public enum MemberFillUpdate {
             (first.trimmingCharacters(in: .whitespaces) + "|" + last.trimmingCharacters(in: .whitespaces)).lowercased()
         }
 
-        var byName: [String: CKRecordDTO] = [:]
-        for record in existingRecords {
-            let first = record.stringField("firstName") ?? ""
-            let last = record.stringField("lastName") ?? ""
-            guard !first.isEmpty, !last.isEmpty else { continue }
-            byName[nameKey(first, last)] = record
+        var byName: [String: MemberRecord] = [:]
+        for record in existingRecords where !record.firstName.isEmpty && !record.lastName.isEmpty {
+            byName[nameKey(record.firstName, record.lastName)] = record
         }
 
         for input in inputs {
@@ -54,141 +45,76 @@ public enum MemberFillUpdate {
                 continue
             }
 
-            let incomingPrivate = input.privateData
-            if !incomingPrivate.isEmpty, privateStore == nil {
-                result.failed += 1
-                result.messages.append("Skipped \(fullName): has protected fields but Supabase is not configured.")
+            let key = nameKey(firstName, lastName)
+            guard let existing = byName[key] else {
+                var record = MemberBulkImport.record(from: input, id: UUID().uuidString,
+                                                     firstName: firstName, lastName: lastName)
+                record.privateData = input.privateData
+                do {
+                    try await store.save(record, writePrivate: !input.privateData.isEmpty, updatedBy: updatedBy)
+                    // A later row with the same name fills this one instead
+                    // of creating a second entry.
+                    byName[key] = record
+                    result.succeeded += 1
+                    result.messages.append("Created \(fullName) (\(record.id)) — no existing match.")
+                } catch {
+                    result.failed += 1
+                    result.messages.append("Failed to create \(fullName): \(error)")
+                }
                 continue
             }
 
-            guard let existing = byName[nameKey(firstName, lastName)] else {
-                await create(input, firstName: firstName, lastName: lastName, fullName: fullName, client: client,
-                             privateStore: privateStore, updatedBy: updatedBy, result: &result)
-                continue
-            }
-
-            var fieldsToSet: [String: Any] = [:]
+            var record = existing
             var filled: [String] = []
 
-            func fillString(_ fieldName: String, _ newValue: String?) {
-                guard let newValue else { return }
-                let trimmed = newValue.trimmingCharacters(in: .whitespaces)
-                guard !trimmed.isEmpty, (existing.stringField(fieldName) ?? "").isEmpty else { return }
-                fieldsToSet[fieldName] = CKFieldCoding.encode(trimmed)
-                filled.append(fieldName)
+            func fill(_ keyPath: WritableKeyPath<MemberRecord, String>, _ name: String, _ newValue: String?) {
+                let trimmed = (newValue ?? "").trimmingCharacters(in: .whitespaces)
+                guard !trimmed.isEmpty, record[keyPath: keyPath].isEmpty else { return }
+                record[keyPath: keyPath] = trimmed
+                filled.append(name)
             }
-            func fillDate(_ fieldName: String, _ newValue: Date?) {
-                guard let newValue, existing.dateField(fieldName) == nil else { return }
-                fieldsToSet[fieldName] = CKFieldCoding.encode(newValue, type: "TIMESTAMP")
-                filled.append(fieldName)
-            }
-
-            fillString("street", input.street)
-            fillString("zip", input.zip)
-            fillString("city", input.city)
-            fillString("country", input.country)
-            fillString("email", input.email)
-            fillString("phone", input.phone)
-            fillString("memberNumber", input.memberNumber)
-            fillString("notes", input.notes)
-            fillString("gender", input.gender)
-            fillString("title", input.title)
-            fillString("sportId", input.sportId)
-            fillString("defaultFunction", input.defaultFunction)
-
-            // Protected fields: fill blanks in the Supabase row the same way.
-            var privateData = existingPrivate[existing.recordName.uppercased()] ?? MemberPrivate()
-            let privateBefore = privateData
-            if privateData.svnr.isEmpty, !incomingPrivate.svnr.isEmpty { privateData.svnr = incomingPrivate.svnr; filled.append("svnr") }
-            if privateData.iban.isEmpty, !incomingPrivate.iban.isEmpty { privateData.iban = incomingPrivate.iban; filled.append("iban") }
-            if privateData.birthDate == nil, let date = incomingPrivate.birthDate { privateData.birthDate = date; filled.append("birthDate") }
-            if privateData.lastMedicalExamination == nil, let date = incomingPrivate.lastMedicalExamination {
-                privateData.lastMedicalExamination = date
-                filled.append("lastMedicalExamination")
+            func fill(_ keyPath: WritableKeyPath<MemberRecord, Date?>, _ name: String, _ newValue: Date?) {
+                guard let newValue, record[keyPath: keyPath] == nil else { return }
+                record[keyPath: keyPath] = newValue
+                filled.append(name)
             }
 
-            guard !fieldsToSet.isEmpty || privateData != privateBefore else {
+            fill(\.street, "street", input.street)
+            fill(\.zip, "zip", input.zip)
+            fill(\.city, "city", input.city)
+            fill(\.country, "country", input.country)
+            fill(\.email, "email", input.email)
+            fill(\.phone, "phone", input.phone)
+            fill(\.memberNumber, "memberNumber", input.memberNumber)
+            fill(\.notes, "notes", input.notes)
+            fill(\.gender, "gender", input.gender)
+            fill(\.title, "title", input.title)
+            fill(\.sportId, "sportId", input.sportId)
+            fill(\.defaultFunction, "defaultFunction", input.defaultFunction)
+            let incomingPrivate = input.privateData
+            fill(\.svnr, "svnr", incomingPrivate.svnr)
+            fill(\.iban, "iban", incomingPrivate.iban)
+            fill(\.birthDate, "birthDate", incomingPrivate.birthDate)
+            fill(\.lastMedicalExamination, "lastMedicalExamination", incomingPrivate.lastMedicalExamination)
+
+            guard !filled.isEmpty else {
                 result.messages.append("No blank fields to fill for \(fullName) — already up to date.")
                 continue
             }
 
             do {
-                // Protected row first, put back if the CloudKit update fails.
-                let privateChanged = privateStore != nil && privateData != privateBefore
-                if let privateStore, privateChanged {
-                    try await privateStore.save(memberID: existing.recordName, privateData, updatedBy: updatedBy)
-                }
-                if !fieldsToSet.isEmpty {
-                    do {
-                        try await client.updateRecord(existing, fields: fieldsToSet)
-                    } catch {
-                        if let privateStore, privateChanged {
-                            let previous = existingPrivate[existing.recordName.uppercased()]
-                            await privateStore.restore(memberID: existing.recordName, previous: previous)
-                        }
-                        throw error
-                    }
-                }
-                // Later rows in this batch for the same member (duplicate
-                // names) must see what this row just filled, not the snapshot
-                // from before the loop — save() writes the whole row.
-                if privateChanged { existingPrivate[existing.recordName.uppercased()] = privateData }
+                try await store.save(record, writePrivate: record.privateData != existing.privateData,
+                                     updatedBy: updatedBy)
+                // Later rows for the same member (duplicate names) build on
+                // what this row just filled.
+                byName[key] = record
                 result.succeeded += 1
-                result.messages.append("Filled \(fullName) (\(existing.recordName)): \(filled.joined(separator: ", "))")
+                result.messages.append("Filled \(fullName) (\(existing.id)): \(filled.joined(separator: ", "))")
             } catch {
                 result.failed += 1
                 result.messages.append("Failed to update \(fullName): \(error)")
             }
         }
         return result
-    }
-
-    private static func create(
-        _ input: MemberBulkInput, firstName: String, lastName: String, fullName: String,
-        client: CloudKitS2SClient, privateStore: MemberPrivateStore?, updatedBy: UUID?,
-        result: inout MemberBulkImportResult
-    ) async {
-        let recordName = UUID().uuidString
-        let record = MemberRecord(
-            id: recordName,
-            firstName: firstName,
-            lastName: lastName,
-            street: input.street ?? "",
-            zip: input.zip ?? "",
-            city: input.city ?? "",
-            country: input.country ?? "",
-            email: input.email ?? "",
-            phone: input.phone ?? "",
-            memberNumber: input.memberNumber ?? "",
-            joinedAt: MemberBulkImport.parseJoinedAt(input.joinedAt) ?? Date(),
-            notes: input.notes ?? "",
-            gender: input.gender ?? "",
-            title: input.title ?? "",
-            birthDate: MemberBulkImport.parseFlexibleDate(input.birthDate),
-            sportId: input.sportId ?? "",
-            svnr: input.svnr ?? "",
-            iban: input.iban ?? "",
-            lastMedicalExamination: MemberBulkImport.parseFlexibleDate(input.lastMedicalExamination),
-            defaultFunction: input.defaultFunction ?? "",
-            memberOfGVSC: input.memberOfGVSC ?? true
-        )
-        do {
-            // Protected row first (new id, so nothing to put back but the row).
-            let hasPrivate = privateStore != nil && !input.privateData.isEmpty
-            if let privateStore, hasPrivate {
-                try await privateStore.save(memberID: recordName, input.privateData, updatedBy: updatedBy)
-            }
-            do {
-                try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
-            } catch {
-                if let privateStore, hasPrivate { await privateStore.restore(memberID: recordName, previous: nil) }
-                throw error
-            }
-            result.succeeded += 1
-            result.messages.append("Created \(fullName) (\(recordName)) — no existing match.")
-        } catch {
-            result.failed += 1
-            result.messages.append("Failed to create \(fullName): \(error)")
-        }
     }
 }

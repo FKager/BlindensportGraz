@@ -13,14 +13,12 @@
 #                                                                  published)
 #
 # Usage:
-#   1. cp .env.example .env   # fill in real CLOUDKIT_KEY_ID/SUPABASE_URL/
-#      SUPABASE_SERVICE_KEY; DOMAIN/ACME_EMAIL already default to a11y.it/dev@a11y.it
-#   2. Put your CloudKit private key on the host, e.g.
-#      ./secrets/rootcli_private_key_pkcs8.pem (already .gitignore'd via *.pem)
-#   3. Point DOMAIN's DNS A/AAAA record at this host, and make sure ports
+#   1. cp .env.example .env   # fill in real SUPABASE_URL/SUPABASE_SERVICE_KEY;
+#      DOMAIN/ACME_EMAIL already default to a11y.it/dev@a11y.it
+#   2. Point DOMAIN's DNS A/AAAA record at this host, and make sure ports
 #      80+443 reach it (Caddy needs 80 for the ACME HTTP-01 challenge, not
 #      just 443) — Let's Encrypt cannot issue a certificate otherwise.
-#   4. docker compose up -d --build
+#   3. docker compose up -d --build
 #      podman-compose up -d --build
 
 services:
@@ -32,12 +30,6 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    environment:
-      # Path INSIDE the container the private key is mounted at below —
-      # must match the target path of the volume mount, not a host path.
-      CLOUDKIT_PRIVATE_KEY_PATH: /run/secrets/rootcli_private_key.pem
-    volumes:
-      - ${CLOUDKIT_PRIVATE_KEY_HOST_PATH:-./secrets/rootcli_private_key_pkcs8.pem}:/run/secrets/rootcli_private_key.pem:ro
     expose:
       - "8080"
     networks:
@@ -52,7 +44,7 @@ services:
     image: caddy:2-alpine
     restart: unless-stopped
     # Only what the Caddyfile needs — not env_file: .env, which would also
-    # hand the proxy SUPABASE_SERVICE_KEY and the CloudKit key id. Compose
+    # hand the proxy SUPABASE_SERVICE_KEY. Compose
     # reads these from .env for interpolation.
     #
     # `:-` (not `:?`): Compose interpolates this file for EVERY subcommand,

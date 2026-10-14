@@ -2,13 +2,10 @@ import Vapor
 import CloudKitS2SCore
 
 func configure(_ app: Application) throws {
-    let cloudKitConfig = try Config.fromEnvironment()
-    let client = try CloudKitS2SClient(config: cloudKitConfig)
-    // Accounts, roles, calendar tokens and protected member data live in
-    // Supabase; this server uses the service key, so it must check each
-    // admin's permissions itself (see Auth.swift and Routes.swift).
+    // All club data lives in Supabase; this server uses the service key, so
+    // it must check each admin's permissions itself (see Auth.swift and
+    // Routes.swift).
     let supabase = try SupabaseAdminClient.fromEnvironment()
-    let privateStore = MemberPrivateStore(supabase: supabase)
     let sessions = AdminSessionStore(supabase: supabase)
 
     let env = ProcessInfo.processInfo.environment
@@ -30,6 +27,6 @@ func configure(_ app: Application) throws {
 
     AdminLogin.routes(app, supabase: supabase, store: sessions, limiter: LoginAttemptLimiter(),
                       secureCookie: secureCookie)
-    calendarFeedRoutes(app, client: client, supabase: supabase)
-    try routes(app, client: client, privateStore: privateStore)
+    calendarFeedRoutes(app, supabase: supabase)
+    try routes(app, store: MemberStore(supabase: supabase))
 }

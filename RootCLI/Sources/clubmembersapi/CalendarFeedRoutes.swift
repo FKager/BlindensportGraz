@@ -11,7 +11,7 @@ import CloudKitS2SCore
 /// calendar clients care about the extension for content-type sniffing, so
 /// AccountView's generated URL includes one; the route strips it before
 /// looking the token up, so both forms work.
-func calendarFeedRoutes(_ app: RoutesBuilder, client: CloudKitS2SClient, supabase: SupabaseAdminClient) {
+func calendarFeedRoutes(_ app: RoutesBuilder, supabase: SupabaseAdminClient) {
     app.get("calendar", ":token") { req async throws -> Response in
         let raw = try req.parameters.require("token")
         let token = raw.hasSuffix(".ics") ? String(raw.dropLast(4)) : raw
@@ -31,27 +31,26 @@ func calendarFeedRoutes(_ app: RoutesBuilder, client: CloudKitS2SClient, supabas
         let storedRole = roles.first?["role"] as? String ?? "member"
         // CalendarFeed knows member/coach/admin; root sees everything too.
         let role = storedRole == "root" ? "admin" : storedRole
-        let userRecordName = userID.uppercased()
-
         var userTeamIDs: Set<String> = []
         if role != "admin" {
-            let memberships = try await client.queryRecords(recordType: "TeamMembership")
-            userTeamIDs = Set(memberships
-                .filter { $0.stringField("userID")?.uppercased() == userRecordName }
-                .compactMap { $0.stringField("teamID") })
+            let memberships = try await supabase.select(table: "team_memberships", columns: "team_id",
+                                                        filters: [("user_id", "eq.\(userID)")])
+            userTeamIDs = Set(memberships.compactMap { ($0["team_id"] as? String)?.lowercased() })
         }
 
-        async let trainingRecords = client.queryRecords(recordType: "Training")
-        async let tournamentRecords = client.queryRecords(recordType: "Tournament")
-        let allRecords = try await trainingRecords + tournamentRecords
-
-        let events = allRecords.compactMap { dto -> CalendarFeed.EventFields? in
-            guard let title = dto.stringField("title"),
-                  let start = dto.dateField("startDate"),
-                  let end = dto.dateField("endDate") else { return nil }
+        let rows = try await supabase.select(table: "events",
+                                             columns: "id,title,location,start_date,end_date,team_ids",
+                                             filters: [("kind", "in.(training,tournament)")])
+        let events = rows.compactMap { row -> CalendarFeed.EventFields? in
+            guard let id = row["id"] as? String, let title = row["title"] as? String,
+                  let start = (row["start_date"] as? String).flatMap(SupabaseTimestamp.parse),
+                  let end = (row["end_date"] as? String).flatMap(SupabaseTimestamp.parse) else { return nil }
+            // UIDs stay the uppercase ids the CloudKit-era feed used, so
+            // subscribed calendars keep their entries across the move.
             return CalendarFeed.EventFields(
-                uid: dto.recordName, title: title, location: dto.stringField("location") ?? "",
-                startDate: start, endDate: end, teamIDs: dto.stringListField("teamIDs")
+                uid: id.uppercased(), title: title, location: row["location"] as? String ?? "",
+                startDate: start, endDate: end,
+                teamIDs: (row["team_ids"] as? [String] ?? []).map { $0.lowercased() }
             )
         }
 

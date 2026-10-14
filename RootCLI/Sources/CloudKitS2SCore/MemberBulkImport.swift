@@ -140,20 +140,18 @@ public struct MemberBulkImportResult: Sendable {
 }
 
 public enum MemberBulkImport {
-    /// Creates-or-replaces (via `createOrReplaceRecord`, no change-tag needed)
-    /// one `Member` per input. A provided `id` must be a valid UUID string
-    /// (it becomes the CKRecord name) — re-running with the same `id`s updates
-    /// those records in place; omitting `id` mints a fresh UUID each time, so
-    /// re-importing an id-less file duplicates rather than updates. Bad rows
-    /// (empty name, non-UUID id) are skipped individually, never abort the batch.
+    /// Creates or overwrites one roster entry per input in Supabase. A
+    /// provided `id` must be a valid UUID string — re-running with the same
+    /// `id`s updates those entries in place; omitting `id` mints a fresh UUID
+    /// each time, so re-importing an id-less file duplicates rather than
+    /// updates. Bad rows (empty name, non-UUID id) are skipped individually,
+    /// never abort the batch.
     ///
-    /// Protected fields (svnr, iban, birthDate, lastMedicalExamination) go to
-    /// Supabase via `privateStore`, never to CloudKit. A row without any of
-    /// them leaves an existing protected record untouched. A row that has
-    /// them while `privateStore` is nil fails — callers must not silently
-    /// drop protected data.
-    public static func run(_ inputs: [MemberBulkInput], client: CloudKitS2SClient,
-                           privateStore: MemberPrivateStore?, updatedBy: UUID? = nil) async -> MemberBulkImportResult {
+    /// Protected fields (svnr, iban, birthDate, lastMedicalExamination) are
+    /// written only when the row carries any of them; otherwise an existing
+    /// protected row stays untouched.
+    public static func run(_ inputs: [MemberBulkInput], store: MemberStore,
+                           updatedBy: UUID? = nil) async -> MemberBulkImportResult {
         var result = MemberBulkImportResult()
         for input in inputs {
             let firstName = (input.firstName ?? "").trimmingCharacters(in: .whitespaces)
@@ -177,53 +175,10 @@ public enum MemberBulkImport {
                 recordName = UUID().uuidString
             }
 
-            let record = MemberRecord(
-                id: recordName,
-                firstName: firstName,
-                lastName: lastName,
-                street: input.street ?? "",
-                zip: input.zip ?? "",
-                city: input.city ?? "",
-                country: input.country ?? "",
-                email: input.email ?? "",
-                phone: input.phone ?? "",
-                memberNumber: input.memberNumber ?? "",
-                joinedAt: parseJoinedAt(input.joinedAt) ?? Date(),
-                notes: input.notes ?? "",
-                gender: input.gender ?? "",
-                title: input.title ?? "",
-                birthDate: parseFlexibleDate(input.birthDate),
-                sportId: input.sportId ?? "",
-                svnr: input.svnr ?? "",
-                iban: input.iban ?? "",
-                lastMedicalExamination: parseFlexibleDate(input.lastMedicalExamination),
-                defaultFunction: input.defaultFunction ?? "",
-                memberOfGVSC: input.memberOfGVSC ?? true
-            )
-
-            let privateData = input.privateData
-            if !privateData.isEmpty, privateStore == nil {
-                result.failed += 1
-                result.messages.append("Skipped \(fullName): has protected fields but Supabase is not configured.")
-                continue
-            }
-
+            var record = record(from: input, id: recordName, firstName: firstName, lastName: lastName)
+            record.privateData = input.privateData
             do {
-                // Protected row first, put back if the CloudKit write fails, so
-                // a row reported as failed never leaves a half-imported member.
-                var previousPrivate: MemberPrivate?
-                if let privateStore, !privateData.isEmpty {
-                    previousPrivate = try await privateStore.get(memberID: recordName)
-                    try await privateStore.save(memberID: recordName, privateData, updatedBy: updatedBy)
-                }
-                do {
-                    try await client.createOrReplaceRecord(recordType: "ClubMember", recordName: recordName, fields: record.ckFields)
-                } catch {
-                    if let privateStore, !privateData.isEmpty {
-                        await privateStore.restore(memberID: recordName, previous: previousPrivate)
-                    }
-                    throw error
-                }
+                try await store.save(record, writePrivate: !input.privateData.isEmpty, updatedBy: updatedBy)
                 result.succeeded += 1
                 result.messages.append("Imported \(fullName) (\(recordName))")
             } catch {
@@ -232,6 +187,33 @@ public enum MemberBulkImport {
             }
         }
         return result
+    }
+
+    /// A new roster entry from an import row (shared with `MemberFillUpdate`).
+    static func record(from input: MemberBulkInput, id: String, firstName: String, lastName: String) -> MemberRecord {
+        MemberRecord(
+            id: id,
+            firstName: firstName,
+            lastName: lastName,
+            street: input.street ?? "",
+            zip: input.zip ?? "",
+            city: input.city ?? "",
+            country: input.country ?? "",
+            email: input.email ?? "",
+            phone: input.phone ?? "",
+            memberNumber: input.memberNumber ?? "",
+            joinedAt: parseJoinedAt(input.joinedAt) ?? Date(),
+            notes: input.notes ?? "",
+            gender: input.gender ?? "",
+            title: input.title ?? "",
+            birthDate: parseFlexibleDate(input.birthDate),
+            sportId: input.sportId ?? "",
+            svnr: input.svnr ?? "",
+            iban: input.iban ?? "",
+            lastMedicalExamination: parseFlexibleDate(input.lastMedicalExamination),
+            defaultFunction: input.defaultFunction ?? "",
+            memberOfGVSC: input.memberOfGVSC ?? true
+        )
     }
 
     /// Accepts "yyyy-MM-dd" or full ISO8601; nil (caller defaults to "now")

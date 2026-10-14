@@ -84,8 +84,8 @@ struct RootCLI {
             return
         }
 
-        let client = try makeClient()
-        let result = await MemberBulkImport.run(inputs, client: client, privateStore: try privateStore(for: inputs))
+        let store = MemberStore(supabase: try SupabaseAdminClient.fromEnvironment())
+        let result = await MemberBulkImport.run(inputs, store: store)
         for message in result.messages { print(message) }
         print("Done: \(result.succeeded) imported, \(result.failed) failed, out of \(inputs.count).")
     }
@@ -104,26 +104,10 @@ struct RootCLI {
             return
         }
 
-        let client = try makeClient()
-        let result = await MemberFillUpdate.run(inputs, client: client, privateStore: try privateStore(for: inputs))
+        let store = MemberStore(supabase: try SupabaseAdminClient.fromEnvironment())
+        let result = await MemberFillUpdate.run(inputs, store: store)
         for message in result.messages { print(message) }
         print("Done: \(result.succeeded) updated/created, \(result.failed) failed, out of \(inputs.count).")
-    }
-
-    /// Protected fields (svnr, iban, dates) are stored in Supabase only, so a
-    /// file carrying them needs SUPABASE_URL/SUPABASE_SERVICE_KEY. Files
-    /// without them run on CloudKit credentials alone.
-    private static func privateStore(for inputs: [MemberBulkInput]) throws -> MemberPrivateStore? {
-        let env = ProcessInfo.processInfo.environment
-        let configured = !(env["SUPABASE_URL"] ?? "").isEmpty && !(env["SUPABASE_SERVICE_KEY"] ?? "").isEmpty
-        if configured { return MemberPrivateStore(supabase: try SupabaseAdminClient.fromEnvironment()) }
-        guard inputs.allSatisfy({ $0.privateData.isEmpty }) else {
-            throw CLIError.message("""
-                The file contains protected fields (svnr, iban, birthDate, lastMedicalExamination), \
-                which are stored in Supabase. Set SUPABASE_URL and SUPABASE_SERVICE_KEY and run again.
-                """)
-        }
-        return nil
     }
 
     /// Generic insert/update/read/delete for ANY CloudKit record type this

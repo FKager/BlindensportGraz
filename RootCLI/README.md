@@ -179,9 +179,8 @@ container over a compose-internal Docker network:
 
 ```bash
 cp .env.example .env
-# edit .env: real CLOUDKIT_KEY_ID/SUPABASE_URL/SUPABASE_SERVICE_KEY, plus DOMAIN (a
-# real hostname whose DNS A/AAAA record points at this host) and ACME_EMAIL
-mkdir -p secrets && cp ~/.config/rootcli/rootcli_private_key_pkcs8.pem secrets/rootcli_private_key_pkcs8.pem
+# edit .env: real SUPABASE_URL/SUPABASE_SERVICE_KEY, plus DOMAIN (a real
+# hostname whose DNS A/AAAA record points at this host) and ACME_EMAIL
 # make sure ports 80 and 443 both reach this host from the internet — Caddy
 # needs 80 for the ACME HTTP-01 challenge, not just for the HTTP->HTTPS redirect
 docker compose up -d --build
@@ -200,26 +199,20 @@ with `DOMAIN=localhost` (Caddy falls back to its own internal CA for that
 one hostname, so this only proves the reverse-proxy wiring — real deployment
 still needs a real `DOMAIN` for a browser-trusted Let's Encrypt cert) and
 confirmed via `curl` that unauthenticated requests get 401, valid credentials
-(then: Basic Auth; since v0.2.0: Supabase sign-in) reach both `/` and
-`/records.html` with 200, wrong credentials get 401, and
+(then: Basic Auth; since v0.2.0: Supabase sign-in) reach `/` with 200, wrong credentials get 401, and
 `clubmembersapi`'s own port is genuinely unreachable from the host directly
 (connection refused — only `caddy` can reach it).
 
 **Standalone, without the bundled Caddy** (e.g. you already run your own
 nginx/Traefik/cloud load balancer elsewhere and just want the bare
 container): same required env vars as
-[`clubmembersapi` usage](#web-api--admin-page) below, plus mounting the
-private key file read-only:
+[`clubmembersapi` usage](#web-api--admin-page) below:
 
 ```bash
 docker run -d --name clubmembersapi \
   -p 127.0.0.1:8080:8080 \
-  -e CLOUDKIT_KEY_ID=<key id> \
-  -e CLOUDKIT_ENVIRONMENT=production \
   -e SUPABASE_URL=https://<project-ref>.supabase.co \
   -e SUPABASE_SERVICE_KEY=<sb_secret key> \
-  -e CLOUDKIT_PRIVATE_KEY_PATH=/run/secrets/rootcli_private_key.pem \
-  -v ~/.config/rootcli/rootcli_private_key_pkcs8.pem:/run/secrets/rootcli_private_key.pem:ro \
   clubmembersapi
 
 # Podman: identical, `podman run` accepts the same flags.
@@ -326,14 +319,14 @@ non-UUID `id`) are skipped with a message rather than aborting the whole file;
 the final line reports how many
 succeeded/failed out of the total.
 
-Protected fields in the file (`svnr`, `iban`, `birthDate`,
-`lastMedicalExamination`) are written to Supabase (`member_private`), never
-to CloudKit, so such a file needs `SUPABASE_URL`/`SUPABASE_SERVICE_KEY` as
-well; without them the command stops before writing anything. A row without
-protected fields leaves that member's stored protected data untouched.
+Since v0.3.0 both commands write Supabase only (`members`,
+`member_contacts`, `member_private`) and need `SUPABASE_URL`/
+`SUPABASE_SERVICE_KEY`, not a CloudKit key. A row without protected fields
+(`svnr`, `iban`, `birthDate`, `lastMedicalExamination`) leaves that member's
+stored protected data untouched.
 
 Changes made this way reach app instances the same way any other cross-device
-change does: on next login or pull-to-refresh, via `CloudKitSync.syncAll`.
+change does: on next login or pull-to-refresh, via `SupabaseSync.syncAll`.
 Newly-imported members are also matched retroactively the next time someone
 creates an app account — but not against *existing* accounts, since
 `Member.checkMembership` only ever runs at account-creation time (see
@@ -398,9 +391,11 @@ rootcli record set ExpenseReceipt 3F2504E0-... uploadedBy=admin note="Fahrtkoste
 ## Web API & admin page
 
 `clubmembersapi` is a [Vapor](https://vapor.codes) server exposing a REST API
-plus a single static HTML/JS page for CRUD on the Grazer VSC roster
-(`Member` records, CKRecord type `ClubMember`), built on the same
-`CloudKitS2SClient` as `rootcli`.
+plus a single static HTML/JS page for CRUD on the Grazer VSC roster. Since
+v0.3.0 it reads and writes Supabase only (`members`, `member_contacts`,
+`member_private`; the calendar feed reads `events` and `team_memberships`)
+and needs no CloudKit key. The generic CloudKit editor (`records.html`,
+`/api/records`) is gone — use the Supabase dashboard's table editor.
 
 **Every API call requires a signed-in admin — there is no shared password and
 no unauthenticated mode.** Admins sign in on the web pages (or via
@@ -413,9 +408,8 @@ Supabase Auth and reads the account's role and permissions from the database:
 | `members.manage` | signing in at all; list/create/edit/delete roster entries, import |
 | `members.private.read` | seeing `svnr`, `iban`, `birthDate`, `lastMedicalExamination` |
 | `members.private.write` | changing them (also needed for imports that contain them) |
-| `club.manage` | the generic `/api/records` editor |
 
-Admins and root have all four; coaches and members can't sign in. The session
+Admins and root have all three; coaches and members can't sign in. The session
 is an opaque random token in an `HttpOnly`, `Secure`, `SameSite=Strict`
 cookie, held in memory (a restart signs everyone out). It ends after 30
 minutes idle or 12 hours, and the role is re-read every 5 minutes, so a role

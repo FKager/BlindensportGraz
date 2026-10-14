@@ -2,9 +2,9 @@ import Foundation
 
 /// Server-side generation of one user's read-only calendar feed —
 /// architecture-review.md §5 P2 ("webcal subscription feed"). Pure Foundation
-/// (no Vapor/CloudKit types) so it's unit-testable independent of the HTTP
-/// layer and CloudKit querying; `clubmembersapi`'s `CalendarFeedRoutes.swift`
-/// is the only caller — it does the CloudKit fetch and hands this plain data.
+/// (no Vapor types) so it's unit-testable independent of the HTTP layer and
+/// the database; `clubmembersapi`'s `CalendarFeedRoutes.swift` is the only
+/// caller — it reads `events` from Supabase and hands this plain data.
 ///
 /// The feed only ever exposes training/tournament schedule data (title,
 /// time, venue) the same user could already see in the app — never PII.

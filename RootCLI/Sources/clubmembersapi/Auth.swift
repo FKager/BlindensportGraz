@@ -121,7 +121,7 @@ struct AdminSessionAuthenticator: AsyncRequestAuthenticator {
 }
 
 /// Everything under /api needs a signed-in admin, except signing in itself.
-/// Static pages (index.html, records.html) contain no data and stay public so
+/// Static pages (index.html) contain no data and stay public so
 /// they can show the sign-in form; `/calendar/*` has its own per-user token
 /// (see CalendarFeedRoutes.swift).
 ///
