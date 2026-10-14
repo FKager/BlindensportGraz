@@ -64,6 +64,7 @@
 		351B5A4C35C324776995DF39 /* RoleAssignment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 269A5FB5BEA5BD989F15047F /* RoleAssignment.swift */; };
 		35A49DA34B2E46862EC7F44C /* Attendance.swift in Sources */ = {isa = PBXBuildFile; fileRef = F37F65D2EE769602215E4E63 /* Attendance.swift */; };
 		35D9E1286EA524303421C498 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D2B0CB16879F93A93EAA3E /* EventDetailView.swift */; };
+		37E2EA5D7AE268204608DDF0 /* SupabaseRowsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76F901CD3511953F34FCF80B /* SupabaseRowsTests.swift */; };
 		37F1DF95D4CB60E898F71617 /* ImageProcessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C1E51941A32D106EEE8D36 /* ImageProcessing.swift */; };
 		3825639C3A156658022CE184 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8044FEE85B859066AD1FA7B3 /* DashboardView.swift */; };
 		3AB146C9AA3E2B0778438108 /* MemberMembershipRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD1B40457372FFF65FECE717 /* MemberMembershipRequestTests.swift */; };
@@ -101,7 +102,6 @@
 		60A1D7FA23E0AF252C26E319 /* InheritanceQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */; };
 		6107516CC25CBF2AF83F2E37 /* BudgetEntryFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4775FBD624777539EA5A895 /* BudgetEntryFields.swift */; };
 		611DD15ED916B8D5D6A17B41 /* WelcomeScreenSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB405847C3216AE65B70EF9 /* WelcomeScreenSettingsView.swift */; };
-		614442EBC778CD11B40EC65E /* ExpenseReceiptCloudKitRoundTripTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9861D4EA3B3B1B357EE045BE /* ExpenseReceiptCloudKitRoundTripTests.swift */; };
 		64456A19FB310B862D636F3F /* PraeAmountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E451DBB244FCF38DC0F70D6 /* PraeAmountRow.swift */; };
 		68F7BA704F1B3FBFDAE11155 /* PRAE_Darstellung_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 57556A329ADF06C866AEC1E3 /* PRAE_Darstellung_Vorlage.xlsx */; };
 		692A74DBA8897838B63C53F4 /* SupabaseProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79831D8849D6E6C4FA9DD50 /* SupabaseProfileService.swift */; };
@@ -410,6 +410,7 @@
 		754DC121A9438D6FD1827A9F /* TrainingSeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSeriesView.swift; sourceTree = "<group>"; };
 		7595EC27B565687B3039DD59 /* MemberChangeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberChangeRequest.swift; sourceTree = "<group>"; };
 		76E94134B375846255597A10 /* TrainingImportExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingImportExport.swift; sourceTree = "<group>"; };
+		76F901CD3511953F34FCF80B /* SupabaseRowsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseRowsTests.swift; sourceTree = "<group>"; };
 		777BBD4C8C0E13489C37A305 /* NoClientRoleGrantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoClientRoleGrantTests.swift; sourceTree = "<group>"; };
 		77EE00D33AB2AF7A8148E8A9 /* TrainingImportExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingImportExportTests.swift; sourceTree = "<group>"; };
 		7AB3F0726A3B8D85C18D647F /* UserApprovalControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserApprovalControls.swift; sourceTree = "<group>"; };
@@ -440,7 +441,6 @@
 		92C336A2D6BCCDF7E4E76140 /* EventImagesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagesSection.swift; sourceTree = "<group>"; };
 		948C4489E77EB5A022268C79 /* TeamMembership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamMembership.swift; sourceTree = "<group>"; };
 		96A8573B9E1983BD8D7B9680 /* BlindensportGrazApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindensportGrazApp.swift; sourceTree = "<group>"; };
-		9861D4EA3B3B1B357EE045BE /* ExpenseReceiptCloudKitRoundTripTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseReceiptCloudKitRoundTripTests.swift; sourceTree = "<group>"; };
 		98A7600E0E1C59784CC0B68C /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
 		98DE70D29C7F7A50C4BA3B18 /* NextEventLookupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextEventLookupTests.swift; sourceTree = "<group>"; };
 		991A340B81399345B2520638 /* FullBackupImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullBackupImporter.swift; sourceTree = "<group>"; };
@@ -694,7 +694,6 @@
 				DBB696A6769854DF75117D6F /* CalendarEventExportTests.swift */,
 				24482DBA01ABE94F1CDB7FB9 /* EventReminderServiceTests.swift */,
 				3A8DA73FA66128FEFF1064B9 /* EventRosterTests.swift */,
-				9861D4EA3B3B1B357EE045BE /* ExpenseReceiptCloudKitRoundTripTests.swift */,
 				6EC8FAA60C7474DA29E4638D /* FullBackupTests.swift */,
 				46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */,
 				0C5ACBB5E66920ADA625D5EA /* InvitationDateSelectorTests.swift */,
@@ -713,6 +712,7 @@
 				DDE3F917A1C77D9369C95493 /* SammelabrechnungExportTests.swift */,
 				6BA4CA288AD96E0CAF4B1494 /* SammelabrechnungSeasonExportTests.swift */,
 				512697E5A61C2050F2820D64 /* SeasonDashboardTests.swift */,
+				76F901CD3511953F34FCF80B /* SupabaseRowsTests.swift */,
 				9C0E1E022BE99A8781F89965 /* SyncStateTests.swift */,
 				9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */,
 				401DEC882A1342C320FDC3D3 /* TrainingFavoriteTests.swift */,
@@ -1475,7 +1475,6 @@
 				B94B31B77A4562859C174F45 /* CalendarEventExportTests.swift in Sources */,
 				7048447C9D782E85F36578E7 /* EventReminderServiceTests.swift in Sources */,
 				CDB8599A0D0BE21E5955D2C8 /* EventRosterTests.swift in Sources */,
-				614442EBC778CD11B40EC65E /* ExpenseReceiptCloudKitRoundTripTests.swift in Sources */,
 				F0F1BF23F375F902C595B0ED /* FullBackupTests.swift in Sources */,
 				60A1D7FA23E0AF252C26E319 /* InheritanceQueryTests.swift in Sources */,
 				0242933BCCA41C5743DD3DDB /* InvitationDateSelectorTests.swift in Sources */,
@@ -1494,6 +1493,7 @@
 				87AA1F426546F5D62C19EA80 /* SammelabrechnungExportTests.swift in Sources */,
 				9021BDD8FFE458411C3C1FD1 /* SammelabrechnungSeasonExportTests.swift in Sources */,
 				422C73C84EAB649F9F71E44F /* SeasonDashboardTests.swift in Sources */,
+				37E2EA5D7AE268204608DDF0 /* SupabaseRowsTests.swift in Sources */,
 				85640CC8B2B6A9C5A871B58C /* SyncStateTests.swift in Sources */,
 				C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */,
 				0F6C4EB476B60C7C8C655A88 /* TrainingFavoriteTests.swift in Sources */,

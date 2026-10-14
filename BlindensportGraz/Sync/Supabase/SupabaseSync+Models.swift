@@ -28,12 +28,12 @@ extension SupabaseSync {
 
     // MARK: - Teams
 
-    func pushTeam(_ team: Team) { save(TeamRow(team), table: "teams", id: team.id) }
+    func pushTeam(_ team: Team) { save(TeamDBRow(team), table: "teams", id: team.id) }
     func deleteTeam(_ id: UUID) { delete(table: "teams", id: id) }
 
     func pullTeams(modelContext: ModelContext) async throws {
         try await pull("teams", modelContext: modelContext, prune: Team.self, id: \.id,
-                       rowID: { (row: TeamRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: TeamDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             if let team = findTeam(row.id, modelContext: modelContext) {
                 team.name = row.name
                 team.sport = row.sport
@@ -64,13 +64,13 @@ extension SupabaseSync {
     // MARK: - Team memberships
 
     func pushMembership(_ membership: TeamMembership) {
-        save(TeamMembershipRow(membership), table: "team_memberships", id: membership.id)
+        save(TeamMembershipDBRow(membership), table: "team_memberships", id: membership.id)
     }
     func deleteMembership(_ id: UUID) { delete(table: "team_memberships", id: id) }
 
     func pullMemberships(modelContext: ModelContext) async throws {
         try await pull("team_memberships", modelContext: modelContext, prune: TeamMembership.self, id: \.id,
-                       rowID: { (row: TeamMembershipRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: TeamMembershipDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             guard let team = findTeam(row.teamID, modelContext: modelContext) else { return }
             let user = row.userID.flatMap { findUser($0, modelContext: modelContext) }
             let member = row.memberID.flatMap { findMember($0, modelContext: modelContext) }
@@ -93,11 +93,11 @@ extension SupabaseSync {
     /// Names to `members`, contact details to `member_contacts`; the
     /// protected fields go through `MemberPrivateSync` (member_private).
     func pushMember(_ member: Member) {
-        save(MemberRow(member), table: "members", id: member.id)
+        save(MemberDBRow(member), table: "members", id: member.id)
         // Only accounts that may see contacts send them — anyone else would
         // overwrite them with the blanks their cache holds.
         if AuthContext.current?.can(.membersManage) == true {
-            save(MemberContactRow(member), table: "member_contacts", id: member.id)
+            save(MemberContactDBRow(member), table: "member_contacts", id: member.id)
         }
     }
 
@@ -105,7 +105,7 @@ extension SupabaseSync {
 
     func pullMembers(modelContext: ModelContext) async throws {
         try await pull("members", modelContext: modelContext, prune: Member.self, id: \.id,
-                       rowID: { (row: MemberRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: MemberDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             if let member = findMember(row.id, modelContext: modelContext) {
                 member.firstName = row.firstName
                 member.lastName = row.lastName
@@ -133,7 +133,7 @@ extension SupabaseSync {
     private func pullMemberContacts(modelContext: ModelContext) async throws {
         let table = "member_contacts"
         let since = cursor(table)
-        let rows: [MemberContactRow] = try await fetchChanged(table, since: since)
+        let rows: [MemberContactDBRow] = try await fetchChanged(table, since: since)
         for row in rows {
             guard let member = findMember(row.id, modelContext: modelContext) else { continue }
             member.street = row.street
@@ -159,19 +159,19 @@ extension SupabaseSync {
 
     // MARK: - Events (SportEvent / Training / Tournament)
 
-    func pushEvent(_ event: SportEvent) { save(EventRow(event), table: "events", id: event.id) }
+    func pushEvent(_ event: SportEvent) { save(EventDBRow(event), table: "events", id: event.id) }
     func pushTraining(_ training: Training) { pushEvent(training) }
     func pushTournament(_ tournament: Tournament) { pushEvent(tournament) }
     func deleteEvent(_ id: UUID) { delete(table: "events", id: id) }
 
     func pullEvents(modelContext: ModelContext) async throws {
         try await pull("events", modelContext: modelContext, prune: SportEvent.self, id: \.id,
-                       rowID: { (row: EventRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: EventDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             apply(row, modelContext: modelContext)
         }
     }
 
-    private func apply(_ row: EventRow, modelContext: ModelContext) {
+    private func apply(_ row: EventDBRow, modelContext: ModelContext) {
         let teams = findTeams(row.teamIDs, modelContext: modelContext)
         let event: SportEvent
         if let existing = findEvent(row.id, modelContext: modelContext) {
@@ -227,7 +227,7 @@ extension SupabaseSync {
     func pullSchedule(modelContext: ModelContext) async throws {
         try await pull("public_schedule", columns: "id,kind,title,sport,location,city,start_date,end_date,status,updated_at",
                        modelContext: modelContext, prune: SportEvent.self, id: \.id,
-                       rowID: { (row: PublicScheduleRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: PublicScheduleDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             let event: SportEvent
             if let existing = findEvent(row.id, modelContext: modelContext) {
                 event = existing
@@ -279,7 +279,7 @@ extension SupabaseSync {
     // MARK: - Attendance
 
     func pushAttendance(_ attendance: Attendance) {
-        save(AttendanceRow(attendance), table: "attendances", id: attendance.id)
+        save(AttendanceDBRow(attendance), table: "attendances", id: attendance.id)
     }
 
     func deleteAttendance(id: UUID, isTournamentEvent: Bool) {
@@ -288,7 +288,7 @@ extension SupabaseSync {
 
     func pullAttendances(modelContext: ModelContext) async throws {
         try await pull("attendances", modelContext: modelContext, prune: Attendance.self, id: \.id,
-                       rowID: { (row: AttendanceRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: AttendanceDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             let rowID = row.id
             var descriptor = FetchDescriptor<Attendance>(predicate: #Predicate { $0.id == rowID })
             descriptor.fetchLimit = 1
@@ -308,12 +308,12 @@ extension SupabaseSync {
     // MARK: - Participations
 
     func pushParticipation(_ participation: EventParticipation) {
-        save(EventParticipationRow(participation), table: "event_participations", id: participation.id)
+        save(EventParticipationDBRow(participation), table: "event_participations", id: participation.id)
     }
 
     func pullParticipations(modelContext: ModelContext) async throws {
         try await pull("event_participations", modelContext: modelContext, prune: EventParticipation.self,
-                       id: \.id, rowID: { (row: EventParticipationRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       id: \.id, rowID: { (row: EventParticipationDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             let rowID = row.id
             var descriptor = FetchDescriptor<EventParticipation>(predicate: #Predicate { $0.id == rowID })
             descriptor.fetchLimit = 1
@@ -330,13 +330,13 @@ extension SupabaseSync {
     // MARK: - Direct event members
 
     func pushEventMembership(_ membership: EventMembership) {
-        save(EventMembershipRow(membership), table: "event_memberships", id: membership.id)
+        save(EventMembershipDBRow(membership), table: "event_memberships", id: membership.id)
     }
     func deleteEventMembership(_ id: UUID) { delete(table: "event_memberships", id: id) }
 
     func pullEventMemberships(modelContext: ModelContext) async throws {
         try await pull("event_memberships", modelContext: modelContext, prune: EventMembership.self, id: \.id,
-                       rowID: { (row: EventMembershipRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: EventMembershipDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             let rowID = row.id
             var descriptor = FetchDescriptor<EventMembership>(predicate: #Predicate { $0.id == rowID })
             descriptor.fetchLimit = 1
@@ -353,13 +353,13 @@ extension SupabaseSync {
     // MARK: - Budget
 
     func pushBudgetEntry(_ entry: BudgetEntry) {
-        save(BudgetEntryRow(entry), table: "budget_entries", id: entry.id)
+        save(BudgetEntryDBRow(entry), table: "budget_entries", id: entry.id)
     }
     func deleteBudgetEntry(_ id: UUID) { delete(table: "budget_entries", id: id) }
 
     func pullBudgetEntries(modelContext: ModelContext) async throws {
         try await pull("budget_entries", modelContext: modelContext, prune: BudgetEntry.self, id: \.id,
-                       rowID: { (row: BudgetEntryRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: BudgetEntryDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             let category = BudgetCategory.normalize(row.category)
             let event = row.eventID.flatMap { findEvent($0, modelContext: modelContext) }
             let rowID = row.id
@@ -382,13 +382,13 @@ extension SupabaseSync {
     // MARK: - Training favourites
 
     func pushTrainingFavorite(_ favorite: TrainingFavorite) {
-        save(TrainingFavoriteRow(favorite), table: "training_favorites", id: favorite.id)
+        save(TrainingFavoriteDBRow(favorite), table: "training_favorites", id: favorite.id)
     }
     func deleteTrainingFavorite(_ id: UUID) { delete(table: "training_favorites", id: id) }
 
     func pullTrainingFavorites(modelContext: ModelContext) async throws {
         try await pull("training_favorites", modelContext: modelContext, prune: TrainingFavorite.self, id: \.id,
-                       rowID: { (row: TrainingFavoriteRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: TrainingFavoriteDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             let teams = findTeams(row.teamIDs, modelContext: modelContext)
             let rowID = row.id
             var descriptor = FetchDescriptor<TrainingFavorite>(predicate: #Predicate { $0.id == rowID })
@@ -422,12 +422,12 @@ extension SupabaseSync {
     // MARK: - Welcome text
 
     func pushWelcomeContent(_ content: WelcomeContent) {
-        save(WelcomeContentRow(content), table: "welcome_content", id: content.id)
+        save(WelcomeContentDBRow(content), table: "welcome_content", id: content.id)
     }
 
     func pullWelcomeContent(modelContext: ModelContext) async throws {
         try await pull("welcome_content", modelContext: modelContext, prune: WelcomeContent.self, id: \.id,
-                       rowID: { (row: WelcomeContentRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       rowID: { (row: WelcomeContentDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             if let existing = WelcomeContent.current(in: modelContext) {
                 guard !hasPendingPush(existing.id) else { return }
                 existing.markdown = row.markdown
@@ -447,12 +447,12 @@ extension SupabaseSync {
     func pushMemberChangeRequest(_ request: MemberChangeRequest) {
         let isProposal = request.status == MemberChangeRequest.pendingStatus && request.reviewedAt == nil
         let proposer = isProposal ? AuthContext.current?.claims?.userID : nil
-        save(MemberChangeRequestRow(request, userID: proposer), table: "member_change_requests", id: request.id)
+        save(MemberChangeRequestDBRow(request, userID: proposer), table: "member_change_requests", id: request.id)
     }
 
     func pullMemberChangeRequests(modelContext: ModelContext) async throws {
         try await pull("member_change_requests", modelContext: modelContext, prune: MemberChangeRequest.self,
-                       id: \.id, rowID: { (row: MemberChangeRequestRow) in row.id }, updatedAt: \.updatedAt) { row in
+                       id: \.id, rowID: { (row: MemberChangeRequestDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             let rowID = row.id
             var descriptor = FetchDescriptor<MemberChangeRequest>(predicate: #Predicate { $0.id == rowID })
             descriptor.fetchLimit = 1
@@ -494,7 +494,7 @@ extension SupabaseSync {
     /// asset push before): a failed upload is logged and shown as a sync
     /// failure; the photo stays on this device.
     func pushEventImage(_ image: EventImage) {
-        let row = EventImageRow(image)
+        let row = EventImageDBRow(image)
         let data = image.imageData
         Task {
             _ = await performWithRetry("upload of event image \(image.id)") {
@@ -507,12 +507,12 @@ extension SupabaseSync {
 
     func deleteEventImage(_ id: UUID) {
         delete(table: "event_images", id: id)
-        Task { _ = try? await client.storage.from("event-images").remove(paths: [EventImageRow.path(for: id)]) }
+        Task { _ = try? await client.storage.from("event-images").remove(paths: [EventImageDBRow.path(for: id)]) }
     }
 
     func pullEventImages(modelContext: ModelContext) async throws {
         try await pullFiles("event_images", bucket: "event-images", modelContext: modelContext,
-                            prune: EventImage.self, id: \.id, rowID: { (row: EventImageRow) in row.id },
+                            prune: EventImage.self, id: \.id, rowID: { (row: EventImageDBRow) in row.id },
                             path: \.storagePath, updatedAt: \.updatedAt,
                             exists: { id in
                                 var descriptor = FetchDescriptor<EventImage>(predicate: #Predicate { $0.id == id })
@@ -526,7 +526,7 @@ extension SupabaseSync {
     }
 
     func pushExpenseReceipt(_ receipt: ExpenseReceipt) {
-        let row = ExpenseReceiptRow(receipt)
+        let row = ExpenseReceiptDBRow(receipt)
         let data = receipt.imageData
         Task {
             _ = await performWithRetry("upload of receipt \(receipt.id)") {
@@ -539,12 +539,12 @@ extension SupabaseSync {
 
     func deleteExpenseReceipt(_ id: UUID) {
         delete(table: "expense_receipts", id: id)
-        Task { _ = try? await client.storage.from("receipts").remove(paths: [ExpenseReceiptRow.path(for: id)]) }
+        Task { _ = try? await client.storage.from("receipts").remove(paths: [ExpenseReceiptDBRow.path(for: id)]) }
     }
 
     func pullExpenseReceipts(modelContext: ModelContext) async throws {
         try await pullFiles("expense_receipts", bucket: "receipts", modelContext: modelContext,
-                            prune: ExpenseReceipt.self, id: \.id, rowID: { (row: ExpenseReceiptRow) in row.id },
+                            prune: ExpenseReceipt.self, id: \.id, rowID: { (row: ExpenseReceiptDBRow) in row.id },
                             path: \.storagePath, updatedAt: \.updatedAt,
                             exists: { id in
                                 var descriptor = FetchDescriptor<ExpenseReceipt>(predicate: #Predicate { $0.id == id })
@@ -573,7 +573,8 @@ extension SupabaseSync {
                 insert(row, try await client.storage.from(bucket).download(path: path(row)))
             } catch {
                 allDownloaded = false
-                logger.error("download \(bucket, privacy: .public)/\(path(row), privacy: .public) failed: \(String(describing: error), privacy: .public)")
+                let objectPath = path(row)
+                logger.error("download \(bucket, privacy: .public)/\(objectPath, privacy: .public) failed: \(String(describing: error), privacy: .public)")
             }
         }
         if since == nil {
@@ -591,12 +592,12 @@ extension SupabaseSync {
     /// Removes local copies of rows deleted on the server since the last sync.
     func applyDeletions(modelContext: ModelContext, tables: Set<String>? = nil) async throws {
         let since = cursor("deletions")
-        var collected: [DeletionRow] = []
+        var collected: [DeletionDBRow] = []
         var offset = 0
         while true {
             var query = client.from("deletions").select()
             if let since { query = query.gte("deleted_at", value: Self.iso(since)) }
-            let page: [DeletionRow] = try await query.order("deleted_at", ascending: true)
+            let page: [DeletionDBRow] = try await query.order("deleted_at", ascending: true)
                 .range(from: offset, to: offset + 999).execute().value
             collected += page
             guard page.count == 1000 else { break }

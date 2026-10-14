@@ -5,7 +5,7 @@ import Foundation
 // read-only server state (sync cursor); it stays nil when pushing, so the
 // synthesized encoder leaves it out and the database trigger sets it.
 
-nonisolated struct TeamRow: Codable, Sendable, Equatable {
+nonisolated struct TeamDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var name: String
     var sport: String
@@ -21,7 +21,7 @@ nonisolated struct TeamRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct TeamMembershipRow: Codable, Sendable, Equatable {
+nonisolated struct TeamMembershipDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var teamID: UUID
     var memberID: UUID?
@@ -53,7 +53,7 @@ nonisolated struct TeamMembershipRow: Codable, Sendable, Equatable {
 }
 
 /// Roster names — readable by every approved account.
-nonisolated struct MemberRow: Codable, Sendable, Equatable {
+nonisolated struct MemberDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var firstName: String
     var lastName: String
@@ -78,7 +78,7 @@ nonisolated struct MemberRow: Codable, Sendable, Equatable {
 }
 
 /// Roster contact details — members.manage, or the member's own entry.
-nonisolated struct MemberContactRow: Codable, Sendable, Equatable {
+nonisolated struct MemberContactDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var street: String
     var zip: String
@@ -98,7 +98,7 @@ nonisolated struct MemberContactRow: Codable, Sendable, Equatable {
 }
 
 /// SportEvent / Training / Tournament in one table, told apart by `kind`.
-nonisolated struct EventRow: Codable, Sendable, Equatable {
+nonisolated struct EventDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var kind: String
     var title: String
@@ -158,7 +158,7 @@ nonisolated struct EventRow: Codable, Sendable, Equatable {
 }
 
 /// `public_schedule` view: what anonymous and pending accounts may see.
-nonisolated struct PublicScheduleRow: Codable, Sendable, Equatable {
+nonisolated struct PublicScheduleDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var kind: String
     var title: String
@@ -178,7 +178,7 @@ nonisolated struct PublicScheduleRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct AttendanceRow: Codable, Sendable, Equatable {
+nonisolated struct AttendanceDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var eventID: UUID
     var membershipID: UUID
@@ -207,7 +207,7 @@ nonisolated struct AttendanceRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct EventParticipationRow: Codable, Sendable, Equatable {
+nonisolated struct EventParticipationDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var eventID: UUID
     var userID: UUID
@@ -224,7 +224,7 @@ nonisolated struct EventParticipationRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct EventMembershipRow: Codable, Sendable, Equatable {
+nonisolated struct EventMembershipDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var eventID: UUID
     var memberID: UUID?
@@ -251,7 +251,7 @@ nonisolated struct EventMembershipRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct BudgetEntryRow: Codable, Sendable, Equatable {
+nonisolated struct BudgetEntryDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var category: String
     var amount: Double
@@ -283,7 +283,7 @@ nonisolated struct BudgetEntryRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct TrainingFavoriteRow: Codable, Sendable, Equatable {
+nonisolated struct TrainingFavoriteDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var title: String
     var sport: String
@@ -313,7 +313,7 @@ nonisolated struct TrainingFavoriteRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct WelcomeContentRow: Codable, Sendable, Equatable {
+nonisolated struct WelcomeContentDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var markdown: String
     var isEnabled: Bool
@@ -328,7 +328,7 @@ nonisolated struct WelcomeContentRow: Codable, Sendable, Equatable {
 
 /// Contact-data proposals; protected fields go through
 /// `member_private_requests` (SupabaseMemberPrivateService) instead.
-nonisolated struct MemberChangeRequestRow: Codable, Sendable, Equatable {
+nonisolated struct MemberChangeRequestDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var memberID: UUID
     var userID: UUID?
@@ -389,7 +389,7 @@ nonisolated struct MemberChangeRequestRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct EventImageRow: Codable, Sendable, Equatable {
+nonisolated struct EventImageDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var eventID: UUID?
     var storagePath: String
@@ -407,7 +407,7 @@ nonisolated struct EventImageRow: Codable, Sendable, Equatable {
     }
 }
 
-nonisolated struct ExpenseReceiptRow: Codable, Sendable, Equatable {
+nonisolated struct ExpenseReceiptDBRow: Codable, Sendable, Equatable {
     var id: UUID
     var tournamentID: UUID?
     var storagePath: String
@@ -429,7 +429,7 @@ nonisolated struct ExpenseReceiptRow: Codable, Sendable, Equatable {
 }
 
 /// `public.deletions` — ids of rows deleted on the server.
-nonisolated struct DeletionRow: Codable, Sendable, Equatable {
+nonisolated struct DeletionDBRow: Codable, Sendable, Equatable {
     var tableName: String
     var rowID: UUID
     var deletedAt: Date
@@ -443,21 +443,21 @@ nonisolated struct DeletionRow: Codable, Sendable, Equatable {
 
 // MARK: - From local models (push side)
 
-extension TeamRow {
+extension TeamDBRow {
     init(_ team: Team) {
         self.init(id: team.id, name: team.name, sport: team.sport, descriptionText: team.descriptionText,
                   createdAt: team.createdAt)
     }
 }
 
-extension TeamMembershipRow {
+extension TeamMembershipDBRow {
     init(_ membership: TeamMembership) {
         self.init(id: membership.id, teamID: membership.team.id, memberID: membership.member?.id,
                   userID: membership.user?.id, role: membership.role.rawValue, joinedAt: membership.joinedAt)
     }
 }
 
-extension MemberRow {
+extension MemberDBRow {
     init(_ member: Member) {
         self.init(id: member.id, firstName: member.firstName, lastName: member.lastName,
                   memberNumber: member.memberNumber, sportID: member.sportId,
@@ -466,7 +466,7 @@ extension MemberRow {
     }
 }
 
-extension MemberContactRow {
+extension MemberContactDBRow {
     init(_ member: Member) {
         self.init(id: member.id, street: member.street, zip: member.zip, city: member.city,
                   country: member.country, email: member.email, phone: member.phone, notes: member.notes,
@@ -474,7 +474,7 @@ extension MemberContactRow {
     }
 }
 
-extension EventRow {
+extension EventDBRow {
     init(_ event: SportEvent) {
         let training = event as? Training
         let tournament = event as? Tournament
@@ -489,7 +489,7 @@ extension EventRow {
     }
 }
 
-extension AttendanceRow {
+extension AttendanceDBRow {
     init(_ attendance: Attendance) {
         self.init(id: attendance.id, eventID: attendance.event.id, membershipID: attendance.membership.id,
                   attended: attendance.attended, recordedAt: attendance.recordedAt,
@@ -497,28 +497,28 @@ extension AttendanceRow {
     }
 }
 
-extension EventParticipationRow {
+extension EventParticipationDBRow {
     init(_ participation: EventParticipation) {
         self.init(id: participation.id, eventID: participation.event.id, userID: participation.user.id,
                   status: participation.status, registeredAt: participation.registeredAt)
     }
 }
 
-extension EventMembershipRow {
+extension EventMembershipDBRow {
     init(_ membership: EventMembership) {
         self.init(id: membership.id, eventID: membership.event.id, memberID: membership.member?.id,
                   userID: membership.user?.id, addedAt: membership.addedAt)
     }
 }
 
-extension BudgetEntryRow {
+extension BudgetEntryDBRow {
     init(_ entry: BudgetEntry) {
         self.init(id: entry.id, category: entry.category.rawValue, amount: entry.amount, date: entry.date,
                   note: entry.note, eventID: entry.event?.id, createdBy: entry.createdBy, createdAt: entry.createdAt)
     }
 }
 
-extension TrainingFavoriteRow {
+extension TrainingFavoriteDBRow {
     init(_ favorite: TrainingFavorite) {
         self.init(id: favorite.id, title: favorite.title, sport: favorite.sport, weekday: favorite.weekday,
                   startHour: favorite.startHour, startMinute: favorite.startMinute,
@@ -528,13 +528,13 @@ extension TrainingFavoriteRow {
     }
 }
 
-extension WelcomeContentRow {
+extension WelcomeContentDBRow {
     init(_ content: WelcomeContent) {
         self.init(id: content.id, markdown: content.markdown, isEnabled: content.isEnabled)
     }
 }
 
-extension MemberChangeRequestRow {
+extension MemberChangeRequestDBRow {
     /// `userID`: the proposer (set on creation only, nil for a review).
     init(_ request: MemberChangeRequest, userID: UUID?) {
         self.init(id: request.id, memberID: request.memberID, userID: userID,
@@ -547,7 +547,7 @@ extension MemberChangeRequestRow {
     }
 }
 
-extension EventImageRow {
+extension EventImageDBRow {
     init(_ image: EventImage) {
         self.init(id: image.id, eventID: image.event?.id, storagePath: Self.path(for: image.id),
                   uploadedBy: image.uploadedBy, uploadedAt: image.uploadedAt)
@@ -556,7 +556,7 @@ extension EventImageRow {
     static func path(for id: UUID) -> String { "\(id.uuidString.lowercased()).jpg" }
 }
 
-extension ExpenseReceiptRow {
+extension ExpenseReceiptDBRow {
     init(_ receipt: ExpenseReceipt) {
         self.init(id: receipt.id, tournamentID: receipt.tournament?.id, storagePath: Self.path(for: receipt.id),
                   note: receipt.note, month: receipt.month, year: receipt.year,
