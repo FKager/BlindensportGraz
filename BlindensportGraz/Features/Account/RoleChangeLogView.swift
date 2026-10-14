@@ -2,11 +2,14 @@ import SwiftUI
 import SwiftData
 
 /// Role-change audit log from Supabase (`role_change_log`, written by a
-/// database trigger on every role change; readable with `rolelog.read`).
-/// Pushed from `VereinView`'s admin hub.
+/// database trigger on every role change; readable with `rolelog.read`),
+/// plus root's account blocks, unblocks and deletions (`account_admin_log`,
+/// which keeps the email and name of deleted accounts). Pushed from
+/// `VereinView`'s admin hub.
 struct RoleChangeLogView: View {
     @Query private var users: [User]
     @State private var entries: [SupabaseRoleChange] = []
+    @State private var accountEntries: [SupabaseAccountAdminLogEntry] = []
     @State private var isLoading = true
     @State private var errorMessage: String?
 
@@ -20,6 +23,21 @@ struct RoleChangeLogView: View {
                                        systemImage: "clock.arrow.circlepath",
                                        description: Text("Änderungen an Benutzerrollen erscheinen hier."))
             } else {
+                if !accountEntries.isEmpty {
+                    Section("Sperren und Löschen") {
+                        ForEach(accountEntries) { entry in
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                                Text("\(entry.targetLabel): \(entry.actionLabel)")
+                                    .font(.body)
+                                Text("Von \(changedByLabel(entry.actor)) am \(entry.at.formatted(date: .abbreviated, time: .shortened))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .accessibilityElement(children: .combine)
+                        }
+                    }
+                }
+                Section("Rollen") {
                 ForEach(entries) { entry in
                     VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                         Text("\(displayName(for: entry.userID)): \(label(entry.oldRole)) → \(label(entry.newRole))")
@@ -29,6 +47,7 @@ struct RoleChangeLogView: View {
                             .foregroundStyle(.secondary)
                     }
                     .accessibilityElement(children: .combine)
+                }
                 }
             }
         }
@@ -43,6 +62,7 @@ struct RoleChangeLogView: View {
         defer { isLoading = false }
         do {
             entries = try await SupabaseRoleService.fetchChangeLog()
+            accountEntries = try await SupabaseAccountAdminService.fetchLog()
             errorMessage = nil
         } catch {
             errorMessage = AuthErrorMessage.text(for: error)

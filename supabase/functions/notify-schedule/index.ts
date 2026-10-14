@@ -3,8 +3,8 @@
 // (migration 20261014000001_push), which authenticates with a shared secret
 // instead of a user JWT — deploy with --no-verify-jwt.
 //
-// Recipients: approved accounts with a team membership in one of the
-// event's teams, minus the person who made the change. The alert carries
+// Recipients: approved, unblocked accounts with a team membership in one of
+// the event's teams, minus the person who made the change. The alert carries
 // localization keys from the app's Localizable.xcstrings, so the text stays
 // German (and translatable) in the app, not here.
 //
@@ -89,7 +89,12 @@ Deno.serve(async (req) => {
     admin.from("account_approvals").select("user_id").in("user_id", candidates),
     admin.from("user_roles").select("user_id").in("user_id", candidates).in("role", ["admin", "root"]),
   ]);
-  const recipients = new Set([...(approvals ?? []), ...(admins ?? [])].map((r) => r.user_id as string));
+  const approved = [...new Set([...(approvals ?? []), ...(admins ?? [])].map((r) => r.user_id as string))];
+  if (approved.length === 0) return json(200, { sent: 0 });
+  // Blocked accounts (root → "Sperren") get nothing.
+  const { data: unblocked, error: bError } = await admin.rpc("unblocked_user_ids", { ids: approved });
+  if (bError) return json(500, { error: "recipients_failed" });
+  const recipients = new Set((unblocked ?? []) as string[]);
   if (recipients.size === 0) return json(200, { sent: 0 });
 
   const { data: tokens, error: tError } = await admin

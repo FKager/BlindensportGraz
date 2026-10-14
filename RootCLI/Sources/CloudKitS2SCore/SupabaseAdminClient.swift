@@ -89,10 +89,21 @@ public struct SupabaseAdminClient: Sendable {
         return try JSONDecoder().decode(Grant.self, from: data).user
     }
 
+    /// True if root blocked the account (auth `banned_until` in the future).
+    /// Asks the `unblocked_user_ids` RPC (service role only).
+    public func isBlocked(_ userID: UUID) async throws -> Bool {
+        let id = userID.uuidString.lowercased()
+        let data = try await rpc("unblocked_user_ids", params: ["ids": [id]])
+        let unblocked = (try JSONSerialization.jsonObject(with: data) as? [String]) ?? []
+        return !unblocked.contains { $0.lowercased() == id }
+    }
+
     /// Role and permissions as the database grants them right now (tables,
     /// not a JWT — so a role change takes effect on the next lookup). No
-    /// `user_roles` row means a pending account: role nil, no permissions.
+    /// `user_roles` row means a pending account: role nil, no permissions;
+    /// a blocked account gets the same.
     public func access(for userID: UUID) async throws -> (role: String?, permissions: Set<String>) {
+        if try await isBlocked(userID) { return (nil, []) }
         let id = userID.uuidString.lowercased()
         guard let role = try await select(table: "user_roles", columns: "role",
                                           filters: [("user_id", "eq.\(id)")]).first?["role"] as? String else {

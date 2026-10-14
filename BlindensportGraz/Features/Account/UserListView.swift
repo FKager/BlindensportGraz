@@ -28,6 +28,9 @@ struct UserListView: View {
     @State private var errorMessage: String?
     /// Blocked accounts, loaded for root only (`blocked_accounts` RPC).
     @State private var blockedIDs: Set<UUID> = []
+    /// Shown in the list instead of an alert: opening the screen offline
+    /// shouldn't interrupt (VoiceOver) with a popup every time.
+    @State private var blockedLoadFailed = false
 
     private var managesAccounts: Bool { authContext.can(.rolesAssign) }
 
@@ -66,6 +69,12 @@ struct UserListView: View {
 
     var body: some View {
         List {
+            if blockedLoadFailed {
+                Label("Sperrstatus konnte nicht geladen werden. Zum Aktualisieren nach unten ziehen.",
+                      systemImage: "wifi.exclamationmark")
+                    .font(.caption)
+                    .foregroundStyle(Theme.Palette.warning)
+            }
             Section {
                 ForEach(filteredUsers) { user in
                     row(for: user)
@@ -141,7 +150,8 @@ struct UserListView: View {
                 UserApprovalControls(user: user,
                                      onPickMember: { pickingMemberFor = user },
                                      onActivationCode: { activationCodeInfo = (user.displayName, $0) })
-                if managesAccounts && user.id != currentUser.id {
+                // Root accounts are demoted first (role picker), then managed.
+                if managesAccounts && user.id != currentUser.id && user.role != .root {
                     UserAccountAdminMenu(user: user, isBlocked: blockedIDs.contains(user.id)) {
                         await authContext.reload()
                         await loadBlocked()
@@ -157,8 +167,12 @@ struct UserListView: View {
 
     private func loadBlocked() async {
         guard managesAccounts else { return }
-        do { blockedIDs = try await SupabaseAccountAdminService.fetchBlocked() }
-        catch { errorMessage = AuthErrorMessage.text(for: error) }
+        do {
+            blockedIDs = try await SupabaseAccountAdminService.fetchBlocked()
+            blockedLoadFailed = false
+        } catch {
+            blockedLoadFailed = true
+        }
     }
 
     private func approveEmailSuggestions() async {

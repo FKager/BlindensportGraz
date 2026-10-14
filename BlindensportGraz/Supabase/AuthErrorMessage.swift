@@ -29,6 +29,9 @@ nonisolated enum AuthErrorMessage {
                 return String(localized: "Etwas ist schiefgelaufen (\(auth.errorCode.rawValue)). Bitte versuche es später noch einmal.")
             }
         }
+        if let postgrest = error as? PostgrestError, postgrest.hint == "target_root" {
+            return String(localized: "Root-Konten können nicht gesperrt oder gelöscht werden. Ändere zuerst die Rolle.")
+        }
         if let postgrest = error as? PostgrestError, postgrest.code == "42501" {
             return String(localized: "Dafür fehlt dir die Berechtigung.")
         }

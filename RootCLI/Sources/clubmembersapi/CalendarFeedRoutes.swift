@@ -26,6 +26,9 @@ func calendarFeedRoutes(_ app: RoutesBuilder, supabase: SupabaseAdminClient) {
             // hint at whether a token ever existed.
             throw Abort(.notFound)
         }
+        // Blocking already replaces the token; this covers a block set
+        // outside the app (dashboard, service role).
+        if let id = UUID(uuidString: userID), try await supabase.isBlocked(id) { throw Abort(.notFound) }
         let roles = try await supabase.select(table: "user_roles", columns: "role",
                                               filters: [("user_id", "eq.\(userID)")])
         let storedRole = roles.first?["role"] as? String ?? "member"
