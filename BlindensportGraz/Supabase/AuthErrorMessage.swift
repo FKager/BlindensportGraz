@@ -16,8 +16,15 @@ nonisolated enum AuthErrorMessage {
                 return String(localized: "Das Passwort ist zu schwach: mindestens 10 Zeichen mit Buchstaben und Ziffern.")
             case .overEmailSendRateLimit:
                 return String(localized: "Zu viele E-Mails in kurzer Zeit. Bitte versuche es später noch einmal.")
+            case .samePassword:
+                return String(localized: "Das neue Passwort muss sich vom bisherigen unterscheiden.")
+            case .reauthenticationNeeded, .reauthenticationNotValid:
+                return String(localized: "Bitte melde dich erneut an und ändere dann das Passwort.")
+            case .sessionNotFound, .sessionExpired:
+                return String(localized: "Die Sitzung ist abgelaufen. Bitte fordere einen neuen Link an.")
             default:
-                break
+                // Unmapped: keep the server's code visible, so a report can be traced.
+                return String(localized: "Etwas ist schiefgelaufen (\(auth.errorCode.rawValue)). Bitte versuche es später noch einmal.")
             }
         }
         if let postgrest = error as? PostgrestError, postgrest.code == "42501" {
