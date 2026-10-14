@@ -603,6 +603,8 @@
 
 - [2026-10-14] Account block checklist (any new "is this account allowed" path must cover all): GoTrue banned_until + sessions/refresh_tokens; has_permission/authorize/is_approved; auth.uid()-only RPCs/policies (is_blocked()); calendar_token (rotated on block + feed checks SupabaseAdminClient.isBlocked); web admin recheck (access(for:)); notify-schedule (unblocked_user_ids). Root targets are refused — demote first. pgTAP fixtures: delete the seed root row only AFTER inserting test roots (last-root guard). supabase-swift signs out (.signedOut) on refresh_token_not_found, so deleting sessions logs a blocked phone out.
 
+- [2026-10-14] NEVER `modelContext.delete` a SwiftData model that a visible view may hold as `let model` (rows, menus, controls): after save, any property read asserts (EXC_BREAKPOINT in SwiftData, bug-554). For accounts, demote to a hidden name-only row (clear email) instead. Crash logs: `xcrun devicectl device info files --domain-type systemCrashLogs --device BD764E6D-F84C-5BC9-B52C-BB372A7B3190` + `device copy from` (read-only, allowed).
+
 ## Decision Log
 - [2026-10-14] CloudKit→Supabase handover: user chose "make the switch-over safe": upload every local row the server lacks (accepting that stale deleted rows may come back) rather than risk losing device-only data.
 - [2026-09-29] TestFlight workflow (ios-build-deploy.yml, both jobs) moved macos-15 → macos-26 GitHub-hosted image, still selecting the newest `Xcode_26*.app` (26.6 / Swift 6.3 at the time). User chose this over running TestFlight on the self-hosted Xcode 27 runner: stay independent of this Mac, accept being one Swift version behind local/device builds (Xcode 27 / Swift 6.4). Widen the Xcode glob once GitHub ships a release Xcode 27 image.

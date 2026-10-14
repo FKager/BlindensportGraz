@@ -3584,3 +3584,9 @@
 | 22:01 | Created BlindensportGraz/Features/Account/UserAccountAdminMenu.swift | — | ~1086 |
 | 22:04 | Created supabase/tests/account_admin_hardening_test.sql | — | ~2468 |
 | 22:45 | Review fixes 1–11 + 26 pgTAP tests; local feed smoke 200→404; staging push + notify-schedule deploy; device deploy 38630261057 | 20261014000003_account_admin_hardening.sql, UserAccountAdminMenu.swift, UserListView.swift, RoleChangeLogView.swift, SupabaseAdminClient.swift, CalendarFeedRoutes.swift, notify-schedule | success | ~40k |
+| 22:15 | Session end: 10 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11689 tok |
+| 22:55 | Created staging test account sperrtest@example.test (Test Sperrkonto, 2e358e9f-297c-4a1f-baa2-01a35d35f1c8) for block/delete device test | staging-rehearsal.sh | success | ~1k |
+| 22:16 | Session end: 10 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11689 tok |
+| 22:16 | Session end: 10 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11689 tok |
+| 22:22 | Edited BlindensportGraz/Shared/AuthContext.swift | delete() → screen() | ~263 |
+| 22:35 | Fixed crash after root delete (bug-554): prune clears email instead of deleting User | AuthContext.swift | success | ~6k |

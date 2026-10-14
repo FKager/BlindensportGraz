@@ -170,11 +170,19 @@ final class AuthContext {
                 }
                 // Accounts root deleted: approvers get every profile, so a
                 // cached full account (with email) missing here is gone.
+                // Demoted to a name-only row instead of deleted: App-Konten
+                // hides rows without email, while a deleted model still on
+                // screen (its row, menus) crashes SwiftData on the next read
+                // (bug-554), and the cascade would drop local team
+                // memberships/participations the next pull fixes anyway.
                 let serverIDs = Set(profiles.map(\.id))
                 let local = (try? modelContext.fetch(FetchDescriptor<User>())) ?? []
                 for user in local where !user.email.isEmpty && user.id != claims.userID
                     && !serverIDs.contains(user.id) {
-                    modelContext.delete(user)
+                    user.email = ""
+                    user.calendarToken = ""
+                    user.role = .member
+                    user.isRoot = false
                 }
                 try? modelContext.save()
             }

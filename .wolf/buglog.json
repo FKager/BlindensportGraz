@@ -9359,6 +9359,26 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-14T22:30:00Z"
+    },
+    {
+      "id": "bug-554",
+      "timestamp": "2026-10-14T22:30:00Z",
+      "error_message": "after deletion app crashed (EXC_BREAKPOINT in SwiftData, User.role.getter <- UserApprovalControls.needsElevatedAccess)",
+      "file": "BlindensportGraz/Shared/AuthContext.swift",
+      "root_cause": "mirrorServerState pruned the deleted account with modelContext.delete while its App-Konten row (UserApprovalControls with `let user`) was still rendered; reading a property of a deleted+saved @Model asserts",
+      "fix": "Prune no longer deletes: it clears email/calendarToken/role so the row becomes a name-only directory entry, which UserListView already filters out; no cascade of local memberships/participations",
+      "tags": [
+        "swiftdata",
+        "crash",
+        "deleted-model",
+        "user-admin"
+      ],
+      "related_bugs": [
+        "bug-551",
+        "bug-552"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T22:30:00Z"
     }
   ]
 }
