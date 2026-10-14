@@ -168,6 +168,15 @@ final class AuthContext {
                 for profile in profiles {
                     SupabaseProfileService.applyToLocalUser(profile, role: nil, modelContext: modelContext)
                 }
+                // Accounts root deleted: approvers get every profile, so a
+                // cached full account (with email) missing here is gone.
+                let serverIDs = Set(profiles.map(\.id))
+                let local = (try? modelContext.fetch(FetchDescriptor<User>())) ?? []
+                for user in local where !user.email.isEmpty && user.id != claims.userID
+                    && !serverIDs.contains(user.id) {
+                    modelContext.delete(user)
+                }
+                try? modelContext.save()
             }
         }
         if let roles = try? await SupabaseRoleService.fetchRoles() {

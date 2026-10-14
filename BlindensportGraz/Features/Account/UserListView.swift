@@ -12,8 +12,9 @@ import SwiftData
 /// `UserApprovalControls`); a matching name/email is only a suggestion.
 /// "E-Mail-Vorschläge bestätigen" approves every account whose email matches
 /// a roster entry in one go. Accounts, roles and approvals come from Supabase
-/// (mirrored locally by `AuthContext`); deleting an account is done by the
-/// person themselves (Account → Konto löschen), not from this list.
+/// (mirrored locally by `AuthContext`). Root can also block (lock) or delete
+/// another account here (`UserAccountAdminMenu`); everyone deletes their own
+/// account under Account → Konto löschen.
 struct UserListView: View {
     let currentUser: User
     @Environment(AuthContext.self) private var authContext
@@ -25,6 +26,10 @@ struct UserListView: View {
     @State private var activationCodeInfo: (user: String, code: String)?
     @State private var showBulkApproval = false
     @State private var errorMessage: String?
+    /// Blocked accounts, loaded for root only (`blocked_accounts` RPC).
+    @State private var blockedIDs: Set<UUID> = []
+
+    private var managesAccounts: Bool { authContext.can(.rolesAssign) }
 
     private var filteredUsers: [User] {
         let needle = searchText.trimmingCharacters(in: .whitespaces).lowercased()
@@ -69,7 +74,11 @@ struct UserListView: View {
         }
         .navigationTitle("App-Konten")
         .navigationBarTitleDisplayMode(.inline)
-        .refreshable { await authContext.reload() }
+        .refreshable {
+            await authContext.reload()
+            await loadBlocked()
+        }
+        .task { await loadBlocked() }
         .toolbar {
             if !emailSuggestions.isEmpty {
                 ToolbarItem(placement: .primaryAction) {
@@ -124,15 +133,32 @@ struct UserListView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                if blockedIDs.contains(user.id) {
+                    Label("Gesperrt – kann sich nicht anmelden", systemImage: "lock.fill")
+                        .font(.caption)
+                        .foregroundStyle(Theme.Palette.danger)
+                }
                 UserApprovalControls(user: user,
                                      onPickMember: { pickingMemberFor = user },
                                      onActivationCode: { activationCodeInfo = (user.displayName, $0) })
+                if managesAccounts && user.id != currentUser.id {
+                    UserAccountAdminMenu(user: user, isBlocked: blockedIDs.contains(user.id)) {
+                        await authContext.reload()
+                        await loadBlocked()
+                    }
+                }
             }
             Spacer()
             if authContext.can(.rolesAssign) && user.id != currentUser.id {
                 UserRolePicker(user: user)
             }
         }
+    }
+
+    private func loadBlocked() async {
+        guard managesAccounts else { return }
+        do { blockedIDs = try await SupabaseAccountAdminService.fetchBlocked() }
+        catch { errorMessage = AuthErrorMessage.text(for: error) }
     }
 
     private func approveEmailSuggestions() async {

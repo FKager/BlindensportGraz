@@ -11,6 +11,7 @@
 		009E2A7F698570E56E16722E /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B7F4CBA18CEF4792F463F6 /* User.swift */; };
 		01B335FBF980AE082B54C393 /* AppShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60A84629DC455EBA46F4FBB4 /* AppShortcuts.swift */; };
 		02186C2F974A2E84C7C26944 /* TrainingsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1033747A75B156FF6F18B8A9 /* TrainingsListView.swift */; };
+		0219103A8C7691407190553F /* SupabaseAccountAdminService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 768F9FE1A63515DC4E81480C /* SupabaseAccountAdminService.swift */; };
 		0242933BCCA41C5743DD3DDB /* InvitationDateSelectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C5ACBB5E66920ADA625D5EA /* InvitationDateSelectorTests.swift */; };
 		04201C4FA21DFC64A0CB492B /* MemberRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE8609DFBB8935BBE5DFA65 /* MemberRow.swift */; };
 		045A65F1F5ED916FBE23E97C /* Tournament.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922BAB83DD6861F6C8B8910D /* Tournament.swift */; };
@@ -44,6 +45,7 @@
 		23494C983B368EC11C866B64 /* BudgetSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDFE4CDC68E6A85046FEDC3 /* BudgetSummary.swift */; };
 		236350B21BD6A439DEDA7C36 /* MemberChangeRequestDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6156FFEC4B50820A3E57B2 /* MemberChangeRequestDetailView.swift */; };
 		239BB3BC1FC67758D75F20AE /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9D37F5867E2FA11EF9DC579 /* AppRoute.swift */; };
+		24BFA614A6968D3CD1459A63 /* UserAccountAdminMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 153FA8CF4CA26C5166D64C9F /* UserAccountAdminMenu.swift */; };
 		257B760A1A372BD9FFDD88FF /* EventMembership.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8709504EC556435BD802E313 /* EventMembership.swift */; };
 		25C891758404439BBD2F95A9 /* FullBackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268FF22649C7065870A7870A /* FullBackupView.swift */; };
 		2603FEB2A428FD464DDF6D56 /* PraeCalculation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55F17B61E6A213746901F573 /* PraeCalculation.swift */; };
@@ -313,6 +315,7 @@
 		1033747A75B156FF6F18B8A9 /* TrainingsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsListView.swift; sourceTree = "<group>"; };
 		1052747FCE27874BCD82E88D /* EventRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRow.swift; sourceTree = "<group>"; };
 		129E446EA7EDEDC595D1B4B8 /* PRAE_Formular.xlsx */ = {isa = PBXFileReference; path = PRAE_Formular.xlsx; sourceTree = "<group>"; };
+		153FA8CF4CA26C5166D64C9F /* UserAccountAdminMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountAdminMenu.swift; sourceTree = "<group>"; };
 		15947EDBDD914A1C33E1515F /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
 		167B287FA0A9F04F9AF287EE /* AttendanceTrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceTrendsView.swift; sourceTree = "<group>"; };
 		1937F48132A2E153DF65822D /* MemberChangeRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberChangeRequestsView.swift; sourceTree = "<group>"; };
@@ -410,6 +413,7 @@
 		74257B843D2DFE0227E8F6E2 /* WidgetRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetRefresher.swift; sourceTree = "<group>"; };
 		754DC121A9438D6FD1827A9F /* TrainingSeriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingSeriesView.swift; sourceTree = "<group>"; };
 		7595EC27B565687B3039DD59 /* MemberChangeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberChangeRequest.swift; sourceTree = "<group>"; };
+		768F9FE1A63515DC4E81480C /* SupabaseAccountAdminService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAccountAdminService.swift; sourceTree = "<group>"; };
 		76E94134B375846255597A10 /* TrainingImportExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingImportExport.swift; sourceTree = "<group>"; };
 		76F901CD3511953F34FCF80B /* SupabaseRowsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseRowsTests.swift; sourceTree = "<group>"; };
 		777BBD4C8C0E13489C37A305 /* NoClientRoleGrantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoClientRoleGrantTests.swift; sourceTree = "<group>"; };
@@ -995,6 +999,7 @@
 			children = (
 				FE22047A64D6E52E2923D73D /* AuthErrorMessage.swift */,
 				04AB30C7359494733A6A546D /* MemberPrivateSync.swift */,
+				768F9FE1A63515DC4E81480C /* SupabaseAccountAdminService.swift */,
 				A475564AB84A532B85EDDD66 /* SupabaseApprovalService.swift */,
 				EBBCD93357D2FFE67C83F541 /* SupabaseAuthService.swift */,
 				C0CC0743FD2D69A6D6D0FD4A /* SupabaseClientSingleton.swift */,
@@ -1034,6 +1039,7 @@
 				6574FEDB36254B7E849908B9 /* ResetPasswordRequestView.swift */,
 				355EF5B33C954935BDF539C8 /* RoleChangeLogView.swift */,
 				DC12924DD4703027ED064C8D /* SetPasswordView.swift */,
+				153FA8CF4CA26C5166D64C9F /* UserAccountAdminMenu.swift */,
 				7AB3F0726A3B8D85C18D647F /* UserApprovalControls.swift */,
 				23949BEFC7EF4DDE0CB66B83 /* UserListView.swift */,
 				5CE38EE9C0F96C932B8046AF /* UserRolePicker.swift */,
@@ -1402,6 +1408,7 @@
 				2C0C9ED245340D832EB2A564 /* SportEventService.swift in Sources */,
 				2BB689553AA8F71E27FF0487 /* SportIcons.swift in Sources */,
 				B4B94DFD70B397BAE3C82B37 /* StatCard.swift in Sources */,
+				0219103A8C7691407190553F /* SupabaseAccountAdminService.swift in Sources */,
 				A00B422E6D7D6C312D2BAA96 /* SupabaseApprovalService.swift in Sources */,
 				C3A57F56698607AA50EF2CFE /* SupabaseAuthService.swift in Sources */,
 				88B5D8925765DDFAAD09658B /* SupabaseClientSingleton.swift in Sources */,
@@ -1448,6 +1455,7 @@
 				94D1A8637A0E592F287D12DB /* TrainingsfrequenzlisteViews.swift in Sources */,
 				D0FC4CC394EA1BFDAFCCED63 /* UpcomingScheduleSections.swift in Sources */,
 				009E2A7F698570E56E16722E /* User.swift in Sources */,
+				24BFA614A6968D3CD1459A63 /* UserAccountAdminMenu.swift in Sources */,
 				D6F299EB0FEEE4316C902B5F /* UserApprovalControls.swift in Sources */,
 				7A3EE39D18FAFF9E13E0F687 /* UserListView.swift in Sources */,
 				F1A85F9CAB57277F0108654D /* UserRolePicker.swift in Sources */,
