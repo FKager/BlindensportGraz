@@ -455,3 +455,8 @@ user = "resend"
 pass = "env(RESEND_SMTP_KEY)"
 admin_email = "no-reply@mail.a11y.it"
 sender_name = "Blindensport Graz"
+
+# Called by the events_notify_schedule trigger with a shared secret
+# (X-Notify-Secret), not a user JWT.
+[functions.notify-schedule]
+verify_jwt = false

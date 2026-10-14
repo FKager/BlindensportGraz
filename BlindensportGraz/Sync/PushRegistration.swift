@@ -42,16 +42,11 @@ final class PushRegistration {
     }
 
     private func upload() async {
-        guard let token, let userID = AuthContext.current?.claims?.userID else { return }
-        struct Row: Encodable {
-            let token: String
-            let user_id: UUID
-            let apns_env: String
-        }
+        guard let token, AuthContext.current?.isSignedIn == true else { return }
         do {
-            try await client.from("device_tokens")
-                .upsert(Row(token: token, user_id: userID, apns_env: environment), onConflict: "token",
-                        returning: .minimal)
+            // The RPC also moves the token over from a previous account on this phone.
+            try await client.rpc("register_device_token",
+                                 params: ["p_token": token, "p_apns_env": environment])
                 .execute()
         } catch {
             logger.error("device token upload failed: \(String(describing: error), privacy: .public)")
