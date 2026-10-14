@@ -3503,3 +3503,75 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 22:27 | Created ../../.claude/plans/prancy-fluttering-quill.md | — | ~3331 |
+| 22:27 | Edited ../../.claude/plans/prancy-fluttering-quill.md | inline fix | ~13 |
+| 22:29 | Created supabase/migrations/20261013000001_club_data.sql | — | ~5428 |
+| 22:30 | Created supabase/migrations/20261013000002_storage.sql | — | ~516 |
+| 22:33 | Created supabase/tests/club_data_test.sql | — | ~2474 |
+| 22:35 | Created RootCLI/Sources/CloudKitS2SCore/CloudKitCopy.swift | — | ~4338 |
+| 22:36 | Created RootCLI/Tests/CloudKitS2SCoreTests/CloudKitCopyTests.swift | — | ~1299 |
+| 22:43 | Created BlindensportGraz/Sync/Supabase/SupabaseRows.swift | — | ~5086 |
+| 22:45 | Created BlindensportGraz/Sync/Supabase/SupabaseSync.swift | — | ~4324 |
+| 22:46 | Created BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift | — | ~9047 |
+| 22:55 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-to-supabase-club-data.md | — | ~871 |
+| 22:55 | Paused CloudKit->Supabase club data migration (branch supabase-club-data, WIP 2470713) | supabase/, RootCLI/, Sync/Supabase | WIP | ~150k |
+| 22:56 | Session end: 11 writes across 10 files (prancy-fluttering-quill.md, 20261013000001_club_data.sql, 20261013000002_storage.sql, club_data_test.sql, CloudKitCopy.swift) | 0 reads | ~39349 tok |
+
+## Session: 2026-10-14 17:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:21 | Created BlindensportGrazTests/SupabaseRowsTests.swift | — | ~1311 |
+| 17:22 | Created supabase/migrations/20261014000001_push.sql | — | ~1405 |
+| 17:23 | Created supabase/functions/notify-schedule/index.ts | — | ~1462 |
+| 17:23 | Edited BlindensportGraz/Sync/PushRegistration.swift | 11→6 lines | ~95 |
+| 17:24 | Created supabase/tests/push_test.sql | — | ~1767 |
+| 17:25 | Edited supabase/functions/notify-schedule/index.ts | added 1 condition(s) | ~34 |
+| 17:26 | Created RootCLI/Sources/CloudKitS2SCore/MemberStore.swift | — | ~1906 |
+| 17:30 | Session: Supabase club-data Phases 2–4 — app builds (*DBRow rename), tests rewritten; push migration+notify-schedule fn (pgTAP 18/18); clubmembersapi/imports/calendar on Supabase, records.html removed | commits 06b62d5, 5d1ccac, 90826fe | done | ~120k |
+| 17:31 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:37 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:40 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:43 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 18:00 | Staging rehearsal: db push + notify-schedule deploy + CloudKit Dev copy to staging, branch pushed, device deploy 38592189308 OK | staging xlllxpmkxmcolukmcmoi | done | ~15k |
+| 17:47 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:52 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:55 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:58 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 18:02 | Created BlindensportGraz/Sync/SyncStatusRow.swift | — | ~1076 |
+| 18:40 | SyncStatusRow in AccountView (Status line, tap to sync, last error); SyncState.lastError; deploy 38594713246 OK | Sync/SyncStatusRow.swift, SyncState.swift, AccountView.swift | done | ~8k |
+| 18:04 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:13 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 19:30 | Safe CloudKit handover (upload missing local rows + re-send old outbox before prune); deploy 38597371179 OK | SupabaseSync.swift, SupabaseSync+Models.swift | done | ~20k |
+| 18:24 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:29 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:31 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:32 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:34 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:35 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:35 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:47 | Edited BlindensportGraz/Supabase/SupabaseAuthService.swift | added optional chaining | ~246 |
+| 18:47 | Edited BlindensportGraz/Shared/AuthContext.swift | modified handleDeepLink() | ~68 |
+| 19:15 | token_hash auth links (templates + verifyOTP), templates pushed to staging, reset re-sent; deploy 38601114943 OK | supabase/templates, SupabaseAuthService.swift, AuthContext.swift | done | ~15k |
+| 18:50 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 18:59 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:45 | Staging password reset for gmx.net works end-to-end (token_hash link + verifyOTP + clearer auth errors, deploy 38602623229) | — | done | ~3k |
+| 19:03 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:04 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:55 | Staging: created blindensport.gvsc@gmail.com (id dd470577…, root), reset link sent | staging-rehearsal.sh create-user | done | ~3k |
+| 19:09 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:14 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 20:10 | Approval menu shown for admin/root accounts too (UserApprovalControls); deploy 38605301040 OK | UserApprovalControls.swift | done | ~5k |
+| 19:18 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:22 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+
+## Session: 2026-10-14 20:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:40 | Created supabase/migrations/20261014000002_account_admin.sql | — | ~1386 |
+| 21:40 | Created supabase/tests/account_admin_test.sql | — | ~1370 |
+| 21:41 | Created BlindensportGraz/Supabase/SupabaseAccountAdminService.swift | — | ~356 |
+| 21:41 | Created BlindensportGraz/Features/Account/UserAccountAdminMenu.swift | — | ~901 |
+| 21:46 | Edited BlindensportGraz/Shared/AuthContext.swift | added nullish coalescing | ~188 |
+| 21:50 | Root block/unblock/delete accounts: migration 20261014000002_account_admin + pgTAP 17/17 + local GoTrue e2e (user_banned) + staging push + UserAccountAdminMenu; device deploy 38626564432 ok | supabase/migrations/20261014000002_account_admin.sql, UserAccountAdminMenu.swift, UserListView.swift, SupabaseAccountAdminService.swift, AuthContext.swift | success | ~25k |

@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-13T18:55:45.221Z
-> Files: 67 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-14T19:46:33.313Z
+> Files: 88 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -39,11 +39,13 @@
 
 ## ../../.claude/plans/
 
+- `prancy-fluttering-quill.md` — Plan: Move the remaining club data from CloudKit to Supabase (~3127 tok)
 - `woolly-toasting-lobster.md` — Plan: Roll out the Supabase auth & role migration (~2226 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
 - `MEMORY.md` — Memory (~364 tok)
+- `project_cloudkit-to-supabase-club-data.md` — Declares in (~845 tok)
 - `project_supabase-auth-migration.md` (~488 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
@@ -159,6 +161,7 @@
 - `ResetPasswordRequestView.swift` — / "Passwort vergessen": Supabase emails a link that opens the app (~622 tok)
 - `RoleChangeLogView.swift` — / Role-change audit log from Supabase (`role_change_log`, written by a (~721 tok)
 - `SetPasswordView.swift` — / Sets a new password for the signed-in Supabase account — after opening a (~775 tok)
+- `UserAccountAdminMenu.swift` — / "Konto" menu on a `UserListView` row, for root (`roles.assign`) and never (~901 tok)
 - `UserApprovalControls.swift` — / Approval status and admin actions for one account in "App-Konten": (~1142 tok)
 - `UserRolePicker.swift` — / App-role picker on a `UserListView` row. Shown only with `roles.assign` (~478 tok)
 
@@ -231,14 +234,15 @@
 ## BlindensportGraz/Shared/
 
 - `AccessClaims.swift` — / Fine-grained permissions, mirroring the `app_permission` enum in (~739 tok)
-- `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~1620 tok)
+- `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2246 tok)
 
 ## BlindensportGraz/Supabase/
 
 - `AuthErrorMessage.swift` — German, user-facing text for Supabase Auth / RPC errors. (~461 tok)
 - `MemberPrivateSync.swift` — Pushes local svnr/iban/birthDate/lastMedicalExamination edits to Supabase member_private (only with members.private.write and after load) (~400 tok)
+- `SupabaseAccountAdminService.swift` — Root's account administration: block (lock) / unblock and delete another (~356 tok)
 - `SupabaseApprovalService.swift` — Struct: SupabaseApproval (~942 tok)
-- `SupabaseAuthService.swift` — Struct: Row (~991 tok)
+- `SupabaseAuthService.swift` — Struct: Row (~1186 tok)
 - `SupabaseClientSingleton.swift` — Holds the single shared SupabaseClient for the lifetime of the app. (~296 tok)
 - `SupabaseConfig.swift` — Values come from the SUPABASE_URL / SUPABASE_ANON_KEY build settings (~255 tok)
 - `SupabaseMemberPrivateService.swift` — Sensitive roster fields that no longer travel through the CloudKit public (~1392 tok)
@@ -247,9 +251,17 @@
 
 ## BlindensportGraz/Sync/
 
+- `PushRegistration.swift` — / Registers this device's APNs token in Supabase (`device_tokens`) so the (~840 tok)
+- `SyncStatusRow.swift` — / Always-visible sync status for the account screen: "Status: Online / (~1076 tok)
 
 ## BlindensportGraz/Sync/CloudKit/
 
+
+## BlindensportGraz/Sync/Supabase/
+
+- `SupabaseRows.swift` — One row type per Supabase table (migration 20261013000001_club_data). (~5086 tok)
+- `SupabaseSync.swift` — / Keeps the local SwiftData cache in sync with the club data in Supabase (~4324 tok)
+- `SupabaseSync+Models.swift` — Push and pull per table. Pulls fetch rows changed since the table's cursor; (~9047 tok)
 
 ## BlindensportGrazShareExtension/
 
@@ -257,6 +269,7 @@
 ## BlindensportGrazTests/
 
 - `AccessClaimsTests.swift` — Class: AccessClaimsTests (~917 tok)
+- `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
 
 ## BlindensportGrazWidgets/
 
@@ -271,8 +284,10 @@
 
 ## RootCLI/Sources/CloudKitS2SCore/
 
+- `CloudKitCopy.swift` — / Maps the CloudKit public database's club data onto the Supabase tables (~4338 tok)
 - `MemberPrivateStore.swift` — MemberPrivate (svnr/iban/dates), Supabase member_private read/write, CloudKitWriteGuard (~1500 tok)
 - `MemberPrivateStore.swift` — / The protected part of a roster entry — SVNR, IBAN, birth date, last (~1484 tok)
+- `MemberStore.swift` — / The club roster in Supabase (v0.3.0): `members` (names, readable by every (~1906 tok)
 - `SupabaseAdminClient.swift` — if canImport(FoundationNetworking) (~2382 tok)
 
 ## RootCLI/Sources/clubmembersapi/
@@ -287,6 +302,7 @@
 
 ## RootCLI/Tests/CloudKitS2SCoreTests/
 
+- `CloudKitCopyTests.swift` — Class: CloudKitCopyTests (~1299 tok)
 - `MemberPrivateTests.swift` — protected fields never in ckFields, Supabase row format, CloudKitWriteGuard (~600 tok)
 - `MemberPrivateTests.swift` — Class: MemberPrivateTests (~722 tok)
 
@@ -313,6 +329,10 @@
 
 - `index.ts` — Deletes the calling user's auth account. All rows in public.* cascade (~521 tok)
 
+## supabase/functions/notify-schedule/
+
+- `index.ts` — Sends the schedule pushes ("Neues Training", "Training abgesagt", …) for (~1479 tok)
+
 ## supabase/migrations/
 
 - `20261008000001_rbac.sql` — Accounts, roles, permissions, approvals and protected member data. (~1780 tok)
@@ -322,8 +342,19 @@
 - `20261008000005_member_private_self.sql` — Members see their own protected data (via their approval's roster entry) (~908 tok)
 - `20261008000006_directory.sql` — Name-only directory of accounts for approved users (participant lists, (~222 tok)
 - `20261012000001_member_private_updated_by.sql` — touch trigger keeps updated_by supplied by the service role (~200 tok)
+- `20261013000001_club_data.sql` — Club data moved from the CloudKit public database (v0.3.0): roster names (~5428 tok)
+- `20261013000002_storage.sql` — Files formerly stored as CKAssets: event photos and expense receipts. (~516 tok)
+- `20261014000001_push.sql` — Schedule pushes (v0.3.0; replaces the CloudKit query subscriptions): (~1405 tok)
+- `20261014000002_account_admin.sql` — Root account administration: block (lock) / unblock and delete another (~1386 tok)
 
 ## supabase/tests/
 
+- `account_admin_test.sql` — Run with: supabase test db (~1370 tok)
+- `club_data_test.sql` — Run with: supabase test db (~2474 tok)
 - `member_private_test.sql` — Run with: supabase test db (~864 tok)
+- `push_test.sql` — Run with: supabase test db (~1767 tok)
 - `rbac_test.sql` — Run with: supabase test db (~2528 tok)
+- `BlindensportGraz/Supabase/SupabaseAccountAdminService.swift` — Root RPC wrappers: setBlocked / delete / fetchBlocked (~300 tok)
+- `BlindensportGraz/Features/Account/UserAccountAdminMenu.swift` — "Konto" menu on App-Konten rows (root): Sperren/Entsperren, Löschen with confirmations (~700 tok)
+- `supabase/migrations/20261014000002_account_admin.sql` — is_blocked, set_account_blocked, delete_account, blocked_accounts; block-aware has_permission/authorize/is_approved (~1200 tok)
+- `supabase/tests/account_admin_test.sql` — pgTAP 17 tests for block/unblock/delete (~1300 tok)

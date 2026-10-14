@@ -9137,6 +9137,174 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-13T18:55:45.229Z"
+    },
+    {
+      "id": "bug-544",
+      "timestamp": "2026-10-13T20:27:39.894Z",
+      "error_message": "Wrong reference: 6D9HF2HRTX should be from",
+      "file": "../../.claude/plans/prancy-fluttering-quill.md",
+      "root_cause": "Used \"6D9HF2HRTX\" instead of \"from\"",
+      "fix": "Changed 6D9HF2HRTX → from",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T20:27:39.894Z"
+    },
+    {
+      "id": "bug-545",
+      "timestamp": "2026-10-14T15:30:00Z",
+      "error_message": "invalid redeclaration / ambiguous type: AttendanceRow, ScheduleRow, EventRow, TeamRow, MemberRow … (Supabase row structs clash with SwiftUI row views)",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseRows.swift",
+      "root_cause": "PostgREST row types were named *Row like existing SwiftUI list-row views",
+      "fix": "Renamed all Supabase row types to *DBRow via perl \\b regex in SupabaseRows/SupabaseSync/SupabaseSync+Models",
+      "tags": [
+        "supabase",
+        "naming",
+        "build"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T15:30:00Z"
+    },
+    {
+      "id": "bug-546",
+      "timestamp": "2026-10-14T15:30:00Z",
+      "error_message": "escaping autoclosure captures non-escaping parameter 'path'",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+      "root_cause": "os.Logger string interpolation is an escaping autoclosure; calling a non-escaping closure parameter inside it",
+      "fix": "Evaluate path(row) into a local before logger.error",
+      "tags": [
+        "swift",
+        "logger",
+        "closure",
+        "build"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T15:30:00Z"
+    },
+    {
+      "id": "bug-547",
+      "timestamp": "2026-10-14T15:30:00Z",
+      "error_message": "club_data_test.sql fails 6/31 (count mismatches e.g. have 92 want 1) on local supabase test db",
+      "file": "supabase/tests/club_data_test.sql",
+      "root_cause": "Local DB holds the CloudKit Dev copy (91 events, 63 members, 156 attendances); tests assert absolute counts",
+      "fix": "Not a code bug — counts = copied data + fixtures. Run on a reset DB (supabase db reset, then re-copy) to get 31/31",
+      "tags": [
+        "pgtap",
+        "supabase",
+        "test-env"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T15:30:00Z"
+    },
+    {
+      "id": "bug-548",
+      "timestamp": "2026-10-14T17:30:00Z",
+      "error_message": "User: event entry missing after switching the Debug build to Supabase staging",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "One-time migration cleared the CloudKit-era outbox (unsent writes) and only uploaded BudgetEntry/EventMembership; the first full pull then pruned every local row the server lacked, so device-only data (an event that never reached CloudKit Dev — SportEvent type absent there) was deleted",
+      "fix": "handOverFromCloudKitIfNeeded: on first full-access sync upload every local row missing on the server + re-send CloudKit-era outbox rows before pulling; handoverKeep protects images/receipts; schedule-only sync keeps local data until handover done; new defaults key SupabaseSync.cloudKitHandoverDone",
+      "tags": [
+        "supabase",
+        "migration",
+        "data-loss",
+        "sync",
+        "prune"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T17:30:00Z"
+    },
+    {
+      "id": "bug-549",
+      "timestamp": "2026-10-14T16:47:00.255Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Supabase/SupabaseAuthService.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T16:47:00.255Z"
+    },
+    {
+      "id": "bug-549",
+      "timestamp": "2026-10-14T19:00:00Z",
+      "error_message": "Password reset e-mail link: 'Der Link ist ungültig oder abgelaufen' (gmx.net)",
+      "file": "supabase/templates/*.html, BlindensportGraz/Supabase/SupabaseAuthService.swift",
+      "root_cause": "{{ .ConfirmationURL }} is a one-time web link: GMX's link scanner opens it first and consumes the token; also a reset requested outside the app (curl, no PKCE) can't be redeemed by the PKCE-configured app",
+      "fix": "Templates link to blindensportgraz://auth-callback?token_hash={{ .TokenHash }}&type=…; app redeems via auth.verifyOTP(tokenHash:type:) and opens the new-password sheet for type=recovery. Templates pushed to staging only via Management API PATCH config/auth (config push would need RESEND_SMTP_KEY)",
+      "tags": [
+        "supabase",
+        "auth",
+        "email",
+        "deeplink",
+        "gmx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T19:00:00Z"
+    },
+    {
+      "id": "bug-550",
+      "timestamp": "2026-10-14T20:10:00Z",
+      "error_message": "User: 'admin have to confirm a member of gvsc' — admin/root account stuck on 'Freigabe ausstehend', no way to approve",
+      "file": "BlindensportGraz/Features/Account/UserApprovalControls.swift",
+      "root_cause": "Freigabe menu only rendered when needsElevatedAccess (role not admin/root), but the approval also links the account to its roster entry",
+      "fix": "Always render the actions menu; status shows 'Voller Zugriff' plus link state",
+      "tags": [
+        "approval",
+        "ui",
+        "roles"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T20:10:00Z"
+    },
+    {
+      "id": "bug-552",
+      "timestamp": "2026-10-14T19:46:33.332Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Shared/AuthContext.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T19:46:33.332Z"
+    },
+    {
+      "id": "bug-551",
+      "timestamp": "2026-10-14T21:50:00Z",
+      "error_message": "root user should have the possibility to delete or block/lock a user account (missing feature)",
+      "file": "supabase/migrations/20261014000002_account_admin.sql",
+      "root_cause": "Only self-deletion (delete-account Edge Function) existed; no admin-side block or delete",
+      "fix": "RPCs set_account_blocked/delete_account/blocked_accounts (roles.assign, not self); banned_until + session/refresh-token/device-token removal; has_permission/authorize/is_approved check is_blocked(); UserAccountAdminMenu in App-Konten; userBanned message; approver devices prune deleted accounts",
+      "tags": [
+        "supabase",
+        "auth",
+        "root",
+        "block",
+        "ban",
+        "delete-account"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T21:50:00Z"
     }
   ]
 }

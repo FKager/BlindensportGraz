@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 26860851,
-    "total_reads": 8127,
-    "total_writes": 15606,
-    "total_sessions": 98,
-    "anatomy_hits": 7188,
+    "total_tokens_estimated": 27359781,
+    "total_reads": 8152,
+    "total_writes": 15825,
+    "total_sessions": 100,
+    "anatomy_hits": 7213,
     "anatomy_misses": 885,
     "repeated_reads_blocked": 5340,
-    "estimated_savings_vs_bare_cli": 27766215
+    "estimated_savings_vs_bare_cli": 27771215
   },
   "sessions": [
     {
@@ -138955,6 +138955,1692 @@
         "writes_count": 25,
         "repeated_reads_blocked": 1,
         "anatomy_lookups": 4
+      }
+    },
+    {
+      "id": "session-2026-10-13-2144",
+      "started": "2026-10-13T19:44:55.240Z",
+      "ended": "2026-10-13T20:56:03.595Z",
+      "reads": [],
+      "writes": [
+        {
+          "file": "/Users/franz/.claude/plans/prancy-fluttering-quill.md",
+          "tokens_estimated": 3569,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/.claude/plans/prancy-fluttering-quill.md",
+          "tokens_estimated": 14,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261013000001_club_data.sql",
+          "tokens_estimated": 5816,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261013000002_storage.sql",
+          "tokens_estimated": 552,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/club_data_test.sql",
+          "tokens_estimated": 2650,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/CloudKitCopy.swift",
+          "tokens_estimated": 4648,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Tests/CloudKitS2SCoreTests/CloudKitCopyTests.swift",
+          "tokens_estimated": 1392,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseRows.swift",
+          "tokens_estimated": 5449,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+          "tokens_estimated": 4632,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9694,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-to-supabase-club-data.md",
+          "tokens_estimated": 933,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 39349,
+        "reads_count": 0,
+        "writes_count": 11,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T15:31:36.142Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 8445,
+        "reads_count": 1,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T15:37:36.390Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 8445,
+        "reads_count": 1,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T15:40:06.604Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 8445,
+        "reads_count": 1,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T15:43:05.014Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 8445,
+        "reads_count": 1,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T15:47:32.530Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 8445,
+        "reads_count": 1,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T15:52:29.791Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 8445,
+        "reads_count": 1,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T15:55:14.228Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 8445,
+        "reads_count": 1,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T15:58:01.666Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 8445,
+        "reads_count": 1,
+        "writes_count": 7,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:04:32.962Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:13:49.962Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:24:01.451Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:29:13.855Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:31:22.757Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:32:31.325Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:34:12.492Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:35:05.341Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:35:47.639Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9598,
+        "reads_count": 1,
+        "writes_count": 8,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:50:09.701Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Supabase/SupabaseAuthService.swift",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/AuthContext.swift",
+          "tokens_estimated": 72,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9933,
+        "reads_count": 1,
+        "writes_count": 10,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T16:59:41.518Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Supabase/SupabaseAuthService.swift",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/AuthContext.swift",
+          "tokens_estimated": 72,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9933,
+        "reads_count": 1,
+        "writes_count": 10,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T17:03:31.179Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Supabase/SupabaseAuthService.swift",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/AuthContext.swift",
+          "tokens_estimated": 72,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9933,
+        "reads_count": 1,
+        "writes_count": 10,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T17:04:04.151Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Supabase/SupabaseAuthService.swift",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/AuthContext.swift",
+          "tokens_estimated": 72,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9933,
+        "reads_count": 1,
+        "writes_count": 10,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T17:09:31.241Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Supabase/SupabaseAuthService.swift",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/AuthContext.swift",
+          "tokens_estimated": 72,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9933,
+        "reads_count": 1,
+        "writes_count": 10,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T17:14:58.178Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Supabase/SupabaseAuthService.swift",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/AuthContext.swift",
+          "tokens_estimated": 72,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9933,
+        "reads_count": 1,
+        "writes_count": 10,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T17:18:16.281Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Supabase/SupabaseAuthService.swift",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/AuthContext.swift",
+          "tokens_estimated": 72,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9933,
+        "reads_count": 1,
+        "writes_count": 10,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
+      }
+    },
+    {
+      "id": "session-2026-10-14-1718",
+      "started": "2026-10-14T15:18:25.104Z",
+      "ended": "2026-10-14T17:22:40.887Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+          "tokens_estimated": 9047,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseRowsTests.swift",
+          "tokens_estimated": 1405,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/migrations/20261014000001_push.sql",
+          "tokens_estimated": 1506,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 1462,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PushRegistration.swift",
+          "tokens_estimated": 102,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/tests/push_test.sql",
+          "tokens_estimated": 1894,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/supabase/functions/notify-schedule/index.ts",
+          "tokens_estimated": 34,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/RootCLI/Sources/CloudKitS2SCore/MemberStore.swift",
+          "tokens_estimated": 2042,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/SyncStatusRow.swift",
+          "tokens_estimated": 1153,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Supabase/SupabaseAuthService.swift",
+          "tokens_estimated": 263,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/AuthContext.swift",
+          "tokens_estimated": 72,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 9047,
+        "output_tokens_estimated": 9933,
+        "reads_count": 1,
+        "writes_count": 10,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],
