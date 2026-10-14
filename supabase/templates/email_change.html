@@ -4,7 +4,7 @@
 <body style="margin:0;padding:24px;font-family:-apple-system,Helvetica,Arial,sans-serif;font-size:17px;line-height:1.5;color:#1c1c1e;background:#ffffff;">
   <h1 style="font-size:22px;margin:0 0 16px;">Neue E-Mail-Adresse bestätigen</h1>
   <p>Bitte bestätige die neue E-Mail-Adresse für dein Konto bei Blindensport Graz.</p>
-  <p><a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:12px 20px;background:#0a4ea8;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;">Neue E-Mail-Adresse bestätigen</a></p>
+  <p><a href="blindensportgraz://auth-callback?token_hash={{ .TokenHash }}&type=email_change" style="display:inline-block;padding:12px 20px;background:#0a4ea8;color:#ffffff;text-decoration:none;border-radius:8px;font-weight:600;">Neue E-Mail-Adresse bestätigen</a></p>
   <p>Öffne den Link bitte auf dem iPhone, auf dem die App „Blindensport Graz“ installiert ist.</p>
   <p>Wenn du die Änderung nicht angefordert hast, melde dich bitte beim Verein.</p>
   <p style="color:#555;font-size:15px;">Blindensport Graz</p>

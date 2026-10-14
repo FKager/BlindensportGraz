@@ -50,8 +50,20 @@ enum SupabaseAuthService {
     }
 
     // Confirmation and recovery links open blindensportgraz://auth-callback.
-    static func handleDeepLink(_ url: URL) async throws {
+    // Since v0.3.0 the e-mails carry `?token_hash=…&type=…` and the app
+    // redeems it here: mail scanners (GMX, Outlook) open web links ahead
+    // of the user and used up the one-time token, but can't open app
+    // links. Returns true for a password-recovery link.
+    static func handleDeepLink(_ url: URL) async throws -> Bool {
+        let items = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems ?? []
+        if let tokenHash = items.first(where: { $0.name == "token_hash" })?.value,
+           let rawType = items.first(where: { $0.name == "type" })?.value,
+           let type = EmailOTPType(rawValue: rawType) {
+            _ = try await auth.verifyOTP(tokenHash: tokenHash, type: type)
+            return type == .recovery
+        }
         _ = try await auth.session(from: url)
+        return false
     }
 
     // MARK: - Sign in with Apple (OIDC nonce flow)

@@ -77,7 +77,9 @@ final class AuthContext {
 
     func handleDeepLink(_ url: URL) async {
         guard SupabaseConfig.isAuthCallback(url) else { return }
-        do { try await SupabaseAuthService.handleDeepLink(url) }
+        // verifyOTP reports a plain sign-in, so a recovery link opens the
+        // "Neues Passwort" sheet here (old-style links via .passwordRecovery).
+        do { if try await SupabaseAuthService.handleDeepLink(url) { isPasswordRecovery = true } }
         catch { lastError = String(localized: "Der Link ist ungültig oder abgelaufen.") }
     }
 
