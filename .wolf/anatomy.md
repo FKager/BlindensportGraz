@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-14T19:46:33.313Z
-> Files: 88 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-14T20:04:29.049Z
+> Files: 94 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -161,7 +161,7 @@
 - `ResetPasswordRequestView.swift` — / "Passwort vergessen": Supabase emails a link that opens the app (~622 tok)
 - `RoleChangeLogView.swift` — / Role-change audit log from Supabase (`role_change_log`, written by a (~721 tok)
 - `SetPasswordView.swift` — / Sets a new password for the signed-in Supabase account — after opening a (~775 tok)
-- `UserAccountAdminMenu.swift` — / "Konto" menu on a `UserListView` row, for root (`roles.assign`) and never (~901 tok)
+- `UserAccountAdminMenu.swift` — / "Konto" menu on a `UserListView` row, for root (`roles.assign`), never on (~1086 tok)
 - `UserApprovalControls.swift` — / Approval status and admin actions for one account in "App-Konten": (~1142 tok)
 - `UserRolePicker.swift` — / App-role picker on a `UserListView` row. Shown only with `roles.assign` (~478 tok)
 
@@ -331,7 +331,7 @@
 
 ## supabase/functions/notify-schedule/
 
-- `index.ts` — Sends the schedule pushes ("Neues Training", "Training abgesagt", …) for (~1479 tok)
+- `index.ts` — Sends the schedule pushes ("Neues Training", "Training abgesagt", …) for (~1580 tok)
 
 ## supabase/migrations/
 
@@ -346,15 +346,19 @@
 - `20261013000002_storage.sql` — Files formerly stored as CKAssets: event photos and expense receipts. (~516 tok)
 - `20261014000001_push.sql` — Schedule pushes (v0.3.0; replaces the CloudKit query subscriptions): (~1405 tok)
 - `20261014000002_account_admin.sql` — Root account administration: block (lock) / unblock and delete another (~1386 tok)
+- `20261014000003_account_admin_hardening.sql` — Hardening for root account administration (review of 20261014000002): (~2307 tok)
 
 ## supabase/tests/
 
+- `account_admin_hardening_test.sql` — Run with: supabase test db (~2468 tok)
 - `account_admin_test.sql` — Run with: supabase test db (~1370 tok)
+- `BlindensportGraz/Features/Account/UserAccountAdminMenu.swift` — "Konto" menu on App-Konten rows (root): Sperren/Entsperren, Löschen with confirmations (~700 tok)
+- `BlindensportGraz/Supabase/SupabaseAccountAdminService.swift` — Root RPC wrappers: setBlocked / delete / fetchBlocked (~300 tok)
 - `club_data_test.sql` — Run with: supabase test db (~2474 tok)
 - `member_private_test.sql` — Run with: supabase test db (~864 tok)
 - `push_test.sql` — Run with: supabase test db (~1767 tok)
 - `rbac_test.sql` — Run with: supabase test db (~2528 tok)
-- `BlindensportGraz/Supabase/SupabaseAccountAdminService.swift` — Root RPC wrappers: setBlocked / delete / fetchBlocked (~300 tok)
-- `BlindensportGraz/Features/Account/UserAccountAdminMenu.swift` — "Konto" menu on App-Konten rows (root): Sperren/Entsperren, Löschen with confirmations (~700 tok)
 - `supabase/migrations/20261014000002_account_admin.sql` — is_blocked, set_account_blocked, delete_account, blocked_accounts; block-aware has_permission/authorize/is_approved (~1200 tok)
 - `supabase/tests/account_admin_test.sql` — pgTAP 17 tests for block/unblock/delete (~1300 tok)
+- `supabase/migrations/20261014000003_account_admin_hardening.sql` — account_admin_log, root targets refused, last-root guard counts unblocked roots, calendar token rotation, is_blocked in own-account RPCs, unblocked_user_ids (~2500 tok)
+- `supabase/tests/account_admin_hardening_test.sql` — pgTAP 26 tests for the hardening (~2200 tok)

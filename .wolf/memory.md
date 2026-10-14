@@ -3575,3 +3575,12 @@
 | 21:41 | Created BlindensportGraz/Features/Account/UserAccountAdminMenu.swift | — | ~901 |
 | 21:46 | Edited BlindensportGraz/Shared/AuthContext.swift | added nullish coalescing | ~188 |
 | 21:50 | Root block/unblock/delete accounts: migration 20261014000002_account_admin + pgTAP 17/17 + local GoTrue e2e (user_banned) + staging push + UserAccountAdminMenu; device deploy 38626564432 ok | supabase/migrations/20261014000002_account_admin.sql, UserAccountAdminMenu.swift, UserListView.swift, SupabaseAccountAdminService.swift, AuthContext.swift | success | ~25k |
+| 21:48 | Session end: 5 writes across 5 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 0 reads | ~4503 tok |
+| 22:10 | Code review of root block/delete (HEAD~1): 3 high (webcal feed + web admin ignore blocks, last-root guard ignores blocked roots), 4 medium, 5 low; no code changed | supabase/migrations/20261014000002_account_admin.sql, CalendarFeedRoutes.swift, Auth.swift | reported | ~15k |
+| 21:55 | Session end: 5 writes across 5 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 0 reads | ~4503 tok |
+| 22:00 | Created supabase/migrations/20261014000003_account_admin_hardening.sql | — | ~2307 |
+| 22:00 | Edited supabase/functions/notify-schedule/index.ts | added 2 condition(s) | ~146 |
+| 22:00 | Edited supabase/functions/notify-schedule/index.ts | 2→2 lines | ~39 |
+| 22:01 | Created BlindensportGraz/Features/Account/UserAccountAdminMenu.swift | — | ~1086 |
+| 22:04 | Created supabase/tests/account_admin_hardening_test.sql | — | ~2468 |
+| 22:45 | Review fixes 1–11 + 26 pgTAP tests; local feed smoke 200→404; staging push + notify-schedule deploy; device deploy 38630261057 | 20261014000003_account_admin_hardening.sql, UserAccountAdminMenu.swift, UserListView.swift, RoleChangeLogView.swift, SupabaseAdminClient.swift, CalendarFeedRoutes.swift, notify-schedule | success | ~40k |

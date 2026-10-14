@@ -9305,6 +9305,60 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-14T21:50:00Z"
+    },
+    {
+      "id": "bug-554",
+      "timestamp": "2026-10-14T20:00:46.726Z",
+      "error_message": "Wrong condition in logic",
+      "file": "supabase/functions/notify-schedule/index.ts",
+      "root_cause": "Condition was: if (recipients.size === 0)",
+      "fix": "Changed to: if (approved.length === 0)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T20:00:46.726Z"
+    },
+    {
+      "id": "bug-552",
+      "timestamp": "2026-10-14T22:40:00Z",
+      "error_message": "Code review: blocked account kept webcal feed + web admin session; blocked roots counted by last-root guard; no audit log; own-account RPCs open to blocked token; push to blocked; name-only dialogs; offline alert; local delete crash risk; cache kept after forced sign-out",
+      "file": "supabase/migrations/20261014000003_account_admin_hardening.sql",
+      "root_cause": "Initial block/delete (bug-551) only covered GoTrue + has_permission/authorize/is_approved; side channels (calendar token, web admin recheck, push, auth.uid()-only RPCs) ignored banned_until",
+      "fix": "Hardening migration (root targets refused, guard counts unblocked roots, account_admin_log, calendar token rotated, is_blocked in own-account RPCs + profile policy, unblocked_user_ids for push); SupabaseAdminClient.isBlocked in access(for:) and calendar feed; app dialog/offline/sync fixes; 26 pgTAP tests",
+      "tags": [
+        "supabase",
+        "auth",
+        "block",
+        "audit",
+        "calendar",
+        "web-admin",
+        "review"
+      ],
+      "related_bugs": [
+        "bug-551"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T22:40:00Z"
+    },
+    {
+      "id": "bug-553",
+      "timestamp": "2026-10-14T22:30:00Z",
+      "error_message": "pgTAP: cannot remove the last root account (fixture)",
+      "file": "supabase/tests/account_admin_hardening_test.sql",
+      "root_cause": "Deleted the seed root before inserting the test roots, so the guard saw it as the last root",
+      "fix": "Delete the seed root row only after inserting test roots",
+      "tags": [
+        "pgtap",
+        "fixture",
+        "last-root"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T22:30:00Z"
     }
   ]
 }
