@@ -61,7 +61,7 @@ final class SupabaseSync {
                 lastError = error
                 if Self.isDenied(error) {
                     logger.error("\(description, privacy: .public) refused by the server: \(String(describing: error), privacy: .public)")
-                    SyncState.shared.markFailed()
+                    SyncState.shared.markFailed("\(description): \(error)")
                     return .denied
                 }
                 guard attempt < backoffs.count else { break }
@@ -69,7 +69,7 @@ final class SupabaseSync {
             }
         }
         logger.error("\(description, privacy: .public) failed after \(backoffs.count + 1) attempts: \(String(describing: lastError), privacy: .public)")
-        SyncState.shared.markFailed()
+        SyncState.shared.markFailed("\(description): \(lastError.map { String(describing: $0) } ?? "-")")
         return .failed
     }
 
@@ -312,7 +312,7 @@ final class SupabaseSync {
         } catch {
             logger.error("sync failed: \(String(describing: error), privacy: .public)")
             try? modelContext.save()
-            SyncState.shared.markFailed()
+            SyncState.shared.markFailed(String(describing: error))
         }
     }
 

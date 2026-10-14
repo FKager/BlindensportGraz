@@ -218,6 +218,7 @@
 		D78B853F071D1336B8498C2A /* SammelabrechnungExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2179524F056369A65EE64BE8 /* SammelabrechnungExport.swift */; };
 		D9971C76EE30DA739ED6CE18 /* WidgetRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74257B843D2DFE0227E8F6E2 /* WidgetRefresher.swift */; };
 		D99C3FC4916834FB6F5A756D /* WelcomeFileWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6A72C7856B6345DD0554A4 /* WelcomeFileWatcher.swift */; };
+		DC644F567AC790B8E1B3E056 /* SyncStatusRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FB8E8C69968842E28274CC /* SyncStatusRow.swift */; };
 		DD6139935F7B35A2049EBAB0 /* SupabaseConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98A7600E0E1C59784CC0B68C /* SupabaseConfig.swift */; };
 		DD9A0C3D698E5C4FC09F5CB5 /* SammelabrechnungSeasonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6797867F82D7447097840E25 /* SammelabrechnungSeasonView.swift */; };
 		DDEAB3EED2510775DC9D2B23 /* MarkdownContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B7C0436753DCB53AE67842 /* MarkdownContentView.swift */; };
@@ -441,6 +442,7 @@
 		92C336A2D6BCCDF7E4E76140 /* EventImagesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagesSection.swift; sourceTree = "<group>"; };
 		948C4489E77EB5A022268C79 /* TeamMembership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamMembership.swift; sourceTree = "<group>"; };
 		96A8573B9E1983BD8D7B9680 /* BlindensportGrazApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindensportGrazApp.swift; sourceTree = "<group>"; };
+		97FB8E8C69968842E28274CC /* SyncStatusRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusRow.swift; sourceTree = "<group>"; };
 		98A7600E0E1C59784CC0B68C /* SupabaseConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseConfig.swift; sourceTree = "<group>"; };
 		98DE70D29C7F7A50C4BA3B18 /* NextEventLookupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextEventLookupTests.swift; sourceTree = "<group>"; };
 		991A340B81399345B2520638 /* FullBackupImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullBackupImporter.swift; sourceTree = "<group>"; };
@@ -872,6 +874,7 @@
 				36F677932A472627D987A012 /* SyncOrchestrationService.swift */,
 				FA2D4C251E4C527F6F61763E /* SyncState.swift */,
 				C8880B240A4707610CA3C53E /* SyncStatusBanner.swift */,
+				97FB8E8C69968842E28274CC /* SyncStatusRow.swift */,
 				45F4F0EC54ABF83A64720EE8 /* Supabase */,
 			);
 			path = Sync;
@@ -1412,6 +1415,7 @@
 				1ABA2639283BA1D8BCBD3926 /* SyncOrchestrationService.swift in Sources */,
 				C1C8ACD93B713447CE6E2E72 /* SyncState.swift in Sources */,
 				D460D5F42A63E9983581BA9B /* SyncStatusBanner.swift in Sources */,
+				DC644F567AC790B8E1B3E056 /* SyncStatusRow.swift in Sources */,
 				222677C4C70D815C6F76168A /* TagLabel.swift in Sources */,
 				5E3F33B9A90DA04CDA2CE505 /* Team.swift in Sources */,
 				8A0BE1651CFF6545C42231A7 /* TeamDetailView.swift in Sources */,

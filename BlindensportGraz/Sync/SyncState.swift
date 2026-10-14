@@ -38,6 +38,9 @@ final class SyncState {
     /// information, but "the last time a sync definitely succeeded" stays
     /// meaningful across launches.
     private(set) var lastSyncedAt: Date?
+    /// What went wrong in the last failed sync or write (technical text,
+    /// shown in the account screen's status row). Cleared by the next success.
+    private(set) var lastError: String?
 
     private init() {
         lastSyncedAt = UserDefaults.standard.object(forKey: Self.lastSyncedAtKey) as? Date
@@ -53,6 +56,7 @@ final class SyncState {
     /// is real, confirmed activity with CloudKit.
     func markSynced() {
         status = .synced
+        lastError = nil
         let now = Date.now
         lastSyncedAt = now
         UserDefaults.standard.set(now, forKey: Self.lastSyncedAtKey)
@@ -61,8 +65,9 @@ final class SyncState {
     /// Called by `performWithRetry` after all retry attempts are exhausted.
     /// Deliberately does NOT clear `lastSyncedAt` — one failed operation
     /// doesn't erase the fact that other data synced successfully before it.
-    func markFailed() {
+    func markFailed(_ error: String? = nil) {
         status = .failed
+        lastError = error.map { String($0.prefix(300)) }
         logger.error("Sync state moved to .failed")
     }
 
