@@ -3590,3 +3590,6 @@
 | 22:16 | Session end: 10 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11689 tok |
 | 22:22 | Edited BlindensportGraz/Shared/AuthContext.swift | delete() → screen() | ~263 |
 | 22:35 | Fixed crash after root delete (bug-554): prune clears email instead of deleting User | AuthContext.swift | success | ~6k |
+| 22:23 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
+| 22:25 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
+| 22:50 | User confirmed on device: block/unblock/delete + log all work on staging (after bug-554 fix) | - | verified | ~1k |
