@@ -41,6 +41,10 @@ final class SupabaseSync {
     }
 
     let defaults = UserDefaults.standard
+    /// Rows uploaded by the CloudKit handover without an outbox entry
+    /// (images, receipts): not pruned during that sync.
+    var handoverKeep: Set<UUID> = []
+    private var handoverFailed = false
     init() {}
 
     // MARK: - Retry
@@ -143,7 +147,7 @@ final class SupabaseSync {
         let rows = PendingPush.all(in: outboxContext)
         guard !rows.isEmpty else { refreshPendingCount(); return }
 
-        for row in rows {
+        for row in rows where Self.outboxTables.contains(row.recordType) {
             do {
                 if row.operation == PendingPush.deleteOperation {
                     guard let id = UUID(uuidString: row.recordName) else { outboxContext.delete(row); continue }
@@ -172,7 +176,7 @@ final class SupabaseSync {
         guard let outboxContext else { return false }
         let name = id.uuidString
         let descriptor = FetchDescriptor<PendingPush>(predicate: #Predicate { $0.recordName == name })
-        return ((try? outboxContext.fetchCount(descriptor)) ?? 0) > 0
+        return handoverKeep.contains(id) || ((try? outboxContext.fetchCount(descriptor)) ?? 0) > 0
     }
 
     // MARK: - Fetch helpers
@@ -286,7 +290,13 @@ final class SupabaseSync {
     /// (bug-221, bug-371).
     func syncAll(modelContext: ModelContext) async {
         SyncState.shared.markSyncing()
-        migrateFromCloudKitIfNeeded(modelContext: modelContext)
+        handoverFailed = false
+        await handOverFromCloudKitIfNeeded(modelContext: modelContext)
+        defer { handoverKeep.removeAll() }
+        guard !handoverFailed else {
+            SyncState.shared.markFailed("Übergabe der lokalen Daten fehlgeschlagen – wird beim nächsten Sync wiederholt.")
+            return
+        }
         await drainOutbox()
 
         let access = currentAccess()
@@ -341,32 +351,125 @@ final class SupabaseSync {
         try modelContext.save()
     }
 
-    // MARK: - First launch after the CloudKit era
+    // MARK: - Handover from the CloudKit era
 
-    private static let migratedKey = "SupabaseSync.migratedFromCloudKit"
-    private static let localOnlyUploadedKey = "SupabaseSync.uploadedLocalOnlyRows"
+    /// Set once this device's CloudKit-era data has been handed over (a new
+    /// key: devices that ran the earlier, lossy version run this once more).
+    private static let handoverKey = "SupabaseSync.cloudKitHandoverDone"
 
-    /// v0.2.0 outbox rows hold archived CKRecords — they can't be replayed
-    /// against Supabase. Budget entries and direct event members were never
-    /// listable in CloudKit (no recordName index), so they exist only on the
-    /// devices that created them: upload them once (the server decides
-    /// whether this account may write them).
-    private func migrateFromCloudKitIfNeeded(modelContext: ModelContext) {
-        if !defaults.bool(forKey: Self.migratedKey), let outboxContext {
-            for row in PendingPush.all(in: outboxContext) { outboxContext.delete(row) }
+    /// Tables the Supabase outbox writes to. Any other `recordType` in the
+    /// outbox is a CloudKit-era row (archived CKRecord) that can't be replayed.
+    static let outboxTables: Set<String> = [
+        "teams", "team_memberships", "members", "member_contacts", "events", "attendances",
+        "event_participations", "event_memberships", "budget_entries", "training_favorites",
+        "welcome_content", "member_change_requests"
+    ]
+
+    var isHandoverDone: Bool { defaults.bool(forKey: Self.handoverKey) }
+
+    /// First full-access sync after the CloudKit era: nothing on this device
+    /// may be lost. Uploads every local row the server doesn't have, and
+    /// re-sends every row still queued in the CloudKit-era outbox (edits that
+    /// never reached CloudKit), before the first pull prunes anything. Rows
+    /// queued here are protected from pruning by their outbox entries
+    /// (`hasPendingPush`); images/receipts, which aren't outbox-backed, via
+    /// `handoverKeep`. The server decides what this account may write;
+    /// refused rows are dropped and then pruned like any other.
+    ///
+    /// Trade-off: a row deleted in CloudKit that a stale device still holds
+    /// comes back. Losing data that never left a phone is worse.
+    private func handOverFromCloudKitIfNeeded(modelContext: ModelContext) async {
+        guard !isHandoverDone, case .full = currentAccess() else { return }
+        let queued = cloudKitEraOutboxIDs()
+
+        do {
+            func missing(_ table: String) async throws -> (UUID) -> Bool {
+                let onServer = try await serverIDs(table)
+                return { !onServer.contains($0) || queued.contains($0) }
+            }
+            func all<Model: PersistentModel>(_ type: Model.Type) -> [Model] {
+                (try? modelContext.fetch(FetchDescriptor<Model>())) ?? []
+            }
+            // Parents before children, so foreign keys resolve on the server
+            // (anything that still lands too early stays queued and is retried).
+            var upload = try await missing("members")
+            for member in all(Member.self) where upload(member.id) { pushMember(member) }
+            upload = try await missing("teams")
+            for team in all(Team.self) where upload(team.id) { pushTeam(team) }
+            upload = try await missing("team_memberships")
+            for membership in all(TeamMembership.self) where upload(membership.id) { pushMembership(membership) }
+            upload = try await missing("events")
+            for event in all(SportEvent.self) where upload(event.id) { pushEvent(event) }
+            upload = try await missing("attendances")
+            for attendance in all(Attendance.self) where upload(attendance.id) { pushAttendance(attendance) }
+            upload = try await missing("event_participations")
+            for participation in all(EventParticipation.self) where upload(participation.id) {
+                pushParticipation(participation)
+            }
+            upload = try await missing("event_memberships")
+            for membership in all(EventMembership.self) where upload(membership.id) { pushEventMembership(membership) }
+            upload = try await missing("budget_entries")
+            for entry in all(BudgetEntry.self) where upload(entry.id) { pushBudgetEntry(entry) }
+            upload = try await missing("training_favorites")
+            for favorite in all(TrainingFavorite.self) where upload(favorite.id) { pushTrainingFavorite(favorite) }
+            upload = try await missing("welcome_content")
+            for content in all(WelcomeContent.self) where upload(content.id) { pushWelcomeContent(content) }
+            // Change requests carry the proposer's account: only re-send the
+            // ones this device itself had queued, never other people's.
+            for request in all(MemberChangeRequest.self) where queued.contains(request.id) {
+                pushMemberChangeRequest(request)
+            }
+            upload = try await missing("event_images")
+            for image in all(EventImage.self) where upload(image.id) {
+                handoverKeep.insert(image.id)
+                pushEventImage(image)
+            }
+            upload = try await missing("expense_receipts")
+            for receipt in all(ExpenseReceipt.self) where upload(receipt.id) {
+                handoverKeep.insert(receipt.id)
+                pushExpenseReceipt(receipt)
+            }
+        } catch {
+            // Try again on the next sync; the pull below must not prune yet.
+            logger.error("handover: could not list server rows: \(String(describing: error), privacy: .public)")
+            handoverFailed = true
+            return
+        }
+
+        if let outboxContext {
+            for row in PendingPush.all(in: outboxContext) where !Self.outboxTables.contains(row.recordType) {
+                outboxContext.delete(row)
+            }
             try? outboxContext.save()
             refreshPendingCount()
-            defaults.set(true, forKey: Self.migratedKey)
         }
-        guard !defaults.bool(forKey: Self.localOnlyUploadedKey), case .full = currentAccess() else { return }
-        for entry in (try? modelContext.fetch(FetchDescriptor<BudgetEntry>())) ?? [] {
-            pushBudgetEntry(entry)
-        }
-        for membership in (try? modelContext.fetch(FetchDescriptor<EventMembership>())) ?? [] {
-            pushEventMembership(membership)
-        }
-        defaults.set(true, forKey: Self.localOnlyUploadedKey)
+        defaults.set(true, forKey: Self.handoverKey)
+        logger.info("handover from CloudKit done (\(queued.count) queued CloudKit-era writes re-sent)")
     }
 
-    var hasUploadedLocalOnlyRows: Bool { defaults.bool(forKey: Self.localOnlyUploadedKey) }
+    /// Ids of rows queued in the CloudKit-era outbox (record name = id).
+    private func cloudKitEraOutboxIDs() -> Set<UUID> {
+        guard let outboxContext else { return [] }
+        return Set(PendingPush.all(in: outboxContext)
+            .filter { !Self.outboxTables.contains($0.recordType) }
+            .compactMap { UUID(uuidString: $0.recordName) })
+    }
+
+    /// Every id in `table` this account can see (paged).
+    private func serverIDs(_ table: String) async throws -> Set<UUID> {
+        var ids = Set<UUID>()
+        let pageSize = 1000
+        var offset = 0
+        while true {
+            let page: [IDOnlyRow] = try await client.from(table).select("id").order("id")
+                .range(from: offset, to: offset + pageSize - 1).execute().value
+            ids.formUnion(page.map(\.id))
+            guard page.count == pageSize else { return ids }
+            offset += pageSize
+        }
+    }
+}
+
+nonisolated struct IDOnlyRow: Decodable, Sendable {
+    let id: UUID
 }

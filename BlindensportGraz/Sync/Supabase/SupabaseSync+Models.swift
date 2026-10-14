@@ -10,13 +10,13 @@ extension SupabaseSync {
     /// Fetch, apply, advance the cursor; prune on a full pull.
     private func pull<Row: Decodable & Sendable, Model: PersistentModel>(
         _ table: String, columns: String = "*", modelContext: ModelContext,
-        prune model: Model.Type, id modelID: (Model) -> UUID,
+        prune model: Model.Type, id modelID: (Model) -> UUID, pruneMissing: Bool = true,
         rowID: (Row) -> UUID, updatedAt: (Row) -> Date?, apply: (Row) -> Void
     ) async throws {
         let since = cursor(table)
         let rows: [Row] = try await fetchChanged(table, since: since, columns: columns)
         for row in rows { apply(row) }
-        if since == nil {
+        if since == nil, pruneMissing {
             let keep = Set(rows.map(rowID))
             for object in (try? modelContext.fetch(FetchDescriptor<Model>())) ?? []
             where !keep.contains(modelID(object)) && !hasPendingPush(modelID(object)) {
@@ -221,12 +221,13 @@ extension SupabaseSync {
     }
 
     /// Anonymous and pending accounts: only the public schedule. Everything
-    /// else is removed from the cache — except budget entries and direct
-    /// event members before their one-time upload (device-only data from
-    /// the CloudKit era; see `migrateFromCloudKitIfNeeded`).
+    /// else is removed from the cache — but not before this device's
+    /// CloudKit-era data has been handed over (`handOverFromCloudKitIfNeeded`
+    /// needs a full-access sync; until then nothing local is deleted).
     func pullSchedule(modelContext: ModelContext) async throws {
+        let mayRemove = isHandoverDone
         try await pull("public_schedule", columns: "id,kind,title,sport,location,city,start_date,end_date,status,updated_at",
-                       modelContext: modelContext, prune: SportEvent.self, id: \.id,
+                       modelContext: modelContext, prune: SportEvent.self, id: \.id, pruneMissing: mayRemove,
                        rowID: { (row: PublicScheduleDBRow) in row.id }, updatedAt: \.updatedAt) { row in
             let event: SportEvent
             if let existing = findEvent(row.id, modelContext: modelContext) {
@@ -253,6 +254,7 @@ extension SupabaseSync {
             if let training = event as? Training, !row.status.isEmpty { training.status = row.status }
             if let tournament = event as? Tournament, !row.status.isEmpty { tournament.status = row.status }
         }
+        guard mayRemove else { return }
         removeAll(Attendance.self, modelContext: modelContext)
         removeAll(EventParticipation.self, modelContext: modelContext)
         removeAll(EventImage.self, modelContext: modelContext)
@@ -262,10 +264,8 @@ extension SupabaseSync {
         removeAll(TeamMembership.self, modelContext: modelContext)
         removeAll(Team.self, modelContext: modelContext)
         removeAll(Member.self, modelContext: modelContext)
-        if hasUploadedLocalOnlyRows {
-            removeAll(BudgetEntry.self, modelContext: modelContext)
-            removeAll(EventMembership.self, modelContext: modelContext)
-        }
+        removeAll(BudgetEntry.self, modelContext: modelContext)
+        removeAll(EventMembership.self, modelContext: modelContext)
         // Schedule rows are deleted through the same log as events.
         try await applyDeletions(modelContext: modelContext, tables: ["events"])
     }
