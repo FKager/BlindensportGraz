@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T12:59:26.034Z
-> Files: 170 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T13:54:50.702Z
+> Files: 171 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -39,7 +39,7 @@
 
 ## ../../.claude/plans/
 
-- `melodic-cuddling-magpie.md` — Web admin → Java Quarkus + Vaadin (~2435 tok)
+- `melodic-cuddling-magpie.md` — Production cutover: app v0.3.0 (club data on Supabase) + web admin (~2041 tok)
 - `prancy-fluttering-quill.md` — Plan: Move the remaining club data from CloudKit to Supabase (~3127 tok)
 - `woolly-toasting-lobster.md` — Plan: Roll out the Supabase auth & role migration (~2226 tok)
 
@@ -349,6 +349,10 @@
 - `20261014000001_push.sql` — Schedule pushes (v0.3.0; replaces the CloudKit query subscriptions): (~1405 tok)
 - `20261014000002_account_admin.sql` — Root account administration: block (lock) / unblock and delete another (~1386 tok)
 - `20261014000003_account_admin_hardening.sql` — Hardening for root account administration (review of 20261014000002): (~2307 tok)
+
+## supabase/scripts/
+
+- `cutover.sh` — Club-data cutover (CloudKit -> Supabase) and push setup, for staging and prod. (~2103 tok)
 
 ## supabase/tests/
 
