@@ -11,12 +11,11 @@ import Foundation
 /// hand-write a mirror struct per type — that's the same "silently drifts
 /// from Models.swift" problem `MemberRecord` was built to solve, just
 /// multiplied by ten. This lets
-/// the CLI's `record` subcommand and clubmembersapi's `/api/records` routes
-/// share one place that knows CloudKit's wire types instead.
+/// the CLI's `record` subcommand use one place that knows CloudKit's wire
+/// types instead.
 public enum CKFieldCoding {
     /// Record types this app's CloudKitSync.swift actually publishes, for
-    /// CLI help text and the generic web UI's type picker. Not enforced —
-    /// `record`/`/api/records` work against any record type string, known or
+    /// CLI help text. Not enforced — `record` works against any record type string, known or
     /// not. `EventImage`/`ExpenseReceipt` are omitted here since this file's
     /// pure, synchronous `encode`/`parseCLIAssignments` can't handle their
     /// CKAsset field — asset uploads need a network round-trip

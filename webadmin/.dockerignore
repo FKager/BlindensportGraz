@@ -1,0 +1,10 @@
+# Build context for webadmin/Dockerfile: sources and pom only.
+target/
+.idea/
+*.iml
+.DS_Store
+node_modules/
+src/main/frontend/generated/
+.env
+.env.*
+*.pem

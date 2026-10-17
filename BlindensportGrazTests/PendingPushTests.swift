@@ -1,13 +1,11 @@
 import XCTest
-import CloudKit
 import SwiftData
 @testable import BlindensportGraz
 
 /// Coverage for the `PendingPush` outbox (architecture-review.md 2.2/2.3) —
-/// the pure, `ModelContext`-only enqueue/dedupe/clear logic and the
-/// `CKRecord` archive round-trip. Deliberately does NOT touch
-/// `CloudKitSync.shared` or the network (cerebrum's standing rule); the
-/// actual drain against CloudKit stays uncovered like the rest of that class.
+/// the pure, `ModelContext`-only enqueue/dedupe/clear logic. Deliberately
+/// does NOT touch `SupabaseSync.shared` or the network; the actual drain
+/// against Supabase stays uncovered like the rest of that class.
 @MainActor
 final class PendingPushTests: XCTestCase {
 
@@ -19,7 +17,7 @@ final class PendingPushTests: XCTestCase {
 
     private func enqueueSave(_ context: ModelContext, recordName: String, payload: Data) {
         PendingPush.enqueue(in: context, operation: PendingPush.saveOperation,
-                            recordType: "Team", recordName: recordName, payload: payload)
+                            recordType: "teams", recordName: recordName, payload: payload)
     }
 
     // MARK: - enqueue / dedupe
@@ -57,7 +55,7 @@ final class PendingPushTests: XCTestCase {
         enqueueSave(context, recordName: "A", payload: Data([1, 2, 3]))
 
         PendingPush.enqueue(in: context, operation: PendingPush.deleteOperation,
-                            recordType: "Team", recordName: "A", payload: Data())
+                            recordType: "teams", recordName: "A", payload: Data())
 
         XCTAssertEqual(PendingPush.count(in: context), 1)
         let row = try XCTUnwrap(PendingPush.all(in: context).first)
@@ -78,7 +76,7 @@ final class PendingPushTests: XCTestCase {
         enqueueSave(context, recordName: "A", payload: Data([1]))
         enqueueSave(context, recordName: "B", payload: Data([2]))
 
-        PendingPush.clear(recordName: "A", in: context)
+        PendingPush.clear(recordName: "A", recordType: "teams", in: context)
 
         XCTAssertEqual(PendingPush.count(in: context), 1)
         XCTAssertEqual(PendingPush.all(in: context).first?.recordName, "B")
@@ -88,7 +86,7 @@ final class PendingPushTests: XCTestCase {
         let context = try makeContext()
         enqueueSave(context, recordName: "A", payload: Data([1]))
 
-        PendingPush.clear(recordName: "does-not-exist", in: context)
+        PendingPush.clear(recordName: "does-not-exist", recordType: "teams", in: context)
 
         XCTAssertEqual(PendingPush.count(in: context), 1)
     }
@@ -104,31 +102,20 @@ final class PendingPushTests: XCTestCase {
         XCTAssertEqual(PendingPush.all(in: context).map(\.recordName), ["first", "second"])
     }
 
-    // MARK: - CKRecord archive round-trip
+    // MARK: - table + id dedupe key
 
-    func testArchivedRecordRoundTripsThroughDecodedRecord() throws {
-        let recordID = CKRecord.ID(recordName: UUID().uuidString)
-        let record = CKRecord(recordType: "Team", recordID: recordID)
-        record["name"] = "Torball A" as CKRecordValue
-        record["createdAt"] = Date(timeIntervalSince1970: 1_000_000) as CKRecordValue
+    func testSameIDInDifferentTablesQueuesSeparately() throws {
+        // A Member is two rows with the same id: `members` and `member_contacts`.
+        let context = try makeContext()
+        PendingPush.enqueue(in: context, operation: PendingPush.saveOperation,
+                            recordType: "members", recordName: "A", payload: Data([1]))
+        PendingPush.enqueue(in: context, operation: PendingPush.saveOperation,
+                            recordType: "member_contacts", recordName: "A", payload: Data([2]))
 
-        let data = try XCTUnwrap(PendingPush.archived(record))
-        let row = PendingPush(recordType: "Team", recordName: recordID.recordName,
-                              operation: PendingPush.saveOperation, payloadData: data)
+        XCTAssertEqual(PendingPush.count(in: context), 2)
 
-        let decoded = try XCTUnwrap(row.decodedRecord())
-        XCTAssertEqual(decoded.recordID.recordName, recordID.recordName)
-        XCTAssertEqual(decoded["name"] as? String, "Torball A")
-        XCTAssertEqual(decoded["createdAt"] as? Date, Date(timeIntervalSince1970: 1_000_000))
-    }
+        PendingPush.clear(recordName: "A", recordType: "members", in: context)
 
-    func testDecodedRecordIsNilForADeleteRowAndForCorruptPayload() {
-        let deleteRow = PendingPush(recordType: "Team", recordName: "A",
-                                    operation: PendingPush.deleteOperation, payloadData: Data())
-        XCTAssertNil(deleteRow.decodedRecord())
-
-        let corruptRow = PendingPush(recordType: "Team", recordName: "A",
-                                     operation: PendingPush.saveOperation, payloadData: Data([0x00, 0x01, 0x02]))
-        XCTAssertNil(corruptRow.decodedRecord())
+        XCTAssertEqual(PendingPush.all(in: context).map(\.recordType), ["member_contacts"])
     }
 }

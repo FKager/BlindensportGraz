@@ -63,8 +63,7 @@ public struct MemberPrivate: Equatable, Sendable {
 }
 
 /// Reads and writes `member_private` with the service key. Only trusted
-/// tooling holds that key (rootcli, clubmembersapi); clubmembersapi checks
-/// the signed-in admin's `members.private.*` permissions before calling this.
+/// tooling holds that key (rootcli, run by root).
 public struct MemberPrivateStore: Sendable {
     let supabase: SupabaseAdminClient
 
@@ -131,8 +130,7 @@ extension MemberBulkInput {
     }
 }
 
-/// Guard for the generic record tools (`rootcli record set`, clubmembersapi's
-/// `/api/records`): protected member fields and the account record types
+/// Guard for the generic record tool (`rootcli record set`): protected member fields and the account record types
 /// moved to Supabase in v0.2.0 and must not be written to CloudKit again.
 public enum CloudKitWriteGuard {
     static let memberTypes: Set<String> = ["ClubMember", "MemberChangeRequest"]

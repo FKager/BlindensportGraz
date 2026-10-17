@@ -77,11 +77,14 @@ final class AuthContext {
 
     func handleDeepLink(_ url: URL) async {
         guard SupabaseConfig.isAuthCallback(url) else { return }
-        do { try await SupabaseAuthService.handleDeepLink(url) }
+        // verifyOTP reports a plain sign-in, so a recovery link opens the
+        // "Neues Passwort" sheet here (old-style links via .passwordRecovery).
+        do { if try await SupabaseAuthService.handleDeepLink(url) { isPasswordRecovery = true } }
         catch { lastError = String(localized: "Der Link ist ungültig oder abgelaufen.") }
     }
 
     func signOut() async {
+        await PushRegistration.shared.unregister()
         try? await SupabaseAuthService.signOut()
     }
 
@@ -165,6 +168,23 @@ final class AuthContext {
                 for profile in profiles {
                     SupabaseProfileService.applyToLocalUser(profile, role: nil, modelContext: modelContext)
                 }
+                // Accounts root deleted: approvers get every profile, so a
+                // cached full account (with email) missing here is gone.
+                // Demoted to a name-only row instead of deleted: App-Konten
+                // hides rows without email, while a deleted model still on
+                // screen (its row, menus) crashes SwiftData on the next read
+                // (bug-554), and the cascade would drop local team
+                // memberships/participations the next pull fixes anyway.
+                let serverIDs = Set(profiles.map(\.id))
+                let local = (try? modelContext.fetch(FetchDescriptor<User>())) ?? []
+                for user in local where !user.email.isEmpty && user.id != claims.userID
+                    && !serverIDs.contains(user.id) {
+                    user.email = ""
+                    user.calendarToken = ""
+                    user.role = .member
+                    user.isRoot = false
+                }
+                try? modelContext.save()
             }
         }
         if let roles = try? await SupabaseRoleService.fetchRoles() {

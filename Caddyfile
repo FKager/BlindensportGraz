@@ -1,4 +1,4 @@
-# Caddy config for docker-compose.yml — terminates TLS for clubmembersapi.
+# Caddy config for docker-compose.yml — terminates TLS for webadmin.
 # {$DOMAIN}/{$ACME_EMAIL} come from .env via docker-compose.yml's caddy `environment:`.
 #
 # For a real domain (the normal case — see .env.example's DOMAIN), Caddy
@@ -14,5 +14,5 @@
 }
 
 {$DOMAIN} {
-	reverse_proxy clubmembersapi:8080
+	reverse_proxy webadmin:8080
 }

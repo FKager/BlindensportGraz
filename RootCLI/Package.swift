@@ -5,7 +5,6 @@ let package = Package(
     name: "rootcli",
     platforms: [.macOS(.v13)],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.99.0"),
         // CryptoKit is Apple-only; swift-crypto is the drop-in-API-compatible
         // replacement used on Linux/Windows (see CloudKitS2SClient.swift's
         // `#if canImport(CryptoKit)` import). Not needed at all on macOS,
@@ -30,21 +29,8 @@ let package = Package(
             dependencies: ["CloudKitS2SCore"],
             path: "Sources/rootcli"
         ),
-        .executableTarget(
-            name: "clubmembersapi",
-            dependencies: [
-                "CloudKitS2SCore",
-                .product(name: "Vapor", package: "vapor"),
-                // Auth.swift's constant-time credential comparison needs this
-                // directly (not just transitively via CloudKitS2SCore) on
-                // Linux/the Docker/Podman container build — see its
-                // `#if canImport(CryptoKit)` import.
-                .product(name: "Crypto", package: "swift-crypto", condition: .when(platforms: [.linux, .windows, .android]))
-            ],
-            path: "Sources/clubmembersapi"
-        ),
         // Covers CloudKitS2SCore's pure logic (CalendarFeed, CKFieldCoding) —
-        // no network, no Vapor. Mirrors Shared/ClubSchema's Tests target.
+        // no network. Mirrors Shared/ClubSchema's Tests target.
         .testTarget(
             name: "CloudKitS2SCoreTests",
             dependencies: ["CloudKitS2SCore"],

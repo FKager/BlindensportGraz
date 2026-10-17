@@ -3,13 +3,13 @@ import os
 
 /// Shared save+sync core every per-model `*Service` (e.g. `TeamService`,
 /// `TrainingService`) is built on — audit.md Architecture Finding 1 (60
-/// view-layer call sites drove `CloudKitSync.shared` directly, no
+/// view-layer call sites drove `SupabaseSync.shared` directly, no
 /// service/viewmodel layer), Finding 6 (98 `try?` silent-failure sites, no
 /// consistent error policy), and Finding 8 (save-then-sync duplicated
 /// verbatim everywhere).
 ///
 /// One generic core, but NOT one generic `SyncedModelService<T>` type at
-/// call sites — the 12 models' `CloudKitSync.shared.pushX`/`deleteX`
+/// call sites — the 12 models' `SupabaseSync.shared.pushX`/`deleteX`
 /// functions don't share a uniform name or signature (`pushUserIdentity`
 /// for `User`, `pushMember` for `Member`, `deleteX(_ id: UUID)` with no
 /// delete at all for some types), so a single generic type would need an

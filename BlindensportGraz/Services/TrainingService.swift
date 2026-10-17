@@ -1,17 +1,15 @@
 import Foundation
 import SwiftData
 
-/// `delete` only cancels the local reminder (see `EventReminderService`) and
-/// saves the removal — no CloudKit delete push, that scoping still stands
-/// per SportEventService.swift's doc comment (no CloudKit delete path exists
-/// for Training records).
+/// `delete` cancels the local reminder (see `EventReminderService`) and
+/// deletes the training on the server too, so it disappears for everyone.
 @MainActor
 enum TrainingService {
     @discardableResult
     static func save(_ training: Training, modelContext: ModelContext) -> Bool {
         let saved = PersistenceService.saveAndPush(modelContext: modelContext, modelName: "Training",
                                         failureMessage: "Training konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushTraining(training)
+            SupabaseSync.shared.pushTraining(training)
         }
         if saved {
             EventReminderService.reschedule(eventID: training.id, title: training.title,
@@ -28,6 +26,7 @@ enum TrainingService {
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Training",
                                                   failureMessage: "Training konnte nicht gelöscht werden.") {
             EventReminderService.cancel(eventID: id)
+            SupabaseSync.shared.deleteEvent(id)
         }
     }
 
@@ -40,7 +39,7 @@ enum TrainingService {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "Training (batch)",
                                         failureMessage: "Trainings-Import konnte nicht gespeichert werden.") {
             for training in trainings {
-                CloudKitSync.shared.pushTraining(training)
+                SupabaseSync.shared.pushTraining(training)
             }
         }
     }

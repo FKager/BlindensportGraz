@@ -35,9 +35,11 @@ struct UserApprovalControls: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
             status
-            if needsElevatedAccess {
-                actions
-            }
+            // Admin/root accounts have full access without an approval, but
+            // the approval also links the account to its roster entry
+            // (Grazer VSC membership, "Vereinsdaten bearbeiten"), so they
+            // get the same actions.
+            actions
         }
         .alert("Fehler", isPresented: Binding(get: { errorMessage != nil },
                                               set: { if !$0 { errorMessage = nil } })) {
@@ -53,7 +55,8 @@ struct UserApprovalControls: View {
             Label("Voller Zugriff als \(user.role.displayLabel)", systemImage: "checkmark.shield.fill")
                 .font(.caption)
                 .foregroundStyle(Theme.Palette.success)
-        } else if let approvedMember {
+        }
+        if let approvedMember {
             Label("Freigegeben: \(approvedMember.fullName)", systemImage: "checkmark.seal.fill")
                 .font(.caption)
                 .foregroundStyle(Theme.Palette.success)
@@ -62,12 +65,18 @@ struct UserApprovalControls: View {
                 .font(.caption)
                 .foregroundStyle(Theme.Palette.warning)
         } else if let suggestion {
-            Label("Nicht freigegeben – Vorschlag: \(suggestion.member.fullName) (\(suggestion.byEmail ? "E-Mail" : "Name"))",
+            Label(needsElevatedAccess
+                  ? "Nicht freigegeben – Vorschlag: \(suggestion.member.fullName) (\(suggestion.byEmail ? "E-Mail" : "Name"))"
+                  : "Kein Eintrag verknüpft – Vorschlag: \(suggestion.member.fullName) (\(suggestion.byEmail ? "E-Mail" : "Name"))",
                   systemImage: "questionmark.circle")
                 .font(.caption)
                 .foregroundStyle(Theme.Palette.warning)
-        } else {
+        } else if needsElevatedAccess {
             Label("Nicht freigegeben – nur Termine sichtbar", systemImage: "eye.slash")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        } else {
+            Label("Kein Eintrag in der Benutzerverwaltung verknüpft", systemImage: "questionmark.circle")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }

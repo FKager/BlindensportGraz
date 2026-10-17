@@ -3503,3 +3503,222 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+| 22:27 | Created ../../.claude/plans/prancy-fluttering-quill.md | — | ~3331 |
+| 22:27 | Edited ../../.claude/plans/prancy-fluttering-quill.md | inline fix | ~13 |
+| 22:29 | Created supabase/migrations/20261013000001_club_data.sql | — | ~5428 |
+| 22:30 | Created supabase/migrations/20261013000002_storage.sql | — | ~516 |
+| 22:33 | Created supabase/tests/club_data_test.sql | — | ~2474 |
+| 22:35 | Created RootCLI/Sources/CloudKitS2SCore/CloudKitCopy.swift | — | ~4338 |
+| 22:36 | Created RootCLI/Tests/CloudKitS2SCoreTests/CloudKitCopyTests.swift | — | ~1299 |
+| 22:43 | Created BlindensportGraz/Sync/Supabase/SupabaseRows.swift | — | ~5086 |
+| 22:45 | Created BlindensportGraz/Sync/Supabase/SupabaseSync.swift | — | ~4324 |
+| 22:46 | Created BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift | — | ~9047 |
+| 22:55 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_cloudkit-to-supabase-club-data.md | — | ~871 |
+| 22:55 | Paused CloudKit->Supabase club data migration (branch supabase-club-data, WIP 2470713) | supabase/, RootCLI/, Sync/Supabase | WIP | ~150k |
+| 22:56 | Session end: 11 writes across 10 files (prancy-fluttering-quill.md, 20261013000001_club_data.sql, 20261013000002_storage.sql, club_data_test.sql, CloudKitCopy.swift) | 0 reads | ~39349 tok |
+
+## Session: 2026-10-14 17:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:21 | Created BlindensportGrazTests/SupabaseRowsTests.swift | — | ~1311 |
+| 17:22 | Created supabase/migrations/20261014000001_push.sql | — | ~1405 |
+| 17:23 | Created supabase/functions/notify-schedule/index.ts | — | ~1462 |
+| 17:23 | Edited BlindensportGraz/Sync/PushRegistration.swift | 11→6 lines | ~95 |
+| 17:24 | Created supabase/tests/push_test.sql | — | ~1767 |
+| 17:25 | Edited supabase/functions/notify-schedule/index.ts | added 1 condition(s) | ~34 |
+| 17:26 | Created RootCLI/Sources/CloudKitS2SCore/MemberStore.swift | — | ~1906 |
+| 17:30 | Session: Supabase club-data Phases 2–4 — app builds (*DBRow rename), tests rewritten; push migration+notify-schedule fn (pgTAP 18/18); clubmembersapi/imports/calendar on Supabase, records.html removed | commits 06b62d5, 5d1ccac, 90826fe | done | ~120k |
+| 17:31 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:37 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:40 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:43 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 18:00 | Staging rehearsal: db push + notify-schedule deploy + CloudKit Dev copy to staging, branch pushed, device deploy 38592189308 OK | staging xlllxpmkxmcolukmcmoi | done | ~15k |
+| 17:47 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:52 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:55 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 17:58 | Session end: 7 writes across 6 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~17492 tok |
+| 18:02 | Created BlindensportGraz/Sync/SyncStatusRow.swift | — | ~1076 |
+| 18:40 | SyncStatusRow in AccountView (Status line, tap to sync, last error); SyncState.lastError; deploy 38594713246 OK | Sync/SyncStatusRow.swift, SyncState.swift, AccountView.swift | done | ~8k |
+| 18:04 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:13 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 19:30 | Safe CloudKit handover (upload missing local rows + re-send old outbox before prune); deploy 38597371179 OK | SupabaseSync.swift, SupabaseSync+Models.swift | done | ~20k |
+| 18:24 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:29 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:31 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:32 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:34 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:35 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:35 | Session end: 8 writes across 7 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18645 tok |
+| 18:47 | Edited BlindensportGraz/Supabase/SupabaseAuthService.swift | added optional chaining | ~246 |
+| 18:47 | Edited BlindensportGraz/Shared/AuthContext.swift | modified handleDeepLink() | ~68 |
+| 19:15 | token_hash auth links (templates + verifyOTP), templates pushed to staging, reset re-sent; deploy 38601114943 OK | supabase/templates, SupabaseAuthService.swift, AuthContext.swift | done | ~15k |
+| 18:50 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 18:59 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:45 | Staging password reset for gmx.net works end-to-end (token_hash link + verifyOTP + clearer auth errors, deploy 38602623229) | — | done | ~3k |
+| 19:03 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:04 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:55 | Staging: created blindensport.gvsc@gmail.com (id dd470577…, root), reset link sent | staging-rehearsal.sh create-user | done | ~3k |
+| 19:09 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:14 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 20:10 | Approval menu shown for admin/root accounts too (UserApprovalControls); deploy 38605301040 OK | UserApprovalControls.swift | done | ~5k |
+| 19:18 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+| 19:22 | Session end: 10 writes across 9 files (SupabaseRowsTests.swift, 20261014000001_push.sql, index.ts, PushRegistration.swift, push_test.sql) | 1 reads | ~18980 tok |
+
+## Session: 2026-10-14 20:17
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:40 | Created supabase/migrations/20261014000002_account_admin.sql | — | ~1386 |
+| 21:40 | Created supabase/tests/account_admin_test.sql | — | ~1370 |
+| 21:41 | Created BlindensportGraz/Supabase/SupabaseAccountAdminService.swift | — | ~356 |
+| 21:41 | Created BlindensportGraz/Features/Account/UserAccountAdminMenu.swift | — | ~901 |
+| 21:46 | Edited BlindensportGraz/Shared/AuthContext.swift | added nullish coalescing | ~188 |
+| 21:50 | Root block/unblock/delete accounts: migration 20261014000002_account_admin + pgTAP 17/17 + local GoTrue e2e (user_banned) + staging push + UserAccountAdminMenu; device deploy 38626564432 ok | supabase/migrations/20261014000002_account_admin.sql, UserAccountAdminMenu.swift, UserListView.swift, SupabaseAccountAdminService.swift, AuthContext.swift | success | ~25k |
+| 21:48 | Session end: 5 writes across 5 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 0 reads | ~4503 tok |
+| 22:10 | Code review of root block/delete (HEAD~1): 3 high (webcal feed + web admin ignore blocks, last-root guard ignores blocked roots), 4 medium, 5 low; no code changed | supabase/migrations/20261014000002_account_admin.sql, CalendarFeedRoutes.swift, Auth.swift | reported | ~15k |
+| 21:55 | Session end: 5 writes across 5 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 0 reads | ~4503 tok |
+| 22:00 | Created supabase/migrations/20261014000003_account_admin_hardening.sql | — | ~2307 |
+| 22:00 | Edited supabase/functions/notify-schedule/index.ts | added 2 condition(s) | ~146 |
+| 22:00 | Edited supabase/functions/notify-schedule/index.ts | 2→2 lines | ~39 |
+| 22:01 | Created BlindensportGraz/Features/Account/UserAccountAdminMenu.swift | — | ~1086 |
+| 22:04 | Created supabase/tests/account_admin_hardening_test.sql | — | ~2468 |
+| 22:45 | Review fixes 1–11 + 26 pgTAP tests; local feed smoke 200→404; staging push + notify-schedule deploy; device deploy 38630261057 | 20261014000003_account_admin_hardening.sql, UserAccountAdminMenu.swift, UserListView.swift, RoleChangeLogView.swift, SupabaseAdminClient.swift, CalendarFeedRoutes.swift, notify-schedule | success | ~40k |
+| 22:15 | Session end: 10 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11689 tok |
+| 22:55 | Created staging test account sperrtest@example.test (Test Sperrkonto, 2e358e9f-297c-4a1f-baa2-01a35d35f1c8) for block/delete device test | staging-rehearsal.sh | success | ~1k |
+| 22:16 | Session end: 10 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11689 tok |
+| 22:16 | Session end: 10 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11689 tok |
+| 22:22 | Edited BlindensportGraz/Shared/AuthContext.swift | delete() → screen() | ~263 |
+| 22:35 | Fixed crash after root delete (bug-554): prune clears email instead of deleting User | AuthContext.swift | success | ~6k |
+| 22:23 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
+| 22:25 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
+| 22:50 | User confirmed on device: block/unblock/delete + log all work on staging (after bug-554 fix) | - | verified | ~1k |
+| 22:28 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
+| 22:28 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
+
+## Session: 2026-10-17 08:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:54 | Created ../../.claude/plans/melodic-cuddling-magpie.md | — | ~2598 |
+| 08:57 | Created webadmin/pom.xml | — | ~1264 |
+| 08:58 | Created webadmin/src/main/resources/application.properties | — | ~401 |
+| 08:58 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/SupabaseConfig.java | — | ~159 |
+| 08:58 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/SupabaseException.java | — | ~465 |
+| 08:58 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/DbErrorMessages.java | — | ~600 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/SupabaseHttp.java | — | ~1214 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/Postgrest.java | — | ~1072 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/GoTrue.java | — | ~791 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/Supabase.java | — | ~427 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/Permission.java | — | ~354 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/Access.java | — | ~439 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/SessionExpiredException.java | — | ~85 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/AdminSession.java | — | ~942 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/LoginAttemptLimiter.java | — | ~567 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/SignInException.java | — | ~106 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/AdminSessions.java | — | ~1525 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/Dates.java | — | ~827 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberPrivate.java | — | ~513 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberRecord.java | — | ~984 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberStore.java | — | ~1613 |
+| 09:01 | Edited webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberStore.java | added 1 condition(s) | ~132 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberBulkInput.java | — | ~424 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberBulkImport.java | — | ~1010 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberInput.java | — | ~1049 |
+| 09:02 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/calendar/CalendarFeed.java | — | ~712 |
+| 09:02 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/calendar/CalendarFeedResource.java | — | ~1207 |
+| 09:02 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/ApiException.java | — | ~184 |
+| 09:02 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/ApiExceptionMappers.java | — | ~603 |
+| 09:03 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/ApiAuthFilter.java | — | ~563 |
+| 09:03 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/SessionResource.java | — | ~948 |
+| 09:03 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/CurrentAdmin.java | — | ~226 |
+| 09:03 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/MembersResource.java | — | ~2435 |
+| 09:04 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java | — | ~469 |
+| 09:05 | Edited webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java | 5→3 lines | ~61 |
+| 09:05 | Edited webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java | added 2 import(s) | ~36 |
+| 09:05 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/RequiresPermission.java | — | ~118 |
+| 09:05 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccessGuard.java | — | ~490 |
+| 09:05 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/Announcer.java | — | ~452 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/LoginView.java | — | ~1018 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MainLayout.java | — | ~864 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/StartView.java | — | ~418 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AppShell.java | — | ~110 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/SessionCookieSetup.java | — | ~246 |
+| 09:08 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/calendar/CalendarFeedTest.java | — | ~1022 |
+| 09:08 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/MemberMappingTest.java | — | ~1474 |
+| 09:08 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/MemberInputTest.java | — | ~890 |
+| 09:08 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/auth/LoginAttemptLimiterTest.java | — | ~618 |
+| 09:09 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/api/SupabaseMock.java | — | ~213 |
+| 09:09 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/api/ApiTest.java | — | ~4269 |
+| 09:11 | webadmin Phase 1: Quarkus/Vaadin skeleton, Supabase user-JWT client, auth/sessions, REST parity, calendar feed; 41/41 tests, local Supabase smoke OK | webadmin/ | done | ~60000 |
+| 09:13 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/Validation.java | — | ~374 |
+| 09:13 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/GermanUi.java | — | ~1197 |
+| 09:14 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MemberDialog.java | — | ~2864 |
+| 09:15 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AdminView.java | — | ~675 |
+| 09:15 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MembersView.java | — | ~2945 |
+| 09:16 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/ChangeRequestStore.java | — | ~1682 |
+| 09:16 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/ChangeRequestsView.java | — | ~2387 |
+| 09:16 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/ValidationTest.java | — | ~251 |
+| 09:16 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/ui/ChangeRequestDiffTest.java | — | ~476 |
+
+## Session: 2026-10-17 13:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:22 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/ChangeRequestStoreTest.java | — | ~1501 |
+| 13:22 | webadmin Phase 2: MembersView (CRUD, protected fields, JSON import/export), ChangeRequestsView; Playwright e2e 16/16, unit 49/49; Docker disk full incident fixed | webadmin/ui, members | done | ~40000 |
+| 13:23 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/accounts/AccountService.java | — | ~2290 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccountsView.java | — | ~1987 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccountDialog.java | — | ~2575 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/RoleLogView.java | — | ~904 |
+| 13:26 | webadmin Phase 3: AccountsView/AccountDialog (approve, activation code, role, block, delete) + RoleLogView; RPCs verified live on local Supabase; 53/53 tests | webadmin/accounts, ui | done | ~25000 |
+| 13:28 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/club/ClubModels.java | — | ~1042 |
+| 13:28 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/club/ClubStore.java | — | ~3226 |
+| 13:30 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/ClubFields.java | — | ~749 |
+| 13:30 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/TeamsView.java | — | ~3030 |
+| 13:31 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/EventDialog.java | — | ~2741 |
+| 13:31 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AttendanceDialog.java | — | ~1659 |
+| 13:32 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/EventsView.java | — | ~2640 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/FavoritesView.java | — | ~2241 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/BudgetView.java | — | ~2561 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/WelcomeView.java | — | ~876 |
+| 13:40 | webadmin Phase 4: club views (Termine, Teams+Mitglieder, Anwesenheit/PRAE, Favoriten, Budget, Willkommen); LiveSupabaseIT green; Playwright club 24/24 + members 16/16; 58 unit | webadmin/club, ui | done | ~60000 |
+
+## Session: 2026-10-17 14:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:24 | Created webadmin/README.md | — | ~2357 |
+| 14:27 | webadmin Phase 5: Dockerfile + compose/Caddy swap, README, removed Swift clubmembersapi/Public/Dockerfile/Vapor/CalendarFeed; confirm-dialog focus fix; image smoke OK; 58 unit + e2e 16/16 + 22/22; rootcli build + 15 swift tests OK | webadmin, RootCLI, compose | done | ~40000 |
+| 14:27 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_webadmin-quarkus-vaadin.md | — | ~490 |
+| 14:28 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:30 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:31 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:35 | webadmin staging rehearsal: container on 127.0.0.1:8083 against staging Supabase (xlllxpmkxmcolukmcmoi); endpoint checks OK; staging migrations already current | scratchpad/staging-webadmin.sh | running | ~6000 |
+| 14:35 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:39 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:45 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:53 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:54 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:55 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:56 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:59 | Created webadmin/compose.traefik.yml | — | ~562 |
+| 15:06 | webadmin deployed to nuc (Coolify Traefik file route, staging Supabase) at https://a11y.it, LE cert OK | webadmin/compose.traefik.yml, traefik-dynamic.yml | done | ~15000 |
+| 15:07 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:08 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:11 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:13 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:16 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:20 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:27 | DNS bs.a11y.it A → 212.95.27.58 via GoDaddy API (PAT created in Safari); Traefik route on nuc moved a11y.it → bs.a11y.it, LE cert OK | GoDaddy, nuc | done | ~12000 |
+| 15:27 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:35 | Created ../../.claude/plans/melodic-cuddling-magpie.md | — | ~2177 |
+| 15:37 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:40 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:45 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:49 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:49 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:52 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:54 | Created supabase/scripts/cutover.sh | — | ~2103 |
+| 16:02 | Cutover step 1+2: APNs key JD22K7SHQY (~/.config/apns), staging push secrets + Vault set via supabase/scripts/cutover.sh, test push sent:1; PR #13 merged into supabase-club-data; device deploy run 39038853055 OK (staging build) | cutover.sh, notify-schedule | waiting for user checklist | ~30000 |
+| 16:02 | Session end: 5 writes across 5 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md, cutover.sh) | 0 reads | ~8196 tok |

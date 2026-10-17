@@ -79,6 +79,8 @@ struct AccountView: View {
 
                 calendarFeedSection(for: user)
 
+                SyncStatusRow()
+
                 Section {
                     Button {
                         showEdit = true

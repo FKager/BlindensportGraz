@@ -1,0 +1,25 @@
+# Traefik file-provider route for webadmin (see compose.traefik.yml).
+# Replace DOMAIN before copying it into Traefik's dynamic config directory.
+http:
+  routers:
+    blindensport-webadmin-http:
+      rule: Host(`DOMAIN`)
+      entryPoints: [http]
+      middlewares: [blindensport-webadmin-https]
+      service: blindensport-webadmin
+    blindensport-webadmin:
+      rule: Host(`DOMAIN`)
+      entryPoints: [https]
+      service: blindensport-webadmin
+      tls:
+        certResolver: letsencrypt
+  middlewares:
+    blindensport-webadmin-https:
+      redirectScheme:
+        scheme: https
+        permanent: true
+  services:
+    blindensport-webadmin:
+      loadBalancer:
+        servers:
+          - url: http://blindensport-webadmin:8080

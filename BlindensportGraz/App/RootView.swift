@@ -42,6 +42,10 @@ struct RootView: View {
         .onChange(of: authContext.phase) { _, phase in
             switch phase {
             case .signedIn:
+                // A later sign-out (also one forced by a block or deletion)
+                // syncs schedule-only again, which removes the club data
+                // this account could see from the device.
+                didAnonymousSync = false
                 guard let user = authContext.currentUser, syncedUserID != user.id else { return }
                 syncedUserID = user.id
                 triggerBackgroundSync()

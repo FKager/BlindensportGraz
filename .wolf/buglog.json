@@ -9137,6 +9137,399 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-13T18:55:45.229Z"
+    },
+    {
+      "id": "bug-544",
+      "timestamp": "2026-10-13T20:27:39.894Z",
+      "error_message": "Wrong reference: 6D9HF2HRTX should be from",
+      "file": "../../.claude/plans/prancy-fluttering-quill.md",
+      "root_cause": "Used \"6D9HF2HRTX\" instead of \"from\"",
+      "fix": "Changed 6D9HF2HRTX → from",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "md"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-13T20:27:39.894Z"
+    },
+    {
+      "id": "bug-545",
+      "timestamp": "2026-10-14T15:30:00Z",
+      "error_message": "invalid redeclaration / ambiguous type: AttendanceRow, ScheduleRow, EventRow, TeamRow, MemberRow … (Supabase row structs clash with SwiftUI row views)",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseRows.swift",
+      "root_cause": "PostgREST row types were named *Row like existing SwiftUI list-row views",
+      "fix": "Renamed all Supabase row types to *DBRow via perl \\b regex in SupabaseRows/SupabaseSync/SupabaseSync+Models",
+      "tags": [
+        "supabase",
+        "naming",
+        "build"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T15:30:00Z"
+    },
+    {
+      "id": "bug-546",
+      "timestamp": "2026-10-14T15:30:00Z",
+      "error_message": "escaping autoclosure captures non-escaping parameter 'path'",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+      "root_cause": "os.Logger string interpolation is an escaping autoclosure; calling a non-escaping closure parameter inside it",
+      "fix": "Evaluate path(row) into a local before logger.error",
+      "tags": [
+        "swift",
+        "logger",
+        "closure",
+        "build"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T15:30:00Z"
+    },
+    {
+      "id": "bug-547",
+      "timestamp": "2026-10-14T15:30:00Z",
+      "error_message": "club_data_test.sql fails 6/31 (count mismatches e.g. have 92 want 1) on local supabase test db",
+      "file": "supabase/tests/club_data_test.sql",
+      "root_cause": "Local DB holds the CloudKit Dev copy (91 events, 63 members, 156 attendances); tests assert absolute counts",
+      "fix": "Not a code bug — counts = copied data + fixtures. Run on a reset DB (supabase db reset, then re-copy) to get 31/31",
+      "tags": [
+        "pgtap",
+        "supabase",
+        "test-env"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T15:30:00Z"
+    },
+    {
+      "id": "bug-548",
+      "timestamp": "2026-10-14T17:30:00Z",
+      "error_message": "User: event entry missing after switching the Debug build to Supabase staging",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "One-time migration cleared the CloudKit-era outbox (unsent writes) and only uploaded BudgetEntry/EventMembership; the first full pull then pruned every local row the server lacked, so device-only data (an event that never reached CloudKit Dev — SportEvent type absent there) was deleted",
+      "fix": "handOverFromCloudKitIfNeeded: on first full-access sync upload every local row missing on the server + re-send CloudKit-era outbox rows before pulling; handoverKeep protects images/receipts; schedule-only sync keeps local data until handover done; new defaults key SupabaseSync.cloudKitHandoverDone",
+      "tags": [
+        "supabase",
+        "migration",
+        "data-loss",
+        "sync",
+        "prune"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T17:30:00Z"
+    },
+    {
+      "id": "bug-549",
+      "timestamp": "2026-10-14T16:47:00.255Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Supabase/SupabaseAuthService.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T16:47:00.255Z"
+    },
+    {
+      "id": "bug-549",
+      "timestamp": "2026-10-14T19:00:00Z",
+      "error_message": "Password reset e-mail link: 'Der Link ist ungültig oder abgelaufen' (gmx.net)",
+      "file": "supabase/templates/*.html, BlindensportGraz/Supabase/SupabaseAuthService.swift",
+      "root_cause": "{{ .ConfirmationURL }} is a one-time web link: GMX's link scanner opens it first and consumes the token; also a reset requested outside the app (curl, no PKCE) can't be redeemed by the PKCE-configured app",
+      "fix": "Templates link to blindensportgraz://auth-callback?token_hash={{ .TokenHash }}&type=…; app redeems via auth.verifyOTP(tokenHash:type:) and opens the new-password sheet for type=recovery. Templates pushed to staging only via Management API PATCH config/auth (config push would need RESEND_SMTP_KEY)",
+      "tags": [
+        "supabase",
+        "auth",
+        "email",
+        "deeplink",
+        "gmx"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T19:00:00Z"
+    },
+    {
+      "id": "bug-550",
+      "timestamp": "2026-10-14T20:10:00Z",
+      "error_message": "User: 'admin have to confirm a member of gvsc' — admin/root account stuck on 'Freigabe ausstehend', no way to approve",
+      "file": "BlindensportGraz/Features/Account/UserApprovalControls.swift",
+      "root_cause": "Freigabe menu only rendered when needsElevatedAccess (role not admin/root), but the approval also links the account to its roster entry",
+      "fix": "Always render the actions menu; status shows 'Voller Zugriff' plus link state",
+      "tags": [
+        "approval",
+        "ui",
+        "roles"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T20:10:00Z"
+    },
+    {
+      "id": "bug-552",
+      "timestamp": "2026-10-14T19:46:33.332Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Shared/AuthContext.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T19:46:33.332Z"
+    },
+    {
+      "id": "bug-551",
+      "timestamp": "2026-10-14T21:50:00Z",
+      "error_message": "root user should have the possibility to delete or block/lock a user account (missing feature)",
+      "file": "supabase/migrations/20261014000002_account_admin.sql",
+      "root_cause": "Only self-deletion (delete-account Edge Function) existed; no admin-side block or delete",
+      "fix": "RPCs set_account_blocked/delete_account/blocked_accounts (roles.assign, not self); banned_until + session/refresh-token/device-token removal; has_permission/authorize/is_approved check is_blocked(); UserAccountAdminMenu in App-Konten; userBanned message; approver devices prune deleted accounts",
+      "tags": [
+        "supabase",
+        "auth",
+        "root",
+        "block",
+        "ban",
+        "delete-account"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T21:50:00Z"
+    },
+    {
+      "id": "bug-554",
+      "timestamp": "2026-10-14T20:00:46.726Z",
+      "error_message": "Wrong condition in logic",
+      "file": "supabase/functions/notify-schedule/index.ts",
+      "root_cause": "Condition was: if (recipients.size === 0)",
+      "fix": "Changed to: if (approved.length === 0)",
+      "tags": [
+        "auto-detected",
+        "logic-fix",
+        "ts"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T20:00:46.726Z"
+    },
+    {
+      "id": "bug-552",
+      "timestamp": "2026-10-14T22:40:00Z",
+      "error_message": "Code review: blocked account kept webcal feed + web admin session; blocked roots counted by last-root guard; no audit log; own-account RPCs open to blocked token; push to blocked; name-only dialogs; offline alert; local delete crash risk; cache kept after forced sign-out",
+      "file": "supabase/migrations/20261014000003_account_admin_hardening.sql",
+      "root_cause": "Initial block/delete (bug-551) only covered GoTrue + has_permission/authorize/is_approved; side channels (calendar token, web admin recheck, push, auth.uid()-only RPCs) ignored banned_until",
+      "fix": "Hardening migration (root targets refused, guard counts unblocked roots, account_admin_log, calendar token rotated, is_blocked in own-account RPCs + profile policy, unblocked_user_ids for push); SupabaseAdminClient.isBlocked in access(for:) and calendar feed; app dialog/offline/sync fixes; 26 pgTAP tests",
+      "tags": [
+        "supabase",
+        "auth",
+        "block",
+        "audit",
+        "calendar",
+        "web-admin",
+        "review"
+      ],
+      "related_bugs": [
+        "bug-551"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T22:40:00Z"
+    },
+    {
+      "id": "bug-553",
+      "timestamp": "2026-10-14T22:30:00Z",
+      "error_message": "pgTAP: cannot remove the last root account (fixture)",
+      "file": "supabase/tests/account_admin_hardening_test.sql",
+      "root_cause": "Deleted the seed root before inserting the test roots, so the guard saw it as the last root",
+      "fix": "Delete the seed root row only after inserting test roots",
+      "tags": [
+        "pgtap",
+        "fixture",
+        "last-root"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T22:30:00Z"
+    },
+    {
+      "id": "bug-554",
+      "timestamp": "2026-10-14T22:30:00Z",
+      "error_message": "after deletion app crashed (EXC_BREAKPOINT in SwiftData, User.role.getter <- UserApprovalControls.needsElevatedAccess)",
+      "file": "BlindensportGraz/Shared/AuthContext.swift",
+      "root_cause": "mirrorServerState pruned the deleted account with modelContext.delete while its App-Konten row (UserApprovalControls with `let user`) was still rendered; reading a property of a deleted+saved @Model asserts",
+      "fix": "Prune no longer deletes: it clears email/calendarToken/role so the row becomes a name-only directory entry, which UserListView already filters out; no cascade of local memberships/participations",
+      "tags": [
+        "swiftdata",
+        "crash",
+        "deleted-model",
+        "user-admin"
+      ],
+      "related_bugs": [
+        "bug-551",
+        "bug-552"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-10-14T22:30:00Z"
+    },
+    {
+      "id": "bug-558",
+      "timestamp": "2026-10-17T07:01:21.280Z",
+      "error_message": "Significant refactor of ",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberStore.java",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 7→10 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "java"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T07:01:21.280Z"
+    },
+    {
+      "id": "bug-559",
+      "timestamp": "2026-10-17T07:05:12.284Z",
+      "error_message": "Significant refactor of ",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 5→3 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "java"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T07:05:12.284Z"
+    },
+    {
+      "id": "bug-560",
+      "timestamp": "2026-10-17T07:05:12.397Z",
+      "error_message": "Wrong reference: VaadinSession should be VaadinRequest",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java",
+      "root_cause": "Used \"VaadinSession\" instead of \"VaadinRequest\"",
+      "fix": "Changed VaadinSession → VaadinRequest",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "java"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T07:05:12.397Z"
+    },
+    {
+      "id": "bug-561",
+      "timestamp": "2026-10-17T07:11:57+00:00",
+      "error_message": "no suitable method found for body(java.lang.String,com.github.tomakehurst.wiremock.matching.StringValuePattern)",
+      "file": "webadmin/src/test/java/it/a11y/blindensport/webadmin/api/ApiTest.java",
+      "root_cause": "Static imports of both WireMock.equalTo and Hamcrest Matchers.equalTo; Java picked WireMock's for RestAssured .body() assertions.",
+      "fix": "Dropped the WireMock equalTo static import; WireMock matchers go through a local wm(String) helper.",
+      "tags": [
+        "java",
+        "wiremock",
+        "rest-assured",
+        "hamcrest",
+        "webadmin",
+        "test-compile"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T07:11:57+00:00"
+    },
+    {
+      "id": "bug-562",
+      "timestamp": "2026-10-17T11:22:42+00:00",
+      "error_message": "Signed-out user stays on old URL; Playwright expected /login",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccessGuard.java",
+      "root_cause": "BeforeEnterEvent.rerouteTo renders the target but keeps the browser URL.",
+      "fix": "Use forwardTo for the sign-in and no-permission redirects.",
+      "tags": [
+        "vaadin",
+        "navigation",
+        "webadmin"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T11:22:42+00:00"
+    },
+    {
+      "id": "bug-563",
+      "timestamp": "2026-10-17T11:22:42+00:00",
+      "error_message": "Sign-out did not reach the login page with ?abgemeldet",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MainLayout.java",
+      "root_cause": "ui.navigate(\"login?abgemeldet\") treats the whole string as a route path.",
+      "fix": "ui.navigate(LoginView.class, QueryParameters.of(\"abgemeldet\",\"1\")).",
+      "tags": [
+        "vaadin",
+        "navigation",
+        "query-parameters",
+        "webadmin"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T11:22:42+00:00"
+    },
+    {
+      "id": "bug-564",
+      "timestamp": "2026-10-17T11:22:42+00:00",
+      "error_message": "IBAN checksum warning only appeared after leaving the field",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MemberDialog.java",
+      "root_cause": "Vaadin TextField default ValueChangeMode is ON_CHANGE (blur/Enter).",
+      "fix": "ValueChangeMode.LAZY on IBAN/SVNR.",
+      "tags": [
+        "vaadin",
+        "validation",
+        "webadmin"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T11:22:42+00:00"
+    },
+    {
+      "id": "bug-565",
+      "timestamp": "2026-10-17T11:22:42+00:00",
+      "error_message": "Local Supabase DB restart loop: could not write lock file postmaster.pid: No space left on device",
+      "file": "docker (Supabase local)",
+      "root_cause": "Docker Desktop VM disk is only 30 GB; pulling the ~4 GB Playwright image (plus maven/temurin) filled it.",
+      "fix": "Removed my Playwright images; DB recovered with data intact. Check `docker run --rm eclipse-temurin:21-jre df -h /` before big pulls.",
+      "tags": [
+        "docker",
+        "disk",
+        "supabase-local",
+        "playwright"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T11:22:42+00:00"
+    },
+    {
+      "id": "bug-566",
+      "timestamp": "2026-10-17T12:27:02+00:00",
+      "error_message": "Delete confirmation opened with focus on the destructive 'Löschen' button (Enter deletes)",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/GermanUi.java",
+      "root_cause": "vaadin-confirm-dialog focuses its confirm button on open; a server-side cancel.focus() runs before that and is overridden.",
+      "fix": "Own cancel button via setCancelButton and client-side `setTimeout(() => this.focus(), 150)` after open; verified with Playwright (activeElement = Abbrechen).",
+      "tags": [
+        "vaadin",
+        "accessibility",
+        "focus",
+        "confirm-dialog",
+        "webadmin"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T12:27:02+00:00"
     }
   ]
 }

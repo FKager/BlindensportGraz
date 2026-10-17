@@ -3,9 +3,8 @@ import CloudKitS2SCore
 
 /// File-loading half of `import-members`/`update-members` — the per-row
 /// decode shape and the actual create-or-replace/fill logic now live in
-/// `CloudKitS2SCore.MemberBulkImport`/`MemberFillUpdate`, shared with
-/// clubmembersapi's `POST /api/members/import` so the CLI and the REST
-/// endpoint can't drift apart on what counts as a valid row.
+/// `CloudKitS2SCore.MemberBulkImport`/`MemberFillUpdate`; webadmin's
+/// `POST /api/members/import` (Java) applies the same per-row rules.
 enum MemberImport {
     static func loadRecords(from path: String) throws -> [MemberBulkInput] {
         let data: Data

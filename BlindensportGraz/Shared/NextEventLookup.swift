@@ -14,12 +14,12 @@ import SwiftData
 enum NextEventLookup {
 
     /// A context on the SAME store the running app uses. Reuses
-    /// `CloudKitSync.shared.modelContainer` (set in `BlindensportGrazApp.init`,
+    /// `SupabaseSync.shared.modelContainer` (set in `BlindensportGrazApp.init`,
     /// which runs whenever the system spins the app up to service an intent)
     /// rather than opening a second `ModelContainer` on the same file; falls
     /// back to its own only if that handle isn't set.
     static func makeContext() -> ModelContext? {
-        if let container = CloudKitSync.shared.modelContainer {
+        if let container = SupabaseSync.shared.modelContainer {
             return ModelContext(container)
         }
         guard let container = try? ModelContainer(for: AppModelSchema.schema,

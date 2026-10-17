@@ -3,7 +3,7 @@ import Foundation
 import FoundationNetworking
 #endif
 
-/// Minimal Supabase client for trusted tooling (rootcli, clubmembersapi):
+/// Minimal Supabase client for trusted tooling (rootcli):
 /// GoTrue Admin API + PostgREST with the **service-role / secret key**,
 /// which bypasses RLS. The key comes only from the environment
 /// (`SUPABASE_URL`, `SUPABASE_SERVICE_KEY`) — never from a file in the repo,
@@ -74,33 +74,6 @@ public struct SupabaseAdminClient: Sendable {
                                                query: [("redirect_to", redirectTo)],
                                                json: ["email": email])
         try check(status, data, "password reset for \(email)")
-    }
-
-    /// Checks an email/password pair against Supabase Auth (password grant).
-    /// Returns the account on success, nil for wrong credentials or an
-    /// unconfirmed email. The session tokens GoTrue issues are discarded —
-    /// callers keep their own session (see clubmembersapi's AdminSession).
-    public func verifyPassword(email: String, password: String) async throws -> AuthUser? {
-        struct Grant: Decodable { let user: AuthUser }
-        let (data, status) = try await request("POST", "auth/v1/token", query: [("grant_type", "password")],
-                                               json: ["email": email, "password": password])
-        if status == 400 || status == 401 { return nil }
-        try check(status, data, "sign in")
-        return try JSONDecoder().decode(Grant.self, from: data).user
-    }
-
-    /// Role and permissions as the database grants them right now (tables,
-    /// not a JWT — so a role change takes effect on the next lookup). No
-    /// `user_roles` row means a pending account: role nil, no permissions.
-    public func access(for userID: UUID) async throws -> (role: String?, permissions: Set<String>) {
-        let id = userID.uuidString.lowercased()
-        guard let role = try await select(table: "user_roles", columns: "role",
-                                          filters: [("user_id", "eq.\(id)")]).first?["role"] as? String else {
-            return (nil, [])
-        }
-        let rows = try await select(table: "role_permissions", columns: "permission",
-                                    filters: [("role", "eq.\(role)")])
-        return (role, Set(rows.compactMap { $0["permission"] as? String }))
     }
 
     // MARK: - PostgREST

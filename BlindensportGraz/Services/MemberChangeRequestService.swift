@@ -11,7 +11,7 @@ enum MemberChangeRequestService {
     static func save(_ request: MemberChangeRequest, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "MemberChangeRequest",
                                         failureMessage: "Änderungsantrag konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushMemberChangeRequest(request)
+            SupabaseSync.shared.pushMemberChangeRequest(request)
         }
     }
 

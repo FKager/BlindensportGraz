@@ -7,7 +7,7 @@ enum BudgetEntryService {
     static func save(_ entry: BudgetEntry, modelContext: ModelContext) -> Bool {
         PersistenceService.saveAndPush(modelContext: modelContext, modelName: "BudgetEntry",
                                         failureMessage: "Budgeteintrag konnte nicht gespeichert werden.") {
-            CloudKitSync.shared.pushBudgetEntry(entry)
+            SupabaseSync.shared.pushBudgetEntry(entry)
         }
     }
 
@@ -17,7 +17,7 @@ enum BudgetEntryService {
         modelContext.delete(entry)
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "BudgetEntry",
                                                  failureMessage: "Budgeteintrag konnte nicht gelöscht werden.") {
-            CloudKitSync.shared.deleteBudgetEntry(id)
+            SupabaseSync.shared.deleteBudgetEntry(id)
         }
     }
 }
