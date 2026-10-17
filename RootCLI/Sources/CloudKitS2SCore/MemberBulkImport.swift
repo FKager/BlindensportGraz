@@ -1,7 +1,7 @@
 import Foundation
 
 /// Loose, per-row-tolerant input shape for bulk Member import — shared by
-/// `rootcli import-members` and clubmembersapi's `POST /api/members/import`,
+/// `rootcli import-members` and (ported to Java) webadmin's `POST /api/members/import`,
 /// so both accept exactly the same file/body shape (a JSON array, same as
 /// what the app's own export produces) and apply exactly the same per-row
 /// rules. Fields other than the required firstName/lastName are optional so a

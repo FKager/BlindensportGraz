@@ -3683,3 +3683,10 @@
 | 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/BudgetView.java | — | ~2561 |
 | 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/WelcomeView.java | — | ~876 |
 | 13:40 | webadmin Phase 4: club views (Termine, Teams+Mitglieder, Anwesenheit/PRAE, Favoriten, Budget, Willkommen); LiveSupabaseIT green; Playwright club 24/24 + members 16/16; 58 unit | webadmin/club, ui | done | ~60000 |
+
+## Session: 2026-10-17 14:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:24 | Created webadmin/README.md | — | ~2357 |
+| 14:27 | webadmin Phase 5: Dockerfile + compose/Caddy swap, README, removed Swift clubmembersapi/Public/Dockerfile/Vapor/CalendarFeed; confirm-dialog focus fix; image smoke OK; 58 unit + e2e 16/16 + 22/22; rootcli build + 15 swift tests OK | webadmin, RootCLI, compose | done | ~40000 |

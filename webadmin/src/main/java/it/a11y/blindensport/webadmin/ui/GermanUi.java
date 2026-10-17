@@ -80,12 +80,18 @@ public final class GermanUi {
         ConfirmDialog dialog = new ConfirmDialog();
         dialog.setHeader(header);
         dialog.setText(text);
+        // Vaadin focuses the confirm button by default — for a destructive
+        // action that means Enter deletes. Own cancel button, focused on open.
+        com.vaadin.flow.component.button.Button cancel =
+                new com.vaadin.flow.component.button.Button("Abbrechen", e -> dialog.close());
         dialog.setCancelable(true);
-        dialog.setCancelText("Abbrechen");
+        dialog.setCancelButton(cancel);
         dialog.setConfirmText(confirmLabel);
         dialog.setConfirmButtonTheme("error primary");
         dialog.addConfirmListener(e -> onConfirm.run());
         dialog.open();
+        // After the overlay's own focus handling has run (it focuses confirm).
+        cancel.getElement().executeJs("const b = this; setTimeout(() => b.focus(), 150);");
     }
 
     /** aria-label for icon-free buttons that repeat in every row ("Bearbeiten" → "Anna Muster bearbeiten"). */

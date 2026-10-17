@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T11:33:12.477Z
-> Files: 167 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T12:24:14.294Z
+> Files: 168 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -367,6 +367,7 @@
 ## webadmin/
 
 - `pom.xml` (~1264 tok)
+- `README.md` — Project documentation (~2209 tok)
 
 ## webadmin/src/main/java/it/a11y/blindensport/webadmin/accounts/
 

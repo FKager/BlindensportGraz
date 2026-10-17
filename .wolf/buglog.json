@@ -9512,6 +9512,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-17T11:22:42+00:00"
+    },
+    {
+      "id": "bug-566",
+      "timestamp": "2026-10-17T12:27:02+00:00",
+      "error_message": "Delete confirmation opened with focus on the destructive 'Löschen' button (Enter deletes)",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/GermanUi.java",
+      "root_cause": "vaadin-confirm-dialog focuses its confirm button on open; a server-side cancel.focus() runs before that and is overridden.",
+      "fix": "Own cancel button via setCancelButton and client-side `setTimeout(() => this.focus(), 150)` after open; verified with Playwright (activeElement = Abbrechen).",
+      "tags": [
+        "vaadin",
+        "accessibility",
+        "focus",
+        "confirm-dialog",
+        "webadmin"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T12:27:02+00:00"
     }
   ]
 }
