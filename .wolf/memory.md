@@ -3704,3 +3704,21 @@
 | 14:56 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
 | 14:59 | Created webadmin/compose.traefik.yml | — | ~562 |
 | 15:06 | webadmin deployed to nuc (Coolify Traefik file route, staging Supabase) at https://a11y.it, LE cert OK | webadmin/compose.traefik.yml, traefik-dynamic.yml | done | ~15000 |
+| 15:07 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:08 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:11 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:13 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:16 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:20 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:27 | DNS bs.a11y.it A → 212.95.27.58 via GoDaddy API (PAT created in Safari); Traefik route on nuc moved a11y.it → bs.a11y.it, LE cert OK | GoDaddy, nuc | done | ~12000 |
+| 15:27 | Session end: 3 writes across 3 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml) | 0 reads | ~3611 tok |
+| 15:35 | Created ../../.claude/plans/melodic-cuddling-magpie.md | — | ~2177 |
+| 15:37 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:40 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:45 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:49 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:49 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:52 | Session end: 4 writes across 4 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md) | 0 reads | ~5943 tok |
+| 15:54 | Created supabase/scripts/cutover.sh | — | ~2103 |
+| 16:02 | Cutover step 1+2: APNs key JD22K7SHQY (~/.config/apns), staging push secrets + Vault set via supabase/scripts/cutover.sh, test push sent:1; PR #13 merged into supabase-club-data; device deploy run 39038853055 OK (staging build) | cutover.sh, notify-schedule | waiting for user checklist | ~30000 |
+| 16:02 | Session end: 5 writes across 5 files (README.md, project_webadmin-quarkus-vaadin.md, compose.traefik.yml, melodic-cuddling-magpie.md, cutover.sh) | 0 reads | ~8196 tok |
