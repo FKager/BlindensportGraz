@@ -9379,6 +9379,73 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-10-14T22:30:00Z"
+    },
+    {
+      "id": "bug-558",
+      "timestamp": "2026-10-17T07:01:21.280Z",
+      "error_message": "Significant refactor of ",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberStore.java",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 7→10 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "java"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T07:01:21.280Z"
+    },
+    {
+      "id": "bug-559",
+      "timestamp": "2026-10-17T07:05:12.284Z",
+      "error_message": "Significant refactor of ",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java",
+      "root_cause": "5 lines replaced/restructured",
+      "fix": "Rewrote 5→3 lines (5 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "java"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T07:05:12.284Z"
+    },
+    {
+      "id": "bug-560",
+      "timestamp": "2026-10-17T07:05:12.397Z",
+      "error_message": "Wrong reference: VaadinSession should be VaadinRequest",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java",
+      "root_cause": "Used \"VaadinSession\" instead of \"VaadinRequest\"",
+      "fix": "Changed VaadinSession → VaadinRequest",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "java"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T07:05:12.397Z"
+    },
+    {
+      "id": "bug-561",
+      "timestamp": "2026-10-17T07:11:57+00:00",
+      "error_message": "no suitable method found for body(java.lang.String,com.github.tomakehurst.wiremock.matching.StringValuePattern)",
+      "file": "webadmin/src/test/java/it/a11y/blindensport/webadmin/api/ApiTest.java",
+      "root_cause": "Static imports of both WireMock.equalTo and Hamcrest Matchers.equalTo; Java picked WireMock's for RestAssured .body() assertions.",
+      "fix": "Dropped the WireMock equalTo static import; WireMock matchers go through a local wm(String) helper.",
+      "tags": [
+        "java",
+        "wiremock",
+        "rest-assured",
+        "hamcrest",
+        "webadmin",
+        "test-compile"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T07:11:57+00:00"
     }
   ]
 }

@@ -1,0 +1,11 @@
+/* App-wide styles on top of Lumo. Keep focus outlines visible: many admins
+   navigate by keyboard / VoiceOver. */
+:focus-visible {
+  outline: 2px solid var(--lumo-primary-color);
+  outline-offset: 2px;
+}
+
+.view-content {
+  padding: var(--lumo-space-m);
+  max-width: 80rem;
+}
