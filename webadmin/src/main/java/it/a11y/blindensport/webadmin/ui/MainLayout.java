@@ -29,7 +29,9 @@ public class MainLayout extends AppLayout implements RouterLayout, AfterNavigati
     }
 
     static final List<NavEntry> ENTRIES = List.of(
-            new NavEntry("Übersicht", StartView.class));
+            new NavEntry("Übersicht", StartView.class),
+            new NavEntry("Mitglieder", MembersView.class),
+            new NavEntry("Änderungsanträge", ChangeRequestsView.class));
 
     private final AdminSessions sessions;
     private final SideNav nav = new SideNav();
@@ -44,7 +46,7 @@ public class MainLayout extends AppLayout implements RouterLayout, AfterNavigati
         title.getStyle().set("font-weight", "600");
         Button signOut = new Button("Abmelden", e -> {
             UiSession.signOut(sessions);
-            getUI().ifPresent(ui -> ui.navigate("login?abgemeldet"));
+            getUI().ifPresent(ui -> ui.navigate(LoginView.class, com.vaadin.flow.router.QueryParameters.of("abgemeldet", "1")));
         });
         signOut.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 

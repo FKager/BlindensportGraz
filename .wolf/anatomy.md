@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T07:09:47.430Z
-> Files: 143 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T11:22:10.142Z
+> Files: 153 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -394,6 +394,7 @@
 
 ## webadmin/src/main/java/it/a11y/blindensport/webadmin/members/
 
+- `ChangeRequestStore.java` — Members' proposed changes to their own roster entry (~1682 tok)
 - `Dates.java` — Date conventions shared with the Swift tooling and the app. (~827 tok)
 - `MemberBulkImport.java` — Bulk create-or-update of roster entries — same per-row rules as RootCLI's (~1010 tok)
 - `MemberBulkInput.java` — Loose, per-row-tolerant import row — the same JSON shape as the app's (~424 tok)
@@ -401,6 +402,7 @@
 - `MemberPrivate.java` — The protected part of a roster entry — SVNR, IBAN, birth date, last (~513 tok)
 - `MemberRecord.java` — One roster entry as the API and the UI see it — the same shape as (~984 tok)
 - `MemberStore.java` — The club roster in Supabase, read and written as the signed-in admin (RLS: (~1674 tok)
+- `Validation.java` — Soft checks as in the app's {@code Validation.swift}: they warn, never (~374 tok)
 
 ## webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/
 
@@ -415,10 +417,15 @@
 ## webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/
 
 - `AccessGuard.java` — Every navigation: no valid session → sign-in page; a view marked (~490 tok)
+- `AdminView.java` — Base of the signed-in pages: a page heading (h1 — VoiceOver users jump (~675 tok)
 - `Announcer.java` — Status messages. Vaadin notifications live in an ARIA live region, so (~452 tok)
 - `AppShell.java` — Class: AppShell (~110 tok)
+- `ChangeRequestsView.java` — Review members' proposed changes to their own entry (Annehmen / Ablehnen), like the app's Änderungsa (~2387 tok)
+- `GermanUi.java` — German texts and formats for Vaadin's built-in components (their defaults are English). (~1197 tok)
 - `LoginView.java` — Sign-in with the own Blindensport Graz account (same as in the app). Own (~1018 tok)
 - `MainLayout.java` — Frame of every signed-in page: title, who is signed in, sign-out, and (~864 tok)
+- `MemberDialog.java` — Create / edit one roster entry, laid out like the app's MemberDetailView. (~2864 tok)
+- `MembersView.java` — The club roster: search, create, edit, delete, JSON import and export. (~2945 tok)
 - `RequiresPermission.java` — A view only admins holding at least one of these permissions may open (checked by {@link AccessGuard (~118 tok)
 - `SessionCookieSetup.java` — Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless (~246 tok)
 - `StartView.java` — Start page: the areas this admin may open, as a plain link list. (~418 tok)
@@ -443,5 +450,11 @@
 
 ## webadmin/src/test/java/it/a11y/blindensport/webadmin/members/
 
+- `ChangeRequestStoreTest.java` — Approve / reject of member change requests against a mocked PostgREST. (~1501 tok)
 - `MemberInputTest.java` — PUT semantics of the members API, as the Swift server had them. (~890 tok)
 - `MemberMappingTest.java` — Ports of RootCLI's MemberStoreTests / MemberPrivateTests (row mapping, no network). (~1474 tok)
+- `ValidationTest.java` — Class: ValidationTest (~251 tok)
+
+## webadmin/src/test/java/it/a11y/blindensport/webadmin/ui/
+
+- `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)

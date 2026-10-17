@@ -9446,6 +9446,72 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-17T07:11:57+00:00"
+    },
+    {
+      "id": "bug-562",
+      "timestamp": "2026-10-17T11:22:42+00:00",
+      "error_message": "Signed-out user stays on old URL; Playwright expected /login",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccessGuard.java",
+      "root_cause": "BeforeEnterEvent.rerouteTo renders the target but keeps the browser URL.",
+      "fix": "Use forwardTo for the sign-in and no-permission redirects.",
+      "tags": [
+        "vaadin",
+        "navigation",
+        "webadmin"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T11:22:42+00:00"
+    },
+    {
+      "id": "bug-563",
+      "timestamp": "2026-10-17T11:22:42+00:00",
+      "error_message": "Sign-out did not reach the login page with ?abgemeldet",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MainLayout.java",
+      "root_cause": "ui.navigate(\"login?abgemeldet\") treats the whole string as a route path.",
+      "fix": "ui.navigate(LoginView.class, QueryParameters.of(\"abgemeldet\",\"1\")).",
+      "tags": [
+        "vaadin",
+        "navigation",
+        "query-parameters",
+        "webadmin"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T11:22:42+00:00"
+    },
+    {
+      "id": "bug-564",
+      "timestamp": "2026-10-17T11:22:42+00:00",
+      "error_message": "IBAN checksum warning only appeared after leaving the field",
+      "file": "webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MemberDialog.java",
+      "root_cause": "Vaadin TextField default ValueChangeMode is ON_CHANGE (blur/Enter).",
+      "fix": "ValueChangeMode.LAZY on IBAN/SVNR.",
+      "tags": [
+        "vaadin",
+        "validation",
+        "webadmin"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T11:22:42+00:00"
+    },
+    {
+      "id": "bug-565",
+      "timestamp": "2026-10-17T11:22:42+00:00",
+      "error_message": "Local Supabase DB restart loop: could not write lock file postmaster.pid: No space left on device",
+      "file": "docker (Supabase local)",
+      "root_cause": "Docker Desktop VM disk is only 30 GB; pulling the ~4 GB Playwright image (plus maven/temurin) filled it.",
+      "fix": "Removed my Playwright images; DB recovered with data intact. Check `docker run --rm eclipse-temurin:21-jre df -h /` before big pulls.",
+      "tags": [
+        "docker",
+        "disk",
+        "supabase-local",
+        "playwright"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-17T11:22:42+00:00"
     }
   ]
 }

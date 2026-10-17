@@ -3651,3 +3651,19 @@
 | 09:09 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/api/SupabaseMock.java | — | ~213 |
 | 09:09 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/api/ApiTest.java | — | ~4269 |
 | 09:11 | webadmin Phase 1: Quarkus/Vaadin skeleton, Supabase user-JWT client, auth/sessions, REST parity, calendar feed; 41/41 tests, local Supabase smoke OK | webadmin/ | done | ~60000 |
+| 09:13 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/Validation.java | — | ~374 |
+| 09:13 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/GermanUi.java | — | ~1197 |
+| 09:14 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MemberDialog.java | — | ~2864 |
+| 09:15 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AdminView.java | — | ~675 |
+| 09:15 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MembersView.java | — | ~2945 |
+| 09:16 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/ChangeRequestStore.java | — | ~1682 |
+| 09:16 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/ChangeRequestsView.java | — | ~2387 |
+| 09:16 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/ValidationTest.java | — | ~251 |
+| 09:16 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/ui/ChangeRequestDiffTest.java | — | ~476 |
+
+## Session: 2026-10-17 13:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:22 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/ChangeRequestStoreTest.java | — | ~1501 |
+| 13:22 | webadmin Phase 2: MembersView (CRUD, protected fields, JSON import/export), ChangeRequestsView; Playwright e2e 16/16, unit 49/49; Docker disk full incident fixed | webadmin/ui, members | done | ~40000 |

@@ -39,13 +39,13 @@ public class AccessGuard {
         }
         Optional<AdminSession> session = UiSession.current(sessions);
         if (session.isEmpty()) {
-            event.rerouteTo(LoginView.class);
+            event.forwardTo(LoginView.class);
             return;
         }
         RequiresPermission required = target.getAnnotation(RequiresPermission.class);
         if (required != null && Arrays.stream(required.value()).noneMatch(session.get()::can)) {
             Announcer.error("Keine Berechtigung für diese Seite.");
-            event.rerouteTo(StartView.class);
+            event.forwardTo(StartView.class);
         }
     }
 }

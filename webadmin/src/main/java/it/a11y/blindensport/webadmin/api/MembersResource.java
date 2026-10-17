@@ -6,10 +6,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.a11y.blindensport.webadmin.auth.AdminSession;
 import it.a11y.blindensport.webadmin.auth.Permission;
-import it.a11y.blindensport.webadmin.members.Dates;
 import it.a11y.blindensport.webadmin.members.MemberBulkImport;
 import it.a11y.blindensport.webadmin.members.MemberBulkInput;
 import it.a11y.blindensport.webadmin.members.MemberInput;
+import it.a11y.blindensport.webadmin.members.MemberJson;
 import it.a11y.blindensport.webadmin.members.MemberPrivate;
 import it.a11y.blindensport.webadmin.members.MemberRecord;
 import it.a11y.blindensport.webadmin.members.MemberStore;
@@ -53,7 +53,7 @@ public class MembersResource {
     public List<Map<String, Object>> all(@Context ContainerRequestContext request) {
         AdminSession admin = CurrentAdmin.require(request, Permission.MEMBERS_MANAGE);
         return new MemberStore(admin.db()).all(admin.can(Permission.MEMBERS_PRIVATE_READ)).stream()
-                .map(MembersResource::toJson).toList();
+                .map(MemberJson::toMap).toList();
     }
 
     @GET
@@ -61,7 +61,7 @@ public class MembersResource {
     public Map<String, Object> get(@PathParam("id") String id, @Context ContainerRequestContext request) {
         AdminSession admin = CurrentAdmin.require(request, Permission.MEMBERS_MANAGE);
         return new MemberStore(admin.db()).get(id, admin.can(Permission.MEMBERS_PRIVATE_READ))
-                .map(MembersResource::toJson)
+                .map(MemberJson::toMap)
                 .orElseThrow(() -> ApiException.notFound(id));
     }
 
@@ -76,7 +76,7 @@ public class MembersResource {
         }
         MemberRecord record = input.toNewRecord(UUID.randomUUID().toString().toUpperCase());
         new MemberStore(admin.db()).save(record, !record.privateData().isEmpty(), admin.userId());
-        return Response.status(201).entity(toJson(record)).build();
+        return Response.status(201).entity(MemberJson.toMap(record)).build();
     }
 
     @PUT
@@ -110,7 +110,7 @@ public class MembersResource {
         } else if (!touchesPrivate) {
             record = record.withPrivateData(store.getPrivate(id).orElse(MemberPrivate.EMPTY));
         }
-        return toJson(record);
+        return MemberJson.toMap(record);
     }
 
     @DELETE
@@ -154,37 +154,6 @@ public class MembersResource {
         response.put("total", result.total());
         response.put("messages", result.messages());
         return response;
-    }
-
-    /** The JSON shape of {@code ClubMemberRecord}: dates ISO 8601, nil dates omitted. */
-    public static Map<String, Object> toJson(MemberRecord r) {
-        Map<String, Object> m = new LinkedHashMap<>();
-        m.put("id", r.id());
-        m.put("firstName", r.firstName());
-        m.put("lastName", r.lastName());
-        m.put("street", r.street());
-        m.put("zip", r.zip());
-        m.put("city", r.city());
-        m.put("country", r.country());
-        m.put("email", r.email());
-        m.put("phone", r.phone());
-        m.put("memberNumber", r.memberNumber());
-        m.put("joinedAt", Dates.formatApi(r.joinedAt()));
-        m.put("notes", r.notes());
-        m.put("gender", r.gender());
-        m.put("title", r.title());
-        if (r.privateData().birthDate() != null) {
-            m.put("birthDate", Dates.formatApi(r.privateData().birthDate()));
-        }
-        m.put("sportId", r.sportId());
-        m.put("svnr", r.privateData().svnr());
-        m.put("iban", r.privateData().iban());
-        if (r.privateData().lastMedicalExamination() != null) {
-            m.put("lastMedicalExamination", Dates.formatApi(r.privateData().lastMedicalExamination()));
-        }
-        m.put("defaultFunction", r.defaultFunction());
-        m.put("memberOfGVSC", r.memberOfGVSC());
-        return m;
     }
 
     private static void requirePermission(AdminSession admin, String permission) {
