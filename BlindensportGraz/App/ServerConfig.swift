@@ -9,6 +9,12 @@ import Foundation
 /// ready to use the moment a real host is set here and the app rebuilt.
 enum ServerConfig {
     /// Bare host, e.g. `"cal.blindensportgraz.at"` — no scheme, no path, no
-    /// trailing slash.
+    /// trailing slash. Release builds (prod Supabase) use the web admin on
+    /// nuc; Debug builds talk to staging, whose calendar tokens that server
+    /// doesn't know, so they keep the placeholder.
+    #if DEBUG
     static let clubMembersAPIHost: String? = nil
+    #else
+    static let clubMembersAPIHost: String? = "bs.a11y.it"
+    #endif
 }
