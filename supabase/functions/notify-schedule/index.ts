@@ -63,6 +63,13 @@ function alertFor(p: Payload) {
   };
 }
 
+/** Logs the database error (function logs) and returns it to the caller —
+ * the trigger's pg_net call stores the response in net._http_response. */
+function failed(code: string, step: string, error: { message?: string; code?: string }) {
+  console.error(`${code} at ${step}: ${error.code ?? ""} ${error.message ?? ""}`);
+  return json(500, { error: code, step, detail: error.message ?? "" });
+}
+
 Deno.serve(async (req) => {
   if (req.method !== "POST") return json(405, { error: "method not allowed" });
   const secret = Deno.env.get("NOTIFY_SCHEDULE_SECRET");
@@ -79,7 +86,7 @@ Deno.serve(async (req) => {
 
   const { data: memberships, error: mError } = await admin
     .from("team_memberships").select("user_id").in("team_id", p.team_ids).not("user_id", "is", null);
-  if (mError) return json(500, { error: "recipients_failed" });
+  if (mError) return failed("recipients_failed", "team_memberships", mError);
   const candidates = [...new Set(memberships.map((m) => m.user_id as string))]
     .filter((id) => id !== p.actor);
   if (candidates.length === 0) return json(200, { sent: 0 });
@@ -93,13 +100,13 @@ Deno.serve(async (req) => {
   if (approved.length === 0) return json(200, { sent: 0 });
   // Blocked accounts (root → "Sperren") get nothing.
   const { data: unblocked, error: bError } = await admin.rpc("unblocked_user_ids", { ids: approved });
-  if (bError) return json(500, { error: "recipients_failed" });
+  if (bError) return failed("recipients_failed", "unblocked_user_ids", bError);
   const recipients = new Set((unblocked ?? []) as string[]);
   if (recipients.size === 0) return json(200, { sent: 0 });
 
   const { data: tokens, error: tError } = await admin
     .from("device_tokens").select("token, apns_env").in("user_id", [...recipients]);
-  if (tError) return json(500, { error: "tokens_failed" });
+  if (tError) return failed("tokens_failed", "device_tokens", tError);
   if (tokens.length === 0) return json(200, { sent: 0 });
 
   const jwt = await providerToken();
