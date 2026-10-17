@@ -3690,3 +3690,17 @@
 |------|--------|---------|---------|--------|
 | 14:24 | Created webadmin/README.md | — | ~2357 |
 | 14:27 | webadmin Phase 5: Dockerfile + compose/Caddy swap, README, removed Swift clubmembersapi/Public/Dockerfile/Vapor/CalendarFeed; confirm-dialog focus fix; image smoke OK; 58 unit + e2e 16/16 + 22/22; rootcli build + 15 swift tests OK | webadmin, RootCLI, compose | done | ~40000 |
+| 14:27 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_webadmin-quarkus-vaadin.md | — | ~490 |
+| 14:28 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:30 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:31 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:35 | webadmin staging rehearsal: container on 127.0.0.1:8083 against staging Supabase (xlllxpmkxmcolukmcmoi); endpoint checks OK; staging migrations already current | scratchpad/staging-webadmin.sh | running | ~6000 |
+| 14:35 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:39 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:45 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:53 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:54 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:55 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:56 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:59 | Created webadmin/compose.traefik.yml | — | ~562 |
+| 15:06 | webadmin deployed to nuc (Coolify Traefik file route, staging Supabase) at https://a11y.it, LE cert OK | webadmin/compose.traefik.yml, traefik-dynamic.yml | done | ~15000 |

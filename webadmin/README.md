@@ -123,6 +123,14 @@ reach the container. **If you run the image behind your own proxy, never
 publish 8080 on a public interface.** Bind it to `127.0.0.1` or an internal
 network.
 
+**Behind an existing Traefik** (e.g. Coolify on nuc): `webadmin/compose.traefik.yml`
+runs only the app on the proxy network (alias `blindensport-webadmin`, no
+ports), and `webadmin/traefik-dynamic.yml` is a file-provider route to copy
+into Traefik's dynamic directory (`docker exec -i coolify-proxy sh -c 'cat >
+/traefik/dynamic/blindensport-webadmin.yml'`). It uses a file route rather
+than Docker labels because Coolify's Traefik v3.1 can't talk to Docker 29
+(API 1.24 vs. minimum 1.40).
+
 The image (`webadmin/Dockerfile`, build context `webadmin/`) is a multi-stage
 Maven build with a JRE 21 runtime and a non-root user. Vaadin runs in
 production mode from its prebuilt bundle, so no Node.js is needed.

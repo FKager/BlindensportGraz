@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T12:24:14.294Z
-> Files: 168 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T12:59:26.034Z
+> Files: 170 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -48,6 +48,7 @@
 - `MEMORY.md` — Memory (~364 tok)
 - `project_cloudkit-to-supabase-club-data.md` — Declares in (~845 tok)
 - `project_supabase-auth-migration.md` (~488 tok)
+- `project_webadmin-quarkus-vaadin.md` — Declares to (~488 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -366,6 +367,7 @@
 
 ## webadmin/
 
+- `compose.traefik.yml` — webadmin behind an EXISTING Traefik (e.g. Coolify's coolify-proxy on nuc), (~562 tok)
 - `pom.xml` (~1264 tok)
 - `README.md` — Project documentation (~2209 tok)
 

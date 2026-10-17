@@ -7,8 +7,11 @@ import org.eclipse.microprofile.config.ConfigProvider;
 
 /**
  * Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless
- * SESSION_COOKIE_SECURE=false (local plain-http testing). SameSite=Strict
- * comes from quarkus.http.same-site-cookie in application.properties.
+ * SESSION_COOKIE_SECURE=false (local plain-http testing). SameSite is NOT
+ * applied — Quarkus' Undertow ignores both this attribute and
+ * quarkus.http.same-site-cookie for JSESSIONID (checked on nuc 2026-10-17).
+ * Vaadin's own per-UI CSRF token protects UI requests; the REST API's
+ * bsg_admin_session cookie is SameSite=Strict.
  */
 @WebListener
 public class SessionCookieSetup implements ServletContextListener {
