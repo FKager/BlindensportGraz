@@ -1,19 +1,18 @@
-# Runs clubmembersapi (Vapor REST API + static admin webui) behind a bundled
-# Caddy reverse proxy that terminates TLS — this is what makes it safe to
-# expose to the internet (see RootCLI/README.md "Deployment / TLS": the app
+# Runs webadmin (Quarkus + Vaadin web admin, REST API, calendar feed) behind
+# a bundled Caddy reverse proxy that terminates TLS — this is what makes it safe to
+# expose to the internet (see webadmin/README.md "Deployment": the app
 # itself speaks plain HTTP only, and must never be reachable directly).
 # Works with both `docker compose up` and `podman-compose up`.
 #
 # Network layout:
-#   internet --443/80--> caddy (published to 0.0.0.0) --8080--> clubmembersapi
-#                                                                 (internal
-#                                                                  network
-#                                                                  only, no
-#                                                                  host port
-#                                                                  published)
+#   internet --443/80--> caddy (published to 0.0.0.0) --8080--> webadmin
+#                                                           (internal network
+#                                                            only, no host
+#                                                            port published)
 #
 # Usage:
-#   1. cp .env.example .env   # fill in real SUPABASE_URL/SUPABASE_SERVICE_KEY;
+#   1. cp .env.example .env   # fill in SUPABASE_URL, SUPABASE_ANON_KEY and
+#      SUPABASE_SERVICE_KEY;
 #      DOMAIN/ACME_EMAIL already default to a11y.it/dev@a11y.it
 #   2. Point DOMAIN's DNS A/AAAA record at this host, and make sure ports
 #      80+443 reach it (Caddy needs 80 for the ACME HTTP-01 challenge, not
@@ -22,11 +21,10 @@
 #      podman-compose up -d --build
 
 services:
-  clubmembersapi:
+  webadmin:
     build:
-      context: .
-      dockerfile: RootCLI/Dockerfile
-    image: clubmembersapi:latest
+      context: webadmin
+    image: webadmin:latest
     restart: unless-stopped
     env_file:
       - .env
@@ -71,7 +69,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - clubmembersapi
+      - webadmin
     networks:
       - internal
 

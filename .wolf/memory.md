@@ -3593,3 +3593,114 @@
 | 22:23 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
 | 22:25 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
 | 22:50 | User confirmed on device: block/unblock/delete + log all work on staging (after bug-554 fix) | - | verified | ~1k |
+| 22:28 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
+| 22:28 | Session end: 11 writes across 8 files (20261014000002_account_admin.sql, account_admin_test.sql, SupabaseAccountAdminService.swift, UserAccountAdminMenu.swift, AuthContext.swift) | 1 reads | ~11970 tok |
+
+## Session: 2026-10-17 08:46
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 08:54 | Created ../../.claude/plans/melodic-cuddling-magpie.md | — | ~2598 |
+| 08:57 | Created webadmin/pom.xml | — | ~1264 |
+| 08:58 | Created webadmin/src/main/resources/application.properties | — | ~401 |
+| 08:58 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/SupabaseConfig.java | — | ~159 |
+| 08:58 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/SupabaseException.java | — | ~465 |
+| 08:58 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/DbErrorMessages.java | — | ~600 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/SupabaseHttp.java | — | ~1214 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/Postgrest.java | — | ~1072 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/GoTrue.java | — | ~791 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/Supabase.java | — | ~427 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/Permission.java | — | ~354 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/Access.java | — | ~439 |
+| 08:59 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/SessionExpiredException.java | — | ~85 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/AdminSession.java | — | ~942 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/LoginAttemptLimiter.java | — | ~567 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/SignInException.java | — | ~106 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/AdminSessions.java | — | ~1525 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/Dates.java | — | ~827 |
+| 09:00 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberPrivate.java | — | ~513 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberRecord.java | — | ~984 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberStore.java | — | ~1613 |
+| 09:01 | Edited webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberStore.java | added 1 condition(s) | ~132 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberBulkInput.java | — | ~424 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberBulkImport.java | — | ~1010 |
+| 09:01 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/MemberInput.java | — | ~1049 |
+| 09:02 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/calendar/CalendarFeed.java | — | ~712 |
+| 09:02 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/calendar/CalendarFeedResource.java | — | ~1207 |
+| 09:02 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/ApiException.java | — | ~184 |
+| 09:02 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/ApiExceptionMappers.java | — | ~603 |
+| 09:03 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/ApiAuthFilter.java | — | ~563 |
+| 09:03 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/SessionResource.java | — | ~948 |
+| 09:03 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/CurrentAdmin.java | — | ~226 |
+| 09:03 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/api/MembersResource.java | — | ~2435 |
+| 09:04 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java | — | ~469 |
+| 09:05 | Edited webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java | 5→3 lines | ~61 |
+| 09:05 | Edited webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/UiSession.java | added 2 import(s) | ~36 |
+| 09:05 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/RequiresPermission.java | — | ~118 |
+| 09:05 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccessGuard.java | — | ~490 |
+| 09:05 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/Announcer.java | — | ~452 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/LoginView.java | — | ~1018 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MainLayout.java | — | ~864 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/StartView.java | — | ~418 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AppShell.java | — | ~110 |
+| 09:06 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/SessionCookieSetup.java | — | ~246 |
+| 09:08 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/calendar/CalendarFeedTest.java | — | ~1022 |
+| 09:08 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/MemberMappingTest.java | — | ~1474 |
+| 09:08 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/MemberInputTest.java | — | ~890 |
+| 09:08 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/auth/LoginAttemptLimiterTest.java | — | ~618 |
+| 09:09 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/api/SupabaseMock.java | — | ~213 |
+| 09:09 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/api/ApiTest.java | — | ~4269 |
+| 09:11 | webadmin Phase 1: Quarkus/Vaadin skeleton, Supabase user-JWT client, auth/sessions, REST parity, calendar feed; 41/41 tests, local Supabase smoke OK | webadmin/ | done | ~60000 |
+| 09:13 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/Validation.java | — | ~374 |
+| 09:13 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/GermanUi.java | — | ~1197 |
+| 09:14 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MemberDialog.java | — | ~2864 |
+| 09:15 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AdminView.java | — | ~675 |
+| 09:15 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/MembersView.java | — | ~2945 |
+| 09:16 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/members/ChangeRequestStore.java | — | ~1682 |
+| 09:16 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/ChangeRequestsView.java | — | ~2387 |
+| 09:16 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/ValidationTest.java | — | ~251 |
+| 09:16 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/ui/ChangeRequestDiffTest.java | — | ~476 |
+
+## Session: 2026-10-17 13:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:22 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/ChangeRequestStoreTest.java | — | ~1501 |
+| 13:22 | webadmin Phase 2: MembersView (CRUD, protected fields, JSON import/export), ChangeRequestsView; Playwright e2e 16/16, unit 49/49; Docker disk full incident fixed | webadmin/ui, members | done | ~40000 |
+| 13:23 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/accounts/AccountService.java | — | ~2290 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccountsView.java | — | ~1987 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccountDialog.java | — | ~2575 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/RoleLogView.java | — | ~904 |
+| 13:26 | webadmin Phase 3: AccountsView/AccountDialog (approve, activation code, role, block, delete) + RoleLogView; RPCs verified live on local Supabase; 53/53 tests | webadmin/accounts, ui | done | ~25000 |
+| 13:28 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/club/ClubModels.java | — | ~1042 |
+| 13:28 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/club/ClubStore.java | — | ~3226 |
+| 13:30 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/ClubFields.java | — | ~749 |
+| 13:30 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/TeamsView.java | — | ~3030 |
+| 13:31 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/EventDialog.java | — | ~2741 |
+| 13:31 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AttendanceDialog.java | — | ~1659 |
+| 13:32 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/EventsView.java | — | ~2640 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/FavoritesView.java | — | ~2241 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/BudgetView.java | — | ~2561 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/WelcomeView.java | — | ~876 |
+| 13:40 | webadmin Phase 4: club views (Termine, Teams+Mitglieder, Anwesenheit/PRAE, Favoriten, Budget, Willkommen); LiveSupabaseIT green; Playwright club 24/24 + members 16/16; 58 unit | webadmin/club, ui | done | ~60000 |
+
+## Session: 2026-10-17 14:23
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:24 | Created webadmin/README.md | — | ~2357 |
+| 14:27 | webadmin Phase 5: Dockerfile + compose/Caddy swap, README, removed Swift clubmembersapi/Public/Dockerfile/Vapor/CalendarFeed; confirm-dialog focus fix; image smoke OK; 58 unit + e2e 16/16 + 22/22; rootcli build + 15 swift tests OK | webadmin, RootCLI, compose | done | ~40000 |
+| 14:27 | Created ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/project_webadmin-quarkus-vaadin.md | — | ~490 |
+| 14:28 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:30 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:31 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:35 | webadmin staging rehearsal: container on 127.0.0.1:8083 against staging Supabase (xlllxpmkxmcolukmcmoi); endpoint checks OK; staging migrations already current | scratchpad/staging-webadmin.sh | running | ~6000 |
+| 14:35 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:39 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:45 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:53 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:54 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:55 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:56 | Session end: 2 writes across 2 files (README.md, project_webadmin-quarkus-vaadin.md) | 0 reads | ~3049 tok |
+| 14:59 | Created webadmin/compose.traefik.yml | — | ~562 |
+| 15:06 | webadmin deployed to nuc (Coolify Traefik file route, staging Supabase) at https://a11y.it, LE cert OK | webadmin/compose.traefik.yml, traefik-dynamic.yml | done | ~15000 |

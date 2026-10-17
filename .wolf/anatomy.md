@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-14T20:22:23.620Z
-> Files: 96 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T12:59:26.034Z
+> Files: 170 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -39,6 +39,7 @@
 
 ## ../../.claude/plans/
 
+- `melodic-cuddling-magpie.md` — Web admin → Java Quarkus + Vaadin (~2435 tok)
 - `prancy-fluttering-quill.md` — Plan: Move the remaining club data from CloudKit to Supabase (~3127 tok)
 - `woolly-toasting-lobster.md` — Plan: Roll out the Supabase auth & role migration (~2226 tok)
 
@@ -47,6 +48,7 @@
 - `MEMORY.md` — Memory (~364 tok)
 - `project_cloudkit-to-supabase-club-data.md` — Declares in (~845 tok)
 - `project_supabase-auth-migration.md` (~488 tok)
+- `project_webadmin-quarkus-vaadin.md` — Declares to (~488 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
@@ -362,3 +364,120 @@
 - `supabase/migrations/20261014000003_account_admin_hardening.sql` — account_admin_log, root targets refused, last-root guard counts unblocked roots, calendar token rotation, is_blocked in own-account RPCs, unblocked_user_ids (~2500 tok)
 - `supabase/tests/account_admin_hardening_test.sql` — pgTAP 26 tests for the hardening (~2200 tok)
 - `supabase/tests/account_admin_test.sql` — pgTAP 17 tests for block/unblock/delete (~1300 tok)
+
+## webadmin/
+
+- `compose.traefik.yml` — webadmin behind an EXISTING Traefik (e.g. Coolify's coolify-proxy on nuc), (~562 tok)
+- `pom.xml` (~1264 tok)
+- `README.md` — Project documentation (~2209 tok)
+
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/accounts/
+
+- `AccountService.java` — App accounts ("App-Konten"), as the signed-in admin sees them. Every (~2290 tok)
+
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/api/
+
+- `ApiAuthFilter.java` — Everything under /api needs a signed-in admin, except signing in itself; (~563 tok)
+- `ApiException.java` — An API error answered as {@code {"error": true, "reason": "..."}} — the shape Vapor's Abort produced (~184 tok)
+- `ApiExceptionMappers.java` — Every API error as {@code {"error": true, "reason": "..."}} (admin-session.js and scripts read {@cod (~603 tok)
+- `CurrentAdmin.java` — The admin {@link ApiAuthFilter} found for this request. (~226 tok)
+- `MembersResource.java` — The roster REST API, unchanged contract from the Swift server: (~2435 tok)
+- `SessionResource.java` — POST/GET/DELETE /api/session — sign in with a Supabase account, show the current admin, sign out. (~948 tok)
+
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/
+
+- `Access.java` — Role and permissions as the database grants them right now (tables, not (~439 tok)
+- `AdminSession.java` — One signed-in admin. Holds their Supabase tokens server-side (never sent (~942 tok)
+- `AdminSessions.java` — Sign-in and the in-memory session table shared by the REST API (token in (~1525 tok)
+- `LoginAttemptLimiter.java` — In-memory sliding-window limiter for failed sign-ins (REST and Vaadin (~567 tok)
+- `Permission.java` — {@code public.app_permission} values (supabase/migrations/20261008000001_rbac.sql). (~354 tok)
+- `SessionExpiredException.java` — The admin's session ended: timed out, signed out, or Supabase no longer accepts it. (~85 tok)
+- `SignInException.java` — A refused sign-in, with the HTTP status the REST API answers and a German message. (~106 tok)
+
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/calendar/
+
+- `CalendarFeed.java` — One user's read-only webcal feed (port of RootCLI's {@code CalendarFeed}). (~712 tok)
+- `CalendarFeedResource.java` — {@code GET /calendar/{token}[.ics]} — one user's webcal feed, the URL the (~1207 tok)
+
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/club/
+
+- `ClubModels.java` — Club data rows (supabase/migrations/20261013000001_club_data.sql) and the app's value conventions. (~1042 tok)
+- `ClubStore.java` — Teams, memberships, events (trainings / tournaments / events), (~3226 tok)
+
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/members/
+
+- `ChangeRequestStore.java` — Members' proposed changes to their own roster entry (~1682 tok)
+- `Dates.java` — Date conventions shared with the Swift tooling and the app. (~827 tok)
+- `MemberBulkImport.java` — Bulk create-or-update of roster entries — same per-row rules as RootCLI's (~1010 tok)
+- `MemberBulkInput.java` — Loose, per-row-tolerant import row — the same JSON shape as the app's (~424 tok)
+- `MemberInput.java` — Body of POST/PUT /api/members (and what the Vaadin form produces): the (~1049 tok)
+- `MemberPrivate.java` — The protected part of a roster entry — SVNR, IBAN, birth date, last (~513 tok)
+- `MemberRecord.java` — One roster entry as the API and the UI see it — the same shape as (~984 tok)
+- `MemberStore.java` — The club roster in Supabase, read and written as the signed-in admin (RLS: (~1674 tok)
+- `Validation.java` — Soft checks as in the app's {@code Validation.swift}: they warn, never (~374 tok)
+
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/
+
+- `DbErrorMessages.java` — German texts for the errors the database raises (supabase/migrations: (~600 tok)
+- `GoTrue.java` — Supabase Auth (GoTrue) with the anon key: sign in, refresh, sign out. (~791 tok)
+- `Postgrest.java` — PostgREST (tables + RPCs) with one identity: either a signed-in admin (~1072 tok)
+- `Supabase.java` — Entry point to the club's Supabase project: auth, user-scoped and service-role PostgREST. (~427 tok)
+- `SupabaseConfig.java` — {@code supabase.*} in application.properties (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY) (~159 tok)
+- `SupabaseException.java` — A Supabase call answered with a non-2xx status. {@link #code()} is the (~465 tok)
+- `SupabaseHttp.java` — Raw HTTP to one Supabase project (GoTrue under {@code auth/v1}, PostgREST (~1214 tok)
+
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/
+
+- `AccessGuard.java` — Every navigation: no valid session → sign-in page; a view marked (~490 tok)
+- `AccountDialog.java` — Everything an admin can do with one account, as plainly labelled buttons (~2575 tok)
+- `AccountsView.java` — "App-Konten": approve accounts and link them to their roster entry, (~1987 tok)
+- `AdminView.java` — Base of the signed-in pages: a page heading (h1 — VoiceOver users jump (~675 tok)
+- `Announcer.java` — Status messages. Vaadin notifications live in an ARIA live region, so (~452 tok)
+- `AppShell.java` — Class: AppShell (~110 tok)
+- `AttendanceDialog.java` — Roll call for one training or tournament, like the app's (~1659 tok)
+- `BudgetView.java` — Club budget ("Vereinsbudget"): income and expenses per year, with balance. (~2561 tok)
+- `ChangeRequestsView.java` — Review members' proposed changes to their own entry (Annehmen / Ablehnen), like the app's Änderungsa (~2387 tok)
+- `ClubFields.java` — Form fields shared by the club-data dialogs. (~749 tok)
+- `EventDialog.java` — Create / edit a training, tournament or event. Trainings: start + duration (~2741 tok)
+- `EventsView.java` — Trainings, tournaments and other events in one list, filterable by type; attendance per entry. (~2640 tok)
+- `FavoritesView.java` — Saved recurring trainings ("Favoriten") the app offers when creating a training. (~2241 tok)
+- `GermanUi.java` — German texts and formats for Vaadin's built-in components (their defaults are English). (~1197 tok)
+- `LoginView.java` — Sign-in with the own Blindensport Graz account (same as in the app). Own (~1018 tok)
+- `MainLayout.java` — Frame of every signed-in page: title, who is signed in, sign-out, and (~864 tok)
+- `MemberDialog.java` — Create / edit one roster entry, laid out like the app's MemberDetailView. (~2864 tok)
+- `MembersView.java` — The club roster: search, create, edit, delete, JSON import and export. (~2945 tok)
+- `RequiresPermission.java` — A view only admins holding at least one of these permissions may open (checked by {@link AccessGuard (~118 tok)
+- `RoleLogView.java` — Audit trail: role changes and block/unblock/delete of accounts (rolelog.read), like the app's RoleCh (~904 tok)
+- `SessionCookieSetup.java` — Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless (~246 tok)
+- `StartView.java` — Start page: the areas this admin may open, as a plain link list. (~418 tok)
+- `TeamsView.java` — Teams and who plays / coaches in them. (~3030 tok)
+- `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)
+- `WelcomeView.java` — The welcome text the app shows at startup, also before signing in (club.manage). (~876 tok)
+
+## webadmin/src/main/resources/
+
+- `application.properties` — Supabase project the web admin works on. Admins act with their OWN (~401 tok)
+
+## webadmin/src/test/java/it/a11y/blindensport/webadmin/api/
+
+- `ApiTest.java` — The REST contract of the Swift server (session, CSRF, members CRUD, (~4269 tok)
+- `SupabaseMock.java` — A WireMock stand-in for the Supabase project (GoTrue + PostgREST) during @QuarkusTest. (~213 tok)
+
+## webadmin/src/test/java/it/a11y/blindensport/webadmin/auth/
+
+- `LoginAttemptLimiterTest.java` — LoginAttemptLimiterTest: getZone, withZone, instant (~618 tok)
+
+## webadmin/src/test/java/it/a11y/blindensport/webadmin/calendar/
+
+- `CalendarFeedTest.java` — Port of RootCLI's CalendarFeedTests. (~1022 tok)
+
+## webadmin/src/test/java/it/a11y/blindensport/webadmin/members/
+
+- `ChangeRequestStoreTest.java` — Approve / reject of member change requests against a mocked PostgREST. (~1501 tok)
+- `MemberInputTest.java` — PUT semantics of the members API, as the Swift server had them. (~890 tok)
+- `MemberMappingTest.java` — Ports of RootCLI's MemberStoreTests / MemberPrivateTests (row mapping, no network). (~1474 tok)
+- `ValidationTest.java` — Class: ValidationTest (~251 tok)
+
+## webadmin/src/test/java/it/a11y/blindensport/webadmin/ui/
+
+- `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)

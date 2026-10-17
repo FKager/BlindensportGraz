@@ -1,0 +1,35 @@
+# webadmin behind an EXISTING Traefik (e.g. Coolify's coolify-proxy on nuc),
+# instead of the Caddy bundled in the root docker-compose.yml.
+#
+# Routing is done with Traefik's FILE provider (traefik-dynamic.yml next to
+# this file, copied into Traefik's dynamic config directory), not Docker
+# labels: Coolify's Traefik v3.1 cannot talk to Docker >= 29 (API 1.24 vs.
+# minimum 1.40), so label discovery doesn't work there.
+#
+# Usage on the server (directory with this file, webadmin/ sources and .env):
+#   docker compose -f compose.traefik.yml up -d --build
+#   docker exec -i coolify-proxy sh -c 'cat > /traefik/dynamic/blindensport-webadmin.yml' \
+#     < traefik-dynamic.yml        # after replacing DOMAIN in it
+#
+# .env (chmod 600): SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_KEY
+
+services:
+  webadmin:
+    build:
+      context: .
+    image: webadmin:latest
+    restart: unless-stopped
+    environment:
+      SUPABASE_URL: ${SUPABASE_URL:?set SUPABASE_URL in .env}
+      SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY:?set SUPABASE_ANON_KEY in .env}
+      SUPABASE_SERVICE_KEY: ${SUPABASE_SERVICE_KEY:?set SUPABASE_SERVICE_KEY in .env}
+    # No ports: — only Traefik reaches it, over the proxy network, by this alias.
+    networks:
+      proxy:
+        aliases:
+          - blindensport-webadmin
+
+networks:
+  proxy:
+    name: ${TRAEFIK_NETWORK:-coolify}
+    external: true

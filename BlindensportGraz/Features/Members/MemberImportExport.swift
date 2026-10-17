@@ -3,7 +3,7 @@ import SwiftData
 
 /// JSON shape for one roster member, shared by export and import. Field names
 /// intentionally match RootCLI's `MemberBulkInput`/`members.example.json` and
-/// `clubmembersapi`'s REST payloads exactly, so a file exported here can be
+/// webadmin's REST payloads (`/api/members`) exactly, so a file exported here can be
 /// fed to `rootcli import-members` (or vice versa) with no conversion.
 /// `joinedAt`/`birthDate`/`lastMedicalExamination` are plain strings (not
 /// native JSON dates) accepting ISO8601, "yyyy-MM-dd", or "dd.MM.yyyy" —
