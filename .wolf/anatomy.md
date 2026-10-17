@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T11:25:03.941Z
-> Files: 157 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T11:33:12.477Z
+> Files: 167 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -396,6 +396,11 @@
 - `CalendarFeed.java` — One user's read-only webcal feed (port of RootCLI's {@code CalendarFeed}). (~712 tok)
 - `CalendarFeedResource.java` — {@code GET /calendar/{token}[.ics]} — one user's webcal feed, the URL the (~1207 tok)
 
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/club/
+
+- `ClubModels.java` — Club data rows (supabase/migrations/20261013000001_club_data.sql) and the app's value conventions. (~1042 tok)
+- `ClubStore.java` — Teams, memberships, events (trainings / tournaments / events), (~3226 tok)
+
 ## webadmin/src/main/java/it/a11y/blindensport/webadmin/members/
 
 - `ChangeRequestStore.java` — Members' proposed changes to their own roster entry (~1682 tok)
@@ -426,7 +431,13 @@
 - `AdminView.java` — Base of the signed-in pages: a page heading (h1 — VoiceOver users jump (~675 tok)
 - `Announcer.java` — Status messages. Vaadin notifications live in an ARIA live region, so (~452 tok)
 - `AppShell.java` — Class: AppShell (~110 tok)
+- `AttendanceDialog.java` — Roll call for one training or tournament, like the app's (~1659 tok)
+- `BudgetView.java` — Club budget ("Vereinsbudget"): income and expenses per year, with balance. (~2561 tok)
 - `ChangeRequestsView.java` — Review members' proposed changes to their own entry (Annehmen / Ablehnen), like the app's Änderungsa (~2387 tok)
+- `ClubFields.java` — Form fields shared by the club-data dialogs. (~749 tok)
+- `EventDialog.java` — Create / edit a training, tournament or event. Trainings: start + duration (~2741 tok)
+- `EventsView.java` — Trainings, tournaments and other events in one list, filterable by type; attendance per entry. (~2640 tok)
+- `FavoritesView.java` — Saved recurring trainings ("Favoriten") the app offers when creating a training. (~2241 tok)
 - `GermanUi.java` — German texts and formats for Vaadin's built-in components (their defaults are English). (~1197 tok)
 - `LoginView.java` — Sign-in with the own Blindensport Graz account (same as in the app). Own (~1018 tok)
 - `MainLayout.java` — Frame of every signed-in page: title, who is signed in, sign-out, and (~864 tok)
@@ -436,7 +447,9 @@
 - `RoleLogView.java` — Audit trail: role changes and block/unblock/delete of accounts (rolelog.read), like the app's RoleCh (~904 tok)
 - `SessionCookieSetup.java` — Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless (~246 tok)
 - `StartView.java` — Start page: the areas this admin may open, as a plain link list. (~418 tok)
+- `TeamsView.java` — Teams and who plays / coaches in them. (~3030 tok)
 - `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)
+- `WelcomeView.java` — The welcome text the app shows at startup, also before signing in (club.manage). (~876 tok)
 
 ## webadmin/src/main/resources/
 

@@ -3672,3 +3672,14 @@
 | 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccountDialog.java | — | ~2575 |
 | 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/RoleLogView.java | — | ~904 |
 | 13:26 | webadmin Phase 3: AccountsView/AccountDialog (approve, activation code, role, block, delete) + RoleLogView; RPCs verified live on local Supabase; 53/53 tests | webadmin/accounts, ui | done | ~25000 |
+| 13:28 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/club/ClubModels.java | — | ~1042 |
+| 13:28 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/club/ClubStore.java | — | ~3226 |
+| 13:30 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/ClubFields.java | — | ~749 |
+| 13:30 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/TeamsView.java | — | ~3030 |
+| 13:31 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/EventDialog.java | — | ~2741 |
+| 13:31 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AttendanceDialog.java | — | ~1659 |
+| 13:32 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/EventsView.java | — | ~2640 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/FavoritesView.java | — | ~2241 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/BudgetView.java | — | ~2561 |
+| 13:33 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/WelcomeView.java | — | ~876 |
+| 13:40 | webadmin Phase 4: club views (Termine, Teams+Mitglieder, Anwesenheit/PRAE, Favoriten, Budget, Willkommen); LiveSupabaseIT green; Playwright club 24/24 + members 16/16; 58 unit | webadmin/club, ui | done | ~60000 |

@@ -42,6 +42,9 @@ public class RoleLogView extends AdminView {
         if (admin.can(Permission.USERS_APPROVE)) {
             service.all(false).forEach(a -> names.put(a.id(), a.displayName()));
         }
+        var actions = service.adminActions(200);
+        // Deleted accounts are gone from profiles; the admin log kept their names.
+        actions.forEach(a -> names.putIfAbsent(a.target(), a.targetName().isBlank() ? a.targetEmail() : a.targetName()));
         roleChanges.removeAll();
         var changes = service.roleChanges(200);
         changes.forEach(c -> roleChanges.add(new ListItem(name(names, c.userId()) + ": "
@@ -51,7 +54,6 @@ public class RoleLogView extends AdminView {
             roleChanges.add(new ListItem(new Paragraph("Noch keine Rollenänderungen.")));
         }
         adminActions.removeAll();
-        var actions = service.adminActions(200);
         actions.forEach(a -> adminActions.add(new ListItem(
                 (a.targetName().isBlank() ? a.targetEmail() : a.targetName() + " (" + a.targetEmail() + ")")
                         + ": " + ACTIONS.getOrDefault(a.action(), a.action())

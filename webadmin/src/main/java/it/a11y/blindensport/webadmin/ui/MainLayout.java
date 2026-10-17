@@ -30,10 +30,15 @@ public class MainLayout extends AppLayout implements RouterLayout, AfterNavigati
 
     static final List<NavEntry> ENTRIES = List.of(
             new NavEntry("Übersicht", StartView.class),
+            new NavEntry("Termine", EventsView.class),
+            new NavEntry("Teams", TeamsView.class),
+            new NavEntry("Trainings-Favoriten", FavoritesView.class),
             new NavEntry("Mitglieder", MembersView.class),
             new NavEntry("Änderungsanträge", ChangeRequestsView.class),
             new NavEntry("App-Konten", AccountsView.class),
-            new NavEntry("Rollen-Protokoll", RoleLogView.class));
+            new NavEntry("Rollen-Protokoll", RoleLogView.class),
+            new NavEntry("Vereinsbudget", BudgetView.class),
+            new NavEntry("Willkommensbildschirm", WelcomeView.class));
 
     private final AdminSessions sessions;
     private final SideNav nav = new SideNav();
