@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T11:22:10.142Z
-> Files: 153 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T11:25:03.941Z
+> Files: 157 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -368,6 +368,10 @@
 
 - `pom.xml` (~1264 tok)
 
+## webadmin/src/main/java/it/a11y/blindensport/webadmin/accounts/
+
+- `AccountService.java` — App accounts ("App-Konten"), as the signed-in admin sees them. Every (~2290 tok)
+
 ## webadmin/src/main/java/it/a11y/blindensport/webadmin/api/
 
 - `ApiAuthFilter.java` — Everything under /api needs a signed-in admin, except signing in itself; (~563 tok)
@@ -417,6 +421,8 @@
 ## webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/
 
 - `AccessGuard.java` — Every navigation: no valid session → sign-in page; a view marked (~490 tok)
+- `AccountDialog.java` — Everything an admin can do with one account, as plainly labelled buttons (~2575 tok)
+- `AccountsView.java` — "App-Konten": approve accounts and link them to their roster entry, (~1987 tok)
 - `AdminView.java` — Base of the signed-in pages: a page heading (h1 — VoiceOver users jump (~675 tok)
 - `Announcer.java` — Status messages. Vaadin notifications live in an ARIA live region, so (~452 tok)
 - `AppShell.java` — Class: AppShell (~110 tok)
@@ -427,6 +433,7 @@
 - `MemberDialog.java` — Create / edit one roster entry, laid out like the app's MemberDetailView. (~2864 tok)
 - `MembersView.java` — The club roster: search, create, edit, delete, JSON import and export. (~2945 tok)
 - `RequiresPermission.java` — A view only admins holding at least one of these permissions may open (checked by {@link AccessGuard (~118 tok)
+- `RoleLogView.java` — Audit trail: role changes and block/unblock/delete of accounts (rolelog.read), like the app's RoleCh (~904 tok)
 - `SessionCookieSetup.java` — Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless (~246 tok)
 - `StartView.java` — Start page: the areas this admin may open, as a plain link list. (~418 tok)
 - `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)

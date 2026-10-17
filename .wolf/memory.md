@@ -3667,3 +3667,8 @@
 |------|--------|---------|---------|--------|
 | 13:22 | Created webadmin/src/test/java/it/a11y/blindensport/webadmin/members/ChangeRequestStoreTest.java | — | ~1501 |
 | 13:22 | webadmin Phase 2: MembersView (CRUD, protected fields, JSON import/export), ChangeRequestsView; Playwright e2e 16/16, unit 49/49; Docker disk full incident fixed | webadmin/ui, members | done | ~40000 |
+| 13:23 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/accounts/AccountService.java | — | ~2290 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccountsView.java | — | ~1987 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/AccountDialog.java | — | ~2575 |
+| 13:25 | Created webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/RoleLogView.java | — | ~904 |
+| 13:26 | webadmin Phase 3: AccountsView/AccountDialog (approve, activation code, role, block, delete) + RoleLogView; RPCs verified live on local Supabase; 53/53 tests | webadmin/accounts, ui | done | ~25000 |

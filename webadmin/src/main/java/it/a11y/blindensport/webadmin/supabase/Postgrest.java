@@ -40,6 +40,10 @@ public final class Postgrest {
         return new Param("order", spec);
     }
 
+    public static Param limit(int rows) {
+        return new Param("limit", String.valueOf(rows));
+    }
+
     /** Rows as JSON objects. {@code filters} are PostgREST query items, e.g. {@code eq("id", id)}. */
     public ArrayNode select(String table, String columns, Param... filters) {
         List<Param> query = new ArrayList<>();
