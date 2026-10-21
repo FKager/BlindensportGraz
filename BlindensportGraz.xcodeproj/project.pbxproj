@@ -154,7 +154,6 @@
 		923992FB7A38B83C5C879B11 /* MembershipRoleCapsule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4687D2B4985A8CFBC126234 /* MembershipRoleCapsule.swift */; };
 		929F721BDD3F369ACA9BA0A8 /* ClubSchema in Frameworks */ = {isa = PBXBuildFile; productRef = 5DFE357F09BA1D5DBC42A14C /* ClubSchema */; };
 		92E92792BB7688F41D677229 /* TeamService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4F668AFF2335746B4F1BFE /* TeamService.swift */; };
-		937EFC9FEE0E714A0122B6B7 /* settings.local.json in Resources */ = {isa = PBXBuildFile; fileRef = 83D9A0D3FAB093A5FAE4A12C /* settings.local.json */; };
 		94D1A8637A0E592F287D12DB /* TrainingsfrequenzlisteViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3042C56E9CA19F73738987D4 /* TrainingsfrequenzlisteViews.swift */; };
 		9568606C44F38C433015282E /* SeasonDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03606CE086B0FC315F2B9807 /* SeasonDashboardView.swift */; };
 		96D60328127F614E36AEA92D /* PraeExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6746BB4B00F056909212E4D /* PraeExport.swift */; };
@@ -427,7 +426,6 @@
 		80904A7536940E9D0B4A55A0 /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
 		824E6461E899485CF2C9B1DA /* AttendanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceService.swift; sourceTree = "<group>"; };
 		82D2B0CB16879F93A93EAA3E /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
-		83D9A0D3FAB093A5FAE4A12C /* settings.local.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settings.local.json; sourceTree = "<group>"; };
 		8438DD84B10BB0F0F9C99A25 /* MemberImportExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberImportExport.swift; sourceTree = "<group>"; };
 		857C23DF2DF4F6ABBAC70B30 /* BudgetEntryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetEntryService.swift; sourceTree = "<group>"; };
 		85B7F4CBA18CEF4792F463F6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -747,7 +745,6 @@
 		4065556F76DB7C33C3AFCFC8 /* BlindensportGraz */ = {
 			isa = PBXGroup;
 			children = (
-				B316FD2D404C1853E3B2FFF4 /* .claude */,
 				DB0F668FA40E3C20391DEF75 /* App */,
 				4F47A11EFE7E13611FCD7A09 /* Features */,
 				0EF3AE9FCE7A0175BE107795 /* Models */,
@@ -952,14 +949,6 @@
 				0B00C365E9BA6D144461ECED /* WelcomeView.swift */,
 			);
 			path = Welcome;
-			sourceTree = "<group>";
-		};
-		B316FD2D404C1853E3B2FFF4 /* .claude */ = {
-			isa = PBXGroup;
-			children = (
-				83D9A0D3FAB093A5FAE4A12C /* settings.local.json */,
-			);
-			path = .claude;
 			sourceTree = "<group>";
 		};
 		B507FC634D9E88948BA77739 /* Events */ = {
@@ -1251,7 +1240,6 @@
 				878AB6D535553CD35F4DB897 /* PRAE_Formular.xlsx in Resources */,
 				D12D3DB749BD0640B5F7261A /* TN_TeilnehmerInnenliste.xlsx in Resources */,
 				E8E4E599F5B480C55B93435C /* Trainingsfrequenzliste_Vorlage.xlsx in Resources */,
-				937EFC9FEE0E714A0122B6B7 /* settings.local.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
