@@ -62,7 +62,7 @@ final class MemberChangeRequestTests: XCTestCase {
         draft.iban = "AT483200000012345864"
         draft.svnr = "9876010180"
 
-        draft.apply(to: member)
+        draft.apply(to: member, includingPrivate: true)
 
         XCTAssertEqual(member.street, "Neue Straße 5")
         XCTAssertEqual(member.iban, "AT483200000012345864")
@@ -86,10 +86,39 @@ final class MemberChangeRequestTests: XCTestCase {
 
         let draft = MemberChangeRequest.snapshot(of: member, requestedBy: "user-1")
         draft.firstName = "Samuel"
-        draft.apply(to: member)
+        draft.apply(to: member, includingPrivate: true)
 
         XCTAssertEqual(member.memberNumber, "M-042")
         XCTAssertEqual(member.notes, "Vereinsintern")
         XCTAssertTrue(member.memberOfGVSC)
+    }
+
+    func testApplyWithoutPrivateProposalKeepsProtectedFields() throws {
+        // A reviewer's request row carries no protected fields; their seed
+        // may be blank (private data not loaded yet) — approving must not
+        // wipe the member's SVNR/IBAN/dates.
+        let context = try makeContext()
+        let member = makeMember()
+        member.svnr = "1234010180"
+        member.iban = "AT611904300234573201"
+        member.birthDate = Date(timeIntervalSince1970: 0)
+        member.lastMedicalExamination = Date(timeIntervalSince1970: 86_400)
+        context.insert(member)
+        try context.save()
+
+        let draft = MemberChangeRequest.snapshot(of: member, requestedBy: "user-1")
+        draft.street = "Neue Straße 5"
+        draft.svnr = ""
+        draft.iban = ""
+        draft.birthDate = nil
+        draft.lastMedicalExamination = nil
+
+        draft.apply(to: member, includingPrivate: false)
+
+        XCTAssertEqual(member.street, "Neue Straße 5")
+        XCTAssertEqual(member.svnr, "1234010180")
+        XCTAssertEqual(member.iban, "AT611904300234573201")
+        XCTAssertEqual(member.birthDate, Date(timeIntervalSince1970: 0))
+        XCTAssertEqual(member.lastMedicalExamination, Date(timeIntervalSince1970: 86_400))
     }
 }

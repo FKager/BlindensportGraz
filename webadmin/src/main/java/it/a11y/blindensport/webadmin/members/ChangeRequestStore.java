@@ -92,7 +92,7 @@ public final class ChangeRequestStore {
     /**
      * Applies the proposed fields to the entry, then (with {@code applyPrivate})
      * the protected proposal via {@code apply_member_private_request}, and
-     * marks the request approved. Unlike the app, a missing protected
+     * marks the request approved. As in the app, a missing protected
      * proposal never clears stored SVNR/IBAN/dates.
      */
     public void approve(ChangeRequest request, boolean applyPrivate, UUID reviewer) {
