@@ -39,12 +39,15 @@ enum CloudKitCopyCommand {
             } catch let error as CLIError where "\(error)".contains("could not find record_type") {
                 records[type] = [] // never saved in this environment's schema
             } catch let error as CLIError where "\(error)".contains("not marked queryable") {
-                // No recordName index: CloudKit can't list this type at all —
-                // the app's own pulls never saw these records either, so they
-                // live only on the devices that wrote them. v0.3.0 uploads
-                // its locally held rows of these types on first launch.
-                records[type] = []
-                unreadable.append(type)
+                // No recordName index: CloudKit can't list this type without a
+                // filter — the app's own pulls never saw these records. List
+                // them through a QUERYABLE timestamp field instead.
+                if let found = try await queryWithoutRecordNameIndex(type, cloudKit: cloudKit) {
+                    records[type] = found
+                } else {
+                    records[type] = []
+                    unreadable.append(type)
+                }
             }
         }
         let users = Set(try await supabase.listUsers().map { $0.id.uuidString.lowercased() })
@@ -76,6 +79,36 @@ enum CloudKitCopyCommand {
             print("  ✓ \(batch.table)")
         }
         print("Done.")
+    }
+
+    /// QUERYABLE timestamp fields per type without a recordName index. Every
+    /// field is queried (`> 1970`) and the results merged, so a record
+    /// missing one timestamp is still found through another.
+    static let timestampFields = [
+        "BudgetEntry": ["createdAt", "date"],
+        "EventMembership": ["addedAt"],
+    ]
+
+    /// Nil when the type has no known timestamp field or none is queryable.
+    static func queryWithoutRecordNameIndex(_ type: String, cloudKit: CloudKitS2SClient) async throws -> [CKRecordDTO]? {
+        guard let fields = timestampFields[type] else { return nil }
+        var byName: [String: CKRecordDTO] = [:]
+        var anyQueryable = false
+        for field in fields {
+            let filter: [String: Any] = ["fieldName": field, "comparator": "GREATER_THAN",
+                                         "fieldValue": ["value": 0, "type": "TIMESTAMP"]]
+            do {
+                for record in try await cloudKit.queryRecords(recordType: type, filterBy: [filter]) {
+                    byName[record.recordName] = record
+                }
+                anyQueryable = true
+            } catch let error as CLIError where "\(error)".contains("not marked queryable") {
+                continue
+            }
+        }
+        guard anyQueryable else { return nil }
+        FileHandle.standardError.write(Data("\(type): no recordName index, listed via \(fields.joined(separator: "/")) filter (\(byName.count) records)\n".utf8))
+        return Array(byName.values)
     }
 }
 

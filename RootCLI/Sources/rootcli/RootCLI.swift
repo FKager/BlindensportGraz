@@ -130,7 +130,15 @@ struct RootCLI {
             guard rest.count == 1 else {
                 throw CLIError.message("Usage: rootcli record list <type>")
             }
-            let records = try await client.queryRecords(recordType: rest[0])
+            let records: [CKRecordDTO]
+            do {
+                records = try await client.queryRecords(recordType: rest[0])
+            } catch let error as CLIError where "\(error)".contains("not marked queryable") {
+                guard let found = try await CloudKitCopyCommand.queryWithoutRecordNameIndex(rest[0], cloudKit: client) else {
+                    throw error
+                }
+                records = found
+            }
             guard !records.isEmpty else {
                 print("No \(rest[0]) records found.")
                 return
