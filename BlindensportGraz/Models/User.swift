@@ -67,8 +67,8 @@ nonisolated extension User {
         [firstName, lastName].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
     }
 
-    /// The club's own account; made root on the server by
-    /// `rootcli supabase-migrate` (never granted by the app).
+    /// The club's own account; made root on the server by the
+    /// v0.2.0 account migration (never granted by the app).
     static let designatedRootEmail = "blindensport.gvsc@gmail.com"
 
     /// Centralizes the GVSC-membership-or-elevated-role gate for the

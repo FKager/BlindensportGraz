@@ -1,5 +1,5 @@
 -- LOCAL DEVELOPMENT ONLY (`supabase db reset`). Never pushed to the hosted
--- project — production accounts and roles come from `rootcli supabase-migrate`.
+-- project — production accounts and roles were migrated from CloudKit (v0.2.0).
 -- Local root login: root@example.test / localroot123
 
 insert into auth.users (

@@ -1,5 +1,6 @@
 #!/bin/zsh
-# Club-data cutover (CloudKit -> Supabase) and push setup, for staging and prod.
+# Club-data cutover leftovers and push setup, for staging and prod (the
+# CloudKit copy steps were removed with CloudKit on 2026-10-21).
 # Plan: ~/.claude/plans/melodic-cuddling-magpie.md
 #
 # Usage: supabase/scripts/cutover.sh <staging|prod> <step> [args]
@@ -8,34 +9,25 @@
 #   db-push            apply pending migrations
 #   functions          deploy notify-schedule
 #   templates          auth e-mail templates (token_hash links)
-#   copy-dry|copy-apply [--since ISO]   CloudKit -> Supabase (staging: CloudKit Development,
-#                                       prod: CloudKit Production)
 #   webadmin           write nuc:~/blindensport-webadmin/.env for this project and restart
 #
 # Never prints keys or secrets: they go through temp files (mode 600, deleted)
 # or straight into HTTPS requests. Needs: supabase CLI logged in
-# (~/.supabase/access-token), ~/.config/apns/AuthKey_<id>.p8,
-# ~/.config/rootcli/*.pem, built RootCLI (swift build -c release).
+# (~/.supabase/access-token), ~/.config/apns/AuthKey_<id>.p8.
+
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 
 TARGET=${1:-}; STEP=${2:-}; shift 2 2>/dev/null || true
 case "$TARGET" in
-  staging) REF=xlllxpmkxmcolukmcmoi
-           CK_ENV=development
-           CK_KEY_ID=88f56683911217e01f148bc3162b8e986f88a77ef58cdf050191d113757af6ae
-           CK_PEM=$HOME/.config/rootcli/dev_private_key_pkcs8.pem ;;
-  prod)    REF=dehtuoejbnunehevchtg
-           CK_ENV=production
-           CK_KEY_ID=d8f546e972fedea430f039addde22a9b0a98cb8dbd722c3058d7b572314057a5
-           CK_PEM=$HOME/.config/rootcli/rootcli_private_key_pkcs8.pem ;;
+  staging) REF=xlllxpmkxmcolukmcmoi ;;
+  prod)    REF=dehtuoejbnunehevchtg ;;
   *) echo "usage: $0 <staging|prod> <step>"; exit 2 ;;
 esac
 URL=https://$REF.supabase.co
 APNS_KEY_ID=JD22K7SHQY
 APNS_TEAM_ID=5Q57Y9YT8J
 APNS_P8=$HOME/.config/apns/AuthKey_$APNS_KEY_ID.p8
-ROOTCLI=RootCLI/.build/release/rootcli
 MGMT_TOKEN_FILE=$HOME/.supabase/access-token
 echo "== $TARGET ($REF): $STEP" >&2
 
@@ -53,12 +45,6 @@ prefix, name = sys.argv[1], sys.argv[2]
 k = json.load(sys.stdin)
 p = next((x for x in k if (x.get("api_key") or "").startswith(prefix)), None) or next(x for x in k if x.get("name") == name)
 print(p["api_key"])' "$1" "$2"
-}
-
-copy_env() {
-  export SUPABASE_URL=$URL
-  export SUPABASE_SERVICE_KEY=$(api_key sb_secret_ service_role)
-  export CLOUDKIT_ENVIRONMENT=$CK_ENV CLOUDKIT_KEY_ID=$CK_KEY_ID CLOUDKIT_PRIVATE_KEY_PATH=$CK_PEM
 }
 
 case "$STEP" in
@@ -149,9 +135,6 @@ print(json.dumps({
 }))
 PY
     ;;
-
-  copy-dry)   copy_env; $ROOTCLI cloudkit-copy-to-supabase --dry-run "$@" ;;
-  copy-apply) copy_env; $ROOTCLI cloudkit-copy-to-supabase --apply "$@" ;;
 
   webadmin)
     anon=$(api_key sb_publishable_ anon); secret=$(api_key sb_secret_ service_role)

@@ -1,10 +1,8 @@
 import Foundation
 
 /// The protected part of a roster entry — SVNR, IBAN, birth date, last
-/// medical examination. Since v0.2.0 these live only in Supabase
-/// (`public.member_private`, keyed by the CloudKit `ClubMember` record name);
-/// CloudKit's public database is readable by every app install, so they must
-/// never be written there again (see `ClubMemberRecord.ckFields`).
+/// medical examination. They live in Supabase `public.member_private`
+/// (keyed by the member id), readable only with members.private.read.
 public struct MemberPrivate: Equatable, Sendable {
     public var svnr: String
     public var iban: String
