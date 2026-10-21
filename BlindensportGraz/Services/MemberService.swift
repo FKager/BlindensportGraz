@@ -4,7 +4,7 @@ import SwiftData
 /// Roster edits — one of audit.md's two explicitly-prioritized areas for
 /// visible failure signaling (alongside role changes), since a silently
 /// failed roster save is real club-member data loss. Sensitive fields go to
-/// Supabase (`MemberPrivateSync`), the rest to CloudKit.
+/// `member_private` (`MemberPrivateSync`), the rest to `members`/`member_contacts`.
 @MainActor
 enum MemberService {
     @discardableResult

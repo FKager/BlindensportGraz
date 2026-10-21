@@ -23,7 +23,7 @@ enum PersistenceService {
 
     /// Saves the model context, then — ONLY on success — calls `push`. A
     /// local save failure is logged and reported via `ServiceFailureSignal`;
-    /// the CloudKit push is never attempted in that case, since there's
+    /// the Supabase push is never attempted in that case, since there's
     /// nothing valid to push yet (this phase's explicit requirement).
     @discardableResult
     static func saveAndPush(modelContext: ModelContext, modelName: String, failureMessage: String,
@@ -35,7 +35,7 @@ enum PersistenceService {
     /// Same shape for deletes — caller has already called
     /// `modelContext.delete(model)` before this; saves that removal, then —
     /// only on success — calls `remoteDelete` to push the deletion to
-    /// CloudKit.
+    /// Supabase.
     @discardableResult
     static func deleteAndPush(modelContext: ModelContext, modelName: String, failureMessage: String,
                                remoteDelete: () -> Void) -> Bool {

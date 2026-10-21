@@ -126,11 +126,17 @@ public final class CloudKitS2SClient {
     /// indication anything was missing — the same "silent truncation"
     /// failure class as the write-side bug fixed the same day (see
     /// `RootCLI/README.md`'s `records/modify` per-operation-failure note).
-    public func queryRecords(recordType: String) async throws -> [CKRecordDTO] {
+    ///
+    /// `filterBy` is passed through as the query's CloudKit filter list —
+    /// a filter on a QUERYABLE field lists types whose recordName has no
+    /// index (an unfiltered query fails there with "not marked queryable").
+    public func queryRecords(recordType: String, filterBy: [[String: Any]] = []) async throws -> [CKRecordDTO] {
         var allRecords: [CKRecordDTO] = []
         var continuationMarker: String?
+        var query: [String: Any] = ["recordType": recordType]
+        if !filterBy.isEmpty { query["filterBy"] = filterBy }
         repeat {
-            var body: [String: Any] = ["query": ["recordType": recordType]]
+            var body: [String: Any] = ["query": query]
             if let continuationMarker {
                 body["continuationMarker"] = continuationMarker
             }

@@ -23,8 +23,8 @@ packages:
   # also depended on by RootCLI/Package.swift, see Shared/ClubSchema/Package.swift.
   ClubSchema:
     path: Shared/ClubSchema
-  # Supabase Auth + PostgREST — replaces CloudKit auth/role/approval sync.
-  # Auth-only migration: events/trainings/teams remain on CloudKit.
+  # Supabase Auth + PostgREST — accounts, roles and all club data (v0.3.0
+  # replaced the CloudKit public database).
   Supabase:
     url: https://github.com/supabase/supabase-swift.git
     from: 2.0.0
@@ -39,8 +39,9 @@ targets:
           - "Info.plist"
           - "BlindensportGraz.entitlements"
           - "BlindensportGrazRelease.entitlements"
-          # Claude Code guidance for this folder — must not ship in the app bundle.
+          # Claude Code guidance/settings for this folder — must not ship in the app bundle.
           - "CLAUDE.md"
+          - ".claude/**"
     dependencies:
       - package: ZIPFoundation
       - package: ClubSchema
@@ -64,7 +65,7 @@ targets:
         # version from the git tag, build number from the CI run number).
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
-        # App uses only standard HTTPS/TLS (CloudKit, URLSession) — exempt from
+        # App uses only standard HTTPS/TLS (URLSession, Supabase) — exempt from
         # US export compliance. Declaring this here stops every TestFlight build
         # from parking in "Missing Compliance" until answered by hand.
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
@@ -89,11 +90,9 @@ targets:
         # won't match the app's entitlements at archive/export time.
         #
         # Supabase (auth, roles, protected member data): Debug/on-device builds
-        # pair CloudKit Development with the *staging* project, Release/
-        # TestFlight pairs CloudKit Production with *production*. Publishable/
+        # use the *staging* project, Release/TestFlight *production*. Publishable/
         # anon keys only — RLS enforces access; the service-role key never
         # ships in the app.
-        # TODO(supabase): fill in once both hosted projects exist.
         Debug:
           CODE_SIGN_ENTITLEMENTS: BlindensportGraz/BlindensportGraz.entitlements
           SUPABASE_URL: "https://xlllxpmkxmcolukmcmoi.supabase.co"

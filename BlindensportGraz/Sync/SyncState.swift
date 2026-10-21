@@ -4,7 +4,7 @@ import os
 
 /// App-wide sync state — audit.md SwiftData & CloudKit Finding 3 ("no
 /// user-visible sync/pending state anywhere") + Enhancement #3. Driven by
-/// REAL push/pull activity, not a static decoration: `CloudKitSync`'s
+/// REAL push/pull activity, not a static decoration: `SupabaseSync`'s
 /// `performWithRetry` (Phase 6) reports every push/delete attempt's outcome
 /// here, and `syncAll()` brackets its pull pass with `.syncing`/`.synced`.
 /// `@Observable` singleton, same shape as `ServiceFailureSignal` — any view
@@ -25,8 +25,8 @@ final class SyncState {
     private let logger = Logger(subsystem: "it.a11y.BlindensportGraz", category: "SyncState")
 
     private(set) var status: SyncStatus = .idle
-    /// Number of CloudKit writes still sitting in the `PendingPush` outbox —
-    /// architecture-review.md 2.3. Updated by `CloudKitSync` after every
+    /// Number of Supabase writes still sitting in the `PendingPush` outbox —
+    /// architecture-review.md 2.3. Updated by `SupabaseSync` after every
     /// enqueue / confirmed push / `drainOutbox` pass; drives the
     /// "N Änderungen noch nicht synchronisiert" row in `SyncStatusBanner`.
     /// In-memory only (the durable copy is the outbox table itself).
@@ -71,7 +71,7 @@ final class SyncState {
         logger.error("Sync state moved to .failed")
     }
 
-    /// Called by `CloudKitSync` whenever the `PendingPush` outbox changes
+    /// Called by `SupabaseSync` whenever the `PendingPush` outbox changes
     /// size (enqueue, confirmed push, drain pass).
     func setPendingCount(_ count: Int) {
         pendingCount = max(0, count)

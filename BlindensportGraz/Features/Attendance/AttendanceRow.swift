@@ -7,7 +7,7 @@ import SwiftData
 ///
 /// The toggle is bound to local `@State`, not to the model: only a user edit
 /// (`.onChange(of: isAttended)`) saves and pushes. Model changes — including
-/// ones a CloudKit pull writes into the same `Attendance` object — just
+/// ones a Supabase pull writes into the same `Attendance` object — just
 /// refresh the displayed value, so a pull never triggers a re-push.
 struct AttendanceRow: View {
     let membership: TeamMembership
