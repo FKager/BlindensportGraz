@@ -2,19 +2,18 @@ import XCTest
 @testable import CloudKitS2SCore
 
 /// Protected member data (svnr, iban, birthDate, lastMedicalExamination)
-/// lives only in Supabase since v0.2.0 — these guard against it leaking back
-/// into CloudKit through the tooling, and check the Supabase row format.
+/// lives only in Supabase `member_private` — these check the row format and
+/// that a roster record exposes it only through `privateData`.
 final class MemberPrivateTests: XCTestCase {
 
     private let birth = MemberBulkImport.parseFlexibleDate("1990-05-03")!
 
-    func testCloudKitFieldsNeverContainProtectedFields() {
+    func testPrivateDataCarriesTheProtectedFields() {
         let record = MemberRecord(id: UUID().uuidString, firstName: "Anna", lastName: "Muster",
                                   street: "", zip: "", city: "", country: "", email: "", phone: "",
                                   memberNumber: "", joinedAt: Date(), notes: "", gender: "", title: "",
                                   birthDate: birth, sportId: "", svnr: "1234010190", iban: "AT611904300234573201",
                                   lastMedicalExamination: birth, defaultFunction: "", memberOfGVSC: true)
-        XCTAssertTrue(Set(record.ckFields.keys).isDisjoint(with: MemberPrivate.fieldNames))
         XCTAssertEqual(record.privateData.svnr, "1234010190")
         XCTAssertEqual(record.privateData.birthDate, birth)
     }

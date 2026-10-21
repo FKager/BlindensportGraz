@@ -5,11 +5,6 @@ let package = Package(
     name: "rootcli",
     platforms: [.macOS(.v13)],
     dependencies: [
-        // CryptoKit is Apple-only; swift-crypto is the drop-in-API-compatible
-        // replacement used on Linux/Windows (see CloudKitS2SClient.swift's
-        // `#if canImport(CryptoKit)` import). Not needed at all on macOS,
-        // where CryptoKit is used instead — hence the platform condition below.
-        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.0.0"),
         // Local, dependency-free package holding the shared Member/ClubMember
         // record shape (audit.md Architecture Finding 5) — also depended on
         // by the iOS app target, see ../project.yml's `packages:` section.
@@ -19,7 +14,6 @@ let package = Package(
         .target(
             name: "CloudKitS2SCore",
             dependencies: [
-                .product(name: "Crypto", package: "swift-crypto", condition: .when(platforms: [.linux, .windows, .android])),
                 .product(name: "ClubSchema", package: "ClubSchema")
             ],
             path: "Sources/CloudKitS2SCore"
@@ -29,7 +23,7 @@ let package = Package(
             dependencies: ["CloudKitS2SCore"],
             path: "Sources/rootcli"
         ),
-        // Covers CloudKitS2SCore's pure logic (CalendarFeed, CKFieldCoding) —
+        // Covers CloudKitS2SCore's pure logic (member import/fill, private rows) —
         // no network. Mirrors Shared/ClubSchema's Tests target.
         .testTarget(
             name: "CloudKitS2SCoreTests",
