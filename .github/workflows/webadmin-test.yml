@@ -1,0 +1,35 @@
+# Unit/API tests of the web admin (webadmin/, Quarkus + Vaadin, Java 21).
+#
+# Supabase is mocked (SupabaseMock, %test profile in application.properties);
+# LiveSupabaseIT is an *IT class, which `mvn test` skips. No secrets needed.
+#
+# Runs on GitHub-hosted Linux only — the self-hosted macOS runner has no JDK.
+name: Web Admin Tests
+
+on:
+  push:
+    branches: [main]
+    paths: ["webadmin/**", ".github/workflows/webadmin-test.yml"]
+  pull_request:
+    paths: ["webadmin/**", ".github/workflows/webadmin-test.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: webadmin
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: webadmin/pom.xml
+      - name: mvn test
+        run: mvn -B test
