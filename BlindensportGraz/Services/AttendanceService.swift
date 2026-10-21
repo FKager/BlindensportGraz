@@ -13,7 +13,7 @@ enum AttendanceService {
 
     /// Create-or-update (never duplicate) the `Attendance` row for
     /// `membership` at `event` and set its `attended` flag. Pure w.r.t.
-    /// CloudKit — inserts into `modelContext` but does NOT save or push, so
+    /// Supabase — inserts into `modelContext` but does NOT save or push, so
     /// it's unit-testable in isolation. Callers that want persistence use
     /// `setAttended`.
     @discardableResult

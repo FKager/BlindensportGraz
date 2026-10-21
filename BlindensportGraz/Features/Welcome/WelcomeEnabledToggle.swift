@@ -3,7 +3,7 @@ import SwiftData
 
 /// "Für alle Mitglieder anzeigen" switch for the shared welcome screen.
 /// Bound to local `@State`: only the admin flipping it saves and pushes
-/// `WelcomeContent`; a value pulled from CloudKit just updates the switch.
+/// `WelcomeContent`; a value pulled from Supabase just updates the switch.
 struct WelcomeEnabledToggle: View {
     let content: WelcomeContent
 

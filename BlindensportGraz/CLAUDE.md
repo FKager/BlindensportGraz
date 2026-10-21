@@ -14,7 +14,7 @@ Sources are grouped by feature (XcodeGen picks up subfolders; run `xcodegen gene
 - `App/` — app entry, `RootView`/`MainTabView`, App Intents, server config
 - `Models/` — one `@Model` per file, `ModelSchema`, role/sport enums
 - `Services/` — `*Service` persistence/business logic, `PersistenceService`
-- `Sync/` — sync state, outbox (`PendingPush`), network/push; `Sync/CloudKit/` — `CloudKitSync+*`, `CKSchema`
+- `Sync/` — sync state, outbox (`PendingPush`), network/push; `Sync/Supabase/` — `SupabaseSync` (+`+Models`), `SupabaseRows` (`*DBRow` mapping)
 - `Features/<Feature>/` — views + feature-specific import/export (Dashboard, Events, Tournaments, Trainings, Teams, Members, Account, Attendance, Budget, Welcome, Backup)
 - `Features/Reports/<Report>/` — Prae, KostZ, Sammelabrechnung, Trainingsfrequenzliste, Teilnehmerliste (+ shared `XLSXCellPatch`)
 - `Shared/` — theme, icons, validation, files shared with the widget/share extensions (paths referenced in `project.yml`)
@@ -22,7 +22,7 @@ Sources are grouped by feature (XcodeGen picks up subfolders; run `xcodegen gene
 - Root: `Info.plist`, entitlements, this file (excluded from the app bundle in `project.yml`)
 
 ### Core Models (`Models/`)
-All data models use SwiftData's `@Model` protocol with iCloud sync via `ModelContainer`:
+All data models use SwiftData's `@Model` protocol as a local offline cache (no CloudKit mirroring); `SupabaseSync` pulls/pushes them to Supabase with RLS:
 
 - **User**: App accounts with email, display name, and role (member/coach/admin)
 - **Member**: Club roster entry (address, contact info, membership number) — distinct from `User`
@@ -175,7 +175,7 @@ All UI text is in German. Common terms:
 - "Admin" = Administrator
 
 ## Role Hierarchy
-Accounts, roles and approvals live in **Supabase** (`../supabase/`), not CloudKit. Roles come from `user_roles`; permissions from `role_permissions` (check with `user.can(.permission)` / `authContext.can(.permission)`, never compare roles directly). The server enforces everything via RLS and RPCs.
+Accounts, roles and approvals live in **Supabase** (`../supabase/`), like all club data since v0.3.0. Roles come from `user_roles`; permissions from `role_permissions` (check with `user.can(.permission)` / `authContext.can(.permission)`, never compare roles directly). The server enforces everything via RLS and RPCs.
 1. **root** - admin + assigns roles (`roles.assign`)
 2. **admin** - Full access to all features, approves accounts, reads protected member data
 3. **coach** - Can create/manage events, trainings and teams

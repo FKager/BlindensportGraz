@@ -28,13 +28,13 @@ nonisolated enum AppModelSchema {
         // Self-service roster edits awaiting admin review
         // (architecture-review.md §5 P2).
         MemberChangeRequest.self,
-        // Local-only outbox of not-yet-confirmed CloudKit writes
+        // Local-only outbox of not-yet-confirmed Supabase writes
         // (architecture-review.md 2.2) — never itself synced.
         PendingPush.self
     ])
 
-    /// Local store only — cross-user sharing is `CloudKitSync`'s manual
-    /// public-database layer, not SwiftData's automatic mirroring.
+    /// Local store only — cross-user sharing is `SupabaseSync`'s manual
+    /// sync layer, not SwiftData's automatic mirroring.
     static var configuration: ModelConfiguration {
         ModelConfiguration(schema: schema, isStoredInMemoryOnly: false, cloudKitDatabase: .none)
     }

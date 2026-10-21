@@ -4,7 +4,7 @@ import SwiftData
 /// Admin settings screen (pushed from `VereinHubList`/`VereinSplitView`)
 /// showing whether this device can see `welcome.md` in its own iCloud Drive,
 /// a manual re-sync button, the shared on/off toggle, and a preview — all
-/// backed by the CloudKit-synced `WelcomeContent` singleton, not any
+/// backed by the Supabase-synced `WelcomeContent` singleton, not any
 /// per-device state.
 struct WelcomeScreenSettingsView: View {
     @Environment(\.modelContext) private var modelContext

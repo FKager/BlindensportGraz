@@ -86,7 +86,7 @@ struct RootView: View {
     /// If THIS device can see `welcome.md` in its own iCloud Drive (only
     /// true for whichever admin device the file was actually placed on —
     /// see `WelcomeFileWatcher`'s doc comment), pushes its content into the
-    /// shared `WelcomeContent` CloudKit record so every other user's device
+    /// shared `WelcomeContent` row (Supabase) so every other user's device
     /// picks it up on their own next sync. A no-op everywhere else.
     private func syncWelcomeFileIfPresent() {
         guard let localMarkdown = WelcomeFileWatcher.readLocalFile() else { return }
@@ -110,7 +110,7 @@ struct RootView: View {
     }
 
     /// Pulls team/event/training/tournament data other users have shared, without
-    /// blocking the UI on network/CloudKit latency.
+    /// blocking the UI on network/Supabase latency.
     private func triggerBackgroundSync() {
         Task {
             await SyncOrchestrationService.syncAll(modelContext: modelContext)

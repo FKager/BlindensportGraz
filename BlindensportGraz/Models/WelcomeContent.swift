@@ -2,9 +2,8 @@ import Foundation
 import SwiftData
 
 /// Singleton-style shared welcome note, shown to every logged-in user on
-/// launch (see `RootView`) — authored by an admin and synced via CloudKit's
-/// public database like every other record in this app (`CloudKitSync+
-/// WelcomeContent.swift`), NOT a per-device security-scoped bookmark to a
+/// launch (see `RootView`) — authored by an admin and synced via Supabase
+/// (`welcome_content`) like every other record in this app, NOT a per-device security-scoped bookmark to a
 /// picked file (that approach was tried and rejected — it only ever worked
 /// on the one device that picked the file). The actual authoring source is
 /// still a `welcome.md` the admin edits in their own iCloud Drive

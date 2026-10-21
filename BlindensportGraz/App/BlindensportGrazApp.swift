@@ -29,9 +29,9 @@ struct BlindensportGrazApp: App {
         // `catch` block's own reset logic) — it has to be prevented before
         // `ModelContainer` ever opens the old store. One-time,
         // version-gated wipe, reusing the exact same "reset and resync from
-        // CloudKit" mechanism the `catch` block below already relies on for
+        // the server" mechanism the `catch` block below already relies on for
         // a different migration failure mode (the SportEvent inheritance
-        // refactor) — CloudKit is already this app's established source of
+        // refactor) — the server is already this app's established source of
         // truth, so this is safe, just a client-side no-op on any device
         // that never had pre-migration data (fresh installs, or a device
         // that already ran this exact check once).
@@ -53,13 +53,13 @@ struct BlindensportGrazApp: App {
             // lightweight migration is documented to support (flattening
             // independent entities into a class hierarchy). Rather than
             // crash outright if an existing local store can't open under the
-            // new schema, wipe it and start fresh — CloudKitSync.syncAll()
+            // new schema, wipe it and start fresh — SupabaseSync.syncAll()
             // (triggered on next login via RootView) fully repopulates local
-            // data from CloudKit's public database, which is already the
+            // data from Supabase, which is already the
             // durable cross-device source of truth. Only truly offline-only,
             // never-synced local edits would be lost, a narrow edge case
-            // since every local write already pushes to CloudKit
-            // synchronously today.
+            // since every local write already pushes to Supabase
+            // (through the PendingPush outbox).
             //
             // audit.md SwiftData & CloudKit Finding 4: that "only offline-only
             // edits are lost" assumption was never actually verifiable —
@@ -69,7 +69,7 @@ struct BlindensportGrazApp: App {
             // bigger undertaking than this phase's scope (Phase 10's own
             // Notes); what IS practical here: log exactly what's about to be
             // discarded and why, via the same `os.Logger` category
-            // `SyncState`/`CloudKitSync` use, using `SyncState`'s persisted
+            // `SyncState`/`SupabaseSync` use, using `SyncState`'s persisted
             // last-known-successful-sync timestamp (survives across
             // launches, read directly from UserDefaults here since
             // `SyncState.shared` isn't safe to depend on this early in
@@ -80,9 +80,9 @@ struct BlindensportGrazApp: App {
             let resetLogger = Logger(subsystem: "it.a11y.BlindensportGraz", category: "SyncState")
             resetLogger.error("""
                 Local store failed to open under the current schema (\(String(describing: error), privacy: .public)) \
-                — wiping and resetting. Last confirmed successful CloudKit sync on this device: \
+                — wiping and resetting. Last confirmed successful sync on this device: \
                 \(lastSyncedAt.map { $0.description } ?? "never recorded", privacy: .public). Any local edits made \
-                since that point that hadn't yet been confirmed synced will be lost; CloudKit remains the source \
+                since that point that hadn't yet been confirmed synced will be lost; Supabase remains the source \
                 of truth for everything already synced.
                 """)
             UserDefaults.standard.set("\(Date.now): \(error)", forKey: "lastModelContainerResetReason")

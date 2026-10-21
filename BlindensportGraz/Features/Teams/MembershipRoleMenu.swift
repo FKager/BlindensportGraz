@@ -6,7 +6,7 @@ import SwiftData
 ///
 /// The picker is bound to local `@State`: only a user's pick saves and
 /// re-pushes the membership. A role written into the same `TeamMembership`
-/// by a CloudKit pull just updates the display, so it's never pushed back.
+/// by a Supabase pull just updates the display, so it's never pushed back.
 struct MembershipRoleMenu: View {
     let membership: TeamMembership
 

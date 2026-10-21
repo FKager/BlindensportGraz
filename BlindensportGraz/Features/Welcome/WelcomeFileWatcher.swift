@@ -8,10 +8,10 @@ import SwiftData
 /// directly (Mac Finder, iOS Files app, ...). It's read-only per device
 /// (never written by the app) and, critically, private to whichever Apple ID
 /// owns that iCloud Drive — it does NOT sync across different users'
-/// accounts the way CloudKit's public database does. `RootView` bridges the
+/// accounts the way the club data in Supabase does. `RootView` bridges the
 /// two: on whichever admin device can actually see this file, it pushes the
-/// file's content into the shared `WelcomeContent` CloudKit record
-/// (`CloudKitSync+WelcomeContent.swift`), and every other user's device just
+/// file's content into the shared `WelcomeContent` row
+/// (`welcome_content` in Supabase), and every other user's device just
 /// displays that already-synced record. This replaces an earlier
 /// per-device security-scoped-bookmark design that only ever worked on the
 /// one device that picked the file.
