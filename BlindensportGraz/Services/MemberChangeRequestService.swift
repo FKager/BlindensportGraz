@@ -19,10 +19,11 @@ enum MemberChangeRequestService {
     /// member, then marks the request approved and saves+pushes it too. If
     /// the member save fails, the request is left untouched (still
     /// pending) rather than marked approved against data that never
-    /// actually persisted.
+    /// actually persisted. `includingPrivate`: see `MemberChangeRequest.apply`.
     @discardableResult
-    static func approve(_ request: MemberChangeRequest, member: Member, reviewedBy: String, modelContext: ModelContext) -> Bool {
-        request.apply(to: member)
+    static func approve(_ request: MemberChangeRequest, member: Member, includingPrivate: Bool,
+                        reviewedBy: String, modelContext: ModelContext) -> Bool {
+        request.apply(to: member, includingPrivate: includingPrivate)
         guard MemberService.save(member, modelContext: modelContext) else { return false }
         request.status = MemberChangeRequest.approvedStatus
         request.reviewedBy = reviewedBy

@@ -10,6 +10,9 @@ struct MemberChangeRequestDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @State private var privateProposalLoaded = false
+    /// Set once the private-proposal fetch finished (found, absent or
+    /// failed) — "Annehmen" waits for it so a slow fetch can't be skipped.
+    @State private var privateProposalChecked = false
 
     private struct FieldDiff: Identifiable {
         let id = UUID()
@@ -28,7 +31,6 @@ struct MemberChangeRequestDetailView: View {
         add("Nachname", member.lastName, request.lastName)
         add("Titel", member.title, request.title)
         add("Geschlecht", member.gender, request.gender)
-        add("Geburtsdatum", dateString(member.birthDate), dateString(request.birthDate))
         add("Straße", member.street, request.street)
         add("PLZ", member.zip, request.zip)
         add("Ort", member.city, request.city)
@@ -36,9 +38,14 @@ struct MemberChangeRequestDetailView: View {
         add("E-Mail", member.email, request.email)
         add("Telefon", member.phone, request.phone)
         add("Sport-ID", member.sportId, request.sportId)
-        add("SVNR", member.svnr, request.svnr)
-        add("IBAN", member.iban, request.iban)
-        add("Letzte sportärztl. Untersuchung", dateString(member.lastMedicalExamination), dateString(request.lastMedicalExamination))
+        // Without a loaded proposal the request's protected fields are only
+        // a local seed, not something the member asked to change.
+        if privateProposalLoaded {
+            add("Geburtsdatum", dateString(member.birthDate), dateString(request.birthDate))
+            add("SVNR", member.svnr, request.svnr)
+            add("IBAN", member.iban, request.iban)
+            add("Letzte sportärztl. Untersuchung", dateString(member.lastMedicalExamination), dateString(request.lastMedicalExamination))
+        }
         return out
     }
 
@@ -93,14 +100,16 @@ struct MemberChangeRequestDetailView: View {
             if request.status == MemberChangeRequest.pendingStatus, let member {
                 Section {
                     Button {
-                        if MemberChangeRequestService.approve(request, member: member,
-                                                               reviewedBy: currentUser?.id.uuidString ?? "", modelContext: modelContext) {
+                        if MemberChangeRequestService.approve(request, member: member, includingPrivate: privateProposalLoaded,
+                                                               reviewedBy: currentUser?.id.uuidString ?? "", modelContext: modelContext),
+                           privateProposalLoaded {
                             clearPrivateProposal()
                         }
                         dismiss()
                     } label: {
                         Label("Annehmen", systemImage: "checkmark.circle.fill")
                     }
+                    .disabled(!privateProposalChecked)
                     Button(role: .destructive) {
                         MemberChangeRequestService.reject(request, reviewedBy: currentUser?.id.uuidString ?? "", modelContext: modelContext)
                         clearPrivateProposal()
@@ -125,6 +134,7 @@ struct MemberChangeRequestDetailView: View {
     /// diff and "Annehmen" (→ MemberService → MemberPrivateSync) include them.
     private func loadPrivateProposal() async {
         guard !privateProposalLoaded, request.status == MemberChangeRequest.pendingStatus else { return }
+        defer { privateProposalChecked = true }
         guard let proposal = try? await SupabaseMemberPrivateService.fetchRequest(memberID: request.memberID) else { return }
         privateProposalLoaded = true
         request.svnr = proposal.svnr

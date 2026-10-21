@@ -108,12 +108,18 @@ nonisolated extension MemberChangeRequest {
     /// Copies every proposed field onto `member` — the entire effect of
     /// approving a request. Caller persists `member` and marks `self`
     /// approved separately (see `MemberChangeRequestService.approve`).
-    func apply(to member: Member) {
+    ///
+    /// The protected fields (SVNR, IBAN, birth date, medical exam) are not
+    /// part of the synced request row: on a reviewer's device they are only
+    /// a seed copied from the local `Member`, which may still be blank or
+    /// stale. Pass `includingPrivate: true` only when they come from a real
+    /// proposal (`member_private_requests`) or the proposer's own snapshot —
+    /// otherwise approving would wipe the member's protected data.
+    func apply(to member: Member, includingPrivate: Bool) {
         member.firstName = firstName
         member.lastName = lastName
         member.title = title
         member.gender = gender
-        member.birthDate = birthDate
         member.street = street
         member.zip = zip
         member.city = city
@@ -121,8 +127,10 @@ nonisolated extension MemberChangeRequest {
         member.email = email
         member.phone = phone
         member.sportId = sportId
+        guard includingPrivate else { return }
         member.svnr = svnr
         member.iban = iban
+        member.birthDate = birthDate
         member.lastMedicalExamination = lastMedicalExamination
     }
 }
