@@ -38,6 +38,17 @@ struct MemberChangeRequestDetailView: View {
         add("E-Mail", member.email, request.email)
         add("Telefon", member.phone, request.phone)
         add("Sport-ID", member.sportId, request.sportId)
+        add("Mitgliedsart", membershipTypeString(member.membershipType), membershipTypeString(request.membershipType))
+        add("Staatsbürgerschaft", member.citizenship, request.citizenship)
+        add("Mobilnummer", member.mobile, request.mobile)
+        add("Vertreter:in Vorname", member.guardianFirstName, request.guardianFirstName)
+        add("Vertreter:in Nachname", member.guardianLastName, request.guardianLastName)
+        add("Vertreter:in Straße", member.guardianStreet, request.guardianStreet)
+        add("Vertreter:in PLZ", member.guardianZip, request.guardianZip)
+        add("Vertreter:in Wohnort", member.guardianCity, request.guardianCity)
+        add("Vertreter:in Telefon", member.guardianPhone, request.guardianPhone)
+        add("Vertreter:in Mobilnummer", member.guardianMobile, request.guardianMobile)
+        add("Vertreter:in E-Mail", member.guardianEmail, request.guardianEmail)
         // Without a loaded proposal the request's protected fields are only
         // a local seed, not something the member asked to change.
         if privateProposalLoaded {
@@ -45,8 +56,25 @@ struct MemberChangeRequestDetailView: View {
             add("SVNR", member.svnr, request.svnr)
             add("IBAN", member.iban, request.iban)
             add("Letzte sportärztl. Untersuchung", dateString(member.lastMedicalExamination), dateString(request.lastMedicalExamination))
+            add("Art der Behinderung", member.disabilityType, request.disabilityType)
+            add("Behinderungsklasse", member.disabilityClass, request.disabilityClass)
+            add("Behinderung durch", member.disabilityCause, request.disabilityCause)
+            add("Datenweitergabe", consentString(member.consentDataTransfer), consentString(request.consentDataTransfer))
+            add("Foto/Video", consentString(member.consentPhotos), consentString(request.consentPhotos))
         }
         return out
+    }
+
+    private func consentString(_ consent: Bool?) -> String {
+        consent.map { $0 ? String(localized: "Ja") : String(localized: "Nein") } ?? ""
+    }
+
+    private func membershipTypeString(_ type: String) -> String {
+        switch type {
+        case GVSCMembershipType.active: return String(localized: "aktiv")
+        case GVSCMembershipType.supporting: return String(localized: "fördernd")
+        default: return ""
+        }
     }
 
     private func dateString(_ date: Date?) -> String {
@@ -141,6 +169,11 @@ struct MemberChangeRequestDetailView: View {
         request.iban = proposal.iban
         request.birthDate = proposal.birthDate
         request.lastMedicalExamination = proposal.lastMedicalExamination
+        request.disabilityType = proposal.disabilityType
+        request.disabilityClass = proposal.disabilityClass
+        request.disabilityCause = proposal.disabilityCause
+        request.consentDataTransfer = proposal.consentDataTransfer
+        request.consentPhotos = proposal.consentPhotos
     }
 
     private func clearPrivateProposal() {

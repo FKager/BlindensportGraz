@@ -93,6 +93,26 @@ enum SupabaseProfileService {
         try await client.rpc("rotate_calendar_token").execute().value
     }
 
+    // MARK: - Profile photo (bucket `profile-photos`, `<user id>.jpg`)
+
+    // Same object name as the storage policies (auth.uid()::text, lowercase).
+    private static func photoPath(_ userID: UUID) -> String { "\(userID.uuidString.lowercased()).jpg" }
+
+    /// Own photo, or any photo with members.manage (RLS); nil if none.
+    static func downloadPhoto(userID: UUID) async -> Data? {
+        try? await client.storage.from("profile-photos").download(path: photoPath(userID))
+    }
+
+    /// `jpeg` is already downscaled (ImageProcessing).
+    static func uploadPhoto(_ jpeg: Data, userID: UUID) async throws {
+        try await client.storage.from("profile-photos")
+            .upload(photoPath(userID), data: jpeg, options: FileOptions(contentType: "image/jpeg", upsert: true))
+    }
+
+    static func deletePhoto(userID: UUID) async throws {
+        _ = try await client.storage.from("profile-photos").remove(paths: [photoPath(userID)])
+    }
+
     // Keeps the local SwiftData `User` as a cache keyed by the auth uid, so
     // team memberships / participations (CloudKit) keep resolving.
     // Role and approval are not stored here — AuthContext owns them.

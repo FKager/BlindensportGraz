@@ -126,6 +126,7 @@ struct MyMemberView: View {
                     Text("Geburtsdatum, SVNR, IBAN und Untersuchungsdatum kannst du eintragen, sobald dein Konto freigegeben ist.")
                 }
             }
+            GVSCApplicationFieldsSections(model: draft, includesPrivate: privateEditable)
         }
     }
 
@@ -160,10 +161,31 @@ struct MyMemberView: View {
 
     private func submitIfChanged() {
         guard let draft, draft.differs(from: member) else { return }
+        // Admins may edit the Benutzerverwaltung anyway — and the server only
+        // accepts proposals for the account's linked entry (`my_member_id()`),
+        // which e.g. an entry they just created via "Mitgliedschaft
+        // beantragen" isn't. So save directly instead of proposing.
+        if authContext.can(.membersManage) {
+            let includingPrivate = authContext.can(.membersPrivateWrite) && authContext.privateDataLoaded
+            if draft.modelContext == nil {
+                draft.apply(to: member, includingPrivate: includingPrivate)
+                MemberService.save(member, modelContext: modelContext)
+            } else {
+                MemberChangeRequestService.approve(draft, member: member, includingPrivate: includingPrivate,
+                                                   reviewedBy: currentUser?.id.uuidString ?? "",
+                                                   modelContext: modelContext)
+            }
+            return
+        }
         if privateEditable, privateDiffers(draft) {
-            let proposal = MemberPrivateData(memberID: member.id, svnr: draft.svnr, iban: draft.iban,
+            var proposal = MemberPrivateData(memberID: member.id, svnr: draft.svnr, iban: draft.iban,
                                              birthDate: draft.birthDate,
                                              lastMedicalExamination: draft.lastMedicalExamination)
+            proposal.disabilityType = draft.disabilityType
+            proposal.disabilityClass = draft.disabilityClass
+            proposal.disabilityCause = draft.disabilityCause
+            proposal.consentDataTransfer = draft.consentDataTransfer
+            proposal.consentPhotos = draft.consentPhotos
             Task {
                 do { try await SupabaseMemberPrivateService.submitRequest(proposal) }
                 catch {
@@ -183,5 +205,9 @@ struct MyMemberView: View {
         draft.svnr != member.svnr || draft.iban != member.iban
             || draft.birthDate != member.birthDate
             || draft.lastMedicalExamination != member.lastMedicalExamination
+            || draft.disabilityType != member.disabilityType || draft.disabilityClass != member.disabilityClass
+            || draft.disabilityCause != member.disabilityCause
+            || draft.consentDataTransfer != member.consentDataTransfer
+            || draft.consentPhotos != member.consentPhotos
     }
 }

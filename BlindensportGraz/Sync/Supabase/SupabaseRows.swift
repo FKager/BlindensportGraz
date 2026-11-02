@@ -62,10 +62,14 @@ nonisolated struct MemberDBRow: Codable, Sendable, Equatable {
     var defaultFunction: String
     var memberOfGVSC: Bool
     var joinedAt: Date
+    // Set only by the server (mark_gvsc_application); always nil when built
+    // from a local Member, so it's never encoded back.
+    var gvscAppliedAt: Date?
     var updatedAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case id
+        case gvscAppliedAt = "gvsc_applied_at"
         case firstName = "first_name"
         case lastName = "last_name"
         case memberNumber = "member_number"
@@ -89,10 +93,31 @@ nonisolated struct MemberContactDBRow: Codable, Sendable, Equatable {
     var notes: String
     var gender: String
     var title: String
+    var membershipType: String
+    var citizenship: String
+    var mobile: String
+    var guardianFirstName: String
+    var guardianLastName: String
+    var guardianStreet: String
+    var guardianZip: String
+    var guardianCity: String
+    var guardianPhone: String
+    var guardianMobile: String
+    var guardianEmail: String
     var updatedAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case id, street, zip, city, country, email, phone, notes, gender, title
+        case citizenship, mobile
+        case membershipType = "membership_type"
+        case guardianFirstName = "guardian_first_name"
+        case guardianLastName = "guardian_last_name"
+        case guardianStreet = "guardian_street"
+        case guardianZip = "guardian_zip"
+        case guardianCity = "guardian_city"
+        case guardianPhone = "guardian_phone"
+        case guardianMobile = "guardian_mobile"
+        case guardianEmail = "guardian_email"
         case updatedAt = "updated_at"
     }
 }
@@ -348,10 +373,31 @@ nonisolated struct MemberChangeRequestDBRow: Codable, Sendable, Equatable {
     var email: String
     var phone: String
     var sportID: String
+    var membershipType: String
+    var citizenship: String
+    var mobile: String
+    var guardianFirstName: String
+    var guardianLastName: String
+    var guardianStreet: String
+    var guardianZip: String
+    var guardianCity: String
+    var guardianPhone: String
+    var guardianMobile: String
+    var guardianEmail: String
     var updatedAt: Date?
 
     enum CodingKeys: String, CodingKey {
         case id, status, title, gender, street, zip, city, country, email, phone
+        case citizenship, mobile
+        case membershipType = "membership_type"
+        case guardianFirstName = "guardian_first_name"
+        case guardianLastName = "guardian_last_name"
+        case guardianStreet = "guardian_street"
+        case guardianZip = "guardian_zip"
+        case guardianCity = "guardian_city"
+        case guardianPhone = "guardian_phone"
+        case guardianMobile = "guardian_mobile"
+        case guardianEmail = "guardian_email"
         case memberID = "member_id"
         case userID = "user_id"
         case requestedBy = "requested_by"
@@ -386,6 +432,17 @@ nonisolated struct MemberChangeRequestDBRow: Codable, Sendable, Equatable {
         try c.encode(email, forKey: .email)
         try c.encode(phone, forKey: .phone)
         try c.encode(sportID, forKey: .sportID)
+        try c.encode(membershipType, forKey: .membershipType)
+        try c.encode(citizenship, forKey: .citizenship)
+        try c.encode(mobile, forKey: .mobile)
+        try c.encode(guardianFirstName, forKey: .guardianFirstName)
+        try c.encode(guardianLastName, forKey: .guardianLastName)
+        try c.encode(guardianStreet, forKey: .guardianStreet)
+        try c.encode(guardianZip, forKey: .guardianZip)
+        try c.encode(guardianCity, forKey: .guardianCity)
+        try c.encode(guardianPhone, forKey: .guardianPhone)
+        try c.encode(guardianMobile, forKey: .guardianMobile)
+        try c.encode(guardianEmail, forKey: .guardianEmail)
     }
 }
 
@@ -470,7 +527,12 @@ extension MemberContactDBRow {
     init(_ member: Member) {
         self.init(id: member.id, street: member.street, zip: member.zip, city: member.city,
                   country: member.country, email: member.email, phone: member.phone, notes: member.notes,
-                  gender: member.gender, title: member.title)
+                  gender: member.gender, title: member.title,
+                  membershipType: member.membershipType, citizenship: member.citizenship, mobile: member.mobile,
+                  guardianFirstName: member.guardianFirstName, guardianLastName: member.guardianLastName,
+                  guardianStreet: member.guardianStreet, guardianZip: member.guardianZip,
+                  guardianCity: member.guardianCity, guardianPhone: member.guardianPhone,
+                  guardianMobile: member.guardianMobile, guardianEmail: member.guardianEmail)
     }
 }
 
@@ -543,7 +605,12 @@ extension MemberChangeRequestDBRow {
                   firstName: request.firstName, lastName: request.lastName, title: request.title,
                   gender: request.gender, street: request.street, zip: request.zip, city: request.city,
                   country: request.country, email: request.email, phone: request.phone,
-                  sportID: request.sportId)
+                  sportID: request.sportId,
+                  membershipType: request.membershipType, citizenship: request.citizenship, mobile: request.mobile,
+                  guardianFirstName: request.guardianFirstName, guardianLastName: request.guardianLastName,
+                  guardianStreet: request.guardianStreet, guardianZip: request.guardianZip,
+                  guardianCity: request.guardianCity, guardianPhone: request.guardianPhone,
+                  guardianMobile: request.guardianMobile, guardianEmail: request.guardianEmail)
     }
 }
 

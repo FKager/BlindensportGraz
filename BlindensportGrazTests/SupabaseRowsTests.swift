@@ -18,6 +18,41 @@ final class SupabaseRowsTests: XCTestCase {
         return try PostgrestClient.Configuration.jsonDecoder.decode(Row.self, from: data)
     }
 
+    // MARK: - Members (Beitrittserklärung fields)
+
+    func testMemberRowNeverSendsTheAppliedDate() throws {
+        let member = Member(firstName: "Anna", lastName: "Antrag", memberOfGVSC: false)
+        member.gvscAppliedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let object = try json(MemberDBRow(member))
+        XCTAssertNil(object["gvsc_applied_at"], "set only by the server (mark_gvsc_application)")
+        XCTAssertEqual(object["member_of_gvsc"] as? Bool, false)
+    }
+
+    func testMemberContactRowCarriesApplicationFields() throws {
+        let member = Member(firstName: "Anna", lastName: "Antrag")
+        member.membershipType = GVSCMembershipType.active
+        member.citizenship = "Österreich"
+        member.mobile = "0664 1"
+        member.guardianLastName = "Vormund"
+        let row = MemberContactDBRow(member)
+        XCTAssertEqual(try roundTrip(row), row)
+        let object = try json(row)
+        XCTAssertEqual(object["membership_type"] as? String, "active")
+        XCTAssertEqual(object["citizenship"] as? String, "Österreich")
+        XCTAssertEqual(object["guardian_last_name"] as? String, "Vormund")
+    }
+
+    func testMemberPrivateDataSendsUnansweredConsentsAsNull() throws {
+        var data = MemberPrivateData(memberID: UUID())
+        data.disabilityType = "vollblind"
+        data.consentDataTransfer = false
+        let object = try json(data)
+        XCTAssertEqual(object["disability_type"] as? String, "vollblind")
+        XCTAssertEqual(object["consent_data_transfer"] as? Bool, false)
+        XCTAssertTrue(object["consent_photos"] is NSNull, "un-answering must clear the server value")
+        XCTAssertEqual(try roundTrip(data), data)
+    }
+
     // MARK: - Teams / memberships
 
     func testTeamRowRoundTripsAndOmitsUpdatedAt() throws {

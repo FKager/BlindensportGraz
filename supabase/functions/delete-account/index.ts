@@ -37,6 +37,9 @@ Deno.serve(async (req) => {
     return json(409, { error: "last_root" });
   }
 
+  // Storage objects don't cascade; a missing photo is not an error.
+  await admin.storage.from("profile-photos").remove([`${user.id}.jpg`]);
+
   const { error } = await admin.auth.admin.deleteUser(user.id);
   if (error) return json(500, { error: "delete_failed" });
   return json(200, { deleted: true });

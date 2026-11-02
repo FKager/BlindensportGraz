@@ -45,6 +45,32 @@ final class Member {
     // opposed to e.g. an external helper/coach tracked here without formal
     // membership. Defaults true since every entry historically was one.
     var memberOfGVSC: Bool = true
+    // When the GVSC Beitrittserklärung was last mailed (Edge Function
+    // send-membership-application); cleared when an admin confirms.
+    var gvscAppliedAt: Date?
+
+    // Remaining fields of the GVSC Beitrittserklärung (Supabase
+    // member_contacts). membershipType: "active" | "supporting" | "".
+    var membershipType: String = ""
+    var citizenship: String = ""
+    var mobile: String = ""
+    // Gesetzliche:r Vertreter:in — only asked for minors.
+    var guardianFirstName: String = ""
+    var guardianLastName: String = ""
+    var guardianStreet: String = ""
+    var guardianZip: String = ""
+    var guardianCity: String = ""
+    var guardianPhone: String = ""
+    var guardianMobile: String = ""
+    var guardianEmail: String = ""
+
+    // Protected like svnr/iban (Supabase member_private). Consents:
+    // nil = not answered, true = JA, false = NEIN.
+    var disabilityType: String = ""
+    var disabilityClass: String = ""
+    var disabilityCause: String = ""
+    var consentDataTransfer: Bool?
+    var consentPhotos: Bool?
 
     @Relationship(deleteRule: .cascade, inverse: \TeamMembership.member)
     var teamMemberships: [TeamMembership] = []

@@ -41,6 +41,25 @@ final class MemberChangeRequest {
     var svnr: String = ""
     var iban: String = ""
     var lastMedicalExamination: Date?
+    // Beitrittserklärung fields (see Member). The contact-level ones travel in
+    // member_change_requests; disability/consents are protected and go
+    // through member_private_requests like svnr/iban.
+    var membershipType: String = ""
+    var citizenship: String = ""
+    var mobile: String = ""
+    var guardianFirstName: String = ""
+    var guardianLastName: String = ""
+    var guardianStreet: String = ""
+    var guardianZip: String = ""
+    var guardianCity: String = ""
+    var guardianPhone: String = ""
+    var guardianMobile: String = ""
+    var guardianEmail: String = ""
+    var disabilityType: String = ""
+    var disabilityClass: String = ""
+    var disabilityCause: String = ""
+    var consentDataTransfer: Bool?
+    var consentPhotos: Bool?
 
     init(id: UUID = UUID(), memberID: UUID, requestedBy: String, requestedAt: Date = .now,
          status: String = MemberChangeRequest.pendingStatus, reviewedBy: String = "", reviewedAt: Date? = nil,
@@ -83,7 +102,7 @@ nonisolated extension MemberChangeRequest {
     /// editing feels identical; the live `member` is never touched until
     /// this gets approved.
     static func snapshot(of member: Member, requestedBy: String) -> MemberChangeRequest {
-        MemberChangeRequest(
+        let request = MemberChangeRequest(
             memberID: member.id, requestedBy: requestedBy,
             firstName: member.firstName, lastName: member.lastName, title: member.title,
             gender: member.gender, birthDate: member.birthDate, street: member.street,
@@ -91,6 +110,28 @@ nonisolated extension MemberChangeRequest {
             phone: member.phone, sportId: member.sportId, svnr: member.svnr, iban: member.iban,
             lastMedicalExamination: member.lastMedicalExamination
         )
+        request.copyApplicationFields(from: member)
+        return request
+    }
+
+    /// The Beitrittserklärung fields, from the live roster entry.
+    func copyApplicationFields(from member: Member) {
+        membershipType = member.membershipType
+        citizenship = member.citizenship
+        mobile = member.mobile
+        guardianFirstName = member.guardianFirstName
+        guardianLastName = member.guardianLastName
+        guardianStreet = member.guardianStreet
+        guardianZip = member.guardianZip
+        guardianCity = member.guardianCity
+        guardianPhone = member.guardianPhone
+        guardianMobile = member.guardianMobile
+        guardianEmail = member.guardianEmail
+        disabilityType = member.disabilityType
+        disabilityClass = member.disabilityClass
+        disabilityCause = member.disabilityCause
+        consentDataTransfer = member.consentDataTransfer
+        consentPhotos = member.consentPhotos
     }
 
     /// True if any proposed field differs from `member`'s current value —
@@ -102,7 +143,15 @@ nonisolated extension MemberChangeRequest {
             gender != member.gender || birthDate != member.birthDate || street != member.street ||
             zip != member.zip || city != member.city || country != member.country ||
             email != member.email || phone != member.phone || sportId != member.sportId ||
-            svnr != member.svnr || iban != member.iban || lastMedicalExamination != member.lastMedicalExamination
+            svnr != member.svnr || iban != member.iban || lastMedicalExamination != member.lastMedicalExamination ||
+            membershipType != member.membershipType || citizenship != member.citizenship || mobile != member.mobile ||
+            guardianFirstName != member.guardianFirstName || guardianLastName != member.guardianLastName ||
+            guardianStreet != member.guardianStreet || guardianZip != member.guardianZip ||
+            guardianCity != member.guardianCity || guardianPhone != member.guardianPhone ||
+            guardianMobile != member.guardianMobile || guardianEmail != member.guardianEmail ||
+            disabilityType != member.disabilityType || disabilityClass != member.disabilityClass ||
+            disabilityCause != member.disabilityCause || consentDataTransfer != member.consentDataTransfer ||
+            consentPhotos != member.consentPhotos
     }
 
     /// Copies every proposed field onto `member` — the entire effect of
@@ -127,10 +176,26 @@ nonisolated extension MemberChangeRequest {
         member.email = email
         member.phone = phone
         member.sportId = sportId
+        member.membershipType = membershipType
+        member.citizenship = citizenship
+        member.mobile = mobile
+        member.guardianFirstName = guardianFirstName
+        member.guardianLastName = guardianLastName
+        member.guardianStreet = guardianStreet
+        member.guardianZip = guardianZip
+        member.guardianCity = guardianCity
+        member.guardianPhone = guardianPhone
+        member.guardianMobile = guardianMobile
+        member.guardianEmail = guardianEmail
         guard includingPrivate else { return }
         member.svnr = svnr
         member.iban = iban
         member.birthDate = birthDate
         member.lastMedicalExamination = lastMedicalExamination
+        member.disabilityType = disabilityType
+        member.disabilityClass = disabilityClass
+        member.disabilityCause = disabilityCause
+        member.consentDataTransfer = consentDataTransfer
+        member.consentPhotos = consentPhotos
     }
 }

@@ -9,6 +9,7 @@ struct AccountView: View {
     @Query private var allUsers: [User]
     @Query private var members: [Member]
     @Query private var approvals: [AccountApproval]
+    @Query private var changeRequests: [MemberChangeRequest]
 
     @State private var showEdit = false
     @State private var showMyMember = false
@@ -19,6 +20,8 @@ struct AccountView: View {
     @State private var showRequestSent = false
     @State private var showRedeemCode = false
     @State private var errorMessage: String?
+    @State private var showApplication = false
+    @State private var photo: Data?
 
     /// The Benutzerverwaltung entry an admin confirmed as this account's
     /// (`AccessPolicy.approvedMember`). A name/email match alone is not
@@ -28,10 +31,19 @@ struct AccountView: View {
         currentUser.flatMap { AccessPolicy.approvedMember(for: $0, roster: members, approvals: approvals, users: allUsers) }
     }
 
+    /// The entry this account edits as its own: the approved one, or — for
+    /// accounts that may manage the Benutzerverwaltung anyway — the entry
+    /// matching their email/name (an admin needs no approval of their own).
+    private var ownMember: Member? {
+        if let approvedMember { return approvedMember }
+        guard let user = currentUser, authContext.can(.membersManage) else { return nil }
+        return AccessPolicy.suggestedMember(for: user, roster: members)?.member
+    }
+
     /// An unapproved account that plausibly belongs to a roster entry (or has
     /// requested membership) — shown "Freigabe ausstehend", never the data.
     private var awaitingApproval: Bool {
-        guard let user = currentUser, approvedMember == nil else { return false }
+        guard let user = currentUser, ownMember == nil else { return false }
         return AccessPolicy.suggestedMember(for: user, roster: members) != nil
     }
 
@@ -43,10 +55,18 @@ struct AccountView: View {
                         ZStack {
                             Circle()
                                 .fill(Theme.brandFill)
-                            Text(user.displayName.prefix(1).uppercased())
-                                .font(.title)
-                                .bold()
-                                .foregroundStyle(.white)
+                            if let photo, let image = UIImage(data: photo) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .clipShape(Circle())
+                                    .accessibilityLabel("Profilfoto")
+                            } else {
+                                Text(user.displayName.prefix(1).uppercased())
+                                    .font(.title)
+                                    .bold()
+                                    .foregroundStyle(.white)
+                            }
                         }
                         .frame(width: 70, height: 70)
 
@@ -70,7 +90,7 @@ struct AccountView: View {
                     LabeledContent("Teams", value: "\(user.memberships.count)")
                     LabeledContent("Teilnahmen", value: "\(user.participations.count)")
                     LabeledContent("Grazer VSC") {
-                        let isMember = approvedMember?.memberOfGVSC ?? false
+                        let isMember = ownMember?.memberOfGVSC ?? false
                         Label(isMember ? "Mitglied" : "Kein Mitglied",
                               systemImage: isMember ? "checkmark.seal.fill" : "xmark.seal")
                             .foregroundStyle(isMember ? Theme.Palette.success : .secondary)
@@ -104,12 +124,24 @@ struct AccountView: View {
                             Label("Aktivierungscode einlösen", systemImage: "number.square")
                         }
                     }
-                    if let member = approvedMember {
+                    if let member = ownMember {
                         Button {
                             requestedMember = member
                             showMyMember = true
                         } label: {
                             Label("Vereinsdaten bearbeiten", systemImage: "square.and.pencil")
+                        }
+                        if !member.memberOfGVSC {
+                            Button {
+                                showApplication = true
+                            } label: {
+                                Label("Beitrittserklärung Grazer VSC senden", systemImage: "doc.richtext")
+                            }
+                            if let appliedAt = member.gvscAppliedAt {
+                                Label("Beitritt beantragt am \(appliedAt.formatted(date: .abbreviated, time: .omitted)) — ein Admin bestätigt die Mitgliedschaft.",
+                                      systemImage: "envelope.badge")
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     } else if awaitingApproval {
                         Label("Freigabe ausstehend: Ein Admin muss bestätigen, dass dieses Konto zu deinem Eintrag in der Benutzerverwaltung gehört.",
@@ -169,8 +201,23 @@ struct AccountView: View {
         }
         .sheet(isPresented: $showEdit) {
             if let user = currentUser {
-                EditAccountView(user: user)
+                EditAccountView(user: user, photo: $photo)
             }
+        }
+        .sheet(isPresented: $showApplication) {
+            if let member = ownMember {
+                GVSCApplicationView(
+                    member: member,
+                    request: changeRequests.first {
+                        $0.memberID == member.id && $0.status == MemberChangeRequest.pendingStatus
+                    },
+                    photoUserID: currentUser?.id,
+                    canEditPhoto: true)
+            }
+        }
+        .task(id: currentUser?.id) {
+            guard let id = currentUser?.id else { return }
+            photo = await SupabaseProfileService.downloadPhoto(userID: id)
         }
         .sheet(isPresented: $showMyMember) {
             // Uses requestedMember (set right before showMyMember = true, by
