@@ -161,6 +161,22 @@ struct MyMemberView: View {
 
     private func submitIfChanged() {
         guard let draft, draft.differs(from: member) else { return }
+        // Admins may edit the Benutzerverwaltung anyway — and the server only
+        // accepts proposals for the account's linked entry (`my_member_id()`),
+        // which e.g. an entry they just created via "Mitgliedschaft
+        // beantragen" isn't. So save directly instead of proposing.
+        if authContext.can(.membersManage) {
+            let includingPrivate = authContext.can(.membersPrivateWrite) && authContext.privateDataLoaded
+            if draft.modelContext == nil {
+                draft.apply(to: member, includingPrivate: includingPrivate)
+                MemberService.save(member, modelContext: modelContext)
+            } else {
+                MemberChangeRequestService.approve(draft, member: member, includingPrivate: includingPrivate,
+                                                   reviewedBy: currentUser?.id.uuidString ?? "",
+                                                   modelContext: modelContext)
+            }
+            return
+        }
         if privateEditable, privateDiffers(draft) {
             var proposal = MemberPrivateData(memberID: member.id, svnr: draft.svnr, iban: draft.iban,
                                              birthDate: draft.birthDate,
