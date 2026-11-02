@@ -40,17 +40,18 @@ enum TeilnehmerlisteExportError: LocalizedError {
 }
 
 /// Fills the official Sport Austria "TeilnehmerInnenliste (TN)" Excel template
-/// (bundled as TN_TeilnehmerInnenliste.xlsx, downloaded from sportaustria.at)
+/// (bundled as TN_TeilnehmerInnenliste.xlsx — the club's 15-row variant of the
+/// form originally downloaded from sportaustria.at)
 /// with a specific event's attendees. An .xlsx is just a zip of XML, so this
 /// works by unzipping the bundled template, patching the known blank cell
 /// coordinates in xl/worksheets/sheet1.xml with real values, and rezipping —
 /// every other file in the archive (styles, images, the GDPR footer text) is
 /// copied through byte-for-byte, unchanged.
 enum TeilnehmerlisteExporter {
-    /// The template has exactly 25 pre-numbered rows (lfd. Nr. 1–25) — a hard
-    /// limit inherited from the real paper form, not something we can extend
+    /// The template has exactly 15 pre-numbered rows (lfd. Nr. 1–15, sheet rows
+    /// 10–24) — a hard limit of the form layout, not something we can extend
     /// without breaking the row-numbering/merge layout.
-    static let maxRows = 25
+    static let maxRows = 15
 
     static func export(context: TeilnehmerlisteContext) throws -> URL {
         guard let templateURL = Bundle.main.url(forResource: "TN_TeilnehmerInnenliste", withExtension: "xlsx") else {
