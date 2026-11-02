@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
   const authHeader = req.headers.get("Authorization");
   if (!authHeader) return json(401, { error: "missing authorization" });
 
-  let body: { member_id?: string; docx_base64?: string };
+  let body: { member_id?: string; docx_base64?: string; own_photo?: boolean };
   try {
     body = await req.json();
   } catch {
@@ -94,10 +94,13 @@ Deno.serve(async (req) => {
     content: encodeBase64(docx),
   }];
 
+  // The linked account's photo; sent from the caller's own Account screen
+  // (e.g. an admin whose entry isn't linked), the caller's own photo.
+  const photoUserID = linkedUserID ?? (body.own_photo === true ? user.id : null);
   let hasPhoto = false;
-  if (linkedUserID) {
+  if (photoUserID) {
     const { data: photo } = await admin.storage
-      .from("profile-photos").download(`${linkedUserID}.jpg`);
+      .from("profile-photos").download(`${photoUserID}.jpg`);
     if (photo) {
       attachments.push({
         filename: `Foto_${baseName}.jpg`,

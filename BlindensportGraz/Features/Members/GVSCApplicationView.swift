@@ -176,7 +176,8 @@ struct GVSCApplicationView: View {
         isSending = true
         defer { isSending = false }
         do {
-            let withPhoto = try await SupabaseMembershipApplicationService.send(memberID: member.id, docx: current)
+            let withPhoto = try await SupabaseMembershipApplicationService.send(memberID: member.id, docx: current,
+                                                                                 ownPhoto: canEditPhoto)
             member.gvscAppliedAt = .now
             try? modelContext.save()
             sentWithPhoto = withPhoto

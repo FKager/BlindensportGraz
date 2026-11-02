@@ -31,13 +31,17 @@ enum SupabaseMembershipApplicationService {
         let photo: Bool
     }
 
-    /// Returns whether a profile photo was attached.
-    static func send(memberID: UUID, docx: Data) async throws -> Bool {
+    /// Returns whether a profile photo was attached. `ownPhoto`: sent from
+    /// the caller's own Account screen — without a linked account the
+    /// caller's own profile photo is attached.
+    static func send(memberID: UUID, docx: Data, ownPhoto: Bool) async throws -> Bool {
         nonisolated struct Body: Encodable {
             let member_id: String
             let docx_base64: String
+            let own_photo: Bool
         }
-        let body = Body(member_id: memberID.uuidString.lowercased(), docx_base64: docx.base64EncodedString())
+        let body = Body(member_id: memberID.uuidString.lowercased(), docx_base64: docx.base64EncodedString(),
+                        own_photo: ownPhoto)
         do {
             let result: Result = try await SupabaseClientSingleton.shared.client.functions.invoke(
                 "send-membership-application", options: FunctionInvokeOptions(method: .post, body: body))

@@ -31,10 +31,19 @@ struct AccountView: View {
         currentUser.flatMap { AccessPolicy.approvedMember(for: $0, roster: members, approvals: approvals, users: allUsers) }
     }
 
+    /// The entry this account edits as its own: the approved one, or — for
+    /// accounts that may manage the Benutzerverwaltung anyway — the entry
+    /// matching their email/name (an admin needs no approval of their own).
+    private var ownMember: Member? {
+        if let approvedMember { return approvedMember }
+        guard let user = currentUser, authContext.can(.membersManage) else { return nil }
+        return AccessPolicy.suggestedMember(for: user, roster: members)?.member
+    }
+
     /// An unapproved account that plausibly belongs to a roster entry (or has
     /// requested membership) — shown "Freigabe ausstehend", never the data.
     private var awaitingApproval: Bool {
-        guard let user = currentUser, approvedMember == nil else { return false }
+        guard let user = currentUser, ownMember == nil else { return false }
         return AccessPolicy.suggestedMember(for: user, roster: members) != nil
     }
 
@@ -81,7 +90,7 @@ struct AccountView: View {
                     LabeledContent("Teams", value: "\(user.memberships.count)")
                     LabeledContent("Teilnahmen", value: "\(user.participations.count)")
                     LabeledContent("Grazer VSC") {
-                        let isMember = approvedMember?.memberOfGVSC ?? false
+                        let isMember = ownMember?.memberOfGVSC ?? false
                         Label(isMember ? "Mitglied" : "Kein Mitglied",
                               systemImage: isMember ? "checkmark.seal.fill" : "xmark.seal")
                             .foregroundStyle(isMember ? Theme.Palette.success : .secondary)
@@ -115,7 +124,7 @@ struct AccountView: View {
                             Label("Aktivierungscode einlösen", systemImage: "number.square")
                         }
                     }
-                    if let member = approvedMember {
+                    if let member = ownMember {
                         Button {
                             requestedMember = member
                             showMyMember = true
@@ -196,7 +205,7 @@ struct AccountView: View {
             }
         }
         .sheet(isPresented: $showApplication) {
-            if let member = approvedMember {
+            if let member = ownMember {
                 GVSCApplicationView(
                     member: member,
                     request: changeRequests.first {
