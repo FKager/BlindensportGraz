@@ -114,13 +114,16 @@ extension SupabaseSync {
                 member.defaultFunction = row.defaultFunction
                 member.memberOfGVSC = row.memberOfGVSC
                 member.joinedAt = row.joinedAt
+                member.gvscAppliedAt = row.gvscAppliedAt
             } else {
-                modelContext.insert(Member(id: row.id, firstName: row.firstName, lastName: row.lastName,
-                                           street: "", zip: "", city: "", country: "", email: "", phone: "",
-                                           memberNumber: row.memberNumber, joinedAt: row.joinedAt, notes: "",
-                                           gender: "", title: "", birthDate: nil, sportId: row.sportID,
-                                           svnr: "", iban: "", lastMedicalExamination: nil,
-                                           defaultFunction: row.defaultFunction, memberOfGVSC: row.memberOfGVSC))
+                let member = Member(id: row.id, firstName: row.firstName, lastName: row.lastName,
+                                    street: "", zip: "", city: "", country: "", email: "", phone: "",
+                                    memberNumber: row.memberNumber, joinedAt: row.joinedAt, notes: "",
+                                    gender: "", title: "", birthDate: nil, sportId: row.sportID,
+                                    svnr: "", iban: "", lastMedicalExamination: nil,
+                                    defaultFunction: row.defaultFunction, memberOfGVSC: row.memberOfGVSC)
+                member.gvscAppliedAt = row.gvscAppliedAt
+                modelContext.insert(member)
             }
         }
         try modelContext.save()
@@ -145,6 +148,17 @@ extension SupabaseSync {
             member.notes = row.notes
             member.gender = row.gender
             member.title = row.title
+            member.membershipType = row.membershipType
+            member.citizenship = row.citizenship
+            member.mobile = row.mobile
+            member.guardianFirstName = row.guardianFirstName
+            member.guardianLastName = row.guardianLastName
+            member.guardianStreet = row.guardianStreet
+            member.guardianZip = row.guardianZip
+            member.guardianCity = row.guardianCity
+            member.guardianPhone = row.guardianPhone
+            member.guardianMobile = row.guardianMobile
+            member.guardianEmail = row.guardianEmail
         }
         if since == nil {
             let readable = Set(rows.map(\.id))
@@ -152,6 +166,10 @@ extension SupabaseSync {
             where !readable.contains(member.id) && !hasPendingPush(member.id) {
                 member.street = ""; member.zip = ""; member.city = ""; member.country = ""
                 member.email = ""; member.phone = ""; member.notes = ""; member.gender = ""; member.title = ""
+                member.membershipType = ""; member.citizenship = ""; member.mobile = ""
+                member.guardianFirstName = ""; member.guardianLastName = ""; member.guardianStreet = ""
+                member.guardianZip = ""; member.guardianCity = ""; member.guardianPhone = ""
+                member.guardianMobile = ""; member.guardianEmail = ""
             }
         }
         setCursor(table, rows.compactMap(\.updatedAt).max())
@@ -469,6 +487,8 @@ extension SupabaseSync {
                     country: row.country, email: row.email, phone: row.phone, sportId: row.sportID,
                     svnr: member?.svnr ?? "", iban: member?.iban ?? "",
                     lastMedicalExamination: member?.lastMedicalExamination)
+                // Protected fields: seeded from the local entry, like svnr/iban.
+                if let member { request.copyApplicationFields(from: member) }
                 modelContext.insert(request)
             }
             request.status = row.status
@@ -485,6 +505,17 @@ extension SupabaseSync {
             request.email = row.email
             request.phone = row.phone
             request.sportId = row.sportID
+            request.membershipType = row.membershipType
+            request.citizenship = row.citizenship
+            request.mobile = row.mobile
+            request.guardianFirstName = row.guardianFirstName
+            request.guardianLastName = row.guardianLastName
+            request.guardianStreet = row.guardianStreet
+            request.guardianZip = row.guardianZip
+            request.guardianCity = row.guardianCity
+            request.guardianPhone = row.guardianPhone
+            request.guardianMobile = row.guardianMobile
+            request.guardianEmail = row.guardianEmail
         }
     }
 

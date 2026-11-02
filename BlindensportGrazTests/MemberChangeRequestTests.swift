@@ -121,4 +121,34 @@ final class MemberChangeRequestTests: XCTestCase {
         XCTAssertEqual(member.birthDate, Date(timeIntervalSince1970: 0))
         XCTAssertEqual(member.lastMedicalExamination, Date(timeIntervalSince1970: 86_400))
     }
+
+    func testApplicationFieldsRoundTripThroughARequest() throws {
+        let context = try makeContext()
+        let member = makeMember()
+        member.citizenship = "Österreich"
+        member.consentPhotos = true
+        context.insert(member)
+        try context.save()
+
+        let draft = MemberChangeRequest.snapshot(of: member, requestedBy: "user-1")
+        XCTAssertEqual(draft.citizenship, "Österreich")
+        XCTAssertEqual(draft.consentPhotos, true)
+        XCTAssertFalse(draft.differs(from: member))
+
+        draft.membershipType = GVSCMembershipType.supporting
+        draft.guardianFirstName = "Eva"
+        draft.disabilityType = "sehbehindert"
+        draft.consentPhotos = nil
+        XCTAssertTrue(draft.differs(from: member))
+
+        draft.apply(to: member, includingPrivate: false)
+        XCTAssertEqual(member.membershipType, GVSCMembershipType.supporting)
+        XCTAssertEqual(member.guardianFirstName, "Eva")
+        XCTAssertEqual(member.disabilityType, "", "protected without a private proposal")
+        XCTAssertEqual(member.consentPhotos, true, "protected without a private proposal")
+
+        draft.apply(to: member, includingPrivate: true)
+        XCTAssertEqual(member.disabilityType, "sehbehindert")
+        XCTAssertNil(member.consentPhotos)
+    }
 }

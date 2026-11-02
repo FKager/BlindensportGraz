@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import it.a11y.blindensport.webadmin.supabase.Postgrest;
 
+import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -102,6 +103,46 @@ public final class MemberStore {
             row.put("member_id", key);
             db.upsert("member_private", List.of(row), "member_id");
         }
+    }
+
+    /** The Beitrittserklärung contact fields and the applied date (EMPTY for an unknown id). */
+    public MemberApplication application(String id) {
+        Optional<String> key = key(id);
+        if (key.isEmpty()) {
+            return MemberApplication.EMPTY;
+        }
+        var members = db.select("members", "gvsc_applied_at", eq("id", key.get()));
+        Instant appliedAt = members.isEmpty() ? null
+                : Dates.parseTimestamp(members.get(0).path("gvsc_applied_at").asText(null)).orElse(null);
+        var contacts = db.select("member_contacts", MemberApplication.COLUMNS, eq("id", key.get()));
+        return MemberApplication.fromRow(contacts.isEmpty() ? MissingNode.getInstance() : contacts.get(0), appliedAt);
+    }
+
+    /** Writes only the Beitrittserklärung columns of {@code member_contacts} (after {@link #save}). */
+    public void saveApplication(String id, MemberApplication application, UUID updatedBy) {
+        String key = key(id).orElseThrow(() -> new IllegalArgumentException("Member id '" + id + "' is not a UUID."));
+        Map<String, Object> row = new HashMap<>(application.columns());
+        row.put("id", key);
+        if (updatedBy != null) {
+            row.put("updated_by", updatedBy.toString());
+        }
+        db.upsert("member_contacts", List.of(row), "id");
+    }
+
+    /** Disability details and consents (members.private.read). */
+    public MemberHealth health(String id) {
+        return key(id).map(key -> {
+            var rows = db.select("member_private", MemberHealth.COLUMNS, eq("member_id", key));
+            return rows.isEmpty() ? MemberHealth.EMPTY : MemberHealth.fromRow(rows.get(0));
+        }).orElse(MemberHealth.EMPTY);
+    }
+
+    /** Merge-upserts only the health columns of {@code member_private} (members.private.write). */
+    public void saveHealth(String id, MemberHealth health, UUID updatedBy) {
+        String key = key(id).orElseThrow(() -> new IllegalArgumentException("Member id '" + id + "' is not a UUID."));
+        Map<String, Object> row = health.row(updatedBy);
+        row.put("member_id", key);
+        db.upsert("member_private", List.of(row), "member_id");
     }
 
     /**

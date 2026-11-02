@@ -6,6 +6,14 @@ struct MemberDetailView: View {
     @Bindable var member: Member
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @State private var showApplication = false
+    @Query private var approvals: [AccountApproval]
+
+    /// The account an admin linked to this entry — its profile photo goes
+    /// with the Beitrittserklärung.
+    private var linkedUserID: UUID? {
+        approvals.filter { $0.memberID == member.id }.max { $0.approvedAt < $1.approvedAt }?.userID
+    }
 
     var body: some View {
         Form {
@@ -35,6 +43,24 @@ struct MemberDetailView: View {
             }
             Section("Mitgliedschaft") {
                 Toggle("Mitglied des Grazer VSC", isOn: $member.memberOfGVSC)
+                if !member.memberOfGVSC, let appliedAt = member.gvscAppliedAt {
+                    Label("Beitritt beantragt am \(appliedAt.formatted(date: .abbreviated, time: .omitted))",
+                          systemImage: "envelope.badge")
+                        .foregroundStyle(Theme.Palette.warning)
+                    Button {
+                        confirmMembership()
+                    } label: {
+                        Label("Mitgliedschaft bestätigen", systemImage: "checkmark.seal")
+                    }
+                    .accessibilityHint("Schaltet „Mitglied des Grazer VSC“ ein und setzt „Beigetreten“ auf heute.")
+                }
+                if !member.memberOfGVSC {
+                    Button {
+                        showApplication = true
+                    } label: {
+                        Label("Beitrittserklärung senden", systemImage: "doc.richtext")
+                    }
+                }
                 TextField("Mitgliedsnummer", text: $member.memberNumber)
                 DatePicker("Beigetreten", selection: $member.joinedAt, displayedComponents: .date)
                 TextField("Sport-ID", text: $member.sportId)
@@ -55,6 +81,7 @@ struct MemberDetailView: View {
                 OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $member.lastMedicalExamination)
                 TextField("Standardfunktion", text: $member.defaultFunction)
             }
+            GVSCApplicationFieldsSections(model: member, includesPrivate: true)
             Section("Notizen") {
                 TextField("Notizen", text: $member.notes, axis: .vertical)
                     .lineLimit(3...6)
@@ -70,5 +97,15 @@ struct MemberDetailView: View {
         .onDisappear {
             MemberService.save(member, modelContext: modelContext)
         }
+        .sheet(isPresented: $showApplication) {
+            GVSCApplicationView(member: member, photoUserID: linkedUserID)
+        }
+    }
+
+    /// The signed form has arrived: the entry becomes a club member today.
+    private func confirmMembership() {
+        member.memberOfGVSC = true
+        member.joinedAt = .now
+        MemberService.save(member, modelContext: modelContext)
     }
 }

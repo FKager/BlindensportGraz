@@ -16,6 +16,8 @@ import it.a11y.blindensport.webadmin.auth.AdminSessions;
 import it.a11y.blindensport.webadmin.auth.Permission;
 import it.a11y.blindensport.webadmin.members.ChangeRequestStore;
 import it.a11y.blindensport.webadmin.members.ChangeRequestStore.ChangeRequest;
+import it.a11y.blindensport.webadmin.members.MemberApplication;
+import it.a11y.blindensport.webadmin.members.MemberHealth;
 import it.a11y.blindensport.webadmin.members.MemberPrivate;
 import it.a11y.blindensport.webadmin.members.MemberRecord;
 import it.a11y.blindensport.webadmin.members.MemberStore;
@@ -91,6 +93,18 @@ public class ChangeRequestsView extends AdminView {
                 ? Optional.ofNullable(attempt("Laden", () -> new ChangeRequestStore(admin.db())
                         .privateProposal(request.memberId()).orElse(null)))
                 : Optional.empty();
+        MemberHealth healthProposal = proposal.isPresent()
+                ? attempt("Laden", () -> new ChangeRequestStore(admin.db())
+                        .healthProposal(request.memberId()).orElse(null))
+                : null;
+        MemberApplication application = member == null ? MemberApplication.EMPTY
+                : Objects.requireNonNullElse(
+                        attempt("Laden", () -> new MemberStore(admin.db()).application(request.memberId())),
+                        MemberApplication.EMPTY);
+        MemberHealth health = healthProposal == null ? MemberHealth.EMPTY
+                : Objects.requireNonNullElse(
+                        attempt("Laden", () -> new MemberStore(admin.db()).health(request.memberId())),
+                        MemberHealth.EMPTY);
 
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Änderungsantrag: " + memberName(request.memberId()));
@@ -98,7 +112,11 @@ public class ChangeRequestsView extends AdminView {
         if (member == null) {
             dialog.add(new Paragraph("Zugehöriges Mitglied nicht gefunden – vermutlich zwischenzeitlich gelöscht."));
         } else {
-            List<String> changes = diffs(member, request, proposal.orElse(null));
+            List<String> changes = diffs(member, application, request, proposal.orElse(null));
+            if (healthProposal != null) {
+                changes = new ArrayList<>(changes);
+                changes.addAll(healthDiffs(health, healthProposal));
+            }
             if (changes.isEmpty()) {
                 dialog.add(new Paragraph("Keine Unterschiede mehr zu den aktuellen Vereinsdaten."));
             } else {
@@ -141,15 +159,23 @@ public class ChangeRequestsView extends AdminView {
     }
 
     /** "Ort: von Graz zu Wien" lines, like the app's diff (spoken that way by VoiceOver too). */
-    static List<String> diffs(MemberRecord m, ChangeRequest r, MemberPrivate proposal) {
-        Map<String, String> current = Map.ofEntries(
+    static List<String> diffs(MemberRecord m, MemberApplication application, ChangeRequest r, MemberPrivate proposal) {
+        Map<String, String> current = new java.util.HashMap<>(Map.ofEntries(
                 Map.entry("first_name", m.firstName()), Map.entry("last_name", m.lastName()),
                 Map.entry("title", m.title()), Map.entry("gender", m.gender()), Map.entry("street", m.street()),
                 Map.entry("zip", m.zip()), Map.entry("city", m.city()), Map.entry("country", m.country()),
-                Map.entry("email", m.email()), Map.entry("phone", m.phone()), Map.entry("sport_id", m.sportId()));
+                Map.entry("email", m.email()), Map.entry("phone", m.phone()), Map.entry("sport_id", m.sportId())));
+        current.putAll(application.columns());
         List<String> out = new ArrayList<>();
-        ChangeRequestStore.FIELD_LABELS.forEach((key, label) ->
-                add(out, label, current.getOrDefault(key, ""), r.fields().getOrDefault(key, "")));
+        ChangeRequestStore.FIELD_LABELS.forEach((key, label) -> {
+            String old = current.getOrDefault(key, "");
+            String proposed = r.fields().getOrDefault(key, "");
+            if ("membership_type".equals(key)) {
+                old = MemberApplication.membershipTypeLabel(old);
+                proposed = MemberApplication.membershipTypeLabel(proposed);
+            }
+            add(out, label, old, proposed);
+        });
         if (proposal != null) {
             MemberPrivate stored = m.privateData();
             add(out, "SVNR", stored.svnr(), proposal.svnr());
@@ -158,6 +184,19 @@ public class ChangeRequestsView extends AdminView {
             add(out, "Letzte sportärztl. Untersuchung", day(stored.lastMedicalExamination()),
                     day(proposal.lastMedicalExamination()));
         }
+        return out;
+    }
+
+    /** Disability/consent lines of a protected proposal. */
+    static List<String> healthDiffs(MemberHealth stored, MemberHealth proposal) {
+        List<String> out = new ArrayList<>();
+        add(out, "Art der Behinderung", stored.disabilityType(), proposal.disabilityType());
+        add(out, "Behinderungsklasse", stored.disabilityClass(), proposal.disabilityClass());
+        add(out, "Behinderung durch", stored.disabilityCause(), proposal.disabilityCause());
+        add(out, "Datenweitergabe", MemberHealth.consentLabel(stored.consentDataTransfer()),
+                MemberHealth.consentLabel(proposal.consentDataTransfer()));
+        add(out, "Foto/Video", MemberHealth.consentLabel(stored.consentPhotos()),
+                MemberHealth.consentLabel(proposal.consentPhotos()));
         return out;
     }
 

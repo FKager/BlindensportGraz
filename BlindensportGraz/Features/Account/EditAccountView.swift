@@ -2,10 +2,12 @@ import SwiftUI
 import SwiftData
 
 /// Edits the own name in the Supabase profile (the only client-writable
-/// profile columns). Email is the login identity and the role is assigned by
-/// root, so both are read-only here.
+/// profile columns) and the profile photo. Email is the login identity and
+/// the role is assigned by root, so both are read-only here.
 struct EditAccountView: View {
     @Bindable var user: User
+    /// The profile photo shown in AccountView; uploads happen right away.
+    @Binding var photo: Data?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(AuthContext.self) private var authContext
@@ -30,6 +32,7 @@ struct EditAccountView: View {
                             .foregroundStyle(Theme.Palette.warning)
                     }
                 }
+                ProfilePhotoSection(userID: user.id, photo: $photo)
                 Section {
                     LabeledContent("Rolle", value: authContext.role?.displayLabel ?? String(localized: "Freigabe ausstehend"))
                     Text("Die Rolle kann nur von einem Root-Benutzer geändert werden.")

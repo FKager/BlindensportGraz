@@ -56,6 +56,7 @@ public final class ChangeRequestStore {
         m.put("email", "E-Mail");
         m.put("phone", "Telefon");
         m.put("sport_id", "Sport-ID");
+        m.putAll(MemberApplication.LABELS);
         return m;
     }
 
@@ -89,6 +90,16 @@ public final class ChangeRequestStore {
         return rows.isEmpty() ? Optional.empty() : Optional.of(MemberPrivate.fromRow(rows.get(0)));
     }
 
+    /** The proposed disability details/consents, if the member sent a protected proposal. */
+    public Optional<MemberHealth> healthProposal(String memberId) {
+        Optional<String> key = MemberStore.key(memberId);
+        if (key.isEmpty()) {
+            return Optional.empty();
+        }
+        var rows = db.select("member_private_requests", MemberHealth.COLUMNS, eq("member_id", key.get()));
+        return rows.isEmpty() ? Optional.empty() : Optional.of(MemberHealth.fromRow(rows.get(0)));
+    }
+
     /**
      * Applies the proposed fields to the entry, then (with {@code applyPrivate})
      * the protected proposal via {@code apply_member_private_request}, and
@@ -108,6 +119,7 @@ public final class ChangeRequestStore {
         for (String k : List.of("title", "gender", "street", "zip", "city", "country", "email", "phone")) {
             contact.put(k, f.get(k));
         }
+        MemberApplication.LABELS.keySet().forEach(k -> contact.put(k, f.get(k)));
         contact.put("updated_by", reviewer.toString());
         if (db.update("members", member, eq("id", key)) == 0) {
             throw new IllegalArgumentException("Das zugehörige Mitglied gibt es nicht mehr.");

@@ -13,6 +13,8 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import it.a11y.blindensport.webadmin.members.MemberApplication;
+import it.a11y.blindensport.webadmin.members.MemberHealth;
 import it.a11y.blindensport.webadmin.members.MemberPrivate;
 import it.a11y.blindensport.webadmin.members.MemberRecord;
 import it.a11y.blindensport.webadmin.members.Validation;
@@ -20,9 +22,9 @@ import it.a11y.blindensport.webadmin.members.Validation;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.BiConsumer;
 
 /**
  * Create / edit one roster entry, laid out like the app's MemberDetailView.
@@ -31,6 +33,14 @@ import java.util.function.BiConsumer;
  */
 class MemberDialog extends Dialog {
     private static final Map<String, String> GENDERS = Map.of("", "–", "f", "weiblich", "m", "männlich");
+    private static final Map<String, String> MEMBERSHIP_TYPES =
+            Map.of("", "–", "active", "aktiv", "supporting", "fördernd");
+    private static final Map<String, String> CONSENTS = Map.of("", "–", "true", "Ja", "false", "Nein");
+
+    /** What "Speichern" hands back; {@code health} is null unless it must be written. */
+    interface SaveHandler {
+        void save(MemberRecord record, boolean writePrivate, MemberApplication application, MemberHealth health);
+    }
 
     private final MemberRecord existing;
     private final boolean canReadPrivate;
@@ -56,14 +66,33 @@ class MemberDialog extends Dialog {
     private final TextField iban = new TextField("IBAN");
     private final DatePicker birthDate = GermanUi.datePicker("Geburtsdatum");
     private final DatePicker lastMedicalExamination = GermanUi.datePicker("Letzte sportärztl. Untersuchung");
+    private final Select<String> membershipType = new Select<>();
+    private final TextField citizenship = new TextField("Staatsbürgerschaft");
+    private final TextField mobile = new TextField("Mobilnummer");
+    private final TextField guardianFirstName = new TextField("Vorname");
+    private final TextField guardianLastName = new TextField("Nachname");
+    private final TextField guardianStreet = new TextField("Straße, Hausnummer");
+    private final TextField guardianZip = new TextField("PLZ");
+    private final TextField guardianCity = new TextField("Wohnort");
+    private final TextField guardianPhone = new TextField("Telefon");
+    private final TextField guardianMobile = new TextField("Mobilnummer");
+    private final EmailField guardianEmail = new EmailField("E-Mail");
+    private final TextField disabilityType = new TextField("Art der Behinderung");
+    private final TextField disabilityClass = new TextField("Behinderungsklasse");
+    private final TextField disabilityCause = new TextField("Behinderung durch (Arbeit, Freizeit)");
+    private final Select<String> consentDataTransfer = new Select<>();
+    private final Select<String> consentPhotos = new Select<>();
+    private final MemberHealth existingHealth;
 
     /**
-     * @param existing null for a new entry
-     * @param onSave   gets the edited record and whether the protected row must be written
+     * @param existing    null for a new entry
+     * @param application the Beitrittserklärung contact fields (EMPTY for a new entry)
+     * @param health      disability/consents (EMPTY unless members.private.read)
      */
-    MemberDialog(MemberRecord existing, boolean canReadPrivate, boolean canWritePrivate,
-                 BiConsumer<MemberRecord, Boolean> onSave) {
+    MemberDialog(MemberRecord existing, MemberApplication application, MemberHealth health,
+                 boolean canReadPrivate, boolean canWritePrivate, SaveHandler onSave) {
         this.existing = existing;
+        this.existingHealth = health;
         this.canReadPrivate = canReadPrivate;
         this.canWritePrivate = canReadPrivate && canWritePrivate;
         setHeaderTitle(existing == null ? "Neues Mitglied" : existing.fullName() + " bearbeiten");
@@ -90,7 +119,18 @@ class MemberDialog extends Dialog {
         FormLayout membership = form(memberOfGVSC, memberNumber, joinedAt, sportId, defaultFunction);
         FormLayout notesForm = form(notes);
         notesForm.setColspan(notes, 2);
-        add(section("Mitglied", person), section("Kontakt", contact), section("Mitgliedschaft", membership),
+        add(section("Mitglied", person), section("Kontakt", contact), section("Mitgliedschaft", membership));
+        if (existing != null && !existing.memberOfGVSC() && application.appliedAt() != null) {
+            add(new Paragraph("Beitrittserklärung gesendet am "
+                    + GermanUi.DAY.format(LocalDate.ofInstant(application.appliedAt(), java.time.ZoneId.of("Europe/Vienna")))
+                    + " – nach Eingang der Unterschrift „Mitglied des Grazer VSC“ aktivieren."));
+        }
+        membershipType.setLabel("Mitgliedsart");
+        membershipType.setItems("", "active", "supporting");
+        membershipType.setItemLabelGenerator(MEMBERSHIP_TYPES::get);
+        add(section("Beitrittserklärung Grazer VSC", form(membershipType, citizenship, mobile)),
+                section("Gesetzliche:r Vertreter:in (nur bei Minderjährigen)", form(guardianFirstName, guardianLastName,
+                        guardianStreet, guardianZip, guardianCity, guardianPhone, guardianMobile, guardianEmail)),
                 section("Notizen", notesForm));
         if (canReadPrivate) {
             FormLayout privateForm = form(svnr, iban, birthDate, lastMedicalExamination);
@@ -99,12 +139,22 @@ class MemberDialog extends Dialog {
                     : "Nur lesbar – zum Ändern fehlt die Berechtigung „Geschützte Daten ändern“.");
             hint.getStyle().set("font-size", "var(--lumo-font-size-s)");
             add(section("Geschützte Daten", hint, privateForm));
-            for (Component field : new Component[] {svnr, iban, birthDate, lastMedicalExamination}) {
+            for (Select<String> consent : List.of(consentDataTransfer, consentPhotos)) {
+                consent.setItems("", "true", "false");
+                consent.setItemLabelGenerator(CONSENTS::get);
+            }
+            consentDataTransfer.setLabel("Datenweitergabe an Fach-/Dachverbände");
+            consentPhotos.setLabel("Foto- und Videoaufnahmen");
+            add(section("Behinderung und Einwilligungen",
+                    form(disabilityType, disabilityClass, disabilityCause, consentDataTransfer, consentPhotos)));
+            for (Component field : new Component[] {svnr, iban, birthDate, lastMedicalExamination,
+                    disabilityType, disabilityClass, disabilityCause, consentDataTransfer, consentPhotos}) {
                 ((com.vaadin.flow.component.HasEnabled) field).setEnabled(this.canWritePrivate);
             }
         }
 
         fill(existing);
+        fillApplication(application, health);
 
         Button save = new Button("Speichern", e -> {
             if (firstName.getValue().isBlank() || lastName.getValue().isBlank()) {
@@ -115,7 +165,9 @@ class MemberDialog extends Dialog {
             MemberRecord record = record();
             MemberPrivate before = existing == null ? MemberPrivate.EMPTY : existing.privateData();
             boolean writePrivate = this.canWritePrivate && !record.privateData().equals(before);
-            onSave.accept(record, writePrivate);
+            MemberHealth editedHealth = health();
+            onSave.save(record, writePrivate, application(application.appliedAt()),
+                    this.canWritePrivate && !editedHealth.equals(existingHealth) ? editedHealth : null);
         });
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         Button cancel = new Button("Abbrechen", e -> close());
@@ -193,6 +245,47 @@ class MemberDialog extends Dialog {
                 email.getValue(), phone.getValue(), memberNumber.getValue(), joined, notes.getValue(),
                 genderValue, title.getValue(), sportId.getValue(), defaultFunction.getValue(),
                 memberOfGVSC.getValue(), privateData);
+    }
+
+    private void fillApplication(MemberApplication a, MemberHealth h) {
+        membershipType.setValue(MEMBERSHIP_TYPES.containsKey(a.membershipType()) ? a.membershipType() : "");
+        citizenship.setValue(a.citizenship());
+        mobile.setValue(a.mobile());
+        guardianFirstName.setValue(a.guardianFirstName());
+        guardianLastName.setValue(a.guardianLastName());
+        guardianStreet.setValue(a.guardianStreet());
+        guardianZip.setValue(a.guardianZip());
+        guardianCity.setValue(a.guardianCity());
+        guardianPhone.setValue(a.guardianPhone());
+        guardianMobile.setValue(a.guardianMobile());
+        guardianEmail.setValue(a.guardianEmail());
+        disabilityType.setValue(h.disabilityType());
+        disabilityClass.setValue(h.disabilityClass());
+        disabilityCause.setValue(h.disabilityCause());
+        consentDataTransfer.setValue(consentKey(h.consentDataTransfer()));
+        consentPhotos.setValue(consentKey(h.consentPhotos()));
+    }
+
+    private MemberApplication application(Instant appliedAt) {
+        return new MemberApplication(membershipType.getValue(), citizenship.getValue().trim(), mobile.getValue().trim(),
+                guardianFirstName.getValue().trim(), guardianLastName.getValue().trim(),
+                guardianStreet.getValue().trim(), guardianZip.getValue().trim(), guardianCity.getValue().trim(),
+                guardianPhone.getValue().trim(), guardianMobile.getValue().trim(), guardianEmail.getValue().trim(),
+                appliedAt);
+    }
+
+    private MemberHealth health() {
+        return new MemberHealth(disabilityType.getValue().trim(), disabilityClass.getValue().trim(),
+                disabilityCause.getValue().trim(), consent(consentDataTransfer.getValue()),
+                consent(consentPhotos.getValue()));
+    }
+
+    private static String consentKey(Boolean consent) {
+        return consent == null ? "" : consent.toString();
+    }
+
+    private static Boolean consent(String key) {
+        return key == null || key.isEmpty() ? null : Boolean.valueOf(key);
     }
 
     /** Same day as before → keep the stored instant; otherwise midnight in Vienna. */

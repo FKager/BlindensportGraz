@@ -126,6 +126,7 @@ struct MyMemberView: View {
                     Text("Geburtsdatum, SVNR, IBAN und Untersuchungsdatum kannst du eintragen, sobald dein Konto freigegeben ist.")
                 }
             }
+            GVSCApplicationFieldsSections(model: draft, includesPrivate: privateEditable)
         }
     }
 
@@ -161,9 +162,14 @@ struct MyMemberView: View {
     private func submitIfChanged() {
         guard let draft, draft.differs(from: member) else { return }
         if privateEditable, privateDiffers(draft) {
-            let proposal = MemberPrivateData(memberID: member.id, svnr: draft.svnr, iban: draft.iban,
+            var proposal = MemberPrivateData(memberID: member.id, svnr: draft.svnr, iban: draft.iban,
                                              birthDate: draft.birthDate,
                                              lastMedicalExamination: draft.lastMedicalExamination)
+            proposal.disabilityType = draft.disabilityType
+            proposal.disabilityClass = draft.disabilityClass
+            proposal.disabilityCause = draft.disabilityCause
+            proposal.consentDataTransfer = draft.consentDataTransfer
+            proposal.consentPhotos = draft.consentPhotos
             Task {
                 do { try await SupabaseMemberPrivateService.submitRequest(proposal) }
                 catch {
@@ -183,5 +189,9 @@ struct MyMemberView: View {
         draft.svnr != member.svnr || draft.iban != member.iban
             || draft.birthDate != member.birthDate
             || draft.lastMedicalExamination != member.lastMedicalExamination
+            || draft.disabilityType != member.disabilityType || draft.disabilityClass != member.disabilityClass
+            || draft.disabilityCause != member.disabilityCause
+            || draft.consentDataTransfer != member.consentDataTransfer
+            || draft.consentPhotos != member.consentPhotos
     }
 }

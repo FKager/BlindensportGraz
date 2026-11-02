@@ -11,12 +11,23 @@ nonisolated struct MemberPrivateData: Codable, Hashable {
     var iban: String = ""
     var birthDate: Date?
     var lastMedicalExamination: Date?
+    // Beitrittserklärung: health data and consents (nil = not answered).
+    var disabilityType: String = ""
+    var disabilityClass: String = ""
+    var disabilityCause: String = ""
+    var consentDataTransfer: Bool?
+    var consentPhotos: Bool?
 
     enum CodingKeys: String, CodingKey {
         case svnr, iban
         case memberID               = "member_id"
         case birthDate              = "birth_date"
         case lastMedicalExamination = "last_medical_examination"
+        case disabilityType         = "disability_type"
+        case disabilityClass        = "disability_class"
+        case disabilityCause        = "disability_cause"
+        case consentDataTransfer    = "consent_data_transfer"
+        case consentPhotos          = "consent_photos"
     }
 
     // Postgres `date` columns: send/receive plain yyyy-MM-dd so no time zone
@@ -46,6 +57,11 @@ nonisolated struct MemberPrivateData: Codable, Hashable {
         iban = try c.decodeIfPresent(String.self, forKey: .iban) ?? ""
         birthDate = Self.day(try c.decodeIfPresent(String.self, forKey: .birthDate))
         lastMedicalExamination = Self.day(try c.decodeIfPresent(String.self, forKey: .lastMedicalExamination))
+        disabilityType = try c.decodeIfPresent(String.self, forKey: .disabilityType) ?? ""
+        disabilityClass = try c.decodeIfPresent(String.self, forKey: .disabilityClass) ?? ""
+        disabilityCause = try c.decodeIfPresent(String.self, forKey: .disabilityCause) ?? ""
+        consentDataTransfer = try c.decodeIfPresent(Bool.self, forKey: .consentDataTransfer)
+        consentPhotos = try c.decodeIfPresent(Bool.self, forKey: .consentPhotos)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -55,6 +71,12 @@ nonisolated struct MemberPrivateData: Codable, Hashable {
         try c.encode(iban, forKey: .iban)
         try c.encode(birthDate.map(Self.dayString), forKey: .birthDate)
         try c.encode(lastMedicalExamination.map(Self.dayString), forKey: .lastMedicalExamination)
+        try c.encode(disabilityType, forKey: .disabilityType)
+        try c.encode(disabilityClass, forKey: .disabilityClass)
+        try c.encode(disabilityCause, forKey: .disabilityCause)
+        // Explicit null: un-answering a consent must clear it on the server.
+        try c.encode(consentDataTransfer, forKey: .consentDataTransfer)
+        try c.encode(consentPhotos, forKey: .consentPhotos)
     }
 
     // Calendar-day conversion in the user's calendar <-> UTC yyyy-MM-dd.
@@ -120,7 +142,8 @@ enum SupabaseMemberPrivateService {
     static func fetchRequest(memberID: UUID) async throws -> MemberPrivateData? {
         let rows: [MemberPrivateData] = try await client
             .from("member_private_requests")
-            .select("member_id, svnr, iban, birth_date, last_medical_examination")
+            .select("member_id, svnr, iban, birth_date, last_medical_examination, disability_type, "
+                    + "disability_class, disability_cause, consent_data_transfer, consent_photos")
             .eq("member_id", value: memberID.uuidString)
             .limit(1)
             .execute()
@@ -154,13 +177,24 @@ enum SupabaseMemberPrivateService {
             member.iban = data?.iban ?? ""
             member.birthDate = data?.birthDate
             member.lastMedicalExamination = data?.lastMedicalExamination
+            member.disabilityType = data?.disabilityType ?? ""
+            member.disabilityClass = data?.disabilityClass ?? ""
+            member.disabilityCause = data?.disabilityCause ?? ""
+            member.consentDataTransfer = data?.consentDataTransfer
+            member.consentPhotos = data?.consentPhotos
         }
         try? modelContext.save()
     }
 
     static func data(from member: Member) -> MemberPrivateData {
-        MemberPrivateData(memberID: member.id, svnr: member.svnr, iban: member.iban,
-                          birthDate: member.birthDate,
-                          lastMedicalExamination: member.lastMedicalExamination)
+        var data = MemberPrivateData(memberID: member.id, svnr: member.svnr, iban: member.iban,
+                                     birthDate: member.birthDate,
+                                     lastMedicalExamination: member.lastMedicalExamination)
+        data.disabilityType = member.disabilityType
+        data.disabilityClass = member.disabilityClass
+        data.disabilityCause = member.disabilityCause
+        data.consentDataTransfer = member.consentDataTransfer
+        data.consentPhotos = member.consentPhotos
+        return data
     }
 }

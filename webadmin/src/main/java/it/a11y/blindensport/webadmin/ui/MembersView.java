@@ -24,7 +24,9 @@ import com.vaadin.flow.server.streams.UploadHandler;
 import it.a11y.blindensport.webadmin.auth.AdminSession;
 import it.a11y.blindensport.webadmin.auth.AdminSessions;
 import it.a11y.blindensport.webadmin.auth.Permission;
+import it.a11y.blindensport.webadmin.members.MemberApplication;
 import it.a11y.blindensport.webadmin.members.MemberBulkImport;
+import it.a11y.blindensport.webadmin.members.MemberHealth;
 import it.a11y.blindensport.webadmin.members.MemberBulkInput;
 import it.a11y.blindensport.webadmin.members.MemberJson;
 import it.a11y.blindensport.webadmin.members.MemberRecord;
@@ -126,11 +128,25 @@ public class MembersView extends AdminView {
 
     private void openDialog(MemberRecord member) {
         AdminSession admin = session();
+        boolean canReadPrivate = admin.can(Permission.MEMBERS_PRIVATE_READ);
+        MemberApplication application = member == null ? MemberApplication.EMPTY
+                : attempt("Laden", () -> new MemberStore(admin.db()).application(member.id()));
+        MemberHealth health = member == null || !canReadPrivate ? MemberHealth.EMPTY
+                : attempt("Laden", () -> new MemberStore(admin.db()).health(member.id()));
+        if (application == null || health == null) {
+            return;
+        }
         MemberDialog[] holder = new MemberDialog[1];
-        holder[0] = new MemberDialog(member, admin.can(Permission.MEMBERS_PRIVATE_READ),
-                admin.can(Permission.MEMBERS_PRIVATE_WRITE), (record, writePrivate) -> {
-            boolean saved = attempt("Speichern",
-                    () -> new MemberStore(session().db()).save(record, writePrivate, session().userId()));
+        holder[0] = new MemberDialog(member, application, health, canReadPrivate,
+                admin.can(Permission.MEMBERS_PRIVATE_WRITE), (record, writePrivate, editedApplication, editedHealth) -> {
+            boolean saved = attempt("Speichern", () -> {
+                MemberStore store = new MemberStore(session().db());
+                store.save(record, writePrivate, session().userId());
+                store.saveApplication(record.id(), editedApplication, session().userId());
+                if (editedHealth != null) {
+                    store.saveHealth(record.id(), editedHealth, session().userId());
+                }
+            });
             if (saved) {
                 holder[0].close();
                 Announcer.success(member == null ? record.fullName() + " angelegt." : record.fullName() + " gespeichert.");
