@@ -47,7 +47,7 @@ final class TeilnehmerlisteExportTests: XCTestCase {
     /// A representative spread of realistic German/Austrian names — umlauts, ß,
     /// hyphenated surnames, "von"/"van" particles, apostrophes, varying lengths —
     /// covering the kind of real attendee data this export actually sees, at
-    /// several attendee counts including right at and past the 25-row form limit.
+    /// several attendee counts including right at and past the 15-row form limit.
     private let realisticNames: [(String, String, String)] = [
         ("Andreas", "Müller", "Hauptstraße 12, 8010 Graz"),
         ("Bärbel", "Groß", "Schönbrunngasse 3, 8020 Graz"),
@@ -106,13 +106,13 @@ final class TeilnehmerlisteExportTests: XCTestCase {
     }
 
     func testExportVariousAttendeeCounts() throws {
-        for count in [0, 1, 2, 5, 12, 24, 25, 26, 30] {
+        for count in [0, 1, 2, 5, 12, 14, 15, 16, 30] {
             let info = try context(count)
             print("count=\(count): \(info)")
         }
     }
 
-    /// Bundles ALL 30 realistic names in one go (form caps at 25 rows, so this
+    /// Bundles ALL 30 realistic names in one go (form caps at 15 rows, so this
     /// also exercises the maxRows-truncation path) — closest match to a real
     /// club roster with a big turnout.
     func testExportFullRoster() throws {
