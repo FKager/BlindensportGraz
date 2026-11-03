@@ -16,7 +16,8 @@ enum ReportPrinterError: LocalizedError {
     }
 }
 
-/// Prints report files (.xlsx — PRAE, KostZ, TN, Trainingsfrequenzliste …) in
+/// Prints report files (.xlsx — PRAE, KostZ, TN, Trainingsfrequenzliste …;
+/// plus uploaded PDF/DOCX like a tournament's Einladung) in
 /// one print job. iOS can't print spreadsheets directly, so each file is
 /// loaded into an off-screen WKWebView (which renders Office documents) and
 /// drawn into A4 PDF pages through its print formatter; the pages of all
@@ -62,7 +63,10 @@ enum ReportPrinter {
     static func pdf(for files: [URL]) async throws -> Data {
         let combined = PDFDocument()
         for file in files {
-            let data = try await renderPDF(of: file)
+            // PDFs (an uploaded Einladung) keep their own pages and size.
+            let data = file.pathExtension.lowercased() == "pdf"
+                ? try Data(contentsOf: file)
+                : try await renderPDF(of: file)
             guard let document = PDFDocument(data: data), document.pageCount > 0 else {
                 throw ReportPrinterError.renderFailed(file.lastPathComponent)
             }

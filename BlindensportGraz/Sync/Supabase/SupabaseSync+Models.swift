@@ -277,6 +277,7 @@ extension SupabaseSync {
         removeAll(EventParticipation.self, modelContext: modelContext)
         removeAll(EventImage.self, modelContext: modelContext)
         removeAll(ExpenseReceipt.self, modelContext: modelContext)
+        removeAll(TournamentInvitation.self, modelContext: modelContext)
         removeAll(TrainingFavorite.self, modelContext: modelContext)
         removeAll(MemberChangeRequest.self, modelContext: modelContext)
         removeAll(TeamMembership.self, modelContext: modelContext)
@@ -589,6 +590,40 @@ extension SupabaseSync {
         }
     }
 
+    func pushTournamentInvitation(_ invitation: TournamentInvitation) {
+        let row = TournamentInvitationDBRow(invitation)
+        let data = invitation.fileData
+        Task {
+            _ = await performWithRetry("upload of tournament invitation \(invitation.id)") {
+                try await self.client.storage.from("tournament-invitations")
+                    .upload(row.storagePath, data: data, options: FileOptions(contentType: row.contentType, upsert: true))
+                try await self.client.from("tournament_invitations").upsert(row, onConflict: "id", returning: .minimal).execute()
+            }
+        }
+    }
+
+    func deleteTournamentInvitation(_ id: UUID, path: String) {
+        delete(table: "tournament_invitations", id: id)
+        Task { _ = try? await client.storage.from("tournament-invitations").remove(paths: [path]) }
+    }
+
+    func pullTournamentInvitations(modelContext: ModelContext) async throws {
+        try await pullFiles("tournament_invitations", bucket: "tournament-invitations", modelContext: modelContext,
+                            prune: TournamentInvitation.self, id: \.id,
+                            rowID: { (row: TournamentInvitationDBRow) in row.id },
+                            path: \.storagePath, updatedAt: \.updatedAt,
+                            exists: { id in
+                                var descriptor = FetchDescriptor<TournamentInvitation>(predicate: #Predicate { $0.id == id })
+                                descriptor.fetchLimit = 1
+                                return (try? modelContext.fetch(descriptor).first) != nil
+                            }) { row, data in
+            let tournament = row.tournamentID.flatMap { findEvent($0, modelContext: modelContext) as? Tournament }
+            modelContext.insert(TournamentInvitation(id: row.id, fileData: data, fileName: row.fileName,
+                                                     contentType: row.contentType, uploadedBy: row.uploadedBy,
+                                                     uploadedAt: row.uploadedAt, tournament: tournament))
+        }
+    }
+
     /// Like `pull`, but downloads the file for rows not yet cached. A failed
     /// download keeps the cursor where it was, so the next sync retries.
     private func pullFiles<Row: Decodable & Sendable, Model: PersistentModel>(
@@ -660,6 +695,7 @@ extension SupabaseSync {
         case "member_change_requests": delete(MemberChangeRequest.self, #Predicate { $0.id == id })
         case "event_images": delete(EventImage.self, #Predicate { $0.id == id })
         case "expense_receipts": delete(ExpenseReceipt.self, #Predicate { $0.id == id })
+        case "tournament_invitations": delete(TournamentInvitation.self, #Predicate { $0.id == id })
         default: break // member_contacts, welcome_content: nothing separate to remove
         }
     }

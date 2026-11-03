@@ -45,4 +45,18 @@ final class ReportPrinterTests: XCTestCase {
             XCTAssertEqual(error.localizedDescription, ReportPrinterError.nothingToPrint.localizedDescription)
         }
     }
+
+    /// An uploaded PDF (Einladung) is appended with its own pages, not re-rendered.
+    func testPDFFileKeepsItsPages() async throws {
+        let source = PDFDocument()
+        for _ in 0..<3 { source.insert(PDFPage(), at: source.pageCount) }
+        let file = FileManager.default.temporaryDirectory.appendingPathComponent("Einladung-\(UUID().uuidString).pdf")
+        XCTAssertTrue(source.write(to: file))
+        defer { try? FileManager.default.removeItem(at: file) }
+
+        let data = try await ReportPrinter.pdf(for: [file, url("KostZ_Kostenzusammenstellung")])
+        let kostZ = try await ReportPrinter.pdf(for: [url("KostZ_Kostenzusammenstellung")])
+        XCTAssertEqual(try XCTUnwrap(PDFDocument(data: data)).pageCount,
+                       3 + (try XCTUnwrap(PDFDocument(data: kostZ)).pageCount))
+    }
 }

@@ -380,7 +380,7 @@ var body: some View {
         PraeTournamentCalculationView(tournament: tournament)
     }
     .sheet(isPresented: $showSammelabrechnung) {
-        SammelabrechnungTournamentView(tournament: tournament)
+        SammelabrechnungTournamentView(tournament: tournament, currentUser: currentUser)
     }
     .onDisappear {
         TournamentService.save(tournament, modelContext: modelContext)

@@ -485,6 +485,28 @@ nonisolated struct ExpenseReceiptDBRow: Codable, Sendable, Equatable {
     }
 }
 
+nonisolated struct TournamentInvitationDBRow: Codable, Sendable, Equatable {
+    var id: UUID
+    var tournamentID: UUID?
+    var storagePath: String
+    var fileName: String
+    var contentType: String
+    var uploadedBy: String
+    var uploadedAt: Date
+    var updatedAt: Date?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case tournamentID = "tournament_id"
+        case storagePath = "storage_path"
+        case fileName = "file_name"
+        case contentType = "content_type"
+        case uploadedBy = "uploaded_by"
+        case uploadedAt = "uploaded_at"
+        case updatedAt = "updated_at"
+    }
+}
+
 /// `public.deletions` — ids of rows deleted on the server.
 nonisolated struct DeletionDBRow: Codable, Sendable, Equatable {
     var tableName: String
@@ -631,4 +653,17 @@ extension ExpenseReceiptDBRow {
     }
 
     static func path(for id: UUID) -> String { "\(id.uuidString.lowercased()).jpg" }
+}
+
+extension TournamentInvitationDBRow {
+    init(_ invitation: TournamentInvitation) {
+        self.init(id: invitation.id, tournamentID: invitation.tournament?.id,
+                  storagePath: Self.path(for: invitation), fileName: invitation.fileName,
+                  contentType: invitation.contentType, uploadedBy: invitation.uploadedBy,
+                  uploadedAt: invitation.uploadedAt)
+    }
+
+    static func path(for invitation: TournamentInvitation) -> String {
+        "\(invitation.id.uuidString.lowercased()).\(invitation.fileExtension)"
+    }
 }

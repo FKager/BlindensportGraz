@@ -27,6 +27,19 @@ enum SammelabrechnungExporter {
     /// One produced report: its file name inside the bundle and the .xlsx.
     typealias ReportFile = (name: String, url: URL)
 
+    /// An uploaded document bundled as-is (the tournament's Einladung).
+    struct Attachment: Sendable, Equatable {
+        var fileName: String
+        var data: Data
+
+        /// "Einladung_<title>.<ext>", "/" stripped like the other entry names.
+        static func invitation(_ invitation: TournamentInvitation, tournamentTitle: String) -> Attachment {
+            let title = tournamentTitle.replacingOccurrences(of: "/", with: "-")
+            let base = title.isEmpty ? "Einladung" : "Einladung_\(title)"
+            return Attachment(fileName: "\(base).\(invitation.fileExtension)", data: invitation.fileData)
+        }
+    }
+
     /// One calendar month's collective settlement — KostZ across every
     /// Training that month, plus PRAE-Formular + PRAE-Darstellung for every
     /// coach/assistant with a non-zero honorarium that month. `kostZ` is
@@ -68,18 +81,24 @@ enum SammelabrechnungExporter {
     /// naming) — just bundled in here too instead of exported one at a time.
     static func export(kostZ: KostZTournamentSummary?, praeSummaries: [PraeTournamentSummary],
                         teilnehmerlisteSportler: TeilnehmerlisteContext? = nil,
-                        teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil) throws -> URL {
+                        teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil,
+                        invitation: Attachment? = nil) throws -> URL {
         try zipFiles(files(kostZ: kostZ, praeSummaries: praeSummaries,
                            teilnehmerlisteSportler: teilnehmerlisteSportler,
-                           teilnehmerlisteHelfer: teilnehmerlisteHelfer),
+                           teilnehmerlisteHelfer: teilnehmerlisteHelfer,
+                           invitation: invitation),
                      namePrefix: "Sammelabrechnung")
     }
 
     /// The tournament bundle's files, unzipped (zip or print them).
     static func files(kostZ: KostZTournamentSummary?, praeSummaries: [PraeTournamentSummary],
                       teilnehmerlisteSportler: TeilnehmerlisteContext? = nil,
-                      teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil) throws -> [ReportFile] {
+                      teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil,
+                      invitation: Attachment? = nil) throws -> [ReportFile] {
         var files: [ReportFile] = []
+        if let invitation {
+            files.append((invitation.fileName, try write(invitation)))
+        }
         if let kostZ {
             files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
         }
@@ -201,6 +220,17 @@ enum SammelabrechnungExporter {
             try addFile(at: file.url, as: file.name, to: archive)
         }
         return outputURL
+    }
+
+    /// Writes an uploaded document (the tournament invitation) to its own
+    /// temp folder under its file name — the extension matters for printing
+    /// (ReportPrinter picks PDF vs. web rendering by it).
+    private static func write(_ attachment: Attachment) throws -> URL {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString, isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let url = folder.appendingPathComponent(attachment.fileName)
+        try attachment.data.write(to: url)
+        return url
     }
 
     private static func addFile(at fileURL: URL, as entryName: String, to archive: Archive) throws {

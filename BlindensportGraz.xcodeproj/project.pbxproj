@@ -18,6 +18,7 @@
 		0490B37F63FCB92F53E635F9 /* Member.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6667F5F3E72319A925C305A /* Member.swift */; };
 		0714DDADF63342FBC3C7382D /* EditBudgetEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422A033FF7F782C561B72DA4 /* EditBudgetEntryView.swift */; };
 		0736F9AFCF5F998CA95745A4 /* SupabaseMembershipApplicationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D8F302DE57C58CA08FE5C47 /* SupabaseMembershipApplicationService.swift */; };
+		09AEA824FD268F8E293771B0 /* TournamentInvitationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E7C1B862C70DA0A36FA0C6 /* TournamentInvitationService.swift */; };
 		0BAA89CC3CB274073CEF6F37 /* ServerConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15947EDBDD914A1C33E1515F /* ServerConfig.swift */; };
 		0D76211827E44BA44613C807 /* AppRole.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F9BD4909C4BD685959858C /* AppRole.swift */; };
 		0E83E8FBB3E62A19829652F5 /* SammelabrechnungTournamentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44EBC50E9038ADA28F7C081A /* SammelabrechnungTournamentView.swift */; };
@@ -108,6 +109,7 @@
 		60A1D7FA23E0AF252C26E319 /* InheritanceQueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E97994BE62CC13DEF60BAA /* InheritanceQueryTests.swift */; };
 		6107516CC25CBF2AF83F2E37 /* BudgetEntryFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4775FBD624777539EA5A895 /* BudgetEntryFields.swift */; };
 		611DD15ED916B8D5D6A17B41 /* WelcomeScreenSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB405847C3216AE65B70EF9 /* WelcomeScreenSettingsView.swift */; };
+		631738EB7BA341502A666EBA /* TournamentInvitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA02186F64DB2504DBC9E87 /* TournamentInvitation.swift */; };
 		64456A19FB310B862D636F3F /* PraeAmountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E451DBB244FCF38DC0F70D6 /* PraeAmountRow.swift */; };
 		68F7BA704F1B3FBFDAE11155 /* PRAE_Darstellung_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 57556A329ADF06C866AEC1E3 /* PRAE_Darstellung_Vorlage.xlsx */; };
 		692A74DBA8897838B63C53F4 /* SupabaseProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79831D8849D6E6C4FA9DD50 /* SupabaseProfileService.swift */; };
@@ -459,6 +461,7 @@
 		91960F2CDFDA66DE78A2B9A2 /* TrainingFavoriteService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingFavoriteService.swift; sourceTree = "<group>"; };
 		922BAB83DD6861F6C8B8910D /* Tournament.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tournament.swift; sourceTree = "<group>"; };
 		92C336A2D6BCCDF7E4E76140 /* EventImagesSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventImagesSection.swift; sourceTree = "<group>"; };
+		92E7C1B862C70DA0A36FA0C6 /* TournamentInvitationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentInvitationService.swift; sourceTree = "<group>"; };
 		93ECDCC00FB24E03F7185E9B /* GVSCApplicationDocumentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GVSCApplicationDocumentTests.swift; sourceTree = "<group>"; };
 		948C4489E77EB5A022268C79 /* TeamMembership.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamMembership.swift; sourceTree = "<group>"; };
 		96A8573B9E1983BD8D7B9680 /* BlindensportGrazApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlindensportGrazApp.swift; sourceTree = "<group>"; };
@@ -518,6 +521,7 @@
 		CAE72C6CC4B13D526606A490 /* AccessClaimsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessClaimsTests.swift; sourceTree = "<group>"; };
 		CBE5C9A12850E68BE999D6A6 /* KostZTournamentCalculationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KostZTournamentCalculationView.swift; sourceTree = "<group>"; };
 		CBF7041585D47F19795D9DFA /* ValidationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidationTests.swift; sourceTree = "<group>"; };
+		CEA02186F64DB2504DBC9E87 /* TournamentInvitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentInvitation.swift; sourceTree = "<group>"; };
 		CEE968A010D70335178289A2 /* SupabaseRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseRows.swift; sourceTree = "<group>"; };
 		CF839C4DB88DA9C0C53E04F0 /* AddTournamentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTournamentView.swift; sourceTree = "<group>"; };
 		D0D951545EA6796C5DC60E77 /* PraeCalculationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PraeCalculationView.swift; sourceTree = "<group>"; };
@@ -624,6 +628,7 @@
 				B68E3E5FB532A74F309BE4D1 /* Team.swift */,
 				948C4489E77EB5A022268C79 /* TeamMembership.swift */,
 				922BAB83DD6861F6C8B8910D /* Tournament.swift */,
+				CEA02186F64DB2504DBC9E87 /* TournamentInvitation.swift */,
 				B406FB962C9E26E38DB09764 /* Training.swift */,
 				3DA4560ED30FBF2F118164E1 /* TrainingFavorite.swift */,
 				85B7F4CBA18CEF4792F463F6 /* User.swift */,
@@ -706,6 +711,7 @@
 				531706407419E838C6AA27F8 /* SportEventService.swift */,
 				49CEA73C22D56220CB26C599 /* TeamMembershipService.swift */,
 				BB4F668AFF2335746B4F1BFE /* TeamService.swift */,
+				92E7C1B862C70DA0A36FA0C6 /* TournamentInvitationService.swift */,
 				367DA106639883E3F748E3D6 /* TournamentService.swift */,
 				91960F2CDFDA66DE78A2B9A2 /* TrainingFavoriteService.swift */,
 				38CDC92DB796308418A01D10 /* TrainingService.swift */,
@@ -1466,8 +1472,10 @@
 				699B6288B142A94466835CE9 /* Theme.swift in Sources */,
 				045A65F1F5ED916FBE23E97C /* Tournament.swift in Sources */,
 				EC512DCF3F93119E2372E06D /* TournamentDetailView.swift in Sources */,
+				631738EB7BA341502A666EBA /* TournamentInvitation.swift in Sources */,
 				E23055E7C30AA3B0DD3A6C53 /* TournamentInvitationImport.swift in Sources */,
 				742FB4CCF73A427DAEE4FC6E /* TournamentInvitationImportView.swift in Sources */,
+				09AEA824FD268F8E293771B0 /* TournamentInvitationService.swift in Sources */,
 				E078F0FDDCAF48C3334DEA71 /* TournamentRow.swift in Sources */,
 				8527EF3FB8E15A3474DF86F8 /* TournamentService.swift in Sources */,
 				86D59DC5AB18C55DB26EA5F6 /* TournamentsListView.swift in Sources */,

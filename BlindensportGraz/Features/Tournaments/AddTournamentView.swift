@@ -23,6 +23,8 @@ struct AddTournamentView: View {
         @State private var showDuplicateAlert = false
         /// Imported from an invitation that had no recognisable date.
         private let datesMissingFromInvitation: Bool
+        /// The imported invitation file, attached to the tournament on save.
+        private let invitationFile: (name: String, data: Data)?
 
         let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
 
@@ -34,6 +36,7 @@ struct AddTournamentView: View {
             self.currentUser = currentUser
             let draft = draft ?? TournamentDraft()
             datesMissingFromInvitation = !draft.datesFound
+            invitationFile = draft.sourceFileData.map { (draft.sourceFileName, $0) }
             _title = State(initialValue: draft.title)
             _sport = State(initialValue: draft.sport)
             _location = State(initialValue: draft.location)
@@ -178,6 +181,14 @@ struct AddTournamentView: View {
                         )
                         modelContext.insert(tournament)
                         TournamentService.save(tournament, modelContext: modelContext)
+                        // Keep the imported Einladung (admins only — the
+                        // invitations are budget.manage-protected).
+                        if let invitationFile, currentUser?.can(.budgetManage) == true {
+                            TournamentInvitationService.replace(for: tournament, data: invitationFile.data,
+                                                                fileName: invitationFile.name,
+                                                                uploadedBy: currentUser?.id.uuidString ?? "",
+                                                                modelContext: modelContext)
+                        }
 
                         // Post notification when tournament is created
                         NotificationCenter.default.post(

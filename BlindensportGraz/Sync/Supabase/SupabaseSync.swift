@@ -336,6 +336,7 @@ final class SupabaseSync {
         try modelContext.save()
         try await pullEventImages(modelContext: modelContext)
         try await pullExpenseReceipts(modelContext: modelContext)
+        try await pullTournamentInvitations(modelContext: modelContext)
         try modelContext.save()
         try await pullParticipations(modelContext: modelContext)
         try await pullEventMemberships(modelContext: modelContext)
@@ -428,6 +429,11 @@ final class SupabaseSync {
             for receipt in all(ExpenseReceipt.self) where upload(receipt.id) {
                 handoverKeep.insert(receipt.id)
                 pushExpenseReceipt(receipt)
+            }
+            upload = try await missing("tournament_invitations")
+            for invitation in all(TournamentInvitation.self) where upload(invitation.id) {
+                handoverKeep.insert(invitation.id)
+                pushTournamentInvitation(invitation)
             }
         } catch {
             // Try again on the next sync; the pull below must not prune yet.
