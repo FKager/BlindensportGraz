@@ -38,8 +38,8 @@ struct SammelabrechnungSeasonView: View {
                     Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
                 }
 
-                Section("Export") {
-                    Text("Bündelt alle Monats- und Turnier-Sammelabrechnungen sowie alle Trainingsfrequenzlisten dieses Jahres als eine ZIP-Datei.")
+                Section("Export und Druck") {
+                    Text("Bündelt alle Monats- und Turnier-Sammelabrechnungen sowie alle Trainingsfrequenzlisten dieses Jahres als eine ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     if let exportURL {
@@ -49,6 +49,12 @@ struct SammelabrechnungSeasonView: View {
                     } else {
                         Label("Saison-Sammelabrechnung wird vorbereitet …", systemImage: "doc.zipper")
                             .foregroundStyle(.secondary)
+                    }
+                    ReportPrintButton(title: "Alle Dokumente drucken", jobName: "Saison-Sammelabrechnung \(String(year))") {
+                        try SammelabrechnungExporter.seasonFiles(
+                            year: year, allMemberships: allMemberships, tournaments: tournaments,
+                            sports: sports, in: modelContext
+                        ).map(\.url)
                     }
                 }
             }

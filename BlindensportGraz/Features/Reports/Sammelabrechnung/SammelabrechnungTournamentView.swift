@@ -127,8 +127,8 @@ struct SammelabrechnungTournamentView: View {
                     }
                 }
 
-                Section("Export") {
-                    Text("Bündelt die ausgewählten Teile — KostZ-Formular, PRAE-Formular/Darstellung der ausgewählten Trainer:innen/Helfer:innen sowie die TeilnehmerInnenliste(n) — als ZIP-Datei.")
+                Section("Export und Druck") {
+                    Text("Bündelt die ausgewählten Teile — KostZ-Formular, PRAE-Formular/Darstellung der ausgewählten Trainer:innen/Helfer:innen sowie die TeilnehmerInnenliste(n) — als ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     if !hasSelectedParts {
@@ -141,6 +141,17 @@ struct SammelabrechnungTournamentView: View {
                     } else {
                         Label("Sammelabrechnung wird vorbereitet …", systemImage: "doc.zipper")
                             .foregroundStyle(.secondary)
+                    }
+                    if hasSelectedParts {
+                        ReportPrintButton(title: "Ausgewählte Teile drucken",
+                                          jobName: "Sammelabrechnung \(tournament.title)") {
+                            try SammelabrechnungExporter.files(
+                                kostZ: includeKostZ ? kostZSummary : nil,
+                                praeSummaries: praeSummaries,
+                                teilnehmerlisteSportler: includeTeilnehmerSportler ? teilnehmerlisteSportlerContext : nil,
+                                teilnehmerlisteHelfer: includeTeilnehmerHelfer ? teilnehmerlisteHelferContext : nil
+                            ).map(\.url)
+                        }
                     }
                 }
             }

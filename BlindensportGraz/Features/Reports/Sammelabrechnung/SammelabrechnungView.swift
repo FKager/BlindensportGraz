@@ -99,8 +99,8 @@ struct SammelabrechnungView: View {
                     }
                 }
 
-                Section("Export") {
-                    Text("Bündelt die ausgewählten Teile — KostZ-Formular sowie PRAE-Formular und Darstellung der ausgewählten Trainer:innen/Helfer:innen — als ZIP-Datei.")
+                Section("Export und Druck") {
+                    Text("Bündelt die ausgewählten Teile — KostZ-Formular sowie PRAE-Formular und Darstellung der ausgewählten Trainer:innen/Helfer:innen — als ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     if !hasSelectedParts {
@@ -113,6 +113,14 @@ struct SammelabrechnungView: View {
                     } else {
                         Label("Sammelabrechnung wird vorbereitet …", systemImage: "doc.zipper")
                             .foregroundStyle(.secondary)
+                    }
+                    if hasSelectedParts {
+                        ReportPrintButton(title: "Ausgewählte Teile drucken",
+                                          jobName: "Sammelabrechnung \(monthName(month)) \(String(year))") {
+                            try SammelabrechnungExporter.files(
+                                kostZ: includeKostZ ? kostZSummary : nil, praeSummaries: praeSummaries
+                            ).map(\.url)
+                        }
                     }
                 }
             }

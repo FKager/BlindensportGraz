@@ -111,6 +111,9 @@ struct KostZCalculationView: View {
                         Label("KostZ-Formular wird vorbereitet …", systemImage: "doc.fill")
                             .foregroundStyle(.secondary)
                     }
+                    if let exportURL {
+                        ReportPrintButton(title: "KostZ-Formular drucken", jobName: "KostZ") { [exportURL] }
+                    }
                 }
             }
             .navigationTitle("KostZ-Berechnung")
