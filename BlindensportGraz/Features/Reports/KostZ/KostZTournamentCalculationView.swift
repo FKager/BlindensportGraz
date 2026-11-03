@@ -82,6 +82,9 @@ struct KostZTournamentCalculationView: View {
                         Label("KostZ-Formular wird vorbereitet …", systemImage: "doc.fill")
                             .foregroundStyle(.secondary)
                     }
+                    if let exportURL {
+                        ReportPrintButton(title: "KostZ-Formular drucken", jobName: "KostZ \(tournament.title)") { [exportURL] }
+                    }
                 }
             }
             .navigationTitle("KostZ: \(tournament.title)")

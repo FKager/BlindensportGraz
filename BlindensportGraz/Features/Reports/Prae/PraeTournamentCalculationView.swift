@@ -122,6 +122,11 @@ struct PraeTournamentCalculationView: View {
                             Label("Darstellung wird vorbereitet …", systemImage: "tablecells.fill")
                                 .foregroundStyle(.secondary)
                         }
+                        if mainFormURL != nil || darstellungURL != nil {
+                            ReportPrintButton(title: "Formular und Darstellung drucken", jobName: "PRAE \(tournament.title)") {
+                                [mainFormURL, darstellungURL].compactMap { $0 }
+                            }
+                        }
                     }
                 }
             }

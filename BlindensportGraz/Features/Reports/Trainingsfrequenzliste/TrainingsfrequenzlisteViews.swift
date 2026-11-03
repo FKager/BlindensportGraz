@@ -105,6 +105,11 @@ struct TrainingsfrequenzlisteView: View {
                             Label("Trainingsfrequenzliste wird vorbereitet …", systemImage: "doc.fill")
                                 .foregroundStyle(.secondary)
                         }
+                        if let exportURL {
+                            ReportPrintButton(title: "Trainingsfrequenzliste drucken", jobName: "Trainingsfrequenzliste") {
+                                [exportURL]
+                            }
+                        }
                     }
                 }
             }

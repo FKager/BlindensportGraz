@@ -24,6 +24,9 @@ import ZIPFoundation
 /// matching PraeCalculationView's own `!summary.entries.isEmpty` gate on
 /// showing that ShareLink.
 enum SammelabrechnungExporter {
+    /// One produced report: its file name inside the bundle and the .xlsx.
+    typealias ReportFile = (name: String, url: URL)
+
     /// One calendar month's collective settlement — KostZ across every
     /// Training that month, plus PRAE-Formular + PRAE-Darstellung for every
     /// coach/assistant with a non-zero honorarium that month. `kostZ` is
@@ -33,7 +36,12 @@ enum SammelabrechnungExporter {
     /// already filtered to only the helpers selected in its per-helper PRAE
     /// list.
     static func export(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary]) throws -> URL {
-        var files: [(name: String, url: URL)] = []
+        try zipFiles(files(kostZ: kostZ, praeSummaries: praeSummaries), namePrefix: "Sammelabrechnung")
+    }
+
+    /// The month bundle's files, unzipped (zip or print them).
+    static func files(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary]) throws -> [ReportFile] {
+        var files: [ReportFile] = []
         if let kostZ {
             files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
         }
@@ -43,7 +51,7 @@ enum SammelabrechnungExporter {
                 files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung"), try PraeExporter.exportDarstellung(summary: summary)))
             }
         }
-        return try zipFiles(files, namePrefix: "Sammelabrechnung")
+        return files
     }
 
     /// Same bundle, scoped to a single tournament instead of a calendar
@@ -61,7 +69,17 @@ enum SammelabrechnungExporter {
     static func export(kostZ: KostZTournamentSummary?, praeSummaries: [PraeTournamentSummary],
                         teilnehmerlisteSportler: TeilnehmerlisteContext? = nil,
                         teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil) throws -> URL {
-        var files: [(name: String, url: URL)] = []
+        try zipFiles(files(kostZ: kostZ, praeSummaries: praeSummaries,
+                           teilnehmerlisteSportler: teilnehmerlisteSportler,
+                           teilnehmerlisteHelfer: teilnehmerlisteHelfer),
+                     namePrefix: "Sammelabrechnung")
+    }
+
+    /// The tournament bundle's files, unzipped (zip or print them).
+    static func files(kostZ: KostZTournamentSummary?, praeSummaries: [PraeTournamentSummary],
+                      teilnehmerlisteSportler: TeilnehmerlisteContext? = nil,
+                      teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil) throws -> [ReportFile] {
+        var files: [ReportFile] = []
         if let kostZ {
             files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
         }
@@ -77,7 +95,7 @@ enum SammelabrechnungExporter {
         if let teilnehmerlisteHelfer {
             files.append(("TeilnehmerInnenliste-Helfer.xlsx", try TeilnehmerlisteExporter.export(context: teilnehmerlisteHelfer)))
         }
-        return try zipFiles(files, namePrefix: "Sammelabrechnung")
+        return files
     }
 
     /// Full-season rollup (audit.md Enhancement #8) — every calendar month's
@@ -94,7 +112,15 @@ enum SammelabrechnungExporter {
     /// KostZ sheets or crashing.
     static func exportSeason(year: Int, allMemberships: [TeamMembership], tournaments: [Tournament],
                               sports: [String], in context: ModelContext) throws -> URL {
-        var files: [(name: String, url: URL)] = []
+        try zipFiles(seasonFiles(year: year, allMemberships: allMemberships, tournaments: tournaments,
+                                 sports: sports, in: context),
+                     namePrefix: "Sammelabrechnung-Saison-\(year)")
+    }
+
+    /// The season rollup's files, unzipped (zip or print them).
+    static func seasonFiles(year: Int, allMemberships: [TeamMembership], tournaments: [Tournament],
+                            sports: [String], in context: ModelContext) throws -> [ReportFile] {
+        var files: [ReportFile] = []
 
         for month in 1...12 {
             let kostZSummary = KostZCalculator.summary(month: month, year: year, allMemberships: allMemberships, in: context)
@@ -136,7 +162,7 @@ enum SammelabrechnungExporter {
             }
         }
 
-        return try zipFiles(files, namePrefix: "Sammelabrechnung-Saison-\(year)")
+        return files
     }
 
     /// Same "/" stripping as `fileName(for:suffix:)`, for the tournament-title
@@ -167,7 +193,7 @@ enum SammelabrechnungExporter {
     /// `exportSeason` overload above, each of which builds its own
     /// variable-length/variable-part file list first (KostZ/Teilnehmerliste
     /// entries optional, any number of per-person PRAE entries).
-    private static func zipFiles(_ files: [(name: String, url: URL)], namePrefix: String) throws -> URL {
+    private static func zipFiles(_ files: [ReportFile], namePrefix: String) throws -> URL {
         let outputURL = FileManager.default.temporaryDirectory
             .appendingPathComponent("\(namePrefix)-\(UUID().uuidString).zip")
         let archive = try Archive(url: outputURL, accessMode: .create)

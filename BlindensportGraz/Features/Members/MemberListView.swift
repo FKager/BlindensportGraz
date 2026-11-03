@@ -104,6 +104,10 @@ struct MemberListView: View {
                             Label("TeilnehmerInnenliste wird vorbereitet …", systemImage: "square.and.arrow.up.on.square")
                                 .foregroundStyle(.secondary)
                         }
+                        if let exportedFileURL {
+                            ReportPrintButton(title: "TeilnehmerInnenliste drucken",
+                                              jobName: "\(kindLabel) – \(itemName)") { [exportedFileURL] }
+                        }
                         if exportContext.attendedMemberships.count > TeilnehmerlisteExporter.maxRows {
                             Text("Das Formular fasst nur \(TeilnehmerlisteExporter.maxRows) Personen — es werden nur die ersten \(TeilnehmerlisteExporter.maxRows) von \(exportContext.attendedMemberships.count) exportiert.")
                                 .font(.caption)
