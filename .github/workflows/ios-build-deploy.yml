@@ -139,6 +139,8 @@ jobs:
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
           P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+          IOS_CI_CERTIFICATE_P12_BASE64: ${{ secrets.IOS_CI_CERTIFICATE_P12_BASE64 }}
+          IOS_CI_CERTIFICATE_PASSWORD: ${{ secrets.IOS_CI_CERTIFICATE_PASSWORD }}
           BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
           WIDGET_PROVISION_PROFILE_BASE64: ${{ secrets.WIDGET_PROVISION_PROFILE_BASE64 }}
           SHARE_EXTENSION_PROVISION_PROFILE_BASE64: ${{ secrets.SHARE_EXTENSION_PROVISION_PROFILE_BASE64 }}
@@ -168,10 +170,25 @@ jobs:
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
 
           security import "$CERT_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          rm -f "$CERT_PATH"
+
+          # --- Existing Apple Development identity (6Y392859QZ) ---
+          # Automatic signing archives with an "Apple Development" identity.
+          # Without one in the keychain, -allowProvisioningUpdates made Xcode
+          # create a NEW development certificate on every (fresh) runner,
+          # whose private key died with the runner — until Apple's
+          # certificate limit stopped the release (2026-11-03). Importing the
+          # identity the device-deploy workflow already uses makes Xcode
+          # reuse it instead.
+          DEV_CERT_PATH="$RUNNER_TEMP/development.p12"
+          echo -n "$IOS_CI_CERTIFICATE_P12_BASE64" | base64 --decode -o "$DEV_CERT_PATH"
+          security import "$DEV_CERT_PATH" -P "$IOS_CI_CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          rm -f "$DEV_CERT_PATH"
+
           security set-key-partition-list -S apple-tool:,apple:,codesign: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           # Put our keychain first in the search list so codesign finds the identity.
           security list-keychains -d user -s "$KEYCHAIN_PATH" login.keychain-db
-          rm -f "$CERT_PATH"
+          security find-identity -v -p codesigning "$KEYCHAIN_PATH"
 
           # --- App Store provisioning profile ---
           # `-exportArchive` with signingStyle=automatic + -allowProvisioningUpdates
