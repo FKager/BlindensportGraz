@@ -225,4 +225,31 @@ final class SammelabrechnungExportTests: XCTestCase {
         for entry in archive { entryNames.append(entry.path) }
         XCTAssertTrue(entryNames.isEmpty)
     }
+
+    /// The uploaded Einladung goes into the bundle first, under
+    /// "Einladung_<title>.<ext>", byte-for-byte.
+    func testExportForTournamentIncludesInvitation() throws {
+        let tournament = Tournament(title: "Alpen/Cup", sport: "Torball", location: "Graz",
+                                    startDate: .now, endDate: .now)
+        let invitation = TournamentInvitation(fileData: Data("%PDF-1.4 test".utf8), fileName: "einladung.PDF",
+                                              contentType: "application/pdf", tournament: tournament)
+        let attachment = SammelabrechnungExporter.Attachment.invitation(invitation, tournamentTitle: tournament.title)
+        XCTAssertEqual(attachment.fileName, "Einladung_Alpen-Cup.pdf")
+
+        let url = try SammelabrechnungExporter.export(kostZ: nil, praeSummaries: [], invitation: attachment)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        let entries = Array(archive)
+        XCTAssertEqual(entries.map(\.path), ["Einladung_Alpen-Cup.pdf"])
+        var extracted = Data()
+        _ = try archive.extract(entries[0]) { extracted.append($0) }
+        XCTAssertEqual(extracted, invitation.fileData)
+    }
+
+    func testInvitationContentTypeFollowsExtension() {
+        XCTAssertEqual(TournamentInvitation.contentType(forFileName: "a.pdf"), "application/pdf")
+        XCTAssertEqual(TournamentInvitation.contentType(forFileName: "a.DOCX"),
+                       "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        XCTAssertEqual(TournamentInvitation.contentType(forFileName: "a.txt"), "text/plain")
+    }
 }

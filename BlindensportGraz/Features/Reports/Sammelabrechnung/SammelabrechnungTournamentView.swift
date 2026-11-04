@@ -16,12 +16,19 @@ import SwiftData
 /// pre-selected by default, per the earlier request this extends.
 struct SammelabrechnungTournamentView: View {
     let tournament: Tournament
+    var currentUser: User? = nil
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
+    @Query private var allInvitations: [TournamentInvitation]
     // Intentionally unfiltered — see SammelabrechnungView's identical
     // @Query comment above.
     @Query private var allMemberships: [TeamMembership]
 
     @State private var includeKostZ = true
+    // The uploaded Einladung is part of the bundle by default.
+    @State private var includeInvitation = true
+    @State private var showInvitationImporter = false
+    @State private var confirmDeleteInvitation = false
     @State private var includeTeilnehmerSportler = true
     @State private var includeTeilnehmerHelfer = true
     // Which PraeEligiblePerson.id's PRAE (Formular + Darstellung) to
@@ -85,8 +92,32 @@ struct SammelabrechnungTournamentView: View {
                                 fileNamePrefix: "TN-Helfer")
     }
 
+    private var invitation: TournamentInvitation? {
+        TournamentInvitationService.invitation(for: tournament, in: allInvitations)
+    }
+
+    private var invitationAttachment: SammelabrechnungExporter.Attachment? {
+        guard includeInvitation, let invitation else { return nil }
+        return .invitation(invitation, tournamentTitle: tournament.title)
+    }
+
+    private func uploadInvitation(_ result: Result<URL, Error>) {
+        do {
+            let url = try result.get()
+            let accessing = url.startAccessingSecurityScopedResource()
+            defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+            let data = try Data(contentsOf: url)
+            TournamentInvitationService.replace(for: tournament, data: data, fileName: url.lastPathComponent,
+                                                uploadedBy: currentUser?.id.uuidString ?? "",
+                                                modelContext: modelContext)
+            includeInvitation = true
+        } catch {
+            exportError = "Die Einladung konnte nicht geladen werden: \(error.localizedDescription)"
+        }
+    }
+
     private var hasSelectedParts: Bool {
-        includeKostZ || !praeSummaries.isEmpty || includeTeilnehmerSportler || includeTeilnehmerHelfer
+        invitationAttachment != nil || includeKostZ || !praeSummaries.isEmpty || includeTeilnehmerSportler || includeTeilnehmerHelfer
     }
 
     private func praeBinding(for personID: UUID) -> Binding<Bool> {
@@ -104,13 +135,37 @@ struct SammelabrechnungTournamentView: View {
     // regardless of Set iteration order.
     private var exportTaskID: String {
         let praeIDs = selectedPraePersonIDs.map(\.uuidString).sorted().joined(separator: ",")
-        return "\(includeKostZ)-\(praeIDs)-\(includeTeilnehmerSportler)-\(includeTeilnehmerHelfer)-\(kostZSummary.total)"
+        return "\(invitation?.id.uuidString ?? "-")-\(includeInvitation)-\(includeKostZ)-\(praeIDs)-\(includeTeilnehmerSportler)-\(includeTeilnehmerHelfer)-\(kostZSummary.total)"
     }
 
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    if let invitation {
+                        LabeledContent(invitation.fileName,
+                                       value: invitation.uploadedAt.formatted(date: .abbreviated, time: .omitted))
+                        Button { showInvitationImporter = true } label: {
+                            Label("Einladung ersetzen", systemImage: "arrow.triangle.2.circlepath.doc.on.clipboard")
+                        }
+                        Button(role: .destructive) { confirmDeleteInvitation = true } label: {
+                            Label("Einladung entfernen", systemImage: "trash")
+                        }
+                    } else {
+                        Button { showInvitationImporter = true } label: {
+                            Label("Einladung hochladen", systemImage: "square.and.arrow.up")
+                        }
+                    }
+                } header: {
+                    Text("Einladung")
+                } footer: {
+                    Text("PDF, Word oder Text. Wird standardmäßig in die ZIP-Datei und den Druck aufgenommen.")
+                }
+
                 Section("Enthaltene Teile") {
+                    if invitation != nil {
+                        Toggle("Einladung", isOn: $includeInvitation)
+                    }
                     Toggle("KostZ-Formular", isOn: $includeKostZ)
                     Toggle("TeilnehmerInnenliste Sportler", isOn: $includeTeilnehmerSportler)
                     Toggle("TeilnehmerInnenliste Helfer", isOn: $includeTeilnehmerHelfer)
@@ -128,7 +183,7 @@ struct SammelabrechnungTournamentView: View {
                 }
 
                 Section("Export und Druck") {
-                    Text("Bündelt die ausgewählten Teile — KostZ-Formular, PRAE-Formular/Darstellung der ausgewählten Trainer:innen/Helfer:innen sowie die TeilnehmerInnenliste(n) — als ZIP-Datei oder druckt sie in einem Auftrag.")
+                    Text("Bündelt die ausgewählten Teile — Einladung, KostZ-Formular, PRAE-Formular/Darstellung der ausgewählten Trainer:innen/Helfer:innen sowie die TeilnehmerInnenliste(n) — als ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     if !hasSelectedParts {
@@ -149,7 +204,8 @@ struct SammelabrechnungTournamentView: View {
                                 kostZ: includeKostZ ? kostZSummary : nil,
                                 praeSummaries: praeSummaries,
                                 teilnehmerlisteSportler: includeTeilnehmerSportler ? teilnehmerlisteSportlerContext : nil,
-                                teilnehmerlisteHelfer: includeTeilnehmerHelfer ? teilnehmerlisteHelferContext : nil
+                                teilnehmerlisteHelfer: includeTeilnehmerHelfer ? teilnehmerlisteHelferContext : nil,
+                                invitation: invitationAttachment
                             ).map(\.url)
                         }
                     }
@@ -166,6 +222,14 @@ struct SammelabrechnungTournamentView: View {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(exportError ?? "")
+            }
+            .fileImporter(isPresented: $showInvitationImporter,
+                          allowedContentTypes: TournamentInvitationImporter.supportedContentTypes,
+                          onCompletion: uploadInvitation)
+            .confirmationDialog("Einladung entfernen?", isPresented: $confirmDeleteInvitation, titleVisibility: .visible) {
+                Button("Entfernen", role: .destructive) {
+                    if let invitation { TournamentInvitationService.delete(invitation, modelContext: modelContext) }
+                }
             }
             .onAppear {
                 // Pre-select every eligible helper's PRAE the first time
@@ -185,7 +249,8 @@ struct SammelabrechnungTournamentView: View {
                         kostZ: includeKostZ ? kostZSummary : nil,
                         praeSummaries: praeSummaries,
                         teilnehmerlisteSportler: includeTeilnehmerSportler ? teilnehmerlisteSportlerContext : nil,
-                        teilnehmerlisteHelfer: includeTeilnehmerHelfer ? teilnehmerlisteHelferContext : nil)
+                        teilnehmerlisteHelfer: includeTeilnehmerHelfer ? teilnehmerlisteHelferContext : nil,
+                        invitation: invitationAttachment)
                 } catch {
                     exportError = error.localizedDescription
                 }

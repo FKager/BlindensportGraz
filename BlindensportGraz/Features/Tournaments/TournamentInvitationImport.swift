@@ -28,6 +28,10 @@ nonisolated struct TournamentDraft: Identifiable {
     /// False when the invitation had no recognisable tournament date — the
     /// form then warns instead of silently showing today's date.
     var datesFound = true
+    /// The imported invitation itself, kept as the new tournament's
+    /// Einladung on save (admins only — see AddTournamentView).
+    var sourceFileName: String = ""
+    var sourceFileData: Data?
 }
 
 nonisolated enum TournamentInvitationError: LocalizedError {
@@ -91,7 +95,10 @@ nonisolated enum TournamentInvitationImporter {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw TournamentInvitationError.emptyDocument
         }
-        return await draft(fromText: text)
+        var result = await draft(fromText: text)
+        result.sourceFileName = url.lastPathComponent
+        result.sourceFileData = try? Data(contentsOf: url)
+        return result
     }
 
     // MARK: - Text extraction
