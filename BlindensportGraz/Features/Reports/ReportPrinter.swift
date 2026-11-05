@@ -80,7 +80,12 @@ enum ReportPrinter {
         return data
     }
 
-    private static func renderPDF(of file: URL) async throws -> Data {
+    private static func renderPDF(of exportedFile: URL) async throws -> Data {
+        let file = try PraeExporter.printCopy(of: exportedFile)
+        defer {
+            if file != exportedFile { try? FileManager.default.removeItem(at: file) }
+        }
+
         let webView = WKWebView(frame: CGRect(origin: .zero, size: CGSize(width: paper.width, height: paper.height)))
         let loader = PageLoader()
         webView.navigationDelegate = loader
@@ -101,7 +106,7 @@ enum ReportPrinter {
             renderer.drawPage(at: page, in: UIGraphicsGetPDFContextBounds())
         }
         UIGraphicsEndPDFContext()
-        guard renderer.numberOfPages > 0 else { throw ReportPrinterError.renderFailed(file.lastPathComponent) }
+        guard renderer.numberOfPages > 0 else { throw ReportPrinterError.renderFailed(exportedFile.lastPathComponent) }
         return data as Data
     }
 

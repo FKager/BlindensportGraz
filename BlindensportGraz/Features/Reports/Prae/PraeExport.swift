@@ -28,17 +28,16 @@ enum PraeExportError: LocalizedError {
 ///    `sportaustria.at/.../2023/Formular_Pauschale_Reiseaufwandsentschaedigung.xlsx`)
 ///    is a genuinely complex template: an irregular 31-cell calendar-day
 ///    grid spread across ~30 columns with inconsistent row spans, plus
-///    ActiveX checkbox controls for role selection and legal declarations
-///    that must be ticked by the recipient in person (the form exists
-///    specifically to be hand-signed — full automation was never the
-///    point), but the day grid ITSELF and the "im Monat:"/"Jahr:" header are
+///    form-control checkboxes for role selection and legal declarations
+///    (the form exists specifically to be hand-signed — full automation was
+///    never the point), but the day grid ITSELF and the "im Monat:"/"Jahr:" header are
 ///    now auto-filled too (an earlier version of this comment claimed the
 ///    grid's coordinates were too ambiguous to patch — that turned out
 ///    wrong; `<mergeCells>` in the raw XML gives an exact, unambiguous
 ///    layout once actually dumped and read, see `dayGridAmountRef` below).
-///    What's still genuinely left for manual completion is only what the
-///    form exists to capture in person: the role/declaration checkboxes
-///    (ActiveX controls) and the recipient's signature. The personal-data
+///    What's still genuinely left for manual completion is the recipient's
+///    signature and whichever checkboxes `FormCheckbox` doesn't cover. The
+///    personal-data
 ///    header row IS fully auto-filled: name (D4), SVNR (D5), Geburtsdatum
 ///    (L5), address (D7), and IBAN (D33) are all confirmed-blank,
 ///    unmerged-from-their-label, single wide input cells (verified against
@@ -167,15 +166,15 @@ enum PraeExporter {
     /// (D33), the "im Monat:"/"Jahr:" header (B11/K11), the
     /// "Verwendungszweck:" value (T11 — the bare training name, same kind of
     /// value KostZ's C3 gets), every deployment day's amount in the day grid
-    /// (see `dayGridAmountRef`), and the "Übungsleiter:in" role checkbox
-    /// (see `uebungsleiterCheckboxShapeID`) — this club's trainings always
-    /// use that role. Every OTHER role/declaration checkbox and the
-    /// recipient's signature still stay manual (see the type-level doc
-    /// comment).
+    /// (see `dayGridAmountRef`), and the checkboxes that always apply to this
+    /// club's trainings: "Übungsleiter:in" (P9), "Ja (Nebenberuf)" (A26),
+    /// "Ja (Einfachbezug)" (A29) and "Überweisung mittels:" (A33). Every
+    /// OTHER role/declaration checkbox and the recipient's signature still
+    /// stay manual (see the type-level doc comment).
     static func exportMainForm(summary: PraeMonthSummary) throws -> URL {
         try exportMainForm(person: summary.person, month: summary.month, year: summary.year,
                             entries: summary.entries, trainingName: summary.trainingName,
-                            checkedRoleShapeID: uebungsleiterCheckboxShapeID)
+                            checkedBoxes: [.uebungsleiter, .nebenberufJa, .einfachbezugJa, .ueberweisung])
     }
 
     /// Same main form, filled from a single tournament's deployment days.
@@ -187,7 +186,7 @@ enum PraeExporter {
     /// would still place every day's amount in the correct grid cell, just
     /// under one (the tournament's starting) month header. T11 is
     /// unambiguous here: the tournament's own bare title. Checks the
-    /// "Trainer:in" role checkbox (`trainerCheckboxShapeID`, B9) instead of
+    /// "Trainer:in" role checkbox (`FormCheckbox.trainer`, B9) instead of
     /// Training's "Übungsleiter:in" — this club's tournament deployments are
     /// always coaching, unlike trainings. Every other role/declaration
     /// checkbox stays manual.
@@ -195,32 +194,101 @@ enum PraeExporter {
         let components = Calendar.current.dateComponents([.month, .year], from: summary.tournament.startDate)
         return try exportMainForm(person: summary.person, month: components.month ?? 1, year: components.year ?? 0,
                                    entries: summary.entries, trainingName: summary.tournament.title,
-                                   checkedRoleShapeID: trainerCheckboxShapeID)
+                                   checkedBoxes: [.trainer])
     }
 
-    /// The real template's role checkboxes — genuine Excel Form-control
+    /// One of the real template's checkboxes — genuine Excel Form-control
     /// checkboxes (not ActiveX/OLE objects, confirmed by the template having
     /// plain `xl/ctrlProps/*.xml` + `xl/drawings/vmlDrawing1.vml` entries and
     /// no `activeX*.bin` blobs), each floating OVER its label cell rather
     /// than living IN it (found via each shape's `<x:Anchor>` in the VML —
-    /// column/row pairs, 0-indexed). Neither has an `<x:FmlaLink>` to any
-    /// cell, so "checking" one means inserting `<x:Checked>1</x:Checked>`
-    /// into its own `<x:ClientData>` block — see `checkFormCheckbox`.
-    /// `uebungsleiterCheckboxShapeID` anchors at column 15/row 8 (0-indexed)
-    /// = cell **P9** ("Übungsleiter:in", shared string 74); `trainerCheckboxShapeID`
-    /// anchors at column 1/row 8 = cell **B9** ("Trainer:in", shared string
-    /// 72) — both row 9's role-checkbox row, confirmed against the real
-    /// template's `vmlDrawing1.vml`. Every other role checkbox on this row
-    /// (Sportler:in/A9, Lehrwart:in-Instruktor:in/H9, Masseur:in/X9, and row
-    /// 10's Sportarzt-Sportärztin/Zeugwart:in/Schieds-Kampfrichter:in/
-    /// Rennleiter:in) stays manual — this app only ever fills the ONE role
-    /// checkbox that always applies for the export's own scope (Training vs
-    /// Tournament).
-    private static let uebungsleiterCheckboxShapeID = "Kontrollkästchen_x0020_17"
-    private static let trainerCheckboxShapeID = "Kontrollkästchen_x0020_13"
+    /// column/row pairs, 0-indexed), with no `<x:FmlaLink>` to any cell.
+    ///
+    /// A tick is written to the VML shape and to its
+    /// `xl/ctrlProps/ctrlPropN.xml`. Quick Look, and so the in-app preview and
+    /// the WKWebView print path, doesn't draw form controls at all, and a
+    /// screen reader moving by cell only gets the label text. So each label
+    /// starts with a "[X]" or "[ ]" for NVDA, at 1pt in the cell's background
+    /// colour so that it doesn't print, and its Wingdings box is written as
+    /// U+F072 instead of the letter r: the same glyph, but not a letter for
+    /// NVDA to read. `labelStringIndex` is that label's shared string; each is
+    /// used by exactly one cell. The last box's label has no such glyph.
+    /// The app's own print path doesn't get this file — see `printCopy(of:)`.
+    ///
+    /// `altText` is invisible on the form. Cell navigation in a screen reader
+    /// only reads the label cell (NVDA says "r Übungsleiter:in", whatever the
+    /// state), so the state has to be read from the control itself, where NVDA
+    /// uses the alternative text as the name; without it NVDA says
+    /// "Kontrollkästchen 17". It's written to every box on the form, ticked or
+    /// not, in the VML shape, sheet1.xml's `<controlPr>` and drawing1.xml.
+    /// A ticked box's name also says "angekreuzt", and its label cell gets
+    /// that word as an Excel input message, which NVDA speaks during normal
+    /// cell navigation; it only pops up on screen and never prints. Both are
+    /// fixed at export, so they go stale if someone changes a box in Excel.
+    ///
+    /// `ctrlPropPath` comes from the shape's `<control shapeId r:id>` in
+    /// sheet1.xml, resolved through `xl/worksheets/_rels/sheet1.xml.rels` —
+    /// the numbers don't line up with the shape names, so they can't be
+    /// derived.
+    private struct FormCheckbox: Equatable {
+        let vmlShapeID: String
+        let drawingShapeID: Int
+        let ctrlPropPath: String
+        let cell: String
+        let labelStringIndex: Int?
+        let altText: String
+
+        private init(name: Int, drawingShapeID: Int, ctrlProp: Int, cell: String, labelStringIndex: Int, altText: String) {
+            self.init(vmlShapeID: "Kontrollkästchen_x0020_\(name)", drawingShapeID: drawingShapeID,
+                      ctrlProp: ctrlProp, cell: cell, labelStringIndex: labelStringIndex, altText: altText)
+        }
+
+        private init(vmlShapeID: String, drawingShapeID: Int, ctrlProp: Int, cell: String, labelStringIndex: Int? = nil, altText: String) {
+            self.vmlShapeID = vmlShapeID
+            self.drawingShapeID = drawingShapeID
+            self.ctrlPropPath = "xl/ctrlProps/ctrlProp\(ctrlProp).xml"
+            self.cell = cell
+            self.labelStringIndex = labelStringIndex
+            self.altText = altText
+        }
+
+        /// The name for this export, including the state of a ticked box.
+        func altText(checkedBoxes: [FormCheckbox]) -> String {
+            checkedBoxes.contains(self) ? "\(altText), \(FormCheckbox.checkedLabel)" : altText
+        }
+
+        static let checkedLabel = "angekreuzt"
+
+        static let uebungsleiter = FormCheckbox(name: 17, drawingShapeID: 1041, ctrlProp: 7, cell: "P9", labelStringIndex: 74, altText: "Übungsleiter:in")
+        static let trainer = FormCheckbox(name: 13, drawingShapeID: 1037, ctrlProp: 3, cell: "B9", labelStringIndex: 72, altText: "Trainer:in")
+        static let nebenberufJa = FormCheckbox(name: 22, drawingShapeID: 1046, ctrlProp: 10, cell: "A26", labelStringIndex: 55, altText: "Ja (Nebenberuf)")
+        static let einfachbezugJa = FormCheckbox(name: 24, drawingShapeID: 1048, ctrlProp: 12, cell: "A29", labelStringIndex: 57, altText: "Ja (Einfachbezug)")
+        static let ueberweisung = FormCheckbox(name: 27, drawingShapeID: 1051, ctrlProp: 15, cell: "A33", labelStringIndex: 60, altText: "Überweisung mittels")
+
+        /// Every checkbox on the form. The last one's VML id doesn't follow
+        /// the naming of the others.
+        static let all: [FormCheckbox] = [
+            FormCheckbox(name: 9, drawingShapeID: 1033, ctrlProp: 1, cell: "A9", labelStringIndex: 71, altText: "Sportler:in"),
+            FormCheckbox(name: 10, drawingShapeID: 1034, ctrlProp: 2, cell: "A10", labelStringIndex: 54, altText: "Sportarzt / Sportärztin"),
+            trainer,
+            FormCheckbox(name: 14, drawingShapeID: 1038, ctrlProp: 4, cell: "B10", labelStringIndex: 76, altText: "Zeugwart:in"),
+            FormCheckbox(name: 15, drawingShapeID: 1039, ctrlProp: 5, cell: "H9", labelStringIndex: 73, altText: "Lehrwart:in / Instruktor:in"),
+            FormCheckbox(name: 16, drawingShapeID: 1040, ctrlProp: 6, cell: "H10", labelStringIndex: 77, altText: "Schieds- / Kampfrichter:in"),
+            uebungsleiter,
+            FormCheckbox(name: 19, drawingShapeID: 1043, ctrlProp: 8, cell: "P10", labelStringIndex: 78, altText: "Rennleiter:in"),
+            FormCheckbox(name: 20, drawingShapeID: 1044, ctrlProp: 9, cell: "X9", labelStringIndex: 75, altText: "Masseur:in"),
+            nebenberufJa,
+            FormCheckbox(name: 23, drawingShapeID: 1047, ctrlProp: 11, cell: "B26", labelStringIndex: 56, altText: "Nein (Hauptberuf)"),
+            einfachbezugJa,
+            FormCheckbox(name: 25, drawingShapeID: 1049, ctrlProp: 13, cell: "B29", labelStringIndex: 58, altText: "Nein (Mehrfachbezug)"),
+            FormCheckbox(name: 26, drawingShapeID: 1050, ctrlProp: 14, cell: "A31", labelStringIndex: 59, altText: "Betrag bar erhalten am"),
+            ueberweisung,
+            FormCheckbox(vmlShapeID: "_x0000_s1052", drawingShapeID: 1052, ctrlProp: 16, cell: "P42", altText: "Richtigkeitsvermerk")
+        ]
+    }
 
     private static func exportMainForm(person: PraeEligiblePerson, month: Int, year: Int, entries: [PraeDayEntry],
-                                        trainingName: String, checkedRoleShapeID: String?) throws -> URL {
+                                        trainingName: String, checkedBoxes: [FormCheckbox]) throws -> URL {
         guard let templateURL = Bundle.main.url(forResource: "PRAE_Formular", withExtension: "xlsx") else {
             throw PraeExportError.templateNotFound
         }
@@ -231,9 +299,8 @@ enum PraeExporter {
         monthFormatter.locale = Locale(identifier: "de_AT")
         monthFormatter.dateFormat = "LLLL"
 
-        return try patchTemplate(templateURL: templateURL, outputPrefix: "PRAE-Formular", vmlPatch: checkedRoleShapeID.map { shapeID in
-            { vml in checkFormCheckbox(in: vml, shapeID: shapeID) }
-        }) { xml in
+        return try patchTemplate(templateURL: templateURL, outputPrefix: "PRAE-Formular",
+                                 entryPatches: entryPatches(checking: checkedBoxes)) { xml in
             var patched = XLSXCellPatch.setText(in: xml, ref: "D4", value: person.praeFormName)
             patched = XLSXCellPatch.setText(in: patched, ref: "D5", value: person.member?.svnr ?? "")
             patched = XLSXCellPatch.setText(in: patched, ref: "D7", value: person.member?.fullAddress ?? "")
@@ -267,7 +334,10 @@ enum PraeExporter {
                 patched = XLSXCellPatch.setText(in: patched, ref: "B18", value: GermanNumberWords.spelledOutEuroAmount(total))
             }
 
-            return patched
+            let named = FormCheckbox.all.reduce(patched) {
+                addAltText(toControlIn: $0, box: $1, checkedBoxes: checkedBoxes)
+            }
+            return addCheckedInputMessages(in: named, checkedBoxes: checkedBoxes)
         }
     }
 
@@ -294,15 +364,14 @@ enum PraeExporter {
         return Calendar.current.date(from: components) ?? Date()
     }
 
-    /// Shared unzip → patch `xl/worksheets/sheet1.xml` (and, when `vmlPatch`
-    /// is given, `xl/drawings/vmlDrawing1.vml` too) → rezip pipeline used by
-    /// both templates in this file — every other zip entry (styles, theme,
-    /// control definitions, drawings) is copied through byte-for-byte.
-    /// `vmlPatch` only applies to `PRAE_Formular.xlsx` (the only template
-    /// with form checkboxes) — `exportDarstellung` never passes one, so its
-    /// template's lack of a `vmlDrawing1.vml` entry is a no-op, not an error.
+    /// Shared unzip → patch `xl/worksheets/sheet1.xml` (and any other entry
+    /// named in `entryPatches`) → rezip pipeline used by both templates in
+    /// this file — every other zip entry (styles, theme, drawings) is copied
+    /// through byte-for-byte. `entryPatches` only applies to
+    /// `PRAE_Formular.xlsx` (the only template with form checkboxes) —
+    /// `exportDarstellung` never passes any.
     private static func patchTemplate(templateURL: URL, outputPrefix: String,
-                                       vmlPatch: ((String) -> String)? = nil,
+                                       entryPatches: [String: (String) -> String] = [:],
                                        patch: (String) throws -> String) throws -> URL {
         let sourceArchive = try Archive(url: templateURL, accessMode: .read)
         let outputURL = FileManager.default.temporaryDirectory
@@ -315,8 +384,8 @@ enum PraeExporter {
 
             if entry.path == "xl/worksheets/sheet1.xml", let xml = String(data: data, encoding: .utf8) {
                 data = Data(try patch(xml).utf8)
-            } else if entry.path == "xl/drawings/vmlDrawing1.vml", let vmlPatch, let vml = String(data: data, encoding: .utf8) {
-                data = Data(vmlPatch(vml).utf8)
+            } else if let entryPatch = entryPatches[entry.path], let xml = String(data: data, encoding: .utf8) {
+                data = Data(entryPatch(xml).utf8)
             }
 
             try outputArchive.addEntry(
@@ -332,23 +401,141 @@ enum PraeExporter {
         return outputURL
     }
 
+    /// The zip-entry patches that tick `boxes` and name every checkbox — see
+    /// `FormCheckbox`. sheet1.xml's half of the naming happens in the sheet
+    /// patch, since that entry is patched separately.
+    private static func entryPatches(checking boxes: [FormCheckbox]) -> [String: (String) -> String] {
+        var patches: [String: (String) -> String] = [
+            "xl/drawings/vmlDrawing1.vml": { vml in
+                let named = FormCheckbox.all.reduce(vml) { addAltText(toShapeIn: $0, box: $1, checkedBoxes: boxes) }
+                return boxes.reduce(named) { checkFormCheckbox(in: $0, shapeID: $1.vmlShapeID) }
+            },
+            "xl/drawings/drawing1.xml": { drawing in
+                FormCheckbox.all.reduce(drawing) { addAltText(toDrawingIn: $0, box: $1, checkedBoxes: boxes) }
+            },
+            "xl/sharedStrings.xml": { sharedStrings in
+                FormCheckbox.all.reduce(sharedStrings) { markLabel(in: $0, box: $1, checkedBoxes: boxes) }
+            }
+        ]
+        for box in boxes {
+            patches[box.ctrlPropPath] = { ctrlProp in
+                ctrlProp.replacingOccurrences(of: "objectType=\"CheckBox\"", with: "objectType=\"CheckBox\" checked=\"Checked\"")
+            }
+        }
+        return patches
+    }
+
+    /// Adds the invisible "[X]"/"[ ]" to a checkbox label and swaps its
+    /// Wingdings box for the unreadable form — see `FormCheckbox`.
+    private static func markLabel(in sharedStrings: String, box: FormCheckbox, checkedBoxes: [FormCheckbox]) -> String {
+        guard let index = box.labelStringIndex else { return sharedStrings }
+        var searchStart = sharedStrings.startIndex
+        var itemStart: Range<String.Index>?
+        for _ in 0...index {
+            guard let next = sharedStrings.range(of: "<si>", range: searchStart..<sharedStrings.endIndex) else { return sharedStrings }
+            itemStart = next
+            searchStart = next.upperBound
+        }
+        guard let itemStart,
+              let itemEnd = sharedStrings.range(of: "</si>", range: itemStart.upperBound..<sharedStrings.endIndex),
+              let glyph = sharedStrings.range(of: "\(labelGlyphProperties)<t>r</t>",
+                                              range: itemStart.upperBound..<itemEnd.lowerBound) else { return sharedStrings }
+        // Rows 9 and 10 are the form's only shaded checkbox rows.
+        let isShaded = (Int(box.cell.drop(while: \.isLetter)) ?? 0) <= 10
+        return sharedStrings.replacingCharacters(
+            in: glyph,
+            with: hiddenLabelRuns(isChecked: checkedBoxes.contains(box), isShaded: isShaded)
+        )
+    }
+
+    private static let labelGlyphProperties = "<sz val=\"14\"/><color indexed=\"8\"/><rFont val=\"Wingdings\"/><charset val=\"2\"/></rPr>"
+    private static let unreadableBoxRun = "<t>\u{F072}</t>"
+
+    /// What `markLabel` writes in place of the label's box, from just inside
+    /// its first `<rPr>` up to the end of its text.
+    private static func hiddenLabelRuns(isChecked: Bool, isShaded: Bool) -> String {
+        let mark = isChecked ? "[X]" : "[ ]"
+        let background = isShaded ? "<color theme=\"0\" tint=\"-4.9989318521683403E-2\"/>" : "<color theme=\"0\"/>"
+        return "<sz val=\"1\"/>\(background)<rFont val=\"Arial\"/><family val=\"2\"/></rPr><t xml:space=\"preserve\">\(mark) </t></r>"
+            + "<r><rPr>\(labelGlyphProperties)\(unreadableBoxRun)"
+    }
+
+    /// `file` as it should go to the app's print path. WKWebView doesn't draw
+    /// form controls, so a PRAE form printed from the app would show every box
+    /// empty; a visible tick in the shared file isn't an option either, since
+    /// Excel would draw it next to its own control. So a temporary copy gets
+    /// visible ☒/☐ instead of the hidden marks, and the exported file stays as
+    /// it is. Plain Unicode in Arial because Wingdings doesn't ship on iOS.
+    /// Returns `file` itself for anything that isn't a marked PRAE form; a
+    /// returned copy is the caller's to delete.
+    static func printCopy(of file: URL) throws -> URL {
+        guard file.pathExtension.lowercased() == "xlsx" else { return file }
+        let archive = try Archive(url: file, accessMode: .read)
+        guard let entry = archive["xl/sharedStrings.xml"] else { return file }
+        var data = Data()
+        _ = try archive.extract(entry) { data.append($0) }
+        guard let sharedStrings = String(data: data, encoding: .utf8), sharedStrings.contains(unreadableBoxRun) else { return file }
+
+        return try patchTemplate(templateURL: file, outputPrefix: "PRAE-Druck",
+                                 entryPatches: ["xl/sharedStrings.xml": visibleLabelMarks]) { $0 }
+    }
+
+    private static func visibleLabelMarks(in sharedStrings: String) -> String {
+        var result = sharedStrings
+        for isChecked in [true, false] {
+            let visible = "<sz val=\"14\"/><color indexed=\"8\"/><rFont val=\"Arial\"/><family val=\"2\"/></rPr><t>\(isChecked ? "☒" : "☐")</t>"
+            for isShaded in [true, false] {
+                result = result.replacingOccurrences(of: hiddenLabelRuns(isChecked: isChecked, isShaded: isShaded), with: visible)
+            }
+        }
+        return result
+    }
+
+    private static func addAltText(toShapeIn vml: String, box: FormCheckbox, checkedBoxes: [FormCheckbox]) -> String {
+        let marker = "<v:shape id=\"\(box.vmlShapeID)\""
+        return vml.replacingOccurrences(of: marker, with: "\(marker) alt=\"\(box.altText(checkedBoxes: checkedBoxes))\"")
+    }
+
+    private static func addAltText(toDrawingIn drawing: String, box: FormCheckbox, checkedBoxes: [FormCheckbox]) -> String {
+        let marker = "<xdr:cNvPr id=\"\(box.drawingShapeID)\""
+        return drawing.replacingOccurrences(of: marker, with: "\(marker) descr=\"\(box.altText(checkedBoxes: checkedBoxes))\"")
+    }
+
+    private static func addAltText(toControlIn sheet: String, box: FormCheckbox, checkedBoxes: [FormCheckbox]) -> String {
+        guard let control = sheet.range(of: "<control shapeId=\"\(box.drawingShapeID)\""),
+              let properties = sheet.range(of: "<controlPr ", range: control.upperBound..<sheet.endIndex) else { return sheet }
+        return sheet.replacingCharacters(in: properties,
+                                         with: "<controlPr altText=\"\(box.altText(checkedBoxes: checkedBoxes))\" ")
+    }
+
+    /// Adds one input message per ticked box. The template has no
+    /// `<dataValidations>`, and the schema wants it right before
+    /// `<pageMargins>` here. No `type` means any cell value stays allowed.
+    private static func addCheckedInputMessages(in sheet: String, checkedBoxes: [FormCheckbox]) -> String {
+        guard !checkedBoxes.isEmpty, let pageMargins = sheet.range(of: "<pageMargins ") else { return sheet }
+        let validations = checkedBoxes.map {
+            "<dataValidation allowBlank=\"1\" showInputMessage=\"1\" prompt=\"\(FormCheckbox.checkedLabel)\" sqref=\"\($0.cell)\"/>"
+        }
+        let element = "<dataValidations count=\"\(checkedBoxes.count)\">\(validations.joined())</dataValidations>"
+        return sheet.replacingCharacters(in: pageMargins.lowerBound..<pageMargins.lowerBound, with: element)
+    }
+
     /// Checks a real Excel Form-control checkbox that floats OVER a cell
     /// (positioned via its `<x:Anchor>`) rather than being tied to one via
-    /// `<x:FmlaLink>` — inserting `<x:Checked>1</x:Checked>` right after its
-    /// `<x:ClientData ObjectType="Checkbox">` opening tag is exactly what
-    /// Excel itself writes when a user ticks the box by hand. Scoped to the
-    /// one `<v:shape id="...">...</v:shape>` block matching `shapeID` first
-    /// (every shape's `<x:ClientData ObjectType="Checkbox">` opening tag is
-    /// byte-identical, so a plain string search without that scoping would
-    /// check the WRONG box — whichever happens to come first in the file).
+    /// `<x:FmlaLink>` — by inserting `<x:Checked>1</x:Checked>` right before
+    /// the shape's `<x:NoThreeD/>`. Scoped to the one
+    /// `<v:shape id="...">...</v:shape>` block matching `shapeID` first
+    /// (every shape's `<x:NoThreeD/>` is byte-identical, so a plain string
+    /// search without that scoping would check the WRONG box — whichever
+    /// happens to come first in the file).
     private static func checkFormCheckbox(in vml: String, shapeID: String) -> String {
         let shapeStartMarker = "<v:shape id=\"\(shapeID)\""
         guard let shapeStart = vml.range(of: shapeStartMarker),
               let shapeEnd = vml.range(of: "</v:shape>", range: shapeStart.lowerBound..<vml.endIndex) else { return vml }
         let shapeRange = shapeStart.lowerBound..<shapeEnd.upperBound
         var shapeBlock = String(vml[shapeRange])
-        guard let clientDataOpen = shapeBlock.range(of: "<x:ClientData ObjectType=\"Checkbox\">") else { return vml }
-        shapeBlock.replaceSubrange(clientDataOpen, with: "<x:ClientData ObjectType=\"Checkbox\"><x:Checked>1</x:Checked>")
+        guard let noThreeD = shapeBlock.range(of: "<x:NoThreeD/>") else { return vml }
+        shapeBlock.replaceSubrange(noThreeD, with: "<x:Checked>1</x:Checked><x:NoThreeD/>")
         return vml.replacingCharacters(in: shapeRange, with: shapeBlock)
     }
 }
