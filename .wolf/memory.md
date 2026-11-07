@@ -4071,3 +4071,4 @@
 |------|--------|---------|---------|--------|
 | 18:40 | Real Claude Code + token test on staging passed: all 15 tools, PRAE zip, one-time link, refusals; found orphan memberships after member delete | staging | passed | ~6000 |
 | 19:00 | delete_member removes team entries, attendance and PRAE; staging migrated, 2 orphan rows removed; token work committed to PR 27 | supabase/, webui/, app | done | ~5000 |
+| 19:30 | Narrowed positive counts in pgTAP tests to their own rows so extra rows no longer break them; 191/191 | supabase/tests/ | passed, uncommitted | ~3000 |
