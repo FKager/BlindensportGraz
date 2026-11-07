@@ -9,7 +9,8 @@
 #   db-push            apply pending migrations
 #   functions          deploy notify-schedule
 #   templates          auth e-mail templates (token_hash links)
-#   webadmin           write nuc:~/blindensport-webadmin/.env for this project and restart
+#   oauth              OAuth server for MCP clients, and site_url (only these settings)
+#   webui           write nuc:~/blindensport-webui/.env for this project and restart
 #
 # Never prints keys or secrets: they go through temp files (mode 600, deleted)
 # or straight into HTTPS requests. Needs: supabase CLI logged in
@@ -136,12 +137,33 @@ print(json.dumps({
 PY
     ;;
 
-  webadmin)
+  oauth)
+    # Not `supabase config push`: that also sends the SMTP settings, whose
+    # password comes from the environment. Must match supabase/config.toml.
+    [ "$TARGET" = prod ] && site=https://bs.a11y.it || site=http://127.0.0.1:8083
+    SITE_URL=$site python3 -c 'import json, os; print(json.dumps({
+        "site_url": os.environ["SITE_URL"],
+        "oauth_server_enabled": True,
+        "oauth_server_allow_dynamic_registration": True,
+        "oauth_server_authorization_path": "/oauth/consent"}))' \
+      | curl -sS -f -X PATCH "https://api.supabase.com/v1/projects/$REF/config/auth" \
+          -H "Authorization: Bearer $(cat $MGMT_TOKEN_FILE)" -H "Content-Type: application/json" \
+          --data-binary @- -o /dev/null -w "oauth: HTTP %{http_code}\n"
+    curl -sS -f "https://api.supabase.com/v1/projects/$REF/config/auth" \
+        -H "Authorization: Bearer $(cat $MGMT_TOKEN_FILE)" \
+      | python3 -c 'import json, sys
+c = json.load(sys.stdin)
+for k in ("site_url", "uri_allow_list", "oauth_server_enabled", "oauth_server_allow_dynamic_registration", "oauth_server_authorization_path"):
+    print(" ", k, "=", c.get(k))
+print("  smtp configured:", bool(c.get("smtp_host")))'
+    ;;
+
+  webui)
     anon=$(api_key sb_publishable_ anon); secret=$(api_key sb_secret_ service_role)
     printf 'SUPABASE_URL=%s\nSUPABASE_ANON_KEY=%s\nSUPABASE_SERVICE_KEY=%s\n' "$URL" "$anon" "$secret" \
-      | ssh franz@nuc "umask 077 && cat > ~/blindensport-webadmin/.env && cd ~/blindensport-webadmin && docker compose -f compose.traefik.yml up -d 2>&1 | tail -2"
+      | ssh franz@nuc "umask 077 && cat > ~/blindensport-webui/.env && cd ~/blindensport-webui && docker compose -f compose.traefik.yml up -d 2>&1 | tail -2"
     unset anon secret
-    echo "webadmin on nuc now uses $TARGET ($REF)"
+    echo "webui on nuc now uses $TARGET ($REF)"
     ;;
 
   *) echo "unknown step '$STEP'"; exit 2 ;;

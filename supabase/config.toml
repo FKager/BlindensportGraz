@@ -158,7 +158,7 @@ enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
 # Supabase sends OAuth sign-ins (MCP clients) to <site_url>/oauth/consent, so
-# this is the web admin, not the app: locally the one on port 8083. The app's
+# this is the web UI, not the app: locally the one on port 8083. The app's
 # links don't depend on it: the email templates name blindensportgraz:// and
 # the app passes that as redirect_to, allowed below.
 site_url = "http://127.0.0.1:8083"
