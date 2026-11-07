@@ -38,7 +38,8 @@ public class MainLayout extends AppLayout implements RouterLayout, AfterNavigati
             new NavEntry("App-Konten", AccountsView.class),
             new NavEntry("Rollen-Protokoll", RoleLogView.class),
             new NavEntry("Vereinsbudget", BudgetView.class),
-            new NavEntry("Willkommensbildschirm", WelcomeView.class));
+            new NavEntry("Willkommensbildschirm", WelcomeView.class),
+            new NavEntry("KI-Zugang", McpTokensView.class));
 
     private final AdminSessions sessions;
     private final SideNav nav = new SideNav();

@@ -107,7 +107,7 @@ struct MembersListView: View {
             Button("Endgültig löschen", role: .destructive) { delete(member, typedName: confirmName) }
             Button("Abbrechen", role: .cancel) {}
         } message: { member in
-            Text("Zur Bestätigung „\(member.fullName)“ eingeben. Der Eintrag wird mit allen Daten aus der Vereinskartei entfernt. Das kann nicht rückgängig gemacht werden.")
+            Text("Zur Bestätigung „\(member.fullName)“ eingeben. Der Eintrag wird aus der Vereinskartei entfernt, mit Team-Zuordnungen, Anwesenheiten und PRAE-Beträgen. Das kann nicht rückgängig gemacht werden.")
         }
         .alert("Löschen nicht möglich", isPresented: deletionErrorShown) {
             Button("OK") { deletionError = nil }

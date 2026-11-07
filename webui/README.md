@@ -109,18 +109,18 @@ the URL from `ServerConfig.clubMembersAPIHost`
 
 `https://bs.a11y.it/mcp` lets MCP clients (Claude Code, for example) work with the club's data: members, teams, trainings, tournaments, attendance and PRAE forms.
 
-Connect from Claude Code, then sign in with `/mcp`:
+Connect with a personal token. Create it in the web UI under **KI-Zugang**, confirm your password, and copy it: it is shown only once. Then, for Claude Code:
 
 ```
-claude mcp add --transport http blindensport https://bs.a11y.it/mcp
+claude mcp add --transport http blindensport https://bs.a11y.it/mcp --header "Authorization: Bearer <token>"
 ```
 
-The browser opens the web UI. Sign in with your normal account and allow access. Coaches, admins and root can connect; a client can do whatever that account may do.
+Coaches, admins and root can create tokens, and a client can do whatever that account may do. A token lasts 90 days and can be revoked on the same page, which takes effect within a minute. Treat it like a password: the client keeps it in its settings file.
 
 ### How it works
 
-- **Sign-in:** OAuth 2.1 with Supabase's OAuth server. `/.well-known/oauth-protected-resource` names Supabase as authorization server, and `/oauth/consent` (`OAuthConsentView`) is the approval page. `site_url` in `supabase/config.toml` must be this web UI, because Supabase sends people to `<site_url>/oauth/consent`.
-- **Permissions:** the client's token is a normal Supabase user token, so RLS and the RPCs decide, as in the app. `McpAuthFilter` admits only accounts that may use the web UI. The server has no rights of its own, and the service key isn't used.
+- **Tokens:** `McpTokens`. A token stands for one Supabase session, opened when its owner confirmed their password. The database (`mcp_tokens`) holds only a hash of the token and the session's refresh token encrypted with a key derived from the token, so neither the database nor this server can use it without the token. No service key is involved.
+- **Permissions:** every call runs with that person's Supabase token, so RLS and the RPCs decide, as in the app. `McpAuthFilter` admits only accounts that may use the web UI. Signing in with Apple gives no password, so those accounts can't create a token.
 - **Protected data:** SVNR, IBAN, birth date, medical exam, disability and consents never appear in a tool result and can't be written, because anything returned reaches the AI behind the client. Member results are built from an allow-list in `ClubTools`.
 - **PRAE forms:** they do contain SVNR and IBAN, so `create_prae_forms` returns only a summary and a link to `/mcp-files/{token}`. The link works once, lasts 10 minutes, and the file exists in memory only. Whoever holds the link gets the file.
 - **Nothing deletes:** there is no delete tool. A member can only be marked with status `delete`.
@@ -141,14 +141,13 @@ The browser opens the web UI. Sign in with your normal account and allow access.
 
 ### Member status
 
-`members.status` is `new`, `active` or `delete`. Anyone with `members.manage` sets it. Only root can remove a member, only when the status is `delete`, and only by typing the full name: `delete_member` is the only way, as the table's delete policy is gone.
+`members.status` is `new`, `active` or `delete`. Anyone with `members.manage` sets it. Only root can remove a member, only when the status is `delete`, and only by typing the full name: `delete_member` is the only way, as the table's delete policy is gone. It also removes the member's team entries, and with them their attendance and PRAE amounts.
 
 ### Rollout order
 
-1. Database first: `supabase db push`. New app and web UI versions read `members.status`, so it must exist before them.
-2. Supabase auth settings: `supabase config push` (OAuth server, dynamic client registration, `site_url`). `allow_dynamic_registration` lets any client register, which is why the consent page shows where a sign-in returns to.
-3. Web UI: redeploy. The first deploy after the rename from "web admin" moves the server folder from `~/blindensport-webadmin` to `~/blindensport-webui` and replaces Traefik's route file (`blindensport-webadmin.yml` → `blindensport-webui.yml`), since the service alias changed too.
-4. App: release a new TestFlight build. Until then, swiping to delete a member in an old build has no effect on the server, and the member comes back on the next sync.
+1. Database first: `supabase/scripts/cutover.sh <target> db-push`. New app and web UI versions read `members.status`, so it must exist before them.
+2. Web UI: redeploy. The first deploy after the rename from "web admin" moves the server folder from `~/blindensport-webadmin` to `~/blindensport-webui` and replaces Traefik's route file (`blindensport-webadmin.yml` → `blindensport-webui.yml`), since the service alias changed too.
+3. App: release a new TestFlight build. Until then, swiping to delete a member in an old build has no effect on the server, and the member comes back on the next sync.
 
 ## Deployment
 

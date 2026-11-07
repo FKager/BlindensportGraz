@@ -29,6 +29,11 @@ public class Supabase {
         return new Postgrest(http, config.anonKey(), accessToken);
     }
 
+    /** PostgREST with no user, for the few RPCs anon may call (MCP token lookup). */
+    public Postgrest asAnon() {
+        return new Postgrest(http, config.anonKey(), () -> null);
+    }
+
     /**
      * PostgREST as service role — bypasses RLS. Only for the calendar feed,
      * which authenticates by its own per-user token and has no user session.

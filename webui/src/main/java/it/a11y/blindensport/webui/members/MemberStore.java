@@ -148,8 +148,8 @@ public final class MemberStore {
     /**
      * Removes the entry through delete_member, the only way to do it: the
      * caller must be root, the entry marked {@link MemberStatus#DELETE}, and
-     * {@code confirmName} its full name. Contacts cascade, the RPC removes
-     * the protected row.
+     * {@code confirmName} its full name. Contacts cascade; the RPC removes
+     * the protected row and the team entries, with attendance and PRAE amounts.
      */
     public void delete(String id, String confirmName) {
         String key = key(id).orElseThrow(() -> new IllegalArgumentException("Member id '" + id + "' is not a UUID."));

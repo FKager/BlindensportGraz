@@ -8,9 +8,8 @@ import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
 /**
- * Everything under /mcp needs a signed-in coach, admin or root. No or a bad
- * token gets the 401 + WWW-Authenticate that starts the client's OAuth sign-in.
- * Runs as a Vert.x filter since the MCP extension's routes aren't JAX-RS.
+ * Everything under /mcp needs the personal token ({@link McpTokens}) of a
+ * coach, admin or root, sent as {@code Authorization: Bearer}. Runs as a Vert.x filter since the MCP extension's routes aren't JAX-RS.
  */
 @ApplicationScoped
 public class McpAuthFilter {
@@ -21,9 +20,6 @@ public class McpAuthFilter {
 
     @Inject
     McpIdentity identity;
-
-    @Inject
-    McpConfig config;
 
     void register(@Observes Filters filters) {
         filters.register(this::handle, PRIORITY);
@@ -37,11 +33,11 @@ public class McpAuthFilter {
         }
         String header = context.request().getHeader("Authorization");
         if (header == null || !header.regionMatches(true, 0, BEARER, 0, BEARER.length())) {
-            challenge(context, 401, null);
+            challenge(context);
             return;
         }
         String token = header.substring(BEARER.length()).trim();
-        // GoTrue is called over blocking HTTP. The request body waits meanwhile,
+        // The database is called over blocking HTTP. The request body waits meanwhile,
         // so it isn't lost before the MCP route's body handler attaches.
         context.request().pause();
         context.vertx().<McpIdentity.Outcome>executeBlocking(() -> identity.resolve(token), false).onComplete(result -> {
@@ -53,18 +49,14 @@ public class McpAuthFilter {
                 context.put(USER, result.result().user());
                 context.next();
             } else if (result.result().refusal() == McpIdentity.Refusal.NO_ACCESS) {
-                challenge(context, 403, "insufficient_scope");
+                context.response().setStatusCode(403).end();
             } else {
-                challenge(context, 401, "invalid_token");
+                challenge(context);
             }
         });
     }
 
-    private void challenge(RoutingContext context, int status, String error) {
-        String metadata = config.publicUrl() + "/.well-known/oauth-protected-resource/mcp";
-        context.response().setStatusCode(status)
-                .putHeader("WWW-Authenticate", "Bearer resource_metadata=\"" + metadata + "\""
-                        + (error == null ? "" : ", error=\"" + error + "\""))
-                .end();
+    private void challenge(RoutingContext context) {
+        context.response().setStatusCode(401).putHeader("WWW-Authenticate", "Bearer realm=\"Blindensport Graz\"").end();
     }
 }

@@ -178,8 +178,8 @@ public class MembersView extends AdminView {
             }
         });
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        dialog.add(new Paragraph("Der Eintrag wird mit Kontakt- und geschützten Daten gelöscht. "
-                + "Das kann nicht rückgängig gemacht werden."), name);
+        dialog.add(new Paragraph("Der Eintrag wird mit Kontakt- und geschützten Daten gelöscht, ebenso die Team-Zuordnungen "
+                + "samt Anwesenheiten und PRAE-Beträgen. Das kann nicht rückgängig gemacht werden."), name);
         dialog.getFooter().add(new Button("Abbrechen", e -> dialog.close()), delete);
         dialog.open();
         name.focus();

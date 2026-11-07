@@ -1,30 +1,23 @@
 package it.a11y.blindensport.webui.mcp;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.a11y.blindensport.webui.auth.Access;
+import it.a11y.blindensport.webui.auth.SessionExpiredException;
 import it.a11y.blindensport.webui.supabase.GoTrue;
 import it.a11y.blindensport.webui.supabase.Postgrest;
 import it.a11y.blindensport.webui.supabase.Supabase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.HexFormat;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Turns a bearer token into an {@link McpUser}. A client sends many requests in
- * a row, so a result is kept for a minute, never past the token's own expiry;
- * a blocked account or changed role therefore counts within a minute, as RLS
- * applies immediately anyway.
+ * Turns a token into an {@link McpUser}. A client sends many requests in a row,
+ * so a result is kept for a minute: a revoked token, a blocked account or a
+ * changed role counts within a minute. RLS applies immediately anyway.
  */
 @ApplicationScoped
 public class McpIdentity {
@@ -46,59 +39,39 @@ public class McpIdentity {
     Supabase supabase;
 
     @Inject
-    ObjectMapper json;
+    McpTokens tokens;
 
     public Outcome resolve(String token) {
         Instant now = Instant.now();
-        String key = sha256(token);
+        String key = McpTokens.hash(token);
         Cached cached = cache.get(key);
         if (cached != null && cached.until().isAfter(now)) {
             return new Outcome(cached.user(), null);
         }
         cache.remove(key);
-        Optional<GoTrue.User> account = supabase.auth().user(token);
-        if (account.isEmpty()) {
+        Optional<McpTokens.Live> live = tokens.open(token);
+        if (live.isEmpty()) {
             return new Outcome(null, Refusal.INVALID_TOKEN);
         }
-        Postgrest db = supabase.asUser(() -> token);
-        Access access = Access.load(db, account.get().id());
+        GoTrue.Tokens session;
+        try {
+            session = live.get().session();
+        } catch (SessionExpiredException e) {
+            return new Outcome(null, Refusal.INVALID_TOKEN);
+        }
+        Postgrest db = supabase.asUser(live.get()::accessToken);
+        Access access = Access.load(db, session.userId());
         if (!access.canUseWebUi()) {
             return new Outcome(null, Refusal.NO_ACCESS);
         }
-        McpUser user = new McpUser(account.get().id(), account.get().email(), access, db);
-        Instant until = now.plus(CACHE_TIME);
-        Instant expiry = expiry(token);
-        if (expiry != null && expiry.isBefore(until)) {
-            until = expiry;
-        }
+        McpUser user = new McpUser(session.userId(), session.email(), access, db);
         if (cache.size() >= MAX_CACHED) {
             cache.entrySet().removeIf(e -> !e.getValue().until().isAfter(now));
             if (cache.size() >= MAX_CACHED) {
                 cache.clear();
             }
         }
-        cache.put(key, new Cached(user, until));
+        cache.put(key, new Cached(user, now.plus(CACHE_TIME)));
         return new Outcome(user, null);
-    }
-
-    /** The JWT's exp. Only shortens caching of a token GoTrue has just accepted, so the unverified read is fine. */
-    private Instant expiry(String token) {
-        try {
-            String[] parts = token.split("\\.");
-            JsonNode payload = json.readTree(Base64.getUrlDecoder().decode(parts[1]));
-            return payload.hasNonNull("exp") ? Instant.ofEpochSecond(payload.get("exp").asLong()) : null;
-        } catch (java.io.IOException | IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
-            return null;
-        }
-    }
-
-    /** Tokens are kept out of the map's keys, in case anything ever dumps it. */
-    private static String sha256(String token) {
-        try {
-            return HexFormat.of().formatHex(
-                    MessageDigest.getInstance("SHA-256").digest(token.getBytes(StandardCharsets.UTF_8)));
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException(e);
-        }
     }
 }

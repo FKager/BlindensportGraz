@@ -83,6 +83,27 @@ public class AdminSessions {
         return token;
     }
 
+    /**
+     * Checks the person's password again and returns a new Supabase session
+     * for them, separate from the one they're signed in with. Same limiter as
+     * signing in.
+     *
+     * @throws SignInException 429 locked out, 401 wrong password
+     */
+    public GoTrue.Tokens confirmPassword(AdminSession admin, String password, String client) {
+        if (limiter.isLockedOut(client)) {
+            throw new SignInException(429, "Zu viele Fehlversuche. Bitte später erneut versuchen.");
+        }
+        GoTrue.Tokens tokens = password == null || password.isEmpty() ? null
+                : supabase.auth().signIn(admin.email(), password).orElse(null);
+        if (tokens == null) {
+            limiter.recordFailure(client);
+            throw new SignInException(401, "Das Passwort stimmt nicht.");
+        }
+        limiter.recordSuccess(client);
+        return tokens;
+    }
+
     /** The session for a token, or empty if unknown, expired, or no longer allowed. */
     public Optional<AdminSession> get(String token) {
         if (token == null || token.isEmpty()) {

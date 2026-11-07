@@ -39,9 +39,6 @@ public class AccessGuard {
         }
         Optional<AdminSession> session = UiSession.current(sessions);
         if (session.isEmpty()) {
-            if (target == OAuthConsentView.class) {
-                LoginView.returnAfterSignIn(event.getLocation());
-            }
             event.forwardTo(LoginView.class);
             return;
         }

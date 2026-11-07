@@ -4,7 +4,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(13);
+select plan(15);
 
 create function pg_temp.mk_user(uid uuid, mail text) returns void language sql as $$
   insert into auth.users (instance_id, id, aud, role, email, raw_user_meta_data, created_at, updated_at)
@@ -33,6 +33,15 @@ insert into public.members (id, first_name, last_name) values
   ('f1000000-0000-0000-0000-000000000001', 'Anna', 'Muster');
 insert into public.member_private (member_id, svnr) values
   ('f1000000-0000-0000-0000-000000000001', '1234');
+insert into public.teams (id, name) values ('f2000000-0000-0000-0000-000000000001', 'Statusteam');
+insert into public.team_memberships (id, team_id, member_id, role) values
+  ('f3000000-0000-0000-0000-000000000001', 'f2000000-0000-0000-0000-000000000001',
+   'f1000000-0000-0000-0000-000000000001', 'coach');
+insert into public.events (id, kind, title, start_date, end_date) values
+  ('f4000000-0000-0000-0000-000000000001', 'training', 'T', now(), now());
+insert into public.attendances (id, event_id, membership_id, attended, prae_amount) values
+  ('f5000000-0000-0000-0000-000000000001', 'f4000000-0000-0000-0000-000000000001',
+   'f3000000-0000-0000-0000-000000000001', true, 40);
 
 select is((select status from public.members where id = 'f1000000-0000-0000-0000-000000000001'),
           'new', 'a new entry starts as new');
@@ -81,6 +90,11 @@ select is((select count(*)::int from public.members where id = 'f1000000-0000-00
           0, 'entry gone');
 select is((select count(*)::int from public.member_private where member_id = 'f1000000-0000-0000-0000-000000000001'),
           0, 'protected row gone too');
+
+select is((select count(*)::int from public.team_memberships where id = 'f3000000-0000-0000-0000-000000000001'),
+          0, 'no nameless team entry stays behind');
+select is((select count(*)::int from public.attendances where id = 'f5000000-0000-0000-0000-000000000001'),
+          0, 'attendance and PRAE go with it');
 
 select * from finish();
 rollback;
