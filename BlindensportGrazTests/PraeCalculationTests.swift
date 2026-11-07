@@ -740,9 +740,9 @@ final class PraeCalculationTests: XCTestCase {
         try assertBox(ueberweisungBox, checked: false, in: url)
     }
 
-    func testExportMainFormNamesEveryCheckboxForScreenReaders() throws {
-        // NVDA reads a form control's state from the control itself and uses
-        // its alternative text as the name; the template has none.
+    func testExportMainFormNamesEveryCheckboxWithoutItsState() throws {
+        // NVDA uses a control's alternative text as its name; the template
+        // has none. A state in the name would go stale when a box changes.
         let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
         let url = try PraeExporter.exportMainForm(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
@@ -754,58 +754,34 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertEqual(vml.components(separatedBy: " alt=\"").count - 1, 16)
         XCTAssertEqual(sheet.components(separatedBy: "<controlPr altText=\"").count - 1, 16)
         XCTAssertEqual(drawing.components(separatedBy: " descr=\"").count - 1, 16)
-
-        // A ticked box says so; an unticked one has just its name.
-        XCTAssertTrue(vml.contains("<v:shape id=\"Kontrollkästchen_x0020_17\" alt=\"Übungsleiter:in, angekreuzt\""))
-        XCTAssertTrue(vml.contains("<v:shape id=\"Kontrollkästchen_x0020_13\" alt=\"Trainer:in\""))
-        XCTAssertTrue(drawing.contains("<xdr:cNvPr id=\"1041\" descr=\"Übungsleiter:in, angekreuzt\""))
-        let control = try XCTUnwrap(sheet.range(of: "<control shapeId=\"1041\""))
-        XCTAssertTrue(sheet[control.upperBound...].prefix(120).contains("<controlPr altText=\"Übungsleiter:in, angekreuzt\""))
+        XCTAssertTrue(vml.contains("<v:shape id=\"Kontrollkästchen_x0020_17\" alt=\"Übungsleiter:in\""))
+        XCTAssertTrue(drawing.contains("<xdr:cNvPr id=\"1041\" descr=\"Übungsleiter:in\""))
+        XCTAssertFalse(vml.contains("angekreuzt"))
+        XCTAssertFalse(sheet.contains("angekreuzt"))
+        XCTAssertFalse(sheet.contains("<dataValidation"))
     }
 
-    func testExportMainFormAddsInputMessageToTickedCellsOnly() throws {
-        // NVDA speaks a cell's input message during normal cell navigation,
-        // where the checkbox control itself is never reached.
+    func testExportMainFormLeavesEverythingPrintedAsInTheTemplate() throws {
+        // The exported form has to match the original exactly. NVDA gets the
+        // state from the add-on in nvda-addon/, so nothing is added for it.
         let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
         let url = try PraeExporter.exportMainForm(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
+        let template = try XCTUnwrap(Bundle.main.url(forResource: "PRAE_Formular", withExtension: "xlsx"))
 
+        for path in ["xl/sharedStrings.xml", "xl/workbook.xml", "xl/styles.xml", "xl/calcChain.xml"] {
+            XCTAssertEqual(try entryText(from: url, path: path), try entryText(from: template, path: path), path)
+        }
+        let vml = try entryText(from: url, path: "xl/drawings/vmlDrawing1.vml")
+        XCTAssertFalse(vml.contains("<x:FmlaLink>"))
         let sheet = try entryText(from: url, path: "xl/worksheets/sheet1.xml")
-        XCTAssertTrue(sheet.contains("<dataValidations count=\"4\">"))
-        XCTAssertTrue(sheet.contains("</dataValidations><pageMargins "))
-        for cell in ["P9", "A26", "A29", "A33"] {
-            XCTAssertTrue(sheet.contains("prompt=\"angekreuzt\" sqref=\"\(cell)\""), cell)
-        }
-        XCTAssertFalse(sheet.contains("sqref=\"B9\""))
+        XCTAssertFalse(sheet.contains("<dataValidation"))
+        XCTAssertFalse(sheet.contains("r=\"AH"))
     }
 
-    func testExportMainFormMarksCheckboxLabelsForScreenReadersOnly() throws {
-        // NVDA read the template's Wingdings box as the letter r on every
-        // label. The state goes in as text it can read, but must not print:
-        // 1pt, in the cell's background colour.
-        let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
-        let url = try PraeExporter.exportMainForm(summary: summary)
-        defer { try? FileManager.default.removeItem(at: url) }
-
-        let strings = try entryText(from: url, path: "xl/sharedStrings.xml")
-        XCTAssertFalse(strings.contains("<t>r</t>"))
-        XCTAssertEqual(strings.components(separatedBy: "<t>\u{F072}</t>").count - 1, 15)
-        XCTAssertEqual(strings.components(separatedBy: ">[X] </t>").count - 1, 4)
-        XCTAssertEqual(strings.components(separatedBy: ">[ ] </t>").count - 1, 11)
-        XCTAssertEqual(strings.components(separatedBy: "<sz val=\"1\"/><color theme=\"0\"").count - 1, 15)
-
-        func mark(before label: String) throws -> Substring {
-            let end = try XCTUnwrap(strings.range(of: label))
-            let start = try XCTUnwrap(strings[..<end.lowerBound].range(of: "<si>", options: .backwards))
-            return strings[start.upperBound..<end.lowerBound]
-        }
-        XCTAssertTrue(try mark(before: " Übungsleiter:in").contains("[X]"))
-        XCTAssertTrue(try mark(before: " Trainer:in").contains("[ ]"))
-    }
-
-    func testPrintCopyShowsTrainingMarksVisiblyAndKeepsTheExport() throws {
+    func testPrintCopyShowsTrainingMarksAndKeepsTheExport() throws {
         // WKWebView doesn't draw form controls, so the app prints a copy with
-        // visible marks; the exported file keeps its hidden ones.
+        // visible marks, read from the controls.
         let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
         let url = try PraeExporter.exportMainForm(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
@@ -818,8 +794,18 @@ final class PraeCalculationTests: XCTestCase {
         let strings = try entryText(from: copy, path: "xl/sharedStrings.xml")
         XCTAssertEqual(strings.components(separatedBy: "<t>☒</t>").count - 1, 4)
         XCTAssertEqual(strings.components(separatedBy: "<t>☐</t>").count - 1, 11)
-        XCTAssertFalse(strings.contains("\u{F072}"))
-        XCTAssertFalse(strings.contains("<sz val=\"1\"/>"))
+        XCTAssertFalse(strings.contains("<t>r</t>"))
+
+        func mark(before label: String) throws -> Substring {
+            let end = try XCTUnwrap(strings.range(of: label))
+            let start = try XCTUnwrap(strings[..<end.lowerBound].range(of: "<si>", options: .backwards))
+            return strings[start.upperBound..<end.lowerBound]
+        }
+        XCTAssertTrue(try mark(before: " Übungsleiter:in").contains("☒"))
+        XCTAssertTrue(try mark(before: " Trainer:in").contains("☐"))
+
+        XCTAssertEqual(try entryText(from: copy, path: "xl/worksheets/sheet1.xml"),
+                       try entryText(from: url, path: "xl/worksheets/sheet1.xml"))
         XCTAssertEqual(try entryText(from: url, path: "xl/sharedStrings.xml"), exported)
     }
 

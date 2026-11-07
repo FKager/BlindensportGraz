@@ -204,27 +204,21 @@ enum PraeExporter {
     /// than living IN it (found via each shape's `<x:Anchor>` in the VML —
     /// column/row pairs, 0-indexed), with no `<x:FmlaLink>` to any cell.
     ///
-    /// A tick is written to the VML shape and to its
-    /// `xl/ctrlProps/ctrlPropN.xml`. Quick Look, and so the in-app preview and
-    /// the WKWebView print path, doesn't draw form controls at all, and a
-    /// screen reader moving by cell only gets the label text. So each label
-    /// starts with a "[X]" or "[ ]" for NVDA, at 1pt in the cell's background
-    /// colour so that it doesn't print, and its Wingdings box is written as
-    /// U+F072 instead of the letter r: the same glyph, but not a letter for
-    /// NVDA to read. `labelStringIndex` is that label's shared string; each is
-    /// used by exactly one cell. The last box's label has no such glyph.
-    /// The app's own print path doesn't get this file — see `printCopy(of:)`.
+    /// The exported form must look exactly like the template, so a tick goes
+    /// only into the control: the VML shape and its
+    /// `xl/ctrlProps/ctrlPropN.xml`. Labels stay untouched. A screen reader
+    /// moving by cell only gets the label text, so NVDA users need the add-on
+    /// in `nvda-addon/`, which reads the control's state itself and stays
+    /// right when a box changes in Excel.
     ///
-    /// `altText` is invisible on the form. Cell navigation in a screen reader
-    /// only reads the label cell (NVDA says "r Übungsleiter:in", whatever the
-    /// state), so the state has to be read from the control itself, where NVDA
-    /// uses the alternative text as the name; without it NVDA says
-    /// "Kontrollkästchen 17". It's written to every box on the form, ticked or
-    /// not, in the VML shape, sheet1.xml's `<controlPr>` and drawing1.xml.
-    /// A ticked box's name also says "angekreuzt", and its label cell gets
-    /// that word as an Excel input message, which NVDA speaks during normal
-    /// cell navigation; it only pops up on screen and never prints. Both are
-    /// fixed at export, so they go stale if someone changes a box in Excel.
+    /// Quick Look, and so the in-app preview and the WKWebView print path,
+    /// doesn't draw form controls at all — see `printCopy(of:)`, which uses
+    /// `labelStringIndex`: the label's shared string, each used by exactly one
+    /// cell. The last box's label has no box glyph.
+    ///
+    /// `altText` is invisible on the form. NVDA uses it as the control's name;
+    /// without it NVDA says "Kontrollkästchen 17". It's written to every box,
+    /// in the VML shape, sheet1.xml's `<controlPr>` and drawing1.xml.
     ///
     /// `ctrlPropPath` comes from the shape's `<control shapeId r:id>` in
     /// sheet1.xml, resolved through `xl/worksheets/_rels/sheet1.xml.rels` —
@@ -251,13 +245,6 @@ enum PraeExporter {
             self.labelStringIndex = labelStringIndex
             self.altText = altText
         }
-
-        /// The name for this export, including the state of a ticked box.
-        func altText(checkedBoxes: [FormCheckbox]) -> String {
-            checkedBoxes.contains(self) ? "\(altText), \(FormCheckbox.checkedLabel)" : altText
-        }
-
-        static let checkedLabel = "angekreuzt"
 
         static let uebungsleiter = FormCheckbox(name: 17, drawingShapeID: 1041, ctrlProp: 7, cell: "P9", labelStringIndex: 74, altText: "Übungsleiter:in")
         static let trainer = FormCheckbox(name: 13, drawingShapeID: 1037, ctrlProp: 3, cell: "B9", labelStringIndex: 72, altText: "Trainer:in")
@@ -334,10 +321,7 @@ enum PraeExporter {
                 patched = XLSXCellPatch.setText(in: patched, ref: "B18", value: GermanNumberWords.spelledOutEuroAmount(total))
             }
 
-            let named = FormCheckbox.all.reduce(patched) {
-                addAltText(toControlIn: $0, box: $1, checkedBoxes: checkedBoxes)
-            }
-            return addCheckedInputMessages(in: named, checkedBoxes: checkedBoxes)
+            return FormCheckbox.all.reduce(patched) { addAltText(toControlIn: $0, box: $1) }
         }
     }
 
@@ -407,27 +391,25 @@ enum PraeExporter {
     private static func entryPatches(checking boxes: [FormCheckbox]) -> [String: (String) -> String] {
         var patches: [String: (String) -> String] = [
             "xl/drawings/vmlDrawing1.vml": { vml in
-                let named = FormCheckbox.all.reduce(vml) { addAltText(toShapeIn: $0, box: $1, checkedBoxes: boxes) }
+                let named = FormCheckbox.all.reduce(vml) { addAltText(toShapeIn: $0, box: $1) }
                 return boxes.reduce(named) { checkFormCheckbox(in: $0, shapeID: $1.vmlShapeID) }
             },
             "xl/drawings/drawing1.xml": { drawing in
-                FormCheckbox.all.reduce(drawing) { addAltText(toDrawingIn: $0, box: $1, checkedBoxes: boxes) }
-            },
-            "xl/sharedStrings.xml": { sharedStrings in
-                FormCheckbox.all.reduce(sharedStrings) { markLabel(in: $0, box: $1, checkedBoxes: boxes) }
+                FormCheckbox.all.reduce(drawing) { addAltText(toDrawingIn: $0, box: $1) }
             }
         ]
         for box in boxes {
             patches[box.ctrlPropPath] = { ctrlProp in
-                ctrlProp.replacingOccurrences(of: "objectType=\"CheckBox\"", with: "objectType=\"CheckBox\" checked=\"Checked\"")
+                ctrlProp.replacingOccurrences(of: "objectType=\"CheckBox\"", with: "objectType=\"CheckBox\" \(checkedAttribute)")
             }
         }
         return patches
     }
 
-    /// Adds the invisible "[X]"/"[ ]" to a checkbox label and swaps its
-    /// Wingdings box for the unreadable form — see `FormCheckbox`.
-    private static func markLabel(in sharedStrings: String, box: FormCheckbox, checkedBoxes: [FormCheckbox]) -> String {
+    private static let checkedAttribute = "checked=\"Checked\""
+
+    /// Swaps a label's Wingdings box for the visible mark `printCopy` wants.
+    private static func showLabelBox(in sharedStrings: String, box: FormCheckbox, isChecked: Bool) -> String {
         guard let index = box.labelStringIndex else { return sharedStrings }
         var searchStart = sharedStrings.startIndex
         var itemStart: Range<String.Index>?
@@ -438,86 +420,60 @@ enum PraeExporter {
         }
         guard let itemStart,
               let itemEnd = sharedStrings.range(of: "</si>", range: itemStart.upperBound..<sharedStrings.endIndex),
-              let glyph = sharedStrings.range(of: "\(labelGlyphProperties)<t>r</t>",
-                                              range: itemStart.upperBound..<itemEnd.lowerBound) else { return sharedStrings }
-        // Rows 9 and 10 are the form's only shaded checkbox rows.
-        let isShaded = (Int(box.cell.drop(while: \.isLetter)) ?? 0) <= 10
+              let glyph = sharedStrings.range(of: labelBox, range: itemStart.upperBound..<itemEnd.lowerBound) else { return sharedStrings }
         return sharedStrings.replacingCharacters(
             in: glyph,
-            with: hiddenLabelRuns(isChecked: checkedBoxes.contains(box), isShaded: isShaded)
+            with: "<sz val=\"14\"/><color indexed=\"8\"/><rFont val=\"Arial\"/><family val=\"2\"/></rPr><t>\(isChecked ? "☒" : "☐")</t>"
         )
     }
 
-    private static let labelGlyphProperties = "<sz val=\"14\"/><color indexed=\"8\"/><rFont val=\"Wingdings\"/><charset val=\"2\"/></rPr>"
-    private static let unreadableBoxRun = "<t>\u{F072}</t>"
-
-    /// What `markLabel` writes in place of the label's box, from just inside
-    /// its first `<rPr>` up to the end of its text.
-    private static func hiddenLabelRuns(isChecked: Bool, isShaded: Bool) -> String {
-        let mark = isChecked ? "[X]" : "[ ]"
-        let background = isShaded ? "<color theme=\"0\" tint=\"-4.9989318521683403E-2\"/>" : "<color theme=\"0\"/>"
-        return "<sz val=\"1\"/>\(background)<rFont val=\"Arial\"/><family val=\"2\"/></rPr><t xml:space=\"preserve\">\(mark) </t></r>"
-            + "<r><rPr>\(labelGlyphProperties)\(unreadableBoxRun)"
-    }
+    /// The template's box in a label, from just inside its `<rPr>` to the end
+    /// of its text.
+    private static let labelBox = "<sz val=\"14\"/><color indexed=\"8\"/><rFont val=\"Wingdings\"/><charset val=\"2\"/></rPr><t>r</t>"
 
     /// `file` as it should go to the app's print path. WKWebView doesn't draw
     /// form controls, so a PRAE form printed from the app would show every box
     /// empty; a visible tick in the shared file isn't an option either, since
-    /// Excel would draw it next to its own control. So a temporary copy gets
-    /// visible ☒/☐ instead of the hidden marks, and the exported file stays as
-    /// it is. Plain Unicode in Arial because Wingdings doesn't ship on iOS.
-    /// Returns `file` itself for anything that isn't a marked PRAE form; a
-    /// returned copy is the caller's to delete.
+    /// that file must match the template. So a temporary copy gets visible
+    /// ☒/☐, read from the controls, and the exported file stays as it is.
+    /// Plain Unicode in Arial because Wingdings doesn't ship on iOS. Returns
+    /// `file` itself for anything that isn't a PRAE form; a returned copy is
+    /// the caller's to delete.
     static func printCopy(of file: URL) throws -> URL {
         guard file.pathExtension.lowercased() == "xlsx" else { return file }
         let archive = try Archive(url: file, accessMode: .read)
-        guard let entry = archive["xl/sharedStrings.xml"] else { return file }
-        var data = Data()
-        _ = try archive.extract(entry) { data.append($0) }
-        guard let sharedStrings = String(data: data, encoding: .utf8), sharedStrings.contains(unreadableBoxRun) else { return file }
-
-        return try patchTemplate(templateURL: file, outputPrefix: "PRAE-Druck",
-                                 entryPatches: ["xl/sharedStrings.xml": visibleLabelMarks]) { $0 }
-    }
-
-    private static func visibleLabelMarks(in sharedStrings: String) -> String {
-        var result = sharedStrings
-        for isChecked in [true, false] {
-            let visible = "<sz val=\"14\"/><color indexed=\"8\"/><rFont val=\"Arial\"/><family val=\"2\"/></rPr><t>\(isChecked ? "☒" : "☐")</t>"
-            for isShaded in [true, false] {
-                result = result.replacingOccurrences(of: hiddenLabelRuns(isChecked: isChecked, isShaded: isShaded), with: visible)
-            }
+        func text(of path: String) throws -> String? {
+            guard let entry = archive[path] else { return nil }
+            var data = Data()
+            _ = try archive.extract(entry) { data.append($0) }
+            return String(data: data, encoding: .utf8)
         }
-        return result
+        guard let sharedStrings = try text(of: "xl/sharedStrings.xml"), sharedStrings.contains(labelBox),
+              try text(of: FormCheckbox.uebungsleiter.ctrlPropPath) != nil else { return file }
+
+        let checkedBoxes = try FormCheckbox.all.filter { try text(of: $0.ctrlPropPath)?.contains(checkedAttribute) == true }
+        return try patchTemplate(templateURL: file, outputPrefix: "PRAE-Druck",
+                                 entryPatches: ["xl/sharedStrings.xml": { strings in
+                                     FormCheckbox.all.reduce(strings) {
+                                         showLabelBox(in: $0, box: $1, isChecked: checkedBoxes.contains($1))
+                                     }
+                                 }]) { $0 }
     }
 
-    private static func addAltText(toShapeIn vml: String, box: FormCheckbox, checkedBoxes: [FormCheckbox]) -> String {
+    private static func addAltText(toShapeIn vml: String, box: FormCheckbox) -> String {
         let marker = "<v:shape id=\"\(box.vmlShapeID)\""
-        return vml.replacingOccurrences(of: marker, with: "\(marker) alt=\"\(box.altText(checkedBoxes: checkedBoxes))\"")
+        return vml.replacingOccurrences(of: marker, with: "\(marker) alt=\"\(box.altText)\"")
     }
 
-    private static func addAltText(toDrawingIn drawing: String, box: FormCheckbox, checkedBoxes: [FormCheckbox]) -> String {
+    private static func addAltText(toDrawingIn drawing: String, box: FormCheckbox) -> String {
         let marker = "<xdr:cNvPr id=\"\(box.drawingShapeID)\""
-        return drawing.replacingOccurrences(of: marker, with: "\(marker) descr=\"\(box.altText(checkedBoxes: checkedBoxes))\"")
+        return drawing.replacingOccurrences(of: marker, with: "\(marker) descr=\"\(box.altText)\"")
     }
 
-    private static func addAltText(toControlIn sheet: String, box: FormCheckbox, checkedBoxes: [FormCheckbox]) -> String {
+    private static func addAltText(toControlIn sheet: String, box: FormCheckbox) -> String {
         guard let control = sheet.range(of: "<control shapeId=\"\(box.drawingShapeID)\""),
               let properties = sheet.range(of: "<controlPr ", range: control.upperBound..<sheet.endIndex) else { return sheet }
-        return sheet.replacingCharacters(in: properties,
-                                         with: "<controlPr altText=\"\(box.altText(checkedBoxes: checkedBoxes))\" ")
-    }
-
-    /// Adds one input message per ticked box. The template has no
-    /// `<dataValidations>`, and the schema wants it right before
-    /// `<pageMargins>` here. No `type` means any cell value stays allowed.
-    private static func addCheckedInputMessages(in sheet: String, checkedBoxes: [FormCheckbox]) -> String {
-        guard !checkedBoxes.isEmpty, let pageMargins = sheet.range(of: "<pageMargins ") else { return sheet }
-        let validations = checkedBoxes.map {
-            "<dataValidation allowBlank=\"1\" showInputMessage=\"1\" prompt=\"\(FormCheckbox.checkedLabel)\" sqref=\"\($0.cell)\"/>"
-        }
-        let element = "<dataValidations count=\"\(checkedBoxes.count)\">\(validations.joined())</dataValidations>"
-        return sheet.replacingCharacters(in: pageMargins.lowerBound..<pageMargins.lowerBound, with: element)
+        return sheet.replacingCharacters(in: properties, with: "<controlPr altText=\"\(box.altText)\" ")
     }
 
     /// Checks a real Excel Form-control checkbox that floats OVER a cell
