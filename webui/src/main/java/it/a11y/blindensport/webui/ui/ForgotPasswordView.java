@@ -19,6 +19,8 @@ import jakarta.inject.Inject;
 @Route("passwort-vergessen")
 @PageTitle("Passwort vergessen – Blindensport Graz")
 public class ForgotPasswordView extends VerticalLayout {
+    private static final org.jboss.logging.Logger LOG = org.jboss.logging.Logger.getLogger(ForgotPasswordView.class);
+
     private final AdminSessions sessions;
     private final EmailField email = new EmailField("E-Mail");
     private final Button send = new Button("Link schicken", e -> send());
@@ -55,6 +57,7 @@ public class ForgotPasswordView extends VerticalLayout {
         } catch (SignInException e) {
             status.setText(e.getMessage());
         } catch (RuntimeException e) {
+            LOG.warnf("Password reset request failed: %s", e.getMessage());
             status.setText("Das hat gerade nicht geklappt. Bitte versuche es später noch einmal.");
         }
     }
