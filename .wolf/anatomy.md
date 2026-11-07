@@ -584,6 +584,7 @@
 - `webui/.../api/McpTokensResource.java` — /api/mcp-tokens (~600 tok)
 - `supabase/migrations/20261107000002_mcp_tokens.sql`, `supabase/tests/mcp_tokens_test.sql` — token table, anon lookup RPCs, 11 pgTAP tests
 - `supabase/scripts/staging-mcp.sh` — connect: terminal-only token setup for Claude Code on this Mac against staging
+- `supabase/scripts/release-testflight.sh` — tags main as vX.Y.Z, waits for upload and processing, adds German notes and the Internal group
 - `webui/.../members/MemberStatus.java`, `BlindensportGraz/Models/MemberStatus.swift` — new, active, delete
 - `webui/src/main/resources/prae/` — Copies of the app's PRAE templates; PraeExporterTest catches drift
 - `supabase/migrations/20261107000001_member_status.sql` — members.status, drops the delete policy, delete_member RPC (~500 tok)
