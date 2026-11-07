@@ -4129,3 +4129,11 @@
 | 21:48 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
 | 22:35 | Fixed email templates sent to staging and prod; PR 34 reviewed | supabase/templates | prod live, fix uncommitted on fix-email-app-links | ~6000 |
 | 21:51 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:06 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 23:05 | PR 34 marked ready and merged; release script now tracked | supabase/scripts | done | ~800 |
+| 22:09 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:10 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:11 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:14 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:16 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 23:20 | mcp-connect.sh prod|staging replaces staging-mcp.sh; PR opened | supabase/scripts | PR | ~2500 |
