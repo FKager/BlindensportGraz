@@ -4,7 +4,7 @@ import ClubSchema
 /// `MemberRecord` is now a thin alias over the shared `ClubMemberRecord`
 /// (Shared/ClubSchema — audit.md Architecture Finding 5), not an
 /// independent field-shape declaration. `rootcli import-members` uses this
-/// alias (webadmin/'s Java `MemberRecord` mirrors the same JSON), so the tools —
+/// alias (webui/'s Java `MemberRecord` mirrors the same JSON), so the tools —
 /// and the app's own `Member` model — stay in
 /// lockstep with one source of truth instead of drifting apart the way a
 /// field split already required manual lockstep fixes twice (see

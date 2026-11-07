@@ -9,7 +9,7 @@
 #   db-push            apply pending migrations
 #   functions          deploy notify-schedule
 #   templates          auth e-mail templates (token_hash links)
-#   webadmin           write nuc:~/blindensport-webadmin/.env for this project and restart
+#   webui           write nuc:~/blindensport-webui/.env for this project and restart
 #
 # Never prints keys or secrets: they go through temp files (mode 600, deleted)
 # or straight into HTTPS requests. Needs: supabase CLI logged in
@@ -136,12 +136,12 @@ print(json.dumps({
 PY
     ;;
 
-  webadmin)
+  webui)
     anon=$(api_key sb_publishable_ anon); secret=$(api_key sb_secret_ service_role)
     printf 'SUPABASE_URL=%s\nSUPABASE_ANON_KEY=%s\nSUPABASE_SERVICE_KEY=%s\n' "$URL" "$anon" "$secret" \
-      | ssh franz@nuc "umask 077 && cat > ~/blindensport-webadmin/.env && cd ~/blindensport-webadmin && docker compose -f compose.traefik.yml up -d 2>&1 | tail -2"
+      | ssh franz@nuc "umask 077 && cat > ~/blindensport-webui/.env && cd ~/blindensport-webui && docker compose -f compose.traefik.yml up -d 2>&1 | tail -2"
     unset anon secret
-    echo "webadmin on nuc now uses $TARGET ($REF)"
+    echo "webui on nuc now uses $TARGET ($REF)"
     ;;
 
   *) echo "unknown step '$STEP'"; exit 2 ;;

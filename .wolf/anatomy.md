@@ -1,10 +1,15 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-10-17T13:54:50.702Z
-> Files: 171 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-05T18:21:34.591Z
+> Files: 219 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
+
+## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/3174811f-8e08-404b-83bc-4504d5a6753c/scratchpad/
+
+- `ck_backup.py` — Backs up every CloudKit record (Development + Production) via `rootcli record list`. (~710 tok)
+- `ck_delete.py` — Deletes every CloudKit record listed in a ck_backup.py backup, then re-lists to verify. (~488 tok)
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/9310fa5d-a462-4776-b78e-97a4d735b7da/scratchpad/
 
@@ -41,20 +46,24 @@
 
 - `melodic-cuddling-magpie.md` — Production cutover: app v0.3.0 (club data on Supabase) + web admin (~2041 tok)
 - `prancy-fluttering-quill.md` — Plan: Move the remaining club data from CloudKit to Supabase (~3127 tok)
+- `twinkling-waddling-fern.md` — Tournament invitation (Einladung) in Berichte + Sammelabrechnung zip (~1257 tok)
 - `woolly-toasting-lobster.md` — Plan: Roll out the Supabase auth & role migration (~2226 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-BlindensportGraz/memory/
 
 - `MEMORY.md` — Memory (~364 tok)
 - `project_cloudkit-to-supabase-club-data.md` — Declares in (~845 tok)
+- `project_gvsc-beitrittserklaerung.md` — Declares returns (~415 tok)
 - `project_supabase-auth-migration.md` (~488 tok)
-- `project_webadmin-quarkus-vaadin.md` — Declares to (~488 tok)
+- `project_webui-quarkus-vaadin.md` — Declares to (~799 tok)
 
 ## ../../.claude/projects/-Users-franz-dev-claude/memory/
 
 
 ## ./
 
+- `check-prae-checkboxes.ps1` — Windows PowerShell: lists each PRAE form checkbox (cell, alt text, state) via Excel COM, read-only (~500 tok)
+- `check-prae-checkboxes.ps1` — Lists every checkbox on a PRAE form as Excel itself reads it: (~619 tok)
 - `project.yml` (~2248 tok)
 
 ## .claude/
@@ -73,6 +82,14 @@
 ## .claude/worktrees/docker-container-fixes/RootCLI/
 
 - `Dockerfile` — Docker container definition (~711 tok)
+
+## .claude/worktrees/phase6/RootCLI/
+
+- `README.md` — Project documentation (~1033 tok)
+
+## .claude/worktrees/phase6/RootCLI/Sources/rootcli/
+
+- `RootCLI.swift` — Struct: RootCLI (~5712 tok)
 
 ## .claude/worktrees/pr9-review-fixes/.wolf/
 
@@ -116,8 +133,13 @@
 
 - `Auth.swift` — / A signed-in club admin. Accounts, roles and permissions come from (~2670 tok)
 
+## .claude/worktrees/webui-ci/.github/workflows/
+
+- `webui-test.yml` — ", ".github/workflows/webui-test.yml"] (~271 tok)
+
 ## .github/workflows/
 
+- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~5313 tok)
 - `supabase-maintenance.yml` — Supabase maintenance for the Free-plan projects (staging + production): (~1133 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/
@@ -158,6 +180,9 @@
 
 - `EditAccountView.swift` — / Edits the own name in the Supabase profile (the only client-writable (~848 tok)
 - `LoginView.swift` — / Email + password or Sign in with Apple, both against Supabase Auth. (~845 tok)
+- `ProfilePhotoImage.swift` — circular photo or SF symbol fallback (~150 tok)
+- `ProfilePhotoSection.swift` — Profilfoto picker section (upload/delete to bucket profile-photos) (~700 tok)
+- `ProfilePhotoSection.swift` — / The signed-in account's profile photo (Supabase bucket `profile-photos`), (~954 tok)
 - `RedeemActivationCodeView.swift` — / A pending account enters the one-time code an admin created for it (~630 tok)
 - `RegisterView.swift` — / Creates a Supabase Auth account. Name goes into the sign-up metadata (the (~1536 tok)
 - `ResetPasswordRequestView.swift` — / "Passwort vergessen": Supabase emails a link that opens the app (~622 tok)
@@ -184,14 +209,27 @@
 
 ## BlindensportGraz/Features/Members/
 
+- `GVSCApplicationDocument.swift` — GVSCApplicationData (+missingFields, init from Member / pending MemberChangeRequest) and filler for Resources/GVSC_Beitrittserklaerung.docx (patches word/document.xml paragraphs by label, X for JA/NEIN, clears template samples) (~2600 tok)
+- `GVSCApplicationDocument.swift` — / Everything the GVSC Beitrittserklärung asks for, as plain values (so the (~4783 tok)
+- `GVSCApplicationFieldsSections.swift` — GVSCApplicationFields protocol (Member + MemberChangeRequest), isMinor(), GVSCMembershipType, shared Form sections (Mitgliedsart, Staatsbürgerschaft, Mobil, Behinderung, Einwilligungen, Vertreter:in) (~1100 tok)
+- `GVSCApplicationFieldsSections.swift` — / The fields of the GVSC Beitrittserklärung beyond the basic roster data — (~1302 tok)
+- `GVSCApplicationView.swift` — Beitrittserklärung sheet: missing-field checklist, profile photo, QuickLook preview, send via Edge Function (~1500 tok)
+- `GVSCApplicationView.swift` — / Fills the GVSC Beitrittserklärung from the Benutzerverwaltung, shows what (~2207 tok)
+- `MyMemberView.swift` — / Self-service editing of a member's own Grazer VSC roster entry — reachable (~2909 tok)
 
 ## BlindensportGraz/Features/Reports/
 
+- `ReportPrintButton.swift` — "Drucken" button: calls a files closure on tap, prints via ReportPrinter, shows progress/errors (~400 tok)
+- `ReportPrintButton.swift` — / "Drucken" for one or more report files: renders them (ReportPrinter) and (~396 tok)
+- `ReportPrinter.swift` — Class: PageLoader (~1655 tok)
+- `ReportPrinter.swift` — Class: PageLoader (~1592 tok)
 
 ## BlindensportGraz/Features/Reports/KostZ/
 
 
 ## BlindensportGraz/Features/Reports/Prae/
+
+- `PraeExport.swift` — Fills PRAE_Formular.xlsx and the Darstellung; ticks only in the form controls, labels as in the template; printCopy makes the ☒/☐ copy for app printing. (~8500 tok)
 
 
 ## BlindensportGraz/Features/Reports/Sammelabrechnung/
@@ -199,6 +237,7 @@
 
 ## BlindensportGraz/Features/Reports/Teilnehmerliste/
 
+- `TeilnehmerlisteExport.swift` — Patches bundled TN_TeilnehmerInnenliste.xlsx (15-row club template, rows 10–24) with event attendees; maxRows = 15 (~1900 tok)
 
 ## BlindensportGraz/Features/Reports/Trainingsfrequenzliste/
 
@@ -220,6 +259,9 @@
 
 ## BlindensportGraz/Models/
 
+- `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~3238 tok)
+- `MemberChangeRequest.swift` — / A club member's own edit to their roster ("Vereinsdaten") data, awaiting (~1630 tok)
+- `TournamentInvitation.swift` — Tournament's uploaded Einladung (PDF/DOCX/TXT), admins only (budget.manage); synced via tournament_invitations + bucket tournament-invitations (~450 tok)
 
 ## BlindensportGraz/Resources/
 
@@ -232,6 +274,8 @@
 
 ## BlindensportGraz/Services/
 
+- `MemberChangeRequestService.swift` — / Self-service roster edits awaiting admin review — architecture-review.md (~543 tok)
+- `TournamentInvitationService.swift` — invitation(for:), replace (delete old + insert), save/delete with Supabase push (~450 tok)
 
 ## BlindensportGraz/Shared/
 
@@ -248,6 +292,7 @@
 - `SupabaseClientSingleton.swift` — Holds the single shared SupabaseClient for the lifetime of the app. (~296 tok)
 - `SupabaseConfig.swift` — Values come from the SUPABASE_URL / SUPABASE_ANON_KEY build settings (~255 tok)
 - `SupabaseMemberPrivateService.swift` — Sensitive roster fields that no longer travel through the CloudKit public (~1392 tok)
+- `SupabaseMembershipApplicationService.swift` — invokes Edge Function send-membership-application, maps 403/409 to MembershipApplicationError (~500 tok)
 - `SupabaseProfileService.swift` — Wire shape of `profiles` joined with the caller-visible role/approval. (~911 tok)
 - `SupabaseRoleService.swift` — Struct: SupabaseRoleRow (~829 tok)
 
@@ -263,7 +308,7 @@
 
 - `SupabaseRows.swift` — One row type per Supabase table (migration 20261013000001_club_data). (~5086 tok)
 - `SupabaseSync.swift` — / Keeps the local SwiftData cache in sync with the club data in Supabase (~4324 tok)
-- `SupabaseSync+Models.swift` — Push and pull per table. Pulls fetch rows changed since the table's cursor; (~9047 tok)
+- `SupabaseSync+Models.swift` — Push and pull per table. Pulls fetch rows changed since the table's cursor; (~9626 tok)
 
 ## BlindensportGrazShareExtension/
 
@@ -271,6 +316,9 @@
 ## BlindensportGrazTests/
 
 - `AccessClaimsTests.swift` — Class: AccessClaimsTests (~917 tok)
+- `GVSCApplicationDocumentTests.swift` — fills the real template; checks XML well-formed, field values, samples cleared, JA/NEIN marks, guardian, file name (~1500 tok)
+- `GVSCApplicationDocumentTests.swift` — Class: GVSCApplicationDocumentTests (~1950 tok)
+- `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
 
 ## BlindensportGrazWidgets/
@@ -287,6 +335,7 @@
 ## RootCLI/Sources/CloudKitS2SCore/
 
 - `CloudKitCopy.swift` — / Maps the CloudKit public database's club data onto the Supabase tables (~4338 tok)
+- `CloudKitS2SClient.swift` — if canImport(FoundationNetworking) (~4516 tok)
 - `MemberPrivateStore.swift` — MemberPrivate (svnr/iban/dates), Supabase member_private read/write, CloudKitWriteGuard (~1500 tok)
 - `MemberPrivateStore.swift` — / The protected part of a roster entry — SVNR, IBAN, birth date, last (~1484 tok)
 - `MemberStore.swift` — / The club roster in Supabase (v0.3.0): `members` (names, readable by every (~1906 tok)
@@ -300,6 +349,8 @@
 
 ## RootCLI/Sources/rootcli/
 
+- `CloudKitCopyCommand.swift` — / `rootcli cloudkit-copy-to-supabase [--dry-run|--apply] [--since <ISO8601>]` (~1444 tok)
+- `RootCLI.swift` — Struct: RootCLI (~5681 tok)
 - `SupabaseMigrate.swift` — / One-off move of accounts, roles, approvals and sensitive member data from (~3504 tok)
 
 ## RootCLI/Tests/CloudKitS2SCoreTests/
@@ -329,11 +380,16 @@
 
 ## supabase/functions/delete-account/
 
-- `index.ts` — Deletes the calling user's auth account. All rows in public.* cascade (~521 tok)
+- `index.ts` — Deletes the calling user's auth account. All rows in public.* cascade (~562 tok)
 
 ## supabase/functions/notify-schedule/
 
 - `index.ts` — Sends the schedule pushes ("Neues Training", "Training abgesagt", …) for (~1580 tok)
+
+## supabase/functions/send-membership-application/
+
+- `index.ts` — mails filled Beitrittserklärung (.docx from app) + linked account photo via Resend to blindensport.gvsc@gmail.com; auth + "beantragt" via RPC mark_gvsc_application; needs secret RESEND_API_KEY (~1300 tok)
+- `index.ts` — Mails a filled GVSC Beitrittserklärung (.docx, built by the app) to the (~1602 tok)
 
 ## supabase/migrations/
 
@@ -349,10 +405,15 @@
 - `20261014000001_push.sql` — Schedule pushes (v0.3.0; replaces the CloudKit query subscriptions): (~1405 tok)
 - `20261014000002_account_admin.sql` — Root account administration: block (lock) / unblock and delete another (~1386 tok)
 - `20261014000003_account_admin_hardening.sql` — Hardening for root account administration (review of 20261014000002): (~2307 tok)
+- `20261102000001_gvsc_application.sql` — members.gvsc_applied_at, Beitrittserklärung columns (member_contacts/change_requests, member_private/_requests), apply RPC update, mark_gvsc_application(), bucket profile-photos + policies (~1800 tok)
+- `20261102000001_gvsc_application.sql` — GVSC Beitrittserklärung: the remaining fields of the club's application (~1953 tok)
+- `20261104000001_tournament_invitations.sql` — Tournament invitation (Einladung): the organiser's PDF/DOCX, uploaded in (~1023 tok)
 
 ## supabase/scripts/
 
 - `cutover.sh` — Club-data cutover (CloudKit -> Supabase) and push setup, for staging and prod. (~2103 tok)
+- `prod-readonly-check.sh` — Read-only checks against a Supabase project (default: prod). Writes nothing. (~932 tok)
+- `release-testflight.sh` — Tags main as <version>, waits for the TestFlight upload (iOS Build and (~669 tok)
 
 ## supabase/tests/
 
@@ -361,6 +422,8 @@
 - `BlindensportGraz/Features/Account/UserAccountAdminMenu.swift` — "Konto" menu on App-Konten rows (root): Sperren/Entsperren, Löschen with confirmations (~700 tok)
 - `BlindensportGraz/Supabase/SupabaseAccountAdminService.swift` — Root RPC wrappers: setBlocked / delete / fetchBlocked (~300 tok)
 - `club_data_test.sql` — Run with: supabase test db (~2474 tok)
+- `gvsc_application_test.sql` — 14 pgTAP tests for mark_gvsc_application, new private fields, profile-photo policies (~1300 tok)
+- `gvsc_application_test.sql` — Run with: supabase test db (~1368 tok)
 - `member_private_test.sql` — Run with: supabase test db (~864 tok)
 - `push_test.sql` — Run with: supabase test db (~1767 tok)
 - `rbac_test.sql` — Run with: supabase test db (~2528 tok)
@@ -368,18 +431,19 @@
 - `supabase/migrations/20261014000003_account_admin_hardening.sql` — account_admin_log, root targets refused, last-root guard counts unblocked roots, calendar token rotation, is_blocked in own-account RPCs, unblocked_user_ids (~2500 tok)
 - `supabase/tests/account_admin_hardening_test.sql` — pgTAP 26 tests for the hardening (~2200 tok)
 - `supabase/tests/account_admin_test.sql` — pgTAP 17 tests for block/unblock/delete (~1300 tok)
+- `tournament_invitations_test.sql` — Run with: supabase test db (~831 tok)
 
-## webadmin/
+## webui/
 
-- `compose.traefik.yml` — webadmin behind an EXISTING Traefik (e.g. Coolify's coolify-proxy on nuc), (~562 tok)
+- `compose.traefik.yml` — webui behind an EXISTING Traefik (e.g. Coolify's coolify-proxy on nuc), (~562 tok)
 - `pom.xml` (~1264 tok)
 - `README.md` — Project documentation (~2209 tok)
 
-## webadmin/src/main/java/it/a11y/blindensport/webadmin/accounts/
+## webui/src/main/java/it/a11y/blindensport/webui/accounts/
 
 - `AccountService.java` — App accounts ("App-Konten"), as the signed-in admin sees them. Every (~2290 tok)
 
-## webadmin/src/main/java/it/a11y/blindensport/webadmin/api/
+## webui/src/main/java/it/a11y/blindensport/webui/api/
 
 - `ApiAuthFilter.java` — Everything under /api needs a signed-in admin, except signing in itself; (~563 tok)
 - `ApiException.java` — An API error answered as {@code {"error": true, "reason": "..."}} — the shape Vapor's Abort produced (~184 tok)
@@ -388,7 +452,7 @@
 - `MembersResource.java` — The roster REST API, unchanged contract from the Swift server: (~2435 tok)
 - `SessionResource.java` — POST/GET/DELETE /api/session — sign in with a Supabase account, show the current admin, sign out. (~948 tok)
 
-## webadmin/src/main/java/it/a11y/blindensport/webadmin/auth/
+## webui/src/main/java/it/a11y/blindensport/webui/auth/
 
 - `Access.java` — Role and permissions as the database grants them right now (tables, not (~439 tok)
 - `AdminSession.java` — One signed-in admin. Holds their Supabase tokens server-side (never sent (~942 tok)
@@ -398,29 +462,31 @@
 - `SessionExpiredException.java` — The admin's session ended: timed out, signed out, or Supabase no longer accepts it. (~85 tok)
 - `SignInException.java` — A refused sign-in, with the HTTP status the REST API answers and a German message. (~106 tok)
 
-## webadmin/src/main/java/it/a11y/blindensport/webadmin/calendar/
+## webui/src/main/java/it/a11y/blindensport/webui/calendar/
 
 - `CalendarFeed.java` — One user's read-only webcal feed (port of RootCLI's {@code CalendarFeed}). (~712 tok)
 - `CalendarFeedResource.java` — {@code GET /calendar/{token}[.ics]} — one user's webcal feed, the URL the (~1207 tok)
 
-## webadmin/src/main/java/it/a11y/blindensport/webadmin/club/
+## webui/src/main/java/it/a11y/blindensport/webui/club/
 
 - `ClubModels.java` — Club data rows (supabase/migrations/20261013000001_club_data.sql) and the app's value conventions. (~1042 tok)
 - `ClubStore.java` — Teams, memberships, events (trainings / tournaments / events), (~3226 tok)
 
-## webadmin/src/main/java/it/a11y/blindensport/webadmin/members/
+## webui/src/main/java/it/a11y/blindensport/webui/members/
 
 - `ChangeRequestStore.java` — Members' proposed changes to their own roster entry (~1682 tok)
 - `Dates.java` — Date conventions shared with the Swift tooling and the app. (~827 tok)
+- `MemberApplication.java` — Beitrittserklärung contact fields (member_contacts) + read-only applied date; LABELS used by change requests (~900 tok)
 - `MemberBulkImport.java` — Bulk create-or-update of roster entries — same per-row rules as RootCLI's (~1010 tok)
 - `MemberBulkInput.java` — Loose, per-row-tolerant import row — the same JSON shape as the app's (~424 tok)
+- `MemberHealth.java` — disability + consents in member_private (merge upsert of only these columns) (~500 tok)
 - `MemberInput.java` — Body of POST/PUT /api/members (and what the Vaadin form produces): the (~1049 tok)
 - `MemberPrivate.java` — The protected part of a roster entry — SVNR, IBAN, birth date, last (~513 tok)
 - `MemberRecord.java` — One roster entry as the API and the UI see it — the same shape as (~984 tok)
 - `MemberStore.java` — The club roster in Supabase, read and written as the signed-in admin (RLS: (~1674 tok)
 - `Validation.java` — Soft checks as in the app's {@code Validation.swift}: they warn, never (~374 tok)
 
-## webadmin/src/main/java/it/a11y/blindensport/webadmin/supabase/
+## webui/src/main/java/it/a11y/blindensport/webui/supabase/
 
 - `DbErrorMessages.java` — German texts for the errors the database raises (supabase/migrations: (~600 tok)
 - `GoTrue.java` — Supabase Auth (GoTrue) with the anon key: sign in, refresh, sign out. (~791 tok)
@@ -430,7 +496,7 @@
 - `SupabaseException.java` — A Supabase call answered with a non-2xx status. {@link #code()} is the (~465 tok)
 - `SupabaseHttp.java` — Raw HTTP to one Supabase project (GoTrue under {@code auth/v1}, PostgREST (~1214 tok)
 
-## webadmin/src/main/java/it/a11y/blindensport/webadmin/ui/
+## webui/src/main/java/it/a11y/blindensport/webui/ui/
 
 - `AccessGuard.java` — Every navigation: no valid session → sign-in page; a view marked (~490 tok)
 - `AccountDialog.java` — Everything an admin can do with one account, as plainly labelled buttons (~2575 tok)
@@ -458,30 +524,67 @@
 - `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)
 - `WelcomeView.java` — The welcome text the app shows at startup, also before signing in (club.manage). (~876 tok)
 
-## webadmin/src/main/resources/
+## webui/src/main/resources/
 
 - `application.properties` — Supabase project the web admin works on. Admins act with their OWN (~401 tok)
 
-## webadmin/src/test/java/it/a11y/blindensport/webadmin/api/
+## webui/src/test/java/it/a11y/blindensport/webui/api/
 
 - `ApiTest.java` — The REST contract of the Swift server (session, CSRF, members CRUD, (~4269 tok)
 - `SupabaseMock.java` — A WireMock stand-in for the Supabase project (GoTrue + PostgREST) during @QuarkusTest. (~213 tok)
 
-## webadmin/src/test/java/it/a11y/blindensport/webadmin/auth/
+## webui/src/test/java/it/a11y/blindensport/webui/auth/
 
 - `LoginAttemptLimiterTest.java` — LoginAttemptLimiterTest: getZone, withZone, instant (~618 tok)
 
-## webadmin/src/test/java/it/a11y/blindensport/webadmin/calendar/
+## webui/src/test/java/it/a11y/blindensport/webui/calendar/
 
 - `CalendarFeedTest.java` — Port of RootCLI's CalendarFeedTests. (~1022 tok)
 
-## webadmin/src/test/java/it/a11y/blindensport/webadmin/members/
+## webui/src/test/java/it/a11y/blindensport/webui/members/
 
 - `ChangeRequestStoreTest.java` — Approve / reject of member change requests against a mocked PostgREST. (~1501 tok)
 - `MemberInputTest.java` — PUT semantics of the members API, as the Swift server had them. (~890 tok)
 - `MemberMappingTest.java` — Ports of RootCLI's MemberStoreTests / MemberPrivateTests (row mapping, no network). (~1474 tok)
 - `ValidationTest.java` — Class: ValidationTest (~251 tok)
 
-## webadmin/src/test/java/it/a11y/blindensport/webadmin/ui/
+## webui/src/test/java/it/a11y/blindensport/webui/ui/
 
 - `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)
+
+## nvda-addon/
+
+- `build.sh` — Runs the tests and packs excelCheckboxes-<version>.nvda-addon. (~90 tok)
+- `excelCheckboxes/manifest.ini` — NVDA add-on manifest. (~110 tok)
+- `excelCheckboxes/globalPlugins/excelCheckboxes/__init__.py` — Overlay classes for Excel cells in both access modes. (~450 tok)
+- `excelCheckboxes/globalPlugins/excelCheckboxes/checkboxState.py` — Finds the checkbox on a cell and builds '[X] label'; no NVDA imports. (~520 tok)
+- `tests/test_checkboxState.py` — Unit tests against fake Excel objects. (~900 tok)
+
+## webui/src/main/java/it/a11y/blindensport/webui/mcp/
+
+- `ClubTools.java` — The 15 MCP tools; protected data never returned, nothing deletes, member results are an allow-list (~9000 tok)
+- `McpAuthFilter.java` — Vert.x filter: /mcp needs a personal token (~500 tok)
+- `McpIdentity.java` — Token to McpUser via McpTokens + Access.load, cached 1 min (~600 tok)
+- `McpUser.java` — The person a request acts for; their own Postgrest (~200 tok)
+- `McpFiles.java` / `McpFilesResource.java` — One-time, 10-minute, in-memory download links for PRAE zips (~600 tok)
+- `McpConfig.java` — webui.mcp.public-url (~100 tok)
+- `McpTokens.java` — Personal tokens: create, list, revoke, sealed Supabase session, refresh and rotation (~1800 tok)
+
+## webui/src/main/java/it/a11y/blindensport/webui/prae/
+
+- `PraeCalculator.java` — Port of PraeCalculation.swift: eligible people, one form per training title per month, tournament spread (~1800 tok)
+- `PraeForm.java` — One form: person, month, entries, cap warnings (~900 tok)
+- `PraeExporter.java` — Port of PraeExport.swift: fills both templates, ticks controls only (~2800 tok)
+- `PraeService.java` — Reads data as the user, selects forms, zips them (~1000 tok)
+- `XlsxPatch.java`, `GermanNumberWords.java` — Ports of XLSXCellPatch and GermanNumberWords (~800 tok)
+
+## Other new files (2026-11-07)
+
+- `webui/.../ui/McpTokensView.java` — KI-Zugang page: create and revoke tokens (~1000 tok)
+- `webui/.../api/McpTokensResource.java` — /api/mcp-tokens (~600 tok)
+- `supabase/migrations/20261107000002_mcp_tokens.sql`, `supabase/tests/mcp_tokens_test.sql` — token table, anon lookup RPCs, 11 pgTAP tests
+- `supabase/scripts/staging-mcp.sh` — connect: terminal-only token setup for Claude Code on this Mac against staging
+- `webui/.../members/MemberStatus.java`, `BlindensportGraz/Models/MemberStatus.swift` — new, active, delete
+- `webui/src/main/resources/prae/` — Copies of the app's PRAE templates; PraeExporterTest catches drift
+- `supabase/migrations/20261107000001_member_status.sql` — members.status, drops the delete policy, delete_member RPC (~500 tok)
+- `supabase/tests/member_status_test.sql` — pgTAP 13 tests (~1100 tok)

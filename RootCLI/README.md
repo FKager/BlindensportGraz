@@ -6,8 +6,8 @@ roster. It uses the Supabase service key, so it bypasses RLS — run it only
 on a trusted machine. Shared code lives in `Sources/CloudKitS2SCore` (the
 name is historical).
 
-The web admin, REST API and calendar feed (formerly `clubmembersapi` in this
-package) moved to [`../webadmin/`](../webadmin/README.md) — Java Quarkus +
+The web UI, REST API and calendar feed (formerly `clubmembersapi` in this
+package) moved to [`../webui/`](../webui/README.md) — Java Quarkus +
 Vaadin — in October 2026.
 
 `rootcli` exists because the app deliberately has no way for a user to
@@ -83,12 +83,12 @@ or pull-to-refresh). Newly-imported members are also matched retroactively
 the next time someone creates an app account — but not against *existing*
 accounts, since `Member.checkMembership` only runs at account creation.
 
-## Web admin, REST API and calendar feed
+## Web UI, REST API and calendar feed
 
 These moved out of this package in October 2026: the Swift/Vapor
 `clubmembersapi` was replaced by the Java Quarkus + Vaadin server in
-[`../webadmin/`](../webadmin/README.md). It covers the same REST API
+[`../webui/`](../webui/README.md). It covers the same REST API
 (`/api/session`, `/api/members`, `/api/members/import`, unchanged contract)
-and the `/calendar/<token>.ics` feed, plus the web admin for events,
+and the `/calendar/<token>.ics` feed, plus the web UI for events,
 teams, attendance, accounts and budget. It acts as the signed-in admin
 instead of using the service key.

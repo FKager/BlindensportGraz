@@ -42,6 +42,11 @@ struct MemberDetailView: View {
                     .keyboardType(.phonePad)
             }
             Section("Mitgliedschaft") {
+                Picker("Status", selection: $member.status) {
+                    ForEach(MemberStatus.allCases, id: \.rawValue) { status in
+                        Text(status.label).tag(status.rawValue)
+                    }
+                }
                 Toggle("Mitglied des Grazer VSC", isOn: $member.memberOfGVSC)
                 if !member.memberOfGVSC, let appliedAt = member.gvscAppliedAt {
                     Label("Beitritt beantragt am \(appliedAt.formatted(date: .abbreviated, time: .omitted))",

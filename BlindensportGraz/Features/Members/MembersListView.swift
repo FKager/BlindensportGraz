@@ -22,8 +22,11 @@ struct MembersListView: View {
     private var members: [Member]
     @Query private var users: [User]
     @State private var showAdd = false
-    // Two-step delete: swipe fills this, the confirmationDialog commits it.
-    @State private var pendingDeletion: [Member] = []
+    // Root only, on an entry marked for deletion: the swipe action fills
+    // this, and typing the full name in the alert commits it.
+    @State private var pendingDeletion: Member?
+    @State private var confirmName = ""
+    @State private var deletionError: String?
     // Eagerly (re)generated whenever the roster changes, mirroring the
     // ShareLink pattern established for TeilnehmerlisteExport (see
     // MemberListView/cerebrum.md) — this user relies on VoiceOver, and a
@@ -41,7 +44,10 @@ struct MembersListView: View {
     // Extracted from `body` so the modifier chain on `List` stays short
     // enough for the type-checker (it timed out with these inline).
     private var deletionDialogShown: Binding<Bool> {
-        Binding(get: { !pendingDeletion.isEmpty }, set: { if !$0 { pendingDeletion = [] } })
+        Binding(get: { pendingDeletion != nil }, set: { if !$0 { pendingDeletion = nil } })
+    }
+    private var deletionErrorShown: Binding<Bool> {
+        Binding(get: { deletionError != nil }, set: { if !$0 { deletionError = nil } })
     }
     private var importAlertShown: Binding<Bool> {
         Binding(get: { importResultMessage != nil }, set: { if !$0 { importResultMessage = nil } })
@@ -61,9 +67,14 @@ struct MembersListView: View {
                     NavigationLink(value: AppRoute.member(member)) {
                         MemberRow(member: member, isLinked: hasMatchingAccount(member))
                     }
-                }
-                .onDelete { offsets in
-                    pendingDeletion = offsets.map { members[$0] }
+                    .swipeActions {
+                        if currentUser.isRoot && member.status == MemberStatus.delete.rawValue {
+                            Button("Löschen", role: .destructive) {
+                                confirmName = ""
+                                pendingDeletion = member
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -91,14 +102,17 @@ struct MembersListView: View {
         .sheet(isPresented: $showAdd) {
             AddMemberView()
         }
-        .confirmationDialog("Mitglied löschen?", isPresented: deletionDialogShown, titleVisibility: .visible) {
-            Button("Löschen", role: .destructive) {
-                deleteMembers(pendingDeletion)
-                pendingDeletion = []
-            }
-            Button("Abbrechen", role: .cancel) { pendingDeletion = [] }
+        .alert("Mitglied endgültig löschen?", isPresented: deletionDialogShown, presenting: pendingDeletion) { member in
+            TextField("Vor- und Nachname", text: $confirmName)
+            Button("Endgültig löschen", role: .destructive) { delete(member, typedName: confirmName) }
+            Button("Abbrechen", role: .cancel) {}
+        } message: { member in
+            Text("Zur Bestätigung „\(member.fullName)“ eingeben. Der Eintrag wird aus der Vereinskartei entfernt, mit Team-Zuordnungen, Anwesenheiten und PRAE-Beträgen. Das kann nicht rückgängig gemacht werden.")
+        }
+        .alert("Löschen nicht möglich", isPresented: deletionErrorShown) {
+            Button("OK") { deletionError = nil }
         } message: {
-            Text("Der Eintrag wird aus der Vereinskartei entfernt. Team-Zuordnungen dieser Person werden ebenfalls gelöscht.")
+            Text(deletionError ?? "")
         }
         .task(id: members.map(\.id)) {
             exportURL = try? MemberImportExport.exportFile(members: members)
@@ -139,10 +153,18 @@ struct MembersListView: View {
         users.contains { Member.matches(email: $0.email, firstName: $0.firstName, lastName: $0.lastName, in: [member]) }
     }
 
-    private func deleteMembers(_ toDelete: [Member]) {
-        for member in toDelete {
-            MemberService.delete(member, modelContext: modelContext)
+    private func delete(_ member: Member, typedName: String) {
+        Task {
+            do {
+                try await MemberService.delete(member, confirmName: typedName, modelContext: modelContext)
+                snapshotRoster()
+            } catch {
+                deletionError = "Der Name muss genau stimmen, und du brauchst eine Internetverbindung."
+            }
         }
+    }
+
+    private func snapshotRoster() {
         // Re-fetched rather than using the `members` @Query array directly —
         // SwiftUI's @Query refresh isn't guaranteed to have landed yet at
         // this exact point, so a fresh fetch is the only way to be sure the

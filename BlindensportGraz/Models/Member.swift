@@ -45,6 +45,10 @@ final class Member {
     // opposed to e.g. an external helper/coach tracked here without formal
     // membership. Defaults true since every entry historically was one.
     var memberOfGVSC: Bool = true
+    // MemberStatus raw value. The stored default covers rows from before the
+    // field existed, which were all established; a new entry starts as "new"
+    // through init.
+    var status: String = MemberStatus.active.rawValue
     // When the GVSC Beitrittserklärung was last mailed (Edge Function
     // send-membership-application); cleared when an admin confirms.
     var gvscAppliedAt: Date?
@@ -95,7 +99,8 @@ final class Member {
          iban: String = "",
          lastMedicalExamination: Date? = nil,
          defaultFunction: String = "",
-         memberOfGVSC: Bool = true) {
+         memberOfGVSC: Bool = true,
+         status: MemberStatus = .new) {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
@@ -117,6 +122,7 @@ final class Member {
         self.lastMedicalExamination = lastMedicalExamination
         self.defaultFunction = defaultFunction
         self.memberOfGVSC = memberOfGVSC
+        self.status = status.rawValue
     }
 }
 

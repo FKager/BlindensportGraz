@@ -201,6 +201,7 @@
 		B7635163B3C50164AD52E7F6 /* MemberPrivateSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04AB30C7359494733A6A546D /* MemberPrivateSync.swift */; };
 		B94B31B77A4562859C174F45 /* CalendarEventExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB696A6769854DF75117D6F /* CalendarEventExportTests.swift */; };
 		BC3CFB7A20EBD76EBBBBD16F /* ApprovalMemberPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3497DAFB60A766C12AF3CCD /* ApprovalMemberPicker.swift */; };
+		BD81483C594A51D23405C1BC /* MemberStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31324D1FBA4F755797BB34D9 /* MemberStatus.swift */; };
 		BF2699E7A3DB4F648CDF5B28 /* CountBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A877F7BF8CCC2EDB7C3F9E /* CountBadge.swift */; };
 		BF345AFDF7FA85D0B0C733C5 /* BlindensportGrazWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AC0F05D1DE4165C10EEB3DBF /* BlindensportGrazWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BF4898D2C12354648CCBE014 /* MemberDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3038940BF292B84D777EB7F /* MemberDetailView.swift */; };
@@ -354,6 +355,7 @@
 		303694D664F32C36C65AC564 /* RestrictedTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestrictedTabView.swift; sourceTree = "<group>"; };
 		3042C56E9CA19F73738987D4 /* TrainingsfrequenzlisteViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingsfrequenzlisteViews.swift; sourceTree = "<group>"; };
 		30D9CDE736994E65EED19C0E /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		31324D1FBA4F755797BB34D9 /* MemberStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberStatus.swift; sourceTree = "<group>"; };
 		336F6D138B4853E1ADAB229A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		33BBA744C5DE3AA5F9F0DE54 /* PraeCalculationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PraeCalculationTests.swift; sourceTree = "<group>"; };
 		34409C3585CD34D64A70038E /* TournamentInvitationImport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentInvitationImport.swift; sourceTree = "<group>"; };
@@ -620,6 +622,7 @@
 				B6667F5F3E72319A925C305A /* Member.swift */,
 				7595EC27B565687B3039DD59 /* MemberChangeRequest.swift */,
 				DF2BCAEB49953DD3C0AEC35E /* MembershipRole.swift */,
+				31324D1FBA4F755797BB34D9 /* MemberStatus.swift */,
 				C4F38CA9DD569D2F043074CD /* ModelSchema.swift */,
 				269A5FB5BEA5BD989F15047F /* RoleAssignment.swift */,
 				F2441D549FF70392CCDA8F5C /* RoleChangeLog.swift */,
@@ -1395,6 +1398,7 @@
 				04201C4FA21DFC64A0CB492B /* MemberRow.swift in Sources */,
 				D35BCEE973B20129F4492319 /* MemberSelectionRow.swift in Sources */,
 				AF42335419C94C1983651DD3 /* MemberService.swift in Sources */,
+				BD81483C594A51D23405C1BC /* MemberStatus.swift in Sources */,
 				6AFE75F01479E25F53830244 /* MembersListView.swift in Sources */,
 				8794BCEF889E318EEC3AD144 /* MembershipRole.swift in Sources */,
 				923992FB7A38B83C5C879B11 /* MembershipRoleCapsule.swift in Sources */,

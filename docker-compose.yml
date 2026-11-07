@@ -1,11 +1,11 @@
-# Runs webadmin (Quarkus + Vaadin web admin, REST API, calendar feed) behind
+# Runs webui (Quarkus + Vaadin web UI, REST API, calendar feed) behind
 # a bundled Caddy reverse proxy that terminates TLS — this is what makes it safe to
-# expose to the internet (see webadmin/README.md "Deployment": the app
+# expose to the internet (see webui/README.md "Deployment": the app
 # itself speaks plain HTTP only, and must never be reachable directly).
 # Works with both `docker compose up` and `podman-compose up`.
 #
 # Network layout:
-#   internet --443/80--> caddy (published to 0.0.0.0) --8080--> webadmin
+#   internet --443/80--> caddy (published to 0.0.0.0) --8080--> webui
 #                                                           (internal network
 #                                                            only, no host
 #                                                            port published)
@@ -21,10 +21,10 @@
 #      podman-compose up -d --build
 
 services:
-  webadmin:
+  webui:
     build:
-      context: webadmin
-    image: webadmin:latest
+      context: webui
+    image: webui:latest
     restart: unless-stopped
     env_file:
       - .env
@@ -69,7 +69,7 @@ services:
       - caddy_data:/data
       - caddy_config:/config
     depends_on:
-      - webadmin
+      - webui
     networks:
       - internal
 

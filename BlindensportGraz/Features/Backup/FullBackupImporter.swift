@@ -121,7 +121,8 @@ enum FullBackupImporter {
                                 svnr: FullBackup.string(dict, "svnr"), iban: FullBackup.string(dict, "iban"),
                                 lastMedicalExamination: FullBackup.date(dict, "lastMedicalExamination"),
                                 defaultFunction: FullBackup.string(dict, "defaultFunction"),
-                                memberOfGVSC: (dict["memberOfGVSC"] as? Bool) ?? true)
+                                memberOfGVSC: (dict["memberOfGVSC"] as? Bool) ?? true,
+                                status: MemberStatus(rawValue: FullBackup.string(dict, "status")) ?? .active)
             modelContext.insert(member)
             return MemberService.save(member, modelContext: modelContext)
         }

@@ -101,7 +101,6 @@ extension SupabaseSync {
         }
     }
 
-    func deleteMember(_ id: UUID) { delete(table: "members", id: id) }
 
     func pullMembers(modelContext: ModelContext) async throws {
         try await pull("members", modelContext: modelContext, prune: Member.self, id: \.id,
@@ -114,6 +113,7 @@ extension SupabaseSync {
                 member.defaultFunction = row.defaultFunction
                 member.memberOfGVSC = row.memberOfGVSC
                 member.joinedAt = row.joinedAt
+                member.status = row.status
                 member.gvscAppliedAt = row.gvscAppliedAt
             } else {
                 let member = Member(id: row.id, firstName: row.firstName, lastName: row.lastName,
@@ -122,6 +122,7 @@ extension SupabaseSync {
                                     gender: "", title: "", birthDate: nil, sportId: row.sportID,
                                     svnr: "", iban: "", lastMedicalExamination: nil,
                                     defaultFunction: row.defaultFunction, memberOfGVSC: row.memberOfGVSC)
+                member.status = row.status
                 member.gvscAppliedAt = row.gvscAppliedAt
                 modelContext.insert(member)
             }

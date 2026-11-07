@@ -31,14 +31,18 @@ enum MemberService {
         }
     }
 
-    @discardableResult
-    static func delete(_ member: Member, modelContext: ModelContext) -> Bool {
-        let id = member.id
+    /// Removes an entry for good. The server decides: only root, only an entry
+    /// marked "delete", and `confirmName` must be the person's full name
+    /// (`delete_member`, the only way to delete a member). So this needs a
+    /// connection, unlike the outbox-backed writes, and the local copy goes
+    /// only once the server has agreed.
+    static func delete(_ member: Member, confirmName: String, modelContext: ModelContext) async throws {
+        nonisolated struct Params: Encodable { let target: UUID; let confirm_name: String }
+        try await SupabaseClientSingleton.shared.client
+            .rpc("delete_member", params: Params(target: member.id, confirm_name: confirmName))
+            .execute()
         modelContext.delete(member)
-        return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Member",
-                                                 failureMessage: "Mitglied konnte nicht gelöscht werden.") {
-            SupabaseSync.shared.deleteMember(id)
-            MemberPrivateSync.delete(memberID: id)
-        }
+        PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Member",
+                                         failureMessage: "Mitglied konnte nicht gelöscht werden.") {}
     }
 }

@@ -5,7 +5,7 @@ import ClubSchema
 /// approved account), `member_contacts` (address/contact, members.manage)
 /// and `member_private` (svnr/iban/dates, members.private.*). Uses the
 /// service key, so only root-run tooling (rootcli) may call it. The web
-/// admin (webadmin/, Java) has its own port that acts as the signed-in admin.
+/// admin (webui/, Java) has its own port that acts as the signed-in admin.
 ///
 /// No transaction spans the three tables. A save writes `members` first
 /// (the row the others reference), so a failure part-way leaves at most a
