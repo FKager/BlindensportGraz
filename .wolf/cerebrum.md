@@ -670,6 +670,8 @@
 
 - [2026-10-14] NEVER `modelContext.delete` a SwiftData model that a visible view may hold as `let model` (rows, menus, controls): after save, any property read asserts (EXC_BREAKPOINT in SwiftData, bug-554). For accounts, demote to a hidden name-only row (clear email) instead. Crash logs: `xcrun devicectl device info files --domain-type systemCrashLogs --device BD764E6D-F84C-5BC9-B52C-BB372A7B3190` + `device copy from` (read-only, allowed).
 
+- [2026-11-07] Do not put {{ .RedirectTo }} into an href for a custom scheme: GoTrue uses html/template and outputs #ZgotmplZ. Write app links literally. Always render templates through local Mailpit before sending them anywhere.
+
 ## Decision Log
 - [2026-10-14] CloudKit→Supabase handover: user chose "make the switch-over safe": upload every local row the server lacks (accepting that stale deleted rows may come back) rather than risk losing device-only data.
 - [2026-09-29] TestFlight workflow (ios-build-deploy.yml, both jobs) moved macos-15 → macos-26 GitHub-hosted image, still selecting the newest `Xcode_26*.app` (26.6 / Swift 6.3 at the time). User chose this over running TestFlight on the self-hosted Xcode 27 runner: stay independent of this Mac, accept being one Swift version behind local/device builds (Xcode 27 / Swift 6.4). Widen the Xcode glob once GitHub ships a release Xcode 27 image.

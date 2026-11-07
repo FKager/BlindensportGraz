@@ -4124,3 +4124,8 @@
 | 21:21 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
 | 22:10 | Staging app: Apple ids, group, profiles, CI secrets, staging Supabase settings done; code uncommitted on staging-app | Apple, GitHub, staging | done | ~9000 |
 | 21:31 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 21:39 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 21:47 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 21:48 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:35 | Fixed email templates sent to staging and prod; PR 34 reviewed | supabase/templates | prod live, fix uncommitted on fix-email-app-links | ~6000 |
+| 21:51 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
