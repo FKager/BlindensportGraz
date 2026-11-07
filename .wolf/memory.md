@@ -4084,3 +4084,11 @@
 | 23:50 | Rollen section with Vereinsfunktionen in DB, web UI and app; uncommitted on club-functions | supabase/, webui/, app | done locally | ~20000 |
 | 00:10 | PROD: PR 30 merged, migration 4 applied, web UI deployed with Rollen; v0.10.0 release started | prod, nuc | live | ~3000 |
 | 19:30 | Log failed password reset requests; PR opened | ForgotPasswordView.java | PR | ~1500 |
+| 19:50 | Deployed web UI with reset failure logging to nuc | nuc | live | ~1000 |
+| 20:00 | Reset mail reached GMX with a delay, user confirmed; first attempt stays unexplained, delay cause unconfirmed | prod mail | closed | ~300 |
+| 20:20 | Open issues: staging got club_functions migration, test zip removed, local back on main | staging, local | done | ~2000 |
+| 19:55 | PR 32 merged: database tests in CI; 8 old TestFlight builds expired | CI, TestFlight | done | ~1000 |
+| 21:00 | Staging secret key rotated (old sb_secret deleted, new not stored) | staging | done | ~1500 |
+| 21:30 | Resend: full-access key a11y.it replaced by a11y-admin-2026-11, stored in private file | Resend | done | ~3000 |
+| 21:40 | Resend: removed unused keys Onboarding and BlindensportGraz | Resend | done | ~500 |
+| 21:55 | iPhone device deploy made manual-only | ios-device-deploy.yml, deploy.md | PR | ~1500 |
