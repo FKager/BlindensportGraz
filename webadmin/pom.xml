@@ -20,6 +20,7 @@
              3.33 is the current Quarkus LTS. -->
         <vaadin.version>25.3.2</vaadin.version>
         <quarkus.platform.version>3.33.4</quarkus.platform.version>
+        <quarkus-mcp-server.version>2.0.4</quarkus-mcp-server.version>
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
         <wiremock.version>3.13.2</wiremock.version>
         <karibu.version>2.7.3</karibu.version>
@@ -59,6 +60,12 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+        <!-- MCP server at /mcp (it.a11y.blindensport.webadmin.mcp) -->
+        <dependency>
+            <groupId>io.quarkiverse.mcp</groupId>
+            <artifactId>quarkus-mcp-server-http</artifactId>
+            <version>${quarkus-mcp-server.version}</version>
         </dependency>
 
         <dependency>

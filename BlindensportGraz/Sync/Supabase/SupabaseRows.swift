@@ -62,6 +62,7 @@ nonisolated struct MemberDBRow: Codable, Sendable, Equatable {
     var defaultFunction: String
     var memberOfGVSC: Bool
     var joinedAt: Date
+    var status: String
     // Set only by the server (mark_gvsc_application); always nil when built
     // from a local Member, so it's never encoded back.
     var gvscAppliedAt: Date?
@@ -77,6 +78,7 @@ nonisolated struct MemberDBRow: Codable, Sendable, Equatable {
         case defaultFunction = "default_function"
         case memberOfGVSC = "member_of_gvsc"
         case joinedAt = "joined_at"
+        case status
         case updatedAt = "updated_at"
     }
 }
@@ -541,7 +543,7 @@ extension MemberDBRow {
         self.init(id: member.id, firstName: member.firstName, lastName: member.lastName,
                   memberNumber: member.memberNumber, sportID: member.sportId,
                   defaultFunction: member.defaultFunction, memberOfGVSC: member.memberOfGVSC,
-                  joinedAt: member.joinedAt)
+                  joinedAt: member.joinedAt, status: member.status)
     }
 }
 

@@ -17,6 +17,7 @@ import it.a11y.blindensport.webadmin.members.MemberApplication;
 import it.a11y.blindensport.webadmin.members.MemberHealth;
 import it.a11y.blindensport.webadmin.members.MemberPrivate;
 import it.a11y.blindensport.webadmin.members.MemberRecord;
+import it.a11y.blindensport.webadmin.members.MemberStatus;
 import it.a11y.blindensport.webadmin.members.Validation;
 
 import java.time.Instant;
@@ -56,6 +57,7 @@ class MemberDialog extends Dialog {
     private final TextField country = new TextField("Land");
     private final EmailField email = new EmailField("E-Mail");
     private final TextField phone = new TextField("Telefon");
+    private final Select<String> status = new Select<>();
     private final Checkbox memberOfGVSC = new Checkbox("Mitglied des Grazer VSC");
     private final TextField memberNumber = new TextField("Mitgliedsnummer");
     private final DatePicker joinedAt = GermanUi.datePicker("Beigetreten");
@@ -116,7 +118,12 @@ class MemberDialog extends Dialog {
 
         FormLayout person = form(firstName, lastName, title, gender, street, zip, city, country);
         FormLayout contact = form(email, phone);
-        FormLayout membership = form(memberOfGVSC, memberNumber, joinedAt, sportId, defaultFunction);
+        status.setLabel("Status");
+        status.setItems(MemberStatus.ALL);
+        status.setItemLabelGenerator(MemberStatus::label);
+        status.setHelperText("Gelöscht wird nur durch Root, und nur mit Status „Zum Löschen markiert“.");
+        status.setValue(existing == null || existing.status() == null ? MemberStatus.NEW : existing.status());
+        FormLayout membership = form(status, memberOfGVSC, memberNumber, joinedAt, sportId, defaultFunction);
         FormLayout notesForm = form(notes);
         notesForm.setColspan(notes, 2);
         add(section("Mitglied", person), section("Kontakt", contact), section("Mitgliedschaft", membership));
@@ -244,7 +251,7 @@ class MemberDialog extends Dialog {
                 street.getValue(), zip.getValue(), city.getValue(), country.getValue(),
                 email.getValue(), phone.getValue(), memberNumber.getValue(), joined, notes.getValue(),
                 genderValue, title.getValue(), sportId.getValue(), defaultFunction.getValue(),
-                memberOfGVSC.getValue(), privateData);
+                memberOfGVSC.getValue(), privateData, status.getValue());
     }
 
     private void fillApplication(MemberApplication a, MemberHealth h) {

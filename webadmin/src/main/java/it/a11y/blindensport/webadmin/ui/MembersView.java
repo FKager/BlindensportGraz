@@ -30,6 +30,7 @@ import it.a11y.blindensport.webadmin.members.MemberHealth;
 import it.a11y.blindensport.webadmin.members.MemberBulkInput;
 import it.a11y.blindensport.webadmin.members.MemberJson;
 import it.a11y.blindensport.webadmin.members.MemberRecord;
+import it.a11y.blindensport.webadmin.members.MemberStatus;
 import it.a11y.blindensport.webadmin.members.MemberStore;
 import jakarta.inject.Inject;
 
@@ -84,6 +85,8 @@ public class MembersView extends AdminView {
                 .setAutoWidth(true).setRowHeader(true);
         grid.addColumn(m -> join(", ", m.street(), join(" ", m.zip(), m.city()))).setHeader("Adresse").setFlexGrow(1);
         grid.addColumn(m -> join(" · ", m.email(), m.phone())).setHeader("Kontakt").setFlexGrow(1);
+        grid.addColumn(m -> MemberStatus.label(m.status())).setHeader("Status").setSortable(true).setAutoWidth(true)
+                .setFlexGrow(0);
         grid.addColumn(MemberRecord::memberNumber).setHeader("Mitgl.-Nr.").setSortable(true).setAutoWidth(true)
                 .setFlexGrow(0);
         grid.addComponentColumn(this::actions).setHeader("Aktionen").setAutoWidth(true).setFlexGrow(0)
@@ -120,10 +123,15 @@ public class MembersView extends AdminView {
 
     private HorizontalLayout actions(MemberRecord member) {
         Button edit = GermanUi.label(new Button("Bearbeiten", e -> openDialog(member)), member.fullName() + " bearbeiten");
-        Button delete = GermanUi.label(new Button("Löschen", e -> confirmDelete(member)), member.fullName() + " löschen");
         edit.addThemeVariants(ButtonVariant.LUMO_SMALL);
-        delete.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR);
-        return new HorizontalLayout(edit, delete);
+        HorizontalLayout actions = new HorizontalLayout(edit);
+        // Only root removes entries, and only ones marked for deletion (delete_member).
+        if (MemberStatus.DELETE.equals(member.status()) && session().can(Permission.ROLES_ASSIGN)) {
+            Button delete = GermanUi.label(new Button("Löschen", e -> confirmDelete(member)), member.fullName() + " löschen");
+            delete.addThemeVariants(ButtonVariant.LUMO_SMALL, ButtonVariant.LUMO_ERROR);
+            actions.add(delete);
+        }
+        return actions;
     }
 
     private void openDialog(MemberRecord member) {
@@ -157,14 +165,24 @@ public class MembersView extends AdminView {
     }
 
     private void confirmDelete(MemberRecord member) {
-        GermanUi.confirm(member.fullName() + " löschen?",
-                "Der Eintrag wird mit Kontakt- und geschützten Daten gelöscht. Das kann nicht rückgängig gemacht werden.",
-                "Löschen", () -> {
-                    if (attempt("Löschen", () -> new MemberStore(session().db()).delete(member.id()))) {
-                        Announcer.success(member.fullName() + " gelöscht.");
-                        attempt("Laden", this::refresh);
-                    }
-                });
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle(member.fullName() + " endgültig löschen?");
+        TextField name = new TextField("Zur Bestätigung den vollen Namen eingeben: " + member.fullName());
+        name.setWidthFull();
+        name.setRequired(true);
+        Button delete = new Button("Endgültig löschen", e -> {
+            if (attempt("Löschen", () -> new MemberStore(session().db()).delete(member.id(), name.getValue()))) {
+                dialog.close();
+                Announcer.success(member.fullName() + " gelöscht.");
+                attempt("Laden", this::refresh);
+            }
+        });
+        delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        dialog.add(new Paragraph("Der Eintrag wird mit Kontakt- und geschützten Daten gelöscht. "
+                + "Das kann nicht rückgängig gemacht werden."), name);
+        dialog.getFooter().add(new Button("Abbrechen", e -> dialog.close()), delete);
+        dialog.open();
+        name.focus();
     }
 
     private DownloadResponse exportJson() throws java.io.IOException {

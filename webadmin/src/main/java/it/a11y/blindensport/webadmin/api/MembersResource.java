@@ -21,6 +21,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
@@ -113,15 +114,17 @@ public class MembersResource {
         return MemberJson.toMap(record);
     }
 
+    /** Root only, on an entry marked "delete"; {@code confirm} repeats the full name (delete_member). */
     @DELETE
     @Path("{id}")
-    public Response delete(@PathParam("id") String id, @Context ContainerRequestContext request) {
+    public Response delete(@PathParam("id") String id, @QueryParam("confirm") String confirm,
+                           @Context ContainerRequestContext request) {
         AdminSession admin = CurrentAdmin.require(request, Permission.MEMBERS_MANAGE);
         MemberStore store = new MemberStore(admin.db());
         if (store.get(id, false).isEmpty()) {
             throw ApiException.notFound(id);
         }
-        store.delete(id);
+        store.delete(id, confirm);
         return Response.noContent().build();
     }
 

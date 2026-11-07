@@ -61,6 +61,7 @@ enum FullBackup {
             "svnr": member.svnr, "iban": member.iban,
             "lastMedicalExamination": stringOrNull(member.lastMedicalExamination),
             "defaultFunction": member.defaultFunction, "memberOfGVSC": member.memberOfGVSC,
+            "status": member.status,
         ]
     }
 

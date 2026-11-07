@@ -26,7 +26,7 @@ import static it.a11y.blindensport.webadmin.supabase.Postgrest.eq;
  */
 public final class MemberStore {
     static final String MEMBER_COLUMNS =
-            "id,first_name,last_name,member_number,sport_id,default_function,member_of_gvsc,joined_at";
+            "id,first_name,last_name,member_number,sport_id,default_function,member_of_gvsc,joined_at,status";
     static final String CONTACT_COLUMNS = "id,street,zip,city,country,email,phone,notes,gender,title";
     static final String PRIVATE_COLUMNS = "member_id,svnr,iban,birth_date,last_medical_examination";
 
@@ -146,16 +146,17 @@ public final class MemberStore {
     }
 
     /**
-     * Removes the entry; contacts cascade, the protected row is deleted
-     * explicitly (member_private predates the members table).
+     * Removes the entry through delete_member, the only way to do it: the
+     * caller must be root, the entry marked {@link MemberStatus#DELETE}, and
+     * {@code confirmName} its full name. Contacts cascade, the RPC removes
+     * the protected row.
      */
-    public void delete(String id) {
-        Optional<String> key = key(id);
-        if (key.isEmpty()) {
-            return;
-        }
-        db.delete("members", eq("id", key.get()));
-        db.delete("member_private", eq("member_id", key.get()));
+    public void delete(String id, String confirmName) {
+        String key = key(id).orElseThrow(() -> new IllegalArgumentException("Member id '" + id + "' is not a UUID."));
+        Map<String, Object> params = new HashMap<>();
+        params.put("target", key);
+        params.put("confirm_name", confirmName);
+        db.rpc("delete_member", params);
     }
 
     private Map<String, MemberPrivate> allPrivate() {

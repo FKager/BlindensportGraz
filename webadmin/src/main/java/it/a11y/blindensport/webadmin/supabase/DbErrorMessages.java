@@ -20,7 +20,11 @@ public final class DbErrorMessages {
                     "Das eigene Konto bitte in der App unter „Konto löschen“ entfernen."),
             Map.entry("cannot remove the last root account", "Das letzte Root-Konto kann nicht entfernt werden."),
             Map.entry("demote the root account first", "Root-Konten zuerst auf eine andere Rolle zurückstufen."),
-            Map.entry("no pending request", "Es liegt keine offene Anfrage vor."));
+            Map.entry("no pending request", "Es liegt keine offene Anfrage vor."),
+            Map.entry("unknown member", "Dieses Mitglied gibt es nicht (mehr)."),
+            Map.entry("member is not marked for deletion", "Das Mitglied muss zuerst den Status „Zum Löschen markiert“ haben."),
+            Map.entry("confirmation does not match the member name",
+                    "Der eingegebene Name stimmt nicht mit dem Mitglied überein."));
 
     private DbErrorMessages() {
     }

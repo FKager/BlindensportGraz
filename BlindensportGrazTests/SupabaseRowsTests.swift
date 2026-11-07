@@ -28,6 +28,13 @@ final class SupabaseRowsTests: XCTestCase {
         XCTAssertEqual(object["member_of_gvsc"] as? Bool, false)
     }
 
+    func testNewMemberStartsAsNewAndTheRowCarriesTheStatus() throws {
+        let member = Member(firstName: "Anna", lastName: "Neu")
+        XCTAssertEqual(try json(MemberDBRow(member))["status"] as? String, "new")
+        member.status = MemberStatus.delete.rawValue
+        XCTAssertEqual(try json(MemberDBRow(member))["status"] as? String, "delete")
+    }
+
     func testMemberContactRowCarriesApplicationFields() throws {
         let member = Member(firstName: "Anna", lastName: "Antrag")
         member.membershipType = GVSCMembershipType.active

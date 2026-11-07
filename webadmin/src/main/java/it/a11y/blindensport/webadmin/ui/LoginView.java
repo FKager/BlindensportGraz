@@ -12,6 +12,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.router.Location;
 import com.vaadin.flow.server.VaadinRequest;
 import it.a11y.blindensport.webadmin.auth.AdminSessions;
 import it.a11y.blindensport.webadmin.auth.SignInException;
@@ -25,6 +27,8 @@ import jakarta.inject.Inject;
 @Route("login")
 @PageTitle("Anmelden – Blindensport Graz")
 public class LoginView extends VerticalLayout implements BeforeEnterObserver {
+    private static final String RETURN_TO = LoginView.class.getName() + ".returnTo";
+
     private final AdminSessions sessions;
     private final EmailField email = new EmailField("E-Mail");
     private final PasswordField password = new PasswordField("Passwort");
@@ -57,6 +61,11 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
                 email, password, signIn, status);
     }
 
+    /** After signing in, go here instead of the start page (the OAuth consent page). */
+    static void returnAfterSignIn(Location location) {
+        VaadinSession.getCurrent().setAttribute(RETURN_TO, location);
+    }
+
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         if (UiSession.current(sessions).isPresent()) {
@@ -76,7 +85,15 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         try {
             String token = sessions.signIn(email.getValue(), password.getValue(), client);
             UiSession.signedIn(token);
-            getUI().ifPresent(ui -> ui.navigate(StartView.class));
+            Location target = (Location) VaadinSession.getCurrent().getAttribute(RETURN_TO);
+            VaadinSession.getCurrent().setAttribute(RETURN_TO, null);
+            getUI().ifPresent(ui -> {
+                if (target != null) {
+                    ui.navigate(target.getPath(), target.getQueryParameters());
+                } else {
+                    ui.navigate(StartView.class);
+                }
+            });
         } catch (SignInException e) {
             status.setText(e.getMessage());
             password.clear();

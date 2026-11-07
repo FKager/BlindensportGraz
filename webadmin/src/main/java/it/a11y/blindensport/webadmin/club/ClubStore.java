@@ -9,6 +9,7 @@ import it.a11y.blindensport.webadmin.club.ClubModels.Team;
 import it.a11y.blindensport.webadmin.club.ClubModels.TrainingFavorite;
 import it.a11y.blindensport.webadmin.club.ClubModels.WelcomeContent;
 import it.a11y.blindensport.webadmin.members.Dates;
+import it.a11y.blindensport.webadmin.prae.PraeCalculator;
 import it.a11y.blindensport.webadmin.supabase.Postgrest;
 
 import java.math.BigDecimal;
@@ -37,6 +38,9 @@ import static it.a11y.blindensport.webadmin.supabase.Postgrest.order;
  * them from its offline cache too.
  */
 public final class ClubStore {
+    private static final String ATTENDANCE_COLUMNS = "id,event_id,membership_id,attended,prae_amount";
+    private static final int ATTENDANCE_BATCH = 100;
+
     private final Postgrest db;
     private final UUID admin;
 
@@ -97,6 +101,14 @@ public final class ClubStore {
         return names;
     }
 
+    /** First and last name of every account (account_directory), by lowercase id. */
+    public Map<String, PraeCalculator.AccountName> accounts() {
+        Map<String, PraeCalculator.AccountName> accounts = new HashMap<>();
+        db.rpc("account_directory", Map.of()).forEach(r -> accounts.put(lower(r, "id"),
+                new PraeCalculator.AccountName(text(r, "first_name"), text(r, "last_name"))));
+        return accounts;
+    }
+
     // --------------------------------------------------------------- events
 
     public List<ClubEvent> events() {
@@ -149,11 +161,24 @@ public final class ClubStore {
 
     public List<Attendance> attendances(String eventId) {
         List<Attendance> result = new ArrayList<>();
-        db.select("attendances", "id,event_id,membership_id,attended,prae_amount", eq("event_id", eventId))
-                .forEach(r -> result.add(new Attendance(id(r), lower(r, "event_id"), lower(r, "membership_id"),
-                        r.path("attended").asBoolean(false),
-                        r.hasNonNull("prae_amount") ? r.get("prae_amount").decimalValue() : null)));
+        db.select("attendances", ATTENDANCE_COLUMNS, eq("event_id", eventId)).forEach(r -> result.add(attendance(r)));
         return result;
+    }
+
+    /** Attendance of several events, read in batches so a long list stays a valid URL. */
+    public List<Attendance> attendances(List<String> eventIds) {
+        List<Attendance> result = new ArrayList<>();
+        for (int i = 0; i < eventIds.size(); i += ATTENDANCE_BATCH) {
+            List<String> batch = eventIds.subList(i, Math.min(eventIds.size(), i + ATTENDANCE_BATCH));
+            db.select("attendances", ATTENDANCE_COLUMNS, Postgrest.in("event_id", batch))
+                    .forEach(r -> result.add(attendance(r)));
+        }
+        return result;
+    }
+
+    private static Attendance attendance(JsonNode r) {
+        return new Attendance(id(r), lower(r, "event_id"), lower(r, "membership_id"), r.path("attended").asBoolean(false),
+                r.hasNonNull("prae_amount") ? r.get("prae_amount").decimalValue() : null);
     }
 
     /**

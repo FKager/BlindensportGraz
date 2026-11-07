@@ -36,6 +36,7 @@ public final class MemberJson {
         }
         m.put("defaultFunction", r.defaultFunction());
         m.put("memberOfGVSC", r.memberOfGVSC());
+        m.put("status", r.status());
         return m;
     }
 }

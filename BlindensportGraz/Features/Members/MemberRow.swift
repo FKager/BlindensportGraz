@@ -16,6 +16,12 @@ struct MemberRow: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                // Active is the normal case; only the others need saying.
+                if member.status != MemberStatus.active.rawValue, let status = MemberStatus(rawValue: member.status) {
+                    Text(status.label)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             Spacer()
             // Flags all current Grazer VSC members in this list — user

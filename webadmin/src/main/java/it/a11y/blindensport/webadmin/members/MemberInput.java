@@ -30,7 +30,16 @@ public record MemberInput(
         String iban,
         Instant lastMedicalExamination,
         String defaultFunction,
-        Boolean memberOfGVSC) {
+        Boolean memberOfGVSC,
+        String status) {
+
+    public MemberInput(String firstName, String lastName, String street, String zip, String city, String country,
+                       String email, String phone, String memberNumber, Instant joinedAt, String notes, String gender,
+                       String title, Instant birthDate, String sportId, String svnr, String iban,
+                       Instant lastMedicalExamination, String defaultFunction, Boolean memberOfGVSC) {
+        this(firstName, lastName, street, zip, city, country, email, phone, memberNumber, joinedAt, notes, gender,
+                title, birthDate, sportId, svnr, iban, lastMedicalExamination, defaultFunction, memberOfGVSC, null);
+    }
 
     public static final Set<String> CLEARABLE_DATES = Set.of("birthDate", "lastMedicalExamination");
 
@@ -44,6 +53,9 @@ public record MemberInput(
         if (firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank()) {
             throw new IllegalArgumentException("firstName and lastName are required.");
         }
+        if (status != null && !MemberStatus.isValid(status)) {
+            throw new IllegalArgumentException("status must be new, active or delete.");
+        }
     }
 
     /** A new entry (POST). */
@@ -54,7 +66,8 @@ public record MemberInput(
                 or(memberNumber, ""), joinedAt != null ? joinedAt : Instant.now(), or(notes, ""),
                 or(gender, ""), or(title, ""), or(sportId, ""), or(defaultFunction, ""),
                 memberOfGVSC == null || memberOfGVSC,
-                new MemberPrivate(or(svnr, ""), or(iban, ""), birthDate, lastMedicalExamination));
+                new MemberPrivate(or(svnr, ""), or(iban, ""), birthDate, lastMedicalExamination),
+                or(status, MemberStatus.NEW));
     }
 
     /**
@@ -81,7 +94,8 @@ public record MemberInput(
                                 : birthDate != null ? birthDate : stored.birthDate(),
                         clearedDates.contains("lastMedicalExamination") ? null
                                 : lastMedicalExamination != null ? lastMedicalExamination
-                                : stored.lastMedicalExamination()));
+                                : stored.lastMedicalExamination()),
+                or(status, existing.status()));
     }
 
     private static String or(String value, String fallback) {

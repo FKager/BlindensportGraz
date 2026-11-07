@@ -25,6 +25,20 @@ class MemberInputTest {
     }
 
     @Test
+    void statusDefaultsToNewAndStaysWhenNotSent() {
+        assertEquals(MemberStatus.NEW, input("A", "B").toNewRecord("ID").status());
+        MemberRecord active = existing.withPrivateData(existing.privateData());
+        assertEquals(active.status(), input("A", "B").applyTo(active, Set.of()).status());
+    }
+
+    @Test
+    void unknownStatusIsRefused() {
+        MemberInput bad = new MemberInput("A", "B", null, null, null, null, null, null, null, null, null, null, null, null,
+                null, null, null, null, null, null, "gone");
+        assertThrows(IllegalArgumentException.class, bad::validate);
+    }
+
+    @Test
     void omittedFieldsKeepOrReplaceLikeTheSwiftServer() {
         MemberRecord updated = input(" Anna ", "Neu").applyTo(existing, Set.of());
         assertEquals("Anna", updated.firstName());

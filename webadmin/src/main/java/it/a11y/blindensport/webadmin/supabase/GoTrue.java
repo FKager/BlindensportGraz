@@ -48,6 +48,47 @@ public final class GoTrue {
         return Optional.of(tokens(http.check(result, "refresh session").body()));
     }
 
+    /** The account behind an access token: id and email. */
+    public record User(UUID id, String email) {
+    }
+
+    /**
+     * Who an access token belongs to, asked of GoTrue so a forged or revoked
+     * token doesn't count. Works for app, web admin and OAuth (MCP) tokens.
+     * Empty when GoTrue refuses the token.
+     */
+    public Optional<User> user(String accessToken) {
+        SupabaseHttp.Result result = http.send("GET", "auth/v1/user", List.of(), null, Map.of(), anonKey, accessToken);
+        if (result.status() >= 400 && result.status() < 500) {
+            return Optional.empty();
+        }
+        JsonNode node = http.parse(http.check(result, "get user").body());
+        return Optional.of(new User(UUID.fromString(node.path("id").asText()), node.path("email").asText("")));
+    }
+
+    /**
+     * An MCP client's pending sign-in (OAuth 2.1 server), as the consent page
+     * shows it. A client this user already approved has {@code redirectUrl}
+     * set instead and needs no second question.
+     */
+    public record Authorization(String clientName, String redirectUri, String redirectUrl) {
+    }
+
+    public Authorization oauthAuthorization(String accessToken, String authorizationId) {
+        SupabaseHttp.Result result = http.send("GET", "auth/v1/oauth/authorizations/" + authorizationId, List.of(), null,
+                Map.of(), anonKey, accessToken);
+        JsonNode node = http.parse(http.check(result, "get authorization").body());
+        return new Authorization(node.path("client").path("name").asText(""), node.path("redirect_uri").asText(""),
+                node.path("redirect_url").asText(null));
+    }
+
+    /** Approves or denies; returns where to send the browser back to, which is the client's redirect URI. */
+    public String oauthConsent(String accessToken, String authorizationId, boolean approve) {
+        SupabaseHttp.Result result = http.send("POST", "auth/v1/oauth/authorizations/" + authorizationId + "/consent",
+                List.of(), Map.of("action", approve ? "approve" : "deny"), Map.of(), anonKey, accessToken);
+        return http.parse(http.check(result, "oauth consent").body()).path("redirect_url").asText();
+    }
+
     /** Revokes this session's refresh token. Best effort. */
     public void signOut(String accessToken) {
         try {

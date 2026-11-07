@@ -228,6 +228,30 @@ class ApiTest {
     }
 
     @Test
+    void deleteGoesThroughTheRootOnlyRpcWithTheTypedName() {
+        stubMember();
+        mock.stubFor(post(urlPathEqualTo("/rest/v1/rpc/delete_member")).willReturn(okJson("null")));
+        String cookie = signIn("admin@example.org");
+        given().cookie("bsg_admin_session", cookie).header(CSRF, CSRF_VALUE).queryParam("confirm", "Anna Muster")
+                .when().delete("/api/members/" + MEMBER_ID)
+                .then().statusCode(204);
+        mock.verify(postRequestedFor(urlPathEqualTo("/rest/v1/rpc/delete_member"))
+                .withRequestBody(equalToJson("{\"target\":\"" + MEMBER_ID + "\",\"confirm_name\":\"Anna Muster\"}"))
+                .withHeader("Authorization", wm("Bearer admin-token")));
+    }
+
+    @Test
+    void deleteRefusedByTheDatabaseIsExplainedInGerman() {
+        stubMember();
+        mock.stubFor(post(urlPathEqualTo("/rest/v1/rpc/delete_member")).willReturn(aResponse().withStatus(403)
+                .withBody("{\"code\":\"42501\",\"message\":\"member is not marked for deletion\"}")));
+        given().cookie("bsg_admin_session", signIn("admin@example.org")).header(CSRF, CSRF_VALUE)
+                .queryParam("confirm", "Anna Muster")
+                .when().delete("/api/members/" + MEMBER_ID)
+                .then().statusCode(403).body("reason", containsString("Zum Löschen markiert"));
+    }
+
+    @Test
     void importSkipsBadRowsAndReportsCounts() {
         stubMember();
         String cookie = signIn("admin@example.org");

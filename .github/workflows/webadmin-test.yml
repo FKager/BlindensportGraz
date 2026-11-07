@@ -9,9 +9,9 @@ name: Web Admin Tests
 on:
   push:
     branches: [main]
-    paths: ["webadmin/**", ".github/workflows/webadmin-test.yml"]
+    paths: ["webadmin/**", "BlindensportGraz/Resources/PRAE_*", ".github/workflows/webadmin-test.yml"]
   pull_request:
-    paths: ["webadmin/**", ".github/workflows/webadmin-test.yml"]
+    paths: ["webadmin/**", "BlindensportGraz/Resources/PRAE_*", ".github/workflows/webadmin-test.yml"]
   workflow_dispatch:
 
 permissions:

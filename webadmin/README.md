@@ -104,6 +104,51 @@ the URL from `ServerConfig.clubMembersAPIHost`
 | `SESSION_COOKIE_SECURE` | `true` (default); `false` only for plain `http://localhost` testing |
 | `PORT` | default `8080` |
 
+## MCP server
+
+`https://bs.a11y.it/mcp` lets MCP clients (Claude Code, for example) work with the club's data: members, teams, trainings, tournaments, attendance and PRAE forms.
+
+Connect from Claude Code, then sign in with `/mcp`:
+
+```
+claude mcp add --transport http blindensport https://bs.a11y.it/mcp
+```
+
+The browser opens the web admin. Sign in with your normal account and allow access. Coaches, admins and root can connect; a client can do whatever that account may do.
+
+### How it works
+
+- **Sign-in:** OAuth 2.1 with Supabase's OAuth server. `/.well-known/oauth-protected-resource` names Supabase as authorization server, and `/oauth/consent` (`OAuthConsentView`) is the approval page. `site_url` in `supabase/config.toml` must be this web admin, because Supabase sends people to `<site_url>/oauth/consent`.
+- **Permissions:** the client's token is a normal Supabase user token, so RLS and the RPCs decide, as in the app. `McpAuthFilter` admits only accounts that may use the web admin. The server has no rights of its own, and the service key isn't used.
+- **Protected data:** SVNR, IBAN, birth date, medical exam, disability and consents never appear in a tool result and can't be written, because anything returned reaches the AI behind the client. Member results are built from an allow-list in `ClubTools`.
+- **PRAE forms:** they do contain SVNR and IBAN, so `create_prae_forms` returns only a summary and a link to `/mcp-files/{token}`. The link works once, lasts 10 minutes, and the file exists in memory only. Whoever holds the link gets the file.
+- **Nothing deletes:** there is no delete tool. A member can only be marked with status `delete`.
+
+### Tools
+
+| Area | Tools |
+|---|---|
+| Account | `whoami` |
+| Members | `list_members`, `get_member`, `create_member`, `update_member` |
+| Teams | `list_teams`, `create_team`, `add_team_member` |
+| Events | `list_events`, `get_event`, `create_event`, `update_event`, `set_attendance` |
+| PRAE | `preview_prae`, `create_prae_forms` |
+
+### PRAE exists twice
+
+`prae/` is a port of the app's `PraeCalculation.swift` and `PraeExport.swift`, since the forms are now made on the phone and on this server. A change to the rules or the form belongs in both. `src/main/resources/prae` holds copies of the app's templates, because the Docker build sees only `webadmin/`; `PraeExporterTest` fails if they drift apart.
+
+### Member status
+
+`members.status` is `new`, `active` or `delete`. Anyone with `members.manage` sets it. Only root can remove a member, only when the status is `delete`, and only by typing the full name: `delete_member` is the only way, as the table's delete policy is gone.
+
+### Rollout order
+
+1. Database first: `supabase db push`. New app and web admin versions read `members.status`, so it must exist before them.
+2. Supabase auth settings: `supabase config push` (OAuth server, dynamic client registration, `site_url`). `allow_dynamic_registration` lets any client register, which is why the consent page shows where a sign-in returns to.
+3. Web admin: redeploy.
+4. App: release a new TestFlight build. Until then, swiping to delete a member in an old build has no effect on the server, and the member comes back on the next sync.
+
 ## Deployment
 
 The server speaks **plain HTTP** and must only be reachable through the TLS
@@ -168,6 +213,8 @@ docker run --rm -p 127.0.0.1:8081:8080 -v "$PWD/target/quarkus-app":/app -w /app
   refuses anything that isn't local.
 
 ## Layout
+
+`mcp/` MCP server, `prae/` PRAE calculation and forms (see above).
 
 ```
 src/main/java/it/a11y/blindensport/webadmin/

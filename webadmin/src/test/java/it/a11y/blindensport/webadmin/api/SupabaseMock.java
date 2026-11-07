@@ -9,7 +9,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 
 /** A WireMock stand-in for the Supabase project (GoTrue + PostgREST) during @QuarkusTest. */
 public class SupabaseMock implements QuarkusTestResourceLifecycleManager {
-    static WireMockServer server;
+    public static WireMockServer server;
 
     @Override
     public Map<String, String> start() {

@@ -32,16 +32,26 @@ public record MemberRecord(
         String sportId,
         String defaultFunction,
         boolean memberOfGVSC,
-        MemberPrivate privateData) {
+        MemberPrivate privateData,
+        // null = leave the stored status alone (a new row gets the database default, 'new').
+        String status) {
 
     public MemberRecord {
         privateData = privateData == null ? MemberPrivate.EMPTY : privateData;
         joinedAt = joinedAt == null ? Instant.now() : joinedAt;
     }
 
+    public MemberRecord(String id, String firstName, String lastName, String street, String zip, String city,
+                        String country, String email, String phone, String memberNumber, Instant joinedAt,
+                        String notes, String gender, String title, String sportId, String defaultFunction,
+                        boolean memberOfGVSC, MemberPrivate privateData) {
+        this(id, firstName, lastName, street, zip, city, country, email, phone, memberNumber, joinedAt, notes, gender,
+                title, sportId, defaultFunction, memberOfGVSC, privateData, null);
+    }
+
     public MemberRecord withPrivateData(MemberPrivate data) {
         return new MemberRecord(id, firstName, lastName, street, zip, city, country, email, phone, memberNumber,
-                joinedAt, notes, gender, title, sportId, defaultFunction, memberOfGVSC, data);
+                joinedAt, notes, gender, title, sportId, defaultFunction, memberOfGVSC, data, status);
     }
 
     public String fullName() {
@@ -68,7 +78,8 @@ public record MemberRecord(
                 member.path("sport_id").asText(""),
                 member.path("default_function").asText(""),
                 member.path("member_of_gvsc").asBoolean(true),
-                MemberPrivate.EMPTY);
+                MemberPrivate.EMPTY,
+                member.path("status").asText(null));
     }
 
     public Map<String, Object> memberRow() {
@@ -80,6 +91,9 @@ public record MemberRecord(
         row.put("default_function", defaultFunction);
         row.put("member_of_gvsc", memberOfGVSC);
         row.put("joined_at", Dates.formatTimestamp(joinedAt));
+        if (status != null) {
+            row.put("status", status);
+        }
         return row;
     }
 

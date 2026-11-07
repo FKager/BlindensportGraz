@@ -157,7 +157,11 @@ max_indexes = 5
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
-site_url = "blindensportgraz://auth-callback"
+# Supabase sends OAuth sign-ins (MCP clients) to <site_url>/oauth/consent, so
+# this is the web admin, not the app: locally the one on port 8083. The app's
+# links don't depend on it: the email templates name blindensportgraz:// and
+# the app passes that as redirect_to, allowed below.
+site_url = "http://127.0.0.1:8083"
 # The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
 # external_url = ""
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
@@ -381,11 +385,11 @@ enabled = false
 # OAuth server configuration
 [auth.oauth_server]
 # Enable OAuth server functionality
-enabled = false
+enabled = true
 # Path for OAuth consent flow UI
 authorization_url_path = "/oauth/consent"
 # Allow dynamic client registration
-allow_dynamic_registration = false
+allow_dynamic_registration = true
 
 [edge_runtime]
 enabled = true
@@ -435,6 +439,9 @@ enabled = true
 [remotes.staging]
 project_id = "xlllxpmkxmcolukmcmoi"
 
+[remotes.staging.auth]
+site_url = "http://127.0.0.1:8083"
+
 [remotes.staging.auth.email.smtp]
 enabled = true
 host = "smtp.resend.com"
@@ -446,6 +453,9 @@ sender_name = "Blindensport Graz"
 
 [remotes.production]
 project_id = "dehtuoejbnunehevchtg"
+
+[remotes.production.auth]
+site_url = "https://bs.a11y.it"
 
 [remotes.production.auth.email.smtp]
 enabled = true
