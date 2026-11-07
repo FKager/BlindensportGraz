@@ -10074,6 +10074,23 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-07T19:30:00+01:00"
+    },
+    {
+      "id": "bug-599",
+      "timestamp": "2026-11-07T22:30:00+01:00",
+      "error_message": "Email app links rendered as #ZgotmplZ",
+      "file": "supabase/templates/*.html",
+      "root_cause": "GoTrue renders templates with html/template, which blanks a custom URL scheme inserted through {{ .RedirectTo }} in href. Only http(s) survives",
+      "fix": "App links are written out literally per branch; the variable is used for web links only. Rendered every case on the local stack with Mailpit",
+      "tags": [
+        "supabase",
+        "email",
+        "templates",
+        "go-template"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T22:30:00+01:00"
     }
   ]
 }

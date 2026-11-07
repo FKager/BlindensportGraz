@@ -161,7 +161,7 @@ site_url = "blindensportgraz://auth-callback"
 # The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
 # external_url = ""
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["blindensportgraz://auth-callback", "http://127.0.0.1:8083/konto-bestaetigen", "http://127.0.0.1:8083/passwort-neu"]
+additional_redirect_urls = ["blindensportgraz-staging://auth-callback", "blindensportgraz://auth-callback", "http://127.0.0.1:8083/konto-bestaetigen", "http://127.0.0.1:8083/passwort-neu"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 # 15 min so role/approval changes reach the JWT quickly (RPCs re-check tables anyway).
 jwt_expiry = 900
@@ -434,6 +434,9 @@ enabled = true
 # time — never stored in git. Local development keeps using Mailpit.
 [remotes.staging]
 project_id = "xlllxpmkxmcolukmcmoi"
+
+[remotes.staging.auth]
+site_url = "blindensportgraz-staging://auth-callback"
 
 [remotes.staging.auth.email.smtp]
 enabled = true

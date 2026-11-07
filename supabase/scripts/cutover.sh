@@ -10,6 +10,7 @@
 #   functions          deploy notify-schedule
 #   templates          auth e-mail templates (token_hash links)
 #   signup             allow the web UI as redirect target of account emails
+#   staging-app        settings for the separate "BSG Staging" app (staging only)
 #   webui           write nuc:~/blindensport-webui/.env for this project and restart
 #
 # Never prints keys or secrets: they go through temp files (mode 600, deleted)
@@ -144,6 +145,20 @@ PY
       | curl -sS -f -X PATCH "https://api.supabase.com/v1/projects/$REF/config/auth" \
           -H "Authorization: Bearer $(cat $MGMT_TOKEN_FILE)" -H "Content-Type: application/json" \
           --data-binary @- -o /dev/null -w "signup redirect: HTTP %{http_code}\n"
+    ;;
+
+  staging-app)
+    # The separate "BSG Staging" app: its link scheme, Sign in with Apple and pushes. Staging only.
+    [ "$TARGET" = staging ] || { echo "staging only"; exit 1; }
+    python3 -c 'import json; print(json.dumps({
+        "site_url": "blindensportgraz-staging://auth-callback",
+        "uri_allow_list": ",".join(["blindensportgraz-staging://auth-callback", "blindensportgraz://auth-callback",
+                                    "http://127.0.0.1:8083/konto-bestaetigen", "http://127.0.0.1:8083/passwort-neu"]),
+        "external_apple_client_id": "it.a11y.BlindensportGraz.staging,it.a11y.BlindensportGraz"}))' \
+      | curl -sS -f -X PATCH "https://api.supabase.com/v1/projects/$REF/config/auth" \
+          -H "Authorization: Bearer $(cat $MGMT_TOKEN_FILE)" -H "Content-Type: application/json" \
+          --data-binary @- -o /dev/null -w "staging app auth: HTTP %{http_code}\n"
+    supabase secrets set --project-ref $REF APNS_TOPIC=it.a11y.BlindensportGraz.staging >/dev/null && echo "push topic set"
     ;;
 
   webui)
