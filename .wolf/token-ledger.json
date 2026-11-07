@@ -3,11 +3,11 @@
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
     "total_tokens_estimated": 28012522,
-    "total_reads": 8422,
+    "total_reads": 8434,
     "total_writes": 16395,
     "total_sessions": 134,
     "anatomy_hits": 7222,
-    "anatomy_misses": 1130,
+    "anatomy_misses": 1138,
     "repeated_reads_blocked": 5340,
     "estimated_savings_vs_bare_cli": 27773015
   },
@@ -147317,6 +147317,142 @@
       "id": "session-2026-11-07-1719",
       "started": "2026-11-07T16:19:15.457Z",
       "ended": "2026-11-07T18:00:35.166Z",
+      "reads": [
+        {
+          "file": "/tmp/register.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/tmp/home.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/tmp/roles.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 3,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-07-1719",
+      "started": "2026-11-07T16:19:15.457Z",
+      "ended": "2026-11-07T18:03:43.908Z",
+      "reads": [
+        {
+          "file": "/tmp/register.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/tmp/home.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/tmp/roles.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 3,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-07-1719",
+      "started": "2026-11-07T16:19:15.457Z",
+      "ended": "2026-11-07T18:09:41.836Z",
+      "reads": [
+        {
+          "file": "/tmp/register.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/tmp/home.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/tmp/roles.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 3,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-07-1719",
+      "started": "2026-11-07T16:19:15.457Z",
+      "ended": "2026-11-07T18:14:21.750Z",
+      "reads": [
+        {
+          "file": "/tmp/register.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/tmp/home.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/tmp/roles.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 3,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-07-1719",
+      "started": "2026-11-07T16:19:15.457Z",
+      "ended": "2026-11-07T18:16:58.695Z",
       "reads": [
         {
           "file": "/tmp/register.png",

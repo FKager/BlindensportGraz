@@ -10058,6 +10058,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-07T17:10:00+01:00"
+    },
+    {
+      "id": "bug-598",
+      "timestamp": "2026-11-07T19:30:00+01:00",
+      "error_message": "User got no password reset mail from the web UI on production",
+      "file": "webui/.../ui/ForgotPasswordView.java",
+      "root_cause": "Not confirmed. No reset was recorded for either production account; a direct request worked, so most likely an address without a production account. The page also swallowed failures without logging",
+      "fix": "Added a warning log for failed reset requests",
+      "tags": [
+        "password-reset",
+        "logging",
+        "production"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T19:30:00+01:00"
     }
   ]
 }
