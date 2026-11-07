@@ -10091,6 +10091,22 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-07T22:30:00+01:00"
+    },
+    {
+      "id": "bug-600",
+      "timestamp": "2026-11-07T22:50:00+01:00",
+      "error_message": "git stash pop restored the user's old stash instead of mine",
+      "file": "(git workflow)",
+      "root_cause": "'git stash push -- .wolf' saved nothing (no changes), so the later 'git stash pop' took the user's stash@{0}. Also a command chain without set -e kept running on the wrong branch after a failed switch",
+      "fix": "Recovered the stash commit with git fsck and put it back with git stash store. In future: check that stash push actually created an entry, and use set -e or && for branch switches",
+      "tags": [
+        "git",
+        "stash",
+        "workflow"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T22:50:00+01:00"
     }
   ]
 }

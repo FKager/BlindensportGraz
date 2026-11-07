@@ -672,6 +672,8 @@
 
 - [2026-11-07] Do not put {{ .RedirectTo }} into an href for a custom scheme: GoTrue uses html/template and outputs #ZgotmplZ. Write app links literally. Always render templates through local Mailpit before sending them anywhere.
 
+- [2026-11-07] Never pair "git stash push -- <paths>" with a blind "git stash pop": with nothing to stash, pop takes the user's own stash. Check the stash count, or commit or copy the files instead. Chain branch switches with && or set -e.
+
 ## Decision Log
 - [2026-10-14] CloudKit→Supabase handover: user chose "make the switch-over safe": upload every local row the server lacks (accepting that stale deleted rows may come back) rather than risk losing device-only data.
 - [2026-09-29] TestFlight workflow (ios-build-deploy.yml, both jobs) moved macos-15 → macos-26 GitHub-hosted image, still selecting the newest `Xcode_26*.app` (26.6 / Swift 6.3 at the time). User chose this over running TestFlight on the self-hosted Xcode 27 runner: stay independent of this Mac, accept being one Swift version behind local/device builds (Xcode 27 / Swift 6.4). Widen the Xcode glob once GitHub ships a release Xcode 27 image.
