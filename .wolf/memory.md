@@ -4082,3 +4082,5 @@
 | 22:50 | PROD: PR 28 merged, allow list + templates, web UI deployed; v0.9.0 release started | prod, nuc | live | ~5000 |
 | 23:10 | Rollenänderungen: block/delete entries no longer hidden when there are no role changes | RoleChangeLogView.swift | uncommitted on fix-role-log-empty | ~1500 |
 | 23:50 | Rollen section with Vereinsfunktionen in DB, web UI and app; uncommitted on club-functions | supabase/, webui/, app | done locally | ~20000 |
+| 00:10 | PROD: PR 30 merged, migration 4 applied, web UI deployed with Rollen; v0.10.0 release started | prod, nuc | live | ~3000 |
+| 19:30 | Log failed password reset requests; PR opened | ForgotPasswordView.java | PR | ~1500 |
