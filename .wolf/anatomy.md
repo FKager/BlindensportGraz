@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-05T18:21:34.591Z
-> Files: 219 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-07T20:07:48.083Z
+> Files: 244 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -42,6 +42,10 @@
 
 - `limiter-e2e.sh` — Fix 1 check: a valid non-admin login must not reset the failure window. (~163 tok)
 
+## ../../.claude/jobs/c47bab7b/tmp/
+
+- `pr-body.md` — What this does (~164 tok)
+
 ## ../../.claude/plans/
 
 - `melodic-cuddling-magpie.md` — Production cutover: app v0.3.0 (club data on Supabase) + web admin (~2041 tok)
@@ -74,6 +78,10 @@
 
 ## .claude/rules/
 
+
+## .claude/worktrees/commit-release-script/.wolf/
+
+- `anatomy.md` — anatomy.md (~8137 tok)
 
 ## .claude/worktrees/docker-container-fixes/
 
@@ -231,7 +239,6 @@
 
 - `PraeExport.swift` — Fills PRAE_Formular.xlsx and the Darstellung; ticks only in the form controls, labels as in the template; printCopy makes the ☒/☐ copy for app printing. (~8500 tok)
 
-
 ## BlindensportGraz/Features/Reports/Sammelabrechnung/
 
 
@@ -324,6 +331,16 @@
 ## BlindensportGrazWidgets/
 
 
+## Other new files (2026-11-07)
+
+- `supabase/migrations/20261107000001_member_status.sql` — members.status, drops the delete policy, delete_member RPC (~500 tok)
+- `supabase/tests/member_status_test.sql` — pgTAP 13 tests (~1100 tok)
+- `webui/.../api/McpTokensResource.java` — /api/mcp-tokens (~600 tok)
+- `webui/.../ui/McpTokensView.java` — KI-Zugang page: create and revoke tokens (~1000 tok)
+
+## Rollen (2026-11-07)
+
+
 ## RootCLI/
 
 
@@ -368,11 +385,24 @@
 ## Shared/ClubSchema/Tests/ClubSchemaTests/
 
 
+## Web registration (2026-11-07)
+
+- `webui/.../club/PublicSchedule.java` — public_schedule read with no user (~400 tok)
+- `webui/.../ui/PublicHomeView.java` — Start page: upcoming events without an account (~800 tok)
+
 ## data/
 
 
 ## fastlane/
 
+
+## nvda-addon/
+
+- `build.sh` — Runs the tests and packs excelCheckboxes-<version>.nvda-addon. (~90 tok)
+- `excelCheckboxes/globalPlugins/excelCheckboxes/__init__.py` — Overlay classes for Excel cells in both access modes. (~450 tok)
+- `excelCheckboxes/globalPlugins/excelCheckboxes/checkboxState.py` — Finds the checkbox on a cell and builds '[X] label'; no NVDA imports. (~520 tok)
+- `excelCheckboxes/manifest.ini` — NVDA add-on manifest. (~110 tok)
+- `tests/test_checkboxState.py` — Unit tests against fake Excel objects. (~900 tok)
 
 ## supabase/
 
@@ -472,6 +502,15 @@
 - `ClubModels.java` — Club data rows (supabase/migrations/20261013000001_club_data.sql) and the app's value conventions. (~1042 tok)
 - `ClubStore.java` — Teams, memberships, events (trainings / tournaments / events), (~3226 tok)
 
+## webui/src/main/java/it/a11y/blindensport/webui/mcp/
+
+- `ClubTools.java` — The 15 MCP tools; protected data never returned, nothing deletes, member results are an allow-list (~9000 tok)
+- `McpAuthFilter.java` — Vert.x filter: /mcp needs a personal token (~500 tok)
+- `McpConfig.java` — webui.mcp.public-url (~100 tok)
+- `McpIdentity.java` — Token to McpUser via McpTokens + Access.load, cached 1 min (~600 tok)
+- `McpTokens.java` — Personal tokens: create, list, revoke, sealed Supabase session, refresh and rotation (~1800 tok)
+- `McpUser.java` — The person a request acts for; their own Postgrest (~200 tok)
+
 ## webui/src/main/java/it/a11y/blindensport/webui/members/
 
 - `ChangeRequestStore.java` — Members' proposed changes to their own roster entry (~1682 tok)
@@ -485,6 +524,13 @@
 - `MemberRecord.java` — One roster entry as the API and the UI see it — the same shape as (~984 tok)
 - `MemberStore.java` — The club roster in Supabase, read and written as the signed-in admin (RLS: (~1674 tok)
 - `Validation.java` — Soft checks as in the app's {@code Validation.swift}: they warn, never (~374 tok)
+
+## webui/src/main/java/it/a11y/blindensport/webui/prae/
+
+- `PraeCalculator.java` — Port of PraeCalculation.swift: eligible people, one form per training title per month, tournament spread (~1800 tok)
+- `PraeExporter.java` — Port of PraeExport.swift: fills both templates, ticks controls only (~2800 tok)
+- `PraeForm.java` — One form: person, month, entries, cap warnings (~900 tok)
+- `PraeService.java` — Reads data as the user, selects forms, zips them (~1000 tok)
 
 ## webui/src/main/java/it/a11y/blindensport/webui/supabase/
 
@@ -551,54 +597,3 @@
 ## webui/src/test/java/it/a11y/blindensport/webui/ui/
 
 - `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)
-
-## nvda-addon/
-
-- `build.sh` — Runs the tests and packs excelCheckboxes-<version>.nvda-addon. (~90 tok)
-- `excelCheckboxes/manifest.ini` — NVDA add-on manifest. (~110 tok)
-- `excelCheckboxes/globalPlugins/excelCheckboxes/__init__.py` — Overlay classes for Excel cells in both access modes. (~450 tok)
-- `excelCheckboxes/globalPlugins/excelCheckboxes/checkboxState.py` — Finds the checkbox on a cell and builds '[X] label'; no NVDA imports. (~520 tok)
-- `tests/test_checkboxState.py` — Unit tests against fake Excel objects. (~900 tok)
-
-## webui/src/main/java/it/a11y/blindensport/webui/mcp/
-
-- `ClubTools.java` — The 15 MCP tools; protected data never returned, nothing deletes, member results are an allow-list (~9000 tok)
-- `McpAuthFilter.java` — Vert.x filter: /mcp needs a personal token (~500 tok)
-- `McpIdentity.java` — Token to McpUser via McpTokens + Access.load, cached 1 min (~600 tok)
-- `McpUser.java` — The person a request acts for; their own Postgrest (~200 tok)
-- `McpFiles.java` / `McpFilesResource.java` — One-time, 10-minute, in-memory download links for PRAE zips (~600 tok)
-- `McpConfig.java` — webui.mcp.public-url (~100 tok)
-- `McpTokens.java` — Personal tokens: create, list, revoke, sealed Supabase session, refresh and rotation (~1800 tok)
-
-## webui/src/main/java/it/a11y/blindensport/webui/prae/
-
-- `PraeCalculator.java` — Port of PraeCalculation.swift: eligible people, one form per training title per month, tournament spread (~1800 tok)
-- `PraeForm.java` — One form: person, month, entries, cap warnings (~900 tok)
-- `PraeExporter.java` — Port of PraeExport.swift: fills both templates, ticks controls only (~2800 tok)
-- `PraeService.java` — Reads data as the user, selects forms, zips them (~1000 tok)
-- `XlsxPatch.java`, `GermanNumberWords.java` — Ports of XLSXCellPatch and GermanNumberWords (~800 tok)
-
-## Other new files (2026-11-07)
-
-- `webui/.../ui/McpTokensView.java` — KI-Zugang page: create and revoke tokens (~1000 tok)
-- `webui/.../api/McpTokensResource.java` — /api/mcp-tokens (~600 tok)
-- `supabase/migrations/20261107000002_mcp_tokens.sql`, `supabase/tests/mcp_tokens_test.sql` — token table, anon lookup RPCs, 11 pgTAP tests
-- `supabase/scripts/staging-mcp.sh` — connect: terminal-only token setup for Claude Code on this Mac against staging
-- `webui/.../members/MemberStatus.java`, `BlindensportGraz/Models/MemberStatus.swift` — new, active, delete
-- `webui/src/main/resources/prae/` — Copies of the app's PRAE templates; PraeExporterTest catches drift
-- `supabase/migrations/20261107000001_member_status.sql` — members.status, drops the delete policy, delete_member RPC (~500 tok)
-- `supabase/tests/member_status_test.sql` — pgTAP 13 tests (~1100 tok)
-
-## Web registration (2026-11-07)
-
-- `webui/.../ui/PublicHomeView.java` — Start page: upcoming events without an account (~800 tok)
-- `webui/.../ui/RegisterView.java`, `ConfirmEmailView.java` — Registration and click-to-confirm (~1200 tok)
-- `webui/.../ui/ForgotPasswordView.java`, `ResetPasswordView.java` — Password reset (~1200 tok)
-- `webui/.../club/PublicSchedule.java` — public_schedule read with no user (~400 tok)
-
-## Rollen (2026-11-07)
-
-- `webui/.../ui/RolesView.java`, `webui/.../club/ClubFunctions.java` — Rollen page and Vereinsfunktionen store (~2000 tok)
-- `BlindensportGraz/Features/Account/RolesView.swift`, `BlindensportGraz/Supabase/ClubFunctionService.swift` — The same in the app, online (~1800 tok)
-- `supabase/migrations/20261107000004_club_functions.sql`, `supabase/tests/club_functions_test.sql` — Tables, trigger log, set_club_function, 15 pgTAP tests
-

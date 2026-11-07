@@ -4092,3 +4092,35 @@
 | 21:30 | Resend: full-access key a11y.it replaced by a11y-admin-2026-11, stored in private file | Resend | done | ~3000 |
 | 21:40 | Resend: removed unused keys Onboarding and BlindensportGraz | Resend | done | ~500 |
 | 21:55 | iPhone device deploy made manual-only | ios-device-deploy.yml, deploy.md | PR | ~1500 |
+
+## Session: 2026-11-07 21:03
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-07 21:04
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-07 21:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-07 21:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:07 | Edited .claude/worktrees/commit-release-script/.wolf/anatomy.md | 2→3 lines | ~69 |
+| 21:30 | Release script committed as draft PR (commit-release-script); PRAE test leftovers moved to ~/Backups/blindensport-prae-test-2026-11-07; PR 33 still awaits merge OK | release-testflight.sh, anatomy.md | PR | ~4000 |
+| 21:07 | Created ../../.claude/jobs/c47bab7b/tmp/pr-body.md | — | ~175 |
+| 21:08 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 1 reads | ~262 tok |
+| 21:08 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 1 reads | ~262 tok |
+| 21:09 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 1 reads | ~262 tok |
+| 21:10 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 1 reads | ~262 tok |
+| 21:11 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 1 reads | ~262 tok |
+| 21:17 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 21:21 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:10 | Staging app: Apple ids, group, profiles, CI secrets, staging Supabase settings done; code uncommitted on staging-app | Apple, GitHub, staging | done | ~9000 |
+| 21:31 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
