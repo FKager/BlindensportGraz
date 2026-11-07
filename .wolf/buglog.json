@@ -6071,7 +6071,7 @@
       "error_message": "TrainingImportExportTests: 4 failures — testImportMatchesExistingByTitleAndStartDateWhenNoID (created 1/updated 0 instead of 0/1), testImportOverwritesExistingNonEmptyFields (hour 21 != 19). Discovered while running -only-testing:BlindensportGrazTests during the Verein-tab work.",
       "file": "BlindensportGrazTests/TrainingImportExportTests.swift",
       "root_cause": "Test-only timezone fragility, PRE-EXISTING and unrelated to the Verein-tab change. date(hour:) builds dates with Calendar.current (local TZ, Vienna = UTC+2 in summer) while the import JSON fixtures use ...Z (UTC) literals. TrainingImportExport.findExisting matches only within 60s of startDate, so the ~2h offset means no match -> import creates instead of updates, and Calendar.current.component(.hour) reads 2h higher than the UTC literal. Normally hidden because this suite is excluded from local runs (its own header says -skip-testing due to a CloudKit/signing crash on unsigned runs).",
-      "fix": "NOT FIXED (out of scope for the tab reorg). Correct fix: make date(hour:) use a fixed UTC calendar, or change the JSON fixtures to local-time offsets, so the fixture instants line up with what findExisting compares. Verified my change is not the cause: git status shows only AccountView/MembersViews/RootView/TeamsViews modified; TrainingImportExport.swift + its tests untouched since 2026-08-22; app build succeeds; 176/180 tests pass.",
+      "fix": "FIXED 2026-11-07: fixtures build their JSON date from the same local Date via iso(_:); added an export-then-import round-trip test. Test-only, app import was correct.",
       "tags": [
         "test-fragility",
         "timezone",
@@ -6081,7 +6081,7 @@
       ],
       "related_bugs": [],
       "occurrences": 1,
-      "last_seen": "2026-09-03T17:55:00Z"
+      "last_seen": "2026-11-07T09:55:00+01:00"
     },
     {
       "id": "bug-366",
@@ -7750,7 +7750,7 @@
       "error_message": "xcodebuild error: Unable to find a device matching the provided destination specifier (id:BD764E6D-...); underlying: CoreSimulator is out of date. Current version (1051.55.0) is older than build version (1171.7.0); DVTCoreDeviceCore plug-in failed to load (symbol not found).",
       "file": ".github/workflows/ios-device-deploy.yml (self-hosted runner environment, not app code)",
       "root_cause": "The runner Mac's Xcode needs an additional/updated CoreSimulator platform-support component installed, which requires interactive GUI authorization. `xcrun simctl list runtimes` (run here to diagnose) surfaced this directly: 'Install Failed: Es ist eine Autorisierung erforderlich, um das Paket installieren zu koennen.' Because CoreDevice/device-discovery shares this subsystem, even a plain physical-device build destination fails to resolve until the component is installed. `launchctl kickstart -k gui/<uid>/com.apple.CoreSimulator.CoreSimulatorService` did NOT fix it (service wasn't found under that domain) - the service was already running (PID visible in `launchctl list`), so a kickstart alone doesn't help when the real blocker is a missing/outdated platform-support package awaiting an admin install prompt.",
-      "fix": "Confirmed fix: `sudo xcodebuild -runFirstLaunch` run interactively by the user on the runner Mac. This is the CLI equivalent of Xcode's GUI 'install additional required components' first-launch step, which updates the system-level /Library/Developer/PrivateFrameworks/{CoreSimulator,CoreDevice}.framework to match the installed Xcode.app. Note `xcodebuild -downloadPlatform iOS` (tried first) did NOT fix it - that only fetches simulator runtimes, not these system frameworks. Deploy run succeeded immediately after (run 34894980273).",
+      "fix": "Confirmed fix: `sudo xcodebuild -runFirstLaunch` run interactively by the user on the runner Mac. This is the CLI equivalent of Xcode's GUI 'install additional required components' first-launch step, which updates the system-level /Library/Developer/PrivateFrameworks/{CoreSimulator,CoreDevice}.framework to match the installed Xcode.app. Note `xcodebuild -downloadPlatform iOS` (tried first) did NOT fix it - that only fetches simulator runtimes, not these system frameworks. Deploy run succeeded immediately after (run 34894980273). | 2026-11-02 recurrence on dev Mac (CoreSimulator 1171.7.0 < 1174.21.0 after an Xcode update): simulator destinations fail; workaround for verification = build/build-for-testing with -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO (both succeed). Real fix still `sudo xcodebuild -runFirstLaunch`. | 2026-11-02: user ran it in their own Terminal (the `!` prefix can't prompt for sudo password) -> fixed. After Xcode 27.2, iOS 27 sims are 'iPhone 18 Pro' etc. — use -destination 'id=<udid>' from `xcrun simctl list devices available`.",
       "tags": [
         "ci",
         "self-hosted-runner",
@@ -7760,8 +7760,8 @@
         "device-deploy"
       ],
       "related_bugs": [],
-      "occurrences": 1,
-      "last_seen": "2026-09-14T20:35:00.000Z"
+      "occurrences": 2,
+      "last_seen": "2026-11-02T19:07:00.000Z"
     },
     {
       "id": "bug-461",
@@ -9530,6 +9530,517 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-10-17T12:27:02+00:00"
+    },
+    {
+      "id": "bug-567",
+      "timestamp": "2026-10-21T17:10:28.990Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Services/MemberChangeRequestService.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 4→5 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T17:10:28.990Z"
+    },
+    {
+      "id": "bug-568",
+      "timestamp": "2026-10-21T19:15:00Z",
+      "error_message": "Approving a MemberChangeRequest in the app could blank SVNR/IBAN/birth date/medical exam (noted 2026-10-17 as possible bug)",
+      "file": "BlindensportGraz/Models/MemberChangeRequest.swift, Features/Members/MemberChangeRequestDetailView.swift, Services/MemberChangeRequestService.swift",
+      "root_cause": "member_change_requests rows carry no protected fields; pulled requests seed them from the local Member (blank before privateDataLoaded, or stale). apply(to:) copied them unconditionally and MemberPrivateSync upserted them to member_private.",
+      "fix": "apply(to:includingPrivate:) copies protected fields only when the member_private_requests proposal was loaded; diff hides them otherwise; Annehmen disabled until fetch done; private proposal deleted only when applied. PR #15.",
+      "tags": [
+        "supabase",
+        "member_private",
+        "change-request",
+        "data-loss",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T19:15:00Z"
+    },
+    {
+      "id": "bug-569",
+      "timestamp": "2026-10-21T17:35:22.281Z",
+      "error_message": "Significant refactor of ",
+      "file": "RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 5→11 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T17:35:22.281Z"
+    },
+    {
+      "id": "bug-570",
+      "timestamp": "2026-10-21T17:35:22.408Z",
+      "error_message": "Missing await",
+      "file": "RootCLI/Sources/rootcli/CloudKitCopyCommand.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T17:35:22.408Z"
+    },
+    {
+      "id": "bug-571",
+      "timestamp": "2026-10-21T17:35:22.536Z",
+      "error_message": "Missing error handling in throws",
+      "file": "RootCLI/Sources/rootcli/CloudKitCopyCommand.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T17:35:22.536Z"
+    },
+    {
+      "id": "bug-572",
+      "timestamp": "2026-10-21T18:03:38.668Z",
+      "error_message": "Missing error handling in unknown",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Code path had no error handling — exceptions would propagate uncaught",
+      "fix": "Added try/catch block",
+      "tags": [
+        "auto-detected",
+        "error-handling",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T18:03:38.668Z"
+    },
+    {
+      "error_message": "BudgetEntry/EventMembership 'not marked queryable' in CloudKit Production — records looked unrecoverable without a Console index change",
+      "file": "RootCLI/Sources/rootcli/CloudKitCopyCommand.swift, RootCLI/Sources/CloudKitS2SCore/CloudKitS2SClient.swift, RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Unfiltered records/query needs a recordName (___recordID) QUERYABLE index; Production lacks it for these types. A filter on any QUERYABLE field works without it.",
+      "fix": "queryRecords(filterBy:) + fallback GREATER_THAN epoch on createdAt/date (BudgetEntry) and addedAt (EventMembership). Prod has 0 of both. PR #16.",
+      "tags": [
+        "cloudkit",
+        "rootcli",
+        "query",
+        "index"
+      ],
+      "id": "bug-573",
+      "timestamp": "2026-10-21T20:10:00Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T20:10:00Z"
+    },
+    {
+      "error_message": "Build failed in a fresh worktree: settings.local.json couldn't be opened (target BlindensportGraz)",
+      "file": "project.yml, BlindensportGraz.xcodeproj/project.pbxproj",
+      "root_cause": "XcodeGen sources path BlindensportGraz picked up BlindensportGraz/.claude/settings.local.json (gitignored Claude Code settings) as an app Resource — shipped in every build",
+      "fix": "excludes '.claude/**' in project.yml, xcodegen generate. PR #16.",
+      "tags": [
+        "xcodegen",
+        "bundle",
+        "worktree",
+        "build"
+      ],
+      "id": "bug-574",
+      "timestamp": "2026-10-21T20:10:00Z",
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T20:10:00Z"
+    },
+    {
+      "id": "bug-575",
+      "timestamp": "2026-10-21T18:21:19.166Z",
+      "error_message": "Incorrect value in code",
+      "file": "supabase/scripts/prod-readonly-check.sh",
+      "root_cause": "Had \"Authorization: Bearer $(cat $TOKEN_FILE)\"",
+      "fix": "Changed to \"Authorization: Bearer $(token)\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T18:21:19.166Z"
+    },
+    {
+      "id": "bug-576",
+      "timestamp": "2026-10-21T19:02:59.798Z",
+      "error_message": "Incorrect value in code",
+      "file": ".claude/worktrees/phase6/RootCLI/Sources/rootcli/RootCLI.swift",
+      "root_cause": "Had \"ClubMember\"",
+      "fix": "Changed to \"ROOTCLI_CLOUDKIT_ONLY\"",
+      "tags": [
+        "auto-detected",
+        "wrong-value",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T19:02:59.798Z"
+    },
+    {
+      "id": "bug-577",
+      "timestamp": "2026-10-21T21:05:00Z",
+      "error_message": "rootcli record delete ClubMember failed: Missing SUPABASE_URL — revealed it would also delete Supabase member_private rows",
+      "file": "RootCLI/Sources/rootcli/RootCLI.swift (record delete; removed in PR #17)",
+      "root_cause": "record delete ClubMember chained MemberPrivateStore.delete(memberID:) and Supabase uses the same member ids as CloudKit — a CloudKit cleanup with Supabase env set would have wiped live SVNR/IBAN data",
+      "fix": "Ran the CloudKit cleanup without SUPABASE_* and with a temporary CloudKit-only build; the record command was then removed entirely",
+      "tags": [
+        "cloudkit",
+        "rootcli",
+        "member_private",
+        "data-loss",
+        "cleanup"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T21:05:00Z"
+    },
+    {
+      "id": "bug-578",
+      "timestamp": "2026-10-21T19:59:03.937Z",
+      "error_message": "Significant refactor of ",
+      "file": "supabase/scripts/release-testflight.sh",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 9→20 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "sh"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T19:59:03.937Z"
+    },
+    {
+      "id": "bug-579",
+      "timestamp": "2026-10-21T22:00:00Z",
+      "error_message": "release-testflight.sh: Tagged v0.3.1 at 2152acd … No workflow run for v0.3.1 found.",
+      "file": "supabase/scripts/release-testflight.sh",
+      "root_cause": "v0.3.1 tagged the PR #18 squash commit whose message contains [skip ci]; GitHub skips push-triggered workflows (tag pushes included) for that commit",
+      "fix": "Script falls back to gh workflow run 'iOS Build and Deploy' --ref <tag> (deploy job checks refs/tags/v*). Never put [skip ci] on a main commit that may get a release tag.",
+      "tags": [
+        "github-actions",
+        "skip-ci",
+        "testflight",
+        "release"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-10-21T22:00:00Z"
+    },
+    {
+      "id": "bug-580",
+      "timestamp": "2026-11-02T20:05:00.000Z",
+      "error_message": "SupabaseRowsTests: testTeamMembershipSendsClearedLinksAsExplicitNulls (UUID upper vs lower case), testTrainingRowCarriesKindTrainingFieldsAndTeamIDs + testTournamentScopedReceiptKeepsTournamentIDWithoutMonthYear (round-trip not equal, dates) fail",
+      "file": "BlindensportGrazTests/SupabaseRowsTests.swift",
+      "root_cause": "Test assumptions outdated: (1) the PostgREST JSON encoder now emits UUIDs uppercase (Postgres uuid columns are case-insensitive, app filters already use uuidString); (2) round-trip equality used Date.now (sub-ms) while the wire format keeps milliseconds.",
+      "fix": "Tests only (branch fix-supabase-rows-tests): compare team_id via UUID(uuidString:); set training.createdAt / receipt.uploadedAt to whole-second dates. SupabaseRowsTests 10/10. No app code change.",
+      "tags": [
+        "tests",
+        "supabase",
+        "encoding",
+        "uuid",
+        "dates",
+        "pre-existing"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-03T02:10:00.000Z"
+    },
+    {
+      "id": "bug-581",
+      "timestamp": "2026-11-02T20:15:00.000Z",
+      "error_message": "iOS Device Deploy run 41507236548: xcodebuild: error: Unable to find a device matching the provided destination specifier (id=$DEVICE_ID) — only Mac + simulators listed",
+      "file": ".github/workflows/ios-device-deploy.yml (runner environment)",
+      "root_cause": "`xcrun devicectl list devices` shows no physical device at all: iPhone not connected/reachable or not re-paired after CoreDevice update via `sudo xcodebuild -runFirstLaunch` (same session).",
+      "fix": "open — user connects/unlocks/trusts the iPhone, then `gh workflow run \"iOS Device Deploy\" --ref <branch>`",
+      "tags": [
+        "ci",
+        "device-deploy",
+        "coredevice",
+        "self-hosted-runner"
+      ],
+      "related_bugs": [
+        "bug-460"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-02T20:15:00.000Z"
+    },
+    {
+      "id": "bug-582",
+      "timestamp": "2026-11-02T20:07:15.489Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Features/Members/MyMemberView.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-02T20:07:15.489Z"
+    },
+    {
+      "id": "bug-583",
+      "timestamp": "2026-11-02T21:25:00.000Z",
+      "error_message": "Synchronisierung fehlgeschlagen: push to member_change_requests B5619CF2-… refused (user read it as a required value being null)",
+      "file": "BlindensportGraz/Features/Members/MyMemberView.swift",
+      "root_cause": "Root account (not linked via account_approvals) created an entry via AccountView 'Mitgliedschaft beantragen', then saved Vereinsdaten → MemberChangeRequest insert; RLS 'propose own' requires member_id = my_member_id() → 42501. Not a NOT NULL problem (payload verified complete; same payload accepted locally for a linked member).",
+      "fix": "submitIfChanged: accounts with members.manage apply the draft directly (MemberService.save, or approve an existing local request) instead of proposing. Remaining (pre-existing): unapproved non-admin accounts can't insert members at all under Supabase RLS, so the self-service 'Mitgliedschaft beantragen' for them can't sync.",
+      "tags": [
+        "sync",
+        "rls",
+        "member_change_requests",
+        "self-service",
+        "42501"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-02T21:25:00.000Z"
+    },
+    {
+      "id": "bug-584",
+      "timestamp": "2026-11-04T18:00:00.000Z",
+      "error_message": "fix: in PRAE of training, the following cells have to be checked: P9, A26, A29 and A33 (P9 was already 'checked' in code but not visible)",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeExport.swift",
+      "root_cause": "checkFormCheckbox only wrote <x:Checked> into the VML. ctrlProp stayed unchecked (current Excel reads it) and Quick Look/WKWebView do not draw form controls at all, only the Wingdings 'r' glyph in the label cell - confirmed by rendering with qlmanage: VML-only tick shows all boxes empty.",
+      "fix": "New PraeExporter.FormCheckbox (VML shape, ctrlProp path, shared-string index); ticking writes all three: VML, ctrlProp checked=\"Checked\", label glyph swapped to Arial U+2612. Trainings tick P9/A26/A29/A33; tournaments keep B9 only but get the same three-layer fix.",
+      "tags": [
+        "prae",
+        "xlsx",
+        "checkbox",
+        "form-control",
+        "quicklook",
+        "export"
+      ],
+      "related_bugs": [
+        "bug-210"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-04T18:00:00.000Z"
+    },
+    {
+      "id": "bug-585",
+      "timestamp": "2026-11-04T18:20:00.000Z",
+      "error_message": "in the filled excel sheet, the P9 was not set correctly. Check the set mechanism and review the result.",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeExport.swift",
+      "root_cause": "Two findings, Excel itself still untested. LibreOffice render: the checkbox control and the label glyph are separate overlapping boxes, so ticking both (bug-584) shows two overlapping crossed boxes at P9/A26/A29/A33. Text layer: unticked boxes read as a literal 'r', ticked as U+2612, and the control has no text, so a screen reader cannot read the state; before bug-584 a ticked P9 also read 'r'.",
+      "fix": "User chose the original form. Removed the label ☒ from bug-584 (sharedStrings unchanged again); ticks stay in VML + ctrlProp. All 16 controls get alternative text in VML alt, sheet1 controlPr altText, drawing1 descr so NVDA can name them. LibreOffice confirms ticked states; Excel + NVDA result still pending. CONFIRMED 2026-11-05 in real Excel 16.0 on Windows via check-prae-checkboxes.ps1 (COM): 16 controls, all named, exactly P9/A26/A29/A33 checked. Final design in commit 36e2e81: hidden [X]/[ ] run, box as U+F072, alt text, input message; ReportPrinter prints a temporary copy with visible ☒/☐ (PraeExporter.printCopy). User confirmed NVDA and braille; app print pending device test.",
+      "tags": [
+        "prae",
+        "xlsx",
+        "checkbox",
+        "excel",
+        "unresolved",
+        "accessibility"
+      ],
+      "related_bugs": [
+        "bug-584"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-05T19:30:00.000Z"
+    },
+    {
+      "id": "bug-586",
+      "timestamp": "2026-11-05T19:45:00.000Z",
+      "error_message": "AssertionError: 6 in scripted edit of PraeExport.swift (regex expected 16 FormCheckbox lines)",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeExport.swift",
+      "root_cause": "Regex missed array entries with a trailing comma before the // comment; the following shell steps still ran on old code.",
+      "fix": "Allowed the optional comma; reran export, LibreOffice checks and build.",
+      "tags": [
+        "tooling",
+        "scripted-edit"
+      ],
+      "related_bugs": [
+        "bug-585"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-05T19:45:00.000Z"
+    },
+    {
+      "id": "bug-587",
+      "timestamp": "2026-11-07T07:40:00+01:00",
+      "error_message": "PRAE print copy lost the row 'Mit meiner Unterschrift bestätige ich die Richtigkeit meiner Angaben' and a stretch of the side borders; found by rendering, tests passed",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeExport.swift",
+      "root_cause": "removingCheckboxList used a regex for all of columns AG/AH ending in </c>. The template has a self-closed empty cell AG35, so the match ran on through the following row. Earlier check only looked for AF+ cells with values.",
+      "fix": "Remove only the list's named cells (rows 60-76). Test asserts exactly 34 cells disappear from the sheet.",
+      "tags": [
+        "prae",
+        "xlsx",
+        "regex",
+        "print"
+      ],
+      "related_bugs": [
+        "bug-585"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T07:40:00+01:00"
+    },
+    {
+      "id": "bug-588",
+      "timestamp": "2026-11-07T07:40:00+01:00",
+      "error_message": "PRAE [X] marks and 'angekreuzt' messages go stale when a box is toggled in Excel; user wants the print unchanged and a live [X]",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeExport.swift",
+      "root_cause": "Hidden label runs, input messages and alt text are fixed at export; only formula cells can follow a control.",
+      "fix": "User rejected list and label changes. Exported file now matches the template except data, ticks and invisible alt text; NVDA add-on nvda-addon/excelCheckboxes reads the control live. Confirmed by user in NVDA with add-on 0.3.0.",
+      "tags": [
+        "prae",
+        "xlsx",
+        "nvda",
+        "form-control"
+      ],
+      "related_bugs": [
+        "bug-585"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T08:30:00+01:00"
+    },
+    {
+      "id": "bug-589",
+      "timestamp": "2026-11-07T08:40:00+01:00",
+      "error_message": "Flaky: testSummaryTrainingNameJoinsDistinctTitlesWithoutSportFilter got 'Donnerstagstraining, Montagstraining' in about half of repeat runs",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeCalculation.swift",
+      "root_cause": "SwiftData fetch has no order, and titles were collected in fetch order.",
+      "fix": "PraeCalculator.summaries sorts by start date then title; joined name replaced by one form per training. 8 repeat runs passed.",
+      "tags": [
+        "prae",
+        "flaky-test",
+        "ordering"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T08:40:00+01:00"
+    },
+    {
+      "id": "bug-590",
+      "timestamp": "2026-11-07T09:45:00+01:00",
+      "error_message": "Tournament running into the next month filed one PRAE under the start month, so August days appeared under Juli",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeCalculation.swift",
+      "root_cause": "Tournament summary kept only day numbers and the form took the month from startDate.",
+      "fix": "summaries(for:tournament:) returns one summary per calendar month; forms, Darstellung and file names use its month.",
+      "tags": [
+        "prae",
+        "tournament",
+        "month"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T09:45:00+01:00"
+    },
+    {
+      "id": "bug-591",
+      "timestamp": "2026-11-07T09:45:00+01:00",
+      "error_message": "SupabaseRowsTests: 3 failures on UUID case and date equality",
+      "file": "BlindensportGrazTests/SupabaseRowsTests.swift",
+      "root_cause": "Tests expected lowercase UUIDs and compared sub-millisecond dates the wire format doesn't keep.",
+      "fix": "Applied stash from fix-supabase-rows-tests: compare UUID values, whole-second fixture dates. Test-only.",
+      "tags": [
+        "supabase",
+        "tests"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T09:45:00+01:00"
+    },
+    {
+      "id": "bug-592",
+      "timestamp": "2026-11-07T10:45:00+01:00",
+      "error_message": "builds wait: There is no resource of type 'builds' with id <Delivery UUID>, right after upload of v0.7.0",
+      "file": "supabase/scripts/release-testflight.sh",
+      "root_cause": "The Delivery UUID only becomes a builds resource some time after upload, and asc builds wait --build-id fails at once for an unknown id.",
+      "fix": "Wait with --app --build-number (workflow run number) --platform IOS, which covers discovery. Re-run: tag and run are reused.",
+      "tags": [
+        "testflight",
+        "asc",
+        "release"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T10:45:00+01:00"
+    },
+    {
+      "id": "bug-593",
+      "timestamp": "2026-11-07T14:00:00+01:00",
+      "error_message": "Vaadin build: 'Cannot load workspace information for Vaadin plugin ... Unrecognized token ources'",
+      "file": "webadmin/target",
+      "root_cause": "mvn run with the repo mounted at /work (project at /work/webadmin) left target/ state pointing at another path; a later run mounting webadmin/ at /work reads it and fails",
+      "fix": "mvn clean package; use clean whenever switching mount layouts",
+      "tags": [
+        "webadmin",
+        "vaadin",
+        "docker",
+        "maven"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T14:00:00+01:00"
+    },
+    {
+      "id": "bug-594",
+      "timestamp": "2026-11-07T14:00:00+01:00",
+      "error_message": "Java HttpClient: unsupported URI http://supabase_kong_BlindensportGraz:8000",
+      "file": "local test setup",
+      "root_cause": "Java's URI rejects underscores in host names, and the Docker container name has them",
+      "fix": "Use Kong's network alias: SUPABASE_URL=http://kong:8000 on network supabase_network_BlindensportGraz",
+      "tags": [
+        "webadmin",
+        "docker",
+        "local-testing"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T14:00:00+01:00"
+    },
+    {
+      "id": "bug-595",
+      "timestamp": "2026-11-07T14:00:00+01:00",
+      "error_message": "OAuth authorize redirected to blindensportgraz://auth-callback/oauth/consent",
+      "file": "supabase/config.toml",
+      "root_cause": "GoTrue builds the consent URL as site_url + authorization_url_path, and site_url was the app's URL scheme",
+      "fix": "site_url is now the web admin (local 127.0.0.1:8083, production https://bs.a11y.it via [remotes.*.auth]); the app is unaffected since templates name the scheme and it stays in additional_redirect_urls",
+      "tags": [
+        "supabase",
+        "oauth",
+        "mcp"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T14:00:00+01:00"
+    },
+    {
+      "id": "bug-596",
+      "timestamp": "2026-11-07T14:00:00+01:00",
+      "error_message": "pgTAP club_data/rbac tests failed after e2e runs",
+      "file": "local database",
+      "root_cause": "These tests count all rows, so leftover rows from Playwright/e2e runs break them",
+      "fix": "Delete e2e rows afterwards; use unique names per run. Test 11 of club_data_test still fails while the 2 old local members (X Y, Jörg Müller) exist",
+      "tags": [
+        "pgtap",
+        "local-testing"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T14:00:00+01:00"
     }
   ]
 }
