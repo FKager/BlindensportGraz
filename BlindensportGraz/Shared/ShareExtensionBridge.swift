@@ -27,9 +27,17 @@ import Foundation
 enum ShareExtensionBridge {
     /// Must match the App Group id registered on every target's
     /// entitlements (main app, widgets, this extension).
+    #if DEBUG
+    static let appGroup = "group.it.a11y.BlindensportGraz.staging"
+    #else
     static let appGroup = "group.it.a11y.BlindensportGraz"
+    #endif
     private static let subfolder = "SharedInvitations"
+    #if DEBUG
+    static let urlScheme = "blindensportgraz-staging"
+    #else
     static let urlScheme = "blindensportgraz"
+    #endif
     static let importHost = "import-invitation"
 
     private static var containerDirectory: URL? {

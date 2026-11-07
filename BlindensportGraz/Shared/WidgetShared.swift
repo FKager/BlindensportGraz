@@ -25,7 +25,11 @@ struct NextUpSnapshot: Codable, Equatable {
 
 enum WidgetBridge {
     /// Must match the App Group id registered on both App IDs.
+    #if DEBUG
+    static let appGroup = "group.it.a11y.BlindensportGraz.staging"
+    #else
     static let appGroup = "group.it.a11y.BlindensportGraz"
+    #endif
     private static let key = "nextUp.v1"
 
     private static var store: UserDefaults? { UserDefaults(suiteName: appGroup) }

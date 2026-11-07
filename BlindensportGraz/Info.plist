@@ -49,7 +49,7 @@
             <string>it.a11y.BlindensportGraz.shareimport</string>
             <key>CFBundleURLSchemes</key>
             <array>
-                <string>blindensportgraz</string>
+                <string>$(APP_URL_SCHEME)</string>
             </array>
         </dict>
     </array>

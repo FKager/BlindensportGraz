@@ -5,7 +5,11 @@ import Foundation
 // not a secret — RLS policies enforce access server-side. The service-role
 // key must never be added here.
 nonisolated enum SupabaseConfig {
+    #if DEBUG
+    static let redirectURL = URL(string: "blindensportgraz-staging://auth-callback")!
+    #else
     static let redirectURL = URL(string: "blindensportgraz://auth-callback")!
+    #endif
 
     static var projectURL: URL? {
         guard let raw = Bundle.main.object(forInfoDictionaryKey: "SupabaseURL") as? String,

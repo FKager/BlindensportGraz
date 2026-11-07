@@ -435,6 +435,9 @@ enabled = true
 [remotes.staging]
 project_id = "xlllxpmkxmcolukmcmoi"
 
+[remotes.staging.auth]
+site_url = "blindensportgraz-staging://auth-callback"
+
 [remotes.staging.auth.email.smtp]
 enabled = true
 host = "smtp.resend.com"
