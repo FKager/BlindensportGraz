@@ -45,6 +45,9 @@ public class ApiAuthFilter {
         if (session.isEmpty()) {
             return Optional.of(ApiExceptionMappers.error(401, "Bitte anmelden."));
         }
+        if (!session.get().canUseWebUi()) {
+            return Optional.of(ApiExceptionMappers.error(403, "Keine Berechtigung."));
+        }
         return Optional.empty();
     }
 }

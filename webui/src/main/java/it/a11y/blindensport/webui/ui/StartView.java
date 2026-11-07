@@ -14,7 +14,7 @@ import it.a11y.blindensport.webui.auth.AdminSessions;
 import jakarta.inject.Inject;
 
 /** Start page: the areas this admin may open, as a plain link list. */
-@Route(value = "", layout = MainLayout.class)
+@Route(value = "uebersicht", layout = MainLayout.class)
 @PageTitle("Übersicht – Blindensport Graz")
 public class StartView extends VerticalLayout implements BeforeEnterObserver {
     private final AdminSessions sessions;

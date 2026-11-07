@@ -30,6 +30,10 @@ public final class Postgrest {
         return new Param(column, "eq." + value);
     }
 
+    public static Param gte(String column, Object value) {
+        return new Param(column, "gte." + value);
+    }
+
     public static Param in(String column, List<?> values) {
         List<String> parts = new ArrayList<>();
         values.forEach(v -> parts.add(String.valueOf(v)));

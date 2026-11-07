@@ -10,15 +10,21 @@ import jakarta.inject.Inject;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 
 /**
- * Every navigation: no valid session → sign-in page; a view marked
+ * Every navigation: no valid session → sign-in page, except the public pages;
+ * an account without club access → the Übersicht; a view marked
  * {@link RequiresPermission} without that permission → start page. This
  * only decides what is shown — Supabase RLS still enforces every read and
  * write, since the UI acts as the signed-in admin.
  */
 @ApplicationScoped
 public class AccessGuard {
+    private static final Set<Class<?>> PUBLIC =
+            Set.of(LoginView.class, RegisterView.class, ConfirmEmailView.class, PublicHomeView.class,
+                    ForgotPasswordView.class, ResetPasswordView.class);
+
     @Inject
     AdminSessions sessions;
 
@@ -34,12 +40,17 @@ public class AccessGuard {
 
     private void check(BeforeEnterEvent event) {
         Class<?> target = event.getNavigationTarget();
-        if (target == LoginView.class) {
+        if (PUBLIC.contains(target)) {
             return;
         }
         Optional<AdminSession> session = UiSession.current(sessions);
         if (session.isEmpty()) {
             event.forwardTo(LoginView.class);
+            return;
+        }
+        // Accounts without club access yet: the Übersicht and nothing else.
+        if (!session.get().canUseWebUi()) {
+            event.forwardTo(PublicHomeView.class);
             return;
         }
         RequiresPermission required = target.getAnnotation(RequiresPermission.class);

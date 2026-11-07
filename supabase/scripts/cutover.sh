@@ -9,6 +9,7 @@
 #   db-push            apply pending migrations
 #   functions          deploy notify-schedule
 #   templates          auth e-mail templates (token_hash links)
+#   signup             allow the web UI as redirect target of account emails
 #   webui           write nuc:~/blindensport-webui/.env for this project and restart
 #
 # Never prints keys or secrets: they go through temp files (mode 600, deleted)
@@ -134,6 +135,15 @@ print(json.dumps({
     "mailer_templates_email_change_content": open(t + "email_change.html").read(),
 }))
 PY
+    ;;
+
+  signup)
+    # The redirect targets of web registrations and password resets. Only this setting.
+    [ "$TARGET" = prod ] && web=https://bs.a11y.it || web=http://127.0.0.1:8083
+    WEB=$web python3 -c 'import json, os; print(json.dumps({"uri_allow_list": "blindensportgraz://auth-callback," + os.environ["WEB"] + "/konto-bestaetigen," + os.environ["WEB"] + "/passwort-neu"}))' \
+      | curl -sS -f -X PATCH "https://api.supabase.com/v1/projects/$REF/config/auth" \
+          -H "Authorization: Bearer $(cat $MGMT_TOKEN_FILE)" -H "Content-Type: application/json" \
+          --data-binary @- -o /dev/null -w "signup redirect: HTTP %{http_code}\n"
     ;;
 
   webui)

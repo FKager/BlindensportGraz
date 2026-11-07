@@ -1,5 +1,6 @@
 package it.a11y.blindensport.webui.auth;
 
+import it.a11y.blindensport.webui.mcp.McpConfig;
 import it.a11y.blindensport.webui.supabase.GoTrue;
 import it.a11y.blindensport.webui.supabase.Supabase;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -37,6 +38,11 @@ public class AdminSessions {
     private final LoginAttemptLimiter limiter;
     private final Map<String, AdminSession> sessions = new ConcurrentHashMap<>();
 
+    private final LoginAttemptLimiter registrations = new LoginAttemptLimiter();
+
+    @Inject
+    McpConfig mcpConfig;
+
     @Inject
     public AdminSessions(Supabase supabase) {
         this(supabase, new LoginAttemptLimiter());
@@ -55,6 +61,51 @@ public class AdminSessions {
      * @throws SignInException 429 locked out, 401 wrong credentials, 403 no web UI access
      */
     public String signIn(String email, String password, String client) {
+        return open(email, password, client, false);
+    }
+
+    /**
+     * The same for the web pages, where any account may sign in that isn't
+     * blocked: {@link it.a11y.blindensport.webui.ui.AccessGuard} keeps it to
+     * the Übersicht unless it's a coach, admin or root.
+     */
+    public String signInAccount(String email, String password, String client) {
+        return open(email, password, client, true);
+    }
+
+    /**
+     * Creates an account; Supabase sends the confirmation email. Every attempt
+     * counts towards the limit, as each one can send mail.
+     *
+     * @throws SignInException 429 too many attempts, 400 refused
+     */
+    public void register(String email, String password, String firstName, String lastName, String client) {
+        if (registrations.isLockedOut(client)) {
+            throw new SignInException(429, "Zu viele Versuche. Bitte später erneut versuchen.");
+        }
+        registrations.recordFailure(client);
+        String normalized = email.trim().toLowerCase(Locale.ROOT);
+        String redirect = mcpConfig.publicUrl() + "/konto-bestaetigen";
+        if (!supabase.auth().signUp(normalized, password, firstName, lastName, redirect)) {
+            throw new SignInException(400, "Das Konto konnte nicht erstellt werden. Bitte die Angaben prüfen.");
+        }
+    }
+
+    /**
+     * Sends a reset link. Shares the limit of {@link #register}, as each
+     * attempt can send mail.
+     *
+     * @throws SignInException 429 too many attempts
+     */
+    public void requestPasswordReset(String email, String client) {
+        if (registrations.isLockedOut(client)) {
+            throw new SignInException(429, "Zu viele Versuche. Bitte später erneut versuchen.");
+        }
+        registrations.recordFailure(client);
+        supabase.auth().requestPasswordReset(email.trim().toLowerCase(Locale.ROOT), mcpConfig.publicUrl() + "/passwort-neu");
+    }
+
+    private String open(String email, String password, String client, boolean anyAccount) {
         if (limiter.isLockedOut(client)) {
             throw new SignInException(429, "Zu viele Fehlversuche. Bitte später erneut versuchen.");
         }
@@ -68,11 +119,14 @@ public class AdminSessions {
         }
         AdminSession session = new AdminSession(supabase, tokens, Access.NONE);
         Access access = Access.load(session.db(), tokens.userId());
-        if (!access.canUseWebUi()) {
-            LOG.infof("Admin sign-in refused for %s: role %s", normalized,
-                    access.role() == null ? "pending" : access.role());
+        if (anyAccount ? access.blocked() : !access.canUseWebUi()) {
+            LOG.infof("Sign-in refused for %s: role %s", normalized, access.role() == null ? "none" : access.role());
             session.end();
-            throw new SignInException(403, "Dieses Konto hat keinen Zugriff auf die Vereinsverwaltung.");
+            throw new SignInException(403, access.blocked() ? "Dieses Konto ist gesperrt."
+                    : "Dieses Konto hat keinen Zugriff auf die Vereinsverwaltung.");
+        }
+        if (anyAccount) {
+            session.allowPlainAccount();
         }
         limiter.recordSuccess(client);
         session.updateAccess(access, Instant.now());
@@ -127,7 +181,7 @@ public class AdminSessions {
                 LOG.infof("Session recheck failed for %s: %s", session.email(), e.getMessage());
                 access = Access.NONE;
             }
-            if (!access.canUseWebUi()) {
+            if (session.allowsPlainAccount() ? access.blocked() : !access.canUseWebUi()) {
                 remove(token);
                 return Optional.empty();
             }

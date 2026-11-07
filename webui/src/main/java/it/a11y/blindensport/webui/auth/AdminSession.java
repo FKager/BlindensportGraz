@@ -29,6 +29,7 @@ public final class AdminSession {
     private Instant lastSeen;
     private Instant lastChecked;
     private boolean ended;
+    private boolean allowsPlainAccount;
 
     public AdminSession(Supabase supabase, GoTrue.Tokens tokens, Access access) {
         this.supabase = supabase;
@@ -56,6 +57,20 @@ public final class AdminSession {
 
     public synchronized Set<String> permissions() {
         return access.permissions();
+    }
+
+    /** Coach, admin or root. Anyone else who signed in sees only the Übersicht. */
+    public synchronized boolean canUseWebUi() {
+        return access.canUseWebUi();
+    }
+
+    /** Signed in through the web pages, which plain accounts may use too; the REST API stays for staff. */
+    synchronized boolean allowsPlainAccount() {
+        return allowsPlainAccount;
+    }
+
+    synchronized void allowPlainAccount() {
+        allowsPlainAccount = true;
     }
 
     public boolean can(String permission) {

@@ -12,6 +12,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.VaadinRequest;
 import it.a11y.blindensport.webui.auth.AdminSessions;
 import it.a11y.blindensport.webui.auth.SignInException;
@@ -52,15 +53,16 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         status.getStyle().set("color", "var(--lumo-error-text-color)");
 
         add(new H1("Blindensport Graz – Verwaltung"),
-                new Paragraph("Mit dem eigenen Blindensport-Graz-Konto anmelden (gleiche Anmeldung wie in der App). "
-                        + "Zugriff haben Trainer:innen, Admins und Root."),
-                email, password, signIn, status);
+                new Paragraph("Mit dem eigenen Blindensport-Graz-Konto anmelden (gleiche Anmeldung wie in der App)."),
+                email, password, signIn, status, new RouterLink("Passwort vergessen?", ForgotPasswordView.class),
+                new RouterLink("Neues Konto registrieren", RegisterView.class),
+                new RouterLink("Zur Übersicht", PublicHomeView.class));
     }
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         if (UiSession.current(sessions).isPresent()) {
-            event.forwardTo(StartView.class);
+            event.forwardTo(PublicHomeView.class);
             return;
         }
         if (event.getLocation().getQueryParameters().getParameters().containsKey("abgemeldet")) {
@@ -74,9 +76,9 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
         String client = AdminSessions.clientKey(request.getHeader("X-Forwarded-For"), request.getRemoteAddr());
         status.setText("Anmelden …");
         try {
-            String token = sessions.signIn(email.getValue(), password.getValue(), client);
+            String token = sessions.signInAccount(email.getValue(), password.getValue(), client);
             UiSession.signedIn(token);
-            getUI().ifPresent(ui -> ui.navigate(StartView.class));
+            getUI().ifPresent(ui -> ui.navigate(PublicHomeView.class));
         } catch (SignInException e) {
             status.setText(e.getMessage());
             password.clear();
