@@ -10041,6 +10041,23 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-07T14:00:00+01:00"
+    },
+    {
+      "id": "bug-597",
+      "timestamp": "2026-11-07T17:10:00+01:00",
+      "error_message": "Revoking an MCP token: HTTP 403",
+      "file": "webui/.../mcp/McpTokens.java",
+      "root_cause": "Postgrest.delete uses return=representation, which selects all columns; mcp_tokens grants select only on some columns, so PostgREST gets 42501. WireMock tests could not show it",
+      "fix": "Pass select=id on the delete",
+      "tags": [
+        "postgrest",
+        "rls",
+        "column-grants",
+        "mcp"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-07T17:10:00+01:00"
     }
   ]
 }

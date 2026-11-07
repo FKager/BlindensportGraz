@@ -563,12 +563,12 @@
 ## webui/src/main/java/it/a11y/blindensport/webui/mcp/
 
 - `ClubTools.java` — The 15 MCP tools; protected data never returned, nothing deletes, member results are an allow-list (~9000 tok)
-- `McpAuthFilter.java` — Vert.x filter: /mcp needs a bearer token; 401 with resource_metadata starts OAuth (~600 tok)
-- `McpIdentity.java` — Token to McpUser via GoTrue + Access.load, cached 1 min, never past token expiry (~800 tok)
+- `McpAuthFilter.java` — Vert.x filter: /mcp needs a personal token (~500 tok)
+- `McpIdentity.java` — Token to McpUser via McpTokens + Access.load, cached 1 min (~600 tok)
 - `McpUser.java` — The person a request acts for; their own Postgrest (~200 tok)
 - `McpFiles.java` / `McpFilesResource.java` — One-time, 10-minute, in-memory download links for PRAE zips (~600 tok)
-- `McpConfig.java` — webui.mcp.public-url, oauth-issuer (~100 tok)
-- `ProtectedResourceMetadata.java` — RFC 9728 metadata at /.well-known/oauth-protected-resource[/mcp] (~300 tok)
+- `McpConfig.java` — webui.mcp.public-url (~100 tok)
+- `McpTokens.java` — Personal tokens: create, list, revoke, sealed Supabase session, refresh and rotation (~1800 tok)
 
 ## webui/src/main/java/it/a11y/blindensport/webui/prae/
 
@@ -580,7 +580,10 @@
 
 ## Other new files (2026-11-07)
 
-- `webui/.../ui/OAuthConsentView.java` — Approval page for MCP clients' sign-ins (~1000 tok)
+- `webui/.../ui/McpTokensView.java` — KI-Zugang page: create and revoke tokens (~1000 tok)
+- `webui/.../api/McpTokensResource.java` — /api/mcp-tokens (~600 tok)
+- `supabase/migrations/20261107000002_mcp_tokens.sql`, `supabase/tests/mcp_tokens_test.sql` — token table, anon lookup RPCs, 11 pgTAP tests
+- `supabase/scripts/staging-mcp.sh` — connect: terminal-only token setup for Claude Code on this Mac against staging
 - `webui/.../members/MemberStatus.java`, `BlindensportGraz/Models/MemberStatus.swift` — new, active, delete
 - `webui/src/main/resources/prae/` — Copies of the app's PRAE templates; PraeExporterTest catches drift
 - `supabase/migrations/20261107000001_member_status.sql` — members.status, drops the delete policy, delete_member RPC (~500 tok)

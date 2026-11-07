@@ -4046,3 +4046,28 @@
 |------|--------|---------|---------|--------|
 | 14:00 | MCP server in webadmin (OAuth via Supabase, 15 tools, PRAE Java port, one-time links), member status new/active/delete with root-only delete_member RPC across DB, web admin, app; local e2e 36 + UI 9, webadmin 95, PRAE 168 entries byte-equal to Swift. Uncommitted on branch mcp-server | webadmin/, supabase/, BlindensportGraz/ | done, not deployed | ~90000 |
 | 14:30 | Renamed web admin to web UI across repo (folder, package, artifact, Docker, Traefik, CI, cutover.sh, config keys) | webui/, .github/, supabase/scripts/, docs | done | ~8000 |
+
+## Session: 2026-11-07 16:11
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:00 | staging-mcp.sh: start/login/url/status/stop; login copies link via OSC 52 + pbcopy, url for ssh | clip; web UI on LAN port 8084 for staging; tested with stub | supabase/scripts/staging-mcp.sh | uncommitted | ~4000 |
+| 18:30 | Port 8084 unreachable: Windows is outside the LAN, SSH comes via router. Closed LAN server, staging site_url back to 127.0.0.1:8083; use SSH tunnel | staging | done | ~2000 |
+| 17:20 | Replaced OAuth with personal MCP tokens (mcp_tokens, McpTokens, KI-Zugang page, REST, staging-mcp.sh connect); web UI 100 tests, local e2e 16; staging migrated, OAuth off, site_url restored | webui/, supabase/ | uncommitted | ~30000 |
+
+## Session: 2026-11-07 17:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-07 17:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-07 17:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 18:40 | Real Claude Code + token test on staging passed: all 15 tools, PRAE zip, one-time link, refusals; found orphan memberships after member delete | staging | passed | ~6000 |
+| 19:00 | delete_member removes team entries, attendance and PRAE; staging migrated, 2 orphan rows removed; token work committed to PR 27 | supabase/, webui/, app | done | ~5000 |
