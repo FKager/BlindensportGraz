@@ -52,22 +52,17 @@ name: iOS Device Deploy
 #      provisioning profile you upload as IOS_CI_PROVISIONING_PROFILE_BASE64.
 #
 # Security note: self-hosted runners execute workflow code with full access to
-# that Mac, so this is intentionally scoped to push-to-main/manual dispatch
+# that Mac, so this is intentionally scoped to manual dispatch
 # only — never add a `pull_request` trigger to a job that runs on this runner.
 
+# Manual only: a push must not replace the TestFlight app on the phone with
+# this Debug build, which talks to staging.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
-# A single physical iPhone can only take one install at a time, and one
-# `git push` has been observed to start this workflow twice — GitHub
-# intermittently emits two push-triggered runs for a single multi-commit
-# push (confirmed 2026-09-08: commit 5d75093 spawned two full "iOS Device
-# Deploy" runs, plus two of "iOS Build and Deploy", all `event: push`,
-# same head SHA, same timestamp). Collapse any overlap to one run so two
-# device installs never race; `cancel-in-progress` means a newer run
-# supersedes an older one, leaving the phone on the latest build.
+# A single physical iPhone can only take one install at a time, so overlapping
+# runs collapse to one: `cancel-in-progress` means a newer run supersedes an
+# older one, leaving the phone on the latest build.
 concurrency:
   group: ios-device-deploy
   cancel-in-progress: true
