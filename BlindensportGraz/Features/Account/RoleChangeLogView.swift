@@ -18,7 +18,7 @@ struct RoleChangeLogView: View {
             if let errorMessage {
                 Label(errorMessage, systemImage: "exclamationmark.triangle")
                     .foregroundStyle(Theme.Palette.warning)
-            } else if entries.isEmpty, !isLoading {
+            } else if entries.isEmpty, accountEntries.isEmpty, !isLoading {
                 ContentUnavailableView("Keine Rollenänderungen",
                                        systemImage: "clock.arrow.circlepath",
                                        description: Text("Änderungen an Benutzerrollen erscheinen hier."))
@@ -37,6 +37,7 @@ struct RoleChangeLogView: View {
                         }
                     }
                 }
+                if !entries.isEmpty {
                 Section("Rollen") {
                 ForEach(entries) { entry in
                     VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -47,6 +48,7 @@ struct RoleChangeLogView: View {
                             .foregroundStyle(.secondary)
                     }
                     .accessibilityElement(children: .combine)
+                }
                 }
                 }
             }
