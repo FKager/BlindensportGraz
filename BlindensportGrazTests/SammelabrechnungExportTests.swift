@@ -56,8 +56,8 @@ final class SammelabrechnungExportTests: XCTestCase {
         let kostZSummary = KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context)
         XCTAssertEqual(kostZSummary.personAmounts.count, 2)
 
-        let praeSummaries = kostZSummary.personAmounts.map {
-            PraeCalculator.summary(for: $0.person, month: 7, year: 2026, in: context)
+        let praeSummaries = kostZSummary.personAmounts.flatMap {
+            PraeCalculator.summaries(for: $0.person, month: 7, year: 2026, in: context)
         }
 
         let url = try SammelabrechnungExporter.export(kostZ: kostZSummary, praeSummaries: praeSummaries)
@@ -81,10 +81,10 @@ final class SammelabrechnungExportTests: XCTestCase {
 
         XCTAssertEqual(entryNames.count, 5) // KostZ + 2x(PRAE + Darstellung)
         XCTAssertTrue(entryNames.contains("KostZ.xlsx"))
-        XCTAssertTrue(entryNames.contains("PRAE_Trainer_Anna.xlsx"))
-        XCTAssertTrue(entryNames.contains("PRAE-Darstellung_Trainer_Anna.xlsx"))
-        XCTAssertTrue(entryNames.contains("PRAE_Helfer_Bernd.xlsx"))
-        XCTAssertTrue(entryNames.contains("PRAE-Darstellung_Helfer_Bernd.xlsx"))
+        XCTAssertTrue(entryNames.contains("PRAE_Trainer_Anna_Training 5.7..xlsx"))
+        XCTAssertTrue(entryNames.contains("PRAE-Darstellung_Trainer_Anna_Training 5.7..xlsx"))
+        XCTAssertTrue(entryNames.contains("PRAE_Helfer_Bernd_Training 5.7..xlsx"))
+        XCTAssertTrue(entryNames.contains("PRAE-Darstellung_Helfer_Bernd_Training 5.7..xlsx"))
     }
 
     /// No eligible people at all -> the zip should still contain just the
@@ -125,8 +125,8 @@ final class SammelabrechnungExportTests: XCTestCase {
 
         let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
         let kostZSummary = KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context)
-        let praeSummaries = kostZSummary.personAmounts.map {
-            PraeCalculator.summary(for: $0.person, month: 7, year: 2026, in: context)
+        let praeSummaries = kostZSummary.personAmounts.flatMap {
+            PraeCalculator.summaries(for: $0.person, month: 7, year: 2026, in: context)
         }
 
         let url = try SammelabrechnungExporter.export(kostZ: nil, praeSummaries: praeSummaries)
@@ -135,7 +135,77 @@ final class SammelabrechnungExportTests: XCTestCase {
         let archive = try Archive(url: url, accessMode: .read)
         var entryNames: [String] = []
         for entry in archive { entryNames.append(entry.path) }
-        XCTAssertEqual(Set(entryNames), Set(["PRAE_Trainer_Anna.xlsx", "PRAE-Darstellung_Trainer_Anna.xlsx"]))
+        XCTAssertEqual(Set(entryNames), Set(["PRAE_Trainer_Anna_Training 6.7..xlsx", "PRAE-Darstellung_Trainer_Anna_Training 6.7..xlsx"]))
+    }
+
+    /// A person on two trainings files one PRAE for each, so both have to
+    /// survive in the zip under their own names.
+    func testExportForMonthKeepsOnePraePerTraining() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+        let date = try XCTUnwrap(Calendar.current.date(from: DateComponents(year: 2026, month: 7, day: 6, hour: 18)))
+        for title in ["Lauf/Torball", "Torballtraining"] {
+            let training = Training(title: title, sport: team.sport, location: "Graz", startDate: date, teams: [team])
+            context.insert(training)
+            context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 40))
+        }
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let kostZSummary = KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context)
+        let praeSummaries = kostZSummary.personAmounts.flatMap {
+            PraeCalculator.summaries(for: $0.person, month: 7, year: 2026, in: context)
+        }
+
+        let url = try SammelabrechnungExporter.export(kostZ: nil, praeSummaries: praeSummaries)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        XCTAssertEqual(Set(archive.map(\.path)), Set([
+            "PRAE_Trainer_Anna_Lauf-Torball.xlsx", "PRAE-Darstellung_Trainer_Anna_Lauf-Torball.xlsx",
+            "PRAE_Trainer_Anna_Torballtraining.xlsx", "PRAE-Darstellung_Trainer_Anna_Torballtraining.xlsx"
+        ]))
+    }
+
+    /// A tournament running into the next month files a PRAE and a
+    /// Darstellung per month, with one KostZ for the whole event.
+    func testExportForTournamentIntoTheNextMonthKeepsBothMonths() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+        let calendar = Calendar.current
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: team.sport, location: "Graz",
+                                    startDate: try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 7, day: 31, hour: 9))),
+                                    endDate: try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 8, day: 1, hour: 17))))
+        tournament.teams = [team]
+        context.insert(tournament)
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 100))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let kostZSummary = KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
+        let praeSummaries = kostZSummary.personAmounts.flatMap {
+            PraeCalculator.summaries(for: $0.person, tournament: tournament)
+        }
+
+        let url = try SammelabrechnungExporter.export(kostZ: kostZSummary, praeSummaries: praeSummaries)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let archive = try Archive(url: url, accessMode: .read)
+        XCTAssertEqual(Set(archive.map(\.path)), Set([
+            "KostZ.xlsx",
+            "PRAE_Trainer_Anna_07-2026.xlsx", "PRAE-Darstellung_Trainer_Anna_07-2026.xlsx",
+            "PRAE_Trainer_Anna_08-2026.xlsx", "PRAE-Darstellung_Trainer_Anna_08-2026.xlsx"
+        ]))
     }
 
     /// Tournament-scoped overload — same shape, different summary types.
@@ -155,8 +225,8 @@ final class SammelabrechnungExportTests: XCTestCase {
 
         let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
         let kostZSummary = KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
-        let praeSummaries = kostZSummary.personAmounts.map {
-            PraeCalculator.summary(for: $0.person, tournament: tournament)
+        let praeSummaries = kostZSummary.personAmounts.flatMap {
+            PraeCalculator.summaries(for: $0.person, tournament: tournament)
         }
 
         let url = try SammelabrechnungExporter.export(kostZ: kostZSummary, praeSummaries: praeSummaries)
@@ -189,8 +259,8 @@ final class SammelabrechnungExportTests: XCTestCase {
 
         let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
         let kostZSummary = KostZCalculator.summary(for: tournament, allMemberships: allMemberships)
-        let praeSummaries = kostZSummary.personAmounts.map {
-            PraeCalculator.summary(for: $0.person, tournament: tournament)
+        let praeSummaries = kostZSummary.personAmounts.flatMap {
+            PraeCalculator.summaries(for: $0.person, tournament: tournament)
         }
         let sportlerContext = TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.location,
                                                        startDate: tournament.startDate, endDate: tournament.endDate,

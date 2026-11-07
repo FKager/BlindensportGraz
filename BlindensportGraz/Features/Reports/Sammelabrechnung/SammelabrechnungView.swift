@@ -43,12 +43,12 @@ struct SammelabrechnungView: View {
     }
 
     // Only the helpers selected in the per-helper PRAE list, each mapped to
-    // a PraeMonthSummary — no separate eligibility computation beyond that
-    // selection, see SammelabrechnungExporter's doc comment.
+    // one PraeMonthSummary per training — no separate eligibility computation
+    // beyond that selection, see SammelabrechnungExporter's doc comment.
     private var praeSummaries: [PraeMonthSummary] {
         kostZSummary.personAmounts
             .filter { selectedPraePersonIDs.contains($0.person.id) }
-            .map { PraeCalculator.summary(for: $0.person, month: month, year: year, in: modelContext) }
+            .flatMap { PraeCalculator.summaries(for: $0.person, month: month, year: year, in: modelContext) }
     }
 
     private var hasSelectedParts: Bool {

@@ -174,7 +174,7 @@ nonisolated extension SportEvent {
     /// the PRAE change that introduced this shared one). Used to size a
     /// tournament's PRAE picker max (`PraeCalculator.dailyCap * dayCount`)
     /// and to spread a tournament's single PRAE amount evenly across its
-    /// days (`PraeCalculator.summary(for:tournament:)`).
+    /// days (`PraeCalculator.summaries(for:tournament:)`).
     var dayCount: Int {
         let calendar = Calendar.current
         let start = calendar.startOfDay(for: startDate)

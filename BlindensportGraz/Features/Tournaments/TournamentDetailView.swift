@@ -158,7 +158,7 @@ struct TournamentDetailView: View {
                     // €120/day cap (PraeCalculator.dailyCap) times the number
                     // of days it spans (SportEvent.dayCount), since the single
                     // amount entered here is spread evenly across every
-                    // deployment day — see PraeCalculator.summary(for:tournament:).
+                    // deployment day — see PraeCalculator.summaries(for:tournament:).
                     AttendanceRow(membership: membership, event: tournament,
                                   maxPrae: Int(PraeCalculator.dailyCap) * tournament.dayCount)
                 }

@@ -79,8 +79,8 @@ final class SammelabrechnungSeasonExportTests: XCTestCase {
 
         XCTAssertEqual(Set(entryNames), Set([
             "03-2026_KostZ.xlsx",
-            "03-2026_PRAE_Trainer_Anna.xlsx",
-            "03-2026_PRAE-Darstellung_Trainer_Anna.xlsx",
+            "03-2026_PRAE_Trainer_Anna_Training 5.3..xlsx",
+            "03-2026_PRAE-Darstellung_Trainer_Anna_Training 5.3..xlsx",
             "Turnier_Landesmeisterschaft_KostZ.xlsx",
             "Turnier_Landesmeisterschaft_PRAE_Trainer_Anna.xlsx",
             "Turnier_Landesmeisterschaft_PRAE-Darstellung_Trainer_Anna.xlsx",

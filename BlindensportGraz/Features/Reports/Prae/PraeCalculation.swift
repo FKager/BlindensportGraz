@@ -65,40 +65,70 @@ struct PraeMonthSummary {
     let month: Int
     let year: Int
     let entries: [PraeDayEntry] // sorted by day
-    // Distinct training titles contributing to `entries`, first-occurrence
-    // order, joined with ", " — same dedup/join convention as
-    // PraeDayEntry.purpose, just aggregated across the whole summary instead
-    // of per day. Feeds the main PRAE form's "Verwendungszweck:" (T11)
-    // field. Normally a single bare name when `summary(for:month:year:sport:in:)`
-    // was called with a `sport` filter (the usual case from
-    // PraeCalculationView); without one it may list several.
+    // The one training this form covers, its title as on the main PRAE
+    // form's "Verwendungszweck:" (T11) field.
     let trainingName: String // defaulted so existing test fixtures that don't care about it still compile
+    // The person's amount per day across ALL their trainings that month. The
+    // legal caps apply to the person, not to one form, so they're checked
+    // against these rather than `entries`. Empty means `entries` is all there is.
+    let personDayTotals: [Int: Double]
 
-    init(person: PraeEligiblePerson, month: Int, year: Int, entries: [PraeDayEntry], trainingName: String = "") {
+    init(person: PraeEligiblePerson, month: Int, year: Int, entries: [PraeDayEntry], trainingName: String = "",
+         personDayTotals: [Int: Double] = [:]) {
         self.person = person
         self.month = month
         self.year = year
         self.entries = entries
         self.trainingName = trainingName
+        self.personDayTotals = personDayTotals
+    }
+
+    var total: Double { entries.reduce(0) { $0 + $1.amount } }
+    /// The person's total across all their trainings that month.
+    var personTotal: Double { personDayTotals.isEmpty ? total : personDayTotals.values.reduce(0, +) }
+    var exceedsMonthlyCap: Bool { personTotal > PraeCalculator.monthlyCap }
+    var daysExceedingDailyCap: [Int] {
+        entries.filter { (personDayTotals[$0.day] ?? $0.amount) > PraeCalculator.dailyCap }.map(\.day)
+    }
+}
+
+/// One tournament's PRAE deployment days for one helper/coach in one calendar
+/// month, scoped to just that tournament's own Attendance.praeAmount records —
+/// the per-tournament counterpart to PraeMonthSummary, same relationship as
+/// KostZTournamentSummary/KostZMonthSummary in KostZCalculation.swift. The form
+/// and its day grid cover one month, so a tournament that runs into the next
+/// month has one of these per month.
+struct PraeTournamentSummary {
+    let person: PraeEligiblePerson
+    let tournament: Tournament
+    let entries: [PraeDayEntry] // sorted by day
+    let month: Int
+    let year: Int
+    let spansSeveralMonths: Bool
+
+    init(person: PraeEligiblePerson, tournament: Tournament, entries: [PraeDayEntry],
+         month: Int? = nil, year: Int? = nil, spansSeveralMonths: Bool = false) {
+        let start = Calendar.current.dateComponents([.month, .year], from: tournament.startDate)
+        self.person = person
+        self.tournament = tournament
+        self.entries = entries
+        self.month = month ?? start.month ?? 1
+        self.year = year ?? start.year ?? 0
+        self.spansSeveralMonths = spansSeveralMonths
     }
 
     var total: Double { entries.reduce(0) { $0 + $1.amount } }
     var exceedsMonthlyCap: Bool { total > PraeCalculator.monthlyCap }
     var daysExceedingDailyCap: [Int] { entries.filter { $0.amount > PraeCalculator.dailyCap }.map(\.day) }
-}
 
-/// One tournament's PRAE deployment days for one helper/coach, scoped to
-/// just that tournament's own Attendance.praeAmount records — the
-/// per-tournament counterpart to PraeMonthSummary, same relationship as
-/// KostZTournamentSummary/KostZMonthSummary in KostZCalculation.swift.
-struct PraeTournamentSummary {
-    let person: PraeEligiblePerson
-    let tournament: Tournament
-    let entries: [PraeDayEntry] // sorted by day
-
-    var total: Double { entries.reduce(0) { $0 + $1.amount } }
-    var exceedsMonthlyCap: Bool { total > PraeCalculator.monthlyCap }
-    var daysExceedingDailyCap: [Int] { entries.filter { $0.amount > PraeCalculator.dailyCap }.map(\.day) }
+    /// "August 2026".
+    var monthLabel: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "de_AT")
+        formatter.dateFormat = "LLLL yyyy"
+        let date = Calendar.current.date(from: DateComponents(year: year, month: month, day: 1)) ?? tournament.startDate
+        return formatter.string(from: date)
+    }
 }
 
 /// Computes PRAE ("Pauschale Reiseaufwandsentschädigung") deployment days
@@ -139,74 +169,53 @@ enum PraeCalculator {
         }.sorted { ($0.lastName, $0.firstName) < ($1.lastName, $1.firstName) }
     }
 
-    /// Fetches every attended, PRAE-amount-set Attendance across the given
-    /// person's memberships, filters to the requested calendar month (and,
-    /// when given, a specific `sport` — see PraeCalculationView's
-    /// "Trainingsart" picker), and groups by day — summing amounts if the
-    /// person had more than one qualifying session on the same day (rare,
-    /// but a real edge case: PRAE's own form only allows one amount per
-    /// calendar day per person). `sport` defaults to `nil` (no filter,
-    /// covering every training that month) so every existing unscoped call
-    /// site (SammelabrechnungExporter, SammelabrechnungView) keeps its
-    /// current club-wide-per-month behavior unchanged.
-    static func summary(for person: PraeEligiblePerson, month: Int, year: Int, sport: String? = nil, in context: ModelContext) -> PraeMonthSummary {
+    /// One PRAE per training the person was deployed for in the given month:
+    /// a person on more than one training files a separate form for each. A
+    /// training is its name, as a weekly series shares one and the form's
+    /// Verwendungszweck names it, so its sessions stay together on one form,
+    /// and two sessions on the same day are summed, as the form only allows
+    /// one amount per calendar day. Ordered by each training's first session,
+    /// then name. A training whose amounts are all zero gets no form.
+    static func summaries(for person: PraeEligiblePerson, month: Int, year: Int, in context: ModelContext) -> [PraeMonthSummary] {
         let membershipIDs = Set(person.membershipIDs)
+        let calendar = Calendar.current
         // Fetches everything and filters in plain Swift rather than a
         // #Predicate closure — this app has no existing precedent for
         // relationship-path traversal (attendance.membership.id) or
         // Array.contains inside a #Predicate, and an Attendance table is
         // small enough (one club) that a client-side filter costs nothing.
-        let allAttendances = (try? context.fetch(FetchDescriptor<Attendance>())) ?? []
-        let attendances = allAttendances.filter { attendance -> Bool in
-            guard attendance.attended, attendance.praeAmount != nil, attendance.event.kind == "training",
-                  membershipIDs.contains(attendance.membership.id) else { return false }
-            return sport == nil || attendance.event.sport == sport
-        }
+        // Sorted because a fetch has no order of its own.
+        let attendances = ((try? context.fetch(FetchDescriptor<Attendance>())) ?? [])
+            .filter { $0.attended && $0.event.kind == "training" && membershipIDs.contains($0.membership.id) }
+            .sorted { ($0.event.startDate, $0.event.title) < ($1.event.startDate, $1.event.title) }
 
-        let calendar = Calendar.current
-        var byDay: [Int: (amount: Double, purposes: [String])] = [:]
-        var trainingNames: [String] = []
+        var titles: [String] = []
+        var amountsByTitle: [String: [Int: Double]] = [:]
+        var personDayTotals: [Int: Double] = [:]
         for attendance in attendances {
             let components = calendar.dateComponents([.day, .month, .year], from: attendance.event.startDate)
             guard components.month == month, components.year == year, let day = components.day,
                   let amount = attendance.praeAmount else { continue }
-            var entry = byDay[day] ?? (0, [])
-            entry.amount += amount
-            if !entry.purposes.contains(attendance.event.title) {
-                entry.purposes.append(attendance.event.title)
+            let title = attendance.event.title
+            if amountsByTitle[title] == nil {
+                titles.append(title)
             }
-            byDay[day] = entry
-            if !trainingNames.contains(attendance.event.title) {
-                trainingNames.append(attendance.event.title)
-            }
+            amountsByTitle[title, default: [:]][day, default: 0] += amount
+            personDayTotals[day, default: 0] += amount
         }
 
-        let entries = byDay.keys.sorted().map { day -> PraeDayEntry in
-            let value = byDay[day]!
-            return PraeDayEntry(day: day, amount: value.amount, purpose: value.purposes.joined(separator: ", "))
+        return titles.compactMap { title in
+            let amounts = amountsByTitle[title] ?? [:]
+            let entries = amounts.keys.sorted().map { PraeDayEntry(day: $0, amount: amounts[$0] ?? 0, purpose: title) }
+            let summary = PraeMonthSummary(person: person, month: month, year: year, entries: entries,
+                                           trainingName: title, personDayTotals: personDayTotals)
+            return summary.total > 0 ? summary : nil
         }
-        return PraeMonthSummary(person: person, month: month, year: year, entries: entries,
-                                 trainingName: trainingNames.joined(separator: ", "))
     }
 
-    /// Distinct `sport` values (raw, not lowercased — same precedent as
-    /// KostZCalculator.trainingGroups) among Trainings held in the given
-    /// month, sorted — feeds PraeCalculationView's "Trainingsart" picker.
-    static func trainingSports(month: Int, year: Int, in context: ModelContext) -> [String] {
-        let calendar = Calendar.current
-        let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
-        let sports = allTrainings
-            .filter {
-                let components = calendar.dateComponents([.month, .year], from: $0.startDate)
-                return components.month == month && components.year == year
-            }
-            .map(\.sport)
-        return Array(Set(sports)).sorted()
-    }
-
-    /// A single tournament's PRAE deployment days for one person, read
-    /// straight from `tournament.attendances` — no ModelContext fetch or
-    /// month/year filtering needed, mirroring
+    /// A single tournament's PRAE deployment days for one person, one summary
+    /// per calendar month the tournament touches, in date order. Read straight
+    /// from `tournament.attendances` — no ModelContext fetch needed, mirroring
     /// KostZCalculator.summary(for tournament:).
     ///
     /// `Attendance.praeAmount` is entered once for the whole tournament (see
@@ -216,7 +225,9 @@ enum PraeCalculator {
     /// (see `spreadEvenly`) rather than attributed entirely to the start
     /// date — matching the Sport Austria form's one-entry-per-deployment-day
     /// convention and keeping each day within `dailyCap` by construction.
-    static func summary(for person: PraeEligiblePerson, tournament: Tournament) -> PraeTournamentSummary {
+    /// Only then are the days grouped by month, so the months add up to
+    /// exactly the entered amount. A month whose days got nothing has no form.
+    static func summaries(for person: PraeEligiblePerson, tournament: Tournament) -> [PraeTournamentSummary] {
         let membershipIDs = Set(person.membershipIDs)
         let attendances = tournament.attendances.filter {
             $0.attended && $0.praeAmount != nil && membershipIDs.contains($0.membership.id)
@@ -227,26 +238,31 @@ enum PraeCalculator {
             calendar.date(byAdding: .day, value: $0, to: calendar.startOfDay(for: tournament.startDate))
         }
 
-        var byDay: [Int: (amount: Double, purposes: [String])] = [:]
+        struct YearMonth: Hashable, Comparable {
+            let year: Int
+            let month: Int
+            static func < (lhs: YearMonth, rhs: YearMonth) -> Bool { (lhs.year, lhs.month) < (rhs.year, rhs.month) }
+        }
+
+        var amountsByMonth: [YearMonth: [Int: Double]] = [:]
         for attendance in attendances {
             guard let amount = attendance.praeAmount, !tournamentDays.isEmpty else { continue }
             let perDayAmounts = spreadEvenly(amount, across: tournamentDays.count)
             for (date, dayAmount) in zip(tournamentDays, perDayAmounts) {
-                guard let day = calendar.dateComponents([.day], from: date).day else { continue }
-                var entry = byDay[day] ?? (0, [])
-                entry.amount += dayAmount
-                if !entry.purposes.contains(attendance.event.title) {
-                    entry.purposes.append(attendance.event.title)
-                }
-                byDay[day] = entry
+                let components = calendar.dateComponents([.day, .month, .year], from: date)
+                guard let year = components.year, let month = components.month, let day = components.day else { continue }
+                amountsByMonth[YearMonth(year: year, month: month), default: [:]][day, default: 0] += dayAmount
             }
         }
 
-        let entries = byDay.keys.sorted().map { day -> PraeDayEntry in
-            let value = byDay[day]!
-            return PraeDayEntry(day: day, amount: value.amount, purpose: value.purposes.joined(separator: ", "))
+        let spansSeveralMonths = amountsByMonth.count > 1
+        return amountsByMonth.keys.sorted().compactMap { key in
+            let amounts = amountsByMonth[key] ?? [:]
+            let entries = amounts.keys.sorted().map { PraeDayEntry(day: $0, amount: amounts[$0] ?? 0, purpose: tournament.title) }
+            let summary = PraeTournamentSummary(person: person, tournament: tournament, entries: entries,
+                                                month: key.month, year: key.year, spansSeveralMonths: spansSeveralMonths)
+            return summary.total > 0 ? summary : nil
         }
-        return PraeTournamentSummary(person: person, tournament: tournament, entries: entries)
     }
 
     /// Splits `amount` across `dayCount` days in whole euros — never a

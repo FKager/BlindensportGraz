@@ -49,12 +49,12 @@ struct SammelabrechnungTournamentView: View {
     private var praeSummaries: [PraeTournamentSummary] {
         kostZSummary.personAmounts
             .filter { selectedPraePersonIDs.contains($0.person.id) }
-            .map { PraeCalculator.summary(for: $0.person, tournament: tournament) }
+            .flatMap { PraeCalculator.summaries(for: $0.person, tournament: tournament) }
     }
 
     // Read straight from tournament.attendances (attended == true) rather
     // than deriving from tournament.teams/allMemberships — same source
-    // PraeCalculator.summary(for:tournament:) reads from, and self-contained
+    // PraeCalculator.summaries(for:tournament:) reads from, and self-contained
     // without needing TournamentDetailView's own allMemberships/
     // attendedMemberships to be passed in. Deduped by underlying person,
     // same identity-key convention as TournamentDetailView.allMemberships/
