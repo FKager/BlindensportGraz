@@ -2,7 +2,7 @@
 description: Deploy BlindensportGraz to the iPhone via the self-hosted GitHub Actions workflow (never local Xcode/devicectl)
 ---
 
-Deploy to "iPhone von Franz" using the **`iOS Device Deploy`** GitHub Actions workflow
+Deploy the staging app ("BSG Staging", next to the TestFlight app) to "iPhone von Franz" using the **`iOS Device Deploy`** GitHub Actions workflow
 (`.github/workflows/ios-device-deploy.yml`), which runs on the self-hosted runner
 registered on this same Mac. This is the user's explicitly preferred deploy path —
 do NOT build/install locally via Xcode's Run action, raw `xcodebuild`, or
