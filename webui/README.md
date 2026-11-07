@@ -158,7 +158,7 @@ The Rollen page holds the Vereinsfunktionen (Obmann, Obmann Stellvertreter, Kass
 ### Rollout order
 
 1. Database first: `supabase/scripts/cutover.sh <target> db-push`. New app and web UI versions read `members.status`, so it must exist before them.
-2. Web UI: redeploy. The first deploy after the rename from "web admin" moves the server folder from `~/blindensport-webadmin` to `~/blindensport-webui` and replaces Traefik's route file (`blindensport-webadmin.yml` → `blindensport-webui.yml`), since the service alias changed too.
+2. Web UI: redeploy.
 3. App: release a new TestFlight build. Until then, swiping to delete a member in an old build has no effect on the server, and the member comes back on the next sync.
 
 ## Deployment
