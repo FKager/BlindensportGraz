@@ -4078,3 +4078,6 @@
 | 21:00 | PROD rollout: merged PR 27, 3 migrations, 2 orphans removed, nuc moved to blindensport-webui, v0.8.0 release started | prod, nuc | live, TestFlight pending | ~8000 |
 | 21:40 | Web registration, public start page, confirm page, app Übersicht+Account tabs; 108 tests, browser e2e 31, iOS builds; uncommitted on web-registration | webui/, supabase/, app | done locally | ~25000 |
 | 22:00 | Web password reset added; 111 tests, browser e2e 12; committed and PR opened | webui/, supabase/ | done | ~9000 |
+| 22:20 | Staging: signup allow list + templates applied; real reset email requested for root staging account | staging | sent, delivery to confirm | ~2000 |
+| 22:50 | PROD: PR 28 merged, allow list + templates, web UI deployed; v0.9.0 release started | prod, nuc | live | ~5000 |
+| 23:10 | Rollenänderungen: block/delete entries no longer hidden when there are no role changes | RoleChangeLogView.swift | uncommitted on fix-role-log-empty | ~1500 |
