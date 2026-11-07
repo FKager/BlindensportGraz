@@ -3,6 +3,11 @@
 # NVDA's cell navigation only gets the cell's text; the checkbox floats above the
 # cell. So this asks Excel for the checkbox on each cell. NVDA reads Excel in two
 # ways, and each has its own cell class and property for the text.
+#
+# NVDA has one text for both outputs, so cells report the braille form, "[X] label",
+# and a speech filter swaps it for "label ausgewählt". Braille never passes that
+# filter. Only the exact text just reported is swapped, so a cell that really
+# contains "[X]" is read as it is.
 
 import api
 import controlTypes
@@ -13,10 +18,12 @@ from NVDAObjects.UIA.excel import ExcelCell as UIAExcelCell
 from NVDAObjects.window.excel import ExcelBase
 from NVDAObjects.window.excel import ExcelCell as ObjectModelExcelCell
 from scriptHandler import script
+from speech.extensions import filter_speechSequence
 
 from . import checkboxState
 
 _finder = checkboxState.CheckboxFinder()
+_lastReported = None
 
 
 def _withCheckbox(text, cell):
@@ -28,8 +35,17 @@ def _withCheckbox(text, cell):
 		return text
 	if found is None:
 		return text
+	global _lastReported
 	isChecked, controlName = found
-	return checkboxState.labelWithMark(text, isChecked, controlName)
+	marked = checkboxState.labelWithMark(text, isChecked, controlName)
+	_lastReported = (marked, checkboxState.spokenLabel(text, isChecked, controlName))
+	return marked
+
+
+def _speakStateAsWords(speechSequence):
+	if _lastReported is None:
+		return speechSequence
+	return checkboxState.replaceInSpeech(speechSequence, *_lastReported)
 
 
 class ObjectModelCheckboxCell(ObjectModelExcelCell):
@@ -54,6 +70,14 @@ class UIACheckboxCell(UIAExcelCell):
 
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
+	def __init__(self):
+		super().__init__()
+		filter_speechSequence.register(_speakStateAsWords)
+
+	def terminate(self):
+		filter_speechSequence.unregister(_speakStateAsWords)
+		super().terminate()
+
 	def chooseNVDAObjectOverlayClasses(self, obj, clsList):
 		if isinstance(obj, ObjectModelExcelCell) or ObjectModelExcelCell in clsList:
 			clsList.insert(0, ObjectModelCheckboxCell)
@@ -82,4 +106,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message("Kein Kontrollkästchen in dieser Zelle")
 			return
 		isChecked, controlName = toggled
-		ui.message(checkboxState.labelWithMark(text, isChecked, controlName))
+		ui.message(
+			checkboxState.spokenLabel(text, isChecked, controlName),
+			brailleText=checkboxState.labelWithMark(text, isChecked, controlName),
+		)

@@ -12,11 +12,29 @@ VALUE_UNCHECKED = -4146
 _BOX_GLYPH = re.compile("^[r\uf072]\\s+")
 
 
+def _label(cellText, controlName):
+	# An empty cell uses the control's name.
+	return _BOX_GLYPH.sub("", cellText or "", count=1).strip() or (controlName or "").strip()
+
+
 def labelWithMark(cellText, isChecked, controlName=""):
-	"""The text to report: "[X] Trainer:in". An empty cell uses the control's name."""
-	label = _BOX_GLYPH.sub("", cellText or "", count=1).strip() or (controlName or "").strip()
+	"""The text for braille: "[X] Trainer:in"."""
 	mark = "[X]" if isChecked else "[ ]"
-	return f"{mark} {label}".rstrip()
+	return f"{mark} {_label(cellText, controlName)}".rstrip()
+
+
+def spokenLabel(cellText, isChecked, controlName=""):
+	"""The text for speech: "Trainer:in ausgewählt"."""
+	state = "ausgewählt" if isChecked else "nicht ausgewählt"
+	return f"{_label(cellText, controlName)} {state}".strip()
+
+
+def replaceInSpeech(speechSequence, marked, spoken):
+	"""speechSequence with marked swapped for spoken. Speech commands stay as they are."""
+	return [
+		item.replace(marked, spoken) if isinstance(item, str) else item
+		for item in speechSequence
+	]
 
 
 class CheckboxFinder:

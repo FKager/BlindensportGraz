@@ -78,6 +78,32 @@ class LabelTests(unittest.TestCase):
 		self.assertEqual(checkboxState.labelWithMark(None, True), "[X]")
 
 
+class SpeechTests(unittest.TestCase):
+	def test_saysTheStateInWordsAfterTheLabel(self):
+		self.assertEqual(checkboxState.spokenLabel("r Übungsleiter:in", True), "Übungsleiter:in ausgewählt")
+		self.assertEqual(checkboxState.spokenLabel("r Trainer:in", False), "Trainer:in nicht ausgewählt")
+
+	def test_emptyCellSaysTheControlName(self):
+		self.assertEqual(
+			checkboxState.spokenLabel("", False, "Richtigkeitsvermerk"),
+			"Richtigkeitsvermerk nicht ausgewählt",
+		)
+
+	def test_swapsTheReportedTextInsideLongerSpeech(self):
+		command = object()
+		sequence = [command, "[X] Trainer:in  B9", "Spalte B"]
+		self.assertEqual(
+			checkboxState.replaceInSpeech(sequence, "[X] Trainer:in", "Trainer:in ausgewählt"),
+			[command, "Trainer:in ausgewählt  B9", "Spalte B"],
+		)
+
+	def test_leavesOtherTextWithMarksAlone(self):
+		self.assertEqual(
+			checkboxState.replaceInSpeech(["[X] Notiz"], "[X] Trainer:in", "Trainer:in ausgewählt"),
+			["[X] Notiz"],
+		)
+
+
 class FinderTests(unittest.TestCase):
 	def setUp(self):
 		self.sheet = FakeSheet()
