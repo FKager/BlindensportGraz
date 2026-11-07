@@ -54,7 +54,7 @@ select is((select count(*)::int from public.member_private_requests), 0,
   'other members do not see the proposal');
 
 select pg_temp.act_as('33333333-0000-0000-0000-000000000001');
-select is((select count(*)::int from public.member_private_requests), 1, 'admin sees the proposal');
+select is((select count(*)::int from public.member_private_requests where member_id = '44444444-0000-0000-0000-000000000002'), 1, 'admin sees the proposal');
 select lives_ok($$select public.apply_member_private_request('44444444-0000-0000-0000-000000000002')$$,
   'admin applies the proposal');
 select is((select svnr from public.member_private where member_id = '44444444-0000-0000-0000-000000000002'),

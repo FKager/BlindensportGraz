@@ -37,7 +37,7 @@ select lives_ok($$insert into public.tournament_invitations (id, tournament_id, 
                   values ('99999999-0000-0000-0000-000000000001', '88888888-0000-0000-0000-000000000001',
                           '99999999-0000-0000-0000-000000000001.pdf', 'Einladung.pdf', 'application/pdf')$$,
   'admin uploads an invitation');
-select is((select count(*)::int from public.tournament_invitations), 1, 'admin reads it');
+select is((select count(*)::int from public.tournament_invitations where id = '99999999-0000-0000-0000-000000000001'), 1, 'admin reads it');
 select lives_ok($$insert into storage.objects (bucket_id, name, owner_id)
                   values ('tournament-invitations', '99999999-0000-0000-0000-000000000001.pdf',
                           '77777777-0000-0000-0000-000000000001')$$,

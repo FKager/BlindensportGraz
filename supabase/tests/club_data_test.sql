@@ -71,10 +71,10 @@ insert into public.welcome_content (id, markdown, is_enabled) values
 
 -- ------------------------------------------------------------ anonymous ---
 select pg_temp.act_as_anon();
-select is((select count(*)::int from public.public_schedule), 1, 'anon sees the schedule');
+select is((select count(*)::int from public.public_schedule where id = '88888888-0000-0000-0000-000000000001'), 1, 'anon sees the schedule');
 select throws_ok($$select * from public.events$$, '42501', null, 'anon cannot read events directly');
 select throws_ok($$select * from public.members$$, '42501', null, 'anon cannot read the roster');
-select is((select count(*)::int from public.welcome_content), 1, 'anon reads the welcome text');
+select is((select count(*)::int from public.welcome_content where id = '99999999-0000-0000-0000-000000000002'), 1, 'anon reads the welcome text');
 
 reset role;
 select hasnt_column('public', 'public_schedule', 'notes', 'schedule view hides notes');
@@ -83,14 +83,14 @@ select hasnt_column('public', 'public_schedule', 'street', 'schedule view hides 
 -- -------------------------------------------------------------- pending ---
 select pg_temp.act_as('55555555-0000-0000-0000-000000000004');
 select is((select count(*)::int from public.events), 0, 'pending account sees no events');
-select is((select count(*)::int from public.public_schedule), 1, 'pending account sees the schedule');
+select is((select count(*)::int from public.public_schedule where id = '88888888-0000-0000-0000-000000000001'), 1, 'pending account sees the schedule');
 select is((select count(*)::int from public.members), 0, 'pending account sees no roster');
 
 -- --------------------------------------------------------------- member ---
 select pg_temp.act_as('55555555-0000-0000-0000-000000000003');
-select is((select count(*)::int from public.events), 1, 'member reads events');
-select is((select count(*)::int from public.members), 2, 'member reads roster names');
-select is((select count(*)::int from public.attendances), 1, 'member reads attendance');
+select is((select count(*)::int from public.events where id = '88888888-0000-0000-0000-000000000001'), 1, 'member reads events');
+select is((select count(*)::int from public.members where id in ('66666666-0000-0000-0000-000000000001', '66666666-0000-0000-0000-000000000002')), 2, 'member reads roster names');
+select is((select count(*)::int from public.attendances where id = '88888888-0000-0000-0000-000000000002'), 1, 'member reads attendance');
 select is((select array_agg(street) from public.member_contacts), array['Gasse 1'],
   'member reads only own contact details');
 select is((select count(*)::int from public.budget_entries), 0, 'member sees no budget');
@@ -144,8 +144,8 @@ select is((select team_ids from public.events where id = '88888888-0000-0000-000
 
 -- ---------------------------------------------------------------- admin ---
 select pg_temp.act_as('55555555-0000-0000-0000-000000000001');
-select is((select count(*)::int from public.member_contacts), 2, 'admin reads all contact details');
-select is((select count(*)::int from public.budget_entries), 1, 'admin reads the budget');
+select is((select count(*)::int from public.member_contacts where id in ('66666666-0000-0000-0000-000000000001', '66666666-0000-0000-0000-000000000002')), 2, 'admin reads all contact details');
+select is((select count(*)::int from public.budget_entries where id = '99999999-0000-0000-0000-000000000001'), 1, 'admin reads the budget');
 
 -- -------------------------------------------------------------- storage ---
 select pg_temp.act_as('55555555-0000-0000-0000-000000000003');

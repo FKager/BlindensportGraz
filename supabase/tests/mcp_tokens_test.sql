@@ -39,16 +39,16 @@ select is((select count(*)::int from public.mcp_tokens), 0, 'others see nothing'
 delete from public.mcp_tokens;
 
 reset role;
-select is((select count(*)::int from public.mcp_tokens), 1, 'others cannot delete it');
+select is((select count(*)::int from public.mcp_tokens where token_hash = 'hash-a'), 1, 'others cannot delete it');
 
 set local role anon;
 select is((select sealed_session from public.mcp_token_session('hash-a')), 'sealed-a', 'the hash finds the session');
 select throws_ok($$select id from public.mcp_tokens$$, '42501', null, 'anon cannot read the table');
 select public.mcp_token_update('hash-a', 'sealed-b');
 reset role;
-select is((select sealed_session from public.mcp_tokens), 'sealed-b', 'a refreshed session is saved');
+select is((select sealed_session from public.mcp_tokens where token_hash = 'hash-a'), 'sealed-b', 'a refreshed session is saved');
 
-update public.mcp_tokens set expires_at = now() - interval '1 minute';
+update public.mcp_tokens set expires_at = now() - interval '1 minute' where token_hash = 'hash-a';
 set local role anon;
 select is((select count(*)::int from public.mcp_token_session('hash-a')), 0, 'an expired token finds nothing');
 

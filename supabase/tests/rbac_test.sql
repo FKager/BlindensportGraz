@@ -109,7 +109,7 @@ select throws_ok($$select public.create_activation_code('11111111-0000-0000-0000
 
 -- --------------------------------------------------------------- admin ---
 select pg_temp.act_as('11111111-0000-0000-0000-000000000002');
-select is((select count(*)::int from public.member_private), 1, 'admin reads member_private');
+select is((select count(*)::int from public.member_private where member_id = '22222222-0000-0000-0000-000000000004'), 1, 'admin reads member_private');
 select is((select count(*)::int from public.profiles where email like '%@t.test'), 5, 'admin reads all profiles');
 select ok((select count(*) from public.role_change_log) > 0, 'admin can read role_change_log');
 select throws_ok($$select public.set_user_role('11111111-0000-0000-0000-000000000003', 'admin')$$,
