@@ -13,11 +13,16 @@ import static it.a11y.blindensport.webui.supabase.Postgrest.eq;
 /**
  * Role and permissions as the database grants them right now (tables, not
  * the JWT, so a role change counts on the next lookup). No {@code user_roles}
- * row = pending account; a blocked account gets the same: role null, no
- * permissions.
+ * row = pending account; a blocked account also has no role or permissions,
+ * and isn't let in at all.
  */
-public record Access(String role, Set<String> permissions) {
+public record Access(String role, Set<String> permissions, boolean blocked) {
     public static final Access NONE = new Access(null, Set.of());
+    public static final Access BLOCKED = new Access(null, Set.of(), true);
+
+    public Access(String role, Set<String> permissions) {
+        this(role, permissions, false);
+    }
 
     public boolean canUseWebUi() {
         return role != null && !Collections.disjoint(permissions, Permission.WEB_ACCESS);
@@ -27,7 +32,7 @@ public record Access(String role, Set<String> permissions) {
     public static Access load(Postgrest db, UUID userId) {
         JsonNode blocked = db.rpc("is_blocked", java.util.Map.of());
         if (blocked.asBoolean(false)) {
-            return NONE;
+            return BLOCKED;
         }
         var roles = db.select("user_roles", "role", eq("user_id", userId));
         if (roles.isEmpty() || !roles.get(0).hasNonNull("role")) {

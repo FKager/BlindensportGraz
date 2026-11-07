@@ -4072,3 +4072,9 @@
 | 18:40 | Real Claude Code + token test on staging passed: all 15 tools, PRAE zip, one-time link, refusals; found orphan memberships after member delete | staging | passed | ~6000 |
 | 19:00 | delete_member removes team entries, attendance and PRAE; staging migrated, 2 orphan rows removed; token work committed to PR 27 | supabase/, webui/, app | done | ~5000 |
 | 19:30 | Narrowed positive counts in pgTAP tests to their own rows so extra rows no longer break them; 191/191 | supabase/tests/ | passed, uncommitted | ~3000 |
+| 19:50 | Prod read-only check: 2 orphan memberships, 3 attendances, no PRAE; user decided to remove them at prod rollout | - | noted | ~1000 |
+| 20:10 | Staging cleanup: MCP test team and events removed; root delete confirmed in app by user | staging | done | ~1000 |
+| 20:30 | Staging: restored one member from prod (printed counts only), removed MCP Test | staging | done | ~2000 |
+| 21:00 | PROD rollout: merged PR 27, 3 migrations, 2 orphans removed, nuc moved to blindensport-webui, v0.8.0 release started | prod, nuc | live, TestFlight pending | ~8000 |
+| 21:40 | Web registration, public start page, confirm page, app Übersicht+Account tabs; 108 tests, browser e2e 31, iOS builds; uncommitted on web-registration | webui/, supabase/, app | done locally | ~25000 |
+| 22:00 | Web password reset added; 111 tests, browser e2e 12; committed and PR opened | webui/, supabase/ | done | ~9000 |

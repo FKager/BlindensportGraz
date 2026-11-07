@@ -48,6 +48,64 @@ public final class GoTrue {
         return Optional.of(tokens(http.check(result, "refresh session").body()));
     }
 
+    /**
+     * Registers an account. Answers the same for an address that already
+     * exists, so nobody can test who has an account. False when refused, for
+     * example a password Supabase finds too weak.
+     *
+     * @param redirectTo where the confirmation email's link leads
+     */
+    public boolean signUp(String email, String password, String firstName, String lastName, String redirectTo) {
+        SupabaseHttp.Result result = http.send("POST", "auth/v1/signup", List.of(new Param("redirect_to", redirectTo)),
+                Map.of("email", email, "password", password, "data", Map.of("first_name", firstName, "last_name", lastName)),
+                Map.of(), anonKey, null);
+        if (result.status() >= 400 && result.status() < 500) {
+            return false;
+        }
+        http.check(result, "sign up");
+        return true;
+    }
+
+    /** Confirms an email address with the emailed token. False if it's invalid or used up. */
+    public boolean confirmEmail(String tokenHash) {
+        SupabaseHttp.Result result = http.send("POST", "auth/v1/verify", List.of(),
+                Map.of("type", "email", "token_hash", tokenHash), Map.of(), anonKey, null);
+        if (result.status() >= 400 && result.status() < 500) {
+            return false;
+        }
+        http.check(result, "confirm email");
+        return true;
+    }
+
+    /** Sends the reset email. Answers the same for an unknown address. */
+    public void requestPasswordReset(String email, String redirectTo) {
+        http.check(http.send("POST", "auth/v1/recover", List.of(new Param("redirect_to", redirectTo)),
+                Map.of("email", email), Map.of(), anonKey, null), "request password reset");
+    }
+
+    /** An access token for the emailed reset link; empty if it's invalid or used up. */
+    public Optional<String> recoverySession(String tokenHash) {
+        SupabaseHttp.Result result = http.send("POST", "auth/v1/verify", List.of(),
+                Map.of("type", "recovery", "token_hash", tokenHash), Map.of(), anonKey, null);
+        if (result.status() >= 400 && result.status() < 500) {
+            return Optional.empty();
+        }
+        return Optional.of(http.parse(http.check(result, "verify recovery").body()).path("access_token").asText());
+    }
+
+    public enum PasswordChange { DONE, SAME_PASSWORD, REFUSED }
+
+    public PasswordChange changePassword(String accessToken, String password) {
+        SupabaseHttp.Result result = http.send("PUT", "auth/v1/user", List.of(), Map.of("password", password),
+                Map.of(), anonKey, accessToken);
+        if (result.status() >= 400 && result.status() < 500) {
+            return "same_password".equals(http.parse(result.body()).path("error_code").asText())
+                    ? PasswordChange.SAME_PASSWORD : PasswordChange.REFUSED;
+        }
+        http.check(result, "change password");
+        return PasswordChange.DONE;
+    }
+
     /** Revokes this session's refresh token. Best effort. */
     public void signOut(String accessToken) {
         try {

@@ -14,12 +14,12 @@ struct RestrictedTabView: View {
 
     var body: some View {
         TabView {
-            Tab("Termine", systemImage: "calendar") {
+            Tab("Übersicht", systemImage: "house.fill") {
                 NavigationStack {
                     List {
                         UpcomingScheduleSections(viewer: currentUser)
                     }
-                    .navigationTitle("Termine")
+                    .navigationTitle("Übersicht")
                     .refreshable {
                         await SyncOrchestrationService.syncAll(modelContext: modelContext)
                     }

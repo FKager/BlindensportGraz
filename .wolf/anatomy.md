@@ -588,3 +588,11 @@
 - `webui/src/main/resources/prae/` — Copies of the app's PRAE templates; PraeExporterTest catches drift
 - `supabase/migrations/20261107000001_member_status.sql` — members.status, drops the delete policy, delete_member RPC (~500 tok)
 - `supabase/tests/member_status_test.sql` — pgTAP 13 tests (~1100 tok)
+
+## Web registration (2026-11-07)
+
+- `webui/.../ui/PublicHomeView.java` — Start page: upcoming events without an account (~800 tok)
+- `webui/.../ui/RegisterView.java`, `ConfirmEmailView.java` — Registration and click-to-confirm (~1200 tok)
+- `webui/.../ui/ForgotPasswordView.java`, `ResetPasswordView.java` — Password reset (~1200 tok)
+- `webui/.../club/PublicSchedule.java` — public_schedule read with no user (~400 tok)
+

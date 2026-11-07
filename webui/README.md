@@ -139,6 +139,14 @@ Coaches, admins and root can create tokens, and a client can do whatever that ac
 
 `prae/` is a port of the app's `PraeCalculation.swift` and `PraeExport.swift`, since the forms are now made on the phone and on this server. A change to the rules or the form belongs in both. `src/main/resources/prae` holds copies of the app's templates, because the Docker build sees only `webui/`; `PraeExporterTest` fails if they drift apart.
 
+### Accounts and the public start page
+
+Without an account, `/` shows upcoming trainings and tournaments from `public_schedule`: name, day and place, like the app's Übersicht. `/registrieren` creates an account. The confirmation email links to `/konto-bestaetigen` when someone registered here, and to the app when they registered there; `supabase/templates/confirmation.html` chooses by `redirect_to`, which must be on the auth allow list (`cutover.sh <target> signup`). Confirming takes a click, because mail scanners open links by themselves.
+
+`/passwort-vergessen` sends a reset link, and `supabase/templates/recovery.html` chooses the same way between `/passwort-neu` and the app. The link is used up on the click that saves the new password, not on opening the page.
+
+Any account that isn't blocked can sign in to the web pages. `AccessGuard` keeps everyone but coaches, admins and root on `/`. The REST API and MCP stay staff only.
+
 ### Member status
 
 `members.status` is `new`, `active` or `delete`. Anyone with `members.manage` sets it. Only root can remove a member, only when the status is `delete`, and only by typing the full name: `delete_member` is the only way, as the table's delete policy is gone. It also removes the member's team entries, and with them their attendance and PRAE amounts.

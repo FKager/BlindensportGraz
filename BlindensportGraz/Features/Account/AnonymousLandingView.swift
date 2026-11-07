@@ -1,74 +1,75 @@
 import SwiftData
 import SwiftUI
 
-/// Root screen for the "anonymous" account tier (account-tiers refactor) —
-/// shown by `RootView` in place of the old full-screen `LoginView` whenever
-/// `currentUser == nil`. Deliberately NOT the full `MainTabView` tab bar:
-/// a not-logged-in visitor only gets the read-only upcoming schedule (name,
-/// date and location of every upcoming training, tournament and event —
-/// `UpcomingScheduleSections`, shared with `RestrictedTabView`) plus
-/// "Registrieren"/"Anmelden" — everything else requires an account that's
-/// listed in the Benutzerverwaltung (see `AccessPolicy`).
+/// Root screen for visitors without an account, shown by `RootView` when no
+/// one is signed in: only Übersicht, the read-only upcoming schedule
+/// (`UpcomingScheduleSections`, shared with `RestrictedTabView`), and Account
+/// with "Registrieren" and "Anmelden". Everything else needs an account listed
+/// in the Benutzerverwaltung (see `AccessPolicy`).
 struct AnonymousLandingView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var showLogin = false
     @State private var showRegister = false
 
     var body: some View {
-        NavigationStack {
-            List {
-                // Sign-up/sign-in first: below a long schedule the buttons
-                // would be hard to reach, especially with VoiceOver.
-                Section {
-                    VStack(spacing: Theme.Spacing.s) {
-                        HeroIcon(systemName: "figure.run.circle.fill")
-                        Text("Blindensport Graz")
-                            .font(.title2)
-                            .bold()
-                            .accessibilityAddTraits(.isHeader)
+        TabView {
+            Tab("Übersicht", systemImage: "house.fill") {
+                NavigationStack {
+                    List {
+                        UpcomingScheduleSections(viewer: nil)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Theme.Spacing.s)
-                    .listRowBackground(Color.clear)
-
-                    Button(action: register) {
-                        Text("Registrieren")
-                            .frame(maxWidth: .infinity)
+                    .navigationTitle("Übersicht")
+                    .refreshable {
+                        await SyncOrchestrationService.syncAll(modelContext: modelContext)
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(Theme.Fill.info)
-                    .listRowBackground(Color.clear)
-
-                    Button(action: logIn) {
-                        Text("Anmelden")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .listRowBackground(Color.clear)
                 }
-                .listRowSeparator(.hidden)
+            }
 
-                UpcomingScheduleSections(viewer: nil)
+            Tab("Account", systemImage: "person.crop.circle") {
+                NavigationStack {
+                    account
+                        .navigationTitle("Account")
+                }
             }
-            .navigationTitle("Termine")
-            .navigationBarTitleDisplayMode(.inline)
-            .refreshable {
-                await SyncOrchestrationService.syncAll(modelContext: modelContext)
-            }
-            .sheet(isPresented: $showRegister) {
-                RegisterView()
-            }
-            .sheet(isPresented: $showLogin) {
-                LoginView()
-            }
+        }
+        .sheet(isPresented: $showRegister) {
+            RegisterView()
+        }
+        .sheet(isPresented: $showLogin) {
+            LoginView()
         }
     }
 
-    private func register() {
-        showRegister = true
-    }
+    private var account: some View {
+        List {
+            Section {
+                VStack(spacing: Theme.Spacing.s) {
+                    HeroIcon(systemName: "figure.run.circle.fill")
+                    Text("Blindensport Graz")
+                        .font(.title2)
+                        .bold()
+                        .accessibilityAddTraits(.isHeader)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, Theme.Spacing.s)
+                .listRowBackground(Color.clear)
 
-    private func logIn() {
-        showLogin = true
+                Button { showRegister = true } label: {
+                    Text("Registrieren")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Theme.Fill.info)
+                .listRowBackground(Color.clear)
+
+                Button { showLogin = true } label: {
+                    Text("Anmelden")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .listRowBackground(Color.clear)
+            }
+            .listRowSeparator(.hidden)
+        }
     }
 }
