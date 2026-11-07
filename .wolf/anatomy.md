@@ -596,3 +596,9 @@
 - `webui/.../ui/ForgotPasswordView.java`, `ResetPasswordView.java` — Password reset (~1200 tok)
 - `webui/.../club/PublicSchedule.java` — public_schedule read with no user (~400 tok)
 
+## Rollen (2026-11-07)
+
+- `webui/.../ui/RolesView.java`, `webui/.../club/ClubFunctions.java` — Rollen page and Vereinsfunktionen store (~2000 tok)
+- `BlindensportGraz/Features/Account/RolesView.swift`, `BlindensportGraz/Supabase/ClubFunctionService.swift` — The same in the app, online (~1800 tok)
+- `supabase/migrations/20261107000004_club_functions.sql`, `supabase/tests/club_functions_test.sql` — Tables, trigger log, set_club_function, 15 pgTAP tests
+

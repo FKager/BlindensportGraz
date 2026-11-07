@@ -30,7 +30,7 @@ struct VereinSplitView: View {
             case .personen: return "Personen"
             case .konten: return "App-Konten"
             case .antraege: return "Änderungsanträge"
-            case .rollen: return "Rollenänderungen"
+            case .rollen: return "Rollen"
             case .sicherung: return "Datensicherung"
             case .willkommen: return "Willkommensbildschirm"
             case .budget: return "Vereinsbudget"
@@ -44,7 +44,7 @@ struct VereinSplitView: View {
             case .personen: return "person.crop.rectangle.stack"
             case .konten: return "person.2.badge.key"
             case .antraege: return "person.crop.circle.badge.checkmark"
-            case .rollen: return "clock.arrow.circlepath"
+            case .rollen: return "person.badge.key"
             case .sicherung: return "externaldrive.badge.icloud"
             case .willkommen: return "hand.wave"
             case .budget: return "eurosign.bank.building"
@@ -84,7 +84,7 @@ struct VereinSplitView: View {
         case .personen: PersonenListView()
         case .konten: UserListView(currentUser: currentUser)
         case .antraege: MemberChangeRequestsView(currentUser: currentUser)
-        case .rollen: RoleChangeLogView()
+        case .rollen: RolesView(currentUser: currentUser)
         case .sicherung: FullBackupView()
         case .willkommen: WelcomeScreenSettingsView()
         case .budget: BudgetView(currentUser: currentUser)
