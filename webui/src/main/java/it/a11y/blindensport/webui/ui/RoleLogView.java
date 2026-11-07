@@ -6,8 +6,10 @@ import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.UnorderedList;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 import it.a11y.blindensport.webui.accounts.AccountService;
 import it.a11y.blindensport.webui.auth.AdminSession;
+import it.a11y.blindensport.webui.club.ClubFunctions;
 import it.a11y.blindensport.webui.auth.AdminSessions;
 import it.a11y.blindensport.webui.auth.Permission;
 import jakarta.inject.Inject;
@@ -27,11 +29,13 @@ public class RoleLogView extends AdminView {
 
     private final UnorderedList roleChanges = new UnorderedList();
     private final UnorderedList adminActions = new UnorderedList();
+    private final UnorderedList functionChanges = new UnorderedList();
 
     @Inject
     public RoleLogView(AdminSessions sessions) {
         super(sessions, "Rollen-Protokoll");
-        add(new H2("Rollenänderungen"), roleChanges, new H2("Gesperrte und gelöschte Konten"), adminActions);
+        add(new RouterLink("Zurück zu Rollen", RolesView.class), new H2("Rollenänderungen"), roleChanges,
+                new H2("Vereinsfunktionen"), functionChanges, new H2("Gesperrte und gelöschte Konten"), adminActions);
     }
 
     @Override
@@ -53,6 +57,14 @@ public class RoleLogView extends AdminView {
         if (changes.isEmpty()) {
             roleChanges.add(new ListItem(new Paragraph("Noch keine Rollenänderungen.")));
         }
+        functionChanges.removeAll();
+        var functions = new ClubFunctions(admin.db()).log(200);
+        functions.forEach(f -> functionChanges.add(new ListItem(ClubFunctions.LABELS.getOrDefault(f.function(), f.function()) + ": "
+                + person(f.oldName()) + " → " + person(f.newName())
+                + " – geändert von " + actor(names, f.changedBy()) + " am " + format(f.changedAt()))));
+        if (functions.isEmpty()) {
+            functionChanges.add(new ListItem(new Paragraph("Noch keine Einträge.")));
+        }
         adminActions.removeAll();
         actions.forEach(a -> adminActions.add(new ListItem(
                 (a.targetName().isBlank() ? a.targetEmail() : a.targetName() + " (" + a.targetEmail() + ")")
@@ -61,6 +73,10 @@ public class RoleLogView extends AdminView {
         if (actions.isEmpty()) {
             adminActions.add(new ListItem(new Paragraph("Noch keine Einträge.")));
         }
+    }
+
+    private static String person(String name) {
+        return name.isBlank() ? "nicht besetzt" : name;
     }
 
     private static String name(Map<UUID, String> names, UUID id) {

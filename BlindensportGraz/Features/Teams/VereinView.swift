@@ -9,7 +9,7 @@ import UniformTypeIdentifiers
 /// - Non-admins land straight on the Teams list (its own `.navigationTitle`
 ///   reads "Teams" — the tab label is still "Verein").
 /// - Admins/root get a hub `List` that pushes Teams plus the admin screens
-///   (Benutzerverwaltung, Personen, App-Konten, Rollenänderungen) onto the tab's
+///   (Benutzerverwaltung, Personen, App-Konten, Rollen) onto the tab's
 ///   single `NavigationStack`, so none of those wrap themselves anymore.
 struct VereinView: View {
     let currentUser: User
@@ -63,8 +63,8 @@ private struct VereinHubList: View {
                         }
                     }
                 }
-                NavigationLink(value: AppRoute.roleChangeLog) {
-                    Label("Rollenänderungen", systemImage: "clock.arrow.circlepath")
+                NavigationLink(value: AppRoute.roles) {
+                    Label("Rollen", systemImage: "person.badge.key")
                 }
                 NavigationLink(value: AppRoute.fullBackup) {
                     Label("Datensicherung", systemImage: "externaldrive.badge.icloud")

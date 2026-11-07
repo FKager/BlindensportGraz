@@ -10,6 +10,7 @@ struct RoleChangeLogView: View {
     @Query private var users: [User]
     @State private var entries: [SupabaseRoleChange] = []
     @State private var accountEntries: [SupabaseAccountAdminLogEntry] = []
+    @State private var functionEntries: [ClubFunctionLogEntry] = []
     @State private var isLoading = true
     @State private var errorMessage: String?
 
@@ -18,11 +19,25 @@ struct RoleChangeLogView: View {
             if let errorMessage {
                 Label(errorMessage, systemImage: "exclamationmark.triangle")
                     .foregroundStyle(Theme.Palette.warning)
-            } else if entries.isEmpty, accountEntries.isEmpty, !isLoading {
+            } else if entries.isEmpty, accountEntries.isEmpty, functionEntries.isEmpty, !isLoading {
                 ContentUnavailableView("Keine Rollenänderungen",
                                        systemImage: "clock.arrow.circlepath",
                                        description: Text("Änderungen an Benutzerrollen erscheinen hier."))
             } else {
+                if !functionEntries.isEmpty {
+                    Section("Vereinsfunktionen") {
+                        ForEach(functionEntries) { entry in
+                            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                                Text("\(entry.functionLabel): \(entry.oldLabel) → \(entry.newLabel)")
+                                    .font(.body)
+                                Text("Geändert von \(changedByLabel(entry.changedBy)) am \(entry.changedAt.formatted(date: .abbreviated, time: .shortened))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .accessibilityElement(children: .combine)
+                        }
+                    }
+                }
                 if !accountEntries.isEmpty {
                     Section("Sperren und Löschen") {
                         ForEach(accountEntries) { entry in
@@ -65,6 +80,7 @@ struct RoleChangeLogView: View {
         do {
             entries = try await SupabaseRoleService.fetchChangeLog()
             accountEntries = try await SupabaseAccountAdminService.fetchLog()
+            functionEntries = try await ClubFunctionService.fetchLog()
             errorMessage = nil
         } catch {
             errorMessage = AuthErrorMessage.text(for: error)

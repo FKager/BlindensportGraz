@@ -147,6 +147,10 @@ Without an account, `/` shows upcoming trainings and tournaments from `public_sc
 
 Any account that isn't blocked can sign in to the web pages. `AccessGuard` keeps everyone but coaches, admins and root on `/`. The REST API and MCP stay staff only.
 
+### Rollen
+
+The Rollen page holds the Vereinsfunktionen (Obmann, Obmann Stellvertreter, Kassier, Schriftführer) and the Admin and Root accounts, and links to the log. A function has one holder, one member may hold several, and they give no rights. They need `club.manage` to change (`set_club_function`), and a trigger writes `club_function_log`. Admin and Root can have several people, belong to accounts, and only root changes them. The app's Verein tab has the same section.
+
 ### Member status
 
 `members.status` is `new`, `active` or `delete`. Anyone with `members.manage` sets it. Only root can remove a member, only when the status is `delete`, and only by typing the full name: `delete_member` is the only way, as the table's delete policy is gone. It also removes the member's team entries, and with them their attendance and PRAE amounts.

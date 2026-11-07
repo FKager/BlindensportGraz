@@ -21,6 +21,7 @@ enum AppRoute: Hashable {
     case personenList
     case userList
     case memberChangeRequests
+    case roles
     case roleChangeLog
     case fullBackup
     case welcomeSettings
@@ -63,6 +64,8 @@ private struct AppRouteDestination: View {
         case .userList:
             if let currentUser { UserListView(currentUser: currentUser) }
         case .memberChangeRequests: MemberChangeRequestsView(currentUser: currentUser)
+        case .roles:
+            if let currentUser { RolesView(currentUser: currentUser) }
         case .roleChangeLog: RoleChangeLogView()
         case .fullBackup: FullBackupView()
         case .welcomeSettings: WelcomeScreenSettingsView()
