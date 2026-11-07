@@ -99,10 +99,14 @@ enum PraeExporter {
 
     /// Same appendix, filled from a single tournament's deployment days
     /// instead of a calendar month — the "Monat und Jahr" field becomes
-    /// "Turnier" naming the tournament, since a tournament isn't a month.
+    /// "Turnier" naming the tournament, since a tournament isn't a month. The
+    /// table only lists day numbers, so a tournament running into the next
+    /// month names the month too.
     static func exportDarstellung(summary: PraeTournamentSummary, vereinName: String = "Grazer VSC") throws -> URL {
-        try exportDarstellung(person: summary.person, periodFieldLabel: "Turnier:", periodValue: summary.tournament.title,
-                               entries: summary.entries, vereinName: vereinName)
+        let title = summary.tournament.title
+        return try exportDarstellung(person: summary.person, periodFieldLabel: "Turnier:",
+                                     periodValue: summary.spansSeveralMonths ? "\(title), \(summary.monthLabel)" : title,
+                                     entries: summary.entries, vereinName: vereinName)
     }
 
     private static func exportDarstellung(person: PraeEligiblePerson, periodFieldLabel: String, periodValue: String,
@@ -168,33 +172,31 @@ enum PraeExporter {
     /// value KostZ's C3 gets), every deployment day's amount in the day grid
     /// (see `dayGridAmountRef`), and the checkboxes that always apply to this
     /// club's trainings: "Übungsleiter:in" (P9), "Ja (Nebenberuf)" (A26),
-    /// "Ja (Einfachbezug)" (A29) and "Überweisung mittels:" (A33). Every
-    /// OTHER role/declaration checkbox and the recipient's signature still
-    /// stay manual (see the type-level doc comment).
+    /// "Ja (Einfachbezug)" (A29), "Überweisung mittels:" (A33) and the
+    /// Richtigkeitsvermerk (P42). Every OTHER role/declaration checkbox and
+    /// the recipient's signature still stay manual (see the type-level doc
+    /// comment).
     static func exportMainForm(summary: PraeMonthSummary) throws -> URL {
         try exportMainForm(person: summary.person, month: summary.month, year: summary.year,
                             entries: summary.entries, trainingName: summary.trainingName,
-                            checkedBoxes: [.uebungsleiter, .nebenberufJa, .einfachbezugJa, .ueberweisung])
+                            checkedBoxes: [.uebungsleiter, .nebenberufJa, .einfachbezugJa, .ueberweisung, .richtigkeitsvermerk])
     }
 
-    /// Same main form, filled from a single tournament's deployment days.
-    /// The form has no "Turnier:" alternative to "im Monat:"/"Jahr:" (unlike
-    /// the Darstellung appendix's patchable period label) since it's a fixed
-    /// official layout — filled with the tournament's own start month/year,
-    /// which covers the common case of a tournament that doesn't straddle a
-    /// month boundary; a multi-day tournament spanning two calendar months
-    /// would still place every day's amount in the correct grid cell, just
-    /// under one (the tournament's starting) month header. T11 is
+    /// Same main form, filled from a single tournament's deployment days in
+    /// one month. The form has no "Turnier:" alternative to "im Monat:"/"Jahr:"
+    /// (unlike the Darstellung appendix's patchable period label) since it's a
+    /// fixed official layout, so it gets the summary's month: a tournament
+    /// running into the next month files one form per month. T11 is
     /// unambiguous here: the tournament's own bare title. Checks the
     /// "Trainer:in" role checkbox (`FormCheckbox.trainer`, B9) instead of
     /// Training's "Übungsleiter:in" — this club's tournament deployments are
-    /// always coaching, unlike trainings. Every other role/declaration
-    /// checkbox stays manual.
+    /// always coaching, unlike trainings — plus the Richtigkeitsvermerk (P42),
+    /// which every PRAE gets. Every other role/declaration checkbox stays
+    /// manual.
     static func exportMainForm(summary: PraeTournamentSummary) throws -> URL {
-        let components = Calendar.current.dateComponents([.month, .year], from: summary.tournament.startDate)
-        return try exportMainForm(person: summary.person, month: components.month ?? 1, year: components.year ?? 0,
-                                   entries: summary.entries, trainingName: summary.tournament.title,
-                                   checkedBoxes: [.trainer])
+        try exportMainForm(person: summary.person, month: summary.month, year: summary.year,
+                           entries: summary.entries, trainingName: summary.tournament.title,
+                           checkedBoxes: [.trainer, .richtigkeitsvermerk])
     }
 
     /// One of the real template's checkboxes — genuine Excel Form-control
@@ -251,6 +253,7 @@ enum PraeExporter {
         static let nebenberufJa = FormCheckbox(name: 22, drawingShapeID: 1046, ctrlProp: 10, cell: "A26", labelStringIndex: 55, altText: "Ja (Nebenberuf)")
         static let einfachbezugJa = FormCheckbox(name: 24, drawingShapeID: 1048, ctrlProp: 12, cell: "A29", labelStringIndex: 57, altText: "Ja (Einfachbezug)")
         static let ueberweisung = FormCheckbox(name: 27, drawingShapeID: 1051, ctrlProp: 15, cell: "A33", labelStringIndex: 60, altText: "Überweisung mittels")
+        static let richtigkeitsvermerk = FormCheckbox(vmlShapeID: "_x0000_s1052", drawingShapeID: 1052, ctrlProp: 16, cell: "P42", altText: "Richtigkeitsvermerk")
 
         /// Every checkbox on the form. The last one's VML id doesn't follow
         /// the naming of the others.
@@ -270,7 +273,7 @@ enum PraeExporter {
             FormCheckbox(name: 25, drawingShapeID: 1049, ctrlProp: 13, cell: "B29", labelStringIndex: 58, altText: "Nein (Mehrfachbezug)"),
             FormCheckbox(name: 26, drawingShapeID: 1050, ctrlProp: 14, cell: "A31", labelStringIndex: 59, altText: "Betrag bar erhalten am"),
             ueberweisung,
-            FormCheckbox(vmlShapeID: "_x0000_s1052", drawingShapeID: 1052, ctrlProp: 16, cell: "P42", altText: "Richtigkeitsvermerk")
+            richtigkeitsvermerk
         ]
     }
 
@@ -436,6 +439,8 @@ enum PraeExporter {
     /// empty; a visible tick in the shared file isn't an option either, since
     /// that file must match the template. So a temporary copy gets visible
     /// ☒/☐, read from the controls, and the exported file stays as it is.
+    /// The Richtigkeitsvermerk has no box in its label, only the control on
+    /// the empty cell P42, so its ☒ goes into that cell.
     /// Plain Unicode in Arial because Wingdings doesn't ship on iOS. Returns
     /// `file` itself for anything that isn't a PRAE form; a returned copy is
     /// the caller's to delete.
@@ -457,7 +462,10 @@ enum PraeExporter {
                                      FormCheckbox.all.reduce(strings) {
                                          showLabelBox(in: $0, box: $1, isChecked: checkedBoxes.contains($1))
                                      }
-                                 }]) { $0 }
+                                 }]) { sheet in
+            guard checkedBoxes.contains(.richtigkeitsvermerk) else { return sheet }
+            return XLSXCellPatch.setText(in: sheet, ref: FormCheckbox.richtigkeitsvermerk.cell, value: "☒")
+        }
     }
 
     private static func addAltText(toShapeIn vml: String, box: FormCheckbox) -> String {

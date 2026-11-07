@@ -97,7 +97,19 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertEqual(eligible.first?.membershipIDs.count, 2)
     }
 
-    // MARK: - summary
+    // MARK: - summaries
+
+    private func makePerson() throws -> (ModelContext, TeamMembership, PraeEligiblePerson) {
+        let context = ModelContext(try makeContainer())
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+        let person = try XCTUnwrap(PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first)
+        return (context, membership, person)
+    }
 
     func testSummaryGroupsByDayAndFiltersToMonth() throws {
         let container = try makeContainer()
@@ -119,7 +131,7 @@ final class PraeCalculationTests: XCTestCase {
 
         let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
         let person = PraeCalculator.eligiblePeople(from: allMemberships).first!
-        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, in: context)
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).first)
 
         XCTAssertEqual(summary.entries.count, 1)
         XCTAssertEqual(summary.entries.first?.day, 5)
@@ -127,74 +139,85 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertEqual(summary.total, 40)
     }
 
-    func testSummarySumsMultipleSessionsOnSameDay() throws {
-        let container = try makeContainer()
-        let context = ModelContext(container)
-        let team = Team(name: "Torball 1", sport: "Torball")
-        context.insert(team)
-        let coach = Member(firstName: "Anna", lastName: "Trainer")
-        context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: .coach)
-        context.insert(membership)
+    func testSummariesSumTwoSessionsOfOneTrainingOnTheSameDay() throws {
+        let (context, membership, person) = try makePerson()
 
-        let morning = makeTraining(context, title: "Vormittag", day: 10)
-        let evening = makeTraining(context, title: "Abend", day: 10)
+        let morning = makeTraining(context, title: "Montagstraining", day: 10)
+        let evening = makeTraining(context, title: "Montagstraining", day: 10)
         context.insert(Attendance(event: morning, membership: membership, attended: true, praeAmount: 30))
         context.insert(Attendance(event: evening, membership: membership, attended: true, praeAmount: 100))
 
-        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, in: context)
+        let summaries = PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context)
 
-        XCTAssertEqual(summary.entries.count, 1)
-        XCTAssertEqual(summary.entries.first?.amount, 130)
-        XCTAssertTrue(summary.daysExceedingDailyCap.contains(10)) // 130 > 120 daily cap
+        XCTAssertEqual(summaries.count, 1)
+        XCTAssertEqual(summaries.first?.entries.count, 1)
+        XCTAssertEqual(summaries.first?.entries.first?.amount, 130)
+        XCTAssertEqual(summaries.first?.daysExceedingDailyCap, [10]) // 130 > 120 daily cap
     }
 
-    func testSummaryFlagsMonthlyCapExceeded() throws {
-        let container = try makeContainer()
-        let context = ModelContext(container)
-        let team = Team(name: "Torball 1", sport: "Torball")
-        context.insert(team)
-        let coach = Member(firstName: "Anna", lastName: "Trainer")
-        context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: .coach)
-        context.insert(membership)
+    func testSummariesFlagMonthlyCapExceeded() throws {
+        let (context, membership, person) = try makePerson()
 
         for day in [1, 5, 10, 15, 20, 25] {
-            let training = makeTraining(context, title: "Training \(day)", day: day)
+            let training = makeTraining(context, title: "Montagstraining", day: day)
             context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 120))
         }
 
-        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, in: context)
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).first)
 
         XCTAssertEqual(summary.total, 720)
         XCTAssertFalse(summary.exceedsMonthlyCap) // exactly at the cap, not over
 
         // One more day pushes it over.
-        let extra = makeTraining(context, title: "Extra", day: 28)
+        let extra = makeTraining(context, title: "Montagstraining", day: 28)
         context.insert(Attendance(event: extra, membership: membership, attended: true, praeAmount: 10))
-        let summary2 = PraeCalculator.summary(for: person, month: 7, year: 2026, in: context)
+        let summary2 = try XCTUnwrap(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).first)
         XCTAssertTrue(summary2.exceedsMonthlyCap)
     }
 
-    func testSummaryIgnoresAttendanceWithoutPraeAmount() throws {
-        let container = try makeContainer()
-        let context = ModelContext(container)
-        let team = Team(name: "Torball 1", sport: "Torball")
-        context.insert(team)
-        let coach = Member(firstName: "Anna", lastName: "Trainer")
-        context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: .coach)
-        context.insert(membership)
+    func testSummariesCheckTheCapsAcrossAPersonsTrainings() throws {
+        // The legal caps apply to the person, so splitting a month into
+        // several forms must not hide that they were exceeded.
+        let (context, membership, person) = try makePerson()
+
+        for day in [1, 2, 3, 4] {
+            let training = makeTraining(context, title: "Montagstraining", day: day)
+            context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 120))
+        }
+        for day in [4, 5, 6] {
+            let training = makeTraining(context, title: "Donnerstagstraining", day: day)
+            context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 100))
+        }
+
+        let summaries = PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context)
+
+        XCTAssertEqual(summaries.map(\.total), [480, 300])
+        XCTAssertEqual(summaries.map(\.personTotal), [780, 780])
+        XCTAssertEqual(summaries.map(\.exceedsMonthlyCap), [true, true])
+        // Day 4 has 120 + 100, within the cap on each form but not together.
+        XCTAssertEqual(summaries.map(\.daysExceedingDailyCap), [[4], [4]])
+    }
+
+    func testSummariesIgnoreAttendanceWithoutPraeAmount() throws {
+        let (context, membership, person) = try makePerson()
 
         let training = makeTraining(context, title: "Ohne Betrag", day: 3)
         context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: nil))
 
-        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, in: context)
+        XCTAssertTrue(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).isEmpty)
+    }
 
-        XCTAssertTrue(summary.entries.isEmpty)
+    func testSummariesGiveNoFormToATrainingWithoutAnAmount() throws {
+        let (context, membership, person) = try makePerson()
+
+        let paid = makeTraining(context, title: "Montagstraining", day: 3)
+        let unpaid = makeTraining(context, title: "Donnerstagstraining", day: 4)
+        context.insert(Attendance(event: paid, membership: membership, attended: true, praeAmount: 40))
+        context.insert(Attendance(event: unpaid, membership: membership, attended: true, praeAmount: 0))
+
+        let summaries = PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context)
+
+        XCTAssertEqual(summaries.map(\.trainingName), ["Montagstraining"])
     }
 
     func testSummaryExcludesTournamentAttendances() throws {
@@ -216,89 +239,48 @@ final class PraeCalculationTests: XCTestCase {
         context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 60))
 
         let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, in: context)
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).first)
 
         XCTAssertEqual(summary.total, 40)
         XCTAssertEqual(summary.entries.count, 1)
     }
 
-    func testSummaryTrainingNameIsBareTitleWhenFilteredBySport() throws {
-        let container = try makeContainer()
-        let context = ModelContext(container)
-        let team = Team(name: "Torball 1", sport: "Torball")
-        context.insert(team)
-        let coach = Member(firstName: "Anna", lastName: "Trainer")
-        context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: .coach)
-        context.insert(membership)
+    func testSummariesMakeOneFormPerTrainingName() throws {
+        // Same sport, different names: "Lauf- und Torballtraining" and
+        // "Torballtraining" are both Torball and still get a form each.
+        let (context, membership, person) = try makePerson()
 
-        let training = makeTraining(context, title: "Montagstraining", day: 5)
-        context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 40))
+        let run = makeTraining(context, title: "Lauf- und Torballtraining", day: 5)
+        let torball = makeTraining(context, title: "Torballtraining", day: 22)
+        let nextRun = makeTraining(context, title: "Lauf- und Torballtraining", day: 12)
+        context.insert(Attendance(event: run, membership: membership, attended: true, praeAmount: 40))
+        context.insert(Attendance(event: torball, membership: membership, attended: true, praeAmount: 30))
+        context.insert(Attendance(event: nextRun, membership: membership, attended: true, praeAmount: 40))
 
-        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, sport: "Torball", in: context)
+        let summaries = PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context)
 
-        XCTAssertEqual(summary.trainingName, "Montagstraining")
+        XCTAssertEqual(summaries.map(\.trainingName), ["Lauf- und Torballtraining", "Torballtraining"])
+        XCTAssertEqual(summaries[0].entries.map(\.day), [5, 12])
+        XCTAssertEqual(summaries[0].total, 80)
+        XCTAssertEqual(summaries[1].entries.map(\.day), [22])
+        XCTAssertEqual(summaries[1].total, 30)
     }
 
-    func testSummaryTrainingNameJoinsDistinctTitlesWithoutSportFilter() throws {
-        let container = try makeContainer()
-        let context = ModelContext(container)
-        let team = Team(name: "Torball 1", sport: "Torball")
-        context.insert(team)
-        let coach = Member(firstName: "Anna", lastName: "Trainer")
-        context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: .coach)
-        context.insert(membership)
+    func testSummariesKeepTheirOrderHoweverTheyAreStored() throws {
+        // A fetch has no order of its own, which once swapped the two names.
+        for _ in 0..<20 {
+            let (context, membership, person) = try makePerson()
+            let late = makeTraining(context, title: "Zuerst gespeichert", day: 22)
+            let early = makeTraining(context, title: "Danach gespeichert", day: 5)
+            let sameDay = makeTraining(context, title: "Auch am 5.", day: 5)
+            context.insert(Attendance(event: late, membership: membership, attended: true, praeAmount: 30))
+            context.insert(Attendance(event: early, membership: membership, attended: true, praeAmount: 40))
+            context.insert(Attendance(event: sameDay, membership: membership, attended: true, praeAmount: 20))
 
-        let training1 = makeTraining(context, title: "Montagstraining", day: 5)
-        let training2 = makeTraining(context, title: "Donnerstagstraining", day: 22)
-        context.insert(Attendance(event: training1, membership: membership, attended: true, praeAmount: 40))
-        context.insert(Attendance(event: training2, membership: membership, attended: true, praeAmount: 30))
+            let summaries = PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context)
 
-        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, in: context)
-
-        XCTAssertEqual(summary.trainingName, "Montagstraining, Donnerstagstraining")
-    }
-
-    func testSummarySportFilterExcludesOtherSportsAttendances() throws {
-        let container = try makeContainer()
-        let context = ModelContext(container)
-        let team = Team(name: "Torball 1", sport: "Torball")
-        context.insert(team)
-        let coach = Member(firstName: "Anna", lastName: "Trainer")
-        context.insert(coach)
-        let membership = TeamMembership(member: coach, team: team, role: .coach)
-        context.insert(membership)
-
-        let torball = makeTraining(context, title: "Torball-Training", day: 5)
-        let showdown = Training(title: "Showdown-Training", sport: "Showdown", location: "Graz",
-                                 startDate: torball.startDate)
-        context.insert(showdown)
-        context.insert(Attendance(event: torball, membership: membership, attended: true, praeAmount: 40))
-        context.insert(Attendance(event: showdown, membership: membership, attended: true, praeAmount: 999))
-
-        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, month: 7, year: 2026, sport: "Torball", in: context)
-
-        XCTAssertEqual(summary.total, 40)
-        XCTAssertEqual(summary.trainingName, "Torball-Training")
-    }
-
-    func testTrainingSportsReturnsDistinctSortedSportsForThatMonth() throws {
-        let container = try makeContainer()
-        let context = ModelContext(container)
-        _ = makeTraining(context, title: "A", day: 3)
-        _ = makeTraining(context, title: "B", day: 10)
-        let showdown = Training(title: "Showdown-Training", sport: "Showdown", location: "Graz",
-                                 startDate: Calendar.current.date(from: DateComponents(year: 2026, month: 7, day: 15))!)
-        context.insert(showdown)
-        _ = makeTraining(context, title: "August", day: 3, month: 8) // different month, excluded
-
-        let sports = PraeCalculator.trainingSports(month: 7, year: 2026, in: context)
-
-        XCTAssertEqual(sports, ["Showdown", "Torball"])
+            XCTAssertEqual(summaries.map(\.trainingName), ["Auch am 5.", "Danach gespeichert", "Zuerst gespeichert"])
+        }
     }
 
     // MARK: - summary(for:tournament:)
@@ -324,7 +306,7 @@ final class PraeCalculationTests: XCTestCase {
         context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 999))
 
         let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, tournament: tournament)
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, tournament: tournament).first)
 
         XCTAssertEqual(summary.entries.count, 2)
         XCTAssertEqual(summary.entries.map(\.day), [12, 13])
@@ -355,7 +337,7 @@ final class PraeCalculationTests: XCTestCase {
         context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 90))
 
         let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, tournament: tournament)
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, tournament: tournament).first)
 
         XCTAssertEqual(summary.entries.map(\.day), [10, 11, 12])
         XCTAssertEqual(summary.entries.map(\.amount), [30, 30, 30])
@@ -392,7 +374,7 @@ final class PraeCalculationTests: XCTestCase {
         context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 100))
 
         let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, tournament: tournament)
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, tournament: tournament).first)
 
         XCTAssertEqual(summary.entries.map(\.day), [10, 11, 12])
         XCTAssertEqual(summary.entries.map(\.amount), [33, 34, 33])
@@ -426,9 +408,87 @@ final class PraeCalculationTests: XCTestCase {
         context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: nil))
 
         let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
-        let summary = PraeCalculator.summary(for: person, tournament: tournament)
+        XCTAssertTrue(PraeCalculator.summaries(for: person, tournament: tournament).isEmpty)
+    }
 
-        XCTAssertTrue(summary.entries.isEmpty)
+    // MARK: - tournaments across months
+
+    private func makeSpanningTournament(_ context: ModelContext, from start: DateComponents, to end: DateComponents) throws -> Tournament {
+        let calendar = Calendar.current
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
+                                    startDate: try XCTUnwrap(calendar.date(from: start)),
+                                    endDate: try XCTUnwrap(calendar.date(from: end)))
+        context.insert(tournament)
+        return tournament
+    }
+
+    func testTournamentIntoTheNextMonthGetsOneSummaryPerMonth() throws {
+        let (context, membership, person) = try makePerson()
+        let tournament = try makeSpanningTournament(context, from: DateComponents(year: 2026, month: 7, day: 30, hour: 9),
+                                        to: DateComponents(year: 2026, month: 8, day: 2, hour: 17))
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 400))
+
+        let summaries = PraeCalculator.summaries(for: person, tournament: tournament)
+
+        XCTAssertEqual(summaries.map(\.month), [7, 8])
+        XCTAssertEqual(summaries.map(\.year), [2026, 2026])
+        XCTAssertEqual(summaries.map(\.monthLabel), ["Juli 2026", "August 2026"])
+        XCTAssertEqual(summaries.map(\.spansSeveralMonths), [true, true])
+        XCTAssertEqual(summaries[0].entries.map(\.day), [30, 31])
+        XCTAssertEqual(summaries[1].entries.map(\.day), [1, 2])
+        XCTAssertEqual(summaries.map(\.total), [200, 200])
+    }
+
+    func testTournamentMonthsAddUpToTheEnteredAmount() throws {
+        let (context, membership, person) = try makePerson()
+        let tournament = try makeSpanningTournament(context, from: DateComponents(year: 2026, month: 7, day: 31, hour: 9),
+                                        to: DateComponents(year: 2026, month: 8, day: 2, hour: 17))
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 100))
+
+        let summaries = PraeCalculator.summaries(for: person, tournament: tournament)
+
+        // €33 / €34 / €33: the middle day takes the remainder, before the split.
+        XCTAssertEqual(summaries.map(\.total), [33, 67])
+    }
+
+    func testTournamentOverNewYearGetsBothYears() throws {
+        let (context, membership, person) = try makePerson()
+        let tournament = try makeSpanningTournament(context, from: DateComponents(year: 2026, month: 12, day: 31, hour: 9),
+                                        to: DateComponents(year: 2027, month: 1, day: 1, hour: 17))
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 100))
+
+        let summaries = PraeCalculator.summaries(for: person, tournament: tournament)
+
+        XCTAssertEqual(summaries.map(\.month), [12, 1])
+        XCTAssertEqual(summaries.map(\.year), [2026, 2027])
+    }
+
+    func testTournamentWithinOneMonthStaysOneSummary() throws {
+        let (context, membership, person) = try makePerson()
+        let tournament = try makeSpanningTournament(context, from: DateComponents(year: 2026, month: 7, day: 10, hour: 9),
+                                        to: DateComponents(year: 2026, month: 7, day: 11, hour: 17))
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 100))
+
+        let summaries = PraeCalculator.summaries(for: person, tournament: tournament)
+
+        XCTAssertEqual(summaries.count, 1)
+        XCTAssertEqual(summaries.first?.spansSeveralMonths, false)
+    }
+
+    func testTournamentFormsNameTheirOwnMonth() throws {
+        let (context, membership, person) = try makePerson()
+        let tournament = try makeSpanningTournament(context, from: DateComponents(year: 2026, month: 7, day: 31, hour: 9),
+                                        to: DateComponents(year: 2026, month: 8, day: 1, hour: 17))
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 100))
+        let august = try XCTUnwrap(PraeCalculator.summaries(for: person, tournament: tournament).last)
+
+        let form = try PraeExporter.exportMainForm(summary: august)
+        defer { try? FileManager.default.removeItem(at: form) }
+        let darstellung = try PraeExporter.exportDarstellung(summary: august)
+        defer { try? FileManager.default.removeItem(at: darstellung) }
+
+        XCTAssertTrue(try entryText(from: form, path: "xl/worksheets/sheet1.xml").contains("<t>August</t>"))
+        XCTAssertTrue(try entryText(from: darstellung, path: "xl/worksheets/sheet1.xml").contains("<t>Landesmeisterschaft, August 2026</t>"))
     }
 
     // MARK: - SportEvent.dayCount
@@ -680,6 +740,7 @@ final class PraeCalculationTests: XCTestCase {
     private let nebenberufJaBox = (shape: "Kontrollkästchen_x0020_22", ctrlProp: "xl/ctrlProps/ctrlProp10.xml")
     private let einfachbezugJaBox = (shape: "Kontrollkästchen_x0020_24", ctrlProp: "xl/ctrlProps/ctrlProp12.xml")
     private let ueberweisungBox = (shape: "Kontrollkästchen_x0020_27", ctrlProp: "xl/ctrlProps/ctrlProp15.xml")
+    private let richtigkeitsvermerkBox = (shape: "_x0000_s1052", ctrlProp: "xl/ctrlProps/ctrlProp16.xml")
 
     private func entryText(from url: URL, path: String) throws -> String {
         let archive = try Archive(url: url, accessMode: .read)
@@ -719,6 +780,7 @@ final class PraeCalculationTests: XCTestCase {
         try assertBox(nebenberufJaBox, checked: true, in: url)
         try assertBox(einfachbezugJaBox, checked: true, in: url)
         try assertBox(ueberweisungBox, checked: true, in: url)
+        try assertBox(richtigkeitsvermerkBox, checked: true, in: url)
         try assertBox(trainerBox, checked: false, in: url)
     }
 
@@ -734,6 +796,7 @@ final class PraeCalculationTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: url) }
 
         try assertBox(trainerBox, checked: true, in: url)
+        try assertBox(richtigkeitsvermerkBox, checked: true, in: url)
         try assertBox(uebungsleiterBox, checked: false, in: url)
         try assertBox(nebenberufJaBox, checked: false, in: url)
         try assertBox(einfachbezugJaBox, checked: false, in: url)
@@ -804,8 +867,11 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertTrue(try mark(before: " Übungsleiter:in").contains("☒"))
         XCTAssertTrue(try mark(before: " Trainer:in").contains("☐"))
 
-        XCTAssertEqual(try entryText(from: copy, path: "xl/worksheets/sheet1.xml"),
-                       try entryText(from: url, path: "xl/worksheets/sheet1.xml"))
+        // P42 has no box in a label, so its mark goes into the cell.
+        let copySheet = try entryText(from: copy, path: "xl/worksheets/sheet1.xml")
+        XCTAssertNotNil(copySheet.range(of: "<c r=\"P42\"[^>]*><is><t>☒</t></is></c>", options: .regularExpression))
+        let exportedSheet = try entryText(from: url, path: "xl/worksheets/sheet1.xml")
+        XCTAssertNotNil(exportedSheet.range(of: "<c r=\"P42\" s=\"32\"/>"))
         XCTAssertEqual(try entryText(from: url, path: "xl/sharedStrings.xml"), exported)
     }
 
@@ -822,6 +888,8 @@ final class PraeCalculationTests: XCTestCase {
         let strings = try entryText(from: copy, path: "xl/sharedStrings.xml")
         XCTAssertEqual(strings.components(separatedBy: "<t>☒</t>").count - 1, 1)
         XCTAssertEqual(strings.components(separatedBy: "<t>☐</t>").count - 1, 14)
+        let sheet = try entryText(from: copy, path: "xl/worksheets/sheet1.xml")
+        XCTAssertNotNil(sheet.range(of: "<c r=\"P42\"[^>]*><is><t>☒</t></is></c>", options: .regularExpression))
     }
 
     func testPrintCopyLeavesOtherFilesAlone() throws {

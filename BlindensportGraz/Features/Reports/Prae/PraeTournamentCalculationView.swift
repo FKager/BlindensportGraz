@@ -6,7 +6,8 @@ import SwiftData
 /// PRAE deployment days for just this event — the per-tournament
 /// counterpart to PraeCalculationView's per-month one, mirroring
 /// KostZTournamentCalculationView's relationship to KostZCalculationView.
-/// No month/year picker: the tournament supplies its own period.
+/// The tournament supplies its own period; only one that runs into the next
+/// month offers a month picker, as it files one PRAE per month.
 struct PraeTournamentCalculationView: View {
     /// Width of the "12." day column; grows with Dynamic Type.
     @ScaledMetric(relativeTo: .body) private var dayColumnWidth = 32.0
@@ -16,6 +17,7 @@ struct PraeTournamentCalculationView: View {
     @Query private var allMemberships: [TeamMembership]
 
     @State private var selectedPersonID: UUID?
+    @State private var selectedSummaryIndex = 0
     @State private var mainFormURL: URL?
     @State private var darstellungURL: URL?
     @State private var exportError: String?
@@ -35,9 +37,18 @@ struct PraeTournamentCalculationView: View {
         eligiblePeople.first { $0.id == selectedPersonID }
     }
 
+    private var summaries: [PraeTournamentSummary] {
+        guard let person = selectedPerson else { return [] }
+        return PraeCalculator.summaries(for: person, tournament: tournament)
+    }
+
     private var summary: PraeTournamentSummary? {
-        guard let person = selectedPerson else { return nil }
-        return PraeCalculator.summary(for: person, tournament: tournament)
+        let summaries = summaries
+        return summaries.indices.contains(selectedSummaryIndex) ? summaries[selectedSummaryIndex] : summaries.first
+    }
+
+    private var exportTaskID: String {
+        "\(selectedPersonID?.uuidString ?? "")-\(selectedSummaryIndex)"
     }
 
     var body: some View {
@@ -55,50 +66,62 @@ struct PraeTournamentCalculationView: View {
                             }
                         }
                     }
+                    if summaries.count > 1 {
+                        Picker("Monat", selection: $selectedSummaryIndex) {
+                            ForEach(Array(summaries.enumerated()), id: \.offset) { index, summary in
+                                Text(summary.monthLabel).tag(index)
+                            }
+                        }
+                        Text("Dieses Turnier läuft über mehrere Monate. Für jeden Monat gibt es ein eigenes PRAE-Formular und eine eigene Darstellung.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                if selectedPerson != nil, summary == nil {
+                    Section("Einsatztage") {
+                        Text("Keine Einsatztage mit hinterlegtem PRAE-Betrag bei diesem Turnier.")
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 if let summary {
                     Section("Einsatztage") {
-                        if summary.entries.isEmpty {
-                            Text("Keine Einsatztage mit hinterlegtem PRAE-Betrag bei diesem Turnier.")
-                                .foregroundStyle(.secondary)
-                        } else {
-                            ForEach(summary.entries) { entry in
-                                HStack {
-                                    Text("\(entry.day).")
-                                        .frame(width: dayColumnWidth, alignment: .leading)
-                                    Text(entry.purpose)
-                                        .foregroundStyle(.secondary)
-                                        .lineLimit(1)
-                                    Spacer()
-                                    // Over the daily cap: icon + wording, not colour alone.
-                                    if entry.amount > PraeCalculator.dailyCap {
-                                        Image(systemName: "exclamationmark.triangle.fill")
-                                            .foregroundStyle(Theme.Palette.danger)
-                                            .accessibilityLabel("Über Tageshöchstsatz")
-                                    }
-                                    Text(entry.amount, format: .currency(code: "EUR"))
-                                        .foregroundStyle(entry.amount > PraeCalculator.dailyCap ? Theme.Palette.danger : .primary)
-                                }
-                            }
+                        ForEach(summary.entries) { entry in
                             HStack {
-                                Text("Gesamt").bold()
+                                Text("\(entry.day).")
+                                    .frame(width: dayColumnWidth, alignment: .leading)
+                                Text(entry.purpose)
+                                    .foregroundStyle(.secondary)
+                                    .lineLimit(1)
                                 Spacer()
-                                Text(summary.total, format: .currency(code: "EUR"))
-                                    .bold()
-                                    .foregroundStyle(summary.exceedsMonthlyCap ? Theme.Palette.danger : .primary)
+                                // Over the daily cap: icon + wording, not colour alone.
+                                if entry.amount > PraeCalculator.dailyCap {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .foregroundStyle(Theme.Palette.danger)
+                                        .accessibilityLabel("Über Tageshöchstsatz")
+                                }
+                                Text(entry.amount, format: .currency(code: "EUR"))
+                                    .foregroundStyle(entry.amount > PraeCalculator.dailyCap ? Theme.Palette.danger : .primary)
                             }
-                            if summary.exceedsMonthlyCap {
-                                Label("Monatliche Höchstgrenze von € 720,- überschritten.", systemImage: "exclamationmark.triangle.fill")
-                                    .font(.caption)
-                                    .foregroundStyle(Theme.Palette.danger)
-                            }
-                            if !summary.daysExceedingDailyCap.isEmpty {
-                                Label("Tageshöchstsatz von € 120,- überschritten an Tag(en): \(summary.daysExceedingDailyCap.map(String.init).joined(separator: ", ")).",
-                                      systemImage: "exclamationmark.triangle.fill")
-                                    .font(.caption)
-                                    .foregroundStyle(Theme.Palette.danger)
-                            }
+                        }
+                        HStack {
+                            Text("Gesamt").bold()
+                            Spacer()
+                            Text(summary.total, format: .currency(code: "EUR"))
+                                .bold()
+                                .foregroundStyle(summary.exceedsMonthlyCap ? Theme.Palette.danger : .primary)
+                        }
+                        if summary.exceedsMonthlyCap {
+                            Label("Monatliche Höchstgrenze von € 720,- überschritten.", systemImage: "exclamationmark.triangle.fill")
+                                .font(.caption)
+                                .foregroundStyle(Theme.Palette.danger)
+                        }
+                        if !summary.daysExceedingDailyCap.isEmpty {
+                            Label("Tageshöchstsatz von € 120,- überschritten an Tag(en): \(summary.daysExceedingDailyCap.map(String.init).joined(separator: ", ")).",
+                                  systemImage: "exclamationmark.triangle.fill")
+                                .font(.caption)
+                                .foregroundStyle(Theme.Palette.danger)
                         }
                     }
 
@@ -137,12 +160,15 @@ struct PraeTournamentCalculationView: View {
                     Button("Fertig") { dismiss() }
                 }
             }
+            .onChange(of: selectedPersonID) {
+                selectedSummaryIndex = 0
+            }
             .alert("Export fehlgeschlagen", isPresented: Binding(get: { exportError != nil }, set: { if !$0 { exportError = nil } })) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(exportError ?? "")
             }
-            .task(id: selectedPersonID) {
+            .task(id: exportTaskID) {
                 mainFormURL = nil
                 guard let summary else { return }
                 do {
@@ -151,7 +177,7 @@ struct PraeTournamentCalculationView: View {
                     exportError = error.localizedDescription
                 }
             }
-            .task(id: selectedPersonID) {
+            .task(id: exportTaskID) {
                 darstellungURL = nil
                 guard let summary, !summary.entries.isEmpty else { return }
                 do {

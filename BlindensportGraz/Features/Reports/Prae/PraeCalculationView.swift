@@ -23,7 +23,7 @@ struct PraeCalculationView: View {
     @State private var selectedPersonID: UUID?
     @State private var month = Calendar.current.component(.month, from: .now)
     @State private var year = Calendar.current.component(.year, from: .now)
-    @State private var selectedSport: String?
+    @State private var selectedTraining: String?
     @State private var mainFormURL: URL?
     @State private var darstellungURL: URL?
     @State private var exportError: String?
@@ -36,18 +36,15 @@ struct PraeCalculationView: View {
         eligiblePeople.first { $0.id == selectedPersonID }
     }
 
-    // Distinct sports among that month's Trainings — feeds the
-    // "Trainingsart" picker below, so T11 (Verwendungszweck) on the
-    // exported PRAE-Formular can show a single bare training name instead
-    // of every differently-named training the person was deployed for that
-    // month (user request).
-    private var availableSports: [String] {
-        PraeCalculator.trainingSports(month: month, year: year, in: modelContext)
+    // One PRAE per training the person was deployed for this month — the
+    // "Training" picker below chooses which of them to show and export.
+    private var summaries: [PraeMonthSummary] {
+        guard let person = selectedPerson else { return [] }
+        return PraeCalculator.summaries(for: person, month: month, year: year, in: modelContext)
     }
 
     private var summary: PraeMonthSummary? {
-        guard let person = selectedPerson, let sport = selectedSport else { return nil }
-        return PraeCalculator.summary(for: person, month: month, year: year, sport: sport, in: modelContext)
+        summaries.first { $0.trainingName == selectedTraining }
     }
 
     var body: some View {
@@ -71,14 +68,21 @@ struct PraeCalculationView: View {
                         }
                     }
                     Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
-                    if availableSports.isEmpty {
-                        Text("Keine Trainings in diesem Monat.")
-                            .foregroundStyle(.secondary)
-                    } else {
-                        Picker("Trainingsart", selection: $selectedSport) {
-                            Text("Bitte wählen").tag(String?.none)
-                            ForEach(availableSports, id: \.self) { sport in
-                                Text(sport).tag(Optional(sport))
+                    if selectedPerson != nil {
+                        if summaries.isEmpty {
+                            Text("Keine Trainings mit hinterlegtem PRAE-Betrag in diesem Monat.")
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Picker("Training", selection: $selectedTraining) {
+                                Text("Bitte wählen").tag(String?.none)
+                                ForEach(summaries, id: \.trainingName) { summary in
+                                    Text(summary.trainingName).tag(Optional(summary.trainingName))
+                                }
+                            }
+                            if summaries.count > 1 {
+                                Text("Für jedes Training gibt es ein eigenes PRAE-Formular.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                             }
                         }
                     }
@@ -99,13 +103,13 @@ struct PraeCalculationView: View {
                                         .lineLimit(1)
                                     Spacer()
                                     // Over the daily cap: icon + wording, not colour alone.
-                                    if entry.amount > PraeCalculator.dailyCap {
+                                    if summary.daysExceedingDailyCap.contains(entry.day) {
                                         Image(systemName: "exclamationmark.triangle.fill")
                                             .foregroundStyle(Theme.Palette.danger)
                                             .accessibilityLabel("Über Tageshöchstsatz")
                                     }
                                     Text(entry.amount, format: .currency(code: "EUR"))
-                                        .foregroundStyle(entry.amount > PraeCalculator.dailyCap ? Theme.Palette.danger : .primary)
+                                        .foregroundStyle(summary.daysExceedingDailyCap.contains(entry.day) ? Theme.Palette.danger : .primary)
                                 }
                             }
                             HStack {
@@ -114,6 +118,14 @@ struct PraeCalculationView: View {
                                 Text(summary.total, format: .currency(code: "EUR"))
                                     .bold()
                                     .foregroundStyle(summary.exceedsMonthlyCap ? Theme.Palette.danger : .primary)
+                            }
+                            if summary.personTotal != summary.total {
+                                HStack {
+                                    Text("Alle Trainings im Monat")
+                                    Spacer()
+                                    Text(summary.personTotal, format: .currency(code: "EUR"))
+                                        .foregroundStyle(summary.exceedsMonthlyCap ? Theme.Palette.danger : .primary)
+                                }
                             }
                             if summary.exceedsMonthlyCap {
                                 Label("Monatliche Höchstgrenze von € 720,- überschritten.", systemImage: "exclamationmark.triangle.fill")
@@ -171,12 +183,18 @@ struct PraeCalculationView: View {
                     Button("Fertig") { dismiss() }
                 }
             }
+            // A different person or month has its own trainings.
+            .onChange(of: summaries.map(\.trainingName)) { _, names in
+                if let selectedTraining, !names.contains(selectedTraining) {
+                    self.selectedTraining = nil
+                }
+            }
             .alert("Export fehlgeschlagen", isPresented: Binding(get: { exportError != nil }, set: { if !$0 { exportError = nil } })) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(exportError ?? "")
             }
-            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)-\(selectedSport ?? "")") {
+            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)-\(selectedTraining ?? "")") {
                 mainFormURL = nil
                 guard let summary else { return }
                 do {
@@ -185,7 +203,7 @@ struct PraeCalculationView: View {
                     exportError = error.localizedDescription
                 }
             }
-            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)-\(selectedSport ?? "")") {
+            .task(id: "\(selectedPersonID?.uuidString ?? "")-\(month)-\(year)-\(selectedTraining ?? "")") {
                 darstellungURL = nil
                 guard let summary, !summary.entries.isEmpty else { return }
                 do {

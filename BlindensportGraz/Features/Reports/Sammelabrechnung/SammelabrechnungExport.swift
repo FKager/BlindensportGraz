@@ -22,7 +22,10 @@ import ZIPFoundation
 /// file is only included when they actually have deployment-day entries
 /// (always true here, since `personAmounts` already filtered to amount > 0),
 /// matching PraeCalculationView's own `!summary.entries.isEmpty` gate on
-/// showing that ShareLink.
+/// showing that ShareLink. A person on several trainings in a month files one
+/// PRAE per training, so a month's file names carry the training. A tournament
+/// running into the next month files one PRAE per month, so its names carry
+/// the month.
 enum SammelabrechnungExporter {
     /// One produced report: its file name inside the bundle and the .xlsx.
     typealias ReportFile = (name: String, url: URL)
@@ -59,9 +62,9 @@ enum SammelabrechnungExporter {
             files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
         }
         for summary in praeSummaries {
-            files.append((fileName(for: summary.person, suffix: "PRAE"), try PraeExporter.exportMainForm(summary: summary)))
+            files.append((fileName(for: summary.person, suffix: "PRAE", detail: summary.trainingName), try PraeExporter.exportMainForm(summary: summary)))
             if !summary.entries.isEmpty {
-                files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung"), try PraeExporter.exportDarstellung(summary: summary)))
+                files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung", detail: summary.trainingName), try PraeExporter.exportDarstellung(summary: summary)))
             }
         }
         return files
@@ -103,9 +106,9 @@ enum SammelabrechnungExporter {
             files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
         }
         for summary in praeSummaries {
-            files.append((fileName(for: summary.person, suffix: "PRAE"), try PraeExporter.exportMainForm(summary: summary)))
+            files.append((fileName(for: summary.person, suffix: "PRAE", detail: monthDetail(summary)), try PraeExporter.exportMainForm(summary: summary)))
             if !summary.entries.isEmpty {
-                files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung"), try PraeExporter.exportDarstellung(summary: summary)))
+                files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung", detail: monthDetail(summary)), try PraeExporter.exportDarstellung(summary: summary)))
             }
         }
         if let teilnehmerlisteSportler {
@@ -146,11 +149,13 @@ enum SammelabrechnungExporter {
             guard !kostZSummary.personAmounts.isEmpty else { continue }
             let label = String(format: "%02d-%d", month, year)
             files.append(("\(label)_KostZ.xlsx", try KostZExporter.export(summary: kostZSummary)))
-            for personAmount in kostZSummary.personAmounts {
-                let praeSummary = PraeCalculator.summary(for: personAmount.person, month: month, year: year, in: context)
-                files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE"))", try PraeExporter.exportMainForm(summary: praeSummary)))
+            let praeSummaries = kostZSummary.personAmounts.flatMap {
+                PraeCalculator.summaries(for: $0.person, month: month, year: year, in: context)
+            }
+            for praeSummary in praeSummaries {
+                files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE", detail: praeSummary.trainingName))", try PraeExporter.exportMainForm(summary: praeSummary)))
                 if !praeSummary.entries.isEmpty {
-                    files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE-Darstellung"))", try PraeExporter.exportDarstellung(summary: praeSummary)))
+                    files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE-Darstellung", detail: praeSummary.trainingName))", try PraeExporter.exportDarstellung(summary: praeSummary)))
                 }
             }
         }
@@ -163,11 +168,13 @@ enum SammelabrechnungExporter {
             guard !kostZSummary.personAmounts.isEmpty else { continue }
             let label = "Turnier_\(sanitize(tournament.title))"
             files.append(("\(label)_KostZ.xlsx", try KostZExporter.export(summary: kostZSummary)))
-            for personAmount in kostZSummary.personAmounts {
-                let praeSummary = PraeCalculator.summary(for: personAmount.person, tournament: tournament)
-                files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE"))", try PraeExporter.exportMainForm(summary: praeSummary)))
+            let praeSummaries = kostZSummary.personAmounts.flatMap {
+                PraeCalculator.summaries(for: $0.person, tournament: tournament)
+            }
+            for praeSummary in praeSummaries {
+                files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE", detail: monthDetail(praeSummary)))", try PraeExporter.exportMainForm(summary: praeSummary)))
                 if !praeSummary.entries.isEmpty {
-                    files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE-Darstellung"))", try PraeExporter.exportDarstellung(summary: praeSummary)))
+                    files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE-Darstellung", detail: monthDetail(praeSummary)))", try PraeExporter.exportDarstellung(summary: praeSummary)))
                 }
             }
         }
@@ -195,11 +202,17 @@ enum SammelabrechnungExporter {
     /// falling back to `displayName` for a `PraeEligiblePerson` built without
     /// separate name parts (some existing test fixtures only set
     /// displayName) — either way, "/" is stripped since it isn't a valid zip
-    /// entry-name path separator substitute here.
-    private static func fileName(for person: PraeEligiblePerson, suffix: String) -> String {
+    /// entry-name path separator substitute here. `detail` ends the name when
+    /// given, keeping apart a person's forms for different trainings or months.
+    private static func fileName(for person: PraeEligiblePerson, suffix: String, detail: String = "") -> String {
         let name = [person.lastName, person.firstName].filter { !$0.isEmpty }.joined(separator: "_")
-        let safeName = (name.isEmpty ? person.displayName : name).replacingOccurrences(of: "/", with: "-")
-        return "\(suffix)_\(safeName).xlsx"
+        let safeName = sanitize(name.isEmpty ? person.displayName : name)
+        return "\(suffix)_\(safeName)\(detail.isEmpty ? "" : "_\(sanitize(detail))").xlsx"
+    }
+
+    /// "08-2026" for a tournament with a form per month, otherwise nothing.
+    private static func monthDetail(_ summary: PraeTournamentSummary) -> String {
+        summary.spansSeveralMonths ? String(format: "%02d-%d", summary.month, summary.year) : ""
     }
 
     /// Creates a fresh .zip (not a patched template — nothing to unzip

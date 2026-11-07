@@ -71,7 +71,8 @@ final class SupabaseRowsTests: XCTestCase {
         let membership = TeamMembership(team: team, role: .coach)
         let object = try json(TeamMembershipDBRow(membership))
 
-        XCTAssertEqual(object["team_id"] as? String, team.id.uuidString.lowercased())
+        // Postgres uuid columns ignore case; the encoder's casing is not part of the contract.
+        XCTAssertEqual((object["team_id"] as? String).flatMap(UUID.init(uuidString:)), team.id)
         XCTAssertEqual(object["role"] as? String, MembershipRole.coach.rawValue)
         XCTAssertTrue(object["member_id"] is NSNull, "a cleared member link must reach the server as null")
         XCTAssertTrue(object["user_id"] is NSNull)
@@ -85,6 +86,8 @@ final class SupabaseRowsTests: XCTestCase {
                                 startDate: Date(timeIntervalSince1970: 1_800_000_000),
                                 durationMinutes: 120, focusArea: "Abwehr")
         training.teams = [team]
+        // Whole seconds: the wire format keeps milliseconds, `.now` has finer precision.
+        training.createdAt = Date(timeIntervalSince1970: 1_800_000_000)
         let row = EventDBRow(training)
 
         XCTAssertEqual(row.kind, "training")
@@ -123,8 +126,10 @@ final class SupabaseRowsTests: XCTestCase {
     func testTournamentScopedReceiptKeepsTournamentIDWithoutMonthYear() throws {
         let tournament = Tournament(title: "Cup", sport: "Goalball", location: "Wien",
                                     startDate: .now, endDate: .now.addingTimeInterval(3600))
-        let row = ExpenseReceiptDBRow(ExpenseReceipt(imageData: Data([0x01]), uploadedBy: "u",
-                                                     tournament: tournament))
+        let receipt = ExpenseReceipt(imageData: Data([0x01]), uploadedBy: "u", tournament: tournament)
+        // Whole seconds: the wire format keeps milliseconds, `.now` has finer precision.
+        receipt.uploadedAt = Date(timeIntervalSince1970: 1_800_000_000)
+        let row = ExpenseReceiptDBRow(receipt)
 
         XCTAssertEqual(row.tournamentID, tournament.id)
         XCTAssertNil(row.month)
