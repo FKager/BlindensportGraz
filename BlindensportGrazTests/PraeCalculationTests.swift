@@ -672,45 +672,164 @@ final class PraeCalculationTests: XCTestCase {
         return String(vml[start.lowerBound..<end.upperBound])
     }
 
-    // Kontrollkästchen_x0020_17 = the checkbox floating over P9 ("Übungsleiter:in").
-    private let uebungsleiterCheckboxShapeID = "Kontrollkästchen_x0020_17"
-    // Kontrollkästchen_x0020_13 = the checkbox floating over B9 ("Trainer:in").
-    private let trainerCheckboxShapeID = "Kontrollkästchen_x0020_13"
+    /// (VML shape, ctrlProp entry) of each checkbox the tests below care
+    /// about. The ctrlProp numbers don't follow the shape names — they come
+    /// from sheet1.xml's `<control>` list via its .rels.
+    private let uebungsleiterBox = (shape: "Kontrollkästchen_x0020_17", ctrlProp: "xl/ctrlProps/ctrlProp7.xml")
+    private let trainerBox = (shape: "Kontrollkästchen_x0020_13", ctrlProp: "xl/ctrlProps/ctrlProp3.xml")
+    private let nebenberufJaBox = (shape: "Kontrollkästchen_x0020_22", ctrlProp: "xl/ctrlProps/ctrlProp10.xml")
+    private let einfachbezugJaBox = (shape: "Kontrollkästchen_x0020_24", ctrlProp: "xl/ctrlProps/ctrlProp12.xml")
+    private let ueberweisungBox = (shape: "Kontrollkästchen_x0020_27", ctrlProp: "xl/ctrlProps/ctrlProp15.xml")
 
-    func testExportMainFormChecksUebungsleiterBoxForTrainingsOnly() throws {
-        // User request: "In trainings in PRAE the cell P9 should be set" —
-        // P9 has no cell value of its own; it's where the real Excel
-        // Form-control checkbox labeled "Übungsleiter:in" floats (found via
-        // the template's own <x:Anchor> — see PraeExporter's doc comment).
-        let team = Team(name: "Torball 1", sport: "Torball")
-        let coach = Member(firstName: "Anna", lastName: "Trainer")
-        let membership = TeamMembership(member: coach, team: team, role: .coach)
-        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
-        let summary = PraeMonthSummary(person: person, month: 7, year: 2026, entries: [])
-
-        let url = try PraeExporter.exportMainForm(summary: summary)
-        defer { try? FileManager.default.removeItem(at: url) }
-
-        XCTAssertTrue(try checkboxBlock(from: url, shapeID: uebungsleiterCheckboxShapeID).contains("<x:Checked>1</x:Checked>"))
-        XCTAssertFalse(try checkboxBlock(from: url, shapeID: trainerCheckboxShapeID).contains("<x:Checked>"))
+    private func entryText(from url: URL, path: String) throws -> String {
+        let archive = try Archive(url: url, accessMode: .read)
+        var data = Data()
+        _ = try archive.extract(try XCTUnwrap(archive[path])) { data.append($0) }
+        return try XCTUnwrap(String(data: data, encoding: .utf8))
     }
 
-    func testExportMainFormChecksTrainerBoxForTournamentsOnly() throws {
-        // User request: "for tournaments, set B9 in a similar way in the
-        // PRAE" — B9 is where the "Trainer:in" checkbox floats.
+    /// Asserts a box's state in both places it has to be written (see
+    /// `PraeExporter.FormCheckbox`).
+    private func assertBox(_ box: (shape: String, ctrlProp: String), checked: Bool, in url: URL,
+                           file: StaticString = #filePath, line: UInt = #line) throws {
+        XCTAssertEqual(try checkboxBlock(from: url, shapeID: box.shape).contains("<x:Checked>1</x:Checked>"), checked,
+                       "VML \(box.shape)", file: file, line: line)
+        XCTAssertEqual(try entryText(from: url, path: box.ctrlProp).contains("checked=\"Checked\""), checked,
+                       box.ctrlProp, file: file, line: line)
+    }
+
+    private func coachPerson() -> PraeEligiblePerson {
         let team = Team(name: "Torball 1", sport: "Torball")
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         let membership = TeamMembership(member: coach, team: team, role: .coach)
-        let person = PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
-        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
-                                     startDate: .now, endDate: .now)
-        let summary = PraeTournamentSummary(person: person, tournament: tournament, entries: [])
+        return PraeEligiblePerson(id: coach.id, displayName: "Anna Trainer", membershipIDs: [membership.id], member: coach)
+    }
+
+    func testExportMainFormChecksTrainingBoxes() throws {
+        // User requests: "In trainings in PRAE the cell P9 should be set",
+        // then "in PRAE of training, the following cells have to be checked:
+        // P9, A26, A29 and A33". These cells have no value of their own;
+        // each is where a real Excel Form-control checkbox floats.
+        let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
 
         let url = try PraeExporter.exportMainForm(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
 
-        XCTAssertTrue(try checkboxBlock(from: url, shapeID: trainerCheckboxShapeID).contains("<x:Checked>1</x:Checked>"))
-        XCTAssertFalse(try checkboxBlock(from: url, shapeID: uebungsleiterCheckboxShapeID).contains("<x:Checked>"))
+        try assertBox(uebungsleiterBox, checked: true, in: url)
+        try assertBox(nebenberufJaBox, checked: true, in: url)
+        try assertBox(einfachbezugJaBox, checked: true, in: url)
+        try assertBox(ueberweisungBox, checked: true, in: url)
+        try assertBox(trainerBox, checked: false, in: url)
+    }
+
+    func testExportMainFormChecksOnlyTrainerBoxForTournaments() throws {
+        // User request: "for tournaments, set B9 in a similar way in the
+        // PRAE" — B9 is where the "Trainer:in" checkbox floats. The training
+        // declarations (A26/A29/A33) were requested for trainings only.
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
+                                     startDate: .now, endDate: .now)
+        let summary = PraeTournamentSummary(person: coachPerson(), tournament: tournament, entries: [])
+
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        try assertBox(trainerBox, checked: true, in: url)
+        try assertBox(uebungsleiterBox, checked: false, in: url)
+        try assertBox(nebenberufJaBox, checked: false, in: url)
+        try assertBox(einfachbezugJaBox, checked: false, in: url)
+        try assertBox(ueberweisungBox, checked: false, in: url)
+    }
+
+    func testExportMainFormNamesEveryCheckboxWithoutItsState() throws {
+        // NVDA uses a control's alternative text as its name; the template
+        // has none. A state in the name would go stale when a box changes.
+        let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let vml = try entryText(from: url, path: "xl/drawings/vmlDrawing1.vml")
+        let sheet = try entryText(from: url, path: "xl/worksheets/sheet1.xml")
+        let drawing = try entryText(from: url, path: "xl/drawings/drawing1.xml")
+
+        XCTAssertEqual(vml.components(separatedBy: " alt=\"").count - 1, 16)
+        XCTAssertEqual(sheet.components(separatedBy: "<controlPr altText=\"").count - 1, 16)
+        XCTAssertEqual(drawing.components(separatedBy: " descr=\"").count - 1, 16)
+        XCTAssertTrue(vml.contains("<v:shape id=\"Kontrollkästchen_x0020_17\" alt=\"Übungsleiter:in\""))
+        XCTAssertTrue(drawing.contains("<xdr:cNvPr id=\"1041\" descr=\"Übungsleiter:in\""))
+        XCTAssertFalse(vml.contains("angekreuzt"))
+        XCTAssertFalse(sheet.contains("angekreuzt"))
+        XCTAssertFalse(sheet.contains("<dataValidation"))
+    }
+
+    func testExportMainFormLeavesEverythingPrintedAsInTheTemplate() throws {
+        // The exported form has to match the original exactly. NVDA gets the
+        // state from the add-on in nvda-addon/, so nothing is added for it.
+        let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let template = try XCTUnwrap(Bundle.main.url(forResource: "PRAE_Formular", withExtension: "xlsx"))
+
+        for path in ["xl/sharedStrings.xml", "xl/workbook.xml", "xl/styles.xml", "xl/calcChain.xml"] {
+            XCTAssertEqual(try entryText(from: url, path: path), try entryText(from: template, path: path), path)
+        }
+        let vml = try entryText(from: url, path: "xl/drawings/vmlDrawing1.vml")
+        XCTAssertFalse(vml.contains("<x:FmlaLink>"))
+        let sheet = try entryText(from: url, path: "xl/worksheets/sheet1.xml")
+        XCTAssertFalse(sheet.contains("<dataValidation"))
+        XCTAssertFalse(sheet.contains("r=\"AH"))
+    }
+
+    func testPrintCopyShowsTrainingMarksAndKeepsTheExport() throws {
+        // WKWebView doesn't draw form controls, so the app prints a copy with
+        // visible marks, read from the controls.
+        let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let exported = try entryText(from: url, path: "xl/sharedStrings.xml")
+
+        let copy = try PraeExporter.printCopy(of: url)
+        defer { try? FileManager.default.removeItem(at: copy) }
+
+        XCTAssertNotEqual(copy, url)
+        let strings = try entryText(from: copy, path: "xl/sharedStrings.xml")
+        XCTAssertEqual(strings.components(separatedBy: "<t>☒</t>").count - 1, 4)
+        XCTAssertEqual(strings.components(separatedBy: "<t>☐</t>").count - 1, 11)
+        XCTAssertFalse(strings.contains("<t>r</t>"))
+
+        func mark(before label: String) throws -> Substring {
+            let end = try XCTUnwrap(strings.range(of: label))
+            let start = try XCTUnwrap(strings[..<end.lowerBound].range(of: "<si>", options: .backwards))
+            return strings[start.upperBound..<end.lowerBound]
+        }
+        XCTAssertTrue(try mark(before: " Übungsleiter:in").contains("☒"))
+        XCTAssertTrue(try mark(before: " Trainer:in").contains("☐"))
+
+        XCTAssertEqual(try entryText(from: copy, path: "xl/worksheets/sheet1.xml"),
+                       try entryText(from: url, path: "xl/worksheets/sheet1.xml"))
+        XCTAssertEqual(try entryText(from: url, path: "xl/sharedStrings.xml"), exported)
+    }
+
+    func testPrintCopyShowsTournamentMark() throws {
+        let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
+                                     startDate: .now, endDate: .now)
+        let summary = PraeTournamentSummary(person: coachPerson(), tournament: tournament, entries: [])
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        let copy = try PraeExporter.printCopy(of: url)
+        defer { try? FileManager.default.removeItem(at: copy) }
+
+        let strings = try entryText(from: copy, path: "xl/sharedStrings.xml")
+        XCTAssertEqual(strings.components(separatedBy: "<t>☒</t>").count - 1, 1)
+        XCTAssertEqual(strings.components(separatedBy: "<t>☐</t>").count - 1, 14)
+    }
+
+    func testPrintCopyLeavesOtherFilesAlone() throws {
+        let template = try XCTUnwrap(Bundle.main.url(forResource: "PRAE_Darstellung_Vorlage", withExtension: "xlsx"))
+        XCTAssertEqual(try PraeExporter.printCopy(of: template), template)
+
+        let pdf = URL(fileURLWithPath: "/nonexistent/Einladung.pdf")
+        XCTAssertEqual(try PraeExporter.printCopy(of: pdf), pdf)
     }
 
     func testExportMainFormLeavesPersonalDataBlankWithoutMember() throws {
