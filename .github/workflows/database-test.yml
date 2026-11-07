@@ -1,0 +1,30 @@
+# Database tests (supabase/tests, pgTAP) against the migrations, on a fresh
+# local Supabase stack. No project is contacted and no secrets are needed: the
+# Apple secret only has to exist because config.toml references it.
+name: Database Tests
+
+on:
+  push:
+    branches: [main]
+    paths: ["supabase/**", ".github/workflows/database-test.yml"]
+  pull_request:
+    paths: ["supabase/**", ".github/workflows/database-test.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_AUTH_EXTERNAL_APPLE_SECRET: unused
+    steps:
+      - uses: actions/checkout@v7
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.0.0
+      - name: Start Supabase
+        run: supabase start -x studio,imgproxy,logflare,vector,supavisor,realtime,edge-runtime,postgres-meta,mailpit
+      - name: Run database tests
+        run: supabase test db
