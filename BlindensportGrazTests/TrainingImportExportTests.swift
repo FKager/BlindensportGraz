@@ -23,6 +23,12 @@ final class TrainingImportExportTests: XCTestCase {
         return try ModelContainer(for: schema, configurations: [config])
     }
 
+    /// The instant as import files write it, so a fixture built from local
+    /// time means the same moment in every time zone.
+    private func iso(_ date: Date) -> String {
+        ISO8601DateFormatter().string(from: date)
+    }
+
     private func date(hour: Int, day: Int = 1, month: Int = 7, year: Int = 2026) -> Date {
         var components = DateComponents()
         components.year = year; components.month = month; components.day = day; components.hour = hour
@@ -112,7 +118,7 @@ final class TrainingImportExportTests: XCTestCase {
         context.insert(training)
 
         let json = """
-        [{"title":"Wochentraining","sport":"Torball","location":"Neue Halle","startDate":"2026-07-01T18:00:00Z"}]
+        [{"title":"Wochentraining","sport":"Torball","location":"Neue Halle","startDate":"\(iso(date(hour: 18)))"}]
         """
         let result = TrainingImportExport.importTrainings(from: Data(json.utf8), into: [training], modelContext: context)
 
@@ -133,7 +139,7 @@ final class TrainingImportExportTests: XCTestCase {
 
         let json = """
         [{"id":"\(training.id.uuidString)","title":"Wochentraining","sport":"Torball",
-          "location":"Neue Halle","focusArea":"Technik","startDate":"2026-07-01T19:00:00Z","durationMinutes":120}]
+          "location":"Neue Halle","focusArea":"Technik","startDate":"\(iso(date(hour: 19)))","durationMinutes":120}]
         """
         let result = TrainingImportExport.importTrainings(from: Data(json.utf8), into: [training], modelContext: context)
 
@@ -142,6 +148,28 @@ final class TrainingImportExportTests: XCTestCase {
         XCTAssertEqual(training.focusArea, "Technik")
         XCTAssertEqual(training.durationMinutes, 120)
         XCTAssertEqual(Calendar.current.component(.hour, from: training.startDate), 19)
+    }
+
+    /// An exported file carries UTC times; importing it must land on the same
+    /// local time and match the same training, not make a copy.
+    func testExportThenImportKeepsTheLocalTime() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let training = Training(title: "Wochentraining", sport: "Torball", location: "Halle",
+                                 startDate: date(hour: 18), durationMinutes: 90)
+        context.insert(training)
+        let exported = try TrainingImportExport.encodedJSON(for: [training])
+
+        let rows = try XCTUnwrap(try JSONSerialization.jsonObject(with: exported) as? [[String: Any]])
+        var withoutID = try XCTUnwrap(rows.first)
+        withoutID["id"] = nil
+        let data = try JSONSerialization.data(withJSONObject: [withoutID])
+
+        let result = TrainingImportExport.importTrainings(from: data, into: [training], modelContext: context)
+
+        XCTAssertEqual(result.updated, 1)
+        XCTAssertEqual(result.created, 0)
+        XCTAssertEqual(Calendar.current.component(.hour, from: training.startDate), 18)
     }
 
     /// A team name that matches an existing Team (case-insensitively) gets
