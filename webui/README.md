@@ -115,6 +115,8 @@ Connect with a personal token. Create it in the web UI under **KI-Zugang**, conf
 claude mcp add --transport http blindensport https://bs.a11y.it/mcp --header "Authorization: Bearer <token>"
 ```
 
+On this Mac, `supabase/scripts/mcp-connect.sh prod` does all of that in a terminal: it asks for email and password, creates the token and registers it with Claude Code.
+
 Coaches, admins and root can create tokens, and a client can do whatever that account may do. A token lasts 90 days and can be revoked on the same page, which takes effect within a minute. Treat it like a password: the client keeps it in its settings file.
 
 ### How it works
