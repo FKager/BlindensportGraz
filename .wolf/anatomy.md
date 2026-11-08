@@ -266,6 +266,7 @@
 
 ## BlindensportGraz/Models/
 
+- `PlaceFormat.swift` — appendingForeignCountry: adds ", <country>" unless empty or Österreich (KostZ Ort, PRAE Wohnanschrift, Teilnehmerliste Ort) (~200 tok)
 - `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~3238 tok)
 - `MemberChangeRequest.swift` — / A club member's own edit to their roster ("Vereinsdaten") data, awaiting (~1630 tok)
 - `TournamentInvitation.swift` — Tournament's uploaded Einladung (PDF/DOCX/TXT), admins only (budget.manage); synced via tournament_invitations + bucket tournament-invitations (~450 tok)

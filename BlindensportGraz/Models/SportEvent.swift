@@ -162,9 +162,13 @@ nonisolated extension SportEvent {
     /// `fullAddress` above, which always shows `country` unconditionally
     /// as part of the full postal address.
     var locationWithCountry: String {
-        let trimmedCountry = country.trimmingCharacters(in: .whitespaces)
-        guard !trimmedCountry.isEmpty, trimmedCountry != "Österreich" else { return location }
-        return "\(location), \(trimmedCountry)"
+        PlaceFormat.appendingForeignCountry(country, to: location)
+    }
+
+    /// `city` with a foreign `country` appended, same rule as
+    /// `locationWithCountry` — the KostZ "ORT:" field (H3).
+    var cityWithCountry: String {
+        PlaceFormat.appendingForeignCountry(country, to: city)
     }
 
     /// Inclusive count of calendar days this event spans — a tournament

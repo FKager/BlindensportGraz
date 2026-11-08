@@ -784,10 +784,10 @@ final class PraeCalculationTests: XCTestCase {
         try assertBox(trainerBox, checked: false, in: url)
     }
 
-    func testExportMainFormChecksOnlyTrainerBoxForTournaments() throws {
+    func testExportMainFormChecksTrainerAndDeclarationBoxesForTournaments() throws {
         // User request: "for tournaments, set B9 in a similar way in the
-        // PRAE" — B9 is where the "Trainer:in" checkbox floats. The training
-        // declarations (A26/A29/A33) were requested for trainings only.
+        // PRAE" — B9 is where the "Trainer:in" checkbox floats. User request
+        // 2026-11-08: A26/A29/A33 are ticked for tournaments too.
         let tournament = Tournament(title: "Landesmeisterschaft", sport: "Torball", location: "Graz",
                                      startDate: .now, endDate: .now)
         let summary = PraeTournamentSummary(person: coachPerson(), tournament: tournament, entries: [])
@@ -798,9 +798,9 @@ final class PraeCalculationTests: XCTestCase {
         try assertBox(trainerBox, checked: true, in: url)
         try assertBox(richtigkeitsvermerkBox, checked: true, in: url)
         try assertBox(uebungsleiterBox, checked: false, in: url)
-        try assertBox(nebenberufJaBox, checked: false, in: url)
-        try assertBox(einfachbezugJaBox, checked: false, in: url)
-        try assertBox(ueberweisungBox, checked: false, in: url)
+        try assertBox(nebenberufJaBox, checked: true, in: url)
+        try assertBox(einfachbezugJaBox, checked: true, in: url)
+        try assertBox(ueberweisungBox, checked: true, in: url)
     }
 
     func testExportMainFormNamesEveryCheckboxWithoutItsState() throws {

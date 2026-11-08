@@ -111,6 +111,7 @@
 		611DD15ED916B8D5D6A17B41 /* WelcomeScreenSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB405847C3216AE65B70EF9 /* WelcomeScreenSettingsView.swift */; };
 		631738EB7BA341502A666EBA /* TournamentInvitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA02186F64DB2504DBC9E87 /* TournamentInvitation.swift */; };
 		64456A19FB310B862D636F3F /* PraeAmountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E451DBB244FCF38DC0F70D6 /* PraeAmountRow.swift */; };
+		689BF8E4AEBA90505883DDDF /* PlaceFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154E08DCCEB6EF7B998D9B09 /* PlaceFormat.swift */; };
 		68F7BA704F1B3FBFDAE11155 /* PRAE_Darstellung_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 57556A329ADF06C866AEC1E3 /* PRAE_Darstellung_Vorlage.xlsx */; };
 		692A74DBA8897838B63C53F4 /* SupabaseProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79831D8849D6E6C4FA9DD50 /* SupabaseProfileService.swift */; };
 		699B6288B142A94466835CE9 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69C50588D830BD20FBEA4A28 /* Theme.swift */; };
@@ -331,6 +332,7 @@
 		1052747FCE27874BCD82E88D /* EventRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventRow.swift; sourceTree = "<group>"; };
 		129E446EA7EDEDC595D1B4B8 /* PRAE_Formular.xlsx */ = {isa = PBXFileReference; path = PRAE_Formular.xlsx; sourceTree = "<group>"; };
 		153FA8CF4CA26C5166D64C9F /* UserAccountAdminMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccountAdminMenu.swift; sourceTree = "<group>"; };
+		154E08DCCEB6EF7B998D9B09 /* PlaceFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaceFormat.swift; sourceTree = "<group>"; };
 		15947EDBDD914A1C33E1515F /* ServerConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerConfig.swift; sourceTree = "<group>"; };
 		167B287FA0A9F04F9AF287EE /* AttendanceTrendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceTrendsView.swift; sourceTree = "<group>"; };
 		1937F48132A2E153DF65822D /* MemberChangeRequestsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberChangeRequestsView.swift; sourceTree = "<group>"; };
@@ -628,6 +630,7 @@
 				DF2BCAEB49953DD3C0AEC35E /* MembershipRole.swift */,
 				31324D1FBA4F755797BB34D9 /* MemberStatus.swift */,
 				C4F38CA9DD569D2F043074CD /* ModelSchema.swift */,
+				154E08DCCEB6EF7B998D9B09 /* PlaceFormat.swift */,
 				269A5FB5BEA5BD989F15047F /* RoleAssignment.swift */,
 				F2441D549FF70392CCDA8F5C /* RoleChangeLog.swift */,
 				1CB93E3BB6725B63A95179A0 /* Sport.swift */,
@@ -1419,6 +1422,7 @@
 				3AD318ADF6EC2DE64410E668 /* PendingPush.swift in Sources */,
 				F7418D68BAB0F19BE7AF349B /* PersistenceService.swift in Sources */,
 				9866D32E35B6EC593EC86C05 /* PersonenListView.swift in Sources */,
+				689BF8E4AEBA90505883DDDF /* PlaceFormat.swift in Sources */,
 				64456A19FB310B862D636F3F /* PraeAmountRow.swift in Sources */,
 				2603FEB2A428FD464DDF6D56 /* PraeCalculation.swift in Sources */,
 				3FA99729C6C74C8747846A77 /* PraeCalculationView.swift in Sources */,

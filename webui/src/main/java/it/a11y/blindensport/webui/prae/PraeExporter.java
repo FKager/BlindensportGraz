@@ -71,9 +71,9 @@ public final class PraeExporter {
             UEBERWEISUNG,
             RICHTIGKEITSVERMERK);
 
-    /** The main signed form. Trainings tick Übungsleiter:in and their usual declarations, tournaments Trainer:in. */
+    /** The main signed form. Trainings tick Übungsleiter:in, tournaments Trainer:in; both tick the usual declarations. */
     public static byte[] mainForm(PraeForm form) {
-        List<Checkbox> checked = form.tournament() ? List.of(TRAINER, RICHTIGKEITSVERMERK)
+        List<Checkbox> checked = form.tournament() ? List.of(TRAINER, NEBENBERUF_JA, EINFACHBEZUG_JA, UEBERWEISUNG, RICHTIGKEITSVERMERK)
                 : List.of(UEBUNGSLEITER, NEBENBERUF_JA, EINFACHBEZUG_JA, UEBERWEISUNG, RICHTIGKEITSVERMERK);
         PraeForm.Person person = form.person();
         var member = person.member();

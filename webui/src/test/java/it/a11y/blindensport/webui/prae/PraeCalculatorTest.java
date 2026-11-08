@@ -111,4 +111,12 @@ class PraeCalculatorTest {
         assertEquals("Gasse 1, 8010 Graz", new PraeForm.Person("p", "E M", "M", "E", List.of(), member).address());
         assertEquals("", PERSON.address());
     }
+
+    @Test
+    void addressShowsOnlyAForeignCountry() {
+        MemberRecord austria = new MemberRecord("AA", "E", "M", "Gasse 1", "8010", "Graz", "Österreich", "", "", "", null, "", "", "", "", "", true, null);
+        MemberRecord czech = new MemberRecord("AA", "E", "M", "Ulice 2", "110 00", "Prag", "Tschechien", "", "", "", null, "", "", "", "", "", true, null);
+        assertEquals("Gasse 1, 8010 Graz", new PraeForm.Person("p", "E M", "M", "E", List.of(), austria).address());
+        assertEquals("Ulice 2, 110 00 Prag, Tschechien", new PraeForm.Person("p", "E M", "M", "E", List.of(), czech).address());
+    }
 }

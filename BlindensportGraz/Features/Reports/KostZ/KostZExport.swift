@@ -63,7 +63,8 @@ enum KostZExporter {
     /// count computed inclusively, same convention as monthBounds' dayCount)
     /// and BETRIFFT is the tournament's bare name. ORT comes from the
     /// tournament's own `city` — unlike a training, a tournament isn't
-    /// always in Graz — left blank only if that field was never filled in.
+    /// always in Graz — plus ", <country>" when the country is set and isn't
+    /// Österreich; left blank only if the city was never filled in.
     static func export(summary: KostZTournamentSummary) throws -> URL {
         let tournament = summary.tournament
         let betrifft = tournament.title
@@ -73,7 +74,7 @@ enum KostZExporter {
                                                   to: calendar.startOfDay(for: tournament.endDate)).day ?? 0) + 1
         return try export(betrifft: betrifft, periodStart: tournament.startDate, periodEnd: tournament.endDate,
                            dayCount: max(dayCount, 1), personCount: summary.personCount, total: summary.total,
-                           ort: tournament.city.isEmpty ? nil : tournament.city)
+                           ort: tournament.city.trimmingCharacters(in: .whitespaces).isEmpty ? nil : tournament.cityWithCountry)
     }
 
     private static func export(betrifft: String, periodStart: Date, periodEnd: Date,
