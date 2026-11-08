@@ -53,14 +53,14 @@ enum PraeExportError: LocalizedError {
 ///    zip-patched the same way an .xlsx can. Per explicit user request to
 ///    use the real web-sourced file as the basis (same as
 ///    TrainingsfrequenzlisteExporter), it's now bundled as
-///    `PRAE_Darstellung_Vorlage.xlsx` — a faithful **format conversion**
-///    (not a re-design) of the real
-///    `sportaustria.at/.../2020/PRAE_Darstellung_der_Verwendungszwecke.xls`,
-///    reverse-engineered cell-by-cell (values/merges/borders/number formats)
-///    with `xlrd` and rebuilt as a real, patchable .xlsx with `openpyxl` —
-///    every label, merge, and the day-grid's cell layout matches the
-///    original .xls exactly; only the file *format* changed, not its
-///    content or layout. **This uncovered a real content mismatch**: the
+///    `PRAE_Darstellung_Vorlage.xlsx` — a straight LibreOffice conversion
+///    (2026-11-08) of the real
+///    `sportaustria.at/fileadmin/Inhalte/Dokumente/Richtlinien/2020/PRAE_Darstellung_der_Verwendungszwecke.xls`,
+///    checked cell by cell against it (text, merges, fonts incl. italic,
+///    borders, row heights, column widths), with the Sport Austria logo,
+///    print area and page setup. Nothing is changed by hand: every label,
+///    "Monat und Jahr:" in A5 included, comes from the original.
+///    An earlier hand-built version showed a real content mismatch: the
 ///    from-scratch version this replaced also printed Wohnanschrift/
 ///    Sozialversicherungsnummer/IBAN rows (added earlier, before any real
 ///    template was available to check against) — the authentic form has
@@ -74,12 +74,9 @@ enum PraeExportError: LocalizedError {
 enum PraeExporter {
     // MARK: - Darstellung der Verwendungszwecke (patches PRAE_Darstellung_Vorlage.xlsx)
 
-    /// The real template's row 5 label cell (A5, merged A5:B5) is left blank
-    /// on purpose — unlike every other static label in the form, this one
-    /// needs to say "Monat und Jahr:" for a monthly export or "Turnier:"
-    /// for a tournament export, so both the label AND its value (C5) are
-    /// patched here rather than only the value.
-    private static let periodLabelRef = "A5"
+    /// Row 5 is "Monat und Jahr:" (A5, merged A5:B5, a static label in the
+    /// template as in Sport Austria's original); its value (C5, merged C5:E5)
+    /// is the month and year, e.g. "November 2026" — for tournaments too.
     private static let periodValueRef = "C5"
 
     /// Rows 8–28 in the real template — a hard cap inherited from the
@@ -93,23 +90,20 @@ enum PraeExporter {
         monthFormatter.locale = Locale(identifier: "de_AT")
         monthFormatter.dateFormat = "LLLL yyyy"
         let monthLabel = monthFormatter.string(from: dateFor(month: summary.month, year: summary.year))
-        return try exportDarstellung(person: summary.person, periodFieldLabel: "Monat und Jahr:", periodValue: monthLabel,
+        return try exportDarstellung(person: summary.person, periodValue: monthLabel,
                                       entries: summary.entries, vereinName: vereinName)
     }
 
     /// Same appendix, filled from a single tournament's deployment days
-    /// instead of a calendar month — the "Monat und Jahr" field becomes
-    /// "Turnier" naming the tournament, since a tournament isn't a month. The
-    /// table only lists day numbers, so a tournament running into the next
-    /// month names the month too.
+    /// instead of a calendar month. "Monat und Jahr" is the summary's month (a
+    /// tournament running into the next month gets one Darstellung per
+    /// month); the tournament's name stands in the Verwendungszweck column.
     static func exportDarstellung(summary: PraeTournamentSummary, vereinName: String = "Grazer VSC") throws -> URL {
-        let title = summary.tournament.title
-        return try exportDarstellung(person: summary.person, periodFieldLabel: "Turnier:",
-                                     periodValue: summary.spansSeveralMonths ? "\(title), \(summary.monthLabel)" : title,
-                                     entries: summary.entries, vereinName: vereinName)
+        try exportDarstellung(person: summary.person, periodValue: summary.monthLabel,
+                              entries: summary.entries, vereinName: vereinName)
     }
 
-    private static func exportDarstellung(person: PraeEligiblePerson, periodFieldLabel: String, periodValue: String,
+    private static func exportDarstellung(person: PraeEligiblePerson, periodValue: String,
                                            entries: [PraeDayEntry], vereinName: String) throws -> URL {
         guard let templateURL = Bundle.main.url(forResource: "PRAE_Darstellung_Vorlage", withExtension: "xlsx") else {
             throw PraeExportError.templateNotFound
@@ -124,7 +118,6 @@ enum PraeExporter {
             if let birthDate = person.member?.birthDate {
                 patched = XLSXCellPatch.setText(in: patched, ref: "C4", value: dateFormatter.string(from: birthDate))
             }
-            patched = XLSXCellPatch.setText(in: patched, ref: periodLabelRef, value: periodFieldLabel)
             patched = XLSXCellPatch.setText(in: patched, ref: periodValueRef, value: periodValue)
 
             for (index, entry) in entries.prefix(maxEntryRows).enumerated() {

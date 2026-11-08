@@ -488,7 +488,7 @@ final class PraeCalculationTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: darstellung) }
 
         XCTAssertTrue(try entryText(from: form, path: "xl/worksheets/sheet1.xml").contains("<t>August</t>"))
-        XCTAssertTrue(try entryText(from: darstellung, path: "xl/worksheets/sheet1.xml").contains("<t>Landesmeisterschaft, August 2026</t>"))
+        XCTAssertTrue(try entryText(from: darstellung, path: "xl/worksheets/sheet1.xml").contains("<t>August 2026</t>"))
     }
 
     // MARK: - SportEvent.dayCount
@@ -553,7 +553,7 @@ final class PraeCalculationTests: XCTestCase {
         XCTAssertFalse(sheetXML.contains("Turnier & Wörthersee")) // raw unescaped "&" must not appear
     }
 
-    func testExportDarstellungForTournamentUsesTournamentTitleAsPeriod() throws {
+    func testExportDarstellungForTournamentNamesMonthAndYear() throws {
         let team = Team(name: "Torball 1", sport: "Torball")
         let coach = Member(firstName: "Anna", lastName: "Trainer")
         let membership = TeamMembership(member: coach, team: team, role: .coach)
@@ -562,7 +562,8 @@ final class PraeCalculationTests: XCTestCase {
                                      startDate: .now, endDate: .now)
         let summary = PraeTournamentSummary(
             person: person, tournament: tournament,
-            entries: [PraeDayEntry(day: 12, amount: 60, purpose: "Landesmeisterschaft")]
+            entries: [PraeDayEntry(day: 12, amount: 60, purpose: "Landesmeisterschaft")],
+            month: 11, year: 2026
         )
 
         let url = try PraeExporter.exportDarstellung(summary: summary)
@@ -574,7 +575,12 @@ final class PraeCalculationTests: XCTestCase {
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
         XCTAssertTrue(sheetXML.contains("Anna Trainer"))
-        XCTAssertTrue(sheetXML.contains("Turnier:"))
+        // Sport Austria's original: A5 "Monat und Jahr:" (a template label,
+        // left as it is), C5 the month.
+        XCTAssertTrue(try entryText(from: url, path: "xl/sharedStrings.xml").contains("Monat und Jahr:"))
+        XCTAssertNotNil(sheetXML.range(of: "<c r=\"A5\"[^>]*t=\"s\"", options: .regularExpression))
+        XCTAssertTrue(sheetXML.contains("<c r=\"C5\" s=\"7\" t=\"inlineStr\"><is><t>November 2026</t></is></c>"))
+        XCTAssertFalse(sheetXML.contains("Turnier:"))
         XCTAssertTrue(sheetXML.contains("Landesmeisterschaft"))
         XCTAssertTrue(sheetXML.contains("60"))
     }
@@ -979,7 +985,7 @@ final class PraeCalculationTests: XCTestCase {
         _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
         let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
 
-        XCTAssertTrue(sheetXML.contains("Geburtsdatum:"))
+        XCTAssertTrue(try entryText(from: url, path: "xl/sharedStrings.xml").contains("Geburtsdatum:"))
         XCTAssertFalse(sheetXML.range(of: "<c r=\"C4\"[^>]*><is>", options: .regularExpression) != nil)
         XCTAssertFalse(sheetXML.contains("Sozialversicherungsnummer:"))
         XCTAssertFalse(sheetXML.contains("IBAN:"))

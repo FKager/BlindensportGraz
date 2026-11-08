@@ -109,11 +109,12 @@ public final class PraeExporter {
         });
     }
 
-    /** The Darstellung der Verwendungszwecke appendix. */
+    /**
+     * The Darstellung der Verwendungszwecke appendix. A5 "Monat und Jahr:" is in the template, as in
+     * Sport Austria's original; C5 gets the month and year, for tournaments too.
+     */
     public static byte[] darstellung(PraeForm form, String vereinName) {
-        String label = form.tournament() ? "Turnier:" : "Monat und Jahr:";
-        String value = !form.tournament() ? form.monthLabel()
-                : form.spansSeveralMonths() ? form.purpose() + ", " + form.monthLabel() : form.purpose();
+        String value = form.monthLabel();
         PraeForm.Person person = form.person();
         var birthDate = person.member() == null ? null : person.member().privateData().birthDate();
         return patchTemplate("prae/PRAE_Darstellung_Vorlage.xlsx", Map.of(), xml -> {
@@ -122,7 +123,6 @@ public final class PraeExporter {
             if (birthDate != null) {
                 p = XlsxPatch.setText(p, "C4", day(birthDate));
             }
-            p = XlsxPatch.setText(p, "A5", label);
             p = XlsxPatch.setText(p, "C5", value);
             List<PraeForm.DayEntry> entries = form.entries();
             for (int i = 0; i < Math.min(entries.size(), MAX_ENTRY_ROWS); i++) {
