@@ -35,10 +35,13 @@ public final class PraeExporter {
     private PraeExporter() {
     }
 
-    /** A checkbox of the form; the values are read from the template, see FormCheckbox in the app. */
-    private record Checkbox(String vmlShapeId, int drawingShapeId, int ctrlProp, String altText) {
-        static Checkbox named(int name, int drawingShapeId, int ctrlProp, String altText) {
-            return new Checkbox("Kontrollkästchen_x0020_" + name, drawingShapeId, ctrlProp, altText);
+    /**
+     * A checkbox of the form; the values are read from the template, see FormCheckbox in the app. {@code label}
+     * is for readers of this code only: nothing is written for it, the NVDA add-on names a box from the cells.
+     */
+    private record Checkbox(String vmlShapeId, int drawingShapeId, int ctrlProp, String label) {
+        static Checkbox named(int name, int drawingShapeId, int ctrlProp, String label) {
+            return new Checkbox("Kontrollkästchen_x0020_" + name, drawingShapeId, ctrlProp, label);
         }
 
         String ctrlPropPath() {
@@ -52,24 +55,6 @@ public final class PraeExporter {
     private static final Checkbox EINFACHBEZUG_JA = Checkbox.named(24, 1048, 12, "Ja (Einfachbezug)");
     private static final Checkbox UEBERWEISUNG = Checkbox.named(27, 1051, 15, "Überweisung mittels");
     private static final Checkbox RICHTIGKEITSVERMERK = new Checkbox("_x0000_s1052", 1052, 16, "Richtigkeitsvermerk");
-
-    private static final List<Checkbox> ALL_BOXES = List.of(
-            Checkbox.named(9, 1033, 1, "Sportler:in"),
-            Checkbox.named(10, 1034, 2, "Sportarzt / Sportärztin"),
-            TRAINER,
-            Checkbox.named(14, 1038, 4, "Zeugwart:in"),
-            Checkbox.named(15, 1039, 5, "Lehrwart:in / Instruktor:in"),
-            Checkbox.named(16, 1040, 6, "Schieds- / Kampfrichter:in"),
-            UEBUNGSLEITER,
-            Checkbox.named(19, 1043, 8, "Rennleiter:in"),
-            Checkbox.named(20, 1044, 9, "Masseur:in"),
-            NEBENBERUF_JA,
-            Checkbox.named(23, 1047, 11, "Nein (Hauptberuf)"),
-            EINFACHBEZUG_JA,
-            Checkbox.named(25, 1049, 13, "Nein (Mehrfachbezug)"),
-            Checkbox.named(26, 1050, 14, "Betrag bar erhalten am"),
-            UEBERWEISUNG,
-            RICHTIGKEITSVERMERK);
 
     /** The main signed form. Trainings tick Übungsleiter:in, tournaments Trainer:in; both tick the usual declarations. */
     public static byte[] mainForm(PraeForm form) {
@@ -102,18 +87,16 @@ public final class PraeExporter {
             if (total > 0) {
                 p = XlsxPatch.setText(p, "B18", GermanNumberWords.euroAmount(total));
             }
-            for (Checkbox box : ALL_BOXES) {
-                p = addAltTextToControl(p, box);
-            }
             return p;
         });
     }
 
-    /** The Darstellung der Verwendungszwecke appendix. */
+    /**
+     * The Darstellung der Verwendungszwecke appendix. A5 "Monat und Jahr:" is in the template, as in
+     * Sport Austria's original; C5 gets the month and year, for tournaments too.
+     */
     public static byte[] darstellung(PraeForm form, String vereinName) {
-        String label = form.tournament() ? "Turnier:" : "Monat und Jahr:";
-        String value = !form.tournament() ? form.monthLabel()
-                : form.spansSeveralMonths() ? form.purpose() + ", " + form.monthLabel() : form.purpose();
+        String value = form.monthLabel();
         PraeForm.Person person = form.person();
         var birthDate = person.member() == null ? null : person.member().privateData().birthDate();
         return patchTemplate("prae/PRAE_Darstellung_Vorlage.xlsx", Map.of(), xml -> {
@@ -122,7 +105,6 @@ public final class PraeExporter {
             if (birthDate != null) {
                 p = XlsxPatch.setText(p, "C4", day(birthDate));
             }
-            p = XlsxPatch.setText(p, "A5", label);
             p = XlsxPatch.setText(p, "C5", value);
             List<PraeForm.DayEntry> entries = form.entries();
             for (int i = 0; i < Math.min(entries.size(), MAX_ENTRY_ROWS); i++) {
@@ -193,46 +175,21 @@ public final class PraeExporter {
         return letters.toString();
     }
 
-    /** Patches for everything but sheet1.xml: tick {@code boxes}, name every checkbox. */
+    /** Patches for everything but sheet1.xml: tick {@code boxes}. */
     private static Map<String, UnaryOperator<String>> entryPatches(List<Checkbox> boxes) {
         Map<String, UnaryOperator<String>> patches = new HashMap<>();
         patches.put("xl/drawings/vmlDrawing1.vml", vml -> {
-            String named = vml;
-            for (Checkbox box : ALL_BOXES) {
-                String marker = "<v:shape id=\"" + box.vmlShapeId() + "\"";
-                named = named.replace(marker, marker + " alt=\"" + box.altText() + "\"");
-            }
+            String ticked = vml;
             for (Checkbox box : boxes) {
-                named = checkFormCheckbox(named, box.vmlShapeId());
+                ticked = checkFormCheckbox(ticked, box.vmlShapeId());
             }
-            return named;
-        });
-        patches.put("xl/drawings/drawing1.xml", drawing -> {
-            String named = drawing;
-            for (Checkbox box : ALL_BOXES) {
-                String marker = "<xdr:cNvPr id=\"" + box.drawingShapeId() + "\"";
-                named = named.replace(marker, marker + " descr=\"" + box.altText() + "\"");
-            }
-            return named;
+            return ticked;
         });
         for (Checkbox box : boxes) {
             patches.put(box.ctrlPropPath(), ctrlProp -> ctrlProp.replace("objectType=\"CheckBox\"",
                     "objectType=\"CheckBox\" " + CHECKED_ATTRIBUTE));
         }
         return patches;
-    }
-
-    private static String addAltTextToControl(String sheet, Checkbox box) {
-        int control = sheet.indexOf("<control shapeId=\"" + box.drawingShapeId() + "\"");
-        if (control < 0) {
-            return sheet;
-        }
-        int properties = sheet.indexOf("<controlPr ", control);
-        if (properties < 0) {
-            return sheet;
-        }
-        return sheet.substring(0, properties) + "<controlPr altText=\"" + box.altText() + "\" "
-                + sheet.substring(properties + "<controlPr ".length());
     }
 
     /**

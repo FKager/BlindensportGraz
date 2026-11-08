@@ -74,7 +74,7 @@ class PraeExporterTest {
         assertTrue(sheet.contains("<is><t>Einhundertfünf Euro und fünfzig Cent</t></is>"));
         assertTrue(sheet.contains("<c r=\"C13\" s=\"105\"><v>45.5</v></c>"), "day 11 amount");
         assertTrue(sheet.contains("<v>60.0</v>"), "day 31 amount");
-        assertTrue(sheet.contains("altText=\"Trainer:in\""), "every checkbox is named for NVDA");
+        assertFalse(sheet.contains("altText="), "no names: the NVDA add-on reads the cells");
     }
 
     @Test
@@ -92,13 +92,14 @@ class PraeExporterTest {
     }
 
     @Test
-    void darstellungNamesPeriodAndMonthOfASplitTournament() throws IOException {
-        String month = entries(PraeExporter.darstellung(form(false, false), "Grazer VSC")).get("xl/worksheets/sheet1.xml");
-        assertTrue(month.contains("<is><t>Monat und Jahr:</t></is>"));
-        assertTrue(month.contains("<is><t>März 2031</t></is>"));
-        String split = entries(PraeExporter.darstellung(form(true, true), "Grazer VSC")).get("xl/worksheets/sheet1.xml");
-        assertTrue(split.contains("<is><t>Turnier:</t></is>"));
-        assertTrue(split.contains("<is><t>Cup &amp; Co, März 2031</t></is>"));
+    void darstellungNamesMonthAndYearForTrainingsAndTournaments() throws IOException {
+        var training = entries(PraeExporter.darstellung(form(false, false), "Grazer VSC"));
+        assertTrue(training.get("xl/sharedStrings.xml").contains("Monat und Jahr:"), "A5 is the template's own label");
+        assertTrue(training.get("xl/worksheets/sheet1.xml").contains("<c r=\"C5\" s=\"7\" t=\"inlineStr\"><is><t>März 2031</t></is></c>"));
+        var split = entries(PraeExporter.darstellung(form(true, true), "Grazer VSC"));
+        assertTrue(split.get("xl/worksheets/sheet1.xml").contains("<c r=\"C5\" s=\"7\" t=\"inlineStr\"><is><t>März 2031</t></is></c>"));
+        assertFalse(split.get("xl/worksheets/sheet1.xml").contains("Turnier:"));
+        assertTrue(split.get("xl/drawings/drawing1.xml") != null, "Sport Austria logo stays");
     }
 
     @Test

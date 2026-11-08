@@ -17,6 +17,21 @@ def _label(cellText, controlName):
 	return _BOX_GLYPH.sub("", cellText or "", count=1).strip() or (controlName or "").strip()
 
 
+def hasLabel(cellText):
+	"""Whether the cell's own text names its checkbox, so no other name is needed."""
+	return bool(_BOX_GLYPH.sub("", cellText or "", count=1).strip())
+
+
+# A colon ending a phrase, not the one inside "Trainer:in".
+_PHRASE_COLON = re.compile(":(?:\\s|$)")
+
+
+def shortLabel(text):
+	"""A neighbouring cell's text up to its colon: "Richtigkeitsvermerk: Dieser Beleg …" → "Richtigkeitsvermerk"."""
+	text = (text or "").strip()
+	return _PHRASE_COLON.split(text, maxsplit=1)[0].strip() or text
+
+
 def labelWithMark(cellText, isChecked, controlName=""):
 	"""The text for braille: "[X] Trainer:in"."""
 	mark = "[X]" if isChecked else "[ ]"
@@ -48,25 +63,31 @@ class CheckboxFinder:
 		self._sheetKey = None
 		self._shapeIndexesByCell = {}
 
-	def find(self, cell):
-		"""Returns (isChecked, controlName) for the checkbox on cell, or None."""
+	def find(self, cell, needsName=True):
+		"""Returns (isChecked, controlName) for the checkbox on cell, or None.
+
+		controlName is only looked up when needsName is set, i.e. when the cell
+		itself is empty: it is the text of the next cell to the right, up to its
+		colon, or else the checkbox's alternative text.
+		"""
 		shape = self._shape(cell)
 		if shape is None:
 			return None
-		return shape.OLEFormat.Object.Value == VALUE_CHECKED, shape.AlternativeText
+		isChecked = shape.OLEFormat.Object.Value == VALUE_CHECKED
+		return isChecked, (_controlName(shape) if needsName else "")
 
-	def toggle(self, cell):
+	def toggle(self, cell, needsName=True):
 		"""Ticks or unticks the checkbox on cell and returns its new (isChecked, controlName).
 
 		The state comes back from the checkbox itself, so the report is what Excel
 		now has. Returns None if cell has no checkbox.
 		"""
-		found = self.find(cell)
+		found = self.find(cell, needsName=False)
 		if found is None:
 			return None
 		control = self._shape(cell).OLEFormat.Object
 		control.Value = VALUE_UNCHECKED if found[0] else VALUE_CHECKED
-		return self.find(cell)
+		return self.find(cell, needsName)
 
 	def _shape(self, cell):
 		shapes = cell.Worksheet.Shapes
@@ -89,6 +110,14 @@ class CheckboxFinder:
 				continue
 			indexes.setdefault(_cellKey(shape.TopLeftCell), index)
 		return indexes
+
+
+def _controlName(shape):
+	# A box on an empty cell, like the Richtigkeitsvermerk on the PRAE form, is
+	# labelled by the cell to its right.
+	area = shape.TopLeftCell.MergeArea
+	right = area.Worksheet.Cells(area.Row, area.Column + area.Columns.Count)
+	return shortLabel(right.Text) or (shape.AlternativeText or "").strip()
 
 
 def _cellKey(cell):

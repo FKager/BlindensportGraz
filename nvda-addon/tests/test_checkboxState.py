@@ -7,15 +7,30 @@ sys.path.insert(0, str(pathlib.Path(__file__).parents[1] / "excelCheckboxes/glob
 import checkboxState  # noqa: E402
 
 
+class FakeColumns:
+	def __init__(self, count):
+		self.Count = count
+
+
 class FakeCell:
-	def __init__(self, sheet, area):
+	"""A cell or merged area; row/column/width say where it is, for its neighbours."""
+
+	def __init__(self, sheet, area, row=1, column=1, width=1):
 		self.Worksheet = sheet
 		self.MergeArea = self
 		self.area = area
+		self.Row = row
+		self.Column = column
+		self.Columns = FakeColumns(width)
 
 	def Address(self, rowAbsolute, columnAbsolute):
 		assert (rowAbsolute, columnAbsolute) == (False, False)
 		return self.area
+
+
+class FakeTextCell:
+	def __init__(self, text):
+		self.Text = text
 
 
 class FakeControl:
@@ -29,11 +44,11 @@ class FakeOLEFormat:
 
 
 class FakeShape:
-	def __init__(self, sheet, area, value=-4146, name="", shapeType=8, controlType=1):
+	def __init__(self, sheet, area, value=-4146, name="", shapeType=8, controlType=1, row=1, column=1, width=1):
 		self.Type = shapeType
 		self.FormControlType = controlType
 		self.AlternativeText = name
-		self.TopLeftCell = FakeCell(sheet, area)
+		self.TopLeftCell = FakeCell(sheet, area, row, column, width)
 		self.OLEFormat = FakeOLEFormat(value)
 
 
@@ -61,6 +76,12 @@ class FakeSheet:
 
 	def __init__(self):
 		self.Shapes = FakeShapes()
+		self.texts = {}
+		self.cellReads = 0
+
+	def Cells(self, row, column):
+		self.cellReads += 1
+		return FakeTextCell(self.texts.get((row, column), ""))
 
 
 class LabelTests(unittest.TestCase):
@@ -76,6 +97,27 @@ class LabelTests(unittest.TestCase):
 	def test_emptyCellUsesTheControlName(self):
 		self.assertEqual(checkboxState.labelWithMark("", False, "Richtigkeitsvermerk"), "[ ] Richtigkeitsvermerk")
 		self.assertEqual(checkboxState.labelWithMark(None, True), "[X]")
+
+
+class NameTests(unittest.TestCase):
+	def test_knowsWhenTheCellNamesItsBox(self):
+		self.assertTrue(checkboxState.hasLabel("r Trainer:in"))
+		self.assertFalse(checkboxState.hasLabel(""))
+		self.assertFalse(checkboxState.hasLabel("r "))
+		self.assertFalse(checkboxState.hasLabel(None))
+
+	def test_shortensANeighbourToItsColon(self):
+		self.assertEqual(
+			checkboxState.shortLabel(
+				"Richtigkeitsvermerk: Dieser Beleg wird bei keinem anderen Fördergeber zur Abrechnung vorgelegt"
+			),
+			"Richtigkeitsvermerk",
+		)
+		self.assertEqual(checkboxState.shortLabel("  Bestätigung  "), "Bestätigung")
+		self.assertEqual(checkboxState.shortLabel("Masseur:in"), "Masseur:in")
+		self.assertEqual(checkboxState.shortLabel("Überweisung mittels:"), "Überweisung mittels")
+		self.assertEqual(checkboxState.shortLabel(": nur Text"), ": nur Text")
+		self.assertEqual(checkboxState.shortLabel(""), "")
 
 
 class SpeechTests(unittest.TestCase):
@@ -147,6 +189,26 @@ class FinderTests(unittest.TestCase):
 		self.finder.find(FakeCell(self.sheet, "A2"))
 		self.assertEqual(self.sheet.Shapes.reads, reads + 1)
 
+	def test_emptyCellIsNamedByTheCellToItsRight(self):
+		# The PRAE form's Richtigkeitsvermerk: box on the empty cell P42, text in Q42.
+		self.sheet.texts[(42, 17)] = "Richtigkeitsvermerk: Dieser Beleg wird bei keinem anderen Fördergeber …"
+		self.sheet.Shapes.items.append(FakeShape(self.sheet, "P42", value=1, row=42, column=16))
+		self.assertEqual(self.finder.find(FakeCell(self.sheet, "P42")), (True, "Richtigkeitsvermerk"))
+
+	def test_rightOfAMergedAreaIsAfterItsLastColumn(self):
+		self.sheet.texts[(9, 24)] = "Masseur:in"
+		self.sheet.Shapes.items.append(FakeShape(self.sheet, "P9:W9", row=9, column=16, width=8))
+		self.assertEqual(self.finder.find(FakeCell(self.sheet, "P9:W9")), (False, "Masseur:in"))
+
+	def test_emptyNeighbourFallsBackToTheAlternativeText(self):
+		self.sheet.Shapes.items.append(FakeShape(self.sheet, "P42", name="Richtigkeitsvermerk", row=42, column=16))
+		self.assertEqual(self.finder.find(FakeCell(self.sheet, "P42")), (False, "Richtigkeitsvermerk"))
+
+	def test_labelledCellReadsNoNeighbour(self):
+		self.sheet.Shapes.items.append(FakeShape(self.sheet, "B9", value=1, row=9, column=2))
+		self.assertEqual(self.finder.find(FakeCell(self.sheet, "B9"), needsName=False), (True, ""))
+		self.assertEqual(self.sheet.cellReads, 0)
+
 	def test_rescansWhenABoxIsAdded(self):
 		self.sheet.Shapes.items.append(FakeShape(self.sheet, "A1"))
 		self.assertIsNone(self.finder.find(FakeCell(self.sheet, "A2")))
@@ -167,6 +229,11 @@ class ToggleTests(unittest.TestCase):
 		self.assertEqual(shape.OLEFormat.Object.Value, 1)
 		self.assertEqual(self.finder.toggle(cell), (False, "Übungsleiter:in"))
 		self.assertEqual(shape.OLEFormat.Object.Value, -4146)
+
+	def test_namesTheEmptyCellsBoxAfterTicking(self):
+		self.sheet.texts[(42, 17)] = "Richtigkeitsvermerk: Dieser Beleg …"
+		self.sheet.Shapes.items.append(FakeShape(self.sheet, "P42", row=42, column=16))
+		self.assertEqual(self.finder.toggle(FakeCell(self.sheet, "P42")), (True, "Richtigkeitsvermerk"))
 
 	def test_mixedBoxBecomesTicked(self):
 		shape = FakeShape(self.sheet, "A26", value=2)

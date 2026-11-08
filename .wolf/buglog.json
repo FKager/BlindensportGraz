@@ -10107,6 +10107,26 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-07T22:50:00+01:00"
+    },
+    {
+      "id": "bug-601",
+      "timestamp": "2026-11-08T20:12:26+01:00",
+      "error_message": "PRAE Darstellung: row 5 must be 'Monat und Jahr:' (A5) with month and year in C5 — tournaments showed 'Turnier:' and the tournament name",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeExport.swift, webui/.../prae/PraeExporter.java, PRAE_Darstellung_Vorlage.xlsx (app + webui)",
+      "root_cause": "The bundled .xlsx conversion of Sport Austria's PRAE_Darstellung_der_Verwendungszwecke.xls had A5 blanked on purpose so the code could write 'Turnier:' for tournaments; also B6 lost its 'Entschädigungs-\\nhöhe' break and A32 its closing quote/no-period wording",
+      "fix": "Template A5 = static 'Monat und Jahr:', B6 and A32 as in the original (verified cell-by-cell with xlrd against the downloaded .xls); C5 always the month label ('November 2026') for trainings and tournaments; A5 no longer written by code. Tests updated in both. FOLLOW-UP same day: the hand-built template also differed in formatting (no Arial/italic, title merge A1:E1 instead of A1:D1 + missing Sport Austria logo in E1, thin instead of medium outer frame, row heights, centred footer, A31:B31 merge, no print area/page setup). Replaced by a LibreOffice headless conversion of the original .xls (debian + libreoffice-calc in Docker, file piped via base64); verified with xlrd/openpyxl cell-by-cell (only merge-anchor border placement and fonts of empty cells differ) and a rendered sample fill. Labels now come from sharedStrings, so tests check xl/sharedStrings.xml.",
+      "tags": [
+        "prae",
+        "darstellung",
+        "template",
+        "sport-austria",
+        "webui",
+        "libreoffice",
+        "formatting"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-08T20:22:18+01:00"
     }
   ]
 }
