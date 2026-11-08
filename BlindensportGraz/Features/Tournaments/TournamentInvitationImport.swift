@@ -16,7 +16,7 @@ nonisolated struct TournamentDraft: Identifiable {
     let id = UUID()
     var title: String = ""
     var sport: String = "Torball"
-    var location: String = "Graz"
+    var location: String = ""
     var street: String = ""
     var zip: String = ""
     var city: String = ""

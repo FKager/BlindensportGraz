@@ -119,24 +119,25 @@ final class TeilnehmerlisteExportTests: XCTestCase {
         _ = try context(realisticNames.count, timeout: 10)
     }
 
-    /// `Tournament.locationWithCountry` feeds the Teilnehmerliste's "Ort" field
-    /// (see TournamentDetailView.swift's two TeilnehmerlisteContext call sites) —
+    /// `Tournament.cityWithCountry` feeds the Teilnehmerliste's "Ort" field
+    /// (the city, not the venue name — user decision 2026-11-08; see
+    /// TournamentDetailView.swift's two TeilnehmerlisteContext call sites) —
     /// covers the no-country, explicit-Österreich, and foreign-country cases.
-    func testTournamentLocationWithCountry() {
-        let noCountry = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle Graz",
+    func testTournamentCityWithCountry() {
+        let noCountry = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle", city: "Graz",
                                     startDate: .now, endDate: .now)
-        XCTAssertEqual(noCountry.locationWithCountry, "Stadthalle Graz")
+        XCTAssertEqual(noCountry.cityWithCountry, "Graz")
 
-        let austria = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle Graz",
+        let austria = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle", city: "Graz",
                                   country: "Österreich", startDate: .now, endDate: .now)
-        XCTAssertEqual(austria.locationWithCountry, "Stadthalle Graz")
+        XCTAssertEqual(austria.cityWithCountry, "Graz")
 
-        let foreign = Tournament(title: "Cup", sport: "Torball", location: "Sporthalle Maribor",
+        let foreign = Tournament(title: "Cup", sport: "Torball", location: "Sporthalle Tabor", city: "Maribor",
                                   country: "Slowenien", startDate: .now, endDate: .now)
-        XCTAssertEqual(foreign.locationWithCountry, "Sporthalle Maribor, Slowenien")
+        XCTAssertEqual(foreign.cityWithCountry, "Maribor, Slowenien")
 
-        let blankCountry = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle Graz",
+        let blankCountry = Tournament(title: "Cup", sport: "Torball", location: "Stadthalle", city: "Graz",
                                        country: "   ", startDate: .now, endDate: .now)
-        XCTAssertEqual(blankCountry.locationWithCountry, "Stadthalle Graz")
+        XCTAssertEqual(blankCountry.cityWithCountry, "Graz")
     }
 }
