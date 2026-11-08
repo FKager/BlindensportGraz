@@ -4165,3 +4165,18 @@
 | 20:22 | PRAE Darstellung template rebuilt from Sport Austria .xls via LibreOffice (logo, Arial/italic, frame, heights, print setup); tests check sharedStrings; doc comment | PRAE_Darstellung_Vorlage.xlsx x2, PraeExport.swift, PraeCalculationTests.swift, PraeExporterTest.java | iOS build ok, webui Prae*Test ok, render ok | ~25000 |
 | 20:26 | Checked PRAE_Formular vs Sport Austria 2023 original: all 33 zip entries byte-identical (app+webui); all filled cells, 31 day cells, L16 formula and 16 checkboxes match | PRAE_Formular.xlsx, PraeExport.swift | no differences | ~6000 |
 | 20:34 | PRAE export no longer writes checkbox alt text (app+webui); NVDA add-on 0.4.0 names empty-cell box from right neighbour (phrase colon), 26 tests | PraeExport.swift, PraeExporter.java, tests, nvda-addon/* | build ok, webui tests ok, addon tests ok | ~12000 |
+| 20:36 | Created ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/nuc-webui-deploy.sh | — | ~200 |
+| 20:36 | Session end: 1 writes across 1 files (nuc-webui-deploy.sh) | 5 reads | ~214 tok |
+| 20:40 | Merged PR #39; web UI redeployed on nuc from main b38aa87 (200 OK, templates verified in jar); v0.11.1 release started | nuc ~/blindensport-webui | ok | ~3000 |
+| 20:40 | Session end: 1 writes across 1 files (nuc-webui-deploy.sh) | 5 reads | ~214 tok |
+| 20:51 | Released v0.11.1 = TestFlight build 318 (Internal, de notes) | release-testflight.sh | ok | ~1000 |
+| 20:51 | Session end: 1 writes across 1 files (nuc-webui-deploy.sh) | 5 reads | ~214 tok |
+| 20:52 | Session end: 1 writes across 1 files (nuc-webui-deploy.sh) | 5 reads | ~214 tok |
+
+## Session: 2026-11-08 22:12
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:22 | Venue field relabeled 'Name der Sportstätte', city 'Ort' (app+webui), no Graz default, Teilnehmerliste Ort = city; build-for-testing OK, webui tests not run (no Java locally) | Events/Tournaments/Trainings views, SportEvent.swift, Localizable.xcstrings, EventDialog/FavoritesView/EventsView.java, TeilnehmerlisteExportTests | done | ~25k |
+| 22:24 | User correction: venue label back to 'Veranstaltungsort' (app + webui, was 'Ort / Halle' in webui); Teilnehmerliste Ort = city confirmed | same files | done | ~5k |
+| 22:30 | Installed openjdk@21 via brew (temurin cask failed: sudo); webui tests 114/114 pass on branch | (env) | done | ~6k |

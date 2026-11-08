@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-07T20:07:48.083Z
-> Files: 244 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-08T19:36:28.864Z
+> Files: 246 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -10,6 +10,10 @@
 
 - `ck_backup.py` — Backs up every CloudKit record (Development + Production) via `rootcli record list`. (~710 tok)
 - `ck_delete.py` — Deletes every CloudKit record listed in a ck_backup.py backup, then re-lists to verify. (~488 tok)
+
+## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/
+
+- `nuc-webui-deploy.sh` — Deploys webui/ from origin/main to the nuc (~/blindensport-webui) and rebuilds (~200 tok)
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/9310fa5d-a462-4776-b78e-97a4d735b7da/scratchpad/
 
@@ -266,9 +270,9 @@
 
 ## BlindensportGraz/Models/
 
-- `PlaceFormat.swift` — appendingForeignCountry: adds ", <country>" unless empty or Österreich (KostZ Ort, PRAE Wohnanschrift, Teilnehmerliste Ort) (~200 tok)
 - `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~3238 tok)
 - `MemberChangeRequest.swift` — / A club member's own edit to their roster ("Vereinsdaten") data, awaiting (~1630 tok)
+- `PlaceFormat.swift` — appendingForeignCountry: adds ", <country>" unless empty or Österreich (KostZ Ort, PRAE Wohnanschrift, Teilnehmerliste Ort) (~200 tok)
 - `TournamentInvitation.swift` — Tournament's uploaded Einladung (PDF/DOCX/TXT), admins only (budget.manage); synced via tournament_invitations + bucket tournament-invitations (~450 tok)
 
 ## BlindensportGraz/Resources/
