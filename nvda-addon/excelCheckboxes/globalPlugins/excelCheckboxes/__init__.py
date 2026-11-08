@@ -29,7 +29,7 @@ _lastReported = None
 def _withCheckbox(text, cell):
 	"""text, with the state added if cell has a checkbox. Reporting must never fail."""
 	try:
-		found = _finder.find(cell)
+		found = _finder.find(cell, needsName=not checkboxState.hasLabel(text))
 	except Exception:
 		log.debugWarning("Could not read Excel checkboxes", exc_info=True)
 		return text
@@ -96,8 +96,8 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			return
 		try:
 			cell = focus.activeExcelCell()
-			toggled = _finder.toggle(cell) if cell is not None else None
-			text = cell.Text if toggled else ""
+			text = cell.Text if cell is not None else ""
+			toggled = _finder.toggle(cell, needsName=not checkboxState.hasLabel(text)) if cell is not None else None
 		except Exception:
 			log.debugWarning("Could not change an Excel checkbox", exc_info=True)
 			ui.message("Kontrollkästchen konnte nicht geändert werden")

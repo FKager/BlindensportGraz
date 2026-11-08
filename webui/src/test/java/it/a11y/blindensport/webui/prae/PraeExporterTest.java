@@ -74,7 +74,7 @@ class PraeExporterTest {
         assertTrue(sheet.contains("<is><t>Einhundertfünf Euro und fünfzig Cent</t></is>"));
         assertTrue(sheet.contains("<c r=\"C13\" s=\"105\"><v>45.5</v></c>"), "day 11 amount");
         assertTrue(sheet.contains("<v>60.0</v>"), "day 31 amount");
-        assertTrue(sheet.contains("altText=\"Trainer:in\""), "every checkbox is named for NVDA");
+        assertFalse(sheet.contains("altText="), "no names: the NVDA add-on reads the cells");
     }
 
     @Test

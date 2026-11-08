@@ -212,9 +212,11 @@ enum PraeExporter {
     /// `labelStringIndex`: the label's shared string, each used by exactly one
     /// cell. The last box's label has no box glyph.
     ///
-    /// `altText` is invisible on the form. NVDA uses it as the control's name;
-    /// without it NVDA says "Kontrollkästchen 17". It's written to every box,
-    /// in the VML shape, sheet1.xml's `<controlPr>` and drawing1.xml.
+    /// `label` is the text the box stands for, for readers of this code only;
+    /// nothing is written for it. The exported file differs from the template
+    /// only by the data and the ticks. The NVDA add-on names a box by its
+    /// cell's text, or for the Richtigkeitsvermerk (empty cell P42) by the
+    /// text before the colon in the cell to its right (Q42).
     ///
     /// `ctrlPropPath` comes from the shape's `<control shapeId r:id>` in
     /// sheet1.xml, resolved through `xl/worksheets/_rels/sheet1.xml.rels` —
@@ -226,46 +228,46 @@ enum PraeExporter {
         let ctrlPropPath: String
         let cell: String
         let labelStringIndex: Int?
-        let altText: String
+        let label: String
 
-        private init(name: Int, drawingShapeID: Int, ctrlProp: Int, cell: String, labelStringIndex: Int, altText: String) {
+        private init(name: Int, drawingShapeID: Int, ctrlProp: Int, cell: String, labelStringIndex: Int, label: String) {
             self.init(vmlShapeID: "Kontrollkästchen_x0020_\(name)", drawingShapeID: drawingShapeID,
-                      ctrlProp: ctrlProp, cell: cell, labelStringIndex: labelStringIndex, altText: altText)
+                      ctrlProp: ctrlProp, cell: cell, labelStringIndex: labelStringIndex, label: label)
         }
 
-        private init(vmlShapeID: String, drawingShapeID: Int, ctrlProp: Int, cell: String, labelStringIndex: Int? = nil, altText: String) {
+        private init(vmlShapeID: String, drawingShapeID: Int, ctrlProp: Int, cell: String, labelStringIndex: Int? = nil, label: String) {
             self.vmlShapeID = vmlShapeID
             self.drawingShapeID = drawingShapeID
             self.ctrlPropPath = "xl/ctrlProps/ctrlProp\(ctrlProp).xml"
             self.cell = cell
             self.labelStringIndex = labelStringIndex
-            self.altText = altText
+            self.label = label
         }
 
-        static let uebungsleiter = FormCheckbox(name: 17, drawingShapeID: 1041, ctrlProp: 7, cell: "P9", labelStringIndex: 74, altText: "Übungsleiter:in")
-        static let trainer = FormCheckbox(name: 13, drawingShapeID: 1037, ctrlProp: 3, cell: "B9", labelStringIndex: 72, altText: "Trainer:in")
-        static let nebenberufJa = FormCheckbox(name: 22, drawingShapeID: 1046, ctrlProp: 10, cell: "A26", labelStringIndex: 55, altText: "Ja (Nebenberuf)")
-        static let einfachbezugJa = FormCheckbox(name: 24, drawingShapeID: 1048, ctrlProp: 12, cell: "A29", labelStringIndex: 57, altText: "Ja (Einfachbezug)")
-        static let ueberweisung = FormCheckbox(name: 27, drawingShapeID: 1051, ctrlProp: 15, cell: "A33", labelStringIndex: 60, altText: "Überweisung mittels")
-        static let richtigkeitsvermerk = FormCheckbox(vmlShapeID: "_x0000_s1052", drawingShapeID: 1052, ctrlProp: 16, cell: "P42", altText: "Richtigkeitsvermerk")
+        static let uebungsleiter = FormCheckbox(name: 17, drawingShapeID: 1041, ctrlProp: 7, cell: "P9", labelStringIndex: 74, label: "Übungsleiter:in")
+        static let trainer = FormCheckbox(name: 13, drawingShapeID: 1037, ctrlProp: 3, cell: "B9", labelStringIndex: 72, label: "Trainer:in")
+        static let nebenberufJa = FormCheckbox(name: 22, drawingShapeID: 1046, ctrlProp: 10, cell: "A26", labelStringIndex: 55, label: "Ja (Nebenberuf)")
+        static let einfachbezugJa = FormCheckbox(name: 24, drawingShapeID: 1048, ctrlProp: 12, cell: "A29", labelStringIndex: 57, label: "Ja (Einfachbezug)")
+        static let ueberweisung = FormCheckbox(name: 27, drawingShapeID: 1051, ctrlProp: 15, cell: "A33", labelStringIndex: 60, label: "Überweisung mittels")
+        static let richtigkeitsvermerk = FormCheckbox(vmlShapeID: "_x0000_s1052", drawingShapeID: 1052, ctrlProp: 16, cell: "P42", label: "Richtigkeitsvermerk")
 
         /// Every checkbox on the form. The last one's VML id doesn't follow
         /// the naming of the others.
         static let all: [FormCheckbox] = [
-            FormCheckbox(name: 9, drawingShapeID: 1033, ctrlProp: 1, cell: "A9", labelStringIndex: 71, altText: "Sportler:in"),
-            FormCheckbox(name: 10, drawingShapeID: 1034, ctrlProp: 2, cell: "A10", labelStringIndex: 54, altText: "Sportarzt / Sportärztin"),
+            FormCheckbox(name: 9, drawingShapeID: 1033, ctrlProp: 1, cell: "A9", labelStringIndex: 71, label: "Sportler:in"),
+            FormCheckbox(name: 10, drawingShapeID: 1034, ctrlProp: 2, cell: "A10", labelStringIndex: 54, label: "Sportarzt / Sportärztin"),
             trainer,
-            FormCheckbox(name: 14, drawingShapeID: 1038, ctrlProp: 4, cell: "B10", labelStringIndex: 76, altText: "Zeugwart:in"),
-            FormCheckbox(name: 15, drawingShapeID: 1039, ctrlProp: 5, cell: "H9", labelStringIndex: 73, altText: "Lehrwart:in / Instruktor:in"),
-            FormCheckbox(name: 16, drawingShapeID: 1040, ctrlProp: 6, cell: "H10", labelStringIndex: 77, altText: "Schieds- / Kampfrichter:in"),
+            FormCheckbox(name: 14, drawingShapeID: 1038, ctrlProp: 4, cell: "B10", labelStringIndex: 76, label: "Zeugwart:in"),
+            FormCheckbox(name: 15, drawingShapeID: 1039, ctrlProp: 5, cell: "H9", labelStringIndex: 73, label: "Lehrwart:in / Instruktor:in"),
+            FormCheckbox(name: 16, drawingShapeID: 1040, ctrlProp: 6, cell: "H10", labelStringIndex: 77, label: "Schieds- / Kampfrichter:in"),
             uebungsleiter,
-            FormCheckbox(name: 19, drawingShapeID: 1043, ctrlProp: 8, cell: "P10", labelStringIndex: 78, altText: "Rennleiter:in"),
-            FormCheckbox(name: 20, drawingShapeID: 1044, ctrlProp: 9, cell: "X9", labelStringIndex: 75, altText: "Masseur:in"),
+            FormCheckbox(name: 19, drawingShapeID: 1043, ctrlProp: 8, cell: "P10", labelStringIndex: 78, label: "Rennleiter:in"),
+            FormCheckbox(name: 20, drawingShapeID: 1044, ctrlProp: 9, cell: "X9", labelStringIndex: 75, label: "Masseur:in"),
             nebenberufJa,
-            FormCheckbox(name: 23, drawingShapeID: 1047, ctrlProp: 11, cell: "B26", labelStringIndex: 56, altText: "Nein (Hauptberuf)"),
+            FormCheckbox(name: 23, drawingShapeID: 1047, ctrlProp: 11, cell: "B26", labelStringIndex: 56, label: "Nein (Hauptberuf)"),
             einfachbezugJa,
-            FormCheckbox(name: 25, drawingShapeID: 1049, ctrlProp: 13, cell: "B29", labelStringIndex: 58, altText: "Nein (Mehrfachbezug)"),
-            FormCheckbox(name: 26, drawingShapeID: 1050, ctrlProp: 14, cell: "A31", labelStringIndex: 59, altText: "Betrag bar erhalten am"),
+            FormCheckbox(name: 25, drawingShapeID: 1049, ctrlProp: 13, cell: "B29", labelStringIndex: 58, label: "Nein (Mehrfachbezug)"),
+            FormCheckbox(name: 26, drawingShapeID: 1050, ctrlProp: 14, cell: "A31", labelStringIndex: 59, label: "Betrag bar erhalten am"),
             ueberweisung,
             richtigkeitsvermerk
         ]
@@ -318,7 +320,7 @@ enum PraeExporter {
                 patched = XLSXCellPatch.setText(in: patched, ref: "B18", value: GermanNumberWords.spelledOutEuroAmount(total))
             }
 
-            return FormCheckbox.all.reduce(patched) { addAltText(toControlIn: $0, box: $1) }
+            return patched
         }
     }
 
@@ -382,17 +384,11 @@ enum PraeExporter {
         return outputURL
     }
 
-    /// The zip-entry patches that tick `boxes` and name every checkbox — see
-    /// `FormCheckbox`. sheet1.xml's half of the naming happens in the sheet
-    /// patch, since that entry is patched separately.
+    /// The zip-entry patches that tick `boxes` — see `FormCheckbox`.
     private static func entryPatches(checking boxes: [FormCheckbox]) -> [String: (String) -> String] {
         var patches: [String: (String) -> String] = [
             "xl/drawings/vmlDrawing1.vml": { vml in
-                let named = FormCheckbox.all.reduce(vml) { addAltText(toShapeIn: $0, box: $1) }
-                return boxes.reduce(named) { checkFormCheckbox(in: $0, shapeID: $1.vmlShapeID) }
-            },
-            "xl/drawings/drawing1.xml": { drawing in
-                FormCheckbox.all.reduce(drawing) { addAltText(toDrawingIn: $0, box: $1) }
+                boxes.reduce(vml) { checkFormCheckbox(in: $0, shapeID: $1.vmlShapeID) }
             }
         ]
         for box in boxes {
@@ -460,22 +456,6 @@ enum PraeExporter {
             guard checkedBoxes.contains(.richtigkeitsvermerk) else { return sheet }
             return XLSXCellPatch.setText(in: sheet, ref: FormCheckbox.richtigkeitsvermerk.cell, value: "☒")
         }
-    }
-
-    private static func addAltText(toShapeIn vml: String, box: FormCheckbox) -> String {
-        let marker = "<v:shape id=\"\(box.vmlShapeID)\""
-        return vml.replacingOccurrences(of: marker, with: "\(marker) alt=\"\(box.altText)\"")
-    }
-
-    private static func addAltText(toDrawingIn drawing: String, box: FormCheckbox) -> String {
-        let marker = "<xdr:cNvPr id=\"\(box.drawingShapeID)\""
-        return drawing.replacingOccurrences(of: marker, with: "\(marker) descr=\"\(box.altText)\"")
-    }
-
-    private static func addAltText(toControlIn sheet: String, box: FormCheckbox) -> String {
-        guard let control = sheet.range(of: "<control shapeId=\"\(box.drawingShapeID)\""),
-              let properties = sheet.range(of: "<controlPr ", range: control.upperBound..<sheet.endIndex) else { return sheet }
-        return sheet.replacingCharacters(in: properties, with: "<controlPr altText=\"\(box.altText)\" ")
     }
 
     /// Checks a real Excel Form-control checkbox that floats OVER a cell

@@ -809,24 +809,21 @@ final class PraeCalculationTests: XCTestCase {
         try assertBox(ueberweisungBox, checked: true, in: url)
     }
 
-    func testExportMainFormNamesEveryCheckboxWithoutItsState() throws {
-        // NVDA uses a control's alternative text as its name; the template
-        // has none. A state in the name would go stale when a box changes.
+    func testExportMainFormAddsNoNamesToTheCheckboxes() throws {
+        // The NVDA add-on names a box from the cells, so the export writes no
+        // alternative text: the file differs from the template only by data
+        // and ticks.
         let summary = PraeMonthSummary(person: coachPerson(), month: 7, year: 2026, entries: [])
         let url = try PraeExporter.exportMainForm(summary: summary)
         defer { try? FileManager.default.removeItem(at: url) }
+        let template = try XCTUnwrap(Bundle.main.url(forResource: "PRAE_Formular", withExtension: "xlsx"))
 
+        XCTAssertEqual(try entryText(from: url, path: "xl/drawings/drawing1.xml"),
+                       try entryText(from: template, path: "xl/drawings/drawing1.xml"))
         let vml = try entryText(from: url, path: "xl/drawings/vmlDrawing1.vml")
         let sheet = try entryText(from: url, path: "xl/worksheets/sheet1.xml")
-        let drawing = try entryText(from: url, path: "xl/drawings/drawing1.xml")
-
-        XCTAssertEqual(vml.components(separatedBy: " alt=\"").count - 1, 16)
-        XCTAssertEqual(sheet.components(separatedBy: "<controlPr altText=\"").count - 1, 16)
-        XCTAssertEqual(drawing.components(separatedBy: " descr=\"").count - 1, 16)
-        XCTAssertTrue(vml.contains("<v:shape id=\"Kontrollkästchen_x0020_17\" alt=\"Übungsleiter:in\""))
-        XCTAssertTrue(drawing.contains("<xdr:cNvPr id=\"1041\" descr=\"Übungsleiter:in\""))
-        XCTAssertFalse(vml.contains("angekreuzt"))
-        XCTAssertFalse(sheet.contains("angekreuzt"))
+        XCTAssertFalse(vml.contains(" alt=\""))
+        XCTAssertFalse(sheet.contains("altText="))
         XCTAssertFalse(sheet.contains("<dataValidation"))
     }
 
