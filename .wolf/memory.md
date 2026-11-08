@@ -4160,3 +4160,6 @@
 |------|--------|---------|---------|--------|
 | 19:23 | KostZ Ort + PRAE Wohnanschrift: country appended only when set and not Österreich (PlaceFormat helper, app + webui PraeForm, test) | PlaceFormat.swift, SportEvent.swift, Member.swift, KostZExport.swift, PraeExport.swift, PraeForm.java, PraeCalculatorTest.java | iOS build ok, webui PraeCalculatorTest ok | ~6000 |
 | 19:28 | Tournament PRAE now also ticks A26/A29/A33 (Nebenberuf Ja, Einfachbezug Ja, Überweisung), app + webui, tests updated | PraeExport.swift, PraeCalculationTests.swift, PraeExporter.java, PraeExporterTest.java | iOS build ok, webui Prae*Test ok | ~3000 |
+| 19:47 | Merged PR #38, released v0.11.0 = TestFlight build 314 (Internal, de notes) | release-testflight.sh | ok | ~2000 |
+| 20:12 | PRAE Darstellung: A5 'Monat und Jahr:' in template (+B6, A32 as original), C5 month+year for tournaments too; app + webui | PraeExport.swift, PraeExporter.java, PRAE_Darstellung_Vorlage.xlsx x2, tests | iOS build ok, webui Prae*Test ok, rendered check ok | ~15000 |
+| 20:22 | PRAE Darstellung template rebuilt from Sport Austria .xls via LibreOffice (logo, Arial/italic, frame, heights, print setup); tests check sharedStrings; doc comment | PRAE_Darstellung_Vorlage.xlsx x2, PraeExport.swift, PraeCalculationTests.swift, PraeExporterTest.java | iOS build ok, webui Prae*Test ok, render ok | ~25000 |
