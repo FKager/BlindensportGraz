@@ -3,11 +3,11 @@
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
     "total_tokens_estimated": 28018548,
-    "total_reads": 8525,
+    "total_reads": 8545,
     "total_writes": 16441,
     "total_sessions": 141,
     "anatomy_hits": 7222,
-    "anatomy_misses": 1214,
+    "anatomy_misses": 1234,
     "repeated_reads_blocked": 5340,
     "estimated_savings_vs_bare_cli": 27773015
   },
@@ -148933,6 +148933,190 @@
         "input_tokens_estimated": 0,
         "output_tokens_estimated": 0,
         "reads_count": 2,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-08-1919",
+      "started": "2026-11-08T18:19:03.332Z",
+      "ended": "2026-11-08T19:22:46.138Z",
+      "reads": [
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/ql/PRAE_Darstellung_Vorlage.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/ql/orig.xls.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/lo/x/xl/media/image1.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/lo/conv.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/fill/Darstellung-Probe.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 5,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-08-1919",
+      "started": "2026-11-08T18:19:03.332Z",
+      "ended": "2026-11-08T19:26:33.283Z",
+      "reads": [
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/ql/PRAE_Darstellung_Vorlage.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/ql/orig.xls.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/lo/x/xl/media/image1.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/lo/conv.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/fill/Darstellung-Probe.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 5,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-08-1919",
+      "started": "2026-11-08T18:19:03.332Z",
+      "ended": "2026-11-08T19:27:12.898Z",
+      "reads": [
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/ql/PRAE_Darstellung_Vorlage.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/ql/orig.xls.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/lo/x/xl/media/image1.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/lo/conv.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/fill/Darstellung-Probe.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 5,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-08-1919",
+      "started": "2026-11-08T18:19:03.332Z",
+      "ended": "2026-11-08T19:29:26.771Z",
+      "reads": [
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/ql/PRAE_Darstellung_Vorlage.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/ql/orig.xls.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/lo/x/xl/media/image1.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/lo/conv.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        },
+        {
+          "file": "/private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/81e610d6-0a58-47a1-b0c2-a0d871ec2cf9/scratchpad/fill/Darstellung-Probe.xlsx.png",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 5,
         "writes_count": 0,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 0
