@@ -4137,3 +4137,26 @@
 | 22:14 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
 | 22:16 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
 | 23:20 | mcp-connect.sh prod|staging replaces staging-mcp.sh; PR opened | supabase/scripts | PR | ~2500 |
+| 22:17 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:22 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:23 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 22:24 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+| 23:40 | User confirmed: v0.10.0 and BSG Staging side by side; Rollen and Obmann picker work with VoiceOver | iPhone | confirmed | ~200 |
+| 22:25 | Session end: 2 writes across 2 files (anatomy.md, pr-body.md) | 2 reads | ~262 tok |
+
+## Session: 2026-11-07 22:26
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-07 22:27
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-08 19:19
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:23 | KostZ Ort + PRAE Wohnanschrift: country appended only when set and not Österreich (PlaceFormat helper, app + webui PraeForm, test) | PlaceFormat.swift, SportEvent.swift, Member.swift, KostZExport.swift, PraeExport.swift, PraeForm.java, PraeCalculatorTest.java | iOS build ok, webui PraeCalculatorTest ok | ~6000 |
+| 19:28 | Tournament PRAE now also ticks A26/A29/A33 (Nebenberuf Ja, Einfachbezug Ja, Überweisung), app + webui, tests updated | PraeExport.swift, PraeCalculationTests.swift, PraeExporter.java, PraeExporterTest.java | iOS build ok, webui Prae*Test ok | ~3000 |
