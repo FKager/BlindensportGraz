@@ -36,13 +36,18 @@ public record PraeForm(Person person, boolean tournament, int month, int year, S
             return last.isEmpty() || first.isEmpty() ? displayName : last + ", " + first;
         }
 
-        /** Street, zip and city, country (Member.fullAddress). */
+        /**
+         * Street, zip and city; the country only when it is set and not Österreich
+         * (Member.addressWithForeignCountry in the app).
+         */
         public String address() {
             if (member == null) {
                 return "";
             }
             String zipCity = String.join(" ", present(member.zip(), member.city()));
-            return String.join(", ", present(member.street(), zipCity, member.country()));
+            String country = member.country() == null ? "" : member.country().strip();
+            boolean foreign = !country.isEmpty() && !country.equals("Österreich");
+            return String.join(", ", present(member.street(), zipCity, foreign ? country : ""));
         }
 
         private static List<String> present(String... parts) {

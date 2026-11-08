@@ -190,13 +190,14 @@ enum PraeExporter {
     /// unambiguous here: the tournament's own bare title. Checks the
     /// "Trainer:in" role checkbox (`FormCheckbox.trainer`, B9) instead of
     /// Training's "Übungsleiter:in" — this club's tournament deployments are
-    /// always coaching, unlike trainings — plus the Richtigkeitsvermerk (P42),
-    /// which every PRAE gets. Every other role/declaration checkbox stays
-    /// manual.
+    /// always coaching, unlike trainings — plus the same declarations as a
+    /// training: "Ja (Nebenberuf)" (A26), "Ja (Einfachbezug)" (A29),
+    /// "Überweisung mittels:" (A33), and the Richtigkeitsvermerk (P42), which
+    /// every PRAE gets. Every other role/declaration checkbox stays manual.
     static func exportMainForm(summary: PraeTournamentSummary) throws -> URL {
         try exportMainForm(person: summary.person, month: summary.month, year: summary.year,
                            entries: summary.entries, trainingName: summary.tournament.title,
-                           checkedBoxes: [.trainer, .richtigkeitsvermerk])
+                           checkedBoxes: [.trainer, .nebenberufJa, .einfachbezugJa, .ueberweisung, .richtigkeitsvermerk])
     }
 
     /// One of the real template's checkboxes — genuine Excel Form-control
@@ -293,7 +294,7 @@ enum PraeExporter {
                                  entryPatches: entryPatches(checking: checkedBoxes)) { xml in
             var patched = XLSXCellPatch.setText(in: xml, ref: "D4", value: person.praeFormName)
             patched = XLSXCellPatch.setText(in: patched, ref: "D5", value: person.member?.svnr ?? "")
-            patched = XLSXCellPatch.setText(in: patched, ref: "D7", value: person.member?.fullAddress ?? "")
+            patched = XLSXCellPatch.setText(in: patched, ref: "D7", value: person.member?.addressWithForeignCountry ?? "")
             if let birthDate = person.member?.birthDate {
                 patched = XLSXCellPatch.setText(in: patched, ref: "L5", value: dateFormatter.string(from: birthDate))
             }

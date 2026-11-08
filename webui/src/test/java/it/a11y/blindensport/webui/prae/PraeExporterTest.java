@@ -82,7 +82,7 @@ class PraeExporterTest {
         var training = entries(PraeExporter.mainForm(form(false, false)));
         assertEquals(List.of("7", "10", "12", "15", "16"), tickedControls(training));
         assertEquals(5, training.get("xl/drawings/vmlDrawing1.vml").split("<x:Checked>1", -1).length - 1);
-        assertEquals(List.of("3", "16"), tickedControls(entries(PraeExporter.mainForm(form(true, false)))));
+        assertEquals(List.of("3", "10", "12", "15", "16"), tickedControls(entries(PraeExporter.mainForm(form(true, false)))));
     }
 
     @Test

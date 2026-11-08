@@ -142,6 +142,15 @@ nonisolated extension Member {
         return [street, zipCity, country].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
     }
 
+    /// `fullAddress` without "Österreich": a foreign country is appended to
+    /// the city, comma-separated, and Austria stays implicit. Used for the
+    /// PRAE "Wohnanschrift" (D7).
+    var addressWithForeignCountry: String {
+        let zipCity = [zip, city].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: " ")
+        let address = [street, zipCity].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
+        return PlaceFormat.appendingForeignCountry(country, to: address)
+    }
+
     /// `defaultFunction` normalized down to one of `MembershipRole`'s three
     /// known raw values ("player"/"coach"/"assistant"), falling back to
     /// "player" when it's blank or an unrecognized/`.other` value — used by
