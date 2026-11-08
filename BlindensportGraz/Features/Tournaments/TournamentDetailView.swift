@@ -347,7 +347,7 @@ var body: some View {
             teams: tournament.teams,
             exportContext: TeilnehmerlisteContext(
                 betrifft: tournament.title,
-                ort: tournament.locationWithCountry,
+                ort: tournament.cityWithCountry,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
                 attendedMemberships: attendedMemberships.filter(isSportler),
@@ -363,7 +363,7 @@ var body: some View {
             teams: tournament.teams,
             exportContext: TeilnehmerlisteContext(
                 betrifft: tournament.title,
-                ort: tournament.locationWithCountry,
+                ort: tournament.cityWithCountry,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
                 attendedMemberships: attendedMemberships.filter(isHelfer),

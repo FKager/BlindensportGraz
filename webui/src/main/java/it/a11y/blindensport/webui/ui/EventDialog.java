@@ -45,10 +45,10 @@ class EventDialog extends Dialog {
     private final TextField focusArea = new TextField("Schwerpunkt");
     private final IntegerField maxTeams = new IntegerField("Max. Teams");
     private final Select<String> status = new Select<>();
-    private final TextField location = new TextField("Ort / Halle");
+    private final TextField location = new TextField("Veranstaltungsort");
     private final TextField street = new TextField("Straße");
     private final TextField zip = new TextField("PLZ");
-    private final TextField city = new TextField("Stadt");
+    private final TextField city = new TextField("Ort");
     private final TextField country = new TextField("Land");
     private final TextArea notes = new TextArea("Notizen");
     private final MultiSelectComboBox<Team> teams;

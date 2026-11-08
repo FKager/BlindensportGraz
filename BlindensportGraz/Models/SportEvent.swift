@@ -154,19 +154,12 @@ nonisolated extension SportEvent {
         return [street, zipCity, country].filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }.joined(separator: ", ")
     }
 
-    /// `location` with `country` appended, comma-separated, but only when
+    /// `city` with `country` appended, comma-separated, but only when
     /// `country` is set to something other than "Österreich" — Austria is
-    /// the assumed default for this club's events, so it stays implicit;
-    /// a foreign country is the one case worth calling out in something
-    /// like the Teilnehmerliste's "Ort" field. Kept separate from
-    /// `fullAddress` above, which always shows `country` unconditionally
-    /// as part of the full postal address.
-    var locationWithCountry: String {
-        PlaceFormat.appendingForeignCountry(country, to: location)
-    }
-
-    /// `city` with a foreign `country` appended, same rule as
-    /// `locationWithCountry` — the KostZ "ORT:" field (H3).
+    /// the assumed default for this club's events, so it stays implicit.
+    /// Feeds the KostZ "ORT:" field (H3) and the Teilnehmerliste's "Ort".
+    /// Kept separate from `fullAddress` above, which always shows
+    /// `country` as part of the full postal address.
     var cityWithCountry: String {
         PlaceFormat.appendingForeignCountry(country, to: city)
     }

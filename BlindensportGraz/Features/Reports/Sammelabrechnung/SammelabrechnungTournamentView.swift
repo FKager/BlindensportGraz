@@ -79,14 +79,14 @@ struct SammelabrechnungTournamentView: View {
     private func isSportler(_ membership: TeamMembership) -> Bool { membership.role == .player }
 
     private var teilnehmerlisteSportlerContext: TeilnehmerlisteContext {
-        TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.locationWithCountry,
+        TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.cityWithCountry,
                                 startDate: tournament.startDate, endDate: tournament.endDate,
                                 attendedMemberships: attendedMemberships.filter(isSportler),
                                 fileNamePrefix: "TN-Sportler")
     }
 
     private var teilnehmerlisteHelferContext: TeilnehmerlisteContext {
-        TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.locationWithCountry,
+        TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.cityWithCountry,
                                 startDate: tournament.startDate, endDate: tournament.endDate,
                                 attendedMemberships: attendedMemberships.filter(isHelfer),
                                 fileNamePrefix: "TN-Helfer")

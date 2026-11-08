@@ -82,7 +82,7 @@ public class EventsView extends AdminView {
         grid.addColumn(e -> ClubModels.KINDS.getOrDefault(e.kind(), e.kind())).setHeader("Art").setAutoWidth(true);
         grid.addColumn(ClubEvent::title).setHeader("Titel").setRowHeader(true).setFlexGrow(1);
         grid.addColumn(e -> Stream.of(e.location(), e.city()).filter(s -> !s.isBlank()).collect(Collectors.joining(", ")))
-                .setHeader("Ort").setFlexGrow(1);
+                .setHeader("Veranstaltungsort, Ort").setFlexGrow(1);
         grid.addColumn(e -> ClubFields.teamNames(e.teamIds(), teamsById)).setHeader("Teams").setAutoWidth(true);
         grid.addColumn(EventsView::statusLabel).setHeader("Status").setAutoWidth(true);
         grid.addComponentColumn(this::actions).setHeader("Aktionen").setAutoWidth(true).setFlexGrow(0)

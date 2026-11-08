@@ -50,7 +50,7 @@ struct TournamentRow: View {
              // City alongside the venue name — user request: name, city,
              // date, cost in the overview. Only appended when set, same
              // "don't show an empty field" convention as elsewhere (e.g.
-             // SportEvent.locationWithCountry).
+             // SportEvent.cityWithCountry).
              Text(tournament.city.isEmpty ? tournament.location : "\(tournament.location), \(tournament.city)")
           }
           .font(.caption)

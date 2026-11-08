@@ -54,7 +54,7 @@ public class FavoritesView extends AdminView {
         grid.addColumn(f -> WEEKDAY_NAMES.getOrDefault(f.weekday(), "?") + ", "
                 + time(f.startHour(), f.startMinute()) + "–" + time(f.endHour(), f.endMinute()))
                 .setHeader("Wann").setAutoWidth(true);
-        grid.addColumn(TrainingFavorite::location).setHeader("Ort").setFlexGrow(1);
+        grid.addColumn(TrainingFavorite::location).setHeader("Veranstaltungsort").setFlexGrow(1);
         grid.addColumn(f -> ClubFields.teamNames(f.teamIds(), teamsById)).setHeader("Teams").setAutoWidth(true);
         grid.addComponentColumn(f -> {
             Button edit = GermanUi.label(new Button("Bearbeiten", e -> open(f)), f.title() + " bearbeiten");
@@ -103,10 +103,10 @@ public class FavoritesView extends AdminView {
         weekday.setItemLabelGenerator(WEEKDAY_NAMES::get);
         TimePicker start = timePicker("Beginn");
         TimePicker end = timePicker("Ende");
-        TextField location = new TextField("Ort / Halle");
+        TextField location = new TextField("Veranstaltungsort");
         TextField street = new TextField("Straße");
         TextField zip = new TextField("PLZ");
-        TextField city = new TextField("Stadt");
+        TextField city = new TextField("Ort");
         TextField country = new TextField("Land");
         MultiSelectComboBox<Team> teamField = ClubFields.teams(teams, f == null ? List.of() : f.teamIds());
         if (f == null) {

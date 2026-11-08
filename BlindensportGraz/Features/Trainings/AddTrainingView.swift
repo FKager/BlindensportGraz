@@ -18,7 +18,7 @@ struct AddTrainingView: View {
 
        @State private var title = ""
        @State private var sport = "Torball"
-       @State private var location = "Graz"
+       @State private var location = ""
        @State private var street = ""
        @State private var zip = ""
        @State private var city = ""

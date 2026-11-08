@@ -10127,6 +10127,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-08T20:22:18+01:00"
+    },
+    {
+      "id": "bug-602",
+      "timestamp": "2026-11-08",
+      "error_message": "brew install --cask temurin@21: sudo: a terminal is required to read the password (also via the ! prefix); ./mvnw: Unable to locate a Java Runtime",
+      "file": "(environment)",
+      "root_cause": "No JDK on the Mac; the Temurin cask runs a .pkg installer via sudo, and neither Claude's Bash nor the ! prefix provides a password prompt",
+      "fix": "brew install openjdk@21 (formula, no sudo, keg-only); run webui tests with JAVA_HOME=/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home ./mvnw test",
+      "tags": [
+        "java",
+        "maven",
+        "homebrew",
+        "sudo",
+        "webui"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-08"
     }
   ]
 }
