@@ -1,10 +1,7 @@
 package it.a11y.blindensport.webui.prae;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
+import it.a11y.blindensport.webui.xlsx.XlsxPatch;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,9 +11,6 @@ import java.util.Map;
 import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
 
@@ -63,7 +57,7 @@ public final class PraeExporter {
         PraeForm.Person person = form.person();
         var member = person.member();
         var privateData = member == null ? null : member.privateData();
-        return patchTemplate("prae/PRAE_Formular.xlsx", entryPatches(checked), xml -> {
+        return XlsxPatch.fillTemplate("prae/PRAE_Formular.xlsx", entryPatches(checked), xml -> {
             String p = XlsxPatch.setText(xml, "D4", person.formName());
             p = XlsxPatch.setText(p, "D5", privateData == null ? "" : privateData.svnr());
             p = XlsxPatch.setText(p, "D7", person.address());
@@ -99,7 +93,7 @@ public final class PraeExporter {
         String value = form.monthLabel();
         PraeForm.Person person = form.person();
         var birthDate = person.member() == null ? null : person.member().privateData().birthDate();
-        return patchTemplate("prae/PRAE_Darstellung_Vorlage.xlsx", Map.of(), xml -> {
+        return XlsxPatch.fillTemplate("prae/PRAE_Darstellung_Vorlage.xlsx", Map.of(), xml -> {
             String p = XlsxPatch.setText(xml, "C2", vereinName);
             p = XlsxPatch.setText(p, "C3", person.formName());
             if (birthDate != null) {
@@ -205,32 +199,5 @@ public final class PraeExporter {
         }
         String block = shape.group().replaceFirst("<x:NoThreeD/>", "<x:Checked>1</x:Checked><x:NoThreeD/>");
         return vml.substring(0, shape.start()) + block + vml.substring(shape.end());
-    }
-
-    /** Copies the template zip, patching sheet1.xml and the named entries; everything else stays byte for byte. */
-    private static byte[] patchTemplate(String resource, Map<String, UnaryOperator<String>> entryPatches,
-                                        UnaryOperator<String> sheetPatch) {
-        try (InputStream template = PraeExporter.class.getClassLoader().getResourceAsStream(resource)) {
-            if (template == null) {
-                throw new IllegalStateException("PRAE template missing: " + resource);
-            }
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            try (ZipInputStream in = new ZipInputStream(template); ZipOutputStream zip = new ZipOutputStream(out)) {
-                for (ZipEntry entry = in.getNextEntry(); entry != null; entry = in.getNextEntry()) {
-                    byte[] data = in.readAllBytes();
-                    UnaryOperator<String> patch = "xl/worksheets/sheet1.xml".equals(entry.getName()) ? sheetPatch
-                            : entryPatches.get(entry.getName());
-                    if (patch != null) {
-                        data = patch.apply(new String(data, StandardCharsets.UTF_8)).getBytes(StandardCharsets.UTF_8);
-                    }
-                    zip.putNextEntry(new ZipEntry(entry.getName()));
-                    zip.write(data);
-                    zip.closeEntry();
-                }
-            }
-            return out.toByteArray();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 }

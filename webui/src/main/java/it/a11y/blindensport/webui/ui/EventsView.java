@@ -11,6 +11,7 @@ import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import it.a11y.blindensport.webui.auth.AdminSession;
 import it.a11y.blindensport.webui.auth.AdminSessions;
@@ -139,9 +140,28 @@ public class EventsView extends AdminView {
                     this::personName, this::store, this).open()), "Anwesenheit für " + e.title());
             attendance.addThemeVariants(ButtonVariant.LUMO_SMALL);
             row.add(attendance);
+            if (can(Permission.CLUB_MANAGE)) {
+                Button invoicing = GermanUi.label(new Button("Abrechnung", c -> openInvoicing(e)),
+                        "Abrechnung für " + e.title());
+                invoicing.addThemeVariants(ButtonVariant.LUMO_SMALL);
+                row.add(invoicing);
+            }
         }
         row.add(delete);
         return row;
+    }
+
+    /** A tournament's own invoicing; a training's is its month's (trainings are invoiced per month). */
+    private void openInvoicing(ClubEvent e) {
+        QueryParameters query;
+        if ("tournament".equals(e.kind())) {
+            query = QueryParameters.of("turnier", e.id());
+        } else {
+            LocalDate date = LocalDate.ofInstant(e.startDate(), CLUB_ZONE);
+            query = QueryParameters.simple(Map.of("monat", String.valueOf(date.getMonthValue()),
+                    "jahr", String.valueOf(date.getYear())));
+        }
+        getUI().ifPresent(ui -> ui.navigate(ReportsView.class, query));
     }
 
     private void openEvent(String eventKind, ClubEvent existing) {
