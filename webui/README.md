@@ -9,10 +9,13 @@ iOS app for organizing the club's activities, not only an admin tool. It replace
   with attendance and PRAE, Teams and their members, Trainings-Favoriten,
   Mitglieder (incl. protected data, JSON import/export), Änderungsanträge,
   App-Konten (approve, activation codes, roles, block, delete),
-  Rollen-Protokoll, Vereinsbudget, Willkommensbildschirm.
+  Rollen-Protokoll, Vereinsbudget, Willkommensbildschirm, Abrechnung
+  (KostZ, PRAE, TeilnehmerInnenlisten, Sammelabrechnung — like the app's
+  „Berichte“).
 - **JSON REST API**: `/api/session`, `/api/members`, `/api/members/import`.
   The contract is unchanged from the Swift server, so existing scripts keep
-  working.
+  working. `/api/reports` serves the invoicing files, meant as a backend
+  for the app later.
 - **Calendar feed**: `/calendar/<token>.ics`, the webcal URL the app's
   account screen hands out.
 
@@ -44,7 +47,7 @@ The UI only uses permissions to decide which pages and buttons to show.
 | `roles.assign` (root) | App-Konten: roles, block/unblock, delete |
 | `rolelog.read` | Rollen-Protokoll |
 | `budget.manage` | Vereinsbudget |
-| `club.manage` | Willkommensbildschirm |
+| `club.manage` | Willkommensbildschirm, Abrechnung, `/api/reports*` (PRAE files also need `members.private.read`) |
 
 Sessions end after 30 minutes idle or 12 hours. Every 5 minutes the role is
 re-read from the database, so a role change, a block or a deletion reaches an
@@ -84,6 +87,29 @@ curl -b cookies.txt -X POST https://<DOMAIN>/api/members/import \
   -H "Content-Type: application/json" -H "X-Requested-With: blindensport-admin" \
   --data-binary @roster.json
 ```
+
+### Invoicing (`/api/reports`)
+
+All GET, `club.manage`; anything containing PRAE forms (SVNR, IBAN) also
+needs `members.private.read`. Trainings are invoiced per month, tournaments
+one by one, as in the app. Files come as downloads (`Content-Disposition`).
+
+| Path | Returns |
+|---|---|
+| `/api/reports/months/{year}/{month}` | JSON: KostZ (betrifft, ort, period, days, total, people) and PRAE forms with cap warnings |
+| `/api/reports/months/{year}/{month}/kostz.xlsx` | KostZ form |
+| `/api/reports/months/{year}/{month}/prae.zip[?person=]` | PRAE + Darstellung, everyone or one person |
+| `/api/reports/months/{year}/{month}/sammelabrechnung.zip` | bundle, see parameters below |
+| `/api/reports/tournaments` | JSON: tournaments, latest first |
+| `/api/reports/tournaments/{id}` | JSON: as a month, plus both TeilnehmerInnenlisten |
+| `/api/reports/tournaments/{id}/kostz.xlsx` | KostZ form |
+| `/api/reports/tournaments/{id}/teilnehmer-sportler.xlsx`, `…/teilnehmer-helfer.xlsx` | TeilnehmerInnenliste of players / of coaches and assistants |
+| `/api/reports/tournaments/{id}/prae.zip[?person=]` | PRAE + Darstellung |
+| `/api/reports/tournaments/{id}/sammelabrechnung.zip` | bundle |
+
+Sammelabrechnung parameters: `kostz`, `sportler`, `helfer` (tournaments)
+default to `true`; `prae` is repeated person ids (the `personId` of the
+JSON), absent for everyone, `prae=none` for no one.
 
 ## Calendar feed
 
@@ -140,6 +166,8 @@ Coaches, admins and root can create tokens, and a client can do whatever that ac
 ### PRAE exists twice
 
 `prae/` is a port of the app's `PraeCalculation.swift` and `PraeExport.swift`, since the forms are now made on the phone and on this server. A change to the rules or the form belongs in both. `src/main/resources/prae` holds copies of the app's templates, because the Docker build sees only `webui/`; `PraeExporterTest` fails if they drift apart.
+
+The same holds for KostZ and the TeilnehmerInnenliste: `reports/` ports `KostZExport.swift`, `TeilnehmerlisteExport.swift` and `SammelabrechnungExport.swift`; their templates are copies in `src/main/resources/reports`, guarded by `ReportsTest`.
 
 ### Accounts and the public start page
 
@@ -228,7 +256,8 @@ docker run --rm -p 127.0.0.1:8081:8080 -v "$PWD/target/quarkus-app":/app -w /app
 
 ## Layout
 
-`mcp/` MCP server, `prae/` PRAE calculation and forms (see above).
+`mcp/` MCP server, `prae/` PRAE calculation and forms, `reports/` KostZ,
+TeilnehmerInnenliste and Sammelabrechnung, `xlsx/` template patching (see above).
 
 ```
 src/main/java/it/a11y/blindensport/webui/

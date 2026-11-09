@@ -7,23 +7,20 @@ import it.a11y.blindensport.webui.members.Dates;
 import it.a11y.blindensport.webui.members.MemberRecord;
 import it.a11y.blindensport.webui.members.MemberStore;
 import it.a11y.blindensport.webui.prae.PraeForm.Person;
+import it.a11y.blindensport.webui.xlsx.XlsxPatch;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /** Reads what a PRAE needs as the signed-in user and works out the forms. */
 public final class PraeService {
-    private static final String VEREIN = "Grazer VSC";
+    public static final String VEREIN = "Grazer VSC";
 
     private final ClubStore club;
     private final MemberStore roster;
@@ -82,29 +79,16 @@ public final class PraeService {
 
     /** All forms and their Darstellung as one zip; names made unique so nothing overwrites. */
     public static byte[] zip(List<PraeForm> forms) {
-        Map<String, byte[]> files = new java.util.LinkedHashMap<>();
-        for (PraeForm form : forms) {
-            add(files, PraeExporter.fileName(form, "PRAE"), PraeExporter.mainForm(form));
-            add(files, PraeExporter.fileName(form, "PRAE-Darstellung"), PraeExporter.darstellung(form, VEREIN));
-        }
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try (ZipOutputStream zip = new ZipOutputStream(out)) {
-            for (Map.Entry<String, byte[]> file : files.entrySet()) {
-                zip.putNextEntry(new ZipEntry(file.getKey()));
-                zip.write(file.getValue());
-                zip.closeEntry();
-            }
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-        return out.toByteArray();
+        return XlsxPatch.zip(files(forms));
     }
 
-    private static void add(Map<String, byte[]> files, String name, byte[] content) {
-        String unique = name;
-        for (int i = 2; files.containsKey(unique); i++) {
-            unique = name.replaceFirst("\\.xlsx$", "_" + i + ".xlsx");
+    /** Each form and its Darstellung, named as in the app's Sammelabrechnung. */
+    public static LinkedHashMap<String, byte[]> files(List<PraeForm> forms) {
+        LinkedHashMap<String, byte[]> files = new LinkedHashMap<>();
+        for (PraeForm form : forms) {
+            XlsxPatch.addUnique(files, PraeExporter.fileName(form, "PRAE"), PraeExporter.mainForm(form));
+            XlsxPatch.addUnique(files, PraeExporter.fileName(form, "PRAE-Darstellung"), PraeExporter.darstellung(form, VEREIN));
         }
-        files.put(unique, content);
+        return files;
     }
 }
