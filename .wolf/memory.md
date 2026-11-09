@@ -4180,3 +4180,37 @@
 | 22:22 | Venue field relabeled 'Name der Sportstätte', city 'Ort' (app+webui), no Graz default, Teilnehmerliste Ort = city; build-for-testing OK, webui tests not run (no Java locally) | Events/Tournaments/Trainings views, SportEvent.swift, Localizable.xcstrings, EventDialog/FavoritesView/EventsView.java, TeilnehmerlisteExportTests | done | ~25k |
 | 22:24 | User correction: venue label back to 'Veranstaltungsort' (app + webui, was 'Ort / Halle' in webui); Teilnehmerliste Ort = city confirmed | same files | done | ~5k |
 | 22:30 | Installed openjdk@21 via brew (temurin cask failed: sudo); webui tests 114/114 pass on branch | (env) | done | ~6k |
+
+## Session: 2026-11-08 22:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-08 22:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 22:58 | PR #40 merged; v0.11.2 = TestFlight build 321, Internal group + de notes | release-testflight.sh | done | ~4k |
+| 23:01 | Web UI redeployed on nuc at 1ee6858, HTTP 200, new labels in jar | nuc ~/blindensport-webui | done | ~4k |
+| 23:04 | User confirmed on device: Teilnehmerliste Ort = city (v0.11.2) | - | verified | ~1k |
+
+## Session: 2026-11-09 13:57
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 13:58 | Checked bundled KostZ template vs Sport Austria live download (Richtlinien/2020 URL, linked from service-center forms page, last-modified 2024-07-18): MD5 identical 73e37027… | BlindensportGraz/Resources/KostZ_Kostenzusammenstellung.xlsx | identical | ~2k |
+| 14:04 | Created webui/src/main/java/it/a11y/blindensport/webui/xlsx/XlsxPatch.java | — | ~1397 |
+| 14:05 | Created webui/src/main/java/it/a11y/blindensport/webui/reports/KostZ.java | — | ~1619 |
+| 14:05 | Created webui/src/main/java/it/a11y/blindensport/webui/reports/Places.java | — | ~182 |
+| 14:05 | Created webui/src/main/java/it/a11y/blindensport/webui/reports/Places.java | — | ~224 |
+| 14:05 | Created webui/src/main/java/it/a11y/blindensport/webui/reports/Teilnehmerliste.java | — | ~1704 |
+| 14:06 | Created webui/src/main/java/it/a11y/blindensport/webui/reports/Reports.java | — | ~1258 |
+| 14:06 | Created webui/src/main/java/it/a11y/blindensport/webui/reports/ReportService.java | — | ~1094 |
+| 14:07 | Created webui/src/main/java/it/a11y/blindensport/webui/api/ReportsResource.java | — | ~3589 |
+| 14:09 | Created webui/src/main/java/it/a11y/blindensport/webui/ui/ReportsView.java | — | ~5934 |
+| 14:10 | Created webui/src/test/java/it/a11y/blindensport/webui/reports/ReportsTest.java | — | ~4233 |
+| 14:11 | Created webui/src/test/java/it/a11y/blindensport/webui/api/ReportsApiTest.java | — | ~3416 |
+| 14:12 | Edited webui/src/main/java/it/a11y/blindensport/webui/ui/ReportsView.java | 2→2 lines | ~48 |
+| 14:13 | Created webui/src/test/java/it/a11y/blindensport/webui/ui/ReportsViewTest.java | — | ~1595 |
+| 14:15 | Web UI Abrechnung: ported KostZ, TeilnehmerInnenliste, Sammelabrechnung (reports/), new ReportsView (/abrechnung) + Termine "Abrechnung" button, REST /api/reports, xlsx/XlsxPatch shared; 134 webui tests pass | webui/src/main/java/.../reports/*, ui/ReportsView.java, api/ReportsResource.java, xlsx/XlsxPatch.java, tests | done, uncommitted on branch webui-abrechnung | ~60k |
+| 14:15 | Session end: 13 writes across 11 files (XlsxPatch.java, KostZ.java, Places.java, Teilnehmerliste.java, Reports.java) | 0 reads | ~28170 tok |

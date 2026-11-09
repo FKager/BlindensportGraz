@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-08T19:36:28.864Z
-> Files: 246 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-09T13:13:47.787Z
+> Files: 257 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -485,6 +485,7 @@
 - `ApiExceptionMappers.java` — Every API error as {@code {"error": true, "reason": "..."}} (admin-session.js and scripts read {@cod (~603 tok)
 - `CurrentAdmin.java` — The admin {@link ApiAuthFilter} found for this request. (~226 tok)
 - `MembersResource.java` — The roster REST API, unchanged contract from the Swift server: (~2435 tok)
+- `ReportsResource.java` — Invoicing ("Abrechnung") as REST — the same files as the web UI's (~3589 tok)
 - `SessionResource.java` — POST/GET/DELETE /api/session — sign in with a Supabase account, show the current admin, sign out. (~948 tok)
 
 ## webui/src/main/java/it/a11y/blindensport/webui/auth/
@@ -537,6 +538,14 @@
 - `PraeForm.java` — One form: person, month, entries, cap warnings (~900 tok)
 - `PraeService.java` — Reads data as the user, selects forms, zips them (~1000 tok)
 
+## webui/src/main/java/it/a11y/blindensport/webui/reports/
+
+- `KostZ.java` — Sport Austria's "KostZ" (Kostenzusammenstellung) — port of the app's (~1619 tok)
+- `Places.java` — Place names in reports — the app's PlaceFormat.swift. (~224 tok)
+- `Reports.java` — The invoicing of one period, as the app's "Berichte" menus file it: a (~1258 tok)
+- `ReportService.java` — Reads what one period's invoicing needs, as the signed-in user (RLS (~1094 tok)
+- `Teilnehmerliste.java` — Sport Austria's "TeilnehmerInnenliste (TN)" for one tournament — port of (~1704 tok)
+
 ## webui/src/main/java/it/a11y/blindensport/webui/supabase/
 
 - `DbErrorMessages.java` — German texts for the errors the database raises (supabase/migrations: (~600 tok)
@@ -567,6 +576,7 @@
 - `MainLayout.java` — Frame of every signed-in page: title, who is signed in, sign-out, and (~864 tok)
 - `MemberDialog.java` — Create / edit one roster entry, laid out like the app's MemberDetailView. (~2864 tok)
 - `MembersView.java` — The club roster: search, create, edit, delete, JSON import and export. (~2945 tok)
+- `ReportsView.java` — "Abrechnung": the invoicing of the app's Berichte menus — KostZ, PRAE (~5894 tok)
 - `RequiresPermission.java` — A view only admins holding at least one of these permissions may open (checked by {@link AccessGuard (~118 tok)
 - `RoleLogView.java` — Audit trail: role changes and block/unblock/delete of accounts (rolelog.read), like the app's RoleCh (~904 tok)
 - `SessionCookieSetup.java` — Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless (~246 tok)
@@ -575,6 +585,10 @@
 - `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)
 - `WelcomeView.java` — The welcome text the app shows at startup, also before signing in (club.manage). (~876 tok)
 
+## webui/src/main/java/it/a11y/blindensport/webui/xlsx/
+
+- `XlsxPatch.java` — Shared .xlsx helper (moved from prae/): setText/setNumber/setInteger cells, fillTemplate, zip, addUnique (~1397 tok)
+
 ## webui/src/main/resources/
 
 - `application.properties` — Supabase project the web admin works on. Admins act with their OWN (~401 tok)
@@ -582,6 +596,8 @@
 ## webui/src/test/java/it/a11y/blindensport/webui/api/
 
 - `ApiTest.java` — The REST contract of the Swift server (session, CSRF, members CRUD, (~4269 tok)
+- `ReportsApiTest.java` — /api/reports against a mocked Supabase: permissions, JSON and the files. (~3416 tok)
+- `ReportsFixture.java` — Shared Supabase stubs for invoicing tests: admin/kassa/coach accounts, a Prague tournament, a March training (~1500 tok)
 - `SupabaseMock.java` — A WireMock stand-in for the Supabase project (GoTrue + PostgREST) during @QuarkusTest. (~213 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/auth/
@@ -599,6 +615,11 @@
 - `MemberMappingTest.java` — Ports of RootCLI's MemberStoreTests / MemberPrivateTests (row mapping, no network). (~1474 tok)
 - `ValidationTest.java` — Class: ValidationTest (~251 tok)
 
+## webui/src/test/java/it/a11y/blindensport/webui/reports/
+
+- `ReportsTest.java` — KostZ, TeilnehmerInnenliste and the Sammelabrechnung — ports of the app's KostZCalculationTests and (~4233 tok)
+
 ## webui/src/test/java/it/a11y/blindensport/webui/ui/
 
 - `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)
+- `ReportsViewTest.java` — The Abrechnung page, driven server-side (Karibu) against the mocked Supabase of {@link ReportsFixtur (~1595 tok)
