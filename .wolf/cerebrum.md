@@ -474,6 +474,8 @@
 
 - [2026-11-07] Hosted Supabase auth config API: oauth_server_enabled must be sent together with oauth_server_authorization_path. A table with column-level select grants breaks PostgREST deletes with return=representation (42501): pass select=<granted column>. WireMock tests cannot show this, so test RLS-related changes against the local stack.
 
+- [2026-11-09] Trainingsfrequenzliste template (Trainingsfrequenzliste_Vorlage.xlsx) is a FILLED example (Torball 2026), so cells must be overwritten, not filled: web UI `XlsxPatch.overwriteText/overwriteNumber/clearCell` (port of XLSXCellPatch.overwriteCell, keeps only `s=`), unlike `setText` which only replaces self-closing blank cells. The app's TrainingsfrequenzlisteCalculator keys attendance by membership id while deduping the roster per person — someone on two teams of a sport loses ticks from the second team (bug logged; web UI port keys by person, app still has it).
+
 ## Do-Not-Repeat
 - [2026-11-04] Don't report an xlsx form-control tick as working from Quick Look alone: Quick Look doesn't draw form controls, so it says nothing about real Excel (user then reported P9 wrong in the filled sheet). Say explicitly that Excel was not tested, and don't write 'this is what Excel writes' in comments without a real Excel-saved sample. For a full export without the simulator: compile PraeExport.swift + XLSXCellPatch.swift + stub models with ZIPFoundation sources from DerivedData/SourcePackages/checkouts, with the template next to the binary.
 

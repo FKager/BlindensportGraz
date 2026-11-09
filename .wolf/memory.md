@@ -4214,3 +4214,16 @@
 | 14:13 | Created webui/src/test/java/it/a11y/blindensport/webui/ui/ReportsViewTest.java | — | ~1595 |
 | 14:15 | Web UI Abrechnung: ported KostZ, TeilnehmerInnenliste, Sammelabrechnung (reports/), new ReportsView (/abrechnung) + Termine "Abrechnung" button, REST /api/reports, xlsx/XlsxPatch shared; 134 webui tests pass | webui/src/main/java/.../reports/*, ui/ReportsView.java, api/ReportsResource.java, xlsx/XlsxPatch.java, tests | done, uncommitted on branch webui-abrechnung | ~60k |
 | 14:15 | Session end: 13 writes across 11 files (XlsxPatch.java, KostZ.java, Places.java, Teilnehmerliste.java, Reports.java) | 0 reads | ~28170 tok |
+| 14:18 | Session end: 13 writes across 11 files (XlsxPatch.java, KostZ.java, Places.java, Teilnehmerliste.java, Reports.java) | 0 reads | ~28170 tok |
+
+## Session: 2026-11-09 16:31
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:52 | PR #41 merged (1f3da05); nuc deploy blocked by auto mode (Production Deploy), needs user go-ahead | - | merged, not deployed | ~2k |
+| 16:54 | nuc web UI redeployed at 1f3da05 (PR #41 Abrechnung): 200, report classes+templates in jar, Quarkus started | nuc ~/blindensport-webui | done | ~3k |
+| 16:56 | Edited webui/src/main/java/it/a11y/blindensport/webui/xlsx/XlsxPatch.java | added 1 condition(s) | ~447 |
+| 16:57 | Created webui/src/main/java/it/a11y/blindensport/webui/reports/Trainingsfrequenzliste.java | — | ~3364 |
+| 16:57 | Created webui/src/main/java/it/a11y/blindensport/webui/ui/TrainingsfrequenzlisteView.java | — | ~2128 |
+| 16:59 | Created webui/src/test/java/it/a11y/blindensport/webui/reports/TrainingsfrequenzlisteTest.java | — | ~2888 |
+| 17:01 | Web UI Trainingsfrequenzliste: reports/Trainingsfrequenzliste, TrainingsfrequenzlisteView (/trainingsfrequenzliste, nav), /api/reports/trainingsfrequenzliste, XlsxPatch overwrite helpers; 144 tests pass; openpyxl check of a generated file OK | webui/... | done on branch webui-trainingsfrequenzliste | ~40k |

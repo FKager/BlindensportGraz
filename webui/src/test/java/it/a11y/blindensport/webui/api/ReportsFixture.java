@@ -13,7 +13,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 /**
  * Supabase stubs for the invoicing tests: accounts with and without
  * club.manage / members.private.read, one two-day tournament in Prague with
- * a paid coach and a player, and one paid training in March 2026.
+ * a paid coach and a player, and one paid training in March 2026 for team
+ * "t" (the Trainingsfrequenzliste's roster).
  */
 public final class ReportsFixture {
     public static final UUID ADMIN = UUID.fromString("11111111-1111-1111-1111-111111111111");
@@ -62,7 +63,9 @@ public final class ReportsFixture {
         mock.stubFor(get(urlPathEqualTo("/rest/v1/events")).willReturn(okJson("[" + event(TOURNAMENT, "tournament",
                 "Cup/Prag", "2026-05-29T07:00:00+00:00", "2026-05-30T16:00:00+00:00", "Prag", "Tschechien") + ","
                 + event("aaaaaaaa-0000-0000-0000-000000000002", "training", "Torball", "2026-03-03T17:00:00+00:00",
-                "2026-03-03T19:00:00+00:00", "Graz", "") + "]")));
+                "2026-03-03T19:00:00+00:00", "Graz", "").replace("\"team_ids\":[]", "\"team_ids\":[\"t\"]") + "]")));
+        mock.stubFor(get(urlPathEqualTo("/rest/v1/teams")).willReturn(okJson(
+                "[{\"id\":\"t\",\"name\":\"Torball Damen\",\"sport\":\"Torball\",\"description_text\":\"\"}]")));
         mock.stubFor(get(urlPathEqualTo("/rest/v1/attendances")).willReturn(okJson("["
                 + attendance("c1", TOURNAMENT, "cccccccc-0000-0000-0000-000000000001", 100) + ","
                 + attendance("c2", TOURNAMENT, "cccccccc-0000-0000-0000-000000000002", null) + ","

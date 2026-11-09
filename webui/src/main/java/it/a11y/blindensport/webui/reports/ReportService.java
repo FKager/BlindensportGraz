@@ -76,6 +76,28 @@ public final class ReportService {
                 Teilnehmerliste.forTournament(event, attendances, memberships, members, accounts));
     }
 
+    /**
+     * The Trainingsfrequenzliste of one training sport and half year
+     * (1 = Jänner–Juni, 2 = Juli–Dezember). Reads no private data.
+     */
+    public Trainingsfrequenzliste trainingsfrequenzliste(String sport, int half, int year) {
+        if (half != 1 && half != 2) {
+            throw new IllegalArgumentException("Halbjahr muss 1 oder 2 sein.");
+        }
+        List<ClubEvent> trainings = club.events().stream()
+                .filter(e -> "training".equals(e.kind()) && sport.equals(e.sport()))
+                .filter(e -> LocalDate.ofInstant(e.startDate(), CLUB_ZONE).getYear() == year).toList();
+        List<Attendance> attendances = trainings.isEmpty() ? List.of()
+                : club.attendances(trainings.stream().map(ClubEvent::id).toList());
+        return Trainingsfrequenzliste.of(sport, half, year, trainings, attendances, club.teams(), club.memberships(),
+                members(false), club.accounts());
+    }
+
+    /** Sports that have trainings, for the Trainingsfrequenzliste. */
+    public List<String> trainingSports() {
+        return Trainingsfrequenzliste.sports(club.events());
+    }
+
     /** All tournaments, latest first, to choose from. */
     public List<ClubEvent> tournaments() {
         return club.events().stream().filter(e -> "tournament".equals(e.kind()))
