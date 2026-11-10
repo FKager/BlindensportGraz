@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v7
       - uses: supabase/setup-cli@v1
         with:
-          version: 3.0.0
+          version: 3.1.0
       - name: Start Supabase
         run: supabase start -x studio,imgproxy,logflare,vector,supavisor,realtime,edge-runtime,postgres-meta,mailpit
       - name: Run database tests
