@@ -41,7 +41,7 @@ sql() {
 }
 
 api_key() {   # api_key <sb_prefix> <legacy name>
-  supabase projects api-keys --project-ref $REF --reveal -o json 2>/dev/null | python3 -c '
+  supabase projects api-keys --remote=$REF --reveal -o json 2>/dev/null | python3 -c '
 import json, sys
 prefix, name = sys.argv[1], sys.argv[2]
 k = json.load(sys.stdin)
@@ -51,7 +51,7 @@ print(p["api_key"])' "$1" "$2"
 
 case "$STEP" in
   preflight)
-    supabase migration list --project-ref $REF 2>/dev/null | python3 -c 'import json, sys
+    supabase migration list --remote=$REF 2>/dev/null | python3 -c 'import json, sys
 m = json.load(sys.stdin)["migrations"]
 pending = [x["local"] for x in m if not x.get("remote")]
 print("migrations:", len(m), "local,", len(m) - len(pending), "applied, pending:", pending or "none")'
@@ -80,7 +80,7 @@ SQL
       sql <<<"select name from vault.secrets where name like 'notify_schedule_%' order by 1" \
         | python3 -c 'import json,sys; print("  vault:", [r["name"] for r in json.load(sys.stdin)])'
     fi
-    supabase secrets list --project-ref $REF -o json 2>/dev/null \
+    supabase secrets list --remote=$REF -o json 2>/dev/null \
       | python3 -c 'import json,sys; print("  function secrets:", sorted(s["name"] for s in json.load(sys.stdin) if not s["name"].startswith("SUPABASE_")))' || true
     ;;
 
@@ -98,7 +98,7 @@ print("APNS_TOPIC=it.a11y.BlindensportGraz")
 print('APNS_PRIVATE_KEY="' + p8 + '"')
 print("NOTIFY_SCHEDULE_SECRET=$secret")
 PY
-    supabase secrets set --project-ref $REF --env-file $tmp >/dev/null && echo "function secrets set"
+    supabase secrets set --remote=$REF --env-file $tmp >/dev/null && echo "function secrets set"
     sql >/dev/null <<SQL
 do \$\$
 declare v_id uuid;
@@ -117,11 +117,11 @@ SQL
     ;;
 
   db-push)
-    supabase db push --project-ref $REF --yes
+    supabase db push --remote=$REF --yes
     ;;
 
   functions)
-    supabase functions deploy notify-schedule --project-ref $REF --no-verify-jwt
+    supabase functions deploy notify-schedule --remote=$REF --no-verify-jwt
     ;;
 
   templates)
@@ -158,7 +158,7 @@ PY
       | curl -sS -f -X PATCH "https://api.supabase.com/v1/projects/$REF/config/auth" \
           -H "Authorization: Bearer $(cat $MGMT_TOKEN_FILE)" -H "Content-Type: application/json" \
           --data-binary @- -o /dev/null -w "staging app auth: HTTP %{http_code}\n"
-    supabase secrets set --project-ref $REF APNS_TOPIC=it.a11y.BlindensportGraz.staging >/dev/null && echo "push topic set"
+    supabase secrets set --remote=$REF APNS_TOPIC=it.a11y.BlindensportGraz.staging >/dev/null && echo "push topic set"
     ;;
 
   webui)
