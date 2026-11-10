@@ -10,8 +10,10 @@ struct RootView: View {
     @State private var showWelcome = false
     @State private var syncedUserID: UUID?
     @State private var didAnonymousSync = false
+    @State private var wasInBackground = false
 
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         Group {
@@ -55,6 +57,19 @@ struct RootView: View {
                 didAnonymousSync = true
                 triggerAnonymousBackgroundSync()
             case .loading:
+                break
+            }
+        }
+        // Back from the background: pull what changed meanwhile (the launch
+        // sync above only runs once per app session).
+        .onChange(of: scenePhase) { _, phase in
+            switch phase {
+            case .background:
+                wasInBackground = true
+            case .active where wasInBackground:
+                wasInBackground = false
+                foregroundSync()
+            default:
                 break
             }
         }
@@ -131,6 +146,20 @@ struct RootView: View {
             loadWelcomeIfNeeded()
         }
         PushNotifications.requestAuthorizationIfNeeded()
+    }
+
+    /// The pull for an app coming back from the background: the same data as
+    /// the launch sync and a widget refresh, without the once-per-launch
+    /// parts (welcome note, default teams, push permission).
+    private func foregroundSync() {
+        guard authContext.phase != .loading,
+              SyncOrchestrationService.shouldSyncOnForeground(lastSyncedAt: SyncState.shared.lastSyncedAt)
+        else { return }
+        Task {
+            await SyncOrchestrationService.syncAll(modelContext: modelContext)
+            WidgetRefresher.refresh(modelContext: modelContext,
+                                    for: authContext.phase == .signedIn ? authContext.currentUser : nil)
+        }
     }
 
     /// Same shared-data pull as `triggerBackgroundSync()`, for the anonymous

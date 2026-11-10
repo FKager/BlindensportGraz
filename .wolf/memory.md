@@ -4252,3 +4252,5 @@
 | 21:22 | PR #45 merged; user ran prod db-push; verified unique key + trigger on prod, Torball Oct = 60 | - | done | ~2k |
 | 21:32 | Mirrored prod club data to staging (18 tables identical by md5, member_private emptied, staging logins kept, invitation file copied); backups in ~/Backups/blindensport-staging-sync-2026-11-10 | staging DB | done | ~25k |
 | 21:42 | Supabase CLI 3.0.0 → 3.1.0 (brew); cutover.sh --project-ref → --remote=; config.toml email/sms enable_signup → enabled; CI pin 3.1.0; preflight + db push dry-run on staging OK, pgTAP 213/213 | cutover.sh, config.toml, database-test.yml | pass | ~6k |
+| 21:49 | User confirmed 60 € on 7 Oct after app restart; PR #48 merged | - | done | ~1k |
+| 21:52 | App syncs when returning to the foreground (30 s throttle) + overlapping syncs coalesced; full Simulator suite 335/335 | RootView, SupabaseSync, SyncOrchestrationService, SyncStateTests | pass | ~8k |
