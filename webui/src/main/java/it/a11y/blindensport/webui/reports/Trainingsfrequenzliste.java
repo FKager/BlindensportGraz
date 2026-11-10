@@ -26,7 +26,8 @@ import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
 /**
  * Sport Austria's Trainingsfrequenzliste for one training sport and half
  * year — port of the app's TrainingsfrequenzlisteCalculation.swift and
- * TrainingsfrequenzlisteExport.swift. The template is the club's filled-in
+ * TrainingsfrequenzlisteExport.swift. Cancelled ("Abgesagt") trainings
+ * are left out: no date column, and their teams don't join the roster. The template is the club's filled-in
  * Torball 2026 list; its header, dates, names and "j"/"n" cells are
  * overwritten, everything else stays as it is.
  *
@@ -190,11 +191,12 @@ public record Trainingsfrequenzliste(String sport, int half, int year, String ti
 
     private static List<ClubEvent> trainings(String sport, int half, int year, int lastMonth,
                                              List<ClubEvent> events) {
-        return events.stream().filter(e -> "training".equals(e.kind()) && sport.equals(e.sport())).filter(e -> {
-            LocalDate date = day(e);
-            int month = date.getMonthValue();
-            return date.getYear() == year && (half == 1 ? month <= 6 : month >= 7) && month <= lastMonth;
-        }).sorted(Comparator.comparing(ClubEvent::startDate)).toList();
+        return events.stream().filter(e -> "training".equals(e.kind()) && sport.equals(e.sport()) && !e.isCancelled())
+                .filter(e -> {
+                    LocalDate date = day(e);
+                    int month = date.getMonthValue();
+                    return date.getYear() == year && (half == 1 ? month <= 6 : month >= 7) && month <= lastMonth;
+                }).sorted(Comparator.comparing(ClubEvent::startDate)).toList();
     }
 
     /** The person behind a membership: app account, else roster entry (TrainingDetailView.allMemberships). */

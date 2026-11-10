@@ -140,6 +140,25 @@ class TrainingsfrequenzlisteTest {
         assertEquals(1, february.half());
     }
 
+    private static ClubEvent cancelled(ClubEvent e) {
+        return new ClubEvent(e.id(), e.kind(), e.title(), e.sport(), e.location(), e.street(), e.zip(), e.city(),
+                e.country(), e.startDate(), e.endDate(), e.notes(), "cancelled", e.durationMinutes(), e.focusArea(),
+                e.maxTeams(), e.teamIds(), e.createdBy());
+    }
+
+    @Test
+    void cancelledTrainingsGetNoColumnAndBringNoTeam() {
+        List<ClubEvent> events = List.of(
+                training("a", "Torball", "2026-07-07T17:30", "Abgesagt", "Halle X", "herren"),
+                training("b", "Torball", "2026-07-14T17:30", "Training", "Halle B", "damen"));
+        Trainingsfrequenzliste list = Trainingsfrequenzliste.seasonUpTo("Torball", 7, 2026,
+                List.of(cancelled(events.get(0)), events.get(1)), List.of(present("a", "m-uli")), TEAMS,
+                MEMBERSHIPS, MEMBERS, ACCOUNTS);
+        assertEquals(List.of(LocalDate.of(2026, 7, 14)), list.dates());
+        assertEquals(List.of("Torball Damen"), list.teams());
+        assertEquals("Halle B", list.location(), "the header comes from the first training held");
+    }
+
     @Test
     void sportsAreDistinctTrainingSports() {
         assertEquals(List.of("Fußball", "Torball"), Trainingsfrequenzliste.sports(EVENTS));

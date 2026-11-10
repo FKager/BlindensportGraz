@@ -289,6 +289,30 @@ class ReportsTest {
         assertFalse(new Reports.Selection(false, Set.of(), false, false, true).isEmpty(false));
     }
 
+    private static ClubEvent cancelled(ClubEvent e) {
+        return new ClubEvent(e.id(), e.kind(), e.title(), e.sport(), e.location(), e.street(), e.zip(), e.city(),
+                e.country(), e.startDate(), e.endDate(), e.notes(), "cancelled", e.durationMinutes(), e.focusArea(),
+                e.maxTeams(), e.teamIds(), e.createdBy());
+    }
+
+    @Test
+    void cancelledTrainingsCountForNothing() {
+        ClubEvent held = event("t1", "training", "Torball", "2026-03-03T18:00", "2026-03-03T20:00", "", "");
+        ClubEvent off = cancelled(event("t2", "training", "Abgesagt", "2026-03-10T18:00", "2026-03-10T20:00", "", ""));
+        List<ClubEvent> events = List.of(held, off);
+        List<Attendance> attendances = List.of(attended("t1", "mc", 40), attended("t2", "mc", 30));
+
+        KostZ kostZ = KostZ.month(3, 2026, people(), events, attendances);
+        assertEquals(1, kostZ.dayCount());
+        assertEquals("Torball", kostZ.betrifft());
+        assertEquals(40.0, kostZ.total());
+        assertEquals(LocalDate.of(2026, 3, 3), kostZ.end());
+
+        List<PraeForm> prae = new ArrayList<>();
+        people().forEach(p -> prae.addAll(PraeCalculator.monthForms(p, 3, 2026, events, attendances)));
+        assertEquals(List.of("Torball"), prae.stream().map(PraeForm::purpose).toList());
+    }
+
     @Test
     void placesAppendOnlyForeignCountries() {
         assertEquals("Linz", Places.withForeignCountry("Linz", "Österreich"));

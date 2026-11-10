@@ -92,6 +92,7 @@ enum KostZCalculator {
         for attendance in allAttendances {
             guard attendance.attended, let amount = attendance.praeAmount,
                   attendance.event.kind == "training",
+                  (attendance.event as? Training)?.status != Training.cancelledStatus,
                   sport == nil || attendance.event.sport == sport,
                   let person = personByMembershipID[attendance.membership.id] else { continue }
             let components = calendar.dateComponents([.month, .year], from: attendance.event.startDate)
@@ -110,7 +111,8 @@ enum KostZCalculator {
         let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
         let trainingsInMonth = allTrainings
             .filter {
-                guard sport == nil || $0.sport == sport else { return false }
+                // An "Abgesagt" training was never held: no date, no count, no name.
+                guard $0.status != Training.cancelledStatus, sport == nil || $0.sport == sport else { return false }
                 let components = calendar.dateComponents([.month, .year], from: $0.startDate)
                 return components.month == month && components.year == year
             }

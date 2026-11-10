@@ -10181,6 +10181,40 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-10T17:34:47"
+    },
+    {
+      "id": "bug-605",
+      "timestamp": "2026-11-10T19:47:15",
+      "error_message": "PraeCalculationTests.testPrintCopyShowsTournamentMark: XCTAssertEqual failed (\"4\") is not equal to (\"1\"); (\"11\") is not equal to (\"14\")",
+      "file": "BlindensportGrazTests/PraeCalculationTests.swift",
+      "root_cause": "Stale since PR #38 (v0.11.0): tournament PRAE forms intentionally tick A26/A29/A33 too, test still expected only one ☒. Went unnoticed while Simulator tests were banned.",
+      "fix": "Expect 4 ☒ and 11 ☐ in the tournament print copy.",
+      "tags": [
+        "ios",
+        "test",
+        "prae",
+        "stale-test"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-10T19:47:15"
+    },
+    {
+      "id": "bug-606",
+      "timestamp": "2026-11-10T19:47:15",
+      "error_message": "User: in Trainingsfrequenzliste and KostZ only trainings that are not 'abgesagt' are relevant",
+      "file": "KostZCalculation.swift, TrainingsfrequenzlisteCalculation.swift, PraeCalculation.swift, webui KostZ/Trainingsfrequenzliste/PraeCalculator/ReportService",
+      "root_cause": "Report calculations filtered by kind/sport/date only, never by Training.status, so cancelled trainings added date columns, training counts, names and teams.",
+      "fix": "Skip status == \"cancelled\" in KostZ, PRAE and Trainingsfrequenzliste (app + web UI; ClubEvent.isCancelled()).",
+      "tags": [
+        "reports",
+        "kostz",
+        "trainingsfrequenzliste",
+        "cancelled"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-10T19:47:15"
     }
   ]
 }

@@ -48,14 +48,14 @@ public final class ReportService {
             throw new IllegalArgumentException("Monat muss zwischen 1 und 12 liegen.");
         }
         List<ClubEvent> events = club.events();
-        List<ClubEvent> trainings = events.stream().filter(e -> "training".equals(e.kind()))
+        List<ClubEvent> trainings = events.stream().filter(e -> "training".equals(e.kind()) && !e.isCancelled())
                 .filter(e -> sport == null || sport.equals(e.sport()))
                 .filter(e -> {
                     LocalDate date = LocalDate.ofInstant(e.startDate(), CLUB_ZONE);
                     return date.getMonthValue() == month && date.getYear() == year;
                 }).toList();
         List<ClubEvent> season = sport == null ? List.of() : events.stream()
-                .filter(e -> "training".equals(e.kind()) && sport.equals(e.sport()))
+                .filter(e -> "training".equals(e.kind()) && sport.equals(e.sport()) && !e.isCancelled())
                 .filter(e -> {
                     LocalDate date = LocalDate.ofInstant(e.startDate(), CLUB_ZONE);
                     return date.getYear() == year && date.getMonthValue() <= month

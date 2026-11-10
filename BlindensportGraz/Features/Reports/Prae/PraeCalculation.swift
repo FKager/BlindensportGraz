@@ -190,7 +190,8 @@ enum PraeCalculator {
         // Sorted because a fetch has no order of its own.
         let attendances = ((try? context.fetch(FetchDescriptor<Attendance>())) ?? [])
             .filter { $0.attended && $0.event.kind == "training" && membershipIDs.contains($0.membership.id)
-                && (sport == nil || $0.event.sport == sport) }
+                && (sport == nil || $0.event.sport == sport)
+                && ($0.event as? Training)?.status != Training.cancelledStatus }
             .sorted { ($0.event.startDate, $0.event.title) < ($1.event.startDate, $1.event.title) }
 
         var titles: [String] = []
