@@ -657,8 +657,18 @@ extension SupabaseSync {
     // MARK: - Deletions
 
     /// Removes local copies of rows deleted on the server since the last sync.
+    /// Removes locally what was deleted on the server, from the `deletions`
+    /// log. A row with an unsent local change is skipped for now (its upload
+    /// may bring it back — the server then drops its log entry), and the
+    /// cursor stays at the first skipped entry so the next sync looks at it
+    /// again. Before this, a skipped deletion was passed by the cursor and
+    /// the row stayed on the phone for good.
     func applyDeletions(modelContext: ModelContext, tables: Set<String>? = nil) async throws {
-        let since = cursor("deletions")
+        // Once per device and project: re-read the whole log to catch up on
+        // deletions skipped by earlier versions. Rows already gone stay gone.
+        let replayKey = "SupabaseSync.deletionsReplayV1.\(SupabaseConfig.projectURL?.host() ?? "-")"
+        let replay = !defaults.bool(forKey: replayKey)
+        let since = replay ? nil : cursor("deletions")
         var collected: [DeletionDBRow] = []
         var offset = 0
         while true {
@@ -670,11 +680,24 @@ extension SupabaseSync {
             guard page.count == 1000 else { break }
             offset += 1000
         }
+        var skipped: [Date] = []
         for deletion in collected where tables?.contains(deletion.tableName) ?? true {
-            guard !hasPendingPush(deletion.rowID) else { continue }
+            guard !hasPendingPush(deletion.rowID) else {
+                skipped.append(deletion.deletedAt)
+                continue
+            }
             deleteLocal(table: deletion.tableName, id: deletion.rowID, modelContext: modelContext)
         }
-        setCursor("deletions", collected.map(\.deletedAt).max())
+        setCursor("deletions", Self.deletionsCursor(seen: collected.map(\.deletedAt), skipped: skipped),
+                  allowBackwards: replay || !skipped.isEmpty)
+        if replay { defaults.set(true, forKey: replayKey) }
+    }
+
+    /// Where the next deletions fetch starts (it fetches `>=` this): at the
+    /// first skipped entry, so it is looked at again; otherwise past the
+    /// newest one seen.
+    nonisolated static func deletionsCursor(seen: [Date], skipped: [Date]) -> Date? {
+        skipped.min() ?? seen.max()
     }
 
     private func deleteLocal(table: String, id: UUID, modelContext: ModelContext) {

@@ -10234,6 +10234,23 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-10T21:15:34"
+    },
+    {
+      "id": "bug-608",
+      "timestamp": "2026-11-10T22:32:10",
+      "error_message": "Server-side deletion never reaches a phone that had an unsent change for that row",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+      "root_cause": "applyDeletions skipped rows with a pending push but still advanced the deletions cursor past them, so they were never looked at again.",
+      "fix": "Cursor stays at the first skipped entry (deletionsCursor; setCursor allowBackwards); server drops the log entry if the upload re-creates the row (clear_deletion), so nothing wrong is deleted. One-time replay of the whole log per device (deletionsReplayV1).",
+      "tags": [
+        "ios",
+        "sync",
+        "deletions",
+        "supabase"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-10T22:32:10"
     }
   ]
 }

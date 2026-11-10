@@ -215,9 +215,11 @@ final class SupabaseSync {
 
     func cursor(_ table: String) -> Date? { defaults.object(forKey: cursorKey(table)) as? Date }
 
-    func setCursor(_ table: String, _ date: Date?) {
+    /// Moves a table's cursor forward. `allowBackwards` lets the deletions
+    /// log step back to an entry it skipped (see `applyDeletions`).
+    func setCursor(_ table: String, _ date: Date?, allowBackwards: Bool = false) {
         guard let date else { return }
-        if let current = cursor(table), current >= date { return }
+        if !allowBackwards, let current = cursor(table), current >= date { return }
         defaults.set(date, forKey: cursorKey(table))
     }
 
