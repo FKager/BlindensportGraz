@@ -268,8 +268,10 @@ class ReportsTest {
 
     @Test
     void monthOfOneSportBundlesItsTrainingsfrequenzliste() {
-        List<ClubEvent> events = List.of(
-                event("t1", "training", "Torball", "2026-03-03T18:00", "2026-03-03T20:00", "", ""));
+        ClubEvent plain = event("t1", "training", "Torball", "2026-03-03T18:00", "2026-03-03T20:00", "", "");
+        List<ClubEvent> events = List.of(new ClubEvent(plain.id(), plain.kind(), plain.title(), "Torball",
+                plain.location(), plain.street(), plain.zip(), plain.city(), plain.country(), plain.startDate(),
+                plain.endDate(), plain.notes(), plain.status(), null, null, null, List.of(), ""));
         List<Attendance> attendances = List.of(attended("t1", "mc", 40));
         List<PraeForm> prae = new ArrayList<>();
         people().forEach(p -> prae.addAll(PraeCalculator.monthForms(p, 3, 2026, events, attendances)));

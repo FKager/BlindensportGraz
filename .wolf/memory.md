@@ -4239,3 +4239,4 @@
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
 | 10:30 | Web UI Abrechnung: Sportart select for training months (KostZ+PRAE only that sport), Trainingsfrequenzliste (season start → selected month) in Sammelabrechnung + single download; REST `?sport=` on months endpoints | Reports.java, ReportService.java, Trainingsfrequenzliste.java, ReportsView.java, EventsView.java, ReportsResource.java, tests, README | 144 tests green | ~25k |
+| 17:45 | Fixed CI failure on PR #42 (test training lacked sport); real local run 147/147 via ./mvnw + JDK 21 | ReportsTest.java, buglog, cerebrum | pass | ~4k |
