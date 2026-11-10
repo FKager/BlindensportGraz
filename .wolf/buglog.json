@@ -10145,6 +10145,42 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-08"
+    },
+    {
+      "id": "bug-603",
+      "timestamp": "2026-11-09T17:30:00Z",
+      "error_message": "Trainingsfrequenzliste: person on two teams of the same sport shows 'n' although attended (test expected j, was n)",
+      "file": "webui/src/main/java/it/a11y/blindensport/webui/reports/Trainingsfrequenzliste.java",
+      "root_cause": "Roster is deduped per person (first team's membership wins) but attendance was keyed by membership id; attendance recorded via the other team's membership was lost. Same flaw in the app's TrainingsfrequenzlisteCalculator.",
+      "fix": "Key attendance by person (userId ?? memberId ?? membership id) in the web UI port; trainings sorted by start so team order is chronological. App not changed yet.",
+      "tags": [
+        "trainingsfrequenzliste",
+        "webui",
+        "attendance",
+        "dedup",
+        "report"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-09"
+    },
+    {
+      "id": "bug-604",
+      "timestamp": "2026-11-10T17:34:47",
+      "error_message": "CI Web UI Tests: ReportsTest.monthOfOneSportBundlesItsTrainingsfrequenzliste expected Trainingsfrequenzliste.xlsx in bundle but was missing",
+      "file": "webui/src/test/java/it/a11y/blindensport/webui/reports/ReportsTest.java",
+      "root_cause": "Test helper event() creates trainings with sport \"\" so seasonUpTo(\"Torball\") found none. Not caught locally because `mvn` is not on PATH (exit 127) and the grep-filtered output hid it; stale surefire reports were read as a pass.",
+      "fix": "Build the test training with sport Torball; run tests with JAVA_HOME=openjdk@21 ./mvnw test and check exit code + BUILD SUCCESS, after deleting target/surefire-reports.",
+      "tags": [
+        "webui",
+        "test",
+        "maven",
+        "false-green",
+        "ci"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-10T17:34:47"
     }
   ]
 }

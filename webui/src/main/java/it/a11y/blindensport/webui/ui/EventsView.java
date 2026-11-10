@@ -158,8 +158,12 @@ public class EventsView extends AdminView {
             query = QueryParameters.of("turnier", e.id());
         } else {
             LocalDate date = LocalDate.ofInstant(e.startDate(), CLUB_ZONE);
-            query = QueryParameters.simple(Map.of("monat", String.valueOf(date.getMonthValue()),
+            Map<String, String> params = new java.util.HashMap<>(Map.of("monat", String.valueOf(date.getMonthValue()),
                     "jahr", String.valueOf(date.getYear())));
+            if (e.sport() != null && !e.sport().isBlank()) {
+                params.put("sportart", e.sport());
+            }
+            query = QueryParameters.simple(params);
         }
         getUI().ifPresent(ui -> ui.navigate(ReportsView.class, query));
     }

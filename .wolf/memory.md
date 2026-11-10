@@ -4219,6 +4219,19 @@
 | 17:31 | Ran report tests on booted iPhone 17 Pro simulator at user's explicit request: 48/48 passed in ~3 s (TEST SUCCEEDED); CoreData 'Application Support' errors in log are harmless (store recovered) | KostZCalculationTests, TrainingsfrequenzlisteCalculationTests, Sammelabrechnung*Tests | pass | ~3k |
 
 ## Session: 2026-11-10 17:33
+| 14:18 | Session end: 13 writes across 11 files (XlsxPatch.java, KostZ.java, Places.java, Teilnehmerliste.java, Reports.java) | 0 reads | ~28170 tok |
+## Session: 2026-11-09 16:31
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 16:52 | PR #41 merged (1f3da05); nuc deploy blocked by auto mode (Production Deploy), needs user go-ahead | - | merged, not deployed | ~2k |
+| 16:54 | nuc web UI redeployed at 1f3da05 (PR #41 Abrechnung): 200, report classes+templates in jar, Quarkus started | nuc ~/blindensport-webui | done | ~3k |
+| 16:56 | Edited webui/src/main/java/it/a11y/blindensport/webui/xlsx/XlsxPatch.java | added 1 condition(s) | ~447 |
+| 16:57 | Created webui/src/main/java/it/a11y/blindensport/webui/reports/Trainingsfrequenzliste.java | — | ~3364 |
+| 16:57 | Created webui/src/main/java/it/a11y/blindensport/webui/ui/TrainingsfrequenzlisteView.java | — | ~2128 |
+| 16:59 | Created webui/src/test/java/it/a11y/blindensport/webui/reports/TrainingsfrequenzlisteTest.java | — | ~2888 |
+| 17:01 | Web UI Trainingsfrequenzliste: reports/Trainingsfrequenzliste, TrainingsfrequenzlisteView (/trainingsfrequenzliste, nav), /api/reports/trainingsfrequenzliste, XlsxPatch overwrite helpers; 144 tests pass; openpyxl check of a generated file OK | webui/... | done on branch webui-trainingsfrequenzliste | ~40k |
+| 17:01 | Session end: 4 writes across 4 files (XlsxPatch.java, Trainingsfrequenzliste.java, TrainingsfrequenzlisteView.java, TrainingsfrequenzlisteTest.java) | 1 reads | ~12822 tok |
+## Session: 2026-11-09 22:20
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
@@ -4227,3 +4240,7 @@
 
 | Time | Action | File(s) | Outcome | ~Tokens |
 |------|--------|---------|---------|--------|
+## Session: 2026-11-10 17:08
+| 10:30 | Web UI Abrechnung: Sportart select for training months (KostZ+PRAE only that sport), Trainingsfrequenzliste (season start → selected month) in Sammelabrechnung + single download; REST `?sport=` on months endpoints | Reports.java, ReportService.java, Trainingsfrequenzliste.java, ReportsView.java, EventsView.java, ReportsResource.java, tests, README | 144 tests green | ~25k |
+| 17:45 | Fixed CI failure on PR #42 (test training lacked sport); real local run 147/147 via ./mvnw + JDK 21 | ReportsTest.java, buglog, cerebrum | pass | ~4k |
+| 17:55 | User re-enabled Simulator tests for the app; cerebrum rule rewritten, memory feedback_simulator-tests added | .wolf/cerebrum.md, memory | done | ~3k |

@@ -11,7 +11,7 @@ iOS app for organizing the club's activities, not only an admin tool. It replace
   App-Konten (approve, activation codes, roles, block, delete),
   Rollen-Protokoll, Vereinsbudget, Willkommensbildschirm, Abrechnung
   (KostZ, PRAE, TeilnehmerInnenlisten, Sammelabrechnung — like the app's
-  „Berichte“).
+  „Berichte“), Trainingsfrequenzliste.
 - **JSON REST API**: `/api/session`, `/api/members`, `/api/members/import`.
   The contract is unchanged from the Swift server, so existing scripts keep
   working. `/api/reports` serves the invoicing files, meant as a backend
@@ -47,7 +47,7 @@ The UI only uses permissions to decide which pages and buttons to show.
 | `roles.assign` (root) | App-Konten: roles, block/unblock, delete |
 | `rolelog.read` | Rollen-Protokoll |
 | `budget.manage` | Vereinsbudget |
-| `club.manage` | Willkommensbildschirm, Abrechnung, `/api/reports*` (PRAE files also need `members.private.read`) |
+| `club.manage` | Willkommensbildschirm, Abrechnung, Trainingsfrequenzliste, `/api/reports*` (PRAE files also need `members.private.read`) |
 
 Sessions end after 30 minutes idle or 12 hours. Every 5 minutes the role is
 re-read from the database, so a role change, a block or a deletion reaches an
@@ -96,8 +96,9 @@ one by one, as in the app. Files come as downloads (`Content-Disposition`).
 
 | Path | Returns |
 |---|---|
-| `/api/reports/months/{year}/{month}` | JSON: KostZ (betrifft, ort, period, days, total, people) and PRAE forms with cap warnings |
+| `/api/reports/months/{year}/{month}[?sport=]` | JSON: KostZ (betrifft, ort, period, days, total, people) and PRAE forms with cap warnings, of that sport's trainings only (every sport without `sport`); with `sport` also its Trainingsfrequenzliste from the season's start (Jänner or Juli) to the month's end. All month URLs take the same `sport` |
 | `/api/reports/months/{year}/{month}/kostz.xlsx` | KostZ form |
+| `/api/reports/months/{year}/{month}/trainingsfrequenzliste.xlsx?sport=` | Trainingsfrequenzliste, season start to this month (August → Juli + August) |
 | `/api/reports/months/{year}/{month}/prae.zip[?person=]` | PRAE + Darstellung, everyone or one person |
 | `/api/reports/months/{year}/{month}/sammelabrechnung.zip` | bundle, see parameters below |
 | `/api/reports/tournaments` | JSON: tournaments, latest first |
@@ -106,9 +107,12 @@ one by one, as in the app. Files come as downloads (`Content-Disposition`).
 | `/api/reports/tournaments/{id}/teilnehmer-sportler.xlsx`, `…/teilnehmer-helfer.xlsx` | TeilnehmerInnenliste of players / of coaches and assistants |
 | `/api/reports/tournaments/{id}/prae.zip[?person=]` | PRAE + Darstellung |
 | `/api/reports/tournaments/{id}/sammelabrechnung.zip` | bundle |
+| `/api/reports/trainingsfrequenzliste` | JSON: sports that have trainings |
+| `/api/reports/trainingsfrequenzliste/{year}/{half}?sport=` | JSON: half 1 (Jänner–Juni) or 2; header fields, dates, people with the dates they attended |
+| `/api/reports/trainingsfrequenzliste/{year}/{half}/trainingsfrequenzliste.xlsx?sport=` | Sport Austria's Trainingsfrequenzliste (25 dates, 24 people) |
 
-Sammelabrechnung parameters: `kostz`, `sportler`, `helfer` (tournaments)
-default to `true`; `prae` is repeated person ids (the `personId` of the
+Sammelabrechnung parameters: `kostz`, `sportler`, `helfer` (tournaments),
+`trainingsfrequenzliste` (months with `sport`) default to `true`; `prae` is repeated person ids (the `personId` of the
 JSON), absent for everyone, `prae=none` for no one.
 
 ## Calendar feed

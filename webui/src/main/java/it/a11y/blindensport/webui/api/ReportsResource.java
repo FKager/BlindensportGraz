@@ -11,6 +11,7 @@ import it.a11y.blindensport.webui.reports.KostZ;
 import it.a11y.blindensport.webui.reports.ReportService;
 import it.a11y.blindensport.webui.reports.Reports;
 import it.a11y.blindensport.webui.reports.Teilnehmerliste;
+import it.a11y.blindensport.webui.reports.Trainingsfrequenzliste;
 import it.a11y.blindensport.webui.xlsx.XlsxPatch;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -35,14 +36,21 @@ import java.util.Set;
  * admin-only reports; anything holding PRAE forms (SVNR, IBAN) also needs
  * members.private.read.
  * <ul>
- *   <li>{@code GET /api/reports/months/{year}/{month}} — KostZ amounts and PRAE forms of a month's trainings</li>
- *   <li>{@code .../kostz.xlsx}, {@code .../prae.zip[?person=]}, {@code .../sammelabrechnung.zip}</li>
+ *   <li>{@code GET /api/reports/months/{year}/{month}[?sport=]} — KostZ amounts and PRAE forms of a month's
+ *       trainings of one sport (every sport without {@code sport}), and with a sport its Trainingsfrequenzliste
+ *       from the season's start (Jänner or Juli) to the month's end</li>
+ *   <li>{@code .../kostz.xlsx}, {@code .../prae.zip[?person=]}, {@code .../trainingsfrequenzliste.xlsx?sport=},
+ *       {@code .../sammelabrechnung.zip} — each takes the same {@code sport}</li>
  *   <li>{@code GET /api/reports/tournaments} — tournaments to choose from</li>
  *   <li>{@code GET /api/reports/tournaments/{id}} — KostZ, PRAE, both TeilnehmerInnenlisten</li>
  *   <li>{@code .../kostz.xlsx}, {@code .../teilnehmer-sportler.xlsx}, {@code .../teilnehmer-helfer.xlsx},
  *       {@code .../prae.zip[?person=]}, {@code .../sammelabrechnung.zip}</li>
+ *   <li>{@code GET /api/reports/trainingsfrequenzliste} — sports that have trainings</li>
+ *   <li>{@code GET /api/reports/trainingsfrequenzliste/{year}/{half}?sport=} — half 1 (Jänner–Juni) or 2,
+ *       dates and attendance per person; {@code .../trainingsfrequenzliste.xlsx?sport=}</li>
  * </ul>
- * Sammelabrechnung parts: {@code kostz}, {@code sportler}, {@code helfer} (default true) and
+ * Sammelabrechnung parts: {@code kostz}, {@code sportler}, {@code helfer}, {@code trainingsfrequenzliste}
+ * (default true) and
  * {@code prae} — repeated person ids; absent for everyone, {@code prae=none} for no one.
  */
 @Path("/api/reports")
@@ -56,14 +64,17 @@ public class ReportsResource {
     @GET
     @Path("months/{year}/{month}")
     public Map<String, Object> month(@PathParam("year") int year, @PathParam("month") int month,
-                                     @Context ContainerRequestContext request) {
-        Reports.Month report = month(admin(request), month, year, false);
+                                     @QueryParam("sport") String sport, @Context ContainerRequestContext request) {
+        Reports.Month report = month(admin(request), month, year, sport, false);
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("month", month);
         result.put("year", year);
+        result.put("sport", report.sport());
         result.put("title", report.title());
         result.put("kostz", kostZ(report.kostZ()));
         result.put("prae", report.prae().stream().map(ReportsResource::form).toList());
+        result.put("trainingsfrequenzliste", report.trainingsfrequenzliste() == null ? null
+                : trainingsfrequenzliste(report.trainingsfrequenzliste()));
         return result;
     }
 
@@ -71,8 +82,8 @@ public class ReportsResource {
     @Path("months/{year}/{month}/kostz.xlsx")
     @Produces(XLSX)
     public Response monthKostZ(@PathParam("year") int year, @PathParam("month") int month,
-                               @Context ContainerRequestContext request) {
-        Reports.Month report = month(admin(request), month, year, false);
+                               @QueryParam("sport") String sport, @Context ContainerRequestContext request) {
+        Reports.Month report = month(admin(request), month, year, sport, false);
         return file(report.kostZ().xlsx(), "KostZ_" + report.label() + ".xlsx", XLSX);
     }
 
@@ -80,9 +91,10 @@ public class ReportsResource {
     @Path("months/{year}/{month}/prae.zip")
     @Produces(ZIP)
     public Response monthPrae(@PathParam("year") int year, @PathParam("month") int month,
-                              @QueryParam("person") String person, @Context ContainerRequestContext request) {
+                              @QueryParam("person") String person, @QueryParam("sport") String sport,
+                              @Context ContainerRequestContext request) {
         AdminSession admin = privateReader(request);
-        Reports.Month report = month(admin, month, year, true);
+        Reports.Month report = month(admin, month, year, sport, true);
         return praeZip(report.prae(), person, "PRAE_" + report.label() + ".zip");
     }
 
@@ -91,11 +103,29 @@ public class ReportsResource {
     @Produces(ZIP)
     public Response monthBundle(@PathParam("year") int year, @PathParam("month") int month,
                                 @QueryParam("kostz") Boolean kostz, @QueryParam("prae") List<String> prae,
-                                @Context ContainerRequestContext request) {
-        Reports.Selection selection = selection(kostz, prae, false, false);
+                                @QueryParam("trainingsfrequenzliste") Boolean frequenz,
+                                @QueryParam("sport") String sport, @Context ContainerRequestContext request) {
+        Reports.Selection selection = selection(kostz, prae, false, false, orTrue(frequenz) && hasSport(sport));
         AdminSession admin = withPrae(request, selection);
-        Reports.Month report = month(admin, month, year, needsPrivate(selection));
+        Reports.Month report = month(admin, month, year, sport, needsPrivate(selection));
         return bundle(report.sammelabrechnung(selection), "Sammelabrechnung_" + report.label() + ".zip");
+    }
+
+    @GET
+    @Path("months/{year}/{month}/trainingsfrequenzliste.xlsx")
+    @Produces(XLSX)
+    public Response monthTrainingsfrequenzliste(@PathParam("year") int year, @PathParam("month") int month,
+                                                @QueryParam("sport") String sport,
+                                                @Context ContainerRequestContext request) {
+        if (!hasSport(sport)) {
+            throw new ApiException(400, "sport angeben.");
+        }
+        Reports.Month report = month(admin(request), month, year, sport, false);
+        if (!report.hasTrainingsfrequenzliste()) {
+            throw new ApiException(404, "Keine Trainings dieser Sportart in diesem Zeitraum.");
+        }
+        return file(report.trainingsfrequenzliste().xlsx(), "Trainingsfrequenzliste_" + report.label() + ".xlsx",
+                XLSX);
     }
 
     // ---------------------------------------------------------- tournaments
@@ -160,13 +190,71 @@ public class ReportsResource {
     public Response tournamentBundle(@PathParam("id") String id, @QueryParam("kostz") Boolean kostz,
                                      @QueryParam("prae") List<String> prae, @QueryParam("sportler") Boolean sportler,
                                      @QueryParam("helfer") Boolean helfer, @Context ContainerRequestContext request) {
-        Reports.Selection selection = selection(kostz, prae, orTrue(sportler), orTrue(helfer));
+        Reports.Selection selection = selection(kostz, prae, orTrue(sportler), orTrue(helfer), false);
         AdminSession admin = withPrae(request, selection);
         Reports.Tournament report = tournament(admin, id, needsPrivate(selection));
         return bundle(report.sammelabrechnung(selection), "Sammelabrechnung_" + report.label() + ".zip");
     }
 
+    // --------------------------------------------------- trainingsfrequenz
+
+    @GET
+    @Path("trainingsfrequenzliste")
+    public List<String> trainingSports(@Context ContainerRequestContext request) {
+        return service(admin(request)).trainingSports();
+    }
+
+    @GET
+    @Path("trainingsfrequenzliste/{year}/{half}")
+    public Map<String, Object> trainingsfrequenzliste(@PathParam("year") int year, @PathParam("half") int half,
+                                                      @QueryParam("sport") String sport,
+                                                      @Context ContainerRequestContext request) {
+        return trainingsfrequenzliste(trainingsfrequenzliste(admin(request), sport, half, year));
+    }
+
+    private static Map<String, Object> trainingsfrequenzliste(Trainingsfrequenzliste list) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("sport", list.sport());
+        result.put("half", list.half());
+        result.put("year", list.year());
+        result.put("title", list.title());
+        result.put("location", list.location());
+        result.put("startTime", list.startTime() == null ? null : list.startTime().toString());
+        result.put("endTime", list.endTime() == null ? null : list.endTime().toString());
+        result.put("teams", list.teams());
+        result.put("dates", list.dates().stream().map(Object::toString).toList());
+        result.put("missingDates", list.missingDates());
+        result.put("missingPeople", list.missingPeople());
+        result.put("people", list.people().stream().map(p -> {
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("firstName", p.firstName());
+            row.put("lastName", p.lastName());
+            row.put("function", p.roleSuffix());
+            row.put("attended", list.dates().stream().filter(p.attended()::contains).map(Object::toString).toList());
+            return row;
+        }).toList());
+        return result;
+    }
+
+    @GET
+    @Path("trainingsfrequenzliste/{year}/{half}/trainingsfrequenzliste.xlsx")
+    @Produces(XLSX)
+    public Response trainingsfrequenzlisteFile(@PathParam("year") int year, @PathParam("half") int half,
+                                               @QueryParam("sport") String sport,
+                                               @Context ContainerRequestContext request) {
+        Trainingsfrequenzliste list = trainingsfrequenzliste(admin(request), sport, half, year);
+        return file(list.xlsx(), list.label() + "_Trainingsfrequenzliste.xlsx", XLSX);
+    }
+
     // -------------------------------------------------------------- helpers
+
+    private static Trainingsfrequenzliste trainingsfrequenzliste(AdminSession admin, String sport, int half,
+                                                                 int year) {
+        if (sport == null || sport.isBlank() || (half != 1 && half != 2) || year < 2000 || year > 2100) {
+            throw new ApiException(400, "sport, Halbjahr 1 oder 2 und ein Jahr zwischen 2000 und 2100 angeben.");
+        }
+        return service(admin).trainingsfrequenzliste(sport, half, year);
+    }
 
     private static AdminSession admin(ContainerRequestContext request) {
         return CurrentAdmin.require(request, Permission.CLUB_MANAGE);
@@ -192,11 +280,15 @@ public class ReportsResource {
         return new ReportService(new ClubStore(admin.db(), admin.userId()), new MemberStore(admin.db()));
     }
 
-    private static Reports.Month month(AdminSession admin, int month, int year, boolean withPrivate) {
+    private static Reports.Month month(AdminSession admin, int month, int year, String sport, boolean withPrivate) {
         if (month < 1 || month > 12 || year < 2000 || year > 2100) {
             throw new ApiException(400, "Monat 1–12 und ein Jahr zwischen 2000 und 2100 angeben.");
         }
-        return service(admin).month(month, year, withPrivate);
+        return service(admin).month(month, year, hasSport(sport) ? sport : null, withPrivate);
+    }
+
+    private static boolean hasSport(String sport) {
+        return sport != null && !sport.isBlank();
     }
 
     private static Reports.Tournament tournament(AdminSession admin, String id, boolean withPrivate) {
@@ -207,12 +299,13 @@ public class ReportsResource {
         }
     }
 
-    private static Reports.Selection selection(Boolean kostz, List<String> prae, boolean sportler, boolean helfer) {
+    private static Reports.Selection selection(Boolean kostz, List<String> prae, boolean sportler, boolean helfer,
+                                               boolean frequenz) {
         Set<String> people = prae == null || prae.isEmpty() ? null
                 : prae.contains("none") ? Set.of()
                 : Set.copyOf(prae.stream().map(p -> p.toLowerCase(java.util.Locale.ROOT)).toList());
-        Reports.Selection selection = new Reports.Selection(orTrue(kostz), people, sportler, helfer);
-        if (selection.isEmpty(true)) {
+        Reports.Selection selection = new Reports.Selection(orTrue(kostz), people, sportler, helfer, frequenz);
+        if (selection.isEmpty(true) && selection.isEmpty(false)) {
             throw new ApiException(400, "Bitte mindestens einen Teil auswählen.");
         }
         return selection;

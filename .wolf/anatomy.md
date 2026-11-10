@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-09T13:13:47.787Z
-> Files: 257 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-09T15:59:04.093Z
+> Files: 261 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -545,6 +545,8 @@
 - `Reports.java` — The invoicing of one period, as the app's "Berichte" menus file it: a (~1258 tok)
 - `ReportService.java` — Reads what one period's invoicing needs, as the signed-in user (RLS (~1094 tok)
 - `Teilnehmerliste.java` — Sport Austria's "TeilnehmerInnenliste (TN)" for one tournament — port of (~1704 tok)
+- `Trainingsfrequenzliste.java` — Sport Austria Trainingsfrequenzliste per sport + half year (port of app calc+export); overwrites the filled template; attendance per person (~2600 tok)
+- `Trainingsfrequenzliste.java` — Sport Austria's Trainingsfrequenzliste for one training sport and half (~3364 tok)
 
 ## webui/src/main/java/it/a11y/blindensport/webui/supabase/
 
@@ -577,17 +579,19 @@
 - `MemberDialog.java` — Create / edit one roster entry, laid out like the app's MemberDetailView. (~2864 tok)
 - `MembersView.java` — The club roster: search, create, edit, delete, JSON import and export. (~2945 tok)
 - `ReportsView.java` — "Abrechnung": the invoicing of the app's Berichte menus — KostZ, PRAE (~5894 tok)
+- `TrainingsfrequenzlisteView.java` — /trainingsfrequenzliste page: Sportart/Zeitraum/Jahr, roster grid, xlsx download; club.manage (~1500 tok)
 - `RequiresPermission.java` — A view only admins holding at least one of these permissions may open (checked by {@link AccessGuard (~118 tok)
 - `RoleLogView.java` — Audit trail: role changes and block/unblock/delete of accounts (rolelog.read), like the app's RoleCh (~904 tok)
 - `SessionCookieSetup.java` — Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless (~246 tok)
 - `StartView.java` — Start page: the areas this admin may open, as a plain link list. (~418 tok)
 - `TeamsView.java` — Teams and who plays / coaches in them. (~3030 tok)
+- `TrainingsfrequenzlisteView.java` — Sport Austria's Trainingsfrequenzliste: one training sport's attendance (~2128 tok)
 - `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)
 - `WelcomeView.java` — The welcome text the app shows at startup, also before signing in (club.manage). (~876 tok)
 
 ## webui/src/main/java/it/a11y/blindensport/webui/xlsx/
 
-- `XlsxPatch.java` — Shared .xlsx helper (moved from prae/): setText/setNumber/setInteger cells, fillTemplate, zip, addUnique (~1397 tok)
+- `XlsxPatch.java` — Fills blank cells of a real .xlsx template's sheet XML — port of the app's (~1838 tok)
 
 ## webui/src/main/resources/
 
@@ -616,10 +620,13 @@
 - `ValidationTest.java` — Class: ValidationTest (~251 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/reports/
+- `TrainingsfrequenzlisteTest.java` — calculation, cells of the patched file, template = app copy (~2300 tok)
 
 - `ReportsTest.java` — KostZ, TeilnehmerInnenliste and the Sammelabrechnung — ports of the app's KostZCalculationTests and (~4233 tok)
+- `TrainingsfrequenzlisteTest.java` — Port of the app's TrainingsfrequenzlisteCalculationTests plus the file's cells. (~2888 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/ui/
 
 - `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)
 - `ReportsViewTest.java` — The Abrechnung page, driven server-side (Karibu) against the mocked Supabase of {@link ReportsFixtur (~1595 tok)
+- `TrainingsfrequenzlisteViewTest.java` — Trainingsfrequenzliste page via Karibu against ReportsFixture (~900 tok)

@@ -33,6 +33,7 @@ import it.a11y.blindensport.webui.reports.KostZ.PersonAmount;
 import it.a11y.blindensport.webui.reports.ReportService;
 import it.a11y.blindensport.webui.reports.Reports;
 import it.a11y.blindensport.webui.reports.Teilnehmerliste;
+import it.a11y.blindensport.webui.reports.Trainingsfrequenzliste;
 import it.a11y.blindensport.webui.xlsx.XlsxPatch;
 import jakarta.inject.Inject;
 
@@ -72,13 +73,15 @@ public class ReportsView extends AdminView {
     private final RadioButtonGroup<String> scope = new RadioButtonGroup<>("Abrechnen für");
     private final Select<Integer> month = new Select<>();
     private final Select<Integer> year = new Select<>();
+    private final Select<String> sport = new Select<>();
     private final Select<ClubEvent> tournament = new Select<>();
-    private final HorizontalLayout periodFields = new HorizontalLayout(month, year);
+    private final HorizontalLayout periodFields = new HorizontalLayout(month, year, sport);
     private final VerticalLayout result = new VerticalLayout();
 
     private final Checkbox bundleKostZ = new Checkbox("KostZ-Formular", true);
     private final Checkbox bundleSportler = new Checkbox("TeilnehmerInnenliste Sportler", true);
     private final Checkbox bundleHelfer = new Checkbox("TeilnehmerInnenliste Helfer", true);
+    private final Checkbox bundleFrequenz = new Checkbox("Trainingsfrequenzliste", true);
     private final CheckboxGroup<String> bundlePrae = new CheckboxGroup<>("PRAE (Formular + Darstellung)");
     private final Paragraph bundleHint = new Paragraph();
     private Anchor bundleDownload;
@@ -87,19 +90,22 @@ public class ReportsView extends AdminView {
     private boolean loading;
     /** Tournament named in the address, chosen once the list is loaded. */
     private String pendingTournament;
+    /** Sport named in the address, chosen once the list is loaded. */
+    private String pendingSport;
 
     /** What the download links make; replaced as the choices change. */
     private volatile Request request;
 
-    private record Request(boolean tournament, int month, int year, String tournamentId,
+    private record Request(boolean tournament, int month, int year, String sport, String tournamentId,
                            Reports.Selection selection) {
     }
 
     @Inject
     public ReportsView(AdminSessions sessions) {
         super(sessions, "Abrechnung");
-        add(new Paragraph("KostZ, PRAE und TeilnehmerInnenlisten auf den Formularen von Sport Austria, wie in der "
-                + "App unter „Berichte“. Trainings werden pro Monat abgerechnet, Turniere einzeln."));
+        add(new Paragraph("KostZ, PRAE, Trainingsfrequenzliste und TeilnehmerInnenlisten auf den Formularen von "
+                + "Sport Austria, wie in der App unter „Berichte“. Trainings werden pro Monat und Sportart "
+                + "abgerechnet, Turniere einzeln."));
 
         scope.setItems(MONTH, TOURNAMENT);
         scope.setValue(MONTH);
@@ -117,9 +123,13 @@ public class ReportsView extends AdminView {
         year.setItems(IntStream.rangeClosed(2020, today.getYear() + 1).boxed().sorted((a, b) -> b - a).toList());
         year.setItemLabelGenerator(String::valueOf);
         year.setValue(today.getYear());
+        sport.setLabel("Sportart");
+        sport.setEmptySelectionAllowed(false);
         month.addValueChangeListener(e -> reload());
         year.addValueChangeListener(e -> reload());
+        sport.addValueChangeListener(e -> reload());
         periodFields.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
+        periodFields.setWrap(true);
 
         tournament.setLabel("Turnier");
         tournament.setItemLabelGenerator(ReportsView::tournamentLabel);
@@ -129,6 +139,7 @@ public class ReportsView extends AdminView {
         bundleKostZ.addValueChangeListener(e -> updateRequest());
         bundleSportler.addValueChangeListener(e -> updateRequest());
         bundleHelfer.addValueChangeListener(e -> updateRequest());
+        bundleFrequenz.addValueChangeListener(e -> updateRequest());
         bundlePrae.setItemLabelGenerator(id -> personNames.getOrDefault(id, id));
         bundlePrae.addValueChangeListener(e -> updateRequest());
 
@@ -155,6 +166,7 @@ public class ReportsView extends AdminView {
                     year.setValue(y);
                 });
         pendingTournament = query.getSingleParameter("turnier").map(id -> id.toLowerCase(Locale.ROOT)).orElse(null);
+        pendingSport = query.getSingleParameter("sportart").orElse(null);
         loading = false;
         super.beforeEnter(event);
     }
@@ -166,6 +178,11 @@ public class ReportsView extends AdminView {
             String keep = pendingTournament != null ? pendingTournament
                     : tournament.getValue() == null ? null : tournament.getValue().id();
             pendingTournament = null;
+            String keepSport = pendingSport != null ? pendingSport : sport.getValue();
+            pendingSport = null;
+            List<String> sports = service(session()).trainingSports();
+            sport.setItems(sports);
+            sport.setValue(sports.contains(keepSport) ? keepSport : sports.isEmpty() ? null : sports.get(0));
             List<ClubEvent> tournaments = service(session()).tournaments();
             tournament.setItems(tournaments);
             tournament.setValue(tournaments.stream().filter(t -> t.id().equals(keep)).findFirst()
@@ -201,14 +218,20 @@ public class ReportsView extends AdminView {
                 return;
             }
             Reports.Tournament report = service.tournament(chosen.id(), false);
-            show(report.kostZ(), report.prae(), report.teilnehmer(), report.event().title());
+            show(report.kostZ(), report.prae(), report.teilnehmer(), null, report.event().title());
         } else {
-            Reports.Month report = service.month(month.getValue(), year.getValue(), false);
-            show(report.kostZ(), report.prae(), null, report.title());
+            if (sport.getValue() == null) {
+                result.add(new Paragraph("Noch kein Training angelegt."));
+                return;
+            }
+            Reports.Month report = service.month(month.getValue(), year.getValue(), sport.getValue(), false);
+            show(report.kostZ(), report.prae(), null, report.trainingsfrequenzliste(),
+                    report.title() + ", " + sport.getValue());
         }
     }
 
-    private void show(KostZ kostZ, List<PraeForm> prae, Teilnehmerliste.Pair teilnehmer, String title) {
+    private void show(KostZ kostZ, List<PraeForm> prae, Teilnehmerliste.Pair teilnehmer,
+                      Trainingsfrequenzliste frequenz, String title) {
         boolean isTournament = teilnehmer != null;
         boolean privateRead = can(Permission.MEMBERS_PRIVATE_READ);
         personNames = kostZ.people().stream()
@@ -222,7 +245,7 @@ public class ReportsView extends AdminView {
         result.add(new Paragraph(period(kostZ, isTournament)));
         if (kostZ.people().isEmpty()) {
             result.add(new Paragraph(isTournament ? "Keine Einsätze mit hinterlegtem PRAE-Betrag bei diesem Turnier."
-                    : "Keine Einsätze mit hinterlegtem PRAE-Betrag in diesem Monat."));
+                    : "Keine Einsätze mit hinterlegtem PRAE-Betrag in diesem Monat für diese Sportart."));
         } else {
             Grid<PersonAmount> grid = new Grid<>();
             grid.addColumn(p -> p.person().displayName()).setHeader("Name").setRowHeader(true).setFlexGrow(1);
@@ -252,6 +275,11 @@ public class ReportsView extends AdminView {
             forms.add(new ListItem(download("TeilnehmerInnenliste Helfer herunterladen (" + people(
                     teilnehmer.helfer().rows().size()) + ")", null, teilnehmerFile(false))));
         }
+        boolean hasFrequenz = frequenz != null && !frequenz.dates().isEmpty();
+        if (hasFrequenz) {
+            forms.add(new ListItem(download("Trainingsfrequenzliste herunterladen (" + frequenzPeriod(month.getValue(), year.getValue())
+                    + ")", null, frequenzFile())));
+        }
         if (privateRead && !prae.isEmpty()) {
             forms.add(new ListItem(download("Alle PRAE-Formulare mit Darstellung herunterladen (ZIP, "
                     + prae.size() + (prae.size() == 1 ? " Formular)" : " Formulare)"), null, praeOf(null))));
@@ -260,6 +288,15 @@ public class ReportsView extends AdminView {
         result.add(new Paragraph("Auf dem KostZ-Formular werden nur „HONORARE / VERGÜTUNGEN“, Zeitraum, Ort und "
                 + "Personenanzahl vorausgefüllt; alle übrigen Kostenarten und die Beilagen-Nummern bitte von Hand "
                 + "ergänzen."));
+        if (hasFrequenz && frequenz.missingDates() > 0) {
+            result.add(new Paragraph("Achtung: Die Trainingsfrequenzliste hat nur " + Trainingsfrequenzliste.MAX_DATES
+                    + " Spalten. " + frequenz.missingDates() + " Trainingstage am Ende fehlen und bitte von Hand "
+                    + "nachtragen."));
+        }
+        if (hasFrequenz && frequenz.missingPeople() > 0) {
+            result.add(new Paragraph("Achtung: Die Trainingsfrequenzliste hat nur " + Trainingsfrequenzliste.MAX_PEOPLE
+                    + " Zeilen. " + people(frequenz.missingPeople()) + " fehlen und bitte von Hand nachtragen."));
+        }
         if (isTournament) {
             for (Teilnehmerliste list : List.of(teilnehmer.sportler(), teilnehmer.helfer())) {
                 if (list.overflows()) {
@@ -279,21 +316,24 @@ public class ReportsView extends AdminView {
         result.add(new Paragraph("Bündelt die ausgewählten Teile als eine ZIP-Datei. Alles ist vorausgewählt."));
         bundleSportler.setVisible(isTournament);
         bundleHelfer.setVisible(isTournament);
+        bundleFrequenz.setVisible(hasFrequenz);
         bundlePrae.setItems(privateRead ? List.copyOf(personNames.keySet()) : List.of());
         bundlePrae.setValue(privateRead ? new HashSet<>(personNames.keySet()) : Set.of());
         bundlePrae.setVisible(privateRead && !personNames.isEmpty());
         bundleKostZ.setValue(true);
         bundleSportler.setValue(true);
         bundleHelfer.setValue(true);
+        bundleFrequenz.setValue(hasFrequenz);
         bundleDownload = download("Sammelabrechnung herunterladen (ZIP)", null, bundleFile());
-        VerticalLayout bundle = new VerticalLayout(bundleKostZ, bundleSportler, bundleHelfer, bundlePrae,
+        VerticalLayout bundle = new VerticalLayout(bundleKostZ, bundlePrae, bundleFrequenz, bundleSportler, bundleHelfer,
                 bundleDownload, bundleHint);
         bundle.setPadding(false);
         bundle.setSpacing(false);
         result.add(bundle);
 
         String tournamentId = isTournament ? tournament.getValue().id() : null;
-        request = new Request(isTournament, month.getValue(), year.getValue(), tournamentId, selection(privateRead));
+        request = new Request(isTournament, month.getValue(), year.getValue(), isTournament ? null : sport.getValue(),
+                tournamentId, selection(privateRead));
         updateBundleState();
     }
 
@@ -302,14 +342,16 @@ public class ReportsView extends AdminView {
         if (current == null) {
             return;
         }
-        request = new Request(current.tournament(), current.month(), current.year(), current.tournamentId(),
+        request = new Request(current.tournament(), current.month(), current.year(), current.sport(),
+                current.tournamentId(),
                 selection(can(Permission.MEMBERS_PRIVATE_READ)));
         updateBundleState();
     }
 
     private Reports.Selection selection(boolean privateRead) {
         Set<String> prae = privateRead ? Set.copyOf(bundlePrae.getValue()) : Set.of();
-        return new Reports.Selection(bundleKostZ.getValue(), prae, bundleSportler.getValue(), bundleHelfer.getValue());
+        return new Reports.Selection(bundleKostZ.getValue(), prae, bundleSportler.getValue(), bundleHelfer.getValue(),
+                bundleFrequenz.getValue());
     }
 
     private void updateBundleState() {
@@ -362,7 +404,7 @@ public class ReportsView extends AdminView {
                 Reports.Tournament t = service.tournament(r.tournamentId(), false);
                 return Map.entry("KostZ_" + t.label() + ".xlsx", t.kostZ().xlsx());
             }
-            Reports.Month m = service.month(r.month(), r.year(), false);
+            Reports.Month m = service.month(r.month(), r.year(), r.sport(), false);
             return Map.entry("KostZ_" + m.label() + ".xlsx", m.kostZ().xlsx());
         };
     }
@@ -379,6 +421,18 @@ public class ReportsView extends AdminView {
         };
     }
 
+    private static FileMaker frequenzFile() {
+        return (service, r) -> {
+            if (r.tournament()) {
+                return null;
+            }
+            Reports.Month m = service.month(r.month(), r.year(), r.sport(), false);
+            return m.hasTrainingsfrequenzliste()
+                    ? Map.entry("Trainingsfrequenzliste_" + m.label() + ".xlsx", m.trainingsfrequenzliste().xlsx())
+                    : null;
+        };
+    }
+
     /** One person's PRAE forms, or everyone's when {@code personId} is null; needs members.private.read. */
     private FileMaker praeOf(String personId) {
         return (service, r) -> {
@@ -392,7 +446,7 @@ public class ReportsView extends AdminView {
                 forms = t.prae();
                 label = t.label();
             } else {
-                Reports.Month m = service.month(r.month(), r.year(), true);
+                Reports.Month m = service.month(r.month(), r.year(), r.sport(), true);
                 forms = m.prae();
                 label = m.label();
             }
@@ -419,7 +473,7 @@ public class ReportsView extends AdminView {
                 files = t.sammelabrechnung(r.selection());
                 label = t.label();
             } else {
-                Reports.Month m = service.month(r.month(), r.year(), withPrivate);
+                Reports.Month m = service.month(r.month(), r.year(), r.sport(), withPrivate);
                 files = m.sammelabrechnung(r.selection());
                 label = m.label();
             }
@@ -441,6 +495,13 @@ public class ReportsView extends AdminView {
         String betrifft = kostZ.betrifft().isBlank() ? "" : "Betrifft: " + kostZ.betrifft() + ". ";
         String ort = kostZ.ort() == null || kostZ.ort().isBlank() ? "" : " Ort: " + kostZ.ort() + ".";
         return betrifft + "Zeitraum: " + from + " bis " + to + " (" + days + ")." + ort;
+    }
+
+    /** "Juli bis August 2026" (season start to the chosen month), or "Juli 2026" for the season's first month. */
+    static String frequenzPeriod(int month, int year) {
+        int first = month <= 6 ? 1 : 7;
+        String to = capitalized(MONTH_NAME.format(LocalDate.of(2000, month, 1))) + " " + year;
+        return first == month ? to : capitalized(MONTH_NAME.format(LocalDate.of(2000, first, 1))) + " bis " + to;
     }
 
     static String euro(double amount) {

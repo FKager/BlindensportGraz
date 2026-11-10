@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 28047574,
-    "total_reads": 8575,
-    "total_writes": 16458,
-    "total_sessions": 147,
-    "anatomy_hits": 7222,
+    "total_tokens_estimated": 28088566,
+    "total_reads": 8576,
+    "total_writes": 16475,
+    "total_sessions": 148,
+    "anatomy_hits": 7223,
     "anatomy_misses": 1264,
     "repeated_reads_blocked": 5340,
-    "estimated_savings_vs_bare_cli": 27773015
+    "estimated_savings_vs_bare_cli": 27773215
   },
   "sessions": [
     {
@@ -149501,6 +149501,130 @@
         "writes_count": 13,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-09-1357",
+      "started": "2026-11-09T12:57:47.550Z",
+      "ended": "2026-11-09T13:18:11.209Z",
+      "reads": [],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/xlsx/XlsxPatch.java",
+          "tokens_estimated": 1497,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/KostZ.java",
+          "tokens_estimated": 1734,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/Places.java",
+          "tokens_estimated": 194,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/Places.java",
+          "tokens_estimated": 240,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/Teilnehmerliste.java",
+          "tokens_estimated": 1826,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/Reports.java",
+          "tokens_estimated": 1348,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/ReportService.java",
+          "tokens_estimated": 1172,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/api/ReportsResource.java",
+          "tokens_estimated": 3845,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/ui/ReportsView.java",
+          "tokens_estimated": 6358,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/test/java/it/a11y/blindensport/webui/reports/ReportsTest.java",
+          "tokens_estimated": 4535,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/test/java/it/a11y/blindensport/webui/api/ReportsApiTest.java",
+          "tokens_estimated": 3660,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/ui/ReportsView.java",
+          "tokens_estimated": 52,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/test/java/it/a11y/blindensport/webui/ui/ReportsViewTest.java",
+          "tokens_estimated": 1709,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 28170,
+        "reads_count": 0,
+        "writes_count": 13,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-09-1631",
+      "started": "2026-11-09T15:31:34.486Z",
+      "ended": "2026-11-09T16:01:22.876Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/Trainingsfrequenzliste.java",
+          "tokens_estimated": 3364,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/xlsx/XlsxPatch.java",
+          "tokens_estimated": 479,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/Trainingsfrequenzliste.java",
+          "tokens_estimated": 3605,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/ui/TrainingsfrequenzlisteView.java",
+          "tokens_estimated": 2280,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/test/java/it/a11y/blindensport/webui/reports/TrainingsfrequenzlisteTest.java",
+          "tokens_estimated": 3094,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 3364,
+        "output_tokens_estimated": 9458,
+        "reads_count": 1,
+        "writes_count": 4,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],

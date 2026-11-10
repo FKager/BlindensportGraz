@@ -129,6 +129,33 @@ class ReportsApiTest {
     }
 
     @Test
+    void monthOfOneSportCountsOnlyItsTrainings() throws java.io.IOException {
+        String admin = signIn("admin@example.org");
+        given().cookie("bsg_admin_session", admin).when().get("/api/reports/months/2026/3?sport=Fußball")
+                .then().statusCode(200)
+                .body("kostz.total", equalTo(0.0f))
+                .body("prae.size()", equalTo(0))
+                .body("trainingsfrequenzliste.dates.size()", equalTo(0));
+        given().cookie("bsg_admin_session", admin).when().get("/api/reports/months/2026/3?sport=Torball")
+                .then().statusCode(200)
+                .body("kostz.total", equalTo(45.0f))
+                .body("trainingsfrequenzliste.dates", equalTo(List.of("2026-03-03")));
+        given().cookie("bsg_admin_session", admin)
+                .when().get("/api/reports/months/2026/3/trainingsfrequenzliste.xlsx?sport=Torball")
+                .then().statusCode(200);
+        byte[] zip = given().cookie("bsg_admin_session", admin)
+                .when().get("/api/reports/months/2026/3/sammelabrechnung.zip?sport=Torball&kostz=false&prae=none")
+                .then().statusCode(200).extract().asByteArray();
+        java.util.List<String> names = new java.util.ArrayList<>();
+        try (var in = new java.util.zip.ZipInputStream(new java.io.ByteArrayInputStream(zip))) {
+            for (var e = in.getNextEntry(); e != null; e = in.getNextEntry()) {
+                names.add(e.getName());
+            }
+        }
+        assertEquals(List.of("Trainingsfrequenzliste.xlsx"), names);
+    }
+
+    @Test
     void unknownTournamentIs404() {
         mock.stubFor(get(urlPathEqualTo("/rest/v1/events")).atPriority(1)
                 .withQueryParam("id", wm("eq.aaaaaaaa-0000-0000-0000-000000000009"))
@@ -137,5 +164,33 @@ class ReportsApiTest {
         given().cookie("bsg_admin_session", admin)
                 .when().get("/api/reports/tournaments/aaaaaaaa-0000-0000-0000-000000000009")
                 .then().statusCode(404).body("reason", equalTo("Turnier nicht gefunden."));
+    }
+
+    @Test
+    void trainingsfrequenzlisteListsTheTeamWithAttendance() throws IOException {
+        String kassa = signIn("kassa@example.org");
+        given().cookie("bsg_admin_session", kassa).when().get("/api/reports/trainingsfrequenzliste")
+                .then().statusCode(200).body("$", equalTo(List.of("Torball")));
+        given().cookie("bsg_admin_session", kassa)
+                .when().get("/api/reports/trainingsfrequenzliste/2026/1?sport=Torball")
+                .then().statusCode(200)
+                .body("title", equalTo("Torball"))
+                .body("teams", equalTo(List.of("Torball Damen")))
+                .body("dates", equalTo(List.of("2026-03-03")))
+                .body("people[0].lastName", equalTo("Zach"))
+                .body("people[0].attended", hasSize(0))
+                .body("people[1].function", equalTo("Übungsleiter"))
+                .body("people[1].attended", equalTo(List.of("2026-03-03")));
+        given().cookie("bsg_admin_session", kassa)
+                .when().get("/api/reports/trainingsfrequenzliste/2026/1/trainingsfrequenzliste.xlsx?sport=Torball")
+                .then().statusCode(200)
+                .header("Content-Disposition", containsString("Torball_H1-2026_Trainingsfrequenzliste.xlsx"));
+        given().cookie("bsg_admin_session", kassa)
+                .when().get("/api/reports/trainingsfrequenzliste/2026/3?sport=Torball")
+                .then().statusCode(400);
+        String coach = signIn("coach@example.org");
+        given().cookie("bsg_admin_session", coach)
+                .when().get("/api/reports/trainingsfrequenzliste/2026/1?sport=Torball")
+                .then().statusCode(403);
     }
 }
