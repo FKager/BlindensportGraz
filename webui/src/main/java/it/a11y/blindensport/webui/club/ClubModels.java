@@ -54,6 +54,11 @@ public final class ClubModels {
             return (int) Math.max(1, ChronoUnit.DAYS.between(start, end) + 1);
         }
 
+        /** A training marked "Abgesagt": left out of KostZ, PRAE and the Trainingsfrequenzliste. */
+        public boolean isCancelled() {
+            return "cancelled".equals(status);
+        }
+
         /** Highest PRAE per helper: €90 per training, €120 per tournament day (PraeCalculator.dailyCap). */
         public int maxPrae() {
             return "tournament".equals(kind) ? 120 * dayCount() : 90;

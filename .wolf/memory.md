@@ -4245,3 +4245,5 @@
 | 17:45 | Fixed CI failure on PR #42 (test training lacked sport); real local run 147/147 via ./mvnw + JDK 21 | ReportsTest.java, buglog, cerebrum | pass | ~4k |
 | 17:55 | User re-enabled Simulator tests for the app; cerebrum rule rewritten, memory feedback_simulator-tests added | .wolf/cerebrum.md, memory | done | ~3k |
 | 18:20 | Merged PR #42; resolved .wolf conflicts on #43; Simulator report tests 48/48 on merged code; fixed saved destination (needs OS=26.5) | .wolf/* | pass | ~5k |
+| 18:35 | Deployed app-abrechnung-sportart to iPhone (run 42862334126 success); merged PR #43 (CI iOS build still pending at merge, user asked to merge) | - | done | ~2k |
+| 19:47 | Reports skip cancelled (Abgesagt) trainings in KostZ/PRAE/Trainingsfrequenzliste, app + web; fixed stale PRAE print-copy test | reports + tests | web 149/149, app 93/93 (Simulator) | ~15k |

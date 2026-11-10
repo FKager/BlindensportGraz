@@ -136,8 +136,10 @@ enum TrainingsfrequenzlisteCalculator {
         // PraeCalculator's established convention rather than a #Predicate
         // with relationship-path traversal.
         let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
+        // "Abgesagt" trainings were never held: no date column, and their
+        // teams don't join the roster.
         let periodTrainings = allTrainings.filter { training in
-            guard training.sport == sport else { return false }
+            guard training.sport == sport, training.status != Training.cancelledStatus else { return false }
             let components = calendar.dateComponents([.month, .year], from: training.startDate)
             guard let month = components.month else { return false }
             return halfYear.months.contains(month) && components.year == year && month <= (throughMonth ?? 12)

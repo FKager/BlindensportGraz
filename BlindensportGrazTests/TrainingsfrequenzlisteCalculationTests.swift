@@ -523,4 +523,23 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertEqual(feb.trainingDates, [day(january), day(february)])
         XCTAssertEqual(feb.halfYear, .first)
     }
+
+    // MARK: - Abgesagt
+
+    func testCancelledTrainingsGetNoColumnAndBringNoTeam() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let damen = Team(name: "Torball Damen", sport: "Torball")
+        let herren = Team(name: "Torball Herren", sport: "Torball")
+        context.insert(damen)
+        context.insert(herren)
+        let cancelled = makeTraining(context, team: herren, day: 7, month: 7)
+        cancelled.status = Training.cancelledStatus
+        let held = makeTraining(context, team: damen, day: 14, month: 7)
+
+        let summary = TrainingsfrequenzlisteCalculator.seasonSummary(sport: "Torball", throughMonth: 7, year: 2026, in: context)
+        XCTAssertEqual(summary.trainingDates, [Calendar.current.startOfDay(for: held.startDate)])
+        XCTAssertEqual(summary.teams.map(\.name), ["Torball Damen"])
+        XCTAssertEqual(summary.title, held.title)
+    }
 }

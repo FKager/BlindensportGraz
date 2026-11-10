@@ -889,8 +889,9 @@ final class PraeCalculationTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: copy) }
 
         let strings = try entryText(from: copy, path: "xl/sharedStrings.xml")
-        XCTAssertEqual(strings.components(separatedBy: "<t>☒</t>").count - 1, 1)
-        XCTAssertEqual(strings.components(separatedBy: "<t>☐</t>").count - 1, 14)
+        // Tournament forms also tick A26, A29 and A33 (PR #38), so 1 + 3 ☒.
+        XCTAssertEqual(strings.components(separatedBy: "<t>☒</t>").count - 1, 4)
+        XCTAssertEqual(strings.components(separatedBy: "<t>☐</t>").count - 1, 11)
         let sheet = try entryText(from: copy, path: "xl/worksheets/sheet1.xml")
         XCTAssertNotNil(sheet.range(of: "<c r=\"P42\"[^>]*><is><t>☒</t></is></c>", options: .regularExpression))
     }

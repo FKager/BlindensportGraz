@@ -67,7 +67,8 @@ public final class PraeCalculator {
     /**
      * One form per training name the person was deployed for in the month:
      * sessions of a name stay on one form, two sessions on one day are summed,
-     * and a name whose amounts are all zero gets no form.
+     * and a name whose amounts are all zero gets no form. Cancelled
+     * ("Abgesagt") trainings count for nothing, as on the KostZ.
      *
      * @param trainings   every training, with
      * @param attendances their attendance rows
@@ -80,6 +81,7 @@ public final class PraeCalculator {
         List<Attendance> relevant = attendances.stream()
                 .filter(a -> a.attended() && events.containsKey(a.eventId())
                         && "training".equals(events.get(a.eventId()).kind())
+                        && !events.get(a.eventId()).isCancelled()
                         && memberships.contains(a.membershipId()))
                 .sorted(Comparator.<Attendance, java.time.Instant>comparing(a -> events.get(a.eventId()).startDate())
                         .thenComparing(a -> events.get(a.eventId()).title()))

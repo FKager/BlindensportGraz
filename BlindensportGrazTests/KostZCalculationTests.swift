@@ -496,4 +496,32 @@ final class KostZCalculationTests: XCTestCase {
         let files = try SammelabrechnungExporter.files(kostZ: kostZ, praeSummaries: [], trainingsfrequenzliste: frequenz)
         XCTAssertEqual(files.map(\.name), ["KostZ.xlsx", "Trainingsfrequenzliste.xlsx"])
     }
+
+    // MARK: - Abgesagt
+
+    func testCancelledTrainingsCountForNothing() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        let held = makeTraining(context, title: "Torball", day: 5)
+        let cancelled = makeTraining(context, title: "Abgesagt", day: 12)
+        cancelled.status = Training.cancelledStatus
+        context.insert(Attendance(event: held, membership: membership, attended: true, praeAmount: 40))
+        context.insert(Attendance(event: cancelled, membership: membership, attended: true, praeAmount: 30))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let summary = KostZCalculator.summary(month: 7, year: 2026, sport: "Torball", allMemberships: allMemberships, in: context)
+        XCTAssertEqual(summary.total, 40)
+        XCTAssertEqual(summary.trainingDates, [held.startDate])
+        XCTAssertEqual(summary.trainingName, "Torball")
+
+        let person = try XCTUnwrap(summary.personAmounts.first?.person)
+        XCTAssertEqual(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).map(\.trainingName), ["Torball"])
+    }
 }

@@ -24,8 +24,8 @@ import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
  * filled; every other cost line and all BEILAGE numbers stay for the
  * treasurer. The I26 SUM formula is left as it is and recalculates on open.
  *
- * <p>A month's KostZ covers every training of the month (tournaments file
- * their own, so nothing is counted twice).
+ * <p>A month's KostZ covers every training of the month that wasn't
+ * cancelled ("Abgesagt"); tournaments file their own, so nothing is counted twice.
  *
  * @param betrifft C3: the training names of the month, comma-joined, or the tournament's title
  * @param ort      H3: "Graz" for trainings, the tournament's city; null leaves it blank
@@ -58,7 +58,7 @@ public record KostZ(String betrifft, String ort, LocalDate start, LocalDate end,
     public static KostZ month(int month, int year, List<Person> eligible, List<ClubEvent> events,
                               List<Attendance> attendances) {
         List<ClubEvent> trainings = events.stream()
-                .filter(e -> "training".equals(e.kind()))
+                .filter(e -> "training".equals(e.kind()) && !e.isCancelled())
                 .filter(e -> {
                     LocalDate date = LocalDate.ofInstant(e.startDate(), CLUB_ZONE);
                     return date.getMonthValue() == month && date.getYear() == year;
