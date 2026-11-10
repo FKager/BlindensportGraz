@@ -4216,3 +4216,14 @@
 | 14:15 | Session end: 13 writes across 11 files (XlsxPatch.java, KostZ.java, Places.java, Teilnehmerliste.java, Reports.java) | 0 reads | ~28170 tok |
 | 11:00 | iOS app: KostZ + Sammelabrechnung per Sportart (picker), PRAE filtered by sport, month Sammelabrechnung adds Trainingsfrequenzliste season start → month (seasonSummary) | KostZCalculation/View, PraeCalculation, TrainingsfrequenzlisteCalculation, SammelabrechnungExport/View, tests | build-for-testing OK (no simulator) | ~20k |
 | 11:20 | iOS season Sammelabrechnung split per Sportart (Torball_03-2026_KostZ.xlsx …) | SammelabrechnungExport.swift, SammelabrechnungSeasonView.swift, SammelabrechnungSeasonExportTests.swift | build-for-testing OK | ~8k |
+| 17:31 | Ran report tests on booted iPhone 17 Pro simulator at user's explicit request: 48/48 passed in ~3 s (TEST SUCCEEDED); CoreData 'Application Support' errors in log are harmless (store recovered) | KostZCalculationTests, TrainingsfrequenzlisteCalculationTests, Sammelabrechnung*Tests | pass | ~3k |
+
+## Session: 2026-11-10 17:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-10 17:33
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
