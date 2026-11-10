@@ -4254,3 +4254,7 @@
 | 21:42 | Supabase CLI 3.0.0 → 3.1.0 (brew); cutover.sh --project-ref → --remote=; config.toml email/sms enable_signup → enabled; CI pin 3.1.0; preflight + db push dry-run on staging OK, pgTAP 213/213 | cutover.sh, config.toml, database-test.yml | pass | ~6k |
 | 21:49 | User confirmed 60 € on 7 Oct after app restart; PR #48 merged | - | done | ~1k |
 | 21:52 | App syncs when returning to the foreground (30 s throttle) + overlapping syncs coalesced; full Simulator suite 335/335 | RootView, SupabaseSync, SyncOrchestrationService, SyncStateTests | pass | ~8k |
+| 22:06 | Merged PR #49; iPhone deploy (BSG Staging) ok; TestFlight v0.12.2 = build 349 (Internal, notes) | - | done | ~3k |
+| 22:21 | User confirmed on device: cancelled training is left out of the list (Trainingsfrequenzliste) | - | confirmed | ~1k |
+| 22:23 | User confirmed on device: KostZ leaves out cancelled trainings — PR #44 fully confirmed | - | confirmed | ~1k |
+| 22:25 | Deleted all 5 folders in ~/Backups at user's request (incl. final CloudKit export, prod snapshot before v0.8.0) | ~/Backups | done | ~1k |
