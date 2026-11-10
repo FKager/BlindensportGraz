@@ -4258,3 +4258,4 @@
 | 22:21 | User confirmed on device: cancelled training is left out of the list (Trainingsfrequenzliste) | - | confirmed | ~1k |
 | 22:23 | User confirmed on device: KostZ leaves out cancelled trainings — PR #44 fully confirmed | - | confirmed | ~1k |
 | 22:25 | Deleted all 5 folders in ~/Backups at user's request (incl. final CloudKit export, prod snapshot before v0.8.0) | ~/Backups | done | ~1k |
+| 22:32 | App retries deletions skipped for unsent changes (cursor holds at first skipped entry) + one-time log replay; Simulator 337/337 | SupabaseSync(+Models), SyncStateTests | pass | ~10k |
