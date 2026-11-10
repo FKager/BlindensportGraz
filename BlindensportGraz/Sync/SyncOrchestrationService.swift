@@ -10,6 +10,16 @@ import SwiftData
 /// as an exception to "no view file touches SupabaseSync.shared directly."
 @MainActor
 enum SyncOrchestrationService {
+    /// Coming back to the foreground syncs again — data changed on the
+    /// server or by other admins shows up without restarting the app —
+    /// unless the last sync finished less than `foregroundSyncInterval` ago.
+    static let foregroundSyncInterval: TimeInterval = 30
+
+    static func shouldSyncOnForeground(lastSyncedAt: Date?, now: Date = .now) -> Bool {
+        guard let lastSyncedAt else { return true }
+        return now.timeIntervalSince(lastSyncedAt) >= foregroundSyncInterval
+    }
+
     static func syncAll(modelContext: ModelContext) async {
         await SupabaseSync.shared.syncAll(modelContext: modelContext)
     }

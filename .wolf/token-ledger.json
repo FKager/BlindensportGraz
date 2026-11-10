@@ -3,11 +3,11 @@
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
     "total_tokens_estimated": 28088566,
-    "total_reads": 8579,
+    "total_reads": 8584,
     "total_writes": 16475,
     "total_sessions": 148,
     "anatomy_hits": 7223,
-    "anatomy_misses": 1267,
+    "anatomy_misses": 1272,
     "repeated_reads_blocked": 5340,
     "estimated_savings_vs_bare_cli": 27773215
   },
@@ -149675,6 +149675,116 @@
       "id": "session-2026-11-10-1733",
       "started": "2026-11-10T16:33:07.151Z",
       "ended": "2026-11-10T20:39:25.245Z",
+      "reads": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-10-1733",
+      "started": "2026-11-10T16:33:07.151Z",
+      "ended": "2026-11-10T20:42:36.337Z",
+      "reads": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-10-1733",
+      "started": "2026-11-10T16:33:07.151Z",
+      "ended": "2026-11-10T20:44:45.974Z",
+      "reads": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-10-1733",
+      "started": "2026-11-10T16:33:07.151Z",
+      "ended": "2026-11-10T20:46:45.189Z",
+      "reads": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-10-1733",
+      "started": "2026-11-10T16:33:07.151Z",
+      "ended": "2026-11-10T20:47:23.293Z",
+      "reads": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 0,
+        "reads_count": 1,
+        "writes_count": 0,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-10-1733",
+      "started": "2026-11-10T16:33:07.151Z",
+      "ended": "2026-11-10T20:49:51.992Z",
       "reads": [
         {
           "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/memory/MEMORY.md",

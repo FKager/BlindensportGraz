@@ -288,7 +288,23 @@ final class SupabaseSync {
     /// earlier stages inserted, and smaller save batches avoid the SwiftData
     /// Release-build crash on large relationship-heavy transactions
     /// (bug-221, bug-371).
+    /// The sync in progress, if any. A second request (pull-to-refresh, the
+    /// app coming back to the foreground) waits for it instead of running a
+    /// second pull alongside.
+    private var runningSync: Task<Void, Never>?
+
     func syncAll(modelContext: ModelContext) async {
+        if let runningSync {
+            await runningSync.value
+            return
+        }
+        let sync = Task { await performSyncAll(modelContext: modelContext) }
+        runningSync = sync
+        await sync.value
+        runningSync = nil
+    }
+
+    private func performSyncAll(modelContext: ModelContext) async {
         SyncState.shared.markSyncing()
         handoverFailed = false
         await handOverFromCloudKitIfNeeded(modelContext: modelContext)

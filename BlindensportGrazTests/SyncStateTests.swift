@@ -41,4 +41,17 @@ final class SyncStateTests: XCTestCase {
         XCTAssertEqual(SyncState.shared.lastSyncedAt, previousLastSyncedAt,
                         "one failed operation must not erase evidence that other data synced successfully before it")
     }
+
+    // MARK: - Foreground sync
+
+    func testForegroundSyncRunsWithoutAnEarlierSync() {
+        XCTAssertTrue(SyncOrchestrationService.shouldSyncOnForeground(lastSyncedAt: nil))
+    }
+
+    func testForegroundSyncWaitsThirtySecondsAfterTheLastSync() {
+        let now = Date(timeIntervalSinceReferenceDate: 1_000_000)
+        XCTAssertFalse(SyncOrchestrationService.shouldSyncOnForeground(lastSyncedAt: now.addingTimeInterval(-10), now: now))
+        XCTAssertTrue(SyncOrchestrationService.shouldSyncOnForeground(lastSyncedAt: now.addingTimeInterval(-30), now: now))
+        XCTAssertTrue(SyncOrchestrationService.shouldSyncOnForeground(lastSyncedAt: now.addingTimeInterval(-3600), now: now))
+    }
 }
