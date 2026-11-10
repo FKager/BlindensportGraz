@@ -36,26 +36,47 @@ public final class ReportService {
     }
 
     /**
-     * Every training of a month.
+     * The trainings of a month: KostZ and PRAE count only {@code sport}'s
+     * trainings, and the Trainingsfrequenzliste of that sport runs from the
+     * season's start (Jänner or Juli) to the month's end.
      *
+     * @param sport       a training sport, or null for every sport (then without Trainingsfrequenzliste)
      * @param withPrivate read SVNR, IBAN and birth date, needed for the PRAE files; off to only show amounts
      */
-    public Reports.Month month(int month, int year, boolean withPrivate) {
+    public Reports.Month month(int month, int year, String sport, boolean withPrivate) {
         if (month < 1 || month > 12) {
             throw new IllegalArgumentException("Monat muss zwischen 1 und 12 liegen.");
         }
-        List<ClubEvent> trainings = club.events().stream().filter(e -> "training".equals(e.kind()))
+        List<ClubEvent> events = club.events();
+        List<ClubEvent> trainings = events.stream().filter(e -> "training".equals(e.kind()))
+                .filter(e -> sport == null || sport.equals(e.sport()))
                 .filter(e -> {
                     LocalDate date = LocalDate.ofInstant(e.startDate(), CLUB_ZONE);
                     return date.getMonthValue() == month && date.getYear() == year;
                 }).toList();
-        List<Attendance> attendances = club.attendances(trainings.stream().map(ClubEvent::id).toList());
-        List<Person> people = PraeCalculator.eligiblePeople(club.memberships(), members(withPrivate)::get, club.accounts());
+        List<ClubEvent> season = sport == null ? List.of() : events.stream()
+                .filter(e -> "training".equals(e.kind()) && sport.equals(e.sport()))
+                .filter(e -> {
+                    LocalDate date = LocalDate.ofInstant(e.startDate(), CLUB_ZONE);
+                    return date.getYear() == year && date.getMonthValue() <= month
+                            && (date.getMonthValue() <= 6) == (month <= 6);
+                }).toList();
+        List<String> ids = java.util.stream.Stream.concat(trainings.stream(), season.stream())
+                .map(ClubEvent::id).distinct().toList();
+        List<Attendance> attendances = ids.isEmpty() ? List.of() : club.attendances(ids);
+        List<Membership> memberships = club.memberships();
+        Map<String, MemberRecord> members = members(withPrivate);
+        Map<String, AccountName> accounts = club.accounts();
+        List<Person> people = PraeCalculator.eligiblePeople(memberships, members::get, accounts);
         List<PraeForm> prae = new ArrayList<>();
         for (Person person : people) {
             prae.addAll(PraeCalculator.monthForms(person, month, year, trainings, attendances));
         }
-        return new Reports.Month(month, year, KostZ.month(month, year, people, trainings, attendances), prae);
+        Trainingsfrequenzliste frequenz = sport == null ? null
+                : Trainingsfrequenzliste.seasonUpTo(sport, month, year, season, attendances, club.teams(),
+                memberships, members, accounts);
+        return new Reports.Month(month, year, sport, KostZ.month(month, year, people, trainings, attendances), prae,
+                frequenz);
     }
 
     /** One tournament, by id. */

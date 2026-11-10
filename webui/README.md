@@ -96,8 +96,9 @@ one by one, as in the app. Files come as downloads (`Content-Disposition`).
 
 | Path | Returns |
 |---|---|
-| `/api/reports/months/{year}/{month}` | JSON: KostZ (betrifft, ort, period, days, total, people) and PRAE forms with cap warnings |
+| `/api/reports/months/{year}/{month}[?sport=]` | JSON: KostZ (betrifft, ort, period, days, total, people) and PRAE forms with cap warnings, of that sport's trainings only (every sport without `sport`); with `sport` also its Trainingsfrequenzliste from the season's start (Jänner or Juli) to the month's end. All month URLs take the same `sport` |
 | `/api/reports/months/{year}/{month}/kostz.xlsx` | KostZ form |
+| `/api/reports/months/{year}/{month}/trainingsfrequenzliste.xlsx?sport=` | Trainingsfrequenzliste, season start to this month (August → Juli + August) |
 | `/api/reports/months/{year}/{month}/prae.zip[?person=]` | PRAE + Darstellung, everyone or one person |
 | `/api/reports/months/{year}/{month}/sammelabrechnung.zip` | bundle, see parameters below |
 | `/api/reports/tournaments` | JSON: tournaments, latest first |
@@ -110,8 +111,8 @@ one by one, as in the app. Files come as downloads (`Content-Disposition`).
 | `/api/reports/trainingsfrequenzliste/{year}/{half}?sport=` | JSON: half 1 (Jänner–Juni) or 2; header fields, dates, people with the dates they attended |
 | `/api/reports/trainingsfrequenzliste/{year}/{half}/trainingsfrequenzliste.xlsx?sport=` | Sport Austria's Trainingsfrequenzliste (25 dates, 24 people) |
 
-Sammelabrechnung parameters: `kostz`, `sportler`, `helfer` (tournaments)
-default to `true`; `prae` is repeated person ids (the `personId` of the
+Sammelabrechnung parameters: `kostz`, `sportler`, `helfer` (tournaments),
+`trainingsfrequenzliste` (months with `sport`) default to `true`; `prae` is repeated person ids (the `personId` of the
 JSON), absent for everyone, `prae=none` for no one.
 
 ## Calendar feed

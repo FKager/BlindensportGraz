@@ -4227,3 +4227,15 @@
 | 16:57 | Created webui/src/main/java/it/a11y/blindensport/webui/ui/TrainingsfrequenzlisteView.java | — | ~2128 |
 | 16:59 | Created webui/src/test/java/it/a11y/blindensport/webui/reports/TrainingsfrequenzlisteTest.java | — | ~2888 |
 | 17:01 | Web UI Trainingsfrequenzliste: reports/Trainingsfrequenzliste, TrainingsfrequenzlisteView (/trainingsfrequenzliste, nav), /api/reports/trainingsfrequenzliste, XlsxPatch overwrite helpers; 144 tests pass; openpyxl check of a generated file OK | webui/... | done on branch webui-trainingsfrequenzliste | ~40k |
+| 17:01 | Session end: 4 writes across 4 files (XlsxPatch.java, Trainingsfrequenzliste.java, TrainingsfrequenzlisteView.java, TrainingsfrequenzlisteTest.java) | 1 reads | ~12822 tok |
+
+## Session: 2026-11-09 22:20
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-10 17:08
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 10:30 | Web UI Abrechnung: Sportart select for training months (KostZ+PRAE only that sport), Trainingsfrequenzliste (season start → selected month) in Sammelabrechnung + single download; REST `?sport=` on months endpoints | Reports.java, ReportService.java, Trainingsfrequenzliste.java, ReportsView.java, EventsView.java, ReportsResource.java, tests, README | 144 tests green | ~25k |

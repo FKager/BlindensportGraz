@@ -113,6 +113,34 @@ class TrainingsfrequenzlisteTest {
     }
 
     @Test
+    void seasonRunsFromJanuaryOrJulyToTheChosenMonth() {
+        List<ClubEvent> events = List.of(
+                training("jun", "Torball", "2026-06-30T17:30", "T", "", "damen"),
+                training("jul", "Torball", "2026-07-07T17:30", "T", "", "damen"),
+                training("aug", "Torball", "2026-08-04T17:30", "T", "", "damen"),
+                training("sep", "Torball", "2026-09-01T17:30", "T", "", "damen"),
+                training("fb", "Fußball", "2026-08-05T17:30", "F", "", "fb"),
+                training("jan", "Torball", "2026-01-07T17:30", "T", "", "damen"),
+                training("feb", "Torball", "2026-02-03T17:30", "T", "", "damen"));
+        List<Attendance> attendances = List.of(present("jul", "m-anna"), present("sep", "m-anna"));
+
+        Trainingsfrequenzliste august = Trainingsfrequenzliste.seasonUpTo("Torball", 8, 2026, events, attendances,
+                TEAMS, MEMBERSHIPS, MEMBERS, ACCOUNTS);
+        assertEquals(List.of(LocalDate.of(2026, 7, 7), LocalDate.of(2026, 8, 4)), august.dates());
+        assertEquals(2, august.half());
+        assertEquals(1, august.present(LocalDate.of(2026, 7, 7)));
+
+        Trainingsfrequenzliste july = Trainingsfrequenzliste.seasonUpTo("Torball", 7, 2026, events, attendances,
+                TEAMS, MEMBERSHIPS, MEMBERS, ACCOUNTS);
+        assertEquals(List.of(LocalDate.of(2026, 7, 7)), july.dates());
+
+        Trainingsfrequenzliste february = Trainingsfrequenzliste.seasonUpTo("Torball", 2, 2026, events, attendances,
+                TEAMS, MEMBERSHIPS, MEMBERS, ACCOUNTS);
+        assertEquals(List.of(LocalDate.of(2026, 1, 7), LocalDate.of(2026, 2, 3)), february.dates());
+        assertEquals(1, february.half());
+    }
+
+    @Test
     void sportsAreDistinctTrainingSports() {
         assertEquals(List.of("Fußball", "Torball"), Trainingsfrequenzliste.sports(EVENTS));
     }

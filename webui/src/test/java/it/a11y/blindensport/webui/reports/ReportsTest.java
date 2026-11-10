@@ -239,7 +239,7 @@ class ReportsTest {
                 List.copyOf(report.sammelabrechnung(Reports.Selection.ALL).keySet()));
 
         String muster = people.stream().filter(p -> p.lastName().equals("Muster")).findFirst().orElseThrow().id();
-        var chosen = report.sammelabrechnung(new Reports.Selection(false, Set.of(muster), false, true));
+        var chosen = report.sammelabrechnung(new Reports.Selection(false, Set.of(muster), false, true, false));
         assertEquals(List.of("PRAE_Muster_Erika.xlsx", "PRAE-Darstellung_Muster_Erika.xlsx",
                 "TeilnehmerInnenliste-Helfer.xlsx"), List.copyOf(chosen.keySet()));
         assertEquals(List.copyOf(chosen.keySet()),
@@ -261,9 +261,30 @@ class ReportsTest {
         assertEquals(List.of("KostZ.xlsx", "PRAE_Muster_Erika_Torball.xlsx", "PRAE-Darstellung_Muster_Erika_Torball.xlsx",
                         "PRAE_Muster_Erika_Showdown.xlsx", "PRAE-Darstellung_Muster_Erika_Showdown.xlsx"),
                 List.copyOf(report.sammelabrechnung(Reports.Selection.ALL).keySet()));
-        assertTrue(new Reports.Selection(false, Set.of(), true, true).isEmpty(false),
+        assertTrue(new Reports.Selection(false, Set.of(), true, true, false).isEmpty(false),
                 "a month has no TeilnehmerInnenliste, so this selects nothing");
-        assertFalse(new Reports.Selection(false, Set.of(), true, false).isEmpty(true));
+        assertFalse(new Reports.Selection(false, Set.of(), true, false, false).isEmpty(true));
+    }
+
+    @Test
+    void monthOfOneSportBundlesItsTrainingsfrequenzliste() {
+        List<ClubEvent> events = List.of(
+                event("t1", "training", "Torball", "2026-03-03T18:00", "2026-03-03T20:00", "", ""));
+        List<Attendance> attendances = List.of(attended("t1", "mc", 40));
+        List<PraeForm> prae = new ArrayList<>();
+        people().forEach(p -> prae.addAll(PraeCalculator.monthForms(p, 3, 2026, events, attendances)));
+        Trainingsfrequenzliste list = Trainingsfrequenzliste.seasonUpTo("Torball", 3, 2026, events, attendances,
+                List.of(), MEMBERSHIPS, MEMBERS, ACCOUNTS);
+        Reports.Month report = new Reports.Month(3, 2026, "Torball",
+                KostZ.month(3, 2026, people(), events, attendances), prae, list);
+
+        assertEquals("Torball_03-2026", report.label());
+        assertEquals(List.of("KostZ.xlsx", "PRAE_Muster_Erika_Torball.xlsx",
+                        "PRAE-Darstellung_Muster_Erika_Torball.xlsx", "Trainingsfrequenzliste.xlsx"),
+                List.copyOf(report.sammelabrechnung(Reports.Selection.ALL).keySet()));
+        assertEquals(List.of("Trainingsfrequenzliste.xlsx"), List.copyOf(report.sammelabrechnung(
+                new Reports.Selection(false, Set.of(), false, false, true)).keySet()));
+        assertFalse(new Reports.Selection(false, Set.of(), false, false, true).isEmpty(false));
     }
 
     @Test

@@ -106,10 +106,33 @@ public record Trainingsfrequenzliste(String sport, int half, int year, String ti
                                             List<Attendance> attendances, List<Team> teams,
                                             List<Membership> memberships, Map<String, MemberRecord> members,
                                             Map<String, AccountName> accounts) {
+        return of(sport, half, year, half == 1 ? 6 : 12, events, attendances, teams, memberships, members, accounts);
+    }
+
+    /**
+     * The list from the start of {@code lastMonth}'s season (Jänner or Juli)
+     * to the end of {@code lastMonth} — what a month's Sammelabrechnung
+     * files: August covers Juli and August.
+     */
+    public static Trainingsfrequenzliste seasonUpTo(String sport, int lastMonth, int year, List<ClubEvent> events,
+                                                    List<Attendance> attendances, List<Team> teams,
+                                                    List<Membership> memberships, Map<String, MemberRecord> members,
+                                                    Map<String, AccountName> accounts) {
+        if (lastMonth < 1 || lastMonth > 12) {
+            throw new IllegalArgumentException("Monat muss zwischen 1 und 12 liegen.");
+        }
+        return of(sport, lastMonth <= 6 ? 1 : 2, year, lastMonth, events, attendances, teams, memberships, members,
+                accounts);
+    }
+
+    private static Trainingsfrequenzliste of(String sport, int half, int year, int lastMonth, List<ClubEvent> events,
+                                             List<Attendance> attendances, List<Team> teams,
+                                             List<Membership> memberships, Map<String, MemberRecord> members,
+                                             Map<String, AccountName> accounts) {
         if (half != 1 && half != 2) {
             throw new IllegalArgumentException("Halbjahr muss 1 oder 2 sein.");
         }
-        List<ClubEvent> trainings = trainings(sport, half, year, events);
+        List<ClubEvent> trainings = trainings(sport, half, year, lastMonth, events);
         TreeSet<LocalDate> allDates = new TreeSet<>(trainings.stream().map(Trainingsfrequenzliste::day).toList());
         List<LocalDate> dates = allDates.stream().limit(MAX_DATES).toList();
 
@@ -165,11 +188,12 @@ public record Trainingsfrequenzliste(String sport, int half, int year, String ti
                 allDates.size() - dates.size(), roster.size() - people.size());
     }
 
-    private static List<ClubEvent> trainings(String sport, int half, int year, List<ClubEvent> events) {
+    private static List<ClubEvent> trainings(String sport, int half, int year, int lastMonth,
+                                             List<ClubEvent> events) {
         return events.stream().filter(e -> "training".equals(e.kind()) && sport.equals(e.sport())).filter(e -> {
             LocalDate date = day(e);
             int month = date.getMonthValue();
-            return date.getYear() == year && (half == 1 ? month <= 6 : month >= 7);
+            return date.getYear() == year && (half == 1 ? month <= 6 : month >= 7) && month <= lastMonth;
         }).sorted(Comparator.comparing(ClubEvent::startDate)).toList();
     }
 

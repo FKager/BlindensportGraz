@@ -2,14 +2,14 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 28075744,
-    "total_reads": 8575,
-    "total_writes": 16471,
-    "total_sessions": 146,
-    "anatomy_hits": 7222,
+    "total_tokens_estimated": 28088566,
+    "total_reads": 8576,
+    "total_writes": 16475,
+    "total_sessions": 148,
+    "anatomy_hits": 7223,
     "anatomy_misses": 1264,
     "repeated_reads_blocked": 5340,
-    "estimated_savings_vs_bare_cli": 27773015
+    "estimated_savings_vs_bare_cli": 27773215
   },
   "sessions": [
     {
@@ -149582,6 +149582,49 @@
         "writes_count": 13,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-09-1631",
+      "started": "2026-11-09T15:31:34.486Z",
+      "ended": "2026-11-09T16:01:22.876Z",
+      "reads": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/Trainingsfrequenzliste.java",
+          "tokens_estimated": 3364,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/xlsx/XlsxPatch.java",
+          "tokens_estimated": 479,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/reports/Trainingsfrequenzliste.java",
+          "tokens_estimated": 3605,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/main/java/it/a11y/blindensport/webui/ui/TrainingsfrequenzlisteView.java",
+          "tokens_estimated": 2280,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/webui/src/test/java/it/a11y/blindensport/webui/reports/TrainingsfrequenzlisteTest.java",
+          "tokens_estimated": 3094,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 3364,
+        "output_tokens_estimated": 9458,
+        "reads_count": 1,
+        "writes_count": 4,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 1
       }
     }
   ],
