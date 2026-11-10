@@ -51,12 +51,18 @@ enum SammelabrechnungExporter {
     /// nil` when SammelabrechnungView's KostZ toggle is off, `praeSummaries`
     /// already filtered to only the helpers selected in its per-helper PRAE
     /// list.
-    static func export(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary]) throws -> URL {
-        try zipFiles(files(kostZ: kostZ, praeSummaries: praeSummaries), namePrefix: "Sammelabrechnung")
+    /// `trainingsfrequenzliste` (the month's sport, from the season's start
+    /// to the month's end — see TrainingsfrequenzlisteCalculator.seasonSummary)
+    /// comes last; nil or without training dates leaves it out.
+    static func export(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary],
+                       trainingsfrequenzliste: TrainingsfrequenzlisteSummary? = nil) throws -> URL {
+        try zipFiles(files(kostZ: kostZ, praeSummaries: praeSummaries, trainingsfrequenzliste: trainingsfrequenzliste),
+                     namePrefix: "Sammelabrechnung")
     }
 
     /// The month bundle's files, unzipped (zip or print them).
-    static func files(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary]) throws -> [ReportFile] {
+    static func files(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary],
+                      trainingsfrequenzliste: TrainingsfrequenzlisteSummary? = nil) throws -> [ReportFile] {
         var files: [ReportFile] = []
         if let kostZ {
             files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
@@ -66,6 +72,9 @@ enum SammelabrechnungExporter {
             if !summary.entries.isEmpty {
                 files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung", detail: summary.trainingName), try PraeExporter.exportDarstellung(summary: summary)))
             }
+        }
+        if let trainingsfrequenzliste, !trainingsfrequenzliste.trainingDates.isEmpty {
+            files.append(("Trainingsfrequenzliste.xlsx", try TrainingsfrequenzlisteExporter.export(summary: trainingsfrequenzliste)))
         }
         return files
     }

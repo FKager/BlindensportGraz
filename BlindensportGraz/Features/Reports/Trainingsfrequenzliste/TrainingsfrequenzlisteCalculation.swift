@@ -118,7 +118,18 @@ enum TrainingsfrequenzlisteCalculator {
     static let maxDateColumns = 25
     static let maxPersonRows = 24
 
-    static func summary(sport: String, halfYear: HalfYear, year: Int, in context: ModelContext) -> TrainingsfrequenzlisteSummary {
+    /// The list from the start of `month`'s season (Jänner or Juli) to the
+    /// end of `month` — what a month's Sammelabrechnung files: August covers
+    /// Juli and August.
+    static func seasonSummary(sport: String, throughMonth month: Int, year: Int,
+                              in context: ModelContext) -> TrainingsfrequenzlisteSummary {
+        summary(sport: sport, halfYear: month <= 6 ? .first : .second, year: year, throughMonth: month, in: context)
+    }
+
+    /// `throughMonth` ends the period early (inclusive); nil runs to the
+    /// half-year's end.
+    static func summary(sport: String, halfYear: HalfYear, year: Int, throughMonth: Int? = nil,
+                        in context: ModelContext) -> TrainingsfrequenzlisteSummary {
         let calendar = Calendar.current
 
         // Fetch-all-then-filter-in-Swift, matching KostZCalculator/
@@ -129,7 +140,7 @@ enum TrainingsfrequenzlisteCalculator {
             guard training.sport == sport else { return false }
             let components = calendar.dateComponents([.month, .year], from: training.startDate)
             guard let month = components.month else { return false }
-            return halfYear.months.contains(month) && components.year == year
+            return halfYear.months.contains(month) && components.year == year && month <= (throughMonth ?? 12)
         }
 
         let trainingDates = Array(

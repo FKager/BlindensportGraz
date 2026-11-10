@@ -31,14 +31,27 @@ struct KostZCalculationView: View {
     // to stay in `PraeCalculator.eligiblePeople` post-fetch instead.
     @Query private var allMemberships: [TeamMembership]
     @Query private var allReceipts: [ExpenseReceipt]
+    // No query-level `sort:` (bug-352); only feeds the Set of sport names.
+    @Query private var trainings: [Training]
+    @State private var selectedSport: String?
 
     @State private var month = Calendar.current.component(.month, from: .now)
     @State private var year = Calendar.current.component(.year, from: .now)
     @State private var exportURL: URL?
     @State private var exportError: String?
 
+    // Training invoicing is per Sportart: KostZ and PRAE count only the
+    // chosen sport's trainings (same source as TrainingsfrequenzlisteView).
+    private var availableSports: [String] {
+        Array(Set(trainings.map(\.sport))).sorted()
+    }
+
+    private var sport: String? {
+        availableSports.contains(selectedSport ?? "") ? selectedSport : availableSports.first
+    }
+
     private var summary: KostZMonthSummary {
-        KostZCalculator.summary(month: month, year: year, allMemberships: allMemberships, in: modelContext)
+        KostZCalculator.summary(month: month, year: year, sport: sport, allMemberships: allMemberships, in: modelContext)
     }
 
     private var receipts: [ExpenseReceipt] {
@@ -66,11 +79,18 @@ struct KostZCalculationView: View {
                         }
                     }
                     Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
+                    if !availableSports.isEmpty {
+                        Picker("Sportart", selection: Binding(get: { sport }, set: { selectedSport = $0 })) {
+                            ForEach(availableSports, id: \.self) { sport in
+                                Text(sport).tag(Optional(sport))
+                            }
+                        }
+                    }
                 }
 
                 Section("Honorare Trainer:innen / Helfer:innen") {
                     if summary.personAmounts.isEmpty {
-                        Text("Keine Einsätze mit hinterlegtem Betrag in diesem Monat.")
+                        Text("Keine Einsätze mit hinterlegtem Betrag in diesem Monat für diese Sportart.")
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(summary.personAmounts) { entry in
@@ -128,7 +148,7 @@ struct KostZCalculationView: View {
             } message: {
                 Text(exportError ?? "")
             }
-            .task(id: "\(month)-\(year)") {
+            .task(id: "\(month)-\(year)-\(sport ?? "")") {
                 exportURL = nil
                 do {
                     exportURL = try KostZExporter.export(summary: summary)
