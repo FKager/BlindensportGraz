@@ -496,4 +496,31 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         let archive = try Archive(url: url, accessMode: .read)
         XCTAssertNotNil(archive["xl/worksheets/sheet1.xml"])
     }
+
+    // MARK: - season up to a month (Sammelabrechnung)
+
+    func testSeasonSummaryRunsFromTheSeasonStartToTheChosenMonth() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        _ = makeTraining(context, team: team, day: 30, month: 6)
+        let july = makeTraining(context, team: team, day: 7, month: 7)
+        let august = makeTraining(context, team: team, day: 4, month: 8)
+        _ = makeTraining(context, team: team, day: 1, month: 9)
+        let january = makeTraining(context, team: team, day: 7, month: 1)
+        let february = makeTraining(context, team: team, day: 3, month: 2)
+        let day = { (training: Training) in Calendar.current.startOfDay(for: training.startDate) }
+
+        let aug = TrainingsfrequenzlisteCalculator.seasonSummary(sport: "Torball", throughMonth: 8, year: 2026, in: context)
+        XCTAssertEqual(aug.trainingDates, [day(july), day(august)])
+        XCTAssertEqual(aug.halfYear, .second)
+
+        let jul = TrainingsfrequenzlisteCalculator.seasonSummary(sport: "Torball", throughMonth: 7, year: 2026, in: context)
+        XCTAssertEqual(jul.trainingDates, [day(july)])
+
+        let feb = TrainingsfrequenzlisteCalculator.seasonSummary(sport: "Torball", throughMonth: 2, year: 2026, in: context)
+        XCTAssertEqual(feb.trainingDates, [day(january), day(february)])
+        XCTAssertEqual(feb.halfYear, .first)
+    }
 }

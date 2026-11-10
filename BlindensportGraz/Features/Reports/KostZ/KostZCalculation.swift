@@ -70,7 +70,10 @@ struct KostZTournamentSummary {
 /// honoraria would be counted twice, once on its own KostZ and again on the
 /// month it falls in.
 enum KostZCalculator {
-    static func summary(month: Int, year: Int, allMemberships: [TeamMembership], in context: ModelContext) -> KostZMonthSummary {
+    /// `sport` limits the month to that Sportart's trainings (KostZ is
+    /// filed per sport); nil counts every sport.
+    static func summary(month: Int, year: Int, sport: String? = nil, allMemberships: [TeamMembership],
+                        in context: ModelContext) -> KostZMonthSummary {
         let eligible = PraeCalculator.eligiblePeople(from: allMemberships)
         var personByMembershipID: [UUID: PraeEligiblePerson] = [:]
         for person in eligible {
@@ -89,6 +92,7 @@ enum KostZCalculator {
         for attendance in allAttendances {
             guard attendance.attended, let amount = attendance.praeAmount,
                   attendance.event.kind == "training",
+                  sport == nil || attendance.event.sport == sport,
                   let person = personByMembershipID[attendance.membership.id] else { continue }
             let components = calendar.dateComponents([.month, .year], from: attendance.event.startDate)
             guard components.month == month, components.year == year else { continue }
@@ -106,6 +110,7 @@ enum KostZCalculator {
         let allTrainings = (try? context.fetch(FetchDescriptor<Training>())) ?? []
         let trainingsInMonth = allTrainings
             .filter {
+                guard sport == nil || $0.sport == sport else { return false }
                 let components = calendar.dateComponents([.month, .year], from: $0.startDate)
                 return components.month == month && components.year == year
             }

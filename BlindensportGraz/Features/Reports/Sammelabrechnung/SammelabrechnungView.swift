@@ -12,8 +12,11 @@ import SwiftData
 /// Darstellung) toggle per eligible helper — all pre-selected by default —
 /// mirror SammelabrechnungTournamentView's identical "Enthaltene Teile"/
 /// per-helper PRAE selection; there's no TeilnehmerInnenliste toggle here
-/// since that's tournament-only paperwork (Trainings file the
-/// Trainingsfrequenzliste separately instead, not part of this bundle).
+/// since that's tournament-only paperwork. Trainings are invoiced per
+/// Sportart: KostZ and PRAE count only the chosen sport's trainings, and the
+/// bundle adds that sport's Trainingsfrequenzliste from the season's start
+/// (Jänner or Juli) to the end of the chosen month — August covers Juli and
+/// August.
 struct SammelabrechnungView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -25,10 +28,14 @@ struct SammelabrechnungView: View {
     // (KostZCalculationView.swift) for why it compiles but crashes
     // at runtime against `MembershipRole`, a custom `@Model`-stored enum.
     @Query private var allMemberships: [TeamMembership]
+    // No query-level `sort:` (bug-352); only feeds the Set of sport names.
+    @Query private var trainings: [Training]
+    @State private var selectedSport: String?
 
     @State private var month = Calendar.current.component(.month, from: .now)
     @State private var year = Calendar.current.component(.year, from: .now)
     @State private var includeKostZ = true
+    @State private var includeTrainingsfrequenzliste = true
     // Which PraeEligiblePerson.id's PRAE (Formular + Darstellung) to
     // include — seeded to "everyone" the first time personAmounts is known
     // for a given month/year (see .onChange/.onAppear below), same pattern
@@ -38,8 +45,38 @@ struct SammelabrechnungView: View {
     @State private var exportURL: URL?
     @State private var exportError: String?
 
+    // Training invoicing is per Sportart: KostZ and PRAE count only the
+    // chosen sport's trainings (same source as TrainingsfrequenzlisteView).
+    private var availableSports: [String] {
+        Array(Set(trainings.map(\.sport))).sorted()
+    }
+
+    private var sport: String? {
+        availableSports.contains(selectedSport ?? "") ? selectedSport : availableSports.first
+    }
+
     private var kostZSummary: KostZMonthSummary {
-        KostZCalculator.summary(month: month, year: year, allMemberships: allMemberships, in: modelContext)
+        KostZCalculator.summary(month: month, year: year, sport: sport, allMemberships: allMemberships, in: modelContext)
+    }
+
+    /// The sport's list from the season's start to this month's end; nil
+    /// without a sport or without training days in that range.
+    private var frequenzSummary: TrainingsfrequenzlisteSummary? {
+        guard let sport else { return nil }
+        let summary = TrainingsfrequenzlisteCalculator.seasonSummary(sport: sport, throughMonth: month, year: year,
+                                                                     in: modelContext)
+        return summary.trainingDates.isEmpty ? nil : summary
+    }
+
+    private var includedFrequenzSummary: TrainingsfrequenzlisteSummary? {
+        includeTrainingsfrequenzliste ? frequenzSummary : nil
+    }
+
+    /// "Juli bis August 2026", or "Juli 2026" in a season's first month.
+    private var seasonLabel: String {
+        let first = month <= 6 ? 1 : 7
+        let to = "\(monthName(month)) \(String(year))"
+        return first == month ? to : "\(monthName(first)) bis \(to)"
     }
 
     // Only the helpers selected in the per-helper PRAE list, each mapped to
@@ -48,11 +85,11 @@ struct SammelabrechnungView: View {
     private var praeSummaries: [PraeMonthSummary] {
         kostZSummary.personAmounts
             .filter { selectedPraePersonIDs.contains($0.person.id) }
-            .flatMap { PraeCalculator.summaries(for: $0.person, month: month, year: year, in: modelContext) }
+            .flatMap { PraeCalculator.summaries(for: $0.person, month: month, year: year, sport: sport, in: modelContext) }
     }
 
     private var hasSelectedParts: Bool {
-        includeKostZ || !praeSummaries.isEmpty
+        includeKostZ || !praeSummaries.isEmpty || includedFrequenzSummary != nil
     }
 
     private func praeBinding(for personID: UUID) -> Binding<Bool> {
@@ -69,7 +106,7 @@ struct SammelabrechnungView: View {
     // so the id is stable regardless of Set iteration order.
     private var exportTaskID: String {
         let praeIDs = selectedPraePersonIDs.map(\.uuidString).sorted().joined(separator: ",")
-        return "\(month)-\(year)-\(includeKostZ)-\(praeIDs)"
+        return "\(month)-\(year)-\(sport ?? "")-\(includeKostZ)-\(includeTrainingsfrequenzliste)-\(praeIDs)"
     }
 
     var body: some View {
@@ -82,15 +119,30 @@ struct SammelabrechnungView: View {
                         }
                     }
                     Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
+                    if !availableSports.isEmpty {
+                        Picker("Sportart", selection: Binding(get: { sport }, set: { selectedSport = $0 })) {
+                            ForEach(availableSports, id: \.self) { sport in
+                                Text(sport).tag(Optional(sport))
+                            }
+                        }
+                    }
                 }
 
                 Section("Enthaltene Teile") {
                     Toggle("KostZ-Formular", isOn: $includeKostZ)
+                    if let frequenzSummary {
+                        Toggle("Trainingsfrequenzliste (\(seasonLabel))", isOn: $includeTrainingsfrequenzliste)
+                        if frequenzSummary.trainingDates.count >= TrainingsfrequenzlisteCalculator.maxDateColumns {
+                            Text("Das Formular hat nur \(TrainingsfrequenzlisteCalculator.maxDateColumns) Spalten für Trainingstage; weitere bitte von Hand nachtragen.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
 
                 Section("PRAE (Formular + Darstellung)") {
                     if kostZSummary.personAmounts.isEmpty {
-                        Text("Keine Trainer:innen/Helfer:innen mit hinterlegtem PRAE-Betrag in diesem Monat.")
+                        Text("Keine Trainer:innen/Helfer:innen mit hinterlegtem PRAE-Betrag in diesem Monat für diese Sportart.")
                             .foregroundStyle(.secondary)
                     } else {
                         ForEach(kostZSummary.personAmounts) { entry in
@@ -100,7 +152,7 @@ struct SammelabrechnungView: View {
                 }
 
                 Section("Export und Druck") {
-                    Text("Bündelt die ausgewählten Teile — KostZ-Formular sowie PRAE-Formular und Darstellung der ausgewählten Trainer:innen/Helfer:innen — als ZIP-Datei oder druckt sie in einem Auftrag.")
+                    Text("Bündelt die ausgewählten Teile — KostZ-Formular, PRAE-Formular und Darstellung der ausgewählten Trainer:innen/Helfer:innen sowie die Trainingsfrequenzliste der Sportart — als ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     if !hasSelectedParts {
@@ -118,7 +170,8 @@ struct SammelabrechnungView: View {
                         ReportPrintButton(title: "Ausgewählte Teile drucken",
                                           jobName: "Sammelabrechnung \(monthName(month)) \(String(year))") {
                             try SammelabrechnungExporter.files(
-                                kostZ: includeKostZ ? kostZSummary : nil, praeSummaries: praeSummaries
+                                kostZ: includeKostZ ? kostZSummary : nil, praeSummaries: praeSummaries,
+                                trainingsfrequenzliste: includedFrequenzSummary
                             ).map(\.url)
                         }
                     }
@@ -137,13 +190,14 @@ struct SammelabrechnungView: View {
                 Text(exportError ?? "")
             }
             .onAppear { seedPraeSelectionIfNeeded() }
-            .onChange(of: "\(month)-\(year)") { seedPraeSelectionIfNeeded() }
+            .onChange(of: "\(month)-\(year)-\(sport ?? "")") { seedPraeSelectionIfNeeded() }
             .task(id: exportTaskID) {
                 exportURL = nil
                 guard hasSelectedParts else { return }
                 do {
                     exportURL = try SammelabrechnungExporter.export(
-                        kostZ: includeKostZ ? kostZSummary : nil, praeSummaries: praeSummaries)
+                        kostZ: includeKostZ ? kostZSummary : nil, praeSummaries: praeSummaries,
+                        trainingsfrequenzliste: includedFrequenzSummary)
                 } catch {
                     exportError = error.localizedDescription
                 }
@@ -159,7 +213,7 @@ struct SammelabrechnungView: View {
     // synchronously before the .task above, so the very first export for a
     // given period already reflects "all pre-selected".
     private func seedPraeSelectionIfNeeded() {
-        let key = "\(month)-\(year)"
+        let key = "\(month)-\(year)-\(sport ?? "")"
         guard seededPraeSelectionKey != key else { return }
         selectedPraePersonIDs = Set(kostZSummary.personAmounts.map(\.person.id))
         seededPraeSelectionKey = key

@@ -444,4 +444,56 @@ final class KostZCalculationTests: XCTestCase {
         XCTAssertTrue(sheetXML.contains("<c r=\"I15\""))
         XCTAssertFalse(sheetXML.contains("<c r=\"I15\"") && sheetXML.range(of: "<c r=\"I15\"[^>]*><v>", options: .regularExpression) != nil)
     }
+
+    // MARK: - per Sportart
+
+    func testSummaryAndPraeCountOnlyTheChosenSport() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        let torball = makeTraining(context, title: "Torball", day: 5, sport: "Torball")
+        let fussball = makeTraining(context, title: "Fußball", day: 6, sport: "Fußball")
+        context.insert(Attendance(event: torball, membership: membership, attended: true, praeAmount: 40))
+        context.insert(Attendance(event: fussball, membership: membership, attended: true, praeAmount: 30))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let torballSummary = KostZCalculator.summary(month: 7, year: 2026, sport: "Torball",
+                                                     allMemberships: allMemberships, in: context)
+        XCTAssertEqual(torballSummary.total, 40)
+        XCTAssertEqual(torballSummary.trainingDates.count, 1)
+        XCTAssertEqual(torballSummary.trainingName, "Torball")
+        XCTAssertEqual(KostZCalculator.summary(month: 7, year: 2026, allMemberships: allMemberships, in: context).total, 70,
+                       "without a sport every sport counts")
+
+        let person = try XCTUnwrap(torballSummary.personAmounts.first?.person)
+        let prae = PraeCalculator.summaries(for: person, month: 7, year: 2026, sport: "Torball", in: context)
+        XCTAssertEqual(prae.map(\.trainingName), ["Torball"])
+        XCTAssertEqual(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).count, 2)
+    }
+
+    func testMonthBundleEndsWithTheTrainingsfrequenzliste() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+        let training = makeTraining(context, title: "Torball", day: 5)
+        training.teams = [team]
+        context.insert(Attendance(event: training, membership: membership, attended: true, praeAmount: 40))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let kostZ = KostZCalculator.summary(month: 7, year: 2026, sport: "Torball", allMemberships: allMemberships, in: context)
+        let frequenz = TrainingsfrequenzlisteCalculator.seasonSummary(sport: "Torball", throughMonth: 7, year: 2026, in: context)
+        let files = try SammelabrechnungExporter.files(kostZ: kostZ, praeSummaries: [], trainingsfrequenzliste: frequenz)
+        XCTAssertEqual(files.map(\.name), ["KostZ.xlsx", "Trainingsfrequenzliste.xlsx"])
+    }
 }

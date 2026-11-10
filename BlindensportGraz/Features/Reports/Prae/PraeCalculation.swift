@@ -176,7 +176,10 @@ enum PraeCalculator {
     /// and two sessions on the same day are summed, as the form only allows
     /// one amount per calendar day. Ordered by each training's first session,
     /// then name. A training whose amounts are all zero gets no form.
-    static func summaries(for person: PraeEligiblePerson, month: Int, year: Int, in context: ModelContext) -> [PraeMonthSummary] {
+    /// `sport` limits the forms to that Sportart's trainings, as the month's
+    /// KostZ does; nil covers every sport.
+    static func summaries(for person: PraeEligiblePerson, month: Int, year: Int, sport: String? = nil,
+                          in context: ModelContext) -> [PraeMonthSummary] {
         let membershipIDs = Set(person.membershipIDs)
         let calendar = Calendar.current
         // Fetches everything and filters in plain Swift rather than a
@@ -186,7 +189,8 @@ enum PraeCalculator {
         // small enough (one club) that a client-side filter costs nothing.
         // Sorted because a fetch has no order of its own.
         let attendances = ((try? context.fetch(FetchDescriptor<Attendance>())) ?? [])
-            .filter { $0.attended && $0.event.kind == "training" && membershipIDs.contains($0.membership.id) }
+            .filter { $0.attended && $0.event.kind == "training" && membershipIDs.contains($0.membership.id)
+                && (sport == nil || $0.event.sport == sport) }
             .sorted { ($0.event.startDate, $0.event.title) < ($1.event.startDate, $1.event.title) }
 
         var titles: [String] = []

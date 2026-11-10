@@ -51,12 +51,18 @@ enum SammelabrechnungExporter {
     /// nil` when SammelabrechnungView's KostZ toggle is off, `praeSummaries`
     /// already filtered to only the helpers selected in its per-helper PRAE
     /// list.
-    static func export(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary]) throws -> URL {
-        try zipFiles(files(kostZ: kostZ, praeSummaries: praeSummaries), namePrefix: "Sammelabrechnung")
+    /// `trainingsfrequenzliste` (the month's sport, from the season's start
+    /// to the month's end — see TrainingsfrequenzlisteCalculator.seasonSummary)
+    /// comes last; nil or without training dates leaves it out.
+    static func export(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary],
+                       trainingsfrequenzliste: TrainingsfrequenzlisteSummary? = nil) throws -> URL {
+        try zipFiles(files(kostZ: kostZ, praeSummaries: praeSummaries, trainingsfrequenzliste: trainingsfrequenzliste),
+                     namePrefix: "Sammelabrechnung")
     }
 
     /// The month bundle's files, unzipped (zip or print them).
-    static func files(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary]) throws -> [ReportFile] {
+    static func files(kostZ: KostZMonthSummary?, praeSummaries: [PraeMonthSummary],
+                      trainingsfrequenzliste: TrainingsfrequenzlisteSummary? = nil) throws -> [ReportFile] {
         var files: [ReportFile] = []
         if let kostZ {
             files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
@@ -66,6 +72,9 @@ enum SammelabrechnungExporter {
             if !summary.entries.isEmpty {
                 files.append((fileName(for: summary.person, suffix: "PRAE-Darstellung", detail: summary.trainingName), try PraeExporter.exportDarstellung(summary: summary)))
             }
+        }
+        if let trainingsfrequenzliste, !trainingsfrequenzliste.trainingDates.isEmpty {
+            files.append(("Trainingsfrequenzliste.xlsx", try TrainingsfrequenzlisteExporter.export(summary: trainingsfrequenzliste)))
         }
         return files
     }
@@ -121,7 +130,7 @@ enum SammelabrechnungExporter {
     }
 
     /// Full-season rollup (audit.md Enhancement #8) — every calendar month's
-    /// and every tournament's KostZ+PRAE bundle, plus every training sport's
+    /// KostZ+PRAE bundle per training sport, every tournament's KostZ+PRAE bundle, plus every training sport's
     /// two Trainingsfrequenzliste half-years, all for one year, flattened
     /// into a single zip with period-prefixed file names so nothing
     /// collides. Pure orchestration over the existing per-period
@@ -144,18 +153,25 @@ enum SammelabrechnungExporter {
                             sports: [String], in context: ModelContext) throws -> [ReportFile] {
         var files: [ReportFile] = []
 
+        // Trainings are invoiced per month AND Sportart, like the month's
+        // Sammelabrechnung: one KostZ + PRAE set per sport and month,
+        // "Torball_03-2026_…". `sports` must hold every training sport, or
+        // that sport's honoraria are left out.
         for month in 1...12 {
-            let kostZSummary = KostZCalculator.summary(month: month, year: year, allMemberships: allMemberships, in: context)
-            guard !kostZSummary.personAmounts.isEmpty else { continue }
-            let label = String(format: "%02d-%d", month, year)
-            files.append(("\(label)_KostZ.xlsx", try KostZExporter.export(summary: kostZSummary)))
-            let praeSummaries = kostZSummary.personAmounts.flatMap {
-                PraeCalculator.summaries(for: $0.person, month: month, year: year, in: context)
-            }
-            for praeSummary in praeSummaries {
-                files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE", detail: praeSummary.trainingName))", try PraeExporter.exportMainForm(summary: praeSummary)))
-                if !praeSummary.entries.isEmpty {
-                    files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE-Darstellung", detail: praeSummary.trainingName))", try PraeExporter.exportDarstellung(summary: praeSummary)))
+            for sport in sports {
+                let kostZSummary = KostZCalculator.summary(month: month, year: year, sport: sport,
+                                                           allMemberships: allMemberships, in: context)
+                guard !kostZSummary.personAmounts.isEmpty else { continue }
+                let label = "\(sanitize(sport))_" + String(format: "%02d-%d", month, year)
+                files.append(("\(label)_KostZ.xlsx", try KostZExporter.export(summary: kostZSummary)))
+                let praeSummaries = kostZSummary.personAmounts.flatMap {
+                    PraeCalculator.summaries(for: $0.person, month: month, year: year, sport: sport, in: context)
+                }
+                for praeSummary in praeSummaries {
+                    files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE", detail: praeSummary.trainingName))", try PraeExporter.exportMainForm(summary: praeSummary)))
+                    if !praeSummary.entries.isEmpty {
+                        files.append(("\(label)_\(fileName(for: praeSummary.person, suffix: "PRAE-Darstellung", detail: praeSummary.trainingName))", try PraeExporter.exportDarstellung(summary: praeSummary)))
+                    }
                 }
             }
         }
