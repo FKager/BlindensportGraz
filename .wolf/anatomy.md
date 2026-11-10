@@ -630,3 +630,7 @@
 - `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)
 - `ReportsViewTest.java` — The Abrechnung page, driven server-side (Karibu) against the mocked Supabase of {@link ReportsFixtur (~1595 tok)
 - `TrainingsfrequenzlisteViewTest.java` — Trainingsfrequenzliste page via Karibu against ReportsFixture (~900 tok)
+
+## supabase/ (2026-11-10 additions)
+- `migrations/20261110000001_attendance_one_row_per_person.sql` — dedupes attendances, BEFORE INSERT merge trigger, unique (event_id, membership_id) (~400 tok)
+- `tests/attendance_unique_test.sql` — pgTAP: second insert merges into the existing row, upsert by id still updates, unique key exists (~600 tok)

@@ -10215,6 +10215,25 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-10T19:47:15"
+    },
+    {
+      "id": "bug-607",
+      "timestamp": "2026-11-10T21:15:34",
+      "error_message": "User: KostZ/PRAE for Torball October should sum to 60, shows 100",
+      "file": "supabase/migrations/20261110000001_attendance_one_row_per_person.sql",
+      "root_cause": "Prod had duplicate attendances rows (same event_id + membership_id, different id): one from the 2026-10-14 bulk import, one uploaded by a device's CloudKit handover on 2026-10-17. No unique constraint; clients upsert by id. Two coaches counted 2x20.",
+      "fix": "Deleted the 4 older duplicates in prod (local backup taken). Migration: dedupe, BEFORE INSERT trigger merges an insert for an existing pair into that row, unique (event_id, membership_id).",
+      "tags": [
+        "supabase",
+        "attendances",
+        "duplicates",
+        "prae",
+        "kostz",
+        "prod-data"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-10T21:15:34"
     }
   ]
 }

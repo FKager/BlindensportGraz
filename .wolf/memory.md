@@ -4247,3 +4247,5 @@
 | 18:20 | Merged PR #42; resolved .wolf conflicts on #43; Simulator report tests 48/48 on merged code; fixed saved destination (needs OS=26.5) | .wolf/* | pass | ~5k |
 | 18:35 | Deployed app-abrechnung-sportart to iPhone (run 42862334126 success); merged PR #43 (CI iOS build still pending at merge, user asked to merge) | - | done | ~2k |
 | 19:47 | Reports skip cancelled (Abgesagt) trainings in KostZ/PRAE/Trainingsfrequenzliste, app + web; fixed stale PRAE print-copy test | reports + tests | web 149/149, app 93/93 (Simulator) | ~15k |
+| 20:05 | Merged PR #44, nuc at aecc1bb, TestFlight v0.12.1 = build 337 (Internal, notes) | - | done | ~3k |
+| 21:15 | Prod: deleted 4 duplicate attendances (Torball 7 Oct, KostZ 100→60); migration unique (event,membership) + merge trigger; pgTAP 213/213 local | supabase/migrations, tests | pass | ~20k |
