@@ -89,9 +89,12 @@ class ReportsViewTest {
                 paragraphs.toString());
         assertTrue(paragraphs.stream().anyMatch(p -> p.startsWith("Gesamt: ") && p.endsWith("45,00 · 1 Person")),
                 paragraphs.toString());
+        assertEquals("Torball", find(view, Select.class, "Sportart").getValue());
         assertEquals(List.of("KostZ-Formular herunterladen",
+                        "Trainingsfrequenzliste herunterladen (Jänner bis März 2026)",
                         "Alle PRAE-Formulare mit Darstellung herunterladen (ZIP, 1 Formular)",
                         "Sammelabrechnung herunterladen (ZIP)"), texts(view, Anchor.class));
+        assertTrue(find(view, Checkbox.class, "Trainingsfrequenzliste").getValue());
         Grid<?> grid = all(view).filter(Grid.class::isInstance).map(Grid.class::cast).findFirst().orElseThrow();
         assertEquals(1, grid.getGenericDataView().getItems().count());
         assertEquals(4, grid.getColumns().size(), "Name, Betrag, Hinweise and the PRAE link per person");

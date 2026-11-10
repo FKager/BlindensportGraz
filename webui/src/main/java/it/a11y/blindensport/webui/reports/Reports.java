@@ -31,9 +31,11 @@ public final class Reports {
      *                   {@link PraeForm.Person#id()}; null for everyone
      * @param sportler   tournaments only: TeilnehmerInnenliste of the players
      * @param helfer     tournaments only: TeilnehmerInnenliste of the coaches and assistants
+     * @param trainingsfrequenzliste months of one sport only: its Trainingsfrequenzliste from the season's start
      */
-    public record Selection(boolean kostZ, Set<String> praePeople, boolean sportler, boolean helfer) {
-        public static final Selection ALL = new Selection(true, null, true, true);
+    public record Selection(boolean kostZ, Set<String> praePeople, boolean sportler, boolean helfer,
+                            boolean trainingsfrequenzliste) {
+        public static final Selection ALL = new Selection(true, null, true, true, true);
 
         boolean includes(PraeForm form) {
             return praePeople == null || praePeople.contains(form.person().id());
@@ -41,15 +43,27 @@ public final class Reports {
 
         public boolean isEmpty(boolean tournament) {
             boolean noPrae = praePeople != null && praePeople.isEmpty();
-            return !kostZ && noPrae && (!tournament || (!sportler && !helfer));
+            return !kostZ && noPrae && (tournament ? !sportler && !helfer : !trainingsfrequenzliste);
         }
     }
 
-    /** Every training of one calendar month. */
-    public record Month(int month, int year, KostZ kostZ, List<PraeForm> prae) {
-        /** "11-2026", as the app names a season's month files. */
+    /**
+     * The trainings of one calendar month: of one sport, or of every sport when
+     * {@code sport} is null.
+     *
+     * @param trainingsfrequenzliste the sport's list from the season's start to this month's end; null without a sport
+     */
+    public record Month(int month, int year, String sport, KostZ kostZ, List<PraeForm> prae,
+                        Trainingsfrequenzliste trainingsfrequenzliste) {
+        /** Every sport, without a Trainingsfrequenzliste. */
+        public Month(int month, int year, KostZ kostZ, List<PraeForm> prae) {
+            this(month, year, null, kostZ, prae, null);
+        }
+
+        /** "11-2026", as the app names a season's month files; "Torball_11-2026" for one sport. */
         public String label() {
-            return String.format("%02d-%d", month, year);
+            String period = String.format("%02d-%d", month, year);
+            return sport == null ? period : fileSafe(sport) + "_" + period;
         }
 
         /** "November 2026". */
@@ -57,14 +71,24 @@ public final class Reports {
             return DateTimeFormatter.ofPattern("LLLL uuuu", AUSTRIA).format(LocalDate.of(year, month, 1));
         }
 
-        /** KostZ, then each chosen person's PRAE and Darstellung per training. */
+        /**
+         * KostZ, then each chosen person's PRAE and Darstellung per training,
+         * then the sport's Trainingsfrequenzliste (if it has training days).
+         */
         public LinkedHashMap<String, byte[]> sammelabrechnung(Selection selection) {
             LinkedHashMap<String, byte[]> files = new LinkedHashMap<>();
             if (selection.kostZ()) {
                 files.put("KostZ.xlsx", kostZ.xlsx());
             }
             praeFiles(prae, selection).forEach((name, data) -> XlsxPatch.addUnique(files, name, data));
+            if (selection.trainingsfrequenzliste() && hasTrainingsfrequenzliste()) {
+                XlsxPatch.addUnique(files, "Trainingsfrequenzliste.xlsx", trainingsfrequenzliste.xlsx());
+            }
             return files;
+        }
+
+        public boolean hasTrainingsfrequenzliste() {
+            return trainingsfrequenzliste != null && !trainingsfrequenzliste.dates().isEmpty();
         }
     }
 

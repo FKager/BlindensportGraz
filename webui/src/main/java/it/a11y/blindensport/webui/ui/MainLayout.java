@@ -32,6 +32,7 @@ public class MainLayout extends AppLayout implements RouterLayout, AfterNavigati
             new NavEntry("Übersicht", StartView.class),
             new NavEntry("Termine", EventsView.class),
             new NavEntry("Abrechnung", ReportsView.class),
+            new NavEntry("Trainingsfrequenzliste", TrainingsfrequenzlisteView.class),
             new NavEntry("Teams", TeamsView.class),
             new NavEntry("Trainings-Favoriten", FavoritesView.class),
             new NavEntry("Mitglieder", MembersView.class),

@@ -50,6 +50,38 @@ public final class XlsxPatch {
         return xml.substring(0, cell.start()) + updated + xml.substring(cell.end());
     }
 
+    /**
+     * Replaces a cell that may already hold a value (a template that is a
+     * filled-in example, like the Trainingsfrequenzliste); keeps only its
+     * style. Empty text leaves the cell blank (XLSXCellPatch.setInlineText).
+     */
+    public static String overwriteText(String xml, String ref, String value) {
+        return overwriteCell(xml, ref, style -> value.isEmpty() ? "<c r=\"" + ref + "\"" + style + "/>"
+                : "<c r=\"" + ref + "\"" + style + " t=\"inlineStr\"><is><t>" + escape(value) + "</t></is></c>");
+    }
+
+    /** {@link #overwriteText} for a number (XLSXCellPatch.setCellNumber). */
+    public static String overwriteNumber(String xml, String ref, double value) {
+        return overwriteCell(xml, ref, style -> "<c r=\"" + ref + "\"" + style + "><v>" + value + "</v></c>");
+    }
+
+    /** Empties a cell, keeping its style (XLSXCellPatch.clearCell). */
+    public static String clearCell(String xml, String ref) {
+        return overwriteCell(xml, ref, style -> "<c r=\"" + ref + "\"" + style + "/>");
+    }
+
+    private static final Pattern STYLE = Pattern.compile("s=\"\\d+\"");
+
+    private static String overwriteCell(String xml, String ref, UnaryOperator<String> build) {
+        Matcher cell = Pattern.compile("<c r=\"" + ref + "\"([^>]*?)(?:/>|>.*?</c>)", Pattern.DOTALL).matcher(xml);
+        if (!cell.find()) {
+            return xml;
+        }
+        Matcher style = STYLE.matcher(cell.group(1));
+        String styleAttr = style.find() ? " " + style.group() : "";
+        return xml.substring(0, cell.start()) + build.apply(styleAttr) + xml.substring(cell.end());
+    }
+
     public static String escape(String value) {
         return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
