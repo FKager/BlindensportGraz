@@ -4250,3 +4250,4 @@
 | 20:05 | Merged PR #44, nuc at aecc1bb, TestFlight v0.12.1 = build 337 (Internal, notes) | - | done | ~3k |
 | 21:15 | Prod: deleted 4 duplicate attendances (Torball 7 Oct, KostZ 100→60); migration unique (event,membership) + merge trigger; pgTAP 213/213 local | supabase/migrations, tests | pass | ~20k |
 | 21:22 | PR #45 merged; user ran prod db-push; verified unique key + trigger on prod, Torball Oct = 60 | - | done | ~2k |
+| 21:32 | Mirrored prod club data to staging (18 tables identical by md5, member_private emptied, staging logins kept, invitation file copied); backups in ~/Backups/blindensport-staging-sync-2026-11-10 | staging DB | done | ~25k |
