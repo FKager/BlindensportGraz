@@ -33,9 +33,9 @@ final class SammelabrechnungSeasonExportTests: XCTestCase {
     /// One month with a PRAE-amounted attendance, one tournament with a
     /// PRAE-amounted attendance, both in 2026 -> the season zip should
     /// contain that month's + that tournament's KostZ/PRAE files, correctly
-    /// prefixed and non-colliding, each individually a valid .xlsx. No
-    /// training sport has any dates in this fixture, so no Trainingsfrequenzliste
-    /// entries are expected.
+    /// prefixed and non-colliding, each individually a valid .xlsx. Months
+    /// are filed per sport, so the sport heads the month's names, and the
+    /// sport's first half year brings its Trainingsfrequenzliste.
     func testExportSeasonBundlesEveryMonthAndTournamentWithData() throws {
         let container = try makeContainer()
         let context = ModelContext(container)
@@ -61,7 +61,7 @@ final class SammelabrechnungSeasonExportTests: XCTestCase {
         let tournaments = try context.fetch(FetchDescriptor<Tournament>())
 
         let url = try SammelabrechnungExporter.exportSeason(
-            year: 2026, allMemberships: allMemberships, tournaments: tournaments, sports: [], in: context)
+            year: 2026, allMemberships: allMemberships, tournaments: tournaments, sports: ["Torball"], in: context)
         defer { try? FileManager.default.removeItem(at: url) }
 
         let archive = try Archive(url: url, accessMode: .read)
@@ -78,9 +78,10 @@ final class SammelabrechnungSeasonExportTests: XCTestCase {
         }
 
         XCTAssertEqual(Set(entryNames), Set([
-            "03-2026_KostZ.xlsx",
-            "03-2026_PRAE_Trainer_Anna_Training 5.3..xlsx",
-            "03-2026_PRAE-Darstellung_Trainer_Anna_Training 5.3..xlsx",
+            "Torball_03-2026_KostZ.xlsx",
+            "Torball_03-2026_PRAE_Trainer_Anna_Training 5.3..xlsx",
+            "Torball_03-2026_PRAE-Darstellung_Trainer_Anna_Training 5.3..xlsx",
+            "Torball_H1-2026_Trainingsfrequenzliste.xlsx",
             "Turnier_Landesmeisterschaft_KostZ.xlsx",
             "Turnier_Landesmeisterschaft_PRAE_Trainer_Anna.xlsx",
             "Turnier_Landesmeisterschaft_PRAE-Darstellung_Trainer_Anna.xlsx",
@@ -88,7 +89,7 @@ final class SammelabrechnungSeasonExportTests: XCTestCase {
         // No other month produced files (no eligible people) — confirms
         // months with zero data are skipped, not padded in with empty
         // KostZ sheets.
-        XCTAssertFalse(entryNames.contains { $0.hasPrefix("01-2026") || $0.hasPrefix("07-2026") })
+        XCTAssertFalse(entryNames.contains { $0.contains("01-2026") || $0.contains("07-2026") })
     }
 
     /// A season with literally zero periods/data -> a valid, readable,
@@ -124,5 +125,37 @@ final class SammelabrechnungSeasonExportTests: XCTestCase {
         var entryNames: [String] = []
         for entry in archive { entryNames.append(entry.path) }
         XCTAssertEqual(entryNames, ["Torball_H1-2026_Trainingsfrequenzliste.xlsx"])
+    }
+
+    /// Two sports trained in one month -> a KostZ + PRAE set per sport, each
+    /// counting only its own sport's honoraria.
+    func testExportSeasonSplitsAMonthBySport() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let torball = Team(name: "Torball 1", sport: "Torball")
+        let fussball = Team(name: "Blindenfußball", sport: "Fußball")
+        context.insert(torball)
+        context.insert(fussball)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let torballMembership = TeamMembership(member: coach, team: torball, role: .coach)
+        let fussballMembership = TeamMembership(member: coach, team: fussball, role: .coach)
+        context.insert(torballMembership)
+        context.insert(fussballMembership)
+        let t1 = makeTraining(context, team: torball, day: 5, month: 3)
+        let t2 = makeTraining(context, team: fussball, day: 6, month: 3)
+        context.insert(Attendance(event: t1, membership: torballMembership, attended: true, praeAmount: 30))
+        context.insert(Attendance(event: t2, membership: fussballMembership, attended: true, praeAmount: 20))
+
+        let allMemberships = try context.fetch(FetchDescriptor<TeamMembership>())
+        let files = try SammelabrechnungExporter.seasonFiles(
+            year: 2026, allMemberships: allMemberships, tournaments: [], sports: ["Fußball", "Torball"], in: context)
+        let names = files.map(\.name)
+
+        XCTAssertEqual(names.filter { $0.hasSuffix("_KostZ.xlsx") },
+                       ["Fußball_03-2026_KostZ.xlsx", "Torball_03-2026_KostZ.xlsx"])
+        XCTAssertTrue(names.contains("Fußball_03-2026_PRAE_Trainer_Anna_Training 6.3..xlsx"))
+        XCTAssertTrue(names.contains("Torball_03-2026_PRAE_Trainer_Anna_Training 5.3..xlsx"))
+        XCTAssertFalse(names.contains("Torball_03-2026_PRAE_Trainer_Anna_Training 6.3..xlsx"))
     }
 }

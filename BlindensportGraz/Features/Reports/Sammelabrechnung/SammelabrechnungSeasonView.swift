@@ -2,8 +2,8 @@ import SwiftUI
 import SwiftData
 
 /// Admin-only screen (see TrainingsListView's "Berichte" toolbar menu) that
-/// bundles a WHOLE calendar year's paperwork — every month's and every
-/// tournament's Sammelabrechnung, plus every training sport's two
+/// bundles a WHOLE calendar year's paperwork — every month's (per training
+/// sport) and every tournament's Sammelabrechnung, plus every training sport's two
 /// Trainingsfrequenzliste half-years — into one .zip (audit.md Enhancement
 /// #8, `SammelabrechnungExporter.exportSeason`'s doc comment). Same
 /// eager-export-via-`.task`-then-`ShareLink` pattern as every other export
@@ -39,7 +39,7 @@ struct SammelabrechnungSeasonView: View {
                 }
 
                 Section("Export und Druck") {
-                    Text("Bündelt alle Monats- und Turnier-Sammelabrechnungen sowie alle Trainingsfrequenzlisten dieses Jahres als eine ZIP-Datei oder druckt sie in einem Auftrag.")
+                    Text("Bündelt alle Monats-Sammelabrechnungen je Sportart, alle Turnier-Sammelabrechnungen sowie alle Trainingsfrequenzlisten dieses Jahres als eine ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     if let exportURL {
