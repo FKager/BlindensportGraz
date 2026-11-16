@@ -10234,6 +10234,40 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-10T21:15:34"
+    },
+    {
+      "id": "bug-608",
+      "timestamp": "2026-11-16T17:22:00+01:00",
+      "error_message": "Trainingsfrequenzliste: in the same columns the background color is different (some date columns gray)",
+      "file": "BlindensportGraz/Resources/Trainingsfrequenzliste_Vorlage.xlsx, webui/src/main/resources/reports/Trainingsfrequenzliste_Vorlage.xlsx",
+      "root_cause": "Template is the club's filled 2026 file; it had gray fill (style 27) in 10 date columns without data plus other per-cell style leftovers. Exporters keep each cell's s= so every export inherited them regardless of dates.",
+      "fix": "Set every attendance cell D8:AB31 in both template copies to style 23 (white, bordered, centered); added style assertions to Swift and Java tests.",
+      "tags": [
+        "trainingsfrequenzliste",
+        "xlsx",
+        "template",
+        "style",
+        "fill"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-16T17:22:00+01:00"
+    },
+    {
+      "id": "bug-609",
+      "timestamp": "2026-11-16T16:24:24.326Z",
+      "error_message": "Wrong reference: checkedBoxes should be signatureDate",
+      "file": "BlindensportGraz/Features/Reports/Prae/PraeExport.swift",
+      "root_cause": "Used \"checkedBoxes\" instead of \"signatureDate\"",
+      "fix": "Changed checkedBoxes → signatureDate",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-16T16:24:24.326Z"
     }
   ]
 }

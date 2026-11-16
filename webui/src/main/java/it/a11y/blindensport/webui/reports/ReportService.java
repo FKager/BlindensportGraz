@@ -70,7 +70,7 @@ public final class ReportService {
         List<Person> people = PraeCalculator.eligiblePeople(memberships, members::get, accounts);
         List<PraeForm> prae = new ArrayList<>();
         for (Person person : people) {
-            prae.addAll(PraeCalculator.monthForms(person, month, year, trainings, attendances));
+            prae.addAll(PraeCalculator.monthForms(person, month, year, trainings, attendances, events));
         }
         Trainingsfrequenzliste frequenz = sport == null ? null
                 : Trainingsfrequenzliste.seasonUpTo(sport, month, year, season, attendances, club.teams(),
@@ -85,13 +85,14 @@ public final class ReportService {
                 .filter(e -> "tournament".equals(e.kind()))
                 .orElseThrow(() -> new IllegalArgumentException("Turnier nicht gefunden."));
         List<Attendance> attendances = club.attendances(event.id());
+        List<ClubEvent> events = club.events();
         List<Membership> memberships = club.memberships();
         Map<String, MemberRecord> members = members(withPrivate);
         Map<String, AccountName> accounts = club.accounts();
         List<Person> people = PraeCalculator.eligiblePeople(memberships, members::get, accounts);
         List<PraeForm> prae = new ArrayList<>();
         for (Person person : people) {
-            prae.addAll(PraeCalculator.tournamentForms(person, event, attendances));
+            prae.addAll(PraeCalculator.tournamentForms(person, event, attendances, events));
         }
         return new Reports.Tournament(event, KostZ.tournament(event, people, attendances), prae,
                 Teilnehmerliste.forTournament(event, attendances, memberships, members, accounts));

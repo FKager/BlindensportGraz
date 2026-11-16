@@ -4258,3 +4258,20 @@
 | 22:21 | User confirmed on device: cancelled training is left out of the list (Trainingsfrequenzliste) | - | confirmed | ~1k |
 | 22:23 | User confirmed on device: KostZ leaves out cancelled trainings — PR #44 fully confirmed | - | confirmed | ~1k |
 | 22:25 | Deleted all 5 folders in ~/Backups at user's request (incl. final CloudKit export, prod snapshot before v0.8.0) | ~/Backups | done | ~1k |
+| 17:18 | Investigated Trainingsfrequenzliste gray columns (template style s=27; official WBSV form has no gray; no Sport Austria rule) | Trainingsfrequenzliste_Vorlage.xlsx | answered | ~6000 |
+| 17:18 | Edited webui/src/test/java/it/a11y/blindensport/webui/reports/TrainingsfrequenzlisteTest.java | added 1 condition(s) | ~260 |
+| 17:18 | Edited BlindensportGrazTests/TrainingsfrequenzlisteCalculationTests.swift | modified reduce() | ~320 |
+| 17:20 | Template: all attendance cells D8:AB31 → style 23 (white, uniform); tests on both sides; webui 150 green, app 21 green | Trainingsfrequenzliste_Vorlage.xlsx (x2), TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift | done | ~15000 |
+| 17:20 | Session end: 2 writes across 2 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift) | 0 reads | ~621 tok |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeCalculation.swift | modified signature() | ~179 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeCalculation.swift | modified signature() | ~218 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeCalculation.swift | 11→13 lines | ~190 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeCalculation.swift | modified signatureDate() | ~424 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeCalculation.swift | expanded (+6 lines) | ~249 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeCalculation.swift | 3→4 lines | ~52 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeExport.swift | 3→4 lines | ~101 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeExport.swift | 2→3 lines | ~53 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeExport.swift | 1→2 lines | ~46 |
+| 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeExport.swift | 2→6 lines | ~92 |
+| 17:27 | PRAE: signature date A38 = next training (month form: first of next month, same Sportart; tournament: next training of its Sportart); app + web UI + tests (webui 153, app 97 green) | PraeCalculation.swift, PraeExport.swift, PraeCalculator/PraeForm/PraeExporter/PraeService/ReportService.java, tests | done | ~25000 |
+| 17:27 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |

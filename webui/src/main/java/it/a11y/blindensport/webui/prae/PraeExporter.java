@@ -70,6 +70,10 @@ public final class PraeExporter {
             p = XlsxPatch.setText(p, "B11", form.monthName());
             p = XlsxPatch.setText(p, "K11", String.valueOf(form.year()));
             p = XlsxPatch.setText(p, "T11", form.purpose());
+            if (form.signatureDate() != null) {
+                // "Datum" next to the recipient's signature (A38:J38, label in A39).
+                p = XlsxPatch.setText(p, "A38", form.signatureDate().format(DAY));
+            }
             for (PraeForm.DayEntry entry : form.entries()) {
                 String ref = dayGridAmountRef(entry.day());
                 if (ref != null) {

@@ -252,6 +252,21 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
 
         // No per-member total column beyond the original's own field set.
         XCTAssertFalse(sheetXML.contains("Gesamt"))
+
+        // Like the official form: every attendance cell (D8:AB31) has the
+        // same plain white style (s="23") — the club's 2026 file had gray
+        // columns, removed from the template on 2026-11-16.
+        let stylePattern = try NSRegularExpression(pattern: #"<c r="([A-Z]+)(\d+)"[^>]*?\bs="(\d+)""#)
+        var attendanceStyles: [String: String] = [:]
+        for match in stylePattern.matches(in: sheetXML, range: NSRange(sheetXML.startIndex..., in: sheetXML)) {
+            let column = String(sheetXML[Range(match.range(at: 1), in: sheetXML)!])
+            let row = Int(sheetXML[Range(match.range(at: 2), in: sheetXML)!])!
+            let columnIndex = column.unicodeScalars.reduce(0) { $0 * 26 + Int($1.value) - 64 }
+            guard (8...31).contains(row), (4...28).contains(columnIndex) else { continue }
+            attendanceStyles["\(column)\(row)"] = String(sheetXML[Range(match.range(at: 3), in: sheetXML)!])
+        }
+        XCTAssertEqual(attendanceStyles.count, 24 * 25)
+        XCTAssertEqual(Set(attendanceStyles.values), ["23"])
     }
 
     /// Covers the "Trainingszeiten:" header fields (H4/L4), added alongside

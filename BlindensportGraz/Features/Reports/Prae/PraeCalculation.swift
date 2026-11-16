@@ -72,15 +72,19 @@ struct PraeMonthSummary {
     // legal caps apply to the person, not to one form, so they're checked
     // against these rather than `entries`. Empty means `entries` is all there is.
     let personDayTotals: [Int: Double]
+    // The "Datum" next to the recipient's signature (A38): the first training
+    // of this Sportart from the next month on — see PraeCalculator.signatureDate.
+    let signatureDate: Date?
 
     init(person: PraeEligiblePerson, month: Int, year: Int, entries: [PraeDayEntry], trainingName: String = "",
-         personDayTotals: [Int: Double] = [:]) {
+         personDayTotals: [Int: Double] = [:], signatureDate: Date? = nil) {
         self.person = person
         self.month = month
         self.year = year
         self.entries = entries
         self.trainingName = trainingName
         self.personDayTotals = personDayTotals
+        self.signatureDate = signatureDate
     }
 
     var total: Double { entries.reduce(0) { $0 + $1.amount } }
@@ -105,9 +109,12 @@ struct PraeTournamentSummary {
     let month: Int
     let year: Int
     let spansSeveralMonths: Bool
+    // The "Datum" next to the recipient's signature (A38): the first training
+    // of the tournament's Sportart after the tournament — see PraeCalculator.signatureDate.
+    let signatureDate: Date?
 
     init(person: PraeEligiblePerson, tournament: Tournament, entries: [PraeDayEntry],
-         month: Int? = nil, year: Int? = nil, spansSeveralMonths: Bool = false) {
+         month: Int? = nil, year: Int? = nil, spansSeveralMonths: Bool = false, signatureDate: Date? = nil) {
         let start = Calendar.current.dateComponents([.month, .year], from: tournament.startDate)
         self.person = person
         self.tournament = tournament
@@ -115,6 +122,7 @@ struct PraeTournamentSummary {
         self.month = month ?? start.month ?? 1
         self.year = year ?? start.year ?? 0
         self.spansSeveralMonths = spansSeveralMonths
+        self.signatureDate = signatureDate
     }
 
     var total: Double { entries.reduce(0) { $0 + $1.amount } }
@@ -195,6 +203,7 @@ enum PraeCalculator {
             .sorted { ($0.event.startDate, $0.event.title) < ($1.event.startDate, $1.event.title) }
 
         var titles: [String] = []
+        var sportByTitle: [String: String] = [:]
         var amountsByTitle: [String: [Int: Double]] = [:]
         var personDayTotals: [Int: Double] = [:]
         for attendance in attendances {
@@ -204,18 +213,35 @@ enum PraeCalculator {
             let title = attendance.event.title
             if amountsByTitle[title] == nil {
                 titles.append(title)
+                sportByTitle[title] = attendance.event.sport
             }
             amountsByTitle[title, default: [:]][day, default: 0] += amount
             personDayTotals[day, default: 0] += amount
         }
 
+        let nextMonth = calendar.date(byAdding: .month, value: 1,
+                                      to: calendar.date(from: DateComponents(year: year, month: month, day: 1)) ?? .distantFuture)
         return titles.compactMap { title in
             let amounts = amountsByTitle[title] ?? [:]
             let entries = amounts.keys.sorted().map { PraeDayEntry(day: $0, amount: amounts[$0] ?? 0, purpose: title) }
+            let signature = nextMonth.flatMap { signatureDate(sport: sportByTitle[title] ?? "", from: $0, in: context) }
             let summary = PraeMonthSummary(person: person, month: month, year: year, entries: entries,
-                                           trainingName: title, personDayTotals: personDayTotals)
+                                           trainingName: title, personDayTotals: personDayTotals,
+                                           signatureDate: signature)
             return summary.total > 0 ? summary : nil
         }
+    }
+
+    /// The date the recipient signs the form (A38, "Datum" next to the
+    /// signature): the first training of `sport` starting on or after `start`,
+    /// not cancelled. For a training's form `start` is the first of the next
+    /// month; for a tournament's, the day after its last day. Nil while no
+    /// such training is planned — the date then stays to be written by hand.
+    static func signatureDate(sport: String, from start: Date, in context: ModelContext) -> Date? {
+        ((try? context.fetch(FetchDescriptor<Training>())) ?? [])
+            .filter { $0.sport == sport && $0.status != Training.cancelledStatus && $0.startDate >= start }
+            .map(\.startDate)
+            .min()
     }
 
     /// A single tournament's PRAE deployment days for one person, one summary
@@ -261,11 +287,18 @@ enum PraeCalculator {
         }
 
         let spansSeveralMonths = amountsByMonth.count > 1
+        // The tournament's own context: no call site has to pass one.
+        let dayAfter = tournamentDays.last.flatMap { calendar.date(byAdding: .day, value: 1, to: $0) }
+        var signature: Date?
+        if let dayAfter, let context = tournament.modelContext {
+            signature = signatureDate(sport: tournament.sport, from: dayAfter, in: context)
+        }
         return amountsByMonth.keys.sorted().compactMap { key in
             let amounts = amountsByMonth[key] ?? [:]
             let entries = amounts.keys.sorted().map { PraeDayEntry(day: $0, amount: amounts[$0] ?? 0, purpose: tournament.title) }
             let summary = PraeTournamentSummary(person: person, tournament: tournament, entries: entries,
-                                                month: key.month, year: key.year, spansSeveralMonths: spansSeveralMonths)
+                                                month: key.month, year: key.year, spansSeveralMonths: spansSeveralMonths,
+                                                signatureDate: signature)
             return summary.total > 0 ? summary : nil
         }
     }

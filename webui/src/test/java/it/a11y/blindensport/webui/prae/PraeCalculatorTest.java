@@ -8,12 +8,14 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** The rules of PraeCalculationTests.swift; the two calculators must keep agreeing. */
@@ -22,6 +24,11 @@ class PraeCalculatorTest {
 
     private static ClubEvent event(String id, String kind, String title, String start, String end) {
         return new ClubEvent(id, kind, title, "", "", "", "", "", "", at(start), at(end), "", "", null, null, null, List.of(), "");
+    }
+
+    private static ClubEvent training(String id, String title, String sport, String start, String status) {
+        return new ClubEvent(id, "training", title, sport, "", "", "", "", "", at(start), at(start).plusSeconds(5400), "",
+                status, null, null, null, List.of(), "");
     }
 
     private static Instant at(String local) {
@@ -79,6 +86,34 @@ class PraeCalculatorTest {
         assertTrue(forms.get(0).spansSeveralMonths());
         assertEquals(List.of(30, 31), forms.get(0).entries().stream().map(PraeForm.DayEntry::day).toList());
         assertEquals(List.of(1), forms.get(1).entries().stream().map(PraeForm.DayEntry::day).toList());
+    }
+
+    @Test
+    void trainingFormIsSignedAtTheFirstTrainingOfItsSportNextMonth() {
+        var march = training("a", "Torball", "Torball", "2026-03-03T18:00:00", "open");
+        var all = List.of(march,
+                training("b", "Torball", "Torball", "2026-03-31T18:00:00", "open"),      // still March
+                training("c", "Lauf", "Leichtathletik", "2026-04-01T18:00:00", "open"),  // other sport
+                training("d", "Torball", "Torball", "2026-04-02T18:00:00", "cancelled"),
+                training("e", "Torball", "Torball", "2026-04-09T18:00:00", "open"),
+                training("f", "Torball", "Torball", "2026-04-16T18:00:00", "open"));
+        PraeForm form = PraeCalculator.monthForms(PERSON, 3, 2026, List.of(march), List.of(attended("a", "m1", 40)), all)
+                .get(0);
+        assertEquals(LocalDate.of(2026, 4, 9), form.signatureDate());
+        assertNull(PraeCalculator.monthForms(PERSON, 3, 2026, List.of(march), List.of(attended("a", "m1", 40)),
+                List.of(march)).get(0).signatureDate(), "no training planned yet: left for the pen");
+    }
+
+    @Test
+    void tournamentFormIsSignedAtTheNextTrainingOfItsSport() {
+        var cup = new ClubEvent("t", "tournament", "Torballturnier", "Torball", "", "", "", "", "",
+                at("2026-03-28T09:00:00"), at("2026-03-29T17:00:00"), "", "planned", null, null, null, List.of(), "");
+        var all = List.of(
+                training("a", "Torball", "Torball", "2026-03-29T18:00:00", "open"),      // last tournament day
+                training("b", "Goalball", "Goalball", "2026-03-30T18:00:00", "open"),
+                training("c", "Torball", "Torball", "2026-03-31T18:00:00", "open"));
+        List<PraeForm> forms = PraeCalculator.tournamentForms(PERSON, cup, List.of(attended("t", "m1", 100)), all);
+        assertEquals(LocalDate.of(2026, 3, 31), forms.get(0).signatureDate());
     }
 
     @Test

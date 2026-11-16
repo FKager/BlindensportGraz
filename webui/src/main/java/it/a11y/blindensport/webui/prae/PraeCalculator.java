@@ -75,6 +75,15 @@ public final class PraeCalculator {
      */
     public static List<PraeForm> monthForms(Person person, int month, int year, List<ClubEvent> trainings,
                                             List<Attendance> attendances) {
+        return monthForms(person, month, year, trainings, attendances, trainings);
+    }
+
+    /**
+     * As above; {@code allTrainings} (every training, any month) gives each
+     * form its signature date: the first training of its Sportart in the next month.
+     */
+    public static List<PraeForm> monthForms(Person person, int month, int year, List<ClubEvent> trainings,
+                                            List<Attendance> attendances, List<ClubEvent> allTrainings) {
         Set<String> memberships = Set.copyOf(person.membershipIds());
         Map<String, ClubEvent> events = new LinkedHashMap<>();
         trainings.forEach(e -> events.put(e.id(), e));
@@ -88,6 +97,7 @@ public final class PraeCalculator {
                 .toList();
 
         Map<String, Map<Integer, Double>> amountsByTitle = new LinkedHashMap<>();
+        Map<String, String> sportByTitle = new LinkedHashMap<>();
         Map<Integer, Double> personDayTotals = new TreeMap<>();
         for (Attendance a : relevant) {
             ClubEvent event = events.get(a.eventId());
@@ -96,15 +106,18 @@ public final class PraeCalculator {
                 continue;
             }
             double amount = a.praeAmount().doubleValue();
+            sportByTitle.putIfAbsent(event.title(), event.sport());
             amountsByTitle.computeIfAbsent(event.title(), t -> new TreeMap<>()).merge(date.getDayOfMonth(), amount, Double::sum);
             personDayTotals.merge(date.getDayOfMonth(), amount, Double::sum);
         }
 
+        LocalDate nextMonth = LocalDate.of(year, month, 1).plusMonths(1);
         List<PraeForm> forms = new ArrayList<>();
         amountsByTitle.forEach((title, amounts) -> {
             List<DayEntry> entries = amounts.entrySet().stream()
                     .map(e -> new DayEntry(e.getKey(), e.getValue(), title)).toList();
-            PraeForm form = new PraeForm(person, false, month, year, title, entries, personDayTotals, false);
+            PraeForm form = new PraeForm(person, false, month, year, title, entries, personDayTotals, false,
+                    signatureDate(sportByTitle.get(title), nextMonth, allTrainings));
             if (form.total() > 0) {
                 forms.add(form);
             }
@@ -119,6 +132,15 @@ public final class PraeCalculator {
      * up to exactly what was entered.
      */
     public static List<PraeForm> tournamentForms(Person person, ClubEvent tournament, List<Attendance> attendances) {
+        return tournamentForms(person, tournament, attendances, List.of());
+    }
+
+    /**
+     * As above; {@code allTrainings} gives the forms their signature date: the
+     * first training of the tournament's Sportart after the tournament.
+     */
+    public static List<PraeForm> tournamentForms(Person person, ClubEvent tournament, List<Attendance> attendances,
+                                                 List<ClubEvent> allTrainings) {
         Set<String> memberships = Set.copyOf(person.membershipIds());
         LocalDate firstDay = LocalDate.ofInstant(tournament.startDate(), CLUB_ZONE);
         int dayCount = tournament.dayCount();
@@ -144,17 +166,32 @@ public final class PraeCalculator {
         }
 
         boolean severalMonths = amountsByMonth.size() > 1;
+        LocalDate signature = signatureDate(tournament.sport(), firstDay.plusDays(Math.max(dayCount, 1)), allTrainings);
         List<PraeForm> forms = new ArrayList<>();
         amountsByMonth.forEach((key, amounts) -> {
             List<DayEntry> entries = amounts.entrySet().stream()
                     .map(e -> new DayEntry(e.getKey(), e.getValue(), tournament.title())).toList();
             PraeForm form = new PraeForm(person, true, key.month(), key.year(), tournament.title(), entries, Map.of(),
-                    severalMonths);
+                    severalMonths, signature);
             if (form.total() > 0) {
                 forms.add(form);
             }
         });
         return forms;
+    }
+
+    /**
+     * The date the recipient signs the form (A38): the first training of
+     * {@code sport} on or after {@code from}, not cancelled. Null while none is planned.
+     * PraeCalculator.signatureDate in the app.
+     */
+    public static LocalDate signatureDate(String sport, LocalDate from, List<ClubEvent> trainings) {
+        return trainings.stream()
+                .filter(e -> "training".equals(e.kind()) && !e.isCancelled() && java.util.Objects.equals(e.sport(), sport))
+                .map(e -> LocalDate.ofInstant(e.startDate(), CLUB_ZONE))
+                .filter(d -> !d.isBefore(from))
+                .min(Comparator.naturalOrder())
+                .orElse(null);
     }
 
     /**
