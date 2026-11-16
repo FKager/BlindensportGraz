@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-09T15:59:04.093Z
-> Files: 261 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-16T16:24:24.536Z
+> Files: 269 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -241,7 +241,8 @@
 
 ## BlindensportGraz/Features/Reports/Prae/
 
-- `PraeExport.swift` — Fills PRAE_Formular.xlsx and the Darstellung; ticks only in the form controls, labels as in the template; printCopy makes the ☒/☐ copy for app printing. (~8500 tok)
+- `PraeCalculation.swift` — / One club member/user who has at least one coach/assistant ("Helfer") (~4717 tok)
+- `PraeExport.swift` — Declares PraeExportError (~8494 tok)
 
 ## BlindensportGraz/Features/Reports/Sammelabrechnung/
 
@@ -332,6 +333,7 @@
 - `GVSCApplicationDocumentTests.swift` — Class: GVSCApplicationDocumentTests (~1950 tok)
 - `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
+- `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)
 
 ## BlindensportGrazWidgets/
 
@@ -412,6 +414,11 @@
 ## supabase/
 
 - `seed.sql` — LOCAL DEVELOPMENT ONLY (`supabase db reset`). Never pushed to the hosted (~338 tok)
+
+## supabase/ (2026-11-10 additions)
+
+- `migrations/20261110000001_attendance_one_row_per_person.sql` — dedupes attendances, BEFORE INSERT merge trigger, unique (event_id, membership_id) (~400 tok)
+- `tests/attendance_unique_test.sql` — pgTAP: second insert merges into the existing row, upsert by id still updates, unique key exists (~600 tok)
 
 ## supabase/functions/delete-account/
 
@@ -579,12 +586,12 @@
 - `MemberDialog.java` — Create / edit one roster entry, laid out like the app's MemberDetailView. (~2864 tok)
 - `MembersView.java` — The club roster: search, create, edit, delete, JSON import and export. (~2945 tok)
 - `ReportsView.java` — "Abrechnung": the invoicing of the app's Berichte menus — KostZ, PRAE (~5894 tok)
-- `TrainingsfrequenzlisteView.java` — /trainingsfrequenzliste page: Sportart/Zeitraum/Jahr, roster grid, xlsx download; club.manage (~1500 tok)
 - `RequiresPermission.java` — A view only admins holding at least one of these permissions may open (checked by {@link AccessGuard (~118 tok)
 - `RoleLogView.java` — Audit trail: role changes and block/unblock/delete of accounts (rolelog.read), like the app's RoleCh (~904 tok)
 - `SessionCookieSetup.java` — Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless (~246 tok)
 - `StartView.java` — Start page: the areas this admin may open, as a plain link list. (~418 tok)
 - `TeamsView.java` — Teams and who plays / coaches in them. (~3030 tok)
+- `TrainingsfrequenzlisteView.java` — /trainingsfrequenzliste page: Sportart/Zeitraum/Jahr, roster grid, xlsx download; club.manage (~1500 tok)
 - `TrainingsfrequenzlisteView.java` — Sport Austria's Trainingsfrequenzliste: one training sport's attendance (~2128 tok)
 - `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)
 - `WelcomeView.java` — The welcome text the app shows at startup, also before signing in (club.manage). (~876 tok)
@@ -620,9 +627,9 @@
 - `ValidationTest.java` — Class: ValidationTest (~251 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/reports/
-- `TrainingsfrequenzlisteTest.java` — calculation, cells of the patched file, template = app copy (~2300 tok)
 
 - `ReportsTest.java` — KostZ, TeilnehmerInnenliste and the Sammelabrechnung — ports of the app's KostZCalculationTests and (~4233 tok)
+- `TrainingsfrequenzlisteTest.java` — Port of the app's TrainingsfrequenzlisteCalculationTests plus the file's cells. (~3851 tok)
 - `TrainingsfrequenzlisteTest.java` — Port of the app's TrainingsfrequenzlisteCalculationTests plus the file's cells. (~2888 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/ui/
@@ -630,7 +637,3 @@
 - `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)
 - `ReportsViewTest.java` — The Abrechnung page, driven server-side (Karibu) against the mocked Supabase of {@link ReportsFixtur (~1595 tok)
 - `TrainingsfrequenzlisteViewTest.java` — Trainingsfrequenzliste page via Karibu against ReportsFixture (~900 tok)
-
-## supabase/ (2026-11-10 additions)
-- `migrations/20261110000001_attendance_one_row_per_person.sql` — dedupes attendances, BEFORE INSERT merge trigger, unique (event_id, membership_id) (~400 tok)
-- `tests/attendance_unique_test.sql` — pgTAP: second insert merges into the existing row, upsert by id still updates, unique key exists (~600 tok)
