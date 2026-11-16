@@ -40,7 +40,9 @@ public final class PraeService {
     public List<PraeForm> forEvent(ClubEvent event, String memberId, boolean withPrivate) {
         if ("tournament".equals(event.kind())) {
             List<Attendance> attendances = club.attendances(event.id());
-            return forPeople(memberId, withPrivate, p -> PraeCalculator.tournamentForms(p, event, attendances));
+            List<ClubEvent> allTrainings = allTrainings();
+            return forPeople(memberId, withPrivate,
+                    p -> PraeCalculator.tournamentForms(p, event, attendances, allTrainings));
         }
         if (!"training".equals(event.kind())) {
             throw new IllegalArgumentException("PRAE gibt es nur für Trainings und Turniere.");
@@ -52,13 +54,20 @@ public final class PraeService {
 
     /** Every training's forms in a month. Tournaments are filed per tournament, as in the app. */
     public List<PraeForm> forMonth(int month, int year, String memberId, boolean withPrivate) {
-        List<ClubEvent> trainings = club.events().stream().filter(e -> "training".equals(e.kind()))
+        List<ClubEvent> allTrainings = allTrainings();
+        List<ClubEvent> trainings = allTrainings.stream()
                 .filter(e -> {
                     LocalDate date = LocalDate.ofInstant(e.startDate(), Dates.CLUB_ZONE);
                     return date.getMonthValue() == month && date.getYear() == year;
                 }).toList();
         List<Attendance> attendances = club.attendances(trainings.stream().map(ClubEvent::id).toList());
-        return forPeople(memberId, withPrivate, p -> PraeCalculator.monthForms(p, month, year, trainings, attendances));
+        return forPeople(memberId, withPrivate,
+                p -> PraeCalculator.monthForms(p, month, year, trainings, attendances, allTrainings));
+    }
+
+    /** Every training, any month: the forms' signature dates come from them. */
+    private List<ClubEvent> allTrainings() {
+        return club.events().stream().filter(e -> "training".equals(e.kind())).toList();
     }
 
     private List<PraeForm> forPeople(String memberId, boolean withPrivate, Function<Person, List<PraeForm>> forms) {

@@ -172,6 +172,7 @@ enum PraeExporter {
     static func exportMainForm(summary: PraeMonthSummary) throws -> URL {
         try exportMainForm(person: summary.person, month: summary.month, year: summary.year,
                             entries: summary.entries, trainingName: summary.trainingName,
+                            signatureDate: summary.signatureDate,
                             checkedBoxes: [.uebungsleiter, .nebenberufJa, .einfachbezugJa, .ueberweisung, .richtigkeitsvermerk])
     }
 
@@ -190,6 +191,7 @@ enum PraeExporter {
     static func exportMainForm(summary: PraeTournamentSummary) throws -> URL {
         try exportMainForm(person: summary.person, month: summary.month, year: summary.year,
                            entries: summary.entries, trainingName: summary.tournament.title,
+                           signatureDate: summary.signatureDate,
                            checkedBoxes: [.trainer, .nebenberufJa, .einfachbezugJa, .ueberweisung, .richtigkeitsvermerk])
     }
 
@@ -274,7 +276,8 @@ enum PraeExporter {
     }
 
     private static func exportMainForm(person: PraeEligiblePerson, month: Int, year: Int, entries: [PraeDayEntry],
-                                        trainingName: String, checkedBoxes: [FormCheckbox]) throws -> URL {
+                                        trainingName: String, signatureDate: Date?,
+                                        checkedBoxes: [FormCheckbox]) throws -> URL {
         guard let templateURL = Bundle.main.url(forResource: "PRAE_Formular", withExtension: "xlsx") else {
             throw PraeExportError.templateNotFound
         }
@@ -300,6 +303,10 @@ enum PraeExporter {
             patched = XLSXCellPatch.setText(in: patched, ref: "B11", value: monthFormatter.string(from: dateFor(month: month, year: year)).capitalized)
             patched = XLSXCellPatch.setText(in: patched, ref: "K11", value: String(year))
             patched = XLSXCellPatch.setText(in: patched, ref: "T11", value: trainingName)
+            // "Datum" next to the recipient's signature (A38:J38, label in A39).
+            if let signatureDate {
+                patched = XLSXCellPatch.setText(in: patched, ref: "A38", value: dateFormatter.string(from: signatureDate))
+            }
 
             for entry in entries {
                 guard let ref = dayGridAmountRef(day: entry.day) else { continue }

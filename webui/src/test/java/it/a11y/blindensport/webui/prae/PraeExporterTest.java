@@ -75,6 +75,15 @@ class PraeExporterTest {
         assertTrue(sheet.contains("<c r=\"C13\" s=\"105\"><v>45.5</v></c>"), "day 11 amount");
         assertTrue(sheet.contains("<v>60.0</v>"), "day 31 amount");
         assertFalse(sheet.contains("altText="), "no names: the NVDA add-on reads the cells");
+        assertTrue(sheet.contains("<c r=\"A38\" s=\"68\"/>"), "no signature date: stays blank");
+    }
+
+    @Test
+    void writesTheSignatureDateNextToTheSignature() throws IOException {
+        var dated = new PraeForm(PERSON, false, 3, 2031, "Cup", List.of(new PraeForm.DayEntry(11, 45, "Cup")), Map.of(),
+                false, java.time.LocalDate.of(2031, 4, 2));
+        String sheet = entries(PraeExporter.mainForm(dated)).get("xl/worksheets/sheet1.xml");
+        assertTrue(sheet.contains("<c r=\"A38\" s=\"68\" t=\"inlineStr\"><is><t>02.04.2031</t></is></c>"));
     }
 
     @Test

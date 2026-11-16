@@ -1034,4 +1034,85 @@ final class PraeCalculationTests: XCTestCase {
         // to the nearest cent, not spell out a bogus fractional-cent word.
         XCTAssertEqual(GermanNumberWords.spelledOutEuroAmount(45.1 + 0.4), "Fünfundvierzig Euro und fünfzig Cent")
     }
+
+    // MARK: - signature date (A38)
+
+    func testTrainingSummaryIsSignedAtTheFirstTrainingOfItsSportNextMonth() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        let july = makeTraining(context, title: "Torball", day: 7)
+        context.insert(Attendance(event: july, membership: membership, attended: true, praeAmount: 40))
+        _ = makeTraining(context, title: "Torball", day: 31)                       // still July
+        makeTraining(context, title: "Lauf", day: 1, month: 8).sport = "Leichtathletik" // other sport
+        makeTraining(context, title: "Torball", day: 4, month: 8).status = Training.cancelledStatus
+        let first = makeTraining(context, title: "Torball", day: 11, month: 8)
+        _ = makeTraining(context, title: "Torball", day: 18, month: 8)
+
+        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).first)
+        XCTAssertEqual(summary.signatureDate, first.startDate)
+    }
+
+    func testTrainingSummaryHasNoSignatureDateWhileNothingIsPlanned() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+        let july = makeTraining(context, title: "Torball", day: 7)
+        context.insert(Attendance(event: july, membership: membership, attended: true, praeAmount: 40))
+
+        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, month: 7, year: 2026, in: context).first)
+        XCTAssertNil(summary.signatureDate)
+    }
+
+    func testTournamentSummaryIsSignedAtTheNextTrainingOfItsSport() throws {
+        let container = try makeContainer()
+        let context = ModelContext(container)
+        let team = Team(name: "Torball 1", sport: "Torball")
+        context.insert(team)
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        context.insert(coach)
+        let membership = TeamMembership(member: coach, team: team, role: .coach)
+        context.insert(membership)
+
+        // makeTournament: 12th and 13th July.
+        let tournament = makeTournament(context, title: "Torballturnier", day: 12)
+        context.insert(Attendance(event: tournament, membership: membership, attended: true, praeAmount: 60))
+        _ = makeTraining(context, title: "Torball", day: 13)                        // last tournament day
+        makeTraining(context, title: "Goalball", day: 14).sport = "Goalball"
+        let next = makeTraining(context, title: "Torball", day: 15)
+
+        let person = PraeCalculator.eligiblePeople(from: try context.fetch(FetchDescriptor<TeamMembership>())).first!
+        let summary = try XCTUnwrap(PraeCalculator.summaries(for: person, tournament: tournament).first)
+        XCTAssertEqual(summary.signatureDate, next.startDate)
+    }
+
+    func testExportWritesTheSignatureDateNextToTheSignature() throws {
+        let coach = Member(firstName: "Anna", lastName: "Trainer")
+        let person = PraeEligiblePerson(id: coach.id, displayName: "Trainer Anna", membershipIDs: [], member: coach)
+        let date = Calendar.current.date(from: DateComponents(year: 2026, month: 8, day: 11, hour: 18))!
+        let summary = PraeMonthSummary(person: person, month: 7, year: 2026,
+                                       entries: [PraeDayEntry(day: 7, amount: 40, purpose: "Torball")],
+                                       signatureDate: date)
+
+        let url = try PraeExporter.exportMainForm(summary: summary)
+        defer { try? FileManager.default.removeItem(at: url) }
+        let archive = try Archive(url: url, accessMode: .read)
+        var sheetData = Data()
+        _ = try archive.extract(try XCTUnwrap(archive["xl/worksheets/sheet1.xml"])) { sheetData.append($0) }
+        let sheetXML = try XCTUnwrap(String(data: sheetData, encoding: .utf8))
+        XCTAssertTrue(sheetXML.contains(#"<c r="A38" s="68" t="inlineStr"><is><t>11.08.2026</t></is></c>"#))
+    }
 }

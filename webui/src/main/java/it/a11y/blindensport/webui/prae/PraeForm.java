@@ -17,10 +17,18 @@ import java.util.Map;
  * @param personDayTotals    the person's amount per day across all their trainings that
  *                           month, since the legal caps apply to the person, not one form
  * @param spansSeveralMonths a tournament running into the next month
+ * @param signatureDate      A38 "Datum" next to the recipient's signature
+ *                           ({@link PraeCalculator#signatureDate}); null leaves it for the pen
  */
 public record PraeForm(Person person, boolean tournament, int month, int year, String purpose, List<DayEntry> entries,
-                       Map<Integer, Double> personDayTotals, boolean spansSeveralMonths) {
+                       Map<Integer, Double> personDayTotals, boolean spansSeveralMonths, LocalDate signatureDate) {
     private static final Locale AUSTRIA = Locale.forLanguageTag("de-AT");
+
+    /** A form without a signature date. */
+    public PraeForm(Person person, boolean tournament, int month, int year, String purpose, List<DayEntry> entries,
+                    Map<Integer, Double> personDayTotals, boolean spansSeveralMonths) {
+        this(person, tournament, month, year, purpose, entries, personDayTotals, spansSeveralMonths, null);
+    }
 
     /**
      * A helper across all their teams. {@code member} (with protected fields)
