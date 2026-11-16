@@ -209,6 +209,28 @@ class TrainingsfrequenzlisteTest {
         assertFalse(xml.contains("t=\"s\"><v>89</v>"), "no example 'j' from the template remains in the grid");
     }
 
+    /** Like the official form: no gray columns in the grid, every attendance cell has D8's plain style. */
+    @Test
+    void allAttendanceCellsAreWhite() throws IOException {
+        String xml = sheet(firstHalf().xlsx());
+        String style = styleOf(xml, "D8");
+        assertEquals("23", style, "D8 is the template's unfilled attendance style");
+        for (int row = 8; row <= 31; row++) {
+            for (int col = 4; col <= 28; col++) {
+                String ref = Trainingsfrequenzliste.column(col) + row;
+                assertEquals(style, styleOf(xml, ref), ref + " has a different background");
+            }
+        }
+    }
+
+    private static String styleOf(String xml, String ref) {
+        Matcher m = Pattern.compile("<c r=\"" + ref + "\"[^>]*?\\bs=\"(\\d+)\"").matcher(xml);
+        if (!m.find()) {
+            throw new AssertionError("no styled cell " + ref);
+        }
+        return m.group(1);
+    }
+
     private static final Path APP_TEMPLATE = Path.of("../BlindensportGraz/Resources/Trainingsfrequenzliste_Vorlage.xlsx");
 
     static boolean appTemplateAvailable() {
