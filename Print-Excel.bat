@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 
 :: ============================================================
-:: Print-Excel.bat  —  Print an .xlsx file from Windows CMD
+:: Print-Excel.bat  —  Convert .xlsx to PDF and print on the HP Color LaserJet
 :: Usage:  Print-Excel.bat <file.xlsx> [copies]
 :: Requires Microsoft Excel to be installed.
 :: ============================================================
@@ -49,10 +49,19 @@ if %COUNT%==0 (
     exit /b 1
 )
 
-:: --- Printer selection ---
+:: --- Printer selection — auto-prefer HP Color LaserJet ---
+set "HP_PRINTER="
+for /l %%i in (1,1,%COUNT%) do (
+    echo !PRINTER_%%i! | findstr /i "HP.*LaserJet" >nul 2>&1
+    if !ERRORLEVEL!==0 if not defined HP_PRINTER set "HP_PRINTER=!PRINTER_%%i!"
+)
+
 if %COUNT%==1 (
     set "SELECTED=!PRINTER_1!"
     echo  Single printer found — using: !SELECTED!
+) else if defined HP_PRINTER (
+    set "SELECTED=!HP_PRINTER!"
+    echo  HP Color LaserJet found — using: !SELECTED!
 ) else (
     echo.
     echo  Available printers:
@@ -73,22 +82,43 @@ if %COUNT%==1 (
 )
 
 echo.
+:: --- Derive PDF path (same folder, .pdf extension) ---
+set "PDF_FILE=%~dpn1.pdf"
+
 echo  File   : %~nx1
+echo  PDF    : %~n1.pdf
 echo  Printer: !SELECTED!
 echo  Copies : %COPIES%
 echo.
 
 :: --- Pass values via environment variables to avoid quoting issues ---
 set "PRINT_FILE=%FILE%"
+set "PRINT_PDF=%PDF_FILE%"
 set "PRINT_PRINTER=!SELECTED!"
 set "PRINT_COPIES=%COPIES%"
 
 powershell -NoProfile -Command ^
-    "$xl=$null; $wb=$null; " ^
+    "$xl=$null; $wb=$null; $pq=$null; $orig=$null; " ^
+    "if ($env:PRINT_PRINTER -match 'HP.+LaserJet') { " ^
+        "Add-Type -AssemblyName System.Printing; " ^
+        "$pq = (New-Object System.Printing.LocalPrintServer).GetPrintQueue($env:PRINT_PRINTER); " ^
+        "$orig = $pq.DefaultPrintTicket; " ^
+        "$r = New-Object System.IO.StreamReader($orig.GetXmlStream()); $tx = $r.ReadToEnd(); $r.Dispose(); " ^
+        "if ($tx -match 'Tray2') { " ^
+            "$xml = '<psf:PrintTicket xmlns:psf=""http://schemas.microsoft.com/windows/2003/08/printing/printschemaframework"" xmlns:psk=""http://schemas.microsoft.com/windows/2003/08/printing/printschemakeywords"" xmlns:ns0001=""http://schemas.hp.com/ptpc/2006/1"" version=""1""><psf:Feature name=""psk:JobInputBin""><psf:Option name=""ns0001:Tray1""/></psf:Feature></psf:PrintTicket>'; " ^
+            "$pq.DefaultPrintTicket = New-Object System.Printing.PrintTicket([System.IO.MemoryStream][System.Text.Encoding]::UTF8.GetBytes($xml)); " ^
+            "$pq.Commit(); " ^
+            "Write-Host '  Paper tray : Tray 2 -> Tray 1 (overriding driver default)' " ^
+        "} else { " ^
+            "Write-Host '  Paper tray : Tray 1 (already set)'; $pq = $null; $orig = $null " ^
+        "} " ^
+    "} " ^
     "try { " ^
         "$xl = New-Object -ComObject Excel.Application; " ^
         "$xl.Visible = $false; $xl.DisplayAlerts = $false; " ^
         "$wb = $xl.Workbooks.Open($env:PRINT_FILE, 0, $true); " ^
+        "$wb.ExportAsFixedFormat(0, $env:PRINT_PDF); " ^
+        "Write-Host ('  PDF saved : ' + $env:PRINT_PDF); " ^
         "$wb.PrintOut([Type]::Missing, [Type]::Missing, [int]$env:PRINT_COPIES, $false, $env:PRINT_PRINTER); " ^
         "Write-Host '  Print job sent successfully.' " ^
     "} catch { " ^
@@ -96,7 +126,8 @@ powershell -NoProfile -Command ^
     "} finally { " ^
         "if ($wb) { $wb.Close($false) }; " ^
         "if ($xl) { $xl.Quit() }; " ^
-        "[GC]::Collect() " ^
+        "[GC]::Collect(); " ^
+        "if ($pq -and $orig) { $pq.DefaultPrintTicket = $orig; $pq.Commit() } " ^
     "}"
 
 if %ERRORLEVEL% NEQ 0 (
