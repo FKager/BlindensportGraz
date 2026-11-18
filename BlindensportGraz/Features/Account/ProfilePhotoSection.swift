@@ -20,8 +20,11 @@ struct ProfilePhotoSection: View {
                     .frame(width: 64, height: 64)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: Theme.Spacing.s) {
+                    // PhotosPicker's label closure is @Sendable: capture a plain
+                    // value instead of reading the main-actor @Binding inside it.
+                    let hasPhoto = photo != nil
                     PhotosPicker(selection: $selectedItem, matching: .images) {
-                        Label(photo == nil ? "Foto auswählen" : "Foto ändern", systemImage: "photo")
+                        Label(hasPhoto ? "Foto ändern" : "Foto auswählen", systemImage: "photo")
                     }
                     if photo != nil {
                         Button(role: .destructive) {
