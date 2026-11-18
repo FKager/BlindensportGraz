@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-16T16:24:24.536Z
-> Files: 269 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-18T16:18:53.064Z
+> Files: 273 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -262,6 +262,7 @@
 
 ## BlindensportGraz/Features/Tournaments/
 
+- `TournamentDocumentsSection.swift` — / "Dokumente" of a tournament (invitation, schedule, results …): every (~1830 tok)
 
 ## BlindensportGraz/Features/Trainings/
 
@@ -274,7 +275,7 @@
 - `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~3238 tok)
 - `MemberChangeRequest.swift` — / A club member's own edit to their roster ("Vereinsdaten") data, awaiting (~1630 tok)
 - `PlaceFormat.swift` — appendingForeignCountry: adds ", <country>" unless empty or Österreich (KostZ Ort, PRAE Wohnanschrift, Teilnehmerliste Ort) (~200 tok)
-- `TournamentInvitation.swift` — Tournament's uploaded Einladung (PDF/DOCX/TXT), admins only (budget.manage); synced via tournament_invitations + bucket tournament-invitations (~450 tok)
+- `TournamentInvitation.swift` — One tournament document ("Dokumente": invitation, schedule, results); many per tournament; PDF/Word/Excel/TXT/images ≤15 MB (contentType, supportedContentTypes, isSupported, maxFileSize); approved read, events.manage write; table tournament_invitations + bucket tournament-invitations (~900 tok)
 
 ## BlindensportGraz/Resources/
 
@@ -288,7 +289,7 @@
 ## BlindensportGraz/Services/
 
 - `MemberChangeRequestService.swift` — / Self-service roster edits awaiting admin review — architecture-review.md (~543 tok)
-- `TournamentInvitationService.swift` — invitation(for:), replace (delete old + insert), save/delete with Supabase push (~450 tok)
+- `TournamentInvitationService.swift` — documents(for:in:) oldest first, add(to:…), save, delete (push to Supabase) (~571 tok)
 
 ## BlindensportGraz/Shared/
 
@@ -450,6 +451,7 @@
 - `20261102000001_gvsc_application.sql` — members.gvsc_applied_at, Beitrittserklärung columns (member_contacts/change_requests, member_private/_requests), apply RPC update, mark_gvsc_application(), bucket profile-photos + policies (~1800 tok)
 - `20261102000001_gvsc_application.sql` — GVSC Beitrittserklärung: the remaining fields of the club's application (~1953 tok)
 - `20261104000001_tournament_invitations.sql` — Tournament invitation (Einladung): the organiser's PDF/DOCX, uploaded in (~1023 tok)
+- `20261118000001_tournament_documents.sql` — Tournament documents (Dokumente): the single admin-only invitation of (~806 tok)
 
 ## supabase/scripts/
 
@@ -473,7 +475,7 @@
 - `supabase/migrations/20261014000003_account_admin_hardening.sql` — account_admin_log, root targets refused, last-root guard counts unblocked roots, calendar token rotation, is_blocked in own-account RPCs, unblocked_user_ids (~2500 tok)
 - `supabase/tests/account_admin_hardening_test.sql` — pgTAP 26 tests for the hardening (~2200 tok)
 - `supabase/tests/account_admin_test.sql` — pgTAP 17 tests for block/unblock/delete (~1300 tok)
-- `tournament_invitations_test.sql` — Run with: supabase test db (~831 tok)
+- `tournament_invitations_test.sql` — Tournament documents (table tournament_invitations). Run with: supabase test db (~1151 tok)
 
 ## webui/
 
@@ -514,10 +516,11 @@
 
 - `ClubModels.java` — Club data rows (supabase/migrations/20261013000001_club_data.sql) and the app's value conventions. (~1042 tok)
 - `ClubStore.java` — Teams, memberships, events (trainings / tournaments / events), (~3226 tok)
+- `TournamentDocuments.java` — A tournament's documents (invitation, schedule, results …): rows of (~2003 tok)
 
 ## webui/src/main/java/it/a11y/blindensport/webui/mcp/
 
-- `ClubTools.java` — The 15 MCP tools; protected data never returned, nothing deletes, member results are an allow-list (~9000 tok)
+- `ClubTools.java` — The 19 MCP tools incl. list/get/upload/delete_tournament_document (only delete tool, destructiveHint); protected data never returned, member results are an allow-list (~10500 tok)
 - `McpAuthFilter.java` — Vert.x filter: /mcp needs a personal token (~500 tok)
 - `McpConfig.java` — webui.mcp.public-url (~100 tok)
 - `McpIdentity.java` — Token to McpUser via McpTokens + Access.load, cached 1 min (~600 tok)
@@ -591,6 +594,7 @@
 - `SessionCookieSetup.java` — Vaadin's HTTP session cookie (JSESSIONID): HttpOnly, and Secure unless (~246 tok)
 - `StartView.java` — Start page: the areas this admin may open, as a plain link list. (~418 tok)
 - `TeamsView.java` — Teams and who plays / coaches in them. (~3030 tok)
+- `TournamentDocumentsDialog.java` — A tournament's documents (invitation, schedule, results …): download, (~1859 tok)
 - `TrainingsfrequenzlisteView.java` — /trainingsfrequenzliste page: Sportart/Zeitraum/Jahr, roster grid, xlsx download; club.manage (~1500 tok)
 - `TrainingsfrequenzlisteView.java` — Sport Austria's Trainingsfrequenzliste: one training sport's attendance (~2128 tok)
 - `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)
@@ -637,3 +641,7 @@
 - `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)
 - `ReportsViewTest.java` — The Abrechnung page, driven server-side (Karibu) against the mocked Supabase of {@link ReportsFixtur (~1595 tok)
 - `TrainingsfrequenzlisteViewTest.java` — Trainingsfrequenzliste page via Karibu against ReportsFixture (~900 tok)
+
+- `DocumentText.java` — Plain text of PDF (PDFBox)/docx/txt for the MCP get_tournament_document, capped at 60k chars (~800 tok)
+- `Storage.java` — Supabase Storage client (upload x-upsert, download, remove by prefixes) with the Postgrest identity (~600 tok)
+- `TournamentDocumentsTest.java` — Unit tests: content types, file-name cleaning, docx/pdf text (~700 tok)
