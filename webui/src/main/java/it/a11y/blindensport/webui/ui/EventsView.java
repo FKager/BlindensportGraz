@@ -21,6 +21,7 @@ import it.a11y.blindensport.webui.club.ClubModels.ClubEvent;
 import it.a11y.blindensport.webui.club.ClubModels.Membership;
 import it.a11y.blindensport.webui.club.ClubModels.Team;
 import it.a11y.blindensport.webui.club.ClubStore;
+import it.a11y.blindensport.webui.club.TournamentDocuments;
 import it.a11y.blindensport.webui.members.MemberRecord;
 import it.a11y.blindensport.webui.members.MemberStore;
 import jakarta.inject.Inject;
@@ -54,6 +55,7 @@ public class EventsView extends AdminView {
     private List<Membership> memberships = List.of();
     private Map<String, MemberRecord> members = Map.of();
     private Map<String, String> accountNames = Map.of();
+    private Map<String, Integer> documentCounts = Map.of();
 
     @Inject
     public EventsView(AdminSessions sessions) {
@@ -107,12 +109,18 @@ public class EventsView extends AdminView {
         members = new MemberStore(admin.db()).all(false).stream()
                 .collect(Collectors.toMap(m -> m.id().toLowerCase(Locale.ROOT), Function.identity(), (a, b) -> a));
         events = store.events();
+        documentCounts = documents().counts();
         applyFilter();
     }
 
     private ClubStore store() {
         AdminSession admin = session();
         return new ClubStore(admin.db(), admin.userId());
+    }
+
+    private TournamentDocuments documents() {
+        AdminSession admin = session();
+        return new TournamentDocuments(admin.db(), admin.userId());
     }
 
     private void applyFilter() {
@@ -140,6 +148,16 @@ public class EventsView extends AdminView {
                     this::personName, this::store, this).open()), "Anwesenheit für " + e.title());
             attendance.addThemeVariants(ButtonVariant.LUMO_SMALL);
             row.add(attendance);
+            if ("tournament".equals(e.kind())) {
+                int count = documentCounts.getOrDefault(e.id(), 0);
+                Button documents = GermanUi.label(new Button(count == 0 ? "Dokumente" : "Dokumente (" + count + ")",
+                        c -> new TournamentDocumentsDialog(e, sessions, this::documents, this,
+                                this::refreshDocumentCounts).open()),
+                        "Dokumente für " + e.title() + (count == 0 ? ", keine vorhanden"
+                                : count == 1 ? ", 1 vorhanden" : ", " + count + " vorhanden"));
+                documents.addThemeVariants(ButtonVariant.LUMO_SMALL);
+                row.add(documents);
+            }
             if (can(Permission.CLUB_MANAGE)) {
                 Button invoicing = GermanUi.label(new Button("Abrechnung", c -> openInvoicing(e)),
                         "Abrechnung für " + e.title());
@@ -149,6 +167,13 @@ public class EventsView extends AdminView {
         }
         row.add(delete);
         return row;
+    }
+
+    private void refreshDocumentCounts() {
+        attempt("Laden", () -> {
+            documentCounts = documents().counts();
+            grid.getDataProvider().refreshAll();
+        });
     }
 
     /** A tournament's own invoicing; a training's is its month's (trainings are invoiced per month). */
@@ -182,10 +207,15 @@ public class EventsView extends AdminView {
 
     private void confirmDelete(ClubEvent e) {
         GermanUi.confirm(e.title() + " löschen?",
-                "Anwesenheiten, Anmeldungen und Bilder dieses Termins werden mitgelöscht. Das kann nicht rückgängig "
-                        + "gemacht werden.",
+                "Anwesenheiten, Anmeldungen, Bilder und Dokumente dieses Termins werden mitgelöscht. Das kann nicht "
+                        + "rückgängig gemacht werden.",
                 "Löschen", () -> {
-                    if (attempt("Löschen", () -> store().deleteEvent(e.id()))) {
+                    if (attempt("Löschen", () -> {
+                        List<TournamentDocuments.Document> files = "tournament".equals(e.kind())
+                                ? documents().list(e.id()) : List.of();
+                        store().deleteEvent(e.id());
+                        documents().removeFiles(files);
+                    })) {
                         Announcer.success(e.title() + " gelöscht.");
                         attempt("Laden", this::refresh);
                     }

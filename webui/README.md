@@ -39,7 +39,7 @@ The UI only uses permissions to decide which pages and buttons to show.
 | Permission | Opens |
 |---|---|
 | any of `members.manage`, `events.manage`, `teams.manage`, `users.approve` | signing in at all (coach, admin, root) |
-| `events.manage` | Termine, Anwesenheit/PRAE, Trainings-Favoriten |
+| `events.manage` | Termine, Anwesenheit/PRAE, Trainings-Favoriten, Turnier-Dokumente |
 | `teams.manage` | Teams |
 | `members.manage` | Mitglieder, Änderungsanträge, `/api/members*` |
 | `members.private.read` / `.write` | seeing / changing SVNR, IBAN, Geburtsdatum, letzte Untersuchung |
@@ -155,7 +155,8 @@ Coaches, admins and root can create tokens, and a client can do whatever that ac
 - **Permissions:** every call runs with that person's Supabase token, so RLS and the RPCs decide, as in the app. `McpAuthFilter` admits only accounts that may use the web UI. Signing in with Apple gives no password, so those accounts can't create a token.
 - **Protected data:** SVNR, IBAN, birth date, medical exam, disability and consents never appear in a tool result and can't be written, because anything returned reaches the AI behind the client. Member results are built from an allow-list in `ClubTools`.
 - **PRAE forms:** they do contain SVNR and IBAN, so `create_prae_forms` returns only a summary and a link to `/mcp-files/{token}`. The link works once, lasts 10 minutes, and the file exists in memory only. Whoever holds the link gets the file.
-- **Nothing deletes:** there is no delete tool. A member can only be marked with status `delete`.
+- **Tournament documents:** `get_tournament_document` returns the text of a PDF, Word (.docx) or .txt document (PDFBox, `DocumentText`) plus a one-time `/mcp-files/` link to the file itself.
+- **Almost nothing deletes:** the only delete tool is `delete_tournament_document` (marked destructive, needs `events.manage`). A member can only be marked with status `delete`.
 
 ### Tools
 
@@ -166,6 +167,7 @@ Coaches, admins and root can create tokens, and a client can do whatever that ac
 | Teams | `list_teams`, `create_team`, `add_team_member` |
 | Events | `list_events`, `get_event`, `create_event`, `update_event`, `set_attendance` |
 | PRAE | `preview_prae`, `create_prae_forms` |
+| Tournament documents | `list_tournament_documents`, `get_tournament_document`, `upload_tournament_document` (base64), `delete_tournament_document` |
 
 ### PRAE exists twice
 

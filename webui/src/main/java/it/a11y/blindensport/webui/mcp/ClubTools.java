@@ -13,6 +13,8 @@ import it.a11y.blindensport.webui.club.ClubModels.ClubEvent;
 import it.a11y.blindensport.webui.club.ClubModels.Membership;
 import it.a11y.blindensport.webui.club.ClubModels.Team;
 import it.a11y.blindensport.webui.club.ClubStore;
+import it.a11y.blindensport.webui.club.DocumentText;
+import it.a11y.blindensport.webui.club.TournamentDocuments;
 import it.a11y.blindensport.webui.members.Dates;
 import it.a11y.blindensport.webui.members.MemberPrivate;
 import it.a11y.blindensport.webui.members.MemberRecord;
@@ -55,8 +57,9 @@ import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
  *       consents) never appear in a result and can't be written, since
  *       anything returned reaches the AI behind the client. Member results
  *       are built from an explicit list of fields for that reason.</li>
- *   <li>Nothing here deletes. A member is only flagged with status "delete";
- *       root removes them in the app or web UI.</li>
+ *   <li>Nothing here deletes, except a single tournament document
+ *       (delete_tournament_document, marked destructive). A member is only
+ *       flagged with status "delete"; root removes them in the app or web UI.</li>
  * </ul>
  */
 public class ClubTools {
@@ -550,6 +553,108 @@ public class ClubTools {
             result.put("expires_in_minutes", McpFiles.LIFETIME.toMinutes());
             return result;
         });
+    }
+
+    // ------------------------------------------------ tournament documents
+
+    @Tool(description = "List a tournament's documents (invitation, schedule, results …): id, file name, type, upload date. "
+            + "Every approved account may read them.",
+            annotations = @Tool.Annotations(title = "List tournament documents", readOnlyHint = true, destructiveHint = false, idempotentHint = true))
+    String list_tournament_documents(@ToolArg(description = "Tournament id from list_events") String tournament_id) {
+        return run("list_tournament_documents", user -> {
+            ClubEvent tournament = tournament(user.club(), tournament_id);
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("tournament", tournament.title());
+            result.put("documents", documents(user).list(tournament.id()).stream().map(ClubTools::documentRow).toList());
+            return result;
+        });
+    }
+
+    @Tool(description = "One tournament document: its text (PDF, Word .docx and .txt; cut off after "
+            + DocumentText.MAX_CHARS + " characters) and a one-time download link, valid 10 minutes, for the file itself.",
+            annotations = @Tool.Annotations(title = "Get tournament document", readOnlyHint = true, destructiveHint = false, idempotentHint = false))
+    String get_tournament_document(@ToolArg(description = "Document id from list_tournament_documents") String document_id) {
+        return run("get_tournament_document", user -> {
+            TournamentDocuments store = documents(user);
+            TournamentDocuments.Document document = document(store, document_id);
+            byte[] content = store.content(document);
+            Map<String, Object> result = documentRow(document);
+            result.put("size_bytes", content.length);
+            DocumentText.of(document.fileName(), content).ifPresentOrElse(text -> result.put("text", text),
+                    () -> result.put("text_note", "Für diesen Dateityp gibt es keinen Text; bitte den Link verwenden."));
+            String token = files.put(document.fileName(),
+                    document.contentType().isBlank() ? "application/octet-stream" : document.contentType(), content);
+            result.put("download_url", config.publicUrl() + "/mcp-files/" + token);
+            result.put("expires_in_minutes", McpFiles.LIFETIME.toMinutes());
+            return result;
+        });
+    }
+
+    @Tool(description = "Add a document to a tournament (invitation, schedule, results …). PDF, Word (.docx/.doc), "
+            + "Excel (.xlsx/.xls), .txt or image (.jpg/.png/.heic), at most 15 MB. Every approved account will see it "
+            + "in the app. Needs events.manage.",
+            annotations = @Tool.Annotations(title = "Upload tournament document", readOnlyHint = false, destructiveHint = false, idempotentHint = false))
+    String upload_tournament_document(
+            @ToolArg(description = "Tournament id from list_events") String tournament_id,
+            @ToolArg(description = "File name with extension, e.g. Einladung.pdf") String file_name,
+            @ToolArg(description = "The file's content, base64-encoded") String content_base64) {
+        return run("upload_tournament_document", user -> {
+            requirePermission(user, Permission.EVENTS_MANAGE);
+            ClubEvent tournament = tournament(user.club(), tournament_id);
+            byte[] content;
+            try {
+                content = java.util.Base64.getMimeDecoder().decode(required(content_base64, "content_base64"));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("content_base64 ist kein gültiges Base64.");
+            }
+            TournamentDocuments.Document added = documents(user).add(tournament.id(), required(file_name, "file_name"), content);
+            Map<String, Object> result = documentRow(added);
+            result.put("tournament", tournament.title());
+            result.put("size_bytes", content.length);
+            return result;
+        });
+    }
+
+    @Tool(description = "Delete one tournament document for everyone (also in the app). Cannot be undone; confirm with "
+            + "the user first. Needs events.manage.",
+            annotations = @Tool.Annotations(title = "Delete tournament document", readOnlyHint = false, destructiveHint = true, idempotentHint = true))
+    String delete_tournament_document(@ToolArg(description = "Document id from list_tournament_documents") String document_id) {
+        return run("delete_tournament_document", user -> {
+            requirePermission(user, Permission.EVENTS_MANAGE);
+            TournamentDocuments store = documents(user);
+            TournamentDocuments.Document document = document(store, document_id);
+            if (!store.delete(document)) {
+                throw new IllegalArgumentException("Das Dokument konnte nicht gelöscht werden.");
+            }
+            return Map.of("deleted", document.fileName());
+        });
+    }
+
+    private static TournamentDocuments documents(McpUser user) {
+        return new TournamentDocuments(user.db(), user.id());
+    }
+
+    private static ClubEvent tournament(ClubStore club, String tournamentId) {
+        ClubEvent event = event(club, tournamentId);
+        if (!"tournament".equals(event.kind())) {
+            throw new IllegalArgumentException("„" + event.title() + "“ ist kein Turnier; Dokumente gibt es nur bei Turnieren.");
+        }
+        return event;
+    }
+
+    private static TournamentDocuments.Document document(TournamentDocuments store, String documentId) {
+        return store.get(id(documentId, "document_id")).orElseThrow(() -> new IllegalArgumentException(
+                "Dieses Dokument gibt es nicht. Ids liefert list_tournament_documents."));
+    }
+
+    private static Map<String, Object> documentRow(TournamentDocuments.Document d) {
+        Map<String, Object> row = new LinkedHashMap<>();
+        row.put("id", d.id());
+        row.put("tournament_id", d.tournamentId());
+        row.put("file_name", d.fileName());
+        row.put("content_type", d.contentType());
+        row.put("uploaded_at", d.uploadedAt() == null ? null : Dates.formatApi(d.uploadedAt()));
+        return row;
     }
 
     // ------------------------------------------------------------ helpers

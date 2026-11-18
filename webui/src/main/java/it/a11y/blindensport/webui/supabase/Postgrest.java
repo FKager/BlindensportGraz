@@ -90,6 +90,11 @@ public final class Postgrest {
         return rows.isArray() ? rows.size() : 0;
     }
 
+    /** Supabase Storage with the same identity (storage RLS applies to users). */
+    public Storage storage() {
+        return new Storage(http, apiKey, bearer);
+    }
+
     /** POST /rpc/{name}; the parsed JSON result (null node for void functions). */
     public JsonNode rpc(String name, Map<String, ?> params) {
         SupabaseHttp.Result result = send("POST", "rpc/" + name, List.of(), params, Map.of(), "rpc " + name);

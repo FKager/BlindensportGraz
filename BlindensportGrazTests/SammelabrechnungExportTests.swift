@@ -296,24 +296,27 @@ final class SammelabrechnungExportTests: XCTestCase {
         XCTAssertTrue(entryNames.isEmpty)
     }
 
-    /// The uploaded Einladung goes into the bundle first, under
-    /// "Einladung_<title>.<ext>", byte-for-byte.
-    func testExportForTournamentIncludesInvitation() throws {
+    /// The tournament's documents go into the bundle first, under their own
+    /// names, byte-for-byte; a repeated name gets " 2".
+    func testExportForTournamentIncludesDocuments() throws {
         let tournament = Tournament(title: "Alpen/Cup", sport: "Torball", location: "Graz",
                                     startDate: .now, endDate: .now)
-        let invitation = TournamentInvitation(fileData: Data("%PDF-1.4 test".utf8), fileName: "einladung.PDF",
+        let invitation = TournamentInvitation(fileData: Data("%PDF-1.4 test".utf8), fileName: "Einladung.pdf",
                                               contentType: "application/pdf", tournament: tournament)
-        let attachment = SammelabrechnungExporter.Attachment.invitation(invitation, tournamentTitle: tournament.title)
-        XCTAssertEqual(attachment.fileName, "Einladung_Alpen-Cup.pdf")
+        let schedule = TournamentInvitation(fileData: Data("xlsx".utf8), fileName: "Spiel/plan.xlsx",
+                                            contentType: "", tournament: tournament)
+        let again = TournamentInvitation(fileData: Data("%PDF-1.4 other".utf8), fileName: "einladung.PDF",
+                                         contentType: "application/pdf", tournament: tournament)
+        let attachments = [invitation, schedule, again].map(SammelabrechnungExporter.Attachment.document)
 
-        let url = try SammelabrechnungExporter.export(kostZ: nil, praeSummaries: [], invitation: attachment)
+        let url = try SammelabrechnungExporter.export(kostZ: nil, praeSummaries: [], documents: attachments)
         defer { try? FileManager.default.removeItem(at: url) }
         let archive = try Archive(url: url, accessMode: .read)
         let entries = Array(archive)
-        XCTAssertEqual(entries.map(\.path), ["Einladung_Alpen-Cup.pdf"])
+        XCTAssertEqual(entries.map(\.path), ["Einladung.pdf", "Spiel-plan.xlsx", "einladung 2.PDF"])
         var extracted = Data()
-        _ = try archive.extract(entries[0]) { extracted.append($0) }
-        XCTAssertEqual(extracted, invitation.fileData)
+        _ = try archive.extract(entries[2]) { extracted.append($0) }
+        XCTAssertEqual(extracted, again.fileData)
     }
 
     func testInvitationContentTypeFollowsExtension() {
@@ -321,5 +324,10 @@ final class SammelabrechnungExportTests: XCTestCase {
         XCTAssertEqual(TournamentInvitation.contentType(forFileName: "a.DOCX"),
                        "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
         XCTAssertEqual(TournamentInvitation.contentType(forFileName: "a.txt"), "text/plain")
+        XCTAssertEqual(TournamentInvitation.contentType(forFileName: "a.xlsx"),
+                       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        XCTAssertEqual(TournamentInvitation.contentType(forFileName: "a.JPG"), "image/jpeg")
+        XCTAssertTrue(TournamentInvitation.isSupported(fileName: "Plan.HEIC"))
+        XCTAssertFalse(TournamentInvitation.isSupported(fileName: "virus.exe"))
     }
 }

@@ -181,13 +181,15 @@ struct AddTournamentView: View {
                         )
                         modelContext.insert(tournament)
                         TournamentService.save(tournament, modelContext: modelContext)
-                        // Keep the imported Einladung (admins only — the
-                        // invitations are budget.manage-protected).
-                        if let invitationFile, currentUser?.can(.budgetManage) == true {
-                            TournamentInvitationService.replace(for: tournament, data: invitationFile.data,
-                                                                fileName: invitationFile.name,
-                                                                uploadedBy: currentUser?.id.uuidString ?? "",
-                                                                modelContext: modelContext)
+                        // Keep the imported Einladung as the tournament's
+                        // first document (uploading needs events.manage).
+                        if let invitationFile, currentUser?.can(.eventsManage) == true,
+                           TournamentInvitation.isSupported(fileName: invitationFile.name),
+                           invitationFile.data.count <= TournamentInvitation.maxFileSize {
+                            TournamentInvitationService.add(to: tournament, data: invitationFile.data,
+                                                            fileName: invitationFile.name,
+                                                            uploadedBy: currentUser?.id.uuidString ?? "",
+                                                            modelContext: modelContext)
                         }
 
                         // Post notification when tournament is created

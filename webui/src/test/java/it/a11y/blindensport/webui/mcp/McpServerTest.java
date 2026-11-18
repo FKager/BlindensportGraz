@@ -20,6 +20,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,9 +33,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class McpServerTest {
     private static final String ADMIN_TOKEN = McpTokens.PREFIX + "admin";
     private static final String MEMBER_TOKEN = McpTokens.PREFIX + "member";
+    private static final String OFFICE_TOKEN = McpTokens.PREFIX + "office";
     private static final String MEMBER_ID = "44444444-4444-4444-4444-444444444444";
     private static final UUID ADMIN = UUID.fromString("11111111-1111-1111-1111-111111111111");
     private static final UUID PLAIN = UUID.fromString("33333333-3333-3333-3333-333333333333");
+    private static final UUID OFFICE = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
     private WireMockServer mock;
 
@@ -50,6 +53,7 @@ class McpServerTest {
         mock.stubFor(post(urlPathEqualTo("/rest/v1/rpc/mcp_token_update")).willReturn(okJson("null")));
         account(ADMIN_TOKEN, ADMIN, "admin", "[{\"permission\":\"members.manage\"},{\"permission\":\"events.manage\"}]");
         account(MEMBER_TOKEN, PLAIN, "member", "[]");
+        account(OFFICE_TOKEN, OFFICE, "office", "[{\"permission\":\"members.manage\"}]");
         mock.stubFor(get(urlPathEqualTo("/rest/v1/members")).willReturn(okJson("[{\"id\":\"" + MEMBER_ID
                 + "\",\"first_name\":\"Anna\",\"last_name\":\"Muster\",\"member_number\":\"7\",\"sport_id\":\"\","
                 + "\"default_function\":\"\",\"member_of_gvsc\":true,\"joined_at\":\"2020-01-01T00:00:00+00:00\","
@@ -140,15 +144,109 @@ class McpServerTest {
     }
 
     @Test
-    void noToolDeletesAnything() {
+    void onlyATournamentDocumentCanBeDeleted() {
         String session = initialize(ADMIN_TOKEN);
         String tools = mcp(ADMIN_TOKEN, session, "{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}")
                 .then().statusCode(200).extract().asString();
-        List<String> names = io.restassured.path.json.JsonPath.from(tools).getList("result.tools.name");
+        var list = io.restassured.path.json.JsonPath.from(tools);
+        List<String> names = list.getList("result.tools.name");
         assertTrue(names.contains("create_prae_forms"), tools);
-        assertTrue(names.stream().noneMatch(n -> n.contains("delete") || n.contains("remove")), tools);
-        List<Boolean> destructive = io.restassured.path.json.JsonPath.from(tools).getList("result.tools.annotations.destructiveHint");
-        assertFalse(destructive.contains(true), tools);
+        assertEquals(List.of("delete_tournament_document"),
+                names.stream().filter(n -> n.contains("delete") || n.contains("remove")).toList(), tools);
+        List<String> destructive = list.getList("result.tools.findAll { it.annotations.destructiveHint == true }.name");
+        assertEquals(List.of("delete_tournament_document"), destructive, tools);
+    }
+
+    // ------------------------------------------------ tournament documents
+
+    private static final String TOURNAMENT_ID = "55555555-5555-5555-5555-555555555555";
+    private static final String DOCUMENT_ID = "66666666-6666-6666-6666-666666666666";
+
+    private void tournament() {
+        mock.stubFor(get(urlPathEqualTo("/rest/v1/events")).willReturn(okJson("[{\"id\":\"" + TOURNAMENT_ID
+                + "\",\"kind\":\"tournament\",\"title\":\"Alpencup\",\"sport\":\"Torball\",\"location\":\"\","
+                + "\"street\":\"\",\"zip\":\"\",\"city\":\"Graz\",\"country\":\"\","
+                + "\"start_date\":\"2026-12-05T08:00:00+00:00\",\"end_date\":\"2026-12-06T17:00:00+00:00\","
+                + "\"notes\":\"\",\"status\":\"planned\",\"team_ids\":[],\"created_by\":\"\"}]")));
+    }
+
+    private void document() {
+        mock.stubFor(get(urlPathEqualTo("/rest/v1/tournament_invitations")).willReturn(okJson("[{\"id\":\"" + DOCUMENT_ID
+                + "\",\"tournament_id\":\"" + TOURNAMENT_ID + "\",\"storage_path\":\"" + DOCUMENT_ID + ".txt\","
+                + "\"file_name\":\"Einladung.txt\",\"content_type\":\"text/plain\",\"uploaded_by\":\"\","
+                + "\"uploaded_at\":\"2026-11-18T10:00:00+00:00\"}]")));
+        mock.stubFor(get(urlPathEqualTo("/storage/v1/object/tournament-invitations/" + DOCUMENT_ID + ".txt"))
+                .willReturn(aResponse().withStatus(200).withBody("Einladung zum Alpencup am 5. Dezember")));
+    }
+
+    @Test
+    void aDocumentIsUploadedAsTheUserFileFirst() {
+        tournament();
+        mock.stubFor(post(urlPathMatching("/storage/v1/object/tournament-invitations/.*\\.pdf"))
+                .willReturn(okJson("{\"Key\":\"x\"}")));
+        mock.stubFor(post(urlPathEqualTo("/rest/v1/tournament_invitations")).willReturn(aResponse().withStatus(201)));
+        String session = initialize(ADMIN_TOKEN);
+        String content = java.util.Base64.getEncoder().encodeToString("%PDF-1.4 test".getBytes());
+        String result = call(ADMIN_TOKEN, session, "upload_tournament_document", "{\"tournament_id\":\"" + TOURNAMENT_ID
+                + "\",\"file_name\":\"Einladung.pdf\",\"content_base64\":\"" + content + "\"}");
+        assertFalse(result.contains("\"isError\":true"), result);
+        assertTrue(result.contains("Einladung.pdf"), result);
+        mock.verify(postRequestedFor(urlPathMatching("/storage/v1/object/tournament-invitations/.*\\.pdf"))
+                .withHeader("Authorization", wm("Bearer access-admin"))
+                .withHeader("Content-Type", wm("application/pdf")));
+        mock.verify(postRequestedFor(urlPathEqualTo("/rest/v1/tournament_invitations"))
+                .withRequestBody(matchingJsonPath("$[0].tournament_id", wm(TOURNAMENT_ID)))
+                .withRequestBody(matchingJsonPath("$[0].file_name", wm("Einladung.pdf")))
+                .withRequestBody(matchingJsonPath("$[0].content_type", wm("application/pdf"))));
+    }
+
+    @Test
+    void anUnsupportedFileIsRefusedBeforeAnyUpload() {
+        tournament();
+        String session = initialize(ADMIN_TOKEN);
+        String result = call(ADMIN_TOKEN, session, "upload_tournament_document", "{\"tournament_id\":\"" + TOURNAMENT_ID
+                + "\",\"file_name\":\"tool.exe\",\"content_base64\":\"AAAA\"}");
+        assertTrue(result.contains("\"isError\":true"), result);
+        assertTrue(result.contains("nicht unterst"), result);
+        assertEquals(0, mock.findAll(postRequestedFor(urlPathMatching("/storage/.*"))).size());
+    }
+
+    @Test
+    void uploadingNeedsEventsManage() {
+        String session = initialize(OFFICE_TOKEN);
+        String result = call(OFFICE_TOKEN, session, "upload_tournament_document", "{\"tournament_id\":\"" + TOURNAMENT_ID
+                + "\",\"file_name\":\"a.pdf\",\"content_base64\":\"AAAA\"}");
+        assertTrue(result.contains("events.manage"), result);
+        assertEquals(0, mock.findAll(postRequestedFor(urlPathMatching("/storage/.*"))).size());
+    }
+
+    @Test
+    void aDocumentComesWithItsTextAndAOneTimeLink() {
+        tournament();
+        document();
+        String session = initialize(ADMIN_TOKEN);
+        String listed = call(ADMIN_TOKEN, session, "list_tournament_documents", "{\"tournament_id\":\"" + TOURNAMENT_ID + "\"}");
+        assertTrue(listed.contains(DOCUMENT_ID), listed);
+        String result = call(ADMIN_TOKEN, session, "get_tournament_document", "{\"document_id\":\"" + DOCUMENT_ID + "\"}");
+        assertTrue(result.contains("Einladung zum Alpencup am 5. Dezember"), result);
+        String url = result.replaceAll("(?s).*(/mcp-files/[0-9a-f]+).*", "$1");
+        given().when().get(url).then().statusCode(200).body(containsString("Alpencup"));
+        given().when().get(url).then().statusCode(404);
+    }
+
+    @Test
+    void deletingRemovesRowAndFile() {
+        document();
+        mock.stubFor(com.github.tomakehurst.wiremock.client.WireMock.delete(urlPathEqualTo("/rest/v1/tournament_invitations"))
+                .willReturn(okJson("[{\"id\":\"" + DOCUMENT_ID + "\"}]")));
+        mock.stubFor(com.github.tomakehurst.wiremock.client.WireMock.delete(urlPathEqualTo("/storage/v1/object/tournament-invitations"))
+                .willReturn(okJson("[]")));
+        String session = initialize(ADMIN_TOKEN);
+        String result = call(ADMIN_TOKEN, session, "delete_tournament_document", "{\"document_id\":\"" + DOCUMENT_ID + "\"}");
+        assertTrue(result.contains("Einladung.txt"), result);
+        mock.verify(com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor(
+                urlPathEqualTo("/storage/v1/object/tournament-invitations"))
+                .withRequestBody(matchingJsonPath("$.prefixes[0]", wm(DOCUMENT_ID + ".txt"))));
     }
 
     @Test
