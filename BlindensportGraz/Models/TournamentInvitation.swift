@@ -1,13 +1,15 @@
 import Foundation
 import SwiftData
+import UniformTypeIdentifiers
 
-/// The organiser's invitation (Einladung) for a tournament — PDF/DOCX/TXT,
-/// uploaded in the tournament's Sammelabrechnung or kept from "Turnier aus
-/// Einladung erstellen", and bundled into its ZIP/print job. Admins only
-/// (budget.manage, like `ExpenseReceipt`). Immutable once uploaded:
-/// replacing deletes the old one and inserts a new one
-/// (`TournamentInvitationService.replace`). The newest per tournament wins
-/// if two ever coexist.
+/// One document of a tournament ("Dokumente": invitation, schedule,
+/// results …) — PDF, Word, Excel, text or image. A tournament has any number
+/// of them; they're uploaded in the tournament's detail screen (or kept from
+/// "Turnier aus Einladung erstellen") and all bundled into its
+/// Sammelabrechnung ZIP/print job. Every approved account reads them;
+/// events.manage adds and deletes (`TournamentInvitationService`). Immutable
+/// once uploaded. The name stays "invitation" (table `tournament_invitations`,
+/// bucket `tournament-invitations`) from when a tournament had only one.
 @Model
 final class TournamentInvitation {
     @Attribute(.unique) var id: UUID = UUID()
@@ -47,8 +49,32 @@ extension TournamentInvitation {
         switch (name as NSString).pathExtension.lowercased() {
         case "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         case "doc": "application/msword"
+        case "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        case "xls": "application/vnd.ms-excel"
         case "txt": "text/plain"
+        case "jpg", "jpeg": "image/jpeg"
+        case "png": "image/png"
+        case "heic": "image/heic"
+        case "heif": "image/heif"
         default: "application/pdf"
         }
+    }
+
+    /// The document types the bucket accepts (file picker filter).
+    nonisolated static let supportedContentTypes: [UTType] = [
+        .pdf, .plainText, .jpeg, .png, .heic, .heif,
+        UTType(filenameExtension: "docx") ?? .data,
+        UTType(filenameExtension: "doc") ?? .data,
+        UTType(filenameExtension: "xlsx") ?? .data,
+        UTType(filenameExtension: "xls") ?? .data
+    ]
+
+    /// Largest file the bucket accepts (15 MB, see the storage migration).
+    nonisolated static let maxFileSize = 15 * 1024 * 1024
+
+    /// Accepted by the bucket? Judged by extension, like `contentType(forFileName:)`.
+    nonisolated static func isSupported(fileName: String) -> Bool {
+        ["pdf", "docx", "doc", "xlsx", "xls", "txt", "jpg", "jpeg", "png", "heic", "heif"]
+            .contains((fileName as NSString).pathExtension.lowercased())
     }
 }

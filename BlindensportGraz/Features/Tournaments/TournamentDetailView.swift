@@ -181,6 +181,7 @@ struct TournamentDetailView: View {
             TextField("Notizen", text: $tournament.notes, axis: .vertical)
                 .lineLimit(3...6)
         }
+        TournamentDocumentsSection(tournament: tournament, currentUser: currentUser)
     }
 
     // Localized label for `tournament.status` — mirrors the edit Picker's tags.
@@ -258,6 +259,7 @@ struct TournamentDetailView: View {
                 Text(tournament.notes)
             }
         }
+        TournamentDocumentsSection(tournament: tournament, currentUser: currentUser)
     }
 
 var body: some View {

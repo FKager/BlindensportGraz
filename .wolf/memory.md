@@ -4275,3 +4275,33 @@
 | 17:24 | Edited BlindensportGraz/Features/Reports/Prae/PraeExport.swift | 2→6 lines | ~92 |
 | 17:27 | PRAE: signature date A38 = next training (month form: first of next month, same Sportart; tournament: next training of its Sportart); app + web UI + tests (webui 153, app 97 green) | PraeCalculation.swift, PraeExport.swift, PraeCalculator/PraeForm/PraeExporter/PraeService/ReportService.java, tests | done | ~25000 |
 | 17:27 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:28 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:28 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:29 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:35 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:40 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:41 | Merged PR #52 (e8b6c2d); web UI deployed to nuc (verified); iOS Device Deploy succeeded after restarting the stopped runner | - | done | ~3000 |
+| 17:41 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:42 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:50 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+| 17:59 | TestFlight v0.13.0 = build 355, Internal group + de notes | - | done | ~3000 |
+| 17:59 | Session end: 12 writes across 4 files (TrainingsfrequenzlisteTest.java, TrainingsfrequenzlisteCalculationTests.swift, PraeCalculation.swift, PraeExport.swift) | 0 reads | ~2340 tok |
+
+## Session: 2026-11-18 17:06
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 17:13 | Created supabase/migrations/20261118000001_tournament_documents.sql | — | ~806 |
+| 17:13 | Created supabase/tests/tournament_invitations_test.sql | — | ~1151 |
+| 17:14 | Created BlindensportGraz/Services/TournamentInvitationService.swift | — | ~571 |
+| 17:15 | Created BlindensportGraz/Features/Tournaments/TournamentDocumentsSection.swift | — | ~1830 |
+| 17:17 | Created webui/src/main/java/it/a11y/blindensport/webui/club/TournamentDocuments.java | — | ~2003 |
+| 17:18 | Created webui/src/main/java/it/a11y/blindensport/webui/ui/TournamentDocumentsDialog.java | — | ~1859 |
+| 17:30 | Tournament documents feature: migration+pgTAP (217 ok), app section/Sammelabrechnung (339 tests ok), web UI dialog+Storage, 4 MCP tools (162 tests ok), local storage RLS checked with curl | many | done, not committed | ~60000 |
+| 17:24 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+| 17:29 | PR #54 opened; migration 20261118000001 applied to STAGING (verified policies+mime types); staging web UI container rebuilt from branch; MCP e2e on staging passed (upload/list/get text+one-time link/refuse .exe/delete incl. file) | supabase, webui | done | ~8000 |
+| 17:28 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+| 17:29 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+| 17:29 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+| 17:30 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+| 17:30 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |

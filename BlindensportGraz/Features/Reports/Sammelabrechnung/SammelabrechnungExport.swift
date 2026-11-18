@@ -30,16 +30,16 @@ enum SammelabrechnungExporter {
     /// One produced report: its file name inside the bundle and the .xlsx.
     typealias ReportFile = (name: String, url: URL)
 
-    /// An uploaded document bundled as-is (the tournament's Einladung).
+    /// An uploaded document bundled as-is (one of the tournament's Dokumente).
     struct Attachment: Sendable, Equatable {
         var fileName: String
         var data: Data
 
-        /// "Einladung_<title>.<ext>", "/" stripped like the other entry names.
-        static func invitation(_ invitation: TournamentInvitation, tournamentTitle: String) -> Attachment {
-            let title = tournamentTitle.replacingOccurrences(of: "/", with: "-")
-            let base = title.isEmpty ? "Einladung" : "Einladung_\(title)"
-            return Attachment(fileName: "\(base).\(invitation.fileExtension)", data: invitation.fileData)
+        /// Under its own file name, "/" stripped like the other entry names.
+        static func document(_ document: TournamentInvitation) -> Attachment {
+            let name = document.fileName.replacingOccurrences(of: "/", with: "-")
+            return Attachment(fileName: name.isEmpty ? "Dokument.\(document.fileExtension)" : name,
+                              data: document.fileData)
         }
     }
 
@@ -94,11 +94,11 @@ enum SammelabrechnungExporter {
     static func export(kostZ: KostZTournamentSummary?, praeSummaries: [PraeTournamentSummary],
                         teilnehmerlisteSportler: TeilnehmerlisteContext? = nil,
                         teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil,
-                        invitation: Attachment? = nil) throws -> URL {
+                        documents: [Attachment] = []) throws -> URL {
         try zipFiles(files(kostZ: kostZ, praeSummaries: praeSummaries,
                            teilnehmerlisteSportler: teilnehmerlisteSportler,
                            teilnehmerlisteHelfer: teilnehmerlisteHelfer,
-                           invitation: invitation),
+                           documents: documents),
                      namePrefix: "Sammelabrechnung")
     }
 
@@ -106,10 +106,10 @@ enum SammelabrechnungExporter {
     static func files(kostZ: KostZTournamentSummary?, praeSummaries: [PraeTournamentSummary],
                       teilnehmerlisteSportler: TeilnehmerlisteContext? = nil,
                       teilnehmerlisteHelfer: TeilnehmerlisteContext? = nil,
-                      invitation: Attachment? = nil) throws -> [ReportFile] {
+                      documents: [Attachment] = []) throws -> [ReportFile] {
         var files: [ReportFile] = []
-        if let invitation {
-            files.append((invitation.fileName, try write(invitation)))
+        for document in uniquelyNamed(documents) {
+            files.append((document.fileName, try write(document)))
         }
         if let kostZ {
             files.append(("KostZ.xlsx", try KostZExporter.export(summary: kostZ)))
@@ -251,7 +251,25 @@ enum SammelabrechnungExporter {
         return outputURL
     }
 
-    /// Writes an uploaded document (the tournament invitation) to its own
+    /// Documents with a name already taken (case-insensitively, like a ZIP
+    /// on a Mac) get " 2", " 3" … before the extension.
+    static func uniquelyNamed(_ documents: [Attachment]) -> [Attachment] {
+        var taken = Set<String>()
+        return documents.map { document in
+            var result = document
+            let name = document.fileName as NSString
+            let base = name.deletingPathExtension
+            let ext = name.pathExtension
+            var counter = 1
+            while !taken.insert(result.fileName.lowercased()).inserted {
+                counter += 1
+                result.fileName = ext.isEmpty ? "\(base) \(counter)" : "\(base) \(counter).\(ext)"
+            }
+            return result
+        }
+    }
+
+    /// Writes an uploaded document (one of the tournament's Dokumente) to its own
     /// temp folder under its file name — the extension matters for printing
     /// (ReportPrinter picks PDF vs. web rendering by it).
     private static func write(_ attachment: Attachment) throws -> URL {

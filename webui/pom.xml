@@ -67,6 +67,12 @@
             <artifactId>quarkus-mcp-server-http</artifactId>
             <version>${quarkus-mcp-server.version}</version>
         </dependency>
+        <!-- Text of uploaded tournament documents for the MCP tool get_tournament_document -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.8</version>
+        </dependency>
 
         <dependency>
             <groupId>io.quarkus</groupId>

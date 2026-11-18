@@ -87,6 +87,48 @@ public final class SupabaseHttp {
         }
     }
 
+    /** A binary answer (Storage downloads). */
+    public record BytesResult(int status, byte[] body) {
+        public boolean ok() {
+            return status >= 200 && status < 300;
+        }
+
+        public Result asText() {
+            return new Result(status, new String(body, StandardCharsets.UTF_8));
+        }
+    }
+
+    /**
+     * Raw bytes up and down (Supabase Storage under {@code storage/v1}).
+     *
+     * @param body        uploaded as-is with {@code contentType}, or null for no body
+     */
+    public BytesResult sendBytes(String method, String path, byte[] body, String contentType,
+                                 Map<String, String> headers, String apiKey, String bearer) {
+        HttpRequest.Builder request = HttpRequest.newBuilder(baseURL.resolve(path))
+                .timeout(Duration.ofSeconds(60))
+                .header("apikey", apiKey);
+        if (bearer != null) {
+            request.header("Authorization", "Bearer " + bearer);
+        }
+        headers.forEach(request::header);
+        if (body != null) {
+            request.header("Content-Type", contentType);
+            request.method(method, HttpRequest.BodyPublishers.ofByteArray(body));
+        } else {
+            request.method(method, HttpRequest.BodyPublishers.noBody());
+        }
+        try {
+            HttpResponse<byte[]> response = CLIENT.send(request.build(), HttpResponse.BodyHandlers.ofByteArray());
+            return new BytesResult(response.statusCode(), response.body());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Supabase nicht erreichbar: " + e.getMessage(), e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Supabase request interrupted", e);
+        }
+    }
+
     /** Throws {@link SupabaseException} unless 2xx. */
     public Result check(Result result, String what) {
         if (!result.ok()) {
@@ -117,6 +159,11 @@ public final class SupabaseHttp {
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Cannot encode request body", e);
         }
+    }
+
+    /** One path segment, percent-encoded (spaces as %20). */
+    public static String encodeSegment(String s) {
+        return encode(s);
     }
 
     private static String encode(String s) {
