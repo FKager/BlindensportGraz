@@ -5,6 +5,7 @@
 > Last updated: 2026-07-15
 
 ## User Preferences
+- [2026-11-18] Run web UI and MCP server deployments (nuc redeploy; /mcp lives in the same container) through a subagent that gets the full recipe and the checks to run.
 - [2026-11-10] Report times in Graz local time (Europe/Vienna), not UTC — GitHub/CI timestamps are UTC, convert them.
 - [2026-11-10] Run the app's XCTest suites in the iOS Simulator again (`xcodebuild test`) to verify Swift changes — the earlier no-Simulator preference is withdrawn.
 - [2026-11-08] USER CORRECTION: event field `location` (venue name) stays labeled "Veranstaltungsort" — user rejected "Name der Sportstätte" and "Anschrift". Web UI now also says "Veranstaltungsort" (was "Ort / Halle"); `city` is "Ort" everywhere (web UI said "Stadt"). New events/trainings/invitation drafts start with an empty venue (no "Graz" default). The Teilnehmerliste "Ort" is the city (cityWithCountry), like KostZ H3 — confirmed by user.
@@ -49,6 +50,8 @@
 - [2026-10-14] User wants a permanent, tappable sync status line ("Status: Online/Offline/…") in the account screen that starts a sync on tap, not only transient banners. Implemented as Sync/SyncStatusRow.swift (shows SyncState.lastError on failure).
 
 ## Key Learnings
+- [2026-11-18] A TestFlight run can fail without any code problem: GitHub-hosted macos-26 runners had no capacity, and the archive job was cancelled unstarted ("not acquired by Runner of type hosted"). Recovery: `gh run rerun <id> --failed`, then run release-testflight.sh again with the same version (no re-tag, it resumes).
+- [2026-11-18] MCP `create_tournament_reports` (branch mcp-tournament-reports): the whole tournament Sammelabrechnung as a one-time zip link; Reports.Selection has a 6th field `documents` (5-arg constructor = false); ReportService.sammelabrechnung(report, selection) adds the uploaded docs first; the REST `documents` param and the ReportsView checkbox use it. In ClubTools never name a local `files` — it hides the injected McpFiles.
 - [2026-11-18] Tournament documents ("Dokumente") reuse table `tournament_invitations` + bucket `tournament-invitations` (names kept for old builds); many per tournament; approved read, events.manage write (migration 20261118000001). App: `TournamentDocumentsSection` in TournamentDetailView (both modes), Sammelabrechnung bundles all docs (per-doc toggle, duplicate names get " 2"). Web: `club/TournamentDocuments` + `supabase/Storage` (Postgrest.storage(), same user identity) + `TournamentDocumentsDialog` from EventsView. MCP: list/get/upload(base64)/delete_tournament_document; get returns DocumentText (PDFBox 3.0.8) + one-time /mcp-files link. Web Sammelabrechnung does NOT include documents yet.
 - [2026-11-18] Supabase Storage REST: upload POST /storage/v1/object/{bucket}/{path} with x-upsert: true; remove = DELETE /storage/v1/object/{bucket} with JSON {"prefixes":[…]} (returns [] when RLS hides the file — no error); an RLS refusal on upload comes back as HTTP 400 with statusCode "403" in the body. Local storage-api only runs if `supabase start` doesn't exclude storage-api.
 - [2026-11-18] MCP access needs a WEB_ACCESS permission: a plain member can't even initialize; tests for "missing permission" need e.g. a members.manage-only account.

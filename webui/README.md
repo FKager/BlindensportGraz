@@ -111,7 +111,7 @@ one by one, as in the app. Files come as downloads (`Content-Disposition`).
 | `/api/reports/trainingsfrequenzliste/{year}/{half}?sport=` | JSON: half 1 (Jänner–Juni) or 2; header fields, dates, people with the dates they attended |
 | `/api/reports/trainingsfrequenzliste/{year}/{half}/trainingsfrequenzliste.xlsx?sport=` | Sport Austria's Trainingsfrequenzliste (25 dates, 24 people) |
 
-Sammelabrechnung parameters: `kostz`, `sportler`, `helfer` (tournaments),
+Sammelabrechnung parameters: `kostz`, `sportler`, `helfer`, `documents` (tournaments: the uploaded documents, first in the zip),
 `trainingsfrequenzliste` (months with `sport`) default to `true`; `prae` is repeated person ids (the `personId` of the
 JSON), absent for everyone, `prae=none` for no one.
 
@@ -167,6 +167,7 @@ Coaches, admins and root can create tokens, and a client can do whatever that ac
 | Teams | `list_teams`, `create_team`, `add_team_member` |
 | Events | `list_events`, `get_event`, `create_event`, `update_event`, `set_attendance` |
 | PRAE | `preview_prae`, `create_prae_forms` |
+| Tournament reports | `create_tournament_reports`: the whole Sammelabrechnung of a tournament as one zip (uploaded documents first, KostZ, TeilnehmerInnenlisten, PRAE), each part switchable; needs `club.manage`, PRAE also `members.private.read` (left out without it) |
 | Tournament documents | `list_tournament_documents`, `get_tournament_document`, `upload_tournament_document` (base64), `delete_tournament_document` |
 
 ### PRAE exists twice

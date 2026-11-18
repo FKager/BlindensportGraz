@@ -34,6 +34,8 @@ class McpServerTest {
     private static final String ADMIN_TOKEN = McpTokens.PREFIX + "admin";
     private static final String MEMBER_TOKEN = McpTokens.PREFIX + "member";
     private static final String OFFICE_TOKEN = McpTokens.PREFIX + "office";
+    private static final String KASSA_TOKEN = McpTokens.PREFIX + "kassa";
+    private static final String ROOT_TOKEN = McpTokens.PREFIX + "root";
     private static final String MEMBER_ID = "44444444-4444-4444-4444-444444444444";
     private static final UUID ADMIN = UUID.fromString("11111111-1111-1111-1111-111111111111");
     private static final UUID PLAIN = UUID.fromString("33333333-3333-3333-3333-333333333333");
@@ -54,6 +56,11 @@ class McpServerTest {
         account(ADMIN_TOKEN, ADMIN, "admin", "[{\"permission\":\"members.manage\"},{\"permission\":\"events.manage\"}]");
         account(MEMBER_TOKEN, PLAIN, "member", "[]");
         account(OFFICE_TOKEN, OFFICE, "office", "[{\"permission\":\"members.manage\"}]");
+        account(KASSA_TOKEN, UUID.fromString("66666666-0000-0000-0000-000000000001"), "kassa",
+                "[{\"permission\":\"club.manage\"},{\"permission\":\"events.manage\"}]");
+        account(ROOT_TOKEN, UUID.fromString("66666666-0000-0000-0000-000000000002"), "root",
+                "[{\"permission\":\"club.manage\"},{\"permission\":\"events.manage\"},"
+                        + "{\"permission\":\"members.private.read\"}]");
         mock.stubFor(get(urlPathEqualTo("/rest/v1/members")).willReturn(okJson("[{\"id\":\"" + MEMBER_ID
                 + "\",\"first_name\":\"Anna\",\"last_name\":\"Muster\",\"member_number\":\"7\",\"sport_id\":\"\","
                 + "\"default_function\":\"\",\"member_of_gvsc\":true,\"joined_at\":\"2020-01-01T00:00:00+00:00\","
@@ -155,6 +162,60 @@ class McpServerTest {
                 names.stream().filter(n -> n.contains("delete") || n.contains("remove")).toList(), tools);
         List<String> destructive = list.getList("result.tools.findAll { it.annotations.destructiveHint == true }.name");
         assertEquals(List.of("delete_tournament_document"), destructive, tools);
+    }
+
+    // ------------------------------------------------- tournament reports
+
+    private static List<String> zipEntries(String url) throws java.io.IOException {
+        byte[] zip = given().when().get(url).then().statusCode(200).extract().asByteArray();
+        List<String> names = new java.util.ArrayList<>();
+        try (var in = new java.util.zip.ZipInputStream(new java.io.ByteArrayInputStream(zip))) {
+            for (var e = in.getNextEntry(); e != null; e = in.getNextEntry()) {
+                names.add(e.getName());
+            }
+        }
+        return names;
+    }
+
+    private static String downloadPath(String result) {
+        return result.replaceAll("(?s).*(/mcp-files/[0-9a-f]+).*", "$1");
+    }
+
+    @Test
+    void aTournamentsReportsComeAsOneZipWithItsDocumentsFirst() throws java.io.IOException {
+        it.a11y.blindensport.webui.api.ReportsFixture.stubClubData(mock);
+        String session = initialize(ROOT_TOKEN);
+        String result = call(ROOT_TOKEN, session, "create_tournament_reports",
+                "{\"tournament_id\":\"" + it.a11y.blindensport.webui.api.ReportsFixture.TOURNAMENT + "\"}");
+        assertFalse(result.contains("\"isError\":true"), result);
+        assertTrue(result.contains("kostz_total"), result);
+        assertEquals(List.of("Einladung.pdf", "KostZ.xlsx", "PRAE_Muster_Erika.xlsx", "PRAE-Darstellung_Muster_Erika.xlsx",
+                "TeilnehmerInnenliste-Sportler.xlsx", "TeilnehmerInnenliste-Helfer.xlsx"), zipEntries(downloadPath(result)));
+        assertFalse(result.contains("AT00"), "no IBAN in the tool result: " + result);
+    }
+
+    @Test
+    void withoutPrivateReadTheReportsLeaveOutPrae() throws java.io.IOException {
+        it.a11y.blindensport.webui.api.ReportsFixture.stubClubData(mock);
+        String session = initialize(KASSA_TOKEN);
+        String tournament = it.a11y.blindensport.webui.api.ReportsFixture.TOURNAMENT;
+        String result = call(KASSA_TOKEN, session, "create_tournament_reports", "{\"tournament_id\":\"" + tournament + "\"}");
+        assertTrue(result.contains("prae_note"), result);
+        assertEquals(List.of("Einladung.pdf", "KostZ.xlsx", "TeilnehmerInnenliste-Sportler.xlsx",
+                "TeilnehmerInnenliste-Helfer.xlsx"), zipEntries(downloadPath(result)));
+        mock.verify(0, getRequestedFor(urlPathEqualTo("/rest/v1/member_private")));
+
+        String asked = call(KASSA_TOKEN, session, "create_tournament_reports",
+                "{\"tournament_id\":\"" + tournament + "\",\"prae\":true}");
+        assertTrue(asked.contains("members.private.read"), asked);
+    }
+
+    @Test
+    void tournamentReportsNeedClubManage() {
+        String session = initialize(ADMIN_TOKEN);
+        String result = call(ADMIN_TOKEN, session, "create_tournament_reports",
+                "{\"tournament_id\":\"" + TOURNAMENT_ID + "\",\"prae\":false}");
+        assertTrue(result.contains("club.manage"), result);
     }
 
     // ------------------------------------------------ tournament documents

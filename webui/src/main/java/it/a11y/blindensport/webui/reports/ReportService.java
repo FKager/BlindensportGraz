@@ -14,6 +14,7 @@ import it.a11y.blindensport.webui.prae.PraeForm.Person;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -77,6 +78,17 @@ public final class ReportService {
                 memberships, members, accounts);
         return new Reports.Month(month, year, sport, KostZ.month(month, year, people, trainings, attendances), prae,
                 frequenz);
+    }
+
+    /** A tournament's uploaded documents (invitation, schedule …) by file name. */
+    public LinkedHashMap<String, byte[]> documents(String tournamentId) {
+        return club.documents().files(tournamentId);
+    }
+
+    /** The tournament's Sammelabrechnung files, with its documents if the selection asks for them. */
+    public LinkedHashMap<String, byte[]> sammelabrechnung(Reports.Tournament report, Reports.Selection selection) {
+        return report.sammelabrechnung(selection,
+                selection.documents() ? documents(report.event().id()) : Map.of());
     }
 
     /** One tournament, by id. */

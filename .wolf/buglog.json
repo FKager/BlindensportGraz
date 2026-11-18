@@ -10300,6 +10300,23 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-18T17:30:00+01:00"
+    },
+    {
+      "id": "bug-612",
+      "timestamp": "2026-11-18T18:10:00+01:00",
+      "error_message": "iOS Build and Deploy v0.14.0: 'Archive, sign and upload to TestFlight' cancelled — The job was not acquired by Runner of type hosted even after multiple attempts",
+      "file": ".github/workflows/ios-build-deploy.yml",
+      "root_cause": "GitHub-hosted macos-26 (arm64) capacity shortage; the job never started (no runner, no steps) and was cancelled after ~15 min",
+      "fix": "gh run rerun <id> --failed, then re-run supabase/scripts/release-testflight.sh with the same version (it does not re-tag and resumes)",
+      "tags": [
+        "ci",
+        "testflight",
+        "github-actions",
+        "macos-runner"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-18T18:10:00+01:00"
     }
   ]
 }
