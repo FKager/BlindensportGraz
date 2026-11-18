@@ -180,7 +180,7 @@ struct AccountView: View {
         }
         .navigationTitle("Account")
         .sheet(isPresented: $showSetPassword) {
-            if let user = currentUser {
+            if currentUser != nil {
                 // Already signed in (e.g. via Apple on this device) — no
                 // activation code needed.
                 SetPasswordView(title: "Passwort ändern") {}
