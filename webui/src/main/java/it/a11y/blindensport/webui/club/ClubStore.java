@@ -49,6 +49,11 @@ public final class ClubStore {
         this.admin = admin;
     }
 
+    /** The tournament documents, as the same user. */
+    public TournamentDocuments documents() {
+        return new TournamentDocuments(db, admin);
+    }
+
     public static String newId() {
         return UUID.randomUUID().toString();
     }

@@ -23,6 +23,7 @@ public final class ReportsFixture {
     public static final String TOURNAMENT = "aaaaaaaa-0000-0000-0000-000000000001";
     static final String COACH_MEMBER = "bbbbbbbb-0000-0000-0000-000000000001";
     static final String PLAYER_MEMBER = "bbbbbbbb-0000-0000-0000-000000000002";
+    static final String DOCUMENT = "dddddddd-0000-0000-0000-000000000001";
 
     private ReportsFixture() {
     }
@@ -59,7 +60,8 @@ public final class ReportsFixture {
                         .map(p -> "{\"permission\":" + p + "}").toList()) + "]")));
     }
 
-    private static void stubClubData(WireMockServer mock) {
+    /** The club data: a tournament with one uploaded document, a training, two people. */
+    public static void stubClubData(WireMockServer mock) {
         mock.stubFor(get(urlPathEqualTo("/rest/v1/events")).willReturn(okJson("[" + event(TOURNAMENT, "tournament",
                 "Cup/Prag", "2026-05-29T07:00:00+00:00", "2026-05-30T16:00:00+00:00", "Prag", "Tschechien") + ","
                 + event("aaaaaaaa-0000-0000-0000-000000000002", "training", "Torball", "2026-03-03T17:00:00+00:00",
@@ -85,6 +87,13 @@ public final class ReportsFixture {
                 + member(COACH_MEMBER, "Erika", "Muster") + "," + member(PLAYER_MEMBER, "Zoe", "Zach") + "]")));
         mock.stubFor(get(urlPathEqualTo("/rest/v1/member_contacts")).willReturn(okJson("["
                 + contact(COACH_MEMBER, "Graz") + "," + contact(PLAYER_MEMBER, "Wien") + "]")));
+        mock.stubFor(get(urlPathEqualTo("/rest/v1/tournament_invitations")).willReturn(okJson("[{\"id\":\""
+                + DOCUMENT + "\",\"tournament_id\":\"" + TOURNAMENT + "\",\"storage_path\":\"" + DOCUMENT + ".pdf\","
+                + "\"file_name\":\"Einladung.pdf\",\"content_type\":\"application/pdf\",\"uploaded_by\":\"\","
+                + "\"uploaded_at\":\"2026-05-01T10:00:00+00:00\"}]")));
+        mock.stubFor(get(urlPathEqualTo("/storage/v1/object/tournament-invitations/" + DOCUMENT + ".pdf"))
+                .willReturn(com.github.tomakehurst.wiremock.client.WireMock.aResponse().withStatus(200)
+                        .withBody("%PDF-1.4 Einladung")));
         mock.stubFor(get(urlPathEqualTo("/rest/v1/member_private")).willReturn(okJson("[{\"member_id\":\""
                 + COACH_MEMBER + "\",\"svnr\":\"1234\",\"iban\":\"AT00\",\"birth_date\":\"1990-05-03\","
                 + "\"last_medical_examination\":null}]")));

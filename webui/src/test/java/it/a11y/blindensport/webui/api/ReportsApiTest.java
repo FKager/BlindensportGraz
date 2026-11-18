@@ -91,11 +91,12 @@ class ReportsApiTest {
                 .then().statusCode(200).contentType("application/zip")
                 .header("Content-Disposition", containsString("Sammelabrechnung_Cup-Prag.zip"))
                 .extract().asByteArray();
-        assertEquals(List.of("KostZ.xlsx", "PRAE_Muster_Erika.xlsx", "PRAE-Darstellung_Muster_Erika.xlsx",
+        assertEquals(List.of("Einladung.pdf", "KostZ.xlsx", "PRAE_Muster_Erika.xlsx", "PRAE-Darstellung_Muster_Erika.xlsx",
                 "TeilnehmerInnenliste-Sportler.xlsx", "TeilnehmerInnenliste-Helfer.xlsx"), entries(zip));
 
         byte[] noPrae = given().cookie("bsg_admin_session", admin)
-                .when().get("/api/reports/tournaments/" + TOURNAMENT + "/sammelabrechnung.zip?prae=none&helfer=false")
+                .when().get("/api/reports/tournaments/" + TOURNAMENT
+                        + "/sammelabrechnung.zip?prae=none&helfer=false&documents=false")
                 .then().statusCode(200).extract().asByteArray();
         assertEquals(List.of("KostZ.xlsx", "TeilnehmerInnenliste-Sportler.xlsx"), entries(noPrae));
     }

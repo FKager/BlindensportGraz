@@ -244,6 +244,17 @@ class ReportsTest {
                 "TeilnehmerInnenliste-Helfer.xlsx"), List.copyOf(chosen.keySet()));
         assertEquals(List.copyOf(chosen.keySet()),
                 entryNames(it.a11y.blindensport.webui.xlsx.XlsxPatch.zip(chosen)));
+
+        Map<String, byte[]> documents = new java.util.LinkedHashMap<>();
+        documents.put("Einladung.pdf", new byte[]{1});
+        documents.put("Spielplan.xlsx", new byte[]{2});
+        var withDocuments = report.sammelabrechnung(new Reports.Selection(true, Set.of(), false, false, false, true),
+                documents);
+        assertEquals(List.of("Einladung.pdf", "Spielplan.xlsx", "KostZ.xlsx"), List.copyOf(withDocuments.keySet()));
+        assertEquals(List.of("KostZ.xlsx"), List.copyOf(report.sammelabrechnung(
+                new Reports.Selection(true, Set.of(), false, false, false, false), documents).keySet()));
+        assertFalse(new Reports.Selection(false, Set.of(), false, false, false, true).isEmpty(true),
+                "documents alone are a tournament bundle");
     }
 
     @Test

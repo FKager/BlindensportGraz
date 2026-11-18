@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Locale;
 import java.util.Set;
 
@@ -32,18 +33,25 @@ public final class Reports {
      * @param sportler   tournaments only: TeilnehmerInnenliste of the players
      * @param helfer     tournaments only: TeilnehmerInnenliste of the coaches and assistants
      * @param trainingsfrequenzliste months of one sport only: its Trainingsfrequenzliste from the season's start
+     * @param documents tournaments only: the uploaded documents (invitation, schedule …), first in the bundle
      */
     public record Selection(boolean kostZ, Set<String> praePeople, boolean sportler, boolean helfer,
-                            boolean trainingsfrequenzliste) {
-        public static final Selection ALL = new Selection(true, null, true, true, true);
+                            boolean trainingsfrequenzliste, boolean documents) {
+        public static final Selection ALL = new Selection(true, null, true, true, true, true);
 
-        boolean includes(PraeForm form) {
+        /** Without the tournament documents (months, and callers that predate them). */
+        public Selection(boolean kostZ, Set<String> praePeople, boolean sportler, boolean helfer,
+                         boolean trainingsfrequenzliste) {
+            this(kostZ, praePeople, sportler, helfer, trainingsfrequenzliste, false);
+        }
+
+        public boolean includes(PraeForm form) {
             return praePeople == null || praePeople.contains(form.person().id());
         }
 
         public boolean isEmpty(boolean tournament) {
             boolean noPrae = praePeople != null && praePeople.isEmpty();
-            return !kostZ && noPrae && (tournament ? !sportler && !helfer : !trainingsfrequenzliste);
+            return !kostZ && noPrae && (tournament ? !sportler && !helfer && !documents : !trainingsfrequenzliste);
         }
     }
 
@@ -98,9 +106,20 @@ public final class Reports {
             return fileSafe(event.title());
         }
 
-        /** KostZ, the chosen PRAE forms, then the two TeilnehmerInnenlisten — the app's order. */
+        /** KostZ, the chosen PRAE forms, then the two TeilnehmerInnenlisten — without uploaded documents. */
         public LinkedHashMap<String, byte[]> sammelabrechnung(Selection selection) {
+            return sammelabrechnung(selection, Map.of());
+        }
+
+        /**
+         * The uploaded documents (if chosen, under their own names), then KostZ,
+         * the chosen PRAE forms and the two TeilnehmerInnenlisten — the app's order.
+         */
+        public LinkedHashMap<String, byte[]> sammelabrechnung(Selection selection, Map<String, byte[]> documents) {
             LinkedHashMap<String, byte[]> files = new LinkedHashMap<>();
+            if (selection.documents()) {
+                documents.forEach((name, data) -> XlsxPatch.addUnique(files, name, data));
+            }
             if (selection.kostZ()) {
                 files.put("KostZ.xlsx", kostZ.xlsx());
             }

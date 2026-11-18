@@ -23,6 +23,9 @@ import it.a11y.blindensport.webui.members.MemberStore;
 import it.a11y.blindensport.webui.prae.PraeCalculator;
 import it.a11y.blindensport.webui.prae.PraeForm;
 import it.a11y.blindensport.webui.prae.PraeService;
+import it.a11y.blindensport.webui.reports.ReportService;
+import it.a11y.blindensport.webui.reports.Reports;
+import it.a11y.blindensport.webui.xlsx.XlsxPatch;
 import it.a11y.blindensport.webui.supabase.DbErrorMessages;
 import it.a11y.blindensport.webui.supabase.SupabaseException;
 import jakarta.inject.Inject;
@@ -549,6 +552,76 @@ public class ClubTools {
                 return result;
             }
             String token = files.put("PRAE.zip", "application/zip", PraeService.zip(forms));
+            result.put("download_url", config.publicUrl() + "/mcp-files/" + token);
+            result.put("expires_in_minutes", McpFiles.LIFETIME.toMinutes());
+            return result;
+        });
+    }
+
+    @Tool(description = "All of a tournament's paperwork as one zip (the Sammelabrechnung): the uploaded documents "
+            + "(invitation, schedule …), KostZ, TeilnehmerInnenliste Sportler and Helfer, and the PRAE forms with "
+            + "Darstellung. Everything is included unless switched off. Returns the file names, the KostZ total and a "
+            + "one-time download_url, valid for 10 minutes. Needs club.manage; PRAE also needs members.private.read and "
+            + "is left out without it unless prae=true is asked for. If PRAE is included the zip contains social "
+            + "security numbers and IBANs: save it with `curl -o <file> <download_url>`, don't read its contents, and "
+            + "give the path to the user.",
+            annotations = @Tool.Annotations(title = "Create tournament reports", readOnlyHint = false, destructiveHint = false, idempotentHint = false))
+    String create_tournament_reports(
+            @ToolArg(description = "Tournament id from list_events") String tournament_id,
+            @ToolArg(description = "Uploaded documents (invitation …); default true", required = false) Boolean documents,
+            @ToolArg(description = "KostZ form; default true", required = false) Boolean kostz,
+            @ToolArg(description = "TeilnehmerInnenliste of the players; default true", required = false) Boolean teilnehmer_sportler,
+            @ToolArg(description = "TeilnehmerInnenliste of coaches and assistants; default true", required = false) Boolean teilnehmer_helfer,
+            @ToolArg(description = "PRAE forms with Darstellung; default: included when the account may read protected data", required = false) Boolean prae,
+            @ToolArg(description = "PRAE only for this person's member id", required = false) String prae_member_id) {
+        return run("create_tournament_reports", user -> {
+            requirePermission(user, Permission.CLUB_MANAGE);
+            boolean mayReadPrivate = user.can(Permission.MEMBERS_PRIVATE_READ);
+            boolean withPrae = prae == null ? mayReadPrivate : prae;
+            if (withPrae) {
+                requirePermission(user, Permission.MEMBERS_PRIVATE_READ);
+            }
+            ClubEvent tournament = tournament(user.club(), tournament_id);
+            ReportService service = new ReportService(user.club(), user.roster());
+            Reports.Tournament report = service.tournament(tournament.id(), withPrae);
+            Set<String> praePeople = Set.of();
+            if (withPrae) {
+                String wanted = prae_member_id == null ? null : id(prae_member_id, "prae_member_id");
+                praePeople = new HashSet<>();
+                for (PraeForm form : report.prae()) {
+                    PraeForm.Person person = form.person();
+                    boolean match = wanted == null || wanted.equals(person.id()) || (person.member() != null
+                            && wanted.equals(person.member().id().toLowerCase(Locale.ROOT)));
+                    if (match) {
+                        praePeople.add(person.id());
+                    }
+                }
+            }
+            Reports.Selection selection = new Reports.Selection(kostz == null || kostz, praePeople,
+                    teilnehmer_sportler == null || teilnehmer_sportler, teilnehmer_helfer == null || teilnehmer_helfer,
+                    false, documents == null || documents);
+            if (selection.isEmpty(true)) {
+                throw new IllegalArgumentException("Bitte mindestens einen Teil auswählen.");
+            }
+            LinkedHashMap<String, byte[]> bundle = service.sammelabrechnung(report, selection);
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("tournament", tournament.title());
+            result.put("files", List.copyOf(bundle.keySet()));
+            if (selection.kostZ()) {
+                result.put("kostz_total", report.kostZ().total());
+            }
+            if (withPrae) {
+                result.put("prae_people", report.prae().stream().filter(selection::includes)
+                        .map(f -> f.person().displayName()).distinct().toList());
+            } else if (prae == null && !report.prae().isEmpty()) {
+                result.put("prae_note", "PRAE-Formulare fehlen: dieses Konto darf geschützte Daten (SVNR, IBAN) nicht lesen.");
+            }
+            if (bundle.isEmpty()) {
+                result.put("message", "Für diese Auswahl gibt es keine Dateien.");
+                return result;
+            }
+            String token = files.put("Sammelabrechnung_" + report.label() + ".zip", "application/zip",
+                    XlsxPatch.zip(bundle));
             result.put("download_url", config.publicUrl() + "/mcp-files/" + token);
             result.put("expires_in_minutes", McpFiles.LIFETIME.toMinutes());
             return result;

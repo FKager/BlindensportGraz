@@ -189,11 +189,12 @@ public class ReportsResource {
     @Produces(ZIP)
     public Response tournamentBundle(@PathParam("id") String id, @QueryParam("kostz") Boolean kostz,
                                      @QueryParam("prae") List<String> prae, @QueryParam("sportler") Boolean sportler,
-                                     @QueryParam("helfer") Boolean helfer, @Context ContainerRequestContext request) {
-        Reports.Selection selection = selection(kostz, prae, orTrue(sportler), orTrue(helfer), false);
+                                     @QueryParam("helfer") Boolean helfer, @QueryParam("documents") Boolean documents,
+                                     @Context ContainerRequestContext request) {
+        Reports.Selection selection = selection(kostz, prae, orTrue(sportler), orTrue(helfer), false, orTrue(documents));
         AdminSession admin = withPrae(request, selection);
         Reports.Tournament report = tournament(admin, id, needsPrivate(selection));
-        return bundle(report.sammelabrechnung(selection), "Sammelabrechnung_" + report.label() + ".zip");
+        return bundle(service(admin).sammelabrechnung(report, selection), "Sammelabrechnung_" + report.label() + ".zip");
     }
 
     // --------------------------------------------------- trainingsfrequenz
@@ -301,10 +302,15 @@ public class ReportsResource {
 
     private static Reports.Selection selection(Boolean kostz, List<String> prae, boolean sportler, boolean helfer,
                                                boolean frequenz) {
+        return selection(kostz, prae, sportler, helfer, frequenz, false);
+    }
+
+    private static Reports.Selection selection(Boolean kostz, List<String> prae, boolean sportler, boolean helfer,
+                                               boolean frequenz, boolean documents) {
         Set<String> people = prae == null || prae.isEmpty() ? null
                 : prae.contains("none") ? Set.of()
                 : Set.copyOf(prae.stream().map(p -> p.toLowerCase(java.util.Locale.ROOT)).toList());
-        Reports.Selection selection = new Reports.Selection(orTrue(kostz), people, sportler, helfer, frequenz);
+        Reports.Selection selection = new Reports.Selection(orTrue(kostz), people, sportler, helfer, frequenz, documents);
         if (selection.isEmpty(true) && selection.isEmpty(false)) {
             throw new ApiException(400, "Bitte mindestens einen Teil auswählen.");
         }

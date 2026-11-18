@@ -106,6 +106,15 @@ public final class TournamentDocuments {
         return rows.isEmpty() ? Optional.empty() : Optional.of(rows.get(0));
     }
 
+    /** A tournament's files by name, oldest first; a repeated name gets "_2", "_3" … */
+    public LinkedHashMap<String, byte[]> files(String tournamentId) {
+        LinkedHashMap<String, byte[]> files = new LinkedHashMap<>();
+        for (Document document : list(tournamentId)) {
+            it.a11y.blindensport.webui.xlsx.XlsxPatch.addUnique(files, document.fileName(), content(document));
+        }
+        return files;
+    }
+
     public byte[] content(Document document) {
         return db.storage().download(BUCKET, document.storagePath());
     }

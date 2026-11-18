@@ -81,6 +81,7 @@ public class ReportsView extends AdminView {
     private final Checkbox bundleKostZ = new Checkbox("KostZ-Formular", true);
     private final Checkbox bundleSportler = new Checkbox("TeilnehmerInnenliste Sportler", true);
     private final Checkbox bundleHelfer = new Checkbox("TeilnehmerInnenliste Helfer", true);
+    private final Checkbox bundleDocuments = new Checkbox("Dokumente (Einladung usw.)", true);
     private final Checkbox bundleFrequenz = new Checkbox("Trainingsfrequenzliste", true);
     private final CheckboxGroup<String> bundlePrae = new CheckboxGroup<>("PRAE (Formular + Darstellung)");
     private final Paragraph bundleHint = new Paragraph();
@@ -139,6 +140,7 @@ public class ReportsView extends AdminView {
         bundleKostZ.addValueChangeListener(e -> updateRequest());
         bundleSportler.addValueChangeListener(e -> updateRequest());
         bundleHelfer.addValueChangeListener(e -> updateRequest());
+        bundleDocuments.addValueChangeListener(e -> updateRequest());
         bundleFrequenz.addValueChangeListener(e -> updateRequest());
         bundlePrae.setItemLabelGenerator(id -> personNames.getOrDefault(id, id));
         bundlePrae.addValueChangeListener(e -> updateRequest());
@@ -316,6 +318,12 @@ public class ReportsView extends AdminView {
         result.add(new Paragraph("Bündelt die ausgewählten Teile als eine ZIP-Datei. Alles ist vorausgewählt."));
         bundleSportler.setVisible(isTournament);
         bundleHelfer.setVisible(isTournament);
+        int documentCount = isTournament
+                ? new ClubStore(session().db(), session().userId()).documents().list(tournament.getValue().id()).size()
+                : 0;
+        bundleDocuments.setLabel(documentCount == 1 ? "1 Dokument (Einladung usw.)"
+                : documentCount + " Dokumente (Einladung usw.)");
+        bundleDocuments.setVisible(isTournament && documentCount > 0);
         bundleFrequenz.setVisible(hasFrequenz);
         bundlePrae.setItems(privateRead ? List.copyOf(personNames.keySet()) : List.of());
         bundlePrae.setValue(privateRead ? new HashSet<>(personNames.keySet()) : Set.of());
@@ -323,9 +331,11 @@ public class ReportsView extends AdminView {
         bundleKostZ.setValue(true);
         bundleSportler.setValue(true);
         bundleHelfer.setValue(true);
+        bundleDocuments.setValue(isTournament && documentCount > 0);
         bundleFrequenz.setValue(hasFrequenz);
         bundleDownload = download("Sammelabrechnung herunterladen (ZIP)", null, bundleFile());
-        VerticalLayout bundle = new VerticalLayout(bundleKostZ, bundlePrae, bundleFrequenz, bundleSportler, bundleHelfer,
+        VerticalLayout bundle = new VerticalLayout(bundleDocuments, bundleKostZ, bundlePrae, bundleFrequenz, bundleSportler,
+                bundleHelfer,
                 bundleDownload, bundleHint);
         bundle.setPadding(false);
         bundle.setSpacing(false);
@@ -351,7 +361,7 @@ public class ReportsView extends AdminView {
     private Reports.Selection selection(boolean privateRead) {
         Set<String> prae = privateRead ? Set.copyOf(bundlePrae.getValue()) : Set.of();
         return new Reports.Selection(bundleKostZ.getValue(), prae, bundleSportler.getValue(), bundleHelfer.getValue(),
-                bundleFrequenz.getValue());
+                bundleFrequenz.getValue(), bundleDocuments.getValue() && bundleDocuments.isVisible());
     }
 
     private void updateBundleState() {
@@ -470,7 +480,7 @@ public class ReportsView extends AdminView {
             String label;
             if (r.tournament()) {
                 Reports.Tournament t = service.tournament(r.tournamentId(), withPrivate);
-                files = t.sammelabrechnung(r.selection());
+                files = service.sammelabrechnung(t, r.selection());
                 label = t.label();
             } else {
                 Reports.Month m = service.month(r.month(), r.year(), r.sport(), withPrivate);
