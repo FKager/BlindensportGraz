@@ -7,6 +7,8 @@ import it.a11y.blindensport.webui.club.ClubModels.ClubEvent;
 import it.a11y.blindensport.webui.club.ClubModels.Membership;
 import it.a11y.blindensport.webui.club.ClubModels.Team;
 import it.a11y.blindensport.webui.club.ClubModels.TrainingFavorite;
+import it.a11y.blindensport.webui.club.ClubModels.EventType;
+import it.a11y.blindensport.webui.club.ClubModels.Sport;
 import it.a11y.blindensport.webui.club.ClubModels.WelcomeContent;
 import it.a11y.blindensport.webui.members.Dates;
 import it.a11y.blindensport.webui.prae.PraeCalculator;
@@ -144,6 +146,9 @@ public final class ClubStore {
         row.put("max_teams", e.maxTeams());
         row.put("team_ids", e.teamIds());
         row.put("created_by", e.createdBy());
+        if (!e.eventType().isBlank()) {
+            row.put("event_type", e.eventType());
+        }
         db.upsert("events", List.of(row), "id");
     }
 
@@ -159,7 +164,7 @@ public final class ClubStore {
                 text(r, "street"), text(r, "zip"), text(r, "city"), text(r, "country"), instant(r, "start_date"),
                 instant(r, "end_date"), text(r, "notes"), text(r, "status"), integer(r, "duration_minutes"),
                 r.hasNonNull("focus_area") ? r.get("focus_area").asText() : null, integer(r, "max_teams"),
-                teams, text(r, "created_by"));
+                teams, text(r, "created_by"), text(r, "event_type"));
     }
 
     // ----------------------------------------------------------- attendance
@@ -273,6 +278,92 @@ public final class ClubStore {
         row.put("markdown", w.markdown());
         row.put("is_enabled", w.enabled());
         db.upsert("welcome_content", List.of(row), "id");
+    }
+
+    // ------------------------------------------- sports and event types
+
+    /** All sports, active or not, in their order. */
+    public List<Sport> sports() {
+        return rows("sports", "id,name,is_active,sort_order", "sort_order.asc,name.asc", r -> new Sport(
+                id(r), text(r, "name"), r.path("is_active").asBoolean(true), r.path("sort_order").asInt(0)));
+    }
+
+    /** All event types, active or not, in their order. */
+    public List<EventType> eventTypes() {
+        return rows("event_types", "id,name,behavior,is_active,sort_order", "sort_order.asc,name.asc",
+                r -> new EventType(id(r), text(r, "name"), text(r, "behavior"), r.path("is_active").asBoolean(true),
+                        r.path("sort_order").asInt(0)));
+    }
+
+    /** Active sport names for pickers; the built-in list if the table can't be read. */
+    public List<String> sportNames() {
+        try {
+            List<String> names = sports().stream().filter(Sport::active).map(Sport::name).toList();
+            return names.isEmpty() ? ClubModels.SPORTS : names;
+        } catch (RuntimeException e) {
+            return ClubModels.SPORTS;
+        }
+    }
+
+    /** Active event-type names with the given behaviour; empty if the table can't be read. */
+    public List<String> eventTypeNames(String behavior) {
+        try {
+            return eventTypes().stream().filter(t -> t.active() && t.behavior().equals(behavior))
+                    .map(EventType::name).toList();
+        } catch (RuntimeException e) {
+            String fallback = ClubModels.defaultEventType(behavior);
+            return fallback.isEmpty() ? List.of() : List.of(fallback);
+        }
+    }
+
+    public void addSport(String name, int sortOrder) {
+        Map<String, Object> row = row(newId());
+        row.put("name", cleanName(name));
+        row.put("sort_order", sortOrder);
+        db.insert("sports", row);
+    }
+
+    public void addEventType(String name, String behavior, int sortOrder) {
+        Map<String, Object> row = row(newId());
+        row.put("name", cleanName(name));
+        row.put("behavior", behavior);
+        row.put("sort_order", sortOrder);
+        db.insert("event_types", row);
+    }
+
+    /** Also renames every event, team and favourite using the old name (one transaction on the server). */
+    public void renameSport(String id, String name) {
+        db.rpc("rename_sport", Map.of("p_id", id, "p_name", cleanName(name)));
+    }
+
+    /** Also renames the type on every event that uses it. */
+    public void renameEventType(String id, String name) {
+        db.rpc("rename_event_type", Map.of("p_id", id, "p_name", cleanName(name)));
+    }
+
+    /** {@code table}: "sports" or "event_types". */
+    public void setActive(String table, String id, boolean active) {
+        db.update(checkedCatalog(table), Map.of("is_active", active, "updated_by", admin.toString()), eq("id", id));
+    }
+
+    /** Stores the given order as sort_order 10, 20, 30 … */
+    public void reorder(String table, List<String> ids) {
+        String checked = checkedCatalog(table);
+        for (int i = 0; i < ids.size(); i++) {
+            db.update(checked, Map.of("sort_order", (i + 1) * 10, "updated_by", admin.toString()), eq("id", ids.get(i)));
+        }
+    }
+
+    /** Trimmed, inner runs of whitespace collapsed (same as the app's CatalogService.clean). */
+    public static String cleanName(String name) {
+        return name == null ? "" : name.trim().replaceAll("\\s+", " ");
+    }
+
+    private static String checkedCatalog(String table) {
+        if (!"sports".equals(table) && !"event_types".equals(table)) {
+            throw new IllegalArgumentException("not a catalog table: " + table);
+        }
+        return table;
     }
 
     // -------------------------------------------------------------- helpers

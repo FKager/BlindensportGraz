@@ -82,7 +82,7 @@ public class EventsView extends AdminView {
 
         grid.addColumn(this::when).setHeader("Datum").setAutoWidth(true).setSortable(true)
                 .setComparator(Comparator.comparing(ClubEvent::startDate));
-        grid.addColumn(e -> ClubModels.KINDS.getOrDefault(e.kind(), e.kind())).setHeader("Art").setAutoWidth(true);
+        grid.addColumn(ClubEvent::typeName).setHeader("Art").setAutoWidth(true);
         grid.addColumn(ClubEvent::title).setHeader("Titel").setRowHeader(true).setFlexGrow(1);
         grid.addColumn(e -> Stream.of(e.location(), e.city()).filter(s -> !s.isBlank()).collect(Collectors.joining(", ")))
                 .setHeader("Veranstaltungsort, Ort").setFlexGrow(1);
@@ -195,7 +195,9 @@ public class EventsView extends AdminView {
 
     private void openEvent(String eventKind, ClubEvent existing) {
         EventDialog[] dialog = new EventDialog[1];
-        dialog[0] = new EventDialog(eventKind, existing, teams, store().createdBy(), event -> {
+        String kindForTypes = existing == null ? eventKind : existing.kind();
+        dialog[0] = new EventDialog(eventKind, existing, teams, store().sportNames(),
+                store().eventTypeNames(kindForTypes), store().createdBy(), event -> {
             if (attempt("Speichern", () -> store().saveEvent(event))) {
                 dialog[0].close();
                 Announcer.success(event.title().trim() + " gespeichert.");

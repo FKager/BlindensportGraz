@@ -106,7 +106,7 @@ public class TeamsView extends AdminView {
         dialog.setWidth("min(36rem, 100vw)");
         TextField name = new TextField("Name");
         name.setRequired(true);
-        ComboBox<String> sport = ClubFields.sport(team == null ? "" : team.sport());
+        ComboBox<String> sport = ClubFields.sport(team == null ? "" : team.sport(), store().sportNames());
         TextArea description = new TextArea("Beschreibung");
         if (team != null) {
             name.setValue(team.name());
