@@ -157,7 +157,10 @@ jobs:
           mkdir -p "$KEY_DIR" ~/.appstoreconnect/private_keys
           KEY_PATH="$KEY_DIR/AuthKey_${APP_STORE_CONNECT_KEY_ID}.p8"
           echo -n "$APP_STORE_CONNECT_API_KEY_BASE64" | base64 --decode -o "$KEY_PATH"
-          cp "$KEY_PATH" ~/.appstoreconnect/private_keys/
+          # asc 7+ refuses a key file others can read ("private key file is
+          # too permissive"); v0.15.0's distribution step failed on it.
+          chmod 600 "$KEY_PATH"
+          cp -p "$KEY_PATH" ~/.appstoreconnect/private_keys/
           echo "ASC_KEY_PATH=$KEY_PATH" >> "$GITHUB_ENV"
 
           # --- Ephemeral keychain with the Apple Distribution identity ---
