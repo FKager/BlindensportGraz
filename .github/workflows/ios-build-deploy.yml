@@ -44,11 +44,15 @@ env:
   BUNDLE_ID: it.a11y.BlindensportGraz
   WIDGET_BUNDLE_ID: it.a11y.BlindensportGraz.Widgets
   SHARE_EXTENSION_BUNDLE_ID: it.a11y.BlindensportGraz.ShareExtension
+  # Same Xcode as local development and the self-hosted device deploy.
+  # Pinned exactly: the xcode-27 image also lists betas, and beta builds
+  # can't be uploaded to TestFlight.
+  XCODE_VERSION: "27.2"
 
 jobs:
   build:
     name: Build (unsigned, simulator)
-    runs-on: macos-26
+    runs-on: xcode-27
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -57,19 +61,16 @@ jobs:
         # The project is in Swift 6 language mode with Swift 6.2+ build
         # settings (SWIFT_DEFAULT_ACTOR_ISOLATION, SWIFT_APPROACHABLE_CONCURRENCY,
         # `@concurrent`), and its SwiftData @Model class hierarchy
-        # (SportEvent/Training/Tournament) needs the iOS 26 SDK's SwiftData
+        # (SportEvent/Training/Tournament) needs the iOS 26+ SDK's SwiftData
         # macro for class inheritance (see .wolf/cerebrum.md's 2026-07-18
-        # entry). So: macos-26 image, newest installed Xcode 26.x (26.6 /
-        # Swift 6.3 as of 2026-09-29), picked dynamically rather than
-        # hardcoding a patch version since GitHub periodically changes which
-        # 26.x builds ship on the image. Local builds and the self-hosted
-        # device deploy use Xcode 27 (Swift 6.4) — hosted runners don't offer
-        # it yet; switch the glob once they do.
+        # entry). Since 2026-11-19 CI runs on GitHub's `xcode-27` image
+        # (public preview) with Xcode $XCODE_VERSION (Swift 6.4), matching
+        # local builds; before that it was macos-26 with Xcode 26.6.
         run: |
           set -euo pipefail
-          XCODE_PATH=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
-          if [ -z "$XCODE_PATH" ]; then
-            echo "::error::No Xcode 26.x found on this runner (only found: $(ls -d /Applications/Xcode*.app 2>/dev/null | tr '\n' ' ')). This project's SwiftData @Model class hierarchy requires an iOS 26 SDK Xcode — see .wolf/cerebrum.md."
+          XCODE_PATH="/Applications/Xcode_${XCODE_VERSION}.app"
+          if [ ! -d "$XCODE_PATH" ]; then
+            echo "::error::Xcode $XCODE_VERSION not found on this runner (only found: $(ls -d /Applications/Xcode*.app 2>/dev/null | tr '\n' ' ')). Update XCODE_VERSION in this workflow to an installed release (not beta) Xcode."
             exit 1
           fi
           echo "Selecting $XCODE_PATH"
@@ -97,7 +98,7 @@ jobs:
     name: Archive, sign and upload to TestFlight
     needs: build
     if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: macos-26
+    runs-on: xcode-27
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -107,9 +108,9 @@ jobs:
         # just be /Applications/Xcode.app.
         run: |
           set -euo pipefail
-          XCODE_PATH=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
-          if [ -z "$XCODE_PATH" ]; then
-            echo "::error::No Xcode 26.x found on this runner (only found: $(ls -d /Applications/Xcode*.app 2>/dev/null | tr '\n' ' ')). This project's SwiftData @Model class hierarchy requires an iOS 26 SDK Xcode — see .wolf/cerebrum.md."
+          XCODE_PATH="/Applications/Xcode_${XCODE_VERSION}.app"
+          if [ ! -d "$XCODE_PATH" ]; then
+            echo "::error::Xcode $XCODE_VERSION not found on this runner (only found: $(ls -d /Applications/Xcode*.app 2>/dev/null | tr '\n' ' ')). Update XCODE_VERSION in this workflow to an installed release (not beta) Xcode."
             exit 1
           fi
           echo "Selecting $XCODE_PATH"
