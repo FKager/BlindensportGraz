@@ -105,7 +105,8 @@ enum TrainingService {
     static func createWeeklySeries(title: String, sport: String, location: String,
                                    street: String, zip: String, city: String, country: String,
                                    startDates: [Date], durationMinutes: Int, focusArea: String, notes: String,
-                                   createdBy: String, teams: [Team], modelContext: ModelContext) -> (created: Int, skipped: Int) {
+                                   createdBy: String, teams: [Team], eventType: String = "",
+                                   modelContext: ModelContext) -> (created: Int, skipped: Int) {
         let (open, taken) = partitionSeriesDates(title: title, sport: sport, startDates: startDates, modelContext: modelContext)
         for start in open {
             let training = Training(
@@ -114,6 +115,7 @@ enum TrainingService {
                 startDate: start, durationMinutes: durationMinutes, focusArea: focusArea, notes: notes,
                 createdBy: createdBy, teams: teams
             )
+            training.eventType = eventType
             modelContext.insert(training)
             save(training, modelContext: modelContext)
         }

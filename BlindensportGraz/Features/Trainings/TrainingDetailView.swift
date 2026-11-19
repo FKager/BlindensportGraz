@@ -77,7 +77,7 @@ struct TrainingDetailView: View {
 
         Section("Training") {
             TextField("Titel", text: $training.title)
-            TextField("Sportart", text: $training.sport)
+            SportPicker(selection: $training.sport, allowsNone: true)
             TextField("Veranstaltungsort", text: $training.location)
         }
         Section("Adresse") {
@@ -170,6 +170,9 @@ struct TrainingDetailView: View {
         }
         if !training.sport.isEmpty || !training.location.isEmpty {
             Section("Training") {
+                if training.typeName != EventType.Behavior.training.defaultTypeName {
+                    LabeledContent("Art der Veranstaltung", value: training.typeName)
+                }
                 if !training.sport.isEmpty {
                     LabeledContent("Sportart", value: training.sport)
                 }

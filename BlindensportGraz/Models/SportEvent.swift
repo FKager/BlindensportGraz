@@ -22,6 +22,9 @@ class SportEvent {
     var kind: String = "event" // "event", "training", "tournament"
     var title: String = ""
     var sport: String = ""
+    /// Name of an `EventType` (Training, Turnier, Kurs …); empty on rows
+    /// synced before event types existed — see `typeName`.
+    var eventType: String = ""
     var location: String = "" // venue name, e.g. "Sporthalle Eggenberg" — see street/zip/city/country below for the postal address
     var street: String = ""
     var zip: String = ""
@@ -189,5 +192,16 @@ nonisolated extension SportEvent {
     /// naturally excludes attendances nobody entered a PRAE amount for.
     var totalPraeAmount: Double {
         attendances.compactMap { $0.praeAmount }.reduce(0, +)
+    }
+}
+
+extension SportEvent {
+    /// The event type to show: the stored one, else the default for the
+    /// kind ("Training"/"Turnier"), else — for plain events created before
+    /// event types existed — the type the old picker wrote into `sport`.
+    var typeName: String {
+        if !eventType.isEmpty { return eventType }
+        if let name = EventType.Behavior(rawValue: kind)?.defaultTypeName { return name }
+        return sport
     }
 }

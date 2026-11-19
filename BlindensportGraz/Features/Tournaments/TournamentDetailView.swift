@@ -102,7 +102,7 @@ struct TournamentDetailView: View {
 
         Section("Turnier") {
             TextField("Name", text: $tournament.title)
-            TextField("Sportart", text: $tournament.sport)
+            SportPicker(selection: $tournament.sport, allowsNone: true)
             TextField("Veranstaltungsort", text: $tournament.location)
         }
         Section("Adresse") {
@@ -204,6 +204,9 @@ struct TournamentDetailView: View {
         }
         if !tournament.sport.isEmpty || !tournament.location.isEmpty {
             Section("Turnier") {
+                if tournament.typeName != EventType.Behavior.tournament.defaultTypeName {
+                    LabeledContent("Art der Veranstaltung", value: tournament.typeName)
+                }
                 if !tournament.sport.isEmpty {
                     LabeledContent("Sportart", value: tournament.sport)
                 }

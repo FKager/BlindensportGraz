@@ -343,6 +343,14 @@ final class SupabaseSync {
     }
 
     private func pullAll(modelContext: ModelContext) async throws {
+        // Read-only lists with built-in fallbacks: a failure here (e.g. a
+        // server without migration 20261119000001) must not stop the sync.
+        do {
+            try await pullSports(modelContext: modelContext)
+            try await pullEventTypes(modelContext: modelContext)
+        } catch {
+            logger.error("Sport/event-type lists not synced: \(String(describing: error), privacy: .public)")
+        }
         try await pullMembers(modelContext: modelContext)
         try await pullTeams(modelContext: modelContext)
         try modelContext.save()

@@ -130,6 +130,8 @@ nonisolated struct EventDBRow: Codable, Sendable, Equatable {
     var kind: String
     var title: String
     var sport: String
+    /// Empty = let the server fill in the default for `kind`.
+    var eventType: String = ""
     var location: String
     var street: String
     var zip: String
@@ -149,6 +151,7 @@ nonisolated struct EventDBRow: Codable, Sendable, Equatable {
 
     enum CodingKeys: String, CodingKey {
         case id, kind, title, sport, location, street, zip, city, country, notes, status
+        case eventType = "event_type"
         case startDate = "start_date"
         case endDate = "end_date"
         case durationMinutes = "duration_minutes"
@@ -166,6 +169,7 @@ nonisolated struct EventDBRow: Codable, Sendable, Equatable {
         try c.encode(kind, forKey: .kind)
         try c.encode(title, forKey: .title)
         try c.encode(sport, forKey: .sport)
+        if !eventType.isEmpty { try c.encode(eventType, forKey: .eventType) }
         try c.encode(location, forKey: .location)
         try c.encode(street, forKey: .street)
         try c.encode(zip, forKey: .zip)
@@ -336,6 +340,37 @@ nonisolated struct TrainingFavoriteDBRow: Codable, Sendable, Equatable {
         case endMinute = "end_minute"
         case teamIDs = "team_ids"
         case lastUsedAt = "last_used_at"
+        case updatedAt = "updated_at"
+    }
+}
+
+nonisolated struct SportDBRow: Codable, Sendable, Equatable {
+    var id: UUID
+    var name: String
+    var isActive: Bool
+    var sortOrder: Int
+    var updatedAt: Date?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name
+        case isActive = "is_active"
+        case sortOrder = "sort_order"
+        case updatedAt = "updated_at"
+    }
+}
+
+nonisolated struct EventTypeDBRow: Codable, Sendable, Equatable {
+    var id: UUID
+    var name: String
+    var behavior: String
+    var isActive: Bool
+    var sortOrder: Int
+    var updatedAt: Date?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, behavior
+        case isActive = "is_active"
+        case sortOrder = "sort_order"
         case updatedAt = "updated_at"
     }
 }
@@ -560,6 +595,28 @@ extension MemberContactDBRow {
     }
 }
 
+nonisolated extension EventDBRow {
+    /// `event_type` may be missing (server before migration 20261119000001).
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(id: try c.decode(UUID.self, forKey: .id), kind: try c.decode(String.self, forKey: .kind),
+                  title: try c.decode(String.self, forKey: .title), sport: try c.decode(String.self, forKey: .sport),
+                  eventType: try c.decodeIfPresent(String.self, forKey: .eventType) ?? "",
+                  location: try c.decode(String.self, forKey: .location),
+                  street: try c.decode(String.self, forKey: .street), zip: try c.decode(String.self, forKey: .zip),
+                  city: try c.decode(String.self, forKey: .city), country: try c.decode(String.self, forKey: .country),
+                  startDate: try c.decode(Date.self, forKey: .startDate), endDate: try c.decode(Date.self, forKey: .endDate),
+                  notes: try c.decode(String.self, forKey: .notes), status: try c.decode(String.self, forKey: .status),
+                  durationMinutes: try c.decodeIfPresent(Int.self, forKey: .durationMinutes),
+                  focusArea: try c.decodeIfPresent(String.self, forKey: .focusArea),
+                  maxTeams: try c.decodeIfPresent(Int.self, forKey: .maxTeams),
+                  teamIDs: try c.decode([UUID].self, forKey: .teamIDs),
+                  createdBy: try c.decode(String.self, forKey: .createdBy),
+                  createdAt: try c.decode(Date.self, forKey: .createdAt),
+                  updatedAt: try c.decodeIfPresent(Date.self, forKey: .updatedAt))
+    }
+}
+
 extension EventDBRow {
     init(_ event: SportEvent) {
         let training = event as? Training
@@ -572,6 +629,7 @@ extension EventDBRow {
                   durationMinutes: training?.durationMinutes, focusArea: training?.focusArea,
                   maxTeams: tournament?.maxTeams,
                   teamIDs: event.teams.map(\.id), createdBy: event.createdBy, createdAt: event.createdAt)
+        eventType = event.eventType
     }
 }
 

@@ -10,6 +10,7 @@ struct AddTournamentView: View {
 
         @State private var title: String
         @State private var sport: String
+        @State private var eventType = ""
         @State private var location: String
         @State private var street: String
         @State private var zip: String
@@ -25,8 +26,6 @@ struct AddTournamentView: View {
         private let datesMissingFromInvitation: Bool
         /// The imported invitation file, attached to the tournament on save.
         private let invitationFile: (name: String, data: Data)?
-
-        let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown"]
 
         // `draft` prefills every field from an uploaded invitation (see
         // TournamentInvitationImportView below) — still a completely normal
@@ -65,11 +64,8 @@ struct AddTournamentView: View {
             Form {
                 Section("Turnier") {
                     TextField("Name", text: $title)
-                    Picker("Sportart", selection: $sport) {
-                        ForEach(sports, id: \.self) { s in
-                            Label(s, systemImage: SportIcon.symbolName(for: s)).tag(s)
-                        }
-                          }
+                    EventTypePicker(selection: $eventType, behavior: .tournament)
+                    SportPicker(selection: $sport)
                     TextField("Veranstaltungsort", text: $location)
                      }
                 Section("Adresse") {
@@ -179,6 +175,7 @@ struct AddTournamentView: View {
                             createdBy: currentUser?.id.uuidString ?? "",
                             teams: teams
                         )
+                        tournament.eventType = eventType
                         modelContext.insert(tournament)
                         TournamentService.save(tournament, modelContext: modelContext)
                         // Keep the imported Einladung as the tournament's

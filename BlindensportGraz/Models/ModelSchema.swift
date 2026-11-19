@@ -26,6 +26,9 @@ nonisolated enum AppModelSchema {
         ExpenseReceipt.self,
         TournamentInvitation.self,
         WelcomeContent.self,
+        // Admin-maintained lists (Supabase sports / event_types).
+        ClubSport.self,
+        EventType.self,
         // Self-service roster edits awaiting admin review
         // (architecture-review.md §5 P2).
         MemberChangeRequest.self,
