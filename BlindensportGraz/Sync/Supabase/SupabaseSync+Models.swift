@@ -219,6 +219,7 @@ extension SupabaseSync {
         }
         event.title = row.title
         event.sport = row.sport
+        event.eventType = row.eventType
         event.location = row.location
         event.street = row.street
         event.zip = row.zip
@@ -435,6 +436,41 @@ extension SupabaseSync {
                                                      weekday: row.weekday, location: row.location, street: row.street,
                                                      zip: row.zip, city: row.city, country: row.country,
                                                      teams: teams, lastUsedAt: row.lastUsedAt))
+            }
+        }
+    }
+
+    // MARK: - Sports and event types (read-only lists, edited via CatalogService)
+
+    func pullSports(modelContext: ModelContext) async throws {
+        try await pull("sports", modelContext: modelContext, prune: ClubSport.self, id: \.id,
+                       rowID: { (row: SportDBRow) in row.id }, updatedAt: \.updatedAt) { row in
+            var descriptor = FetchDescriptor<ClubSport>(predicate: #Predicate { $0.id == row.id })
+            descriptor.fetchLimit = 1
+            if let existing = try? modelContext.fetch(descriptor).first {
+                existing.name = row.name
+                existing.isActive = row.isActive
+                existing.sortOrder = row.sortOrder
+            } else {
+                modelContext.insert(ClubSport(id: row.id, name: row.name, isActive: row.isActive,
+                                              sortOrder: row.sortOrder))
+            }
+        }
+    }
+
+    func pullEventTypes(modelContext: ModelContext) async throws {
+        try await pull("event_types", modelContext: modelContext, prune: EventType.self, id: \.id,
+                       rowID: { (row: EventTypeDBRow) in row.id }, updatedAt: \.updatedAt) { row in
+            var descriptor = FetchDescriptor<EventType>(predicate: #Predicate { $0.id == row.id })
+            descriptor.fetchLimit = 1
+            if let existing = try? modelContext.fetch(descriptor).first {
+                existing.name = row.name
+                existing.behavior = row.behavior
+                existing.isActive = row.isActive
+                existing.sortOrder = row.sortOrder
+            } else {
+                modelContext.insert(EventType(id: row.id, name: row.name, behavior: row.behavior,
+                                              isActive: row.isActive, sortOrder: row.sortOrder))
             }
         }
     }
@@ -697,6 +733,8 @@ extension SupabaseSync {
         case "event_images": delete(EventImage.self, #Predicate { $0.id == id })
         case "expense_receipts": delete(ExpenseReceipt.self, #Predicate { $0.id == id })
         case "tournament_invitations": delete(TournamentInvitation.self, #Predicate { $0.id == id })
+        case "sports": delete(ClubSport.self, #Predicate { $0.id == id })
+        case "event_types": delete(EventType.self, #Predicate { $0.id == id })
         default: break // member_contacts, welcome_content: nothing separate to remove
         }
     }

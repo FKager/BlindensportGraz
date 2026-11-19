@@ -3,6 +3,7 @@ package it.a11y.blindensport.webui.ui;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import it.a11y.blindensport.webui.club.ClubModels;
+import it.a11y.blindensport.webui.club.ClubStore;
 import it.a11y.blindensport.webui.club.ClubModels.Team;
 
 import java.util.ArrayList;
@@ -18,24 +19,35 @@ final class ClubFields {
     private ClubFields() {
     }
 
-    /** Sport: the known sports, but free text stays possible (like the app). */
-    static ComboBox<String> sport(String value) {
+    /**
+     * Sport from the club's list ({@link ClubStore#sportNames()}). A stored
+     * value that's no longer offered (deactivated, or free text from older
+     * builds) stays selectable, so editing never changes it unasked.
+     */
+    static ComboBox<String> sport(String value, List<String> options) {
         ComboBox<String> sport = new ComboBox<>("Sportart");
-        List<String> items = new ArrayList<>(ClubModels.SPORTS);
+        sport.setItems(withCurrent(options, value));
+        sport.setClearButtonVisible(true);
+        sport.setHelperText("Neue Sportarten: Seite „Sportarten und Veranstaltungsarten“");
+        sport.setValue(value == null || value.isBlank() ? null : value);
+        return sport;
+    }
+
+    /** Event type from the club's list for one behaviour; same rule for stored values. */
+    static ComboBox<String> eventType(String value, List<String> options) {
+        ComboBox<String> type = new ComboBox<>("Art der Veranstaltung");
+        type.setItems(withCurrent(options, value));
+        type.setHelperText("Neue Arten: Seite „Sportarten und Veranstaltungsarten“");
+        type.setValue(value == null || value.isBlank() ? null : value);
+        return type;
+    }
+
+    static List<String> withCurrent(List<String> options, String value) {
+        List<String> items = new ArrayList<>(options);
         if (value != null && !value.isBlank() && !items.contains(value)) {
             items.add(value);
         }
-        sport.setItems(items);
-        sport.setAllowCustomValue(true);
-        sport.addCustomValueSetListener(e -> {
-            List<String> extended = new ArrayList<>(items);
-            extended.add(e.getDetail());
-            sport.setItems(extended);
-            sport.setValue(e.getDetail());
-        });
-        sport.setHelperText("Auswählen oder eigene Sportart eintippen");
-        sport.setValue(value == null || value.isBlank() ? null : value);
-        return sport;
+        return items;
     }
 
     static String sportValue(ComboBox<String> sport) {

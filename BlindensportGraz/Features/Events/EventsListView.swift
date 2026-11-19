@@ -2,13 +2,6 @@ import SwiftUI
 import SwiftData
 
 struct EventsListView: View {
-    // Plain-Event-only "Art der Veranstaltung" choices (user request
-    // 2026-09-12) — deliberately NOT the Sportart list Training/Tournament
-    // use (SportEvent.sport stays free text either way, see Sport.swift's
-    // doc comment; this is just a different, event-specific curated list of
-    // the same underlying field).
-    static let eventTypes = ["Langlaufkurs", "Tandemfahrt", "Generalversammlung", "Weihnachtsfeier", "ÖSTM Nordisch", "ÖM Torball"]
-
     let currentUser: User?
     @Environment(\.modelContext) private var modelContext
     // SportEvent is polymorphically fetchable (Training/Tournament subclass

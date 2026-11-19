@@ -25,6 +25,7 @@ enum AppRoute: Hashable {
     case roleChangeLog
     case fullBackup
     case welcomeSettings
+    case catalogLists
     case budget
 
     // Details
@@ -69,6 +70,7 @@ private struct AppRouteDestination: View {
         case .roleChangeLog: RoleChangeLogView()
         case .fullBackup: FullBackupView()
         case .welcomeSettings: WelcomeScreenSettingsView()
+        case .catalogLists: CatalogListsView()
         case .budget: BudgetView(currentUser: currentUser)
         case .event(let event): EventDetailView(event: event, currentUser: currentUser)
         case .training(let training): TrainingDetailView(training: training, currentUser: currentUser)

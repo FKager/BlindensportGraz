@@ -9,7 +9,8 @@ struct AddEventView: View {
         @Query(sort: [SortDescriptor(\Member.lastName), SortDescriptor(\Member.firstName)]) private var allMembers: [Member]
 
        @State private var title = ""
-       @State private var sport = EventsListView.eventTypes[0]
+       @State private var eventType = ""
+       @State private var sport = ""
        @State private var location = ""
        @State private var street = ""
        @State private var zip = ""
@@ -30,9 +31,8 @@ struct AddEventView: View {
             Form {
                 Section("Event") {
                     TextField("Titel", text: $title)
-                    Picker("Art der Veranstaltung", selection: $sport) {
-                        ForEach(EventsListView.eventTypes, id: \.self) { Text($0) }
-                      }
+                    EventTypePicker(selection: $eventType, behavior: .event)
+                    SportPicker(selection: $sport, allowsNone: true)
                     // Relabeled from "Ort" to "Veranstaltungsort" (matches
                     // TournamentsViews' existing wording) so it doesn't
                     // collide with the new address section's "Ort" (city)
@@ -120,6 +120,7 @@ struct AddEventView: View {
                             notes: notes,
                             createdBy: currentUser?.id.uuidString ?? ""
                             )
+                        event.eventType = eventType
                         modelContext.insert(event)
                         SportEventService.save(event, modelContext: modelContext)
 

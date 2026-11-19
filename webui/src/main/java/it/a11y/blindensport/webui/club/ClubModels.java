@@ -14,11 +14,36 @@ public final class ClubModels {
     private ClubModels() {
     }
 
-    /** Sports the app knows; the field stays free text (SportIcon / Sport.swift). */
+    /**
+     * Built-in sport list, used only until the club's list (table sports,
+     * migration 20261119000001) can be read. The field stays text.
+     */
     public static final List<String> SPORTS = List.of("Torball", "Goalball", "Blindenfußball", "Showdown", "Judo",
             "Leichtathletik", "Schwimmen", "Ski", "Radfahren");
 
+    /** The three behaviours (events.kind / event_types.behavior). */
     public static final Map<String, String> KINDS = Map.of("training", "Training", "tournament", "Turnier", "event", "Event");
+
+    /** How an event type behaves, as the admin screens say it. */
+    public static final Map<String, String> BEHAVIORS = Map.of(
+            "training", "wie ein Training", "tournament", "wie ein Turnier", "event", "wie eine Veranstaltung");
+
+    /** Default type per kind (what the database fills in for older app builds). */
+    public static String defaultEventType(String kind) {
+        return switch (kind == null ? "" : kind) {
+            case "training" -> "Training";
+            case "tournament" -> "Turnier";
+            default -> "";
+        };
+    }
+
+    /** One entry of the club's sport list. */
+    public record Sport(String id, String name, boolean active, int sortOrder) {
+    }
+
+    /** One entry of the club's event-type list; behavior is a KINDS key. */
+    public record EventType(String id, String name, String behavior, boolean active, int sortOrder) {
+    }
 
     public static final Map<String, String> TOURNAMENT_STATUS = Map.of(
             "planned", "Geplant", "ongoing", "Laufend", "finished", "Beendet");
@@ -43,10 +68,33 @@ public final class ClubModels {
         }
     }
 
+    /** {@code eventType}: name of an EventType; empty = the default for the kind. */
     public record ClubEvent(String id, String kind, String title, String sport, String location, String street,
                             String zip, String city, String country, Instant startDate, Instant endDate, String notes,
                             String status, Integer durationMinutes, String focusArea, Integer maxTeams,
-                            List<String> teamIds, String createdBy) {
+                            List<String> teamIds, String createdBy, String eventType) {
+        public ClubEvent {
+            eventType = eventType == null ? "" : eventType;
+        }
+
+        /** Without an event type (the default for the kind applies). */
+        public ClubEvent(String id, String kind, String title, String sport, String location, String street,
+                         String zip, String city, String country, Instant startDate, Instant endDate, String notes,
+                         String status, Integer durationMinutes, String focusArea, Integer maxTeams,
+                         List<String> teamIds, String createdBy) {
+            this(id, kind, title, sport, location, street, zip, city, country, startDate, endDate, notes, status,
+                    durationMinutes, focusArea, maxTeams, teamIds, createdBy, "");
+        }
+
+        /** The type to show: stored, else the kind's default, else (older plain events) the sport field. */
+        public String typeName() {
+            if (!eventType.isBlank()) {
+                return eventType;
+            }
+            String byKind = defaultEventType(kind);
+            return byKind.isEmpty() ? sport : byKind;
+        }
+
         /** Calendar days covered, at least 1 (Tournament.dayCount). */
         public int dayCount() {
             LocalDate start = LocalDate.ofInstant(startDate, CLUB_ZONE);

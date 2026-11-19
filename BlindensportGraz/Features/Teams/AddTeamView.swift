@@ -10,18 +10,12 @@ struct AddTeamView: View {
     @State private var sport = "Torball"
     @State private var descriptionText = ""
 
-    let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen"]
-
     var body: some View {
         NavigationStack {
             Form {
                 Section("Team") {
                     TextField("Name", text: $name)
-                    Picker("Sportart", selection: $sport) {
-                        ForEach(sports, id: \.self) { s in
-                            Label(s, systemImage: SportIcon.symbolName(for: s)).tag(s)
-                        }
-                    }
+                    SportPicker(selection: $sport)
                     TextField("Beschreibung", text: $descriptionText, axis: .vertical)
                         .lineLimit(3...6)
                 }

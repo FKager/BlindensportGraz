@@ -2,6 +2,12 @@ import SwiftUI
 import SwiftData
 
 struct EventRow: View {
+    /// Type, plus the sport when the event has both ("Langlaufkurs · Ski").
+    private var subtitle: String {
+        guard !event.eventType.isEmpty, !event.sport.isEmpty else { return event.typeName }
+        return "\(event.typeName) · \(event.sport)"
+    }
+
     /// Width of the day/month badge; grows with Dynamic Type.
     @ScaledMetric(relativeTo: .title2) private var dateBadgeWidth = 50.0
 
@@ -33,7 +39,7 @@ struct EventRow: View {
             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                 Text(event.title)
                       .font(.headline)
-                Text(event.sport)
+                Text(subtitle)
                       .font(.subheadline)
                       .foregroundStyle(.secondary)
                 Label(event.location, systemImage: "mappin.and.ellipse")

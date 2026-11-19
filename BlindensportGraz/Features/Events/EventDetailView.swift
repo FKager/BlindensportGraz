@@ -59,8 +59,13 @@ struct EventDetailView: View {
                 .disabled(!isEditing)
 
             Section("Details") {
-                if !event.sport.isEmpty {
-                    LabeledContent("Art der Veranstaltung", value: event.sport)
+                if !event.typeName.isEmpty {
+                    LabeledContent("Art der Veranstaltung", value: event.typeName)
+                }
+                // Older plain events kept their type in `sport` (typeName
+                // shows it above), so a sport line only for typed events.
+                if !event.eventType.isEmpty, !event.sport.isEmpty {
+                    LabeledContent("Sportart", value: event.sport)
                 }
                 if !event.location.isEmpty {
                     LabeledContent("Veranstaltungsort", value: event.location)

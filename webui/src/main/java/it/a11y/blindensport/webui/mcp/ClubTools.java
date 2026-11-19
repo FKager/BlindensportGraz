@@ -292,6 +292,34 @@ public class ClubTools {
         });
     }
 
+    // ------------------------------------------- sports and event types
+
+    @Tool(description = "The club's sport list and event-type list (Training, Turnier, Kurs …), in their order. "
+            + "Use these names for sport and event_type. Each event type has a behaviour, the kind its events get: "
+            + "training, tournament or event. Inactive entries are no longer offered but may still appear on old entries.",
+            annotations = @Tool.Annotations(title = "List sports and event types", readOnlyHint = true,
+                    destructiveHint = false, idempotentHint = true))
+    String list_sports_and_event_types() {
+        return run("list_sports_and_event_types", user -> {
+            ClubStore club = user.club();
+            Map<String, Object> result = new LinkedHashMap<>();
+            result.put("sports", club.sports().stream().map(s -> {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("name", s.name());
+                row.put("active", s.active());
+                return row;
+            }).toList());
+            result.put("event_types", club.eventTypes().stream().map(t -> {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("name", t.name());
+                row.put("behavior", t.behavior());
+                row.put("active", t.active());
+                return row;
+            }).toList());
+            return result;
+        });
+    }
+
     // ------------------------------------------------------------- events
 
     @Tool(description = "List trainings, tournaments and events, newest first.",
@@ -355,6 +383,8 @@ public class ClubTools {
             annotations = @Tool.Annotations(title = "Create event", readOnlyHint = false, destructiveHint = false, idempotentHint = false))
     String create_event(
             @ToolArg(description = "training, tournament or event") String kind,
+            @ToolArg(description = "Event type from list_sports_and_event_types whose behaviour is this kind, e.g. Kurs; "
+                    + "default Training / Turnier; required for kind event", required = false) String event_type,
             @ToolArg(description = "Title. Trainings with the same title share one PRAE form per month") String title,
             @ToolArg(description = "Start") String start,
             @ToolArg(description = "End; for a tournament the last day (default: same day); for an event required", required = false) String end,
@@ -375,6 +405,10 @@ public class ClubTools {
                 throw new IllegalArgumentException("kind must be training, tournament or event.");
             }
             ClubStore club = user.club();
+            String type = eventType(club, kind, event_type);
+            if ("event".equals(kind) && type.isEmpty()) {
+                throw new IllegalArgumentException("event_type is required for kind event; see list_sports_and_event_types.");
+            }
             Instant startAt;
             Instant endAt;
             Integer duration = null;
@@ -407,7 +441,7 @@ public class ClubTools {
                     or(street, ""), or(zip, ""), or(city, ""), or(country, "Österreich"), startAt, endAt, or(notes, ""), status,
                     duration, "training".equals(kind) ? or(focus_area, "") : null,
                     "tournament".equals(kind) ? (max_teams == null ? 8 : positive(max_teams, "max_teams")) : null,
-                    teamIds(club, team_ids), club.createdBy());
+                    teamIds(club, team_ids), club.createdBy(), type);
             club.saveEvent(event);
             return eventRow(event);
         });
@@ -423,6 +457,7 @@ public class ClubTools {
             @ToolArg(description = "Start", required = false) String start,
             @ToolArg(description = "End; not for trainings, use duration_minutes", required = false) String end,
             @ToolArg(description = "Status", required = false) String status,
+            @ToolArg(description = "Event type with this event's behaviour, from list_sports_and_event_types", required = false) String event_type,
             @ToolArg(description = "Sport", required = false) String sport,
             @ToolArg(description = "Name of the place", required = false) String location,
             @ToolArg(description = "Street", required = false) String street,
@@ -472,7 +507,8 @@ public class ClubTools {
                     or(city, e.city()), or(country, e.country()), startAt, endAt, or(notes, e.notes()),
                     or(status, e.status()), duration, focus_area != null ? focus_area : e.focusArea(),
                     max_teams != null ? Integer.valueOf(positive(max_teams, "max_teams")) : e.maxTeams(),
-                    team_ids != null ? teamIds(club, team_ids) : e.teamIds(), e.createdBy());
+                    team_ids != null ? teamIds(club, team_ids) : e.teamIds(), e.createdBy(),
+                    event_type != null ? eventType(club, e.kind(), event_type) : e.eventType());
             club.saveEvent(updated);
             return eventRow(updated);
         });
@@ -911,6 +947,7 @@ public class ClubTools {
         Map<String, Object> row = new LinkedHashMap<>();
         row.put("event_id", e.id());
         row.put("kind", e.kind());
+        row.put("event_type", e.typeName());
         row.put("title", e.title());
         row.put("sport", e.sport());
         row.put("start", LocalDateTime.ofInstant(e.startDate(), CLUB_ZONE).toString());
@@ -928,6 +965,34 @@ public class ClubTools {
         MemberStore roster = user.roster();
         return roster.get(id(memberId, "member_id"), false)
                 .orElseThrow(() -> new IllegalArgumentException("Dieses Mitglied gibt es nicht." + ID_HINT));
+    }
+
+    /**
+     * The event type for {@code kind}: blank = the kind's default; otherwise
+     * it must be on the club's list with that behaviour (exact name, case
+     * ignored). If the list can't be read, the name is taken as given.
+     */
+    static String eventType(ClubStore club, String kind, String requested) {
+        if (requested == null || requested.isBlank()) {
+            return ClubModels.defaultEventType(kind);
+        }
+        String wanted = ClubStore.cleanName(requested);
+        List<ClubModels.EventType> types;
+        try {
+            types = club.eventTypes();
+        } catch (RuntimeException e) {
+            return wanted;
+        }
+        return types.stream().filter(t -> t.name().equalsIgnoreCase(wanted)).findFirst()
+                .map(t -> {
+                    if (!t.behavior().equals(kind)) {
+                        throw new IllegalArgumentException("Die Art " + t.name() + " verhält sich wie " + t.behavior()
+                                + ", nicht wie " + kind + ".");
+                    }
+                    return t.name();
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Diese Veranstaltungsart gibt es nicht: " + wanted
+                        + ". Siehe list_sports_and_event_types."));
     }
 
     private static ClubEvent event(ClubStore club, String eventId) {

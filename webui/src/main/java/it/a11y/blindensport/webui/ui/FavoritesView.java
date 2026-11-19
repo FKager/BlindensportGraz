@@ -96,7 +96,7 @@ public class FavoritesView extends AdminView {
         dialog.setWidth("min(48rem, 100vw)");
         TextField title = new TextField("Titel");
         title.setRequired(true);
-        ComboBox<String> sport = ClubFields.sport(f == null ? "" : f.sport());
+        ComboBox<String> sport = ClubFields.sport(f == null ? "" : f.sport(), store().sportNames());
         Select<Integer> weekday = new Select<>();
         weekday.setLabel("Wochentag");
         weekday.setItems(WEEKDAYS);

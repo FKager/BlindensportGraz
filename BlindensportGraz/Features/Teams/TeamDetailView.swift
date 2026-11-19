@@ -29,7 +29,7 @@ struct TeamDetailView: View {
         Form {
             Section("Team") {
                 TextField("Name", text: $team.name)
-                TextField("Sportart", text: $team.sport)
+                SportPicker(selection: $team.sport, allowsNone: true)
                 TextField("Beschreibung", text: $team.descriptionText, axis: .vertical)
                     .lineLimit(2...5)
             }

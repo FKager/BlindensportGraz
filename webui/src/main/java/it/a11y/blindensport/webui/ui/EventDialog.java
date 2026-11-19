@@ -37,6 +37,7 @@ class EventDialog extends Dialog {
     private final String kind;
     private final TextField title = new TextField("Titel");
     private final ComboBox<String> sport;
+    private final ComboBox<String> eventType;
     private final DateTimePicker start = GermanUi.dateTimePicker("Beginn");
     private final DateTimePicker end = GermanUi.dateTimePicker("Ende");
     private final DatePicker startDay = GermanUi.datePicker("Erster Tag");
@@ -53,7 +54,12 @@ class EventDialog extends Dialog {
     private final TextArea notes = new TextArea("Notizen");
     private final MultiSelectComboBox<Team> teams;
 
-    EventDialog(String kind, ClubEvent existing, List<Team> allTeams, String createdBy, Consumer<ClubEvent> onSave) {
+    /**
+     * {@code sportOptions}: the club's active sports; {@code typeOptions}:
+     * the active event types with this kind's behaviour.
+     */
+    EventDialog(String kind, ClubEvent existing, List<Team> allTeams, List<String> sportOptions,
+                List<String> typeOptions, String createdBy, Consumer<ClubEvent> onSave) {
         this.existing = existing;
         this.kind = existing != null ? existing.kind() : kind;
         String label = ClubModels.KINDS.getOrDefault(this.kind, "Event");
@@ -61,7 +67,9 @@ class EventDialog extends Dialog {
                 : label + " bearbeiten: " + existing.title());
         setWidth("min(52rem, 100vw)");
         setCloseOnOutsideClick(false);
-        sport = ClubFields.sport(existing == null ? "" : existing.sport());
+        sport = ClubFields.sport(existing == null ? "" : existing.sport(), sportOptions);
+        String typeValue = existing == null ? defaultType(this.kind, typeOptions) : existing.typeName();
+        eventType = ClubFields.eventType(typeValue, typeOptions);
         teams = ClubFields.teams(allTeams, existing == null ? List.of() : existing.teamIds());
         title.setRequired(true);
         duration.setMin(1);
@@ -81,7 +89,13 @@ class EventDialog extends Dialog {
 
         FormLayout form = new FormLayout();
         form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 1), new FormLayout.ResponsiveStep("32rem", 2));
-        form.add(title, sport);
+        form.add(title);
+        // Trainings and tournaments only show the type when there is a choice
+        // (e.g. "Training" and "Trainingslager"); plain events always pick one.
+        if ("event".equals(this.kind) || ClubFields.withCurrent(typeOptions, typeValue).size() > 1) {
+            form.add(eventType);
+        }
+        form.add(sport);
         switch (this.kind) {
             case "training" -> form.add(start, duration, focusArea, status);
             case "tournament" -> form.add(startDay, endDay, maxTeams, status);
@@ -186,7 +200,17 @@ class EventDialog extends Dialog {
                 "training".equals(kind) ? focusArea.getValue() : existing == null ? null : existing.focusArea(),
                 "tournament".equals(kind) ? maxTeams.getValue() : existing == null ? null : existing.maxTeams(),
                 ClubFields.teamIds(teams),
-                existing == null ? createdBy : existing.createdBy());
+                existing == null ? createdBy : existing.createdBy(),
+                eventType.getValue() == null ? "" : eventType.getValue());
+    }
+
+    /** The kind's default type if the club offers it, else the first offered type. */
+    static String defaultType(String kind, List<String> typeOptions) {
+        String byKind = ClubModels.defaultEventType(kind);
+        if (!byKind.isEmpty() && typeOptions.contains(byKind)) {
+            return byKind;
+        }
+        return typeOptions.isEmpty() ? byKind : typeOptions.get(0);
     }
 
     private ClubEvent invalid(String message, Component field) {

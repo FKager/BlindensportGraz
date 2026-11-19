@@ -72,6 +72,9 @@ private struct VereinHubList: View {
                 NavigationLink(value: AppRoute.welcomeSettings) {
                     Label("Willkommensbildschirm", systemImage: "hand.wave")
                 }
+                NavigationLink(value: AppRoute.catalogLists) {
+                    Label("Sportarten und Veranstaltungsarten", systemImage: "list.bullet.indent")
+                }
             }
 
             Section("Finanzen") {

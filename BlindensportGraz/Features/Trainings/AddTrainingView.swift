@@ -17,7 +17,8 @@ struct AddTrainingView: View {
       @Query private var recentTrainings: [Training]
 
        @State private var title = ""
-       @State private var sport = "Torball"
+       @State private var sport = ""
+       @State private var eventType = ""
        @State private var location = ""
        @State private var street = ""
        @State private var zip = ""
@@ -45,7 +46,6 @@ struct AddTrainingView: View {
        @State private var showSeriesResultAlert = false
        @State private var seriesResultMessage = ""
 
-    let sports = ["Torball", "Goalball", "Blindenfußball", "Showdown", "Judo", "Leichtathletik", "Schwimmen", "Ski", "Radfahren"]
 
     // Admins manage every team, not just ones they personally joined — a team
     // they just created via AddTeamView has no TeamMembership for them yet, so
@@ -154,11 +154,8 @@ struct AddTrainingView: View {
                 }
                 Section("Training") {
                     TextField("Titel", text: $title)
-                    Picker("Sportart", selection: $sport) {
-                        ForEach(sports, id: \.self) { s in
-                            Label(s, systemImage: SportIcon.symbolName(for: s)).tag(s)
-                        }
-                       }
+                    EventTypePicker(selection: $eventType, behavior: .training)
+                    SportPicker(selection: $sport)
                     // Relabeled from "Ort" to "Veranstaltungsort" — see
                     // EventsViews.AddEventView's identical comment.
                     TextField("Veranstaltungsort", text: $location)
@@ -272,7 +269,8 @@ struct AddTrainingView: View {
                                 title: title, sport: sport, location: location,
                                 street: street, zip: zip, city: city, country: country,
                                 startDates: dates, durationMinutes: durationMinutes, focusArea: focusArea, notes: notes,
-                                createdBy: currentUser?.id.uuidString ?? "", teams: teams, modelContext: modelContext
+                                createdBy: currentUser?.id.uuidString ?? "", teams: teams, eventType: eventType,
+                                modelContext: modelContext
                             )
                             guard outcome.created > 0 else {
                                 duplicateAlertMessage = "Für den gewählten Zeitraum gibt es bereits an jedem Termin ein Training mit diesem Titel und dieser Sportart."
@@ -331,6 +329,7 @@ struct AddTrainingView: View {
                             createdBy: currentUser?.id.uuidString ?? "",
                             teams: teams
                         )
+                        training.eventType = eventType
                         modelContext.insert(training)
                         TrainingService.save(training, modelContext: modelContext)
 
