@@ -332,6 +332,42 @@ jobs:
             --apiKey "$APP_STORE_CONNECT_KEY_ID" \
             --apiIssuer "$APP_STORE_CONNECT_ISSUER_ID"
 
+      # altool only uploads the binary. Without this step the build sits in
+      # App Store Connect with no tester group and testers never see it
+      # (happened with v0.14.0 = build 361, 2026-11-18). Waits for processing,
+      # adds the build to the Internal group and, if the tag is annotated
+      # with real text (`git tag -a v1.2.3 -m "…"`), uses that text as the
+      # de-DE "What to Test" notes.
+      - name: Distribute to Internal testers
+        env:
+          APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+          ASC_APP_ID: "6807475637"
+          TESTER_GROUP: Internal
+        run: |
+          set -euo pipefail
+          brew install asc
+          export ASC_CONFIG_PATH="$RUNNER_TEMP/asc-config.json"
+          export ASC_BYPASS_KEYCHAIN=1
+          printf '{"key_id":"%s","issuer_id":"%s","private_key_path":"%s"}' \
+            "$APP_STORE_CONNECT_KEY_ID" "$APP_STORE_CONNECT_ISSUER_ID" "$ASC_KEY_PATH" > "$ASC_CONFIG_PATH"
+
+          SEL=(--app "$ASC_APP_ID" --build-number "$BUILD_NUMBER" --platform IOS)
+          asc builds wait "${SEL[@]}" --timeout 60m --fail-on-invalid --output table
+          asc builds add-groups "${SEL[@]}" --group "$TESTER_GROUP" --output table
+
+          TAG="${GITHUB_REF#refs/tags/}"
+          git fetch --quiet --force origin "refs/tags/$TAG:refs/tags/$TAG"
+          NOTES=$(git tag -l --format='%(contents)' "$TAG" | sed -e '/^-----BEGIN/,$d' | sed -e 's/[[:space:]]*$//')
+          if [ -n "$NOTES" ] && [ "$NOTES" != "$TAG" ]; then
+            BUILD_ID=$(asc builds info "${SEL[@]}" --output json | python3 -c 'import json,sys; print(json.load(sys.stdin)["data"]["id"])')
+            asc builds test-notes update --build-id "$BUILD_ID" --locale de-DE --whats-new "$NOTES" --output table \
+              || asc builds test-notes create "${SEL[@]}" --version "$MARKETING_VERSION" --locale de-DE --whats-new "$NOTES" --output table
+          else
+            echo "::notice::Tag $TAG has no release notes; add What to Test text in App Store Connect if wanted."
+          fi
+          rm -f "$ASC_CONFIG_PATH"
+
       # `uploadSymbols: true` in ExportOptions.plist only pushes dSYMs to
       # App Store Connect when `destination` is `upload` — with
       # `destination: export` (needed so we can find the .ipa to upload
