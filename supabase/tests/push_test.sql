@@ -33,7 +33,7 @@ create function pg_temp.ev(kind text default 'training', title text default 'Tra
 returns public.events language sql as $$
   select row('b0000000-0000-0000-0000-000000000001'::uuid, kind, title, '', 'Halle', '', '', '', '',
              starts, starts + interval '2 hours', notes, status, null, null, null, teams,
-             '', now(), now(), null)::public.events;
+             '', now(), now(), null, '')::public.events;
 $$;
 
 select pg_temp.mk_user('c0000000-0000-0000-0000-000000000001', 'coach@push.test');
