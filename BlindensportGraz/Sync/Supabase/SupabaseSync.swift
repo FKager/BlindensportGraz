@@ -210,6 +210,14 @@ final class SupabaseSync {
         return handoverKeep.contains(id) || ((try? outboxContext.fetchCount(descriptor)) ?? 0) > 0
     }
 
+    /// The pulled rows that may overwrite their local copy: not the ones
+    /// with a local edit still waiting in the outbox, which is newer than
+    /// what the server sent. Once that edit reaches the server its
+    /// `updated_at` moves past the cursor, so the next pull brings it back.
+    func rowsToApply<Row>(_ rows: [Row], id: (Row) -> UUID) -> [Row] {
+        rows.filter { !hasPendingPush(id($0)) }
+    }
+
     // MARK: - Fetch helpers
 
     /// Rows changed at/after `since` (all rows when nil), oldest first, paged.

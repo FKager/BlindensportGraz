@@ -15,7 +15,7 @@ extension SupabaseSync {
     ) async throws {
         let since = cursor(table)
         let rows: [Row] = try await fetchChanged(table, since: since, columns: columns)
-        for row in rows { apply(row) }
+        for row in rowsToApply(rows, id: rowID) { apply(row) }
         if since == nil, pruneMissing {
             let keep = Set(rows.map(rowID))
             for object in (try? modelContext.fetch(FetchDescriptor<Model>())) ?? []
@@ -138,7 +138,7 @@ extension SupabaseSync {
         let table = "member_contacts"
         let since = cursor(table)
         let rows: [MemberContactDBRow] = try await fetchChanged(table, since: since)
-        for row in rows {
+        for row in rowsToApply(rows, id: \.id) {
             guard let member = findMember(row.id, modelContext: modelContext) else { continue }
             member.street = row.street
             member.zip = row.zip

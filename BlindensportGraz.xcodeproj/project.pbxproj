@@ -255,6 +255,7 @@
 		D20BB2C4F7A6B5D081C43751 /* AccountInfoSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4001F90F8C86AD2C69C6D6 /* AccountInfoSection.swift */; };
 		D35BCEE973B20129F4492319 /* MemberSelectionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3673E5EE6B6DC033DFAC297A /* MemberSelectionRow.swift */; };
 		D460D5F42A63E9983581BA9B /* SyncStatusBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8880B240A4707610CA3C53E /* SyncStatusBanner.swift */; };
+		D5C6CCAF65719DDFE7D40C6E /* SupabaseSyncPullTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4289EE8DC407713CD37AC1 /* SupabaseSyncPullTests.swift */; };
 		D6AB64CE119023B37E052105 /* RestrictedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303694D664F32C36C65AC564 /* RestrictedTabView.swift */; };
 		D6F299EB0FEEE4316C902B5F /* UserApprovalControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AB3F0726A3B8D85C18D647F /* UserApprovalControls.swift */; };
 		D78B853F071D1336B8498C2A /* SammelabrechnungExport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2179524F056369A65EE64BE8 /* SammelabrechnungExport.swift */; };
@@ -459,6 +460,7 @@
 		69C50588D830BD20FBEA4A28 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		69F2DD77811BE533E235A51B /* TN_TeilnehmerInnenliste.xlsx */ = {isa = PBXFileReference; path = TN_TeilnehmerInnenliste.xlsx; sourceTree = "<group>"; };
 		69FC81D67E656B895FEF7BCC /* EventParticipation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventParticipation.swift; sourceTree = "<group>"; };
+		6A4289EE8DC407713CD37AC1 /* SupabaseSyncPullTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncPullTests.swift; sourceTree = "<group>"; };
 		6A7EB99AB20DA0758E0B9137 /* Thumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Thumbnail.swift; sourceTree = "<group>"; };
 		6AE4148186F236F59CE5059D /* WordDocInvitation.doc */ = {isa = PBXFileReference; path = WordDocInvitation.doc; sourceTree = "<group>"; };
 		6B8FD58472CEC14B549438AE /* TournamentInvitationImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TournamentInvitationImportView.swift; sourceTree = "<group>"; };
@@ -833,6 +835,7 @@
 				6331B50A5B060D74CC1F836D /* SearchQueryTests.swift */,
 				512697E5A61C2050F2820D64 /* SeasonDashboardTests.swift */,
 				76F901CD3511953F34FCF80B /* SupabaseRowsTests.swift */,
+				6A4289EE8DC407713CD37AC1 /* SupabaseSyncPullTests.swift */,
 				77E0DCABE9EFD83D0C4C1FF2 /* SupabaseSyncRetryTests.swift */,
 				9C0E1E022BE99A8781F89965 /* SyncStateTests.swift */,
 				9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */,
@@ -1692,6 +1695,7 @@
 				06F616B384F0460077B8BCB0 /* SearchQueryTests.swift in Sources */,
 				422C73C84EAB649F9F71E44F /* SeasonDashboardTests.swift in Sources */,
 				37E2EA5D7AE268204608DDF0 /* SupabaseRowsTests.swift in Sources */,
+				D5C6CCAF65719DDFE7D40C6E /* SupabaseSyncPullTests.swift in Sources */,
 				B0AE4E7541D7FB4FB7CFF189 /* SupabaseSyncRetryTests.swift in Sources */,
 				85640CC8B2B6A9C5A871B58C /* SyncStateTests.swift in Sources */,
 				C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */,
