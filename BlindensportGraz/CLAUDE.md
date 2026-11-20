@@ -115,46 +115,48 @@ Unit tests live in `BlindensportGrazTests/` (XCTest) and run in the Simulator wi
 
 ## Key Patterns
 
-### Form Styling
+### Navigation
+Tabs use the `Tab` API in `MainTabView`; each tab has its own `NavigationStack` whose root view calls `.appRouteDestinations(currentUser:)` exactly once. Every pushed screen is a case of `AppRoute` (`App/AppRoute.swift`), linked by value, so destinations are only built when followed:
 ```swift
-Form {
-    Section("Title") {
-        TextField("Label", text: $viewModel.title)
-    }
+NavigationLink(value: AppRoute.team(team)) {
+    TeamRow(team: team)
 }
 ```
+Don't use `NavigationLink { DetailView() }`, and don't add `.appRouteDestinations` to a pushed view (a second registration in one stack is an error).
 
-### List with CRUD
+### Lists
 ```swift
 List {
-    ForEach(items) { item in
-        NavigationLink { DetailView() } label: { Row(item) }
-    }.onDelete(perform: deleteItems)
+    if teams.isEmpty {
+        ContentUnavailableView("Keine Teams", systemImage: "person.3",
+                               description: Text("Lege ein neues Team an."))
+    } else {
+        ForEach(teams) { team in
+            NavigationLink(value: AppRoute.team(team)) { TeamRow(team: team) }
+                .deleteDisabled(!canManageTeams)
+        }
+        .onDelete { offsets in
+            for index in offsets { TeamService.delete(teams[index], modelContext: modelContext) }
+        }
+    }
 }
-.toolbar(.menu)
+.refreshable { await SyncOrchestrationService.syncAll(modelContext: modelContext) }
 ```
+`onDelete` offsets index the collection the `ForEach` shows — resolve them against that same (filtered, sorted) array, never the raw `@Query`. Gate swipe actions and toolbar buttons with `user.can(.permission)`.
 
-### Sheets for Modals
-```swift
-.sheet(isPresented: $showAdd, content: { AddDetailView(currentUser: currentUser) })
-```
+### Writes
+Create, edit and delete through the model's `*Service` (`TeamService.save(team, modelContext:)`, `TeamService.delete(team, modelContext:)`): it saves locally, reports failures and queues the Supabase push. Don't call `modelContext.save()` from a view.
 
-### Navigation Stack Pattern
-```swift
-NavigationStack {
-    ViewContent()
-}.tabItem { Label("Name", systemImage: "icon") }
-```
+### Forms and sheets
+Data entry is a `Form` of `Section`s bound to the model with `@Bindable`. Add/edit forms open with `.sheet(isPresented:)`; use `.sheet(item:)` when the sheet shows an optional value. Errors are kept in an optional `@State` and shown with `.alert`.
 
 ## UI Conventions
 
-- **LinearGradient** backgrounds with blue/purple theme
-- **ZStack** centered icons in circles for avatars
-- **Form** layout for data entry views
-- **List** + **Picker/SegmentedControl** for selection interfaces
-- **LazyVGrid** for card layouts (stats, recent items)
-- **NavigationStack** for hierarchical navigation
-- **TabView** for main app tabs
+- Spacing, radii, colours and the brand fill come from `Theme` (`Shared/Theme.swift`) — no hard-coded values
+- `Form` for data entry, `List` for collections, `ContentUnavailableView` for empty states
+- **ZStack** with `Theme.brandFill` circles for avatars; the initial letter is decorative (`accessibilityHidden`)
+- `LazyVGrid` for card layouts (stats, recent items)
+- Icon-only buttons get an `accessibilityLabel`; tap targets are at least 44×44 pt
 
 ## Localization (German)
 All UI text is in German. Common terms:
