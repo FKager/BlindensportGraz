@@ -94,7 +94,7 @@ struct UserListView: View {
                     Button("E-Mail-Vorschläge bestätigen", systemImage: "checkmark.seal") {
                         showBulkApproval = true
                     }
-                    .confirmationDialog("\(emailSuggestions.count) Konten freigeben?", isPresented: $showBulkApproval,
+                    .confirmationDialog(Text("^[\(emailSuggestions.count) Konto](inflect: true) freigeben?"), isPresented: $showBulkApproval,
                                         titleVisibility: .visible) {
                         Button("Freigeben") { Task { await approveEmailSuggestions() } }
                         Button("Abbrechen", role: .cancel) {}

@@ -66,6 +66,8 @@ struct AccountView: View {
                                     .font(.title)
                                     .bold()
                                     .foregroundStyle(.white)
+                                    // Decorative: the name follows.
+                                    .accessibilityHidden(true)
                             }
                         }
                         .frame(width: 70, height: 70)
