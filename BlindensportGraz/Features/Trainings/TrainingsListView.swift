@@ -249,7 +249,6 @@ struct TrainingsListView: View {
     // Both swipe actions are shown only to managers; the guards keep it that way.
     private func delete(_ training: Training) {
         guard canManageEvents else { return }
-        modelContext.delete(training)
         TrainingService.delete(training, modelContext: modelContext)
     }
 

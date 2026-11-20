@@ -73,7 +73,6 @@ struct TournamentsListView: View {
     private func deleteTournaments(at offsets: IndexSet) {
         guard canManageEvents else { return }
         for tournament in EventListAccess.rows(at: offsets, in: visibleTournaments) {
-            modelContext.delete(tournament)
             TournamentService.delete(tournament, modelContext: modelContext)
         }
     }
