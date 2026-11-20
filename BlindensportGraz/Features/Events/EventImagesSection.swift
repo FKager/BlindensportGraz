@@ -18,13 +18,11 @@ struct EventImagesSection: View {
 
     var body: some View {
         Section("Bilder (\(images.count))") {
-            if let featured, let uiImage = UIImage(data: featured.imageData) {
+            if let featured {
                 Button {
                     showGallery = true
                 } label: {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
+                    ThumbnailImage(id: featured.id, maxPointSize: 500) { featured.imageData }
                         .frame(height: 180)
                         .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.card))
