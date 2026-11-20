@@ -41,8 +41,7 @@ struct UserApprovalControls: View {
             // get the same actions.
             actions
         }
-        .alert("Fehler", isPresented: Binding(get: { errorMessage != nil },
-                                              set: { if !$0 { errorMessage = nil } })) {
+        .alert("Fehler", isPresented: Binding(isPresent: $errorMessage)) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")

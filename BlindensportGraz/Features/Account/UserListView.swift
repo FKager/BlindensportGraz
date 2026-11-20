@@ -49,7 +49,7 @@ struct UserListView: View {
     // Extracted from `body` so the `List` modifier chain stays short enough
     // for the type-checker.
     private var errorShown: Binding<Bool> {
-        Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })
+        Binding(isPresent: $errorMessage)
     }
 
     /// Unapproved non-admin accounts whose email matches a roster entry.
@@ -64,7 +64,7 @@ struct UserListView: View {
     }
 
     private var activationCodeShown: Binding<Bool> {
-        Binding(get: { activationCodeInfo != nil }, set: { if !$0 { activationCodeInfo = nil } })
+        Binding(isPresent: $activationCodeInfo)
     }
 
     var body: some View {

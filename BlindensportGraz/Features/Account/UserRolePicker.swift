@@ -29,8 +29,7 @@ struct UserRolePicker: View {
         .onChange(of: role) { _, newRole in
             changeRole(to: newRole)
         }
-        .alert("Rolle nicht geändert", isPresented: Binding(get: { errorMessage != nil },
-                                                           set: { if !$0 { errorMessage = nil } })) {
+        .alert("Rolle nicht geändert", isPresented: Binding(isPresent: $errorMessage)) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")

@@ -63,8 +63,7 @@ struct RolesView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }
         .refreshable { await load() }
-        .alert("Rolle nicht geändert", isPresented: Binding(get: { errorMessage != nil },
-                                                           set: { if !$0 { errorMessage = nil } })) {
+        .alert("Rolle nicht geändert", isPresented: Binding(isPresent: $errorMessage)) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")

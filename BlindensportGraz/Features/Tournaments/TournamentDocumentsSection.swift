@@ -72,8 +72,7 @@ struct TournamentDocumentsSection: View {
                           onCompletion: add)
             .quickLookPreview($previewURL)
             .confirmationDialog("Dokument „\(pendingDelete?.fileName ?? "")“ löschen?",
-                                isPresented: Binding(get: { pendingDelete != nil },
-                                                     set: { if !$0 { pendingDelete = nil } }),
+                                isPresented: Binding(isPresent: $pendingDelete),
                                 titleVisibility: .visible) {
                 Button("Löschen", role: .destructive) {
                     if let pendingDelete {
@@ -82,8 +81,7 @@ struct TournamentDocumentsSection: View {
                     pendingDelete = nil
                 }
             }
-            .alert("Dokument", isPresented: Binding(get: { errorMessage != nil },
-                                                    set: { if !$0 { errorMessage = nil } })) {
+            .alert("Dokument", isPresented: Binding(isPresent: $errorMessage)) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(errorMessage ?? "")

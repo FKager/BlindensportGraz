@@ -44,13 +44,13 @@ struct MembersListView: View {
     // Extracted from `body` so the modifier chain on `List` stays short
     // enough for the type-checker (it timed out with these inline).
     private var deletionDialogShown: Binding<Bool> {
-        Binding(get: { pendingDeletion != nil }, set: { if !$0 { pendingDeletion = nil } })
+        Binding(isPresent: $pendingDeletion)
     }
     private var deletionErrorShown: Binding<Bool> {
-        Binding(get: { deletionError != nil }, set: { if !$0 { deletionError = nil } })
+        Binding(isPresent: $deletionError)
     }
     private var importAlertShown: Binding<Bool> {
-        Binding(get: { importResultMessage != nil }, set: { if !$0 { importResultMessage = nil } })
+        Binding(isPresent: $importResultMessage)
     }
     private var failureAlertShown: Binding<Bool> {
         Binding(get: { failureSignal.message != nil }, set: { if !$0 { failureSignal.clear() } })

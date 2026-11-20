@@ -191,8 +191,7 @@ struct AccountView: View {
         .sheet(isPresented: $showRedeemCode) {
             RedeemActivationCodeView()
         }
-        .alert("Fehler", isPresented: Binding(get: { errorMessage != nil },
-                                              set: { if !$0 { errorMessage = nil } })) {
+        .alert("Fehler", isPresented: Binding(isPresent: $errorMessage)) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")
