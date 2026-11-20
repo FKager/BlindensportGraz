@@ -559,19 +559,9 @@ extension SupabaseSync {
 
     // MARK: - Images and receipts (Storage + metadata row)
 
-    /// Uploads the file, then the row. Not outbox-backed (like the CloudKit
-    /// asset push before): a failed upload is logged and shown as a sync
-    /// failure; the photo stays on this device.
+    /// Uploads the photo, then its row — outbox-backed (`upload`).
     func pushEventImage(_ image: EventImage) {
-        let row = EventImageDBRow(image)
-        let data = image.imageData
-        Task {
-            _ = await performWithRetry("upload of event image \(image.id)") {
-                try await self.client.storage.from("event-images")
-                    .upload(row.storagePath, data: data, options: FileOptions(contentType: "image/jpeg", upsert: true))
-                try await self.client.from("event_images").upsert(row, onConflict: "id", returning: .minimal).execute()
-            }
-        }
+        upload(EventImageDBRow(image), table: "event_images", id: image.id, data: image.imageData)
     }
 
     func deleteEventImage(_ id: UUID) {
@@ -595,15 +585,7 @@ extension SupabaseSync {
     }
 
     func pushExpenseReceipt(_ receipt: ExpenseReceipt) {
-        let row = ExpenseReceiptDBRow(receipt)
-        let data = receipt.imageData
-        Task {
-            _ = await performWithRetry("upload of receipt \(receipt.id)") {
-                try await self.client.storage.from("receipts")
-                    .upload(row.storagePath, data: data, options: FileOptions(contentType: "image/jpeg", upsert: true))
-                try await self.client.from("expense_receipts").upsert(row, onConflict: "id", returning: .minimal).execute()
-            }
-        }
+        upload(ExpenseReceiptDBRow(receipt), table: "expense_receipts", id: receipt.id, data: receipt.imageData)
     }
 
     func deleteExpenseReceipt(_ id: UUID) {
@@ -628,15 +610,8 @@ extension SupabaseSync {
     }
 
     func pushTournamentInvitation(_ invitation: TournamentInvitation) {
-        let row = TournamentInvitationDBRow(invitation)
-        let data = invitation.fileData
-        Task {
-            _ = await performWithRetry("upload of tournament invitation \(invitation.id)") {
-                try await self.client.storage.from("tournament-invitations")
-                    .upload(row.storagePath, data: data, options: FileOptions(contentType: row.contentType, upsert: true))
-                try await self.client.from("tournament_invitations").upsert(row, onConflict: "id", returning: .minimal).execute()
-            }
-        }
+        upload(TournamentInvitationDBRow(invitation), table: "tournament_invitations", id: invitation.id,
+               data: invitation.fileData)
     }
 
     func deleteTournamentInvitation(_ id: UUID, path: String) {

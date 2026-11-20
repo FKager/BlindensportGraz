@@ -102,6 +102,32 @@ final class PendingPushTests: XCTestCase {
         XCTAssertEqual(PendingPush.all(in: context).map(\.recordName), ["first", "second"])
     }
 
+    // MARK: - uploads
+
+    func testUploadKeepsItsRowPayload() throws {
+        let context = try makeContext()
+        PendingPush.enqueue(in: context, operation: PendingPush.uploadOperation,
+                            recordType: "event_images", recordName: "A", payload: Data([4, 2]))
+
+        let row = try XCTUnwrap(PendingPush.all(in: context).first)
+        XCTAssertEqual(row.operation, PendingPush.uploadOperation)
+        XCTAssertEqual(row.payloadData, Data([4, 2]))
+    }
+
+    func testDeletingAPhotoSupersedesItsPendingUpload() throws {
+        let context = try makeContext()
+        PendingPush.enqueue(in: context, operation: PendingPush.uploadOperation,
+                            recordType: "event_images", recordName: "A", payload: Data([4, 2]))
+
+        PendingPush.enqueue(in: context, operation: PendingPush.deleteOperation,
+                            recordType: "event_images", recordName: "A", payload: Data())
+
+        let row = try XCTUnwrap(PendingPush.all(in: context).first)
+        XCTAssertEqual(PendingPush.count(in: context), 1)
+        XCTAssertEqual(row.operation, PendingPush.deleteOperation)
+        XCTAssertTrue(row.payloadData.isEmpty)
+    }
+
     // MARK: - versions (two quick edits of one record)
 
     func testEveryEnqueueForTheSameRecordGetsALaterStamp() throws {
