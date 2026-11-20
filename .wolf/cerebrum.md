@@ -494,6 +494,10 @@
 
 ## Do-Not-Repeat
 
+- [2026-11-20] Tests must not call `*Service.save/delete` (they push via SupabaseSync.shared → staging, since the test host app sets its modelContainer). For sync logic, use a fresh `SupabaseSync()` with an in-memory `modelContainer` (see SupabaseSyncPullTests/SupabaseSyncRetryTests).
+- [2026-11-20] Pure helpers used from nonisolated XCTest classes need `nonisolated enum` (default MainActor isolation otherwise → 'call to main actor-isolated static method in a synchronous nonisolated context'). `try XCTUnwrap(await f())` doesn't compile (async in autoclosure) — await into a let first.
+- [2026-11-20] Every `*Service.delete` now calls `modelContext.delete` itself — callers must not delete first. Member backups (MemberBackup) are gone on purpose (privacy); don't reintroduce local roster snapshots.
+
 - [2026-11-20] `.onDelete(perform: cond ? deleteX : nil)` in a view body crashes the Swift 6.4 type checker ("failed to produce diagnostic for expression"). Gate swipe-delete with `.deleteDisabled(!canManage)` on the row instead. List visibility, swipe-offset mapping and the events-manage check live in `EventListAccess` (Events/Trainings/Tournaments lists) — use it, don't re-inline the filter.
 - [2026-11-20] Outbox writes are versioned: `PendingPush.enqueue` returns the row's `enqueuedAt`; clear with `clear(…, enqueuedAt:)` and send through `SupabaseSync.send` (per-record `RecordPushQueue`). Never clear an outbox row by record name alone from a send — it drops a newer queued edit.
 

@@ -25,8 +25,7 @@ struct ReportPrintButton: View {
         }
         .disabled(isPreparing)
         .accessibilityHint("Bereitet die Dokumente auf und öffnet den Druckdialog.")
-        .alert("Drucken nicht möglich", isPresented: Binding(get: { errorMessage != nil },
-                                                             set: { if !$0 { errorMessage = nil } })) {
+        .alert("Drucken nicht möglich", isPresented: Binding(isPresent: $errorMessage)) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")

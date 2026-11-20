@@ -62,8 +62,7 @@ struct UserAccountAdminMenu: View {
         } message: {
             Text("Das App-Konto, seine Rolle, Freigabe, Teilnahmen und Teamzuordnungen werden gelöscht. Das kann nicht rückgängig gemacht werden. Der Eintrag in der Benutzerverwaltung bleibt.\n\nMit derselben E-Mail-Adresse kann sich die Person neu registrieren. Um das zu verhindern, sperre das Konto stattdessen.")
         }
-        .alert("Fehler", isPresented: Binding(get: { errorMessage != nil },
-                                              set: { if !$0 { errorMessage = nil } })) {
+        .alert("Fehler", isPresented: Binding(isPresent: $errorMessage)) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")

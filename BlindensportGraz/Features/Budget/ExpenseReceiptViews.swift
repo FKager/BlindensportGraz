@@ -51,14 +51,10 @@ struct ExpenseReceiptsSection: View {
                             expandedReceiptID = (expandedReceiptID == receipt.id) ? nil : receipt.id
                         } label: {
                             HStack {
-                                if let uiImage = UIImage(data: receipt.imageData) {
-                                    Image(uiImage: uiImage)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 44, height: 44)
-                                        .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.small))
-                                        .accessibilityHidden(true)
-                                }
+                                ThumbnailImage(id: receipt.id, maxPointSize: 44) { receipt.imageData }
+                                    .frame(width: 44, height: 44)
+                                    .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.small))
+                                    .accessibilityHidden(true)
                                 Text(receipt.note.isEmpty ? "Beleg" : receipt.note)
                                     .foregroundStyle(.primary)
                                 Spacer()
@@ -70,10 +66,8 @@ struct ExpenseReceiptsSection: View {
                         .accessibilityLabel("\(receipt.note.isEmpty ? "Beleg" : receipt.note), hochgeladen am \(receipt.uploadedAt.formatted(.dateTime.day().month().year()))")
                         .accessibilityHint("Doppeltippen, um den Beleg zu vergrößern")
 
-                        if expandedReceiptID == receipt.id, let uiImage = UIImage(data: receipt.imageData) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .scaledToFit()
+                        if expandedReceiptID == receipt.id {
+                            ThumbnailImage(id: receipt.id, maxPointSize: 600, contentMode: .fit) { receipt.imageData }
                                 .frame(maxHeight: 300)
                                 .accessibilityLabel(receipt.note.isEmpty ? "Beleg" : receipt.note)
                         }

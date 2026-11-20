@@ -94,7 +94,7 @@ struct KostZTournamentCalculationView: View {
                     Button("Fertig") { dismiss() }
                 }
             }
-            .alert("Export fehlgeschlagen", isPresented: Binding(get: { exportError != nil }, set: { if !$0 { exportError = nil } })) {
+            .alert("Export fehlgeschlagen", isPresented: Binding(isPresent: $exportError)) {
                 Button("OK", role: .cancel) {}
             } message: {
                 Text(exportError ?? "")

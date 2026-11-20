@@ -10588,6 +10588,59 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-20T20:05:00+01:00"
+    },
+    {
+      "id": "bug-629",
+      "timestamp": "2026-11-20T21:55:00+01:00",
+      "error_message": "Code review: automatic roster snapshots with SVNR/IBAN/birth dates in Documents/MemberBackups, visible in the Files app, in device backups, kept after sign-out",
+      "file": "BlindensportGraz/Features/Members/MemberBackup.swift",
+      "root_cause": "CloudKit-era local safety net (every member create/delete wrote a full roster JSON, up to 30 files); UIFileSharingEnabled exposed Documents",
+      "fix": "Removed MemberBackup + 5 call sites + UIFileSharingEnabled/LSSupportsOpeningDocumentsInPlace; LegacyFileCleanup.removeMemberBackups at launch. Tests: LegacyFileCleanupTests",
+      "tags": [
+        "privacy",
+        "gdpr",
+        "files-app",
+        "backup"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T21:55:00+01:00"
+    },
+    {
+      "id": "bug-630",
+      "timestamp": "2026-11-20T21:55:00+01:00",
+      "error_message": "Code review: a sync while an edit was queued or in flight showed the older server copy until the next sync",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync+Models.swift",
+      "root_cause": "pull() and pullMemberContacts applied every fetched row; only the full-pull prune checked hasPendingPush",
+      "fix": "SupabaseSync.rowsToApply skips rows with an outbox entry. Tests: SupabaseSyncPullTests",
+      "tags": [
+        "sync",
+        "outbox",
+        "pull"
+      ],
+      "related_bugs": [
+        "bug-628"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T21:55:00+01:00"
+    },
+    {
+      "id": "bug-631",
+      "timestamp": "2026-11-20T21:55:00+01:00",
+      "error_message": "Build: AccountView body 'unable to type-check this expression in reasonable time' after replacing Binding(get:set:) with generic Binding(isPresent:)",
+      "file": "BlindensportGraz/Features/Account/AccountView.swift",
+      "root_cause": "Long modifier chain plus an inline changeRequests.first { … } closure in a sheet; the generic helper added inference load",
+      "fix": "Moved the lookup into pendingRequest(for:) and extracted AccountProfileHeader/AccountInfoSection",
+      "tags": [
+        "swiftui",
+        "compiler",
+        "type-checker"
+      ],
+      "related_bugs": [
+        "bug-627"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T21:55:00+01:00"
     }
   ]
 }

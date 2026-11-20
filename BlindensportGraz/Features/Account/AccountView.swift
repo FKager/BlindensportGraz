@@ -42,6 +42,11 @@ struct AccountView: View {
 
     /// An unapproved account that plausibly belongs to a roster entry (or has
     /// requested membership) — shown "Freigabe ausstehend", never the data.
+    /// The member's open change request (Beitrittserklärung), if any.
+    private func pendingRequest(for member: Member) -> MemberChangeRequest? {
+        changeRequests.first { $0.memberID == member.id && $0.status == MemberChangeRequest.pendingStatus }
+    }
+
     private var awaitingApproval: Bool {
         guard let user = currentUser, ownMember == nil else { return false }
         return AccessPolicy.suggestedMember(for: user, roster: members) != nil
@@ -50,52 +55,8 @@ struct AccountView: View {
     var body: some View {
         Form {
             if let user = currentUser {
-                Section {
-                    HStack(spacing: Theme.Spacing.l) {
-                        ZStack {
-                            Circle()
-                                .fill(Theme.brandFill)
-                            if let photo, let image = UIImage(data: photo) {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .clipShape(Circle())
-                                    .accessibilityLabel("Profilfoto")
-                            } else {
-                                Text(user.displayName.prefix(1).uppercased())
-                                    .font(.title)
-                                    .bold()
-                                    .foregroundStyle(.white)
-                            }
-                        }
-                        .frame(width: 70, height: 70)
-
-                        VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
-                            Text(user.displayName)
-                                .font(.title3)
-                                .bold()
-                            Text(user.email)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                            TagLabel(roleLabel)
-                        }
-                    }
-                    .padding(.vertical, Theme.Spacing.s)
-                }
-
-                Section("Kontoinformationen") {
-                    LabeledContent("E-Mail", value: user.email)
-                    LabeledContent("Mitglied seit",
-                                   value: user.createdAt.formatted(date: .abbreviated, time: .omitted))
-                    LabeledContent("Teams", value: "\(user.memberships.count)")
-                    LabeledContent("Teilnahmen", value: "\(user.participations.count)")
-                    LabeledContent("Grazer VSC") {
-                        let isMember = ownMember?.memberOfGVSC ?? false
-                        Label(isMember ? "Mitglied" : "Kein Mitglied",
-                              systemImage: isMember ? "checkmark.seal.fill" : "xmark.seal")
-                            .foregroundStyle(isMember ? Theme.Palette.success : .secondary)
-                    }
-                }
+                AccountProfileHeader(user: user, photo: photo, roleLabel: roleLabel)
+                AccountInfoSection(user: user, isGVSCMember: ownMember?.memberOfGVSC ?? false)
 
                 calendarFeedSection(for: user)
 
@@ -189,8 +150,7 @@ struct AccountView: View {
         .sheet(isPresented: $showRedeemCode) {
             RedeemActivationCodeView()
         }
-        .alert("Fehler", isPresented: Binding(get: { errorMessage != nil },
-                                              set: { if !$0 { errorMessage = nil } })) {
+        .alert("Fehler", isPresented: Binding(isPresent: $errorMessage)) {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")
@@ -208,9 +168,7 @@ struct AccountView: View {
             if let member = ownMember {
                 GVSCApplicationView(
                     member: member,
-                    request: changeRequests.first {
-                        $0.memberID == member.id && $0.status == MemberChangeRequest.pendingStatus
-                    },
+                    request: pendingRequest(for: member),
                     photoUserID: currentUser?.id,
                     canEditPhoto: true)
             }
@@ -291,8 +249,6 @@ struct AccountView: View {
         case .new(let member):
             modelContext.insert(member)
             guard MemberService.save(member, modelContext: modelContext) else { return }
-            let allMembers = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
-            MemberBackup.snapshot(members: allMembers)
             // The person's own brand-new entry — fine to fill in; full access
             // still needs an admin's approval.
             requestedMember = member

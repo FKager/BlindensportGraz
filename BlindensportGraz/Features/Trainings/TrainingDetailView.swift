@@ -75,78 +75,14 @@ struct TrainingDetailView: View {
             }
         }
 
-        Section("Training") {
-            TextField("Titel", text: $training.title)
-            SportPicker(selection: $training.sport, allowsNone: true)
-            TextField("Veranstaltungsort", text: $training.location)
-        }
-        Section("Adresse") {
-            TextField("Straße", text: $training.street)
-            TextField("PLZ", text: $training.zip)
-            TextField("Ort", text: $training.city)
-            TextField("Land", text: $training.country)
-        }
-        Section("Planung") {
-            DatePicker("Start", selection: $training.startDate)
-                .onChange(of: training.startDate) { training.recomputeEndDate() }
-            Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
-                .onChange(of: training.durationMinutes) { training.recomputeEndDate() }
-            TextField("Schwerpunkt", text: $training.focusArea)
-            Picker("Status", selection: $training.status) {
-                Text("Offen").tag(Training.openStatus)
-                Text("Durchgeführt").tag(Training.heldStatus)
-                Text("Abgesagt").tag(Training.cancelledStatus)
-            }
-            // Same "no attendance for a cancelled training" rule as the
-            // list's swipe action — this is the other place status can
-            // change to Abgesagt, so it needs the identical side effect.
-            .onChange(of: training.status) {
-                if training.status == Training.cancelledStatus {
-                    AttendanceService.deleteAll(for: training, modelContext: modelContext)
-                }
-            }
-        }
-        if !myTeams.isEmpty {
-            Section("Beteiligte Teams") {
-                ForEach(myTeams) { team in
-                    Button {
-                        if training.teams.contains(where: { $0.id == team.id }) {
-                            training.teams.removeAll { $0.id == team.id }
-                        } else {
-                            training.teams.append(team)
-                        }
-                    } label: {
-                        HStack {
-                            Text(team.name)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            if training.teams.contains(where: { $0.id == team.id }) {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(Theme.Palette.info)
-                                    .accessibilityHidden(true)
-                            }
-                        }
-                    }
-                    .accessibilityAddTraits(training.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
-                }
-                Text("Keine Auswahl = für alle sichtbar")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
+        TrainingFieldsSections(training: training)
+        EventTeamsPicker(event: training, teams: myTeams)
         Section("Anwesenheit") {
             if !allMemberships.isEmpty {
                 ForEach(allMemberships) { membership in
                     AttendanceRow(membership: membership, event: training, maxPrae: 90)
                 }
-                if training.totalPraeAmount > 0 {
-                    HStack {
-                        Text("Gesamtkosten")
-                        Spacer()
-                        Text("\(Int(training.totalPraeAmount)) €")
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                PraeTotalRow(amount: training.totalPraeAmount)
             }
             Button {
                 showAddNewMember = true
@@ -213,14 +149,7 @@ struct TrainingDetailView: View {
                         }
                     }
                 }
-                if training.totalPraeAmount > 0 {
-                    HStack {
-                        Text("Gesamtkosten")
-                        Spacer()
-                        Text("\(Int(training.totalPraeAmount)) €")
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                PraeTotalRow(amount: training.totalPraeAmount)
             }
         }
         if !training.notes.isEmpty {

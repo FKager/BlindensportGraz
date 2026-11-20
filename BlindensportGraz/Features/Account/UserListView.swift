@@ -35,21 +35,15 @@ struct UserListView: View {
     private var managesAccounts: Bool { authContext.can(.rolesAssign) }
 
     private var filteredUsers: [User] {
-        let needle = searchText.trimmingCharacters(in: .whitespaces).lowercased()
         // Name-only directory rows (no email) are other accounts' cache
         // entries for non-approvers; admins get full profiles.
-        let accounts = users.filter { !$0.email.isEmpty }
-        guard !needle.isEmpty else { return accounts }
-        return accounts.filter { user in
-            user.displayName.lowercased().contains(needle)
-                || (!user.email.isEmpty && user.email.lowercased().contains(needle))
-        }
+        users.filter { !$0.email.isEmpty && SearchQuery.matches(searchText, in: $0.displayName, $0.email) }
     }
 
     // Extracted from `body` so the `List` modifier chain stays short enough
     // for the type-checker.
     private var errorShown: Binding<Bool> {
-        Binding(get: { errorMessage != nil }, set: { if !$0 { errorMessage = nil } })
+        Binding(isPresent: $errorMessage)
     }
 
     /// Unapproved non-admin accounts whose email matches a roster entry.
@@ -64,7 +58,7 @@ struct UserListView: View {
     }
 
     private var activationCodeShown: Binding<Bool> {
-        Binding(get: { activationCodeInfo != nil }, set: { if !$0 { activationCodeInfo = nil } })
+        Binding(isPresent: $activationCodeInfo)
     }
 
     var body: some View {
@@ -94,7 +88,7 @@ struct UserListView: View {
                     Button("E-Mail-Vorschläge bestätigen", systemImage: "checkmark.seal") {
                         showBulkApproval = true
                     }
-                    .confirmationDialog("\(emailSuggestions.count) Konten freigeben?", isPresented: $showBulkApproval,
+                    .confirmationDialog(Text("^[\(emailSuggestions.count) Konto](inflect: true) freigeben?"), isPresented: $showBulkApproval,
                                         titleVisibility: .visible) {
                         Button("Freigeben") { Task { await approveEmailSuggestions() } }
                         Button("Abbrechen", role: .cancel) {}

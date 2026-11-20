@@ -18,11 +18,12 @@ enum TrainingService {
         return saved
     }
 
-    /// Caller has already called `modelContext.delete(training)` before
-    /// this — same contract as `PersistenceService.deleteAndPush`.
+    /// Removes the training locally, then deletes it on the server and cancels
+    /// its reminder — like every other `*Service.delete`.
     @discardableResult
     static func delete(_ training: Training, modelContext: ModelContext) -> Bool {
         let id = training.id
+        modelContext.delete(training)
         return PersistenceService.deleteAndPush(modelContext: modelContext, modelName: "Training",
                                                   failureMessage: "Training konnte nicht gelöscht werden.") {
             EventReminderService.cancel(eventID: id)

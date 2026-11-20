@@ -1,12 +1,9 @@
 import Foundation
 import SwiftData
 
-/// Whole-store JSON backup — architecture-review.md §5 P2, generalizing
-/// `MemberBackup.swift`'s roster-only silent snapshot to every model type in
-/// `AppModelSchema` (except `PendingPush`, which is local sync-machinery,
-/// not club data). Admin-triggered (unlike `MemberBackup`'s automatic
-/// create/delete-triggered snapshots), for disaster recovery, audit, or
-/// migration.
+/// Whole-store JSON backup of every model type in `AppModelSchema` (except
+/// `PendingPush`, which is local sync machinery, not club data).
+/// Admin-triggered, for disaster recovery, audit or migration.
 ///
 /// Binary fields (`EventImage`/`ExpenseReceipt`'s `imageData`) are
 /// deliberately excluded — same precedent as `CKFieldCoding`'s generic

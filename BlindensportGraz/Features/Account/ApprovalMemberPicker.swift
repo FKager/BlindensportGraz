@@ -14,11 +14,7 @@ struct ApprovalMemberPicker: View {
     @State private var searchText = ""
 
     private var filteredMembers: [Member] {
-        let needle = searchText.trimmingCharacters(in: .whitespaces)
-        guard !needle.isEmpty else { return members }
-        return members.filter {
-            $0.fullName.localizedStandardContains(needle) || $0.email.localizedStandardContains(needle)
-        }
+        members.filter { SearchQuery.matches(searchText, in: $0.fullName, $0.email) }
     }
 
     var body: some View {

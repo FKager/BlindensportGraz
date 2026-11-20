@@ -1,6 +1,4 @@
 import SwiftUI
-import SwiftData
-import UniformTypeIdentifiers
 
 struct TeamRow: View {
     let team: Team
@@ -19,6 +17,8 @@ struct TeamRow: View {
                     // Dynamic Type sizes (audit.md Accessibility Finding 4).
                     .minimumScaleFactor(0.4)
                     .lineLimit(1)
+                    // Decorative: VoiceOver reads the team name right after.
+                    .accessibilityHidden(true)
             }
             .frame(width: 50, height: 50)
 
@@ -28,7 +28,7 @@ struct TeamRow: View {
                 Text(team.sport)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                Text("\(team.memberships.count) Mitglieder")
+                Text("^[\(team.memberships.count) Mitglied](inflect: true)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

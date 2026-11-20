@@ -100,57 +100,8 @@ struct TournamentDetailView: View {
             }
         }
 
-        Section("Turnier") {
-            TextField("Name", text: $tournament.title)
-            SportPicker(selection: $tournament.sport, allowsNone: true)
-            TextField("Veranstaltungsort", text: $tournament.location)
-        }
-        Section("Adresse") {
-            TextField("Straße", text: $tournament.street)
-            TextField("PLZ", text: $tournament.zip)
-            TextField("Ort", text: $tournament.city)
-            TextField("Land", text: $tournament.country)
-        }
-        Section("Zeitraum") {
-            DatePicker("Start", selection: $tournament.startDate, displayedComponents: [.date])
-            DatePicker("Ende", selection: $tournament.endDate, displayedComponents: [.date])
-        }
-        Section("Details") {
-            Stepper("Max. Teams: \(tournament.maxTeams)", value: $tournament.maxTeams, in: 2...64)
-             Picker("Status", selection: $tournament.status) {
-                 Text("Geplant").tag("planned")
-                Text("Laufend").tag("ongoing")
-                Text("Beendet").tag("finished")
-              }
-        }
-        if !myTeams.isEmpty {
-            Section("Beteiligte Teams") {
-                ForEach(myTeams) { team in
-                    Button {
-                        if tournament.teams.contains(where: { $0.id == team.id }) {
-                            tournament.teams.removeAll { $0.id == team.id }
-                        } else {
-                            tournament.teams.append(team)
-                        }
-                    } label: {
-                        HStack {
-                            Text(team.name)
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            if tournament.teams.contains(where: { $0.id == team.id }) {
-                                Image(systemName: "checkmark")
-                                    .foregroundStyle(Theme.Palette.info)
-                                    .accessibilityHidden(true)
-                            }
-                        }
-                    }
-                    .accessibilityAddTraits(tournament.teams.contains(where: { $0.id == team.id }) ? .isSelected : [])
-                }
-                Text("Keine Auswahl = für alle sichtbar")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-        }
+        TournamentFieldsSections(tournament: tournament)
+        EventTeamsPicker(event: tournament, teams: myTeams)
         Section("Teilnehmer:innen") {
             if !allMemberships.isEmpty {
                 ForEach(allMemberships) { membership in
@@ -162,14 +113,7 @@ struct TournamentDetailView: View {
                     AttendanceRow(membership: membership, event: tournament,
                                   maxPrae: Int(PraeCalculator.dailyCap) * tournament.dayCount)
                 }
-                if tournament.totalPraeAmount > 0 {
-                    HStack {
-                        Text("Gesamtkosten")
-                        Spacer()
-                        Text("\(Int(tournament.totalPraeAmount)) €")
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                PraeTotalRow(amount: tournament.totalPraeAmount)
             }
             Button {
                 showAddNewMember = true
@@ -247,14 +191,7 @@ struct TournamentDetailView: View {
                         }
                     }
                 }
-                if tournament.totalPraeAmount > 0 {
-                    HStack {
-                        Text("Gesamtkosten")
-                        Spacer()
-                        Text("\(Int(tournament.totalPraeAmount)) €")
-                            .foregroundStyle(.secondary)
-                    }
-                }
+                PraeTotalRow(amount: tournament.totalPraeAmount)
             }
         }
         if !tournament.notes.isEmpty {

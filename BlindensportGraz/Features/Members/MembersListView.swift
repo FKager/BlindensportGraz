@@ -44,13 +44,13 @@ struct MembersListView: View {
     // Extracted from `body` so the modifier chain on `List` stays short
     // enough for the type-checker (it timed out with these inline).
     private var deletionDialogShown: Binding<Bool> {
-        Binding(get: { pendingDeletion != nil }, set: { if !$0 { pendingDeletion = nil } })
+        Binding(isPresent: $pendingDeletion)
     }
     private var deletionErrorShown: Binding<Bool> {
-        Binding(get: { deletionError != nil }, set: { if !$0 { deletionError = nil } })
+        Binding(isPresent: $deletionError)
     }
     private var importAlertShown: Binding<Bool> {
-        Binding(get: { importResultMessage != nil }, set: { if !$0 { importResultMessage = nil } })
+        Binding(isPresent: $importResultMessage)
     }
     private var failureAlertShown: Binding<Bool> {
         Binding(get: { failureSignal.message != nil }, set: { if !$0 { failureSignal.clear() } })
@@ -157,19 +157,9 @@ struct MembersListView: View {
         Task {
             do {
                 try await MemberService.delete(member, confirmName: typedName, modelContext: modelContext)
-                snapshotRoster()
             } catch {
                 deletionError = "Der Name muss genau stimmen, und du brauchst eine Internetverbindung."
             }
         }
-    }
-
-    private func snapshotRoster() {
-        // Re-fetched rather than using the `members` @Query array directly —
-        // SwiftUI's @Query refresh isn't guaranteed to have landed yet at
-        // this exact point, so a fresh fetch is the only way to be sure the
-        // backup reflects the roster with these entries actually removed.
-        let remaining = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
-        MemberBackup.snapshot(members: remaining)
     }
 }

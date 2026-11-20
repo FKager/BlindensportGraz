@@ -8,6 +8,8 @@ struct BlindensportGrazApp: App {
     let modelContainer: ModelContainer
 
     init() {
+        LegacyFileCleanup.removeMemberBackups()
+
         // Declared once in ModelSchema.swift — shared with the App Shortcuts
         // intents (and, later, a widget), which open their own read-only
         // container on the same store.

@@ -32,8 +32,8 @@ enum PersistenceService {
                      failureMessage: failureMessage, onSuccess: push)
     }
 
-    /// Same shape for deletes — caller has already called
-    /// `modelContext.delete(model)` before this; saves that removal, then —
+    /// Same shape for deletes — the `*Service.delete` calling this has already
+    /// called `modelContext.delete(model)`; saves that removal, then —
     /// only on success — calls `remoteDelete` to push the deletion to
     /// Supabase.
     @discardableResult
