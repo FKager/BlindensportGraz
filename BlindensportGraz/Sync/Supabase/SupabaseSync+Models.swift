@@ -576,7 +576,7 @@ extension SupabaseSync {
 
     func deleteEventImage(_ id: UUID) {
         delete(table: "event_images", id: id)
-        Task { _ = try? await client.storage.from("event-images").remove(paths: [EventImageDBRow.path(for: id)]) }
+        removeStoredFile(bucket: "event-images", path: EventImageDBRow.path(for: id))
     }
 
     func pullEventImages(modelContext: ModelContext) async throws {
@@ -608,7 +608,7 @@ extension SupabaseSync {
 
     func deleteExpenseReceipt(_ id: UUID) {
         delete(table: "expense_receipts", id: id)
-        Task { _ = try? await client.storage.from("receipts").remove(paths: [ExpenseReceiptDBRow.path(for: id)]) }
+        removeStoredFile(bucket: "receipts", path: ExpenseReceiptDBRow.path(for: id))
     }
 
     func pullExpenseReceipts(modelContext: ModelContext) async throws {
@@ -641,7 +641,7 @@ extension SupabaseSync {
 
     func deleteTournamentInvitation(_ id: UUID, path: String) {
         delete(table: "tournament_invitations", id: id)
-        Task { _ = try? await client.storage.from("tournament-invitations").remove(paths: [path]) }
+        removeStoredFile(bucket: "tournament-invitations", path: path)
     }
 
     func pullTournamentInvitations(modelContext: ModelContext) async throws {
@@ -658,6 +658,19 @@ extension SupabaseSync {
             modelContext.insert(TournamentInvitation(id: row.id, fileData: data, fileName: row.fileName,
                                                      contentType: row.contentType, uploadedBy: row.uploadedBy,
                                                      uploadedAt: row.uploadedAt, tournament: tournament))
+        }
+    }
+
+    /// Deletes a photo, receipt or document file in Storage after its row.
+    /// A failure leaves an orphaned file (no row points to it any more), so
+    /// it is logged rather than ignored.
+    private func removeStoredFile(bucket: String, path: String) {
+        Task {
+            do {
+                _ = try await client.storage.from(bucket).remove(paths: [path])
+            } catch {
+                logger.error("Storage delete \(bucket, privacy: .public)/\(path, privacy: .public) failed, file left behind: \(String(describing: error), privacy: .public)")
+            }
         }
     }
 
@@ -699,7 +712,7 @@ extension SupabaseSync {
         var offset = 0
         while true {
             var query = client.from("deletions").select()
-            if let since { query = query.gte("deleted_at", value: Self.iso(since)) }
+            if let since { query = query.gte("deleted_at", value: Self.iso(Self.queryStart(after: since))) }
             let page: [DeletionDBRow] = try await query.order("deleted_at", ascending: true)
                 .range(from: offset, to: offset + 999).execute().value
             collected += page

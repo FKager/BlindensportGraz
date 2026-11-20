@@ -168,9 +168,25 @@ final class SupabaseSync {
         SyncState.shared.setPendingCount(PendingPush.count(in: outboxContext))
     }
 
+    /// The resend in progress, if any. The network coming back and a sync
+    /// starting can both ask for one; the second waits instead of sending
+    /// the same writes again.
+    private var runningDrain: Task<Void, Never>?
+
     /// One attempt per queued write, oldest first; called at the start of
     /// `syncAll` and when the network returns. Refused writes are dropped.
     func drainOutbox() async {
+        if let runningDrain {
+            await runningDrain.value
+            return
+        }
+        let drain = Task { await performDrain() }
+        runningDrain = drain
+        await drain.value
+        runningDrain = nil
+    }
+
+    private func performDrain() async {
         guard let outboxContext else { return }
         let rows = PendingPush.all(in: outboxContext)
         guard !rows.isEmpty else { refreshPendingCount(); return }
@@ -228,7 +244,7 @@ final class SupabaseSync {
         var offset = 0
         while true {
             var query = client.from(table).select(columns)
-            if let since { query = query.gte("updated_at", value: Self.iso(since)) }
+            if let since { query = query.gte("updated_at", value: Self.iso(Self.queryStart(after: since))) }
             let page: [Row] = try await query
                 .order("updated_at", ascending: true)
                 .order("id", ascending: true)
@@ -238,6 +254,20 @@ final class SupabaseSync {
             guard page.count == pageSize else { return collected }
             offset += pageSize
         }
+    }
+
+    /// How far before the cursor an incremental pull starts. The server
+    /// stamps `updated_at`/`deleted_at` with `now()`, the time the transaction
+    /// *started*: a save that started earlier but committed after the last
+    /// pull carries a time before the cursor and would otherwise be skipped
+    /// until the next full sync. Re-reading the overlap is harmless — rows
+    /// apply idempotently, unsent local edits are skipped (`rowsToApply`),
+    /// cached files aren't downloaded again.
+    nonisolated static let cursorOverlap: TimeInterval = 120
+
+    /// Where an incremental pull starts for a stored cursor.
+    nonisolated static func queryStart(after cursor: Date) -> Date {
+        cursor.addingTimeInterval(-cursorOverlap)
     }
 
     nonisolated static func iso(_ date: Date) -> String {

@@ -40,6 +40,24 @@ final class SupabaseSyncPullTests: XCTestCase {
         XCTAssertEqual(sync.rowsToApply([row], id: \.id).map(\.id), [row.id])
     }
 
+    // MARK: - Cursor overlap
+
+    /// A save that started before the last pull but committed after it is
+    /// stamped before the cursor; the next incremental pull must still read it.
+    func testIncrementalPullRereadsRowsStampedShortlyBeforeTheCursor() {
+        let cursor = Date(timeIntervalSince1970: 1_000_000)
+        let lateCommit = cursor.addingTimeInterval(-30)
+
+        XCTAssertLessThanOrEqual(SupabaseSync.queryStart(after: cursor), lateCommit)
+    }
+
+    func testOverlapIsBounded() {
+        let cursor = Date(timeIntervalSince1970: 1_000_000)
+
+        XCTAssertEqual(cursor.timeIntervalSince(SupabaseSync.queryStart(after: cursor)), SupabaseSync.cursorOverlap)
+        XCTAssertLessThanOrEqual(SupabaseSync.cursorOverlap, 300, "re-reading must stay small")
+    }
+
     func testAPendingDeleteAlsoProtectsTheRow() throws {
         let (sync, outbox) = try makeSync()
         let row = Row(id: UUID(), title: "Gelöscht auf diesem Gerät")
