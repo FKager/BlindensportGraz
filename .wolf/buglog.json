@@ -10317,6 +10317,277 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-18T18:10:00+01:00"
+    },
+    {
+      "id": "bug-613",
+      "timestamp": "2026-11-18T23:10:00+01:00",
+      "error_message": "main actor-isolated property 'photo' can not be referenced from a Sendable closure (ProfilePhotoSection.swift:24, archive build of v0.14.0)",
+      "file": "BlindensportGraz/Features/Account/ProfilePhotoSection.swift",
+      "root_cause": "PhotosPicker's label closure is @Sendable; it read the main-actor @Binding `photo` directly. First attempt captured a LocalizedStringKey, which is not Sendable either (new warning).",
+      "fix": "Compute `let hasPhoto = photo != nil` outside the closure and build the Label from the Bool inside it",
+      "tags": [
+        "swift6",
+        "sendable",
+        "photospicker",
+        "swiftui",
+        "warning"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-18T23:10:00+01:00"
+    },
+    {
+      "id": "bug-614",
+      "timestamp": "2026-11-19T14:30:00+01:00",
+      "error_message": "User: last TestFlight not successful — v0.14.0 build 361 VALID but invisible to testers",
+      "file": ".github/workflows/ios-build-deploy.yml",
+      "root_cause": "Deploy workflow only uploads via altool; adding the build to the Internal group (and What to Test notes) was a manual post-deploy step, forgotten after the runner-capacity rerun",
+      "fix": "Added 'Distribute to Internal testers' step: brew install asc, minimal ASC_CONFIG_PATH config from the API key, builds wait --build-number, add-groups --group Internal, de-DE notes from annotated tag text. Build 361 assigned manually.",
+      "tags": [
+        "testflight",
+        "ci",
+        "asc",
+        "beta-group"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-19T14:30:00+01:00"
+    },
+    {
+      "id": "bug-615",
+      "timestamp": "2026-11-19T18:10:00+01:00",
+      "error_message": "Distribute to Internal testers: builds wait: invalid private key: private key file is too permissive; run: chmod 600 …/AuthKey_***.p8",
+      "file": ".github/workflows/ios-build-deploy.yml",
+      "root_cause": "base64 --decode writes the .p8 with 644; asc refuses world-readable keys. Local test of PR #57 used the real key (already 600), so it didn't show.",
+      "fix": "chmod 600 the key right after decoding (cp -p keeps it). Reproduced locally: 644 → exit 3, 600 → ok. v0.15.0 build 372 distributed by hand.",
+      "tags": [
+        "ci",
+        "testflight",
+        "asc",
+        "permissions"
+      ],
+      "related_bugs": [
+        "bug-614"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-19T18:10:00+01:00"
+    },
+    {
+      "id": "bug-616",
+      "timestamp": "2026-11-20T18:58:46.484Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGraz/Sync/PendingPush.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T18:58:46.484Z"
+    },
+    {
+      "id": "bug-617",
+      "timestamp": "2026-11-20T18:58:56.757Z",
+      "error_message": "Null/undefined access in ",
+      "file": "BlindensportGrazTests/PendingPushTests.swift",
+      "root_cause": "Property access on potentially null/undefined value",
+      "fix": "Added null safety (optional chaining or null check)",
+      "tags": [
+        "auto-detected",
+        "null-safety",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T18:58:56.757Z"
+    },
+    {
+      "id": "bug-618",
+      "timestamp": "2026-11-20T18:59:32.264Z",
+      "error_message": "Wrong operator: != should be ==",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "Used \"!=\" instead of \"==\"",
+      "fix": "Changed operator != → ==",
+      "tags": [
+        "auto-detected",
+        "operator-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T18:59:32.264Z"
+    },
+    {
+      "id": "bug-619",
+      "timestamp": "2026-11-20T18:59:32.378Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 12→20 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T18:59:32.378Z"
+    },
+    {
+      "id": "bug-620",
+      "timestamp": "2026-11-20T19:00:02.874Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Services/SportEventService.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 12→24 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T19:00:02.874Z"
+    },
+    {
+      "id": "bug-621",
+      "timestamp": "2026-11-20T19:00:02.994Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Features/Events/EventsListView.swift",
+      "root_cause": "9 lines replaced/restructured",
+      "fix": "Rewrote 10→3 lines (9 removed) | Also: // Plain `try?` here, outside the service layer, i; // never had a remote delete path for plain SportE",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-11-20T19:00:03.223Z"
+    },
+    {
+      "id": "bug-622",
+      "timestamp": "2026-11-20T19:00:03.105Z",
+      "error_message": "Wrong reference: deleteEvents should be canManageEvents",
+      "file": "BlindensportGraz/Features/Events/EventsListView.swift",
+      "root_cause": "Used \"deleteEvents\" instead of \"canManageEvents\"",
+      "fix": "Changed deleteEvents → canManageEvents",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T19:00:03.105Z"
+    },
+    {
+      "id": "bug-623",
+      "timestamp": "2026-11-20T19:00:12.224Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Features/Tournaments/TournamentsListView.swift",
+      "root_cause": "7 lines replaced/restructured",
+      "fix": "Rewrote 11→5 lines (7 removed) | Also: // Index into the same collection the ForEach rend; // @Query — they no longer share an order (see vis",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-11-20T19:00:12.457Z"
+    },
+    {
+      "id": "bug-624",
+      "timestamp": "2026-11-20T19:00:12.343Z",
+      "error_message": "Wrong reference: deleteTournaments should be canManageEvents",
+      "file": "BlindensportGraz/Features/Tournaments/TournamentsListView.swift",
+      "root_cause": "Used \"deleteTournaments\" instead of \"canManageEvents\"",
+      "fix": "Changed deleteTournaments → canManageEvents",
+      "tags": [
+        "auto-detected",
+        "wrong-reference",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T19:00:12.343Z"
+    },
+    {
+      "id": "bug-625",
+      "timestamp": "2026-11-20T19:00:30.455Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Features/Trainings/TrainingsListView.swift",
+      "root_cause": "8 lines replaced/restructured",
+      "fix": "Rewrote 10→5 lines (8 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T19:00:30.455Z"
+    },
+    {
+      "id": "bug-626",
+      "timestamp": "2026-11-20T20:05:00+01:00",
+      "error_message": "Code review: Events list swipe-to-delete removes the wrong event for non-admins, is allowed for every user, and never deletes on the server",
+      "file": "BlindensportGraz/Features/Events/EventsListView.swift",
+      "root_cause": "onDelete indexed the unfiltered @Query (events) while ForEach showed visibleEvents; no permission gate; delete was local try? save only (stale CloudKit-era comment said there was no remote delete path)",
+      "fix": "EventListAccess.visible/rows(at:in:)/canManage shared by Events/Trainings/Tournaments lists; .deleteDisabled(!canManageEvents) + guard; new SportEventService.delete (local delete + SupabaseSync.deleteEvent + reminder cancel). Tests: EventListAccessTests",
+      "tags": [
+        "swiftui",
+        "onDelete",
+        "permissions",
+        "sync",
+        "delete"
+      ],
+      "related_bugs": [
+        "bug-352"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T20:05:00+01:00"
+    },
+    {
+      "id": "bug-627",
+      "timestamp": "2026-11-20T20:05:00+01:00",
+      "error_message": "Code review: members could swipe-delete/cancel trainings and tournaments; refused by RLS but row gone locally until next full sync",
+      "file": "BlindensportGraz/Features/Trainings/TrainingsListView.swift",
+      "root_cause": "swipeActions/onDelete in TrainingsListView and TournamentsListView had no eventsManage check (TeamsListView checked inside delete but still showed the swipe)",
+      "fix": "Swipe actions only when EventListAccess.canManage; .deleteDisabled on Tournaments/Teams rows; guards in delete/markCancelled. Note: `cond ? method : nil` in .onDelete(perform:) crashed the type checker ('failed to produce diagnostic') — use .deleteDisabled instead",
+      "tags": [
+        "swiftui",
+        "permissions",
+        "swipeActions",
+        "compiler"
+      ],
+      "related_bugs": [
+        "bug-626"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T20:05:00+01:00"
+    },
+    {
+      "id": "bug-628",
+      "timestamp": "2026-11-20T20:05:00+01:00",
+      "error_message": "Code review: two quick edits of one record can lose the newer edit or let the older one overwrite it on the server",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "Outbox folds edits into one PendingPush row per record, but each save() started an independent retrying Task and cleared the row by record name on success — clearing a newer edit's row; retries of older edits could land after newer ones",
+      "fix": "PendingPush.enqueue returns a strictly increasing enqueuedAt version; clear(…enqueuedAt:) and isCurrent; RecordPushQueue serializes sends per table/id; performWithRetry(isCurrent:) returns .superseded; drainOutbox skips records with a send in flight. Tests: PendingPushTests, RecordPushQueueTests, SupabaseSyncRetryTests",
+      "tags": [
+        "sync",
+        "outbox",
+        "race",
+        "supabase",
+        "concurrency"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T20:05:00+01:00"
     }
   ]
 }

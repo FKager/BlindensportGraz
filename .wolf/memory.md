@@ -4313,3 +4313,87 @@
 | 17:51 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
 | 18:10 | MCP create_tournament_reports + documents in web Sammelabrechnung (165 tests ok, uncommitted on mcp-tournament-reports); v0.14.0 TestFlight archive job cancelled (no hosted mac runner) → rerun + release script resumed | webui | in progress | ~25000 |
 | 18:05 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+| 18:08 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+| 18:13 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+| 18:16 | PR #55 merged; staging (subagent) + MCP e2e OK; prod nuc 60736cb deployed by subagent, verified (jar, 200, 404) | webui | done | ~6000 |
+| 18:15 | Session end: 6 writes across 6 files (20261118000001_tournament_documents.sql, tournament_invitations_test.sql, TournamentInvitationService.swift, TournamentDocumentsSection.swift, TournamentDocuments.java) | 0 reads | ~8806 tok |
+
+## Session: 2026-11-18 22:45
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 23:05 | Reran v0.14.0 TestFlight deploy (first run failed: no macOS runner) → build 361 VALID | CI run 44349721956 | success | ~3k |
+| 23:10 | Fixed PhotosPicker Sendable warning (capture Bool), Release sim build clean for that file | ProfilePhotoSection.swift | success | ~6k |
+| 23:15 | Fixed AccountView unused-binding warning; pushed branch, opened PR #56 (both warnings) | AccountView.swift | success | ~3k |
+| 23:15 | PR #56 checks passed, merged into main (0083c21), branch deleted | - | success | ~1k |
+
+## Session: 2026-11-19 16:47
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 14:30 | Build 361 added to Internal group + de-DE notes; CI step to auto-distribute (bug-614) | ios-build-deploy.yml | success | ~15k |
+| 14:45 | Merged PR #57; opened PR #58 (CI → xcode-27 runner, Xcode 27.2 pinned) | ios-build-deploy.yml | pending CI | ~8k |
+| 17:16 | PR #58 passed on xcode-27 runner (Xcode 27.2, 27B52), merged | ios-build-deploy.yml | success | ~3k |
+| 17:26 | Created supabase/migrations/20261119000001_sports_event_types.sql | — | ~2394 |
+| 17:26 | Created supabase/tests/sports_event_types_test.sql | — | ~1358 |
+| 17:28 | Created BlindensportGraz/Models/ClubSport.swift | — | ~334 |
+| 17:28 | Created BlindensportGraz/Models/EventType.swift | — | ~605 |
+| 17:29 | Created BlindensportGraz/Features/Catalog/CatalogOptions.swift | — | ~433 |
+| 17:29 | Created BlindensportGraz/Features/Catalog/SportPicker.swift | — | ~238 |
+| 17:29 | Created BlindensportGraz/Features/Catalog/EventTypePicker.swift | — | ~389 |
+| 17:31 | Created BlindensportGraz/Services/CatalogService.swift | — | ~894 |
+| 17:31 | Created BlindensportGraz/Features/Catalog/CatalogListsView.swift | — | ~2137 |
+| 17:31 | Created BlindensportGraz/Features/Catalog/CatalogEntryForm.swift | — | ~1040 |
+| 17:33 | Created BlindensportGrazTests/CatalogTests.swift | — | ~1378 |
+| 17:36 | Created webui/src/main/java/it/a11y/blindensport/webui/ui/CatalogView.java | — | ~2807 |
+| 17:37 | Created webui/src/test/java/it/a11y/blindensport/webui/club/CatalogTest.java | — | ~1546 |
+| 17:37 | Created webui/src/test/java/it/a11y/blindensport/webui/mcp/EventTypeArgumentTest.java | — | ~706 |
+| 17:55 | Sports + event types feature: DB migration+pgTAP, app (models, pickers, Verein screen), web UI page, MCP; all tests green (DB 14 files, iOS 348, web 174) | branch sports-event-types | success | ~120k |
+| 17:39 | Session end: 14 writes across 14 files (20261119000001_sports_event_types.sql, sports_event_types_test.sql, ClubSport.swift, EventType.swift, CatalogOptions.swift) | 0 reads | ~17417 tok |
+| 17:50 | Session end: 14 writes across 14 files (20261119000001_sports_event_types.sql, sports_event_types_test.sql, ClubSport.swift, EventType.swift, CatalogOptions.swift) | 0 reads | ~17417 tok |
+| 17:52 | Deployed web UI 0560ec1 (PR #59 sports/event types) to nuc prod; checks a-d passed | webui/ (nuc) | success | ~3k |
+| 17:52 | Prod: migration 20261119000001 on staging+prod, nuc web UI deployed 0560ec1 (subagent, checks a–d OK, MCP list_events shows event_type); v0.15.0 tagged | - | success | ~5k |
+| 17:51 | Session end: 14 writes across 14 files (20261119000001_sports_event_types.sql, sports_event_types_test.sql, ClubSport.swift, EventType.swift, CatalogOptions.swift) | 0 reads | ~17417 tok |
+| 17:54 | Session end: 14 writes across 14 files (20261119000001_sports_event_types.sql, sports_event_types_test.sql, ClubSport.swift, EventType.swift, CatalogOptions.swift) | 0 reads | ~17417 tok |
+| 17:59 | Session end: 14 writes across 14 files (20261119000001_sports_event_types.sql, sports_event_types_test.sql, ClubSport.swift, EventType.swift, CatalogOptions.swift) | 0 reads | ~17417 tok |
+| 18:10 | v0.15.0 = build 372 uploaded; CI distribution step failed (key 644, bug-615) → distributed by hand; fix branch ci-asc-key-permissions | ios-build-deploy.yml | success | ~6k |
+| 18:06 | Session end: 14 writes across 14 files (20261119000001_sports_event_types.sql, sports_event_types_test.sql, ClubSport.swift, EventType.swift, CatalogOptions.swift) | 0 reads | ~17417 tok |
+| 18:17 | Session end: 14 writes across 14 files (20261119000001_sports_event_types.sql, sports_event_types_test.sql, ClubSport.swift, EventType.swift, CatalogOptions.swift) | 0 reads | ~17417 tok |
+| 18:20 | PR #60 (asc key chmod) checks passed, merged | ios-build-deploy.yml | success | ~1k |
+| 18:17 | Session end: 14 writes across 14 files (20261119000001_sports_event_types.sql, sports_event_types_test.sql, ClubSport.swift, EventType.swift, CatalogOptions.swift) | 0 reads | ~17417 tok |
+
+## Session: 2026-11-20 19:18
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 19:58 | Edited BlindensportGraz/Sync/PendingPush.swift | added optional chaining | ~852 |
+| 19:58 | Edited BlindensportGrazTests/PendingPushTests.swift | added optional chaining | ~708 |
+| 19:59 | Created BlindensportGraz/Sync/RecordPushQueue.swift | — | ~328 |
+| 19:59 | Created BlindensportGrazTests/RecordPushQueueTests.swift | — | ~488 |
+| 19:59 | Edited BlindensportGraz/Sync/Supabase/SupabaseSync.swift | modified performWithRetry() | ~180 |
+| 19:59 | Edited BlindensportGraz/Sync/Supabase/SupabaseSync.swift | 5→3 lines | ~38 |
+| 19:59 | Edited BlindensportGraz/Sync/Supabase/SupabaseSync.swift | modified save() | ~535 |
+| 19:59 | Edited BlindensportGraz/Sync/Supabase/SupabaseSync.swift | modified enqueue() | ~290 |
+| 19:59 | Edited BlindensportGraz/Sync/Supabase/SupabaseSync.swift | modified contains() | ~87 |
+| 19:59 | Edited BlindensportGraz/Sync/Supabase/SupabaseSync.swift | modified init() | ~42 |
+| 19:59 | Created BlindensportGrazTests/SupabaseSyncRetryTests.swift | — | ~326 |
+| 20:00 | Created BlindensportGraz/Features/Events/EventListAccess.swift | — | ~366 |
+| 20:00 | Edited BlindensportGraz/Services/SportEventService.swift | modified save() | ~293 |
+| 20:00 | Edited BlindensportGraz/Features/Events/EventsListView.swift | reduced (-7 lines) | ~44 |
+| 20:00 | Edited BlindensportGraz/Features/Events/EventsListView.swift | inline fix | ~20 |
+| 20:00 | Edited BlindensportGraz/Features/Events/EventsListView.swift | modified deleteEvents() | ~71 |
+| 20:00 | Edited BlindensportGraz/Features/Tournaments/TournamentsListView.swift | reduced (-6 lines) | ~60 |
+| 20:00 | Edited BlindensportGraz/Features/Tournaments/TournamentsListView.swift | inline fix | ~21 |
+| 20:00 | Edited BlindensportGraz/Features/Tournaments/TournamentsListView.swift | order() → rows() | ~63 |
+| 20:00 | Edited BlindensportGraz/Features/Tournaments/TournamentsListView.swift | 6→2 lines | ~26 |
+| 20:00 | Edited BlindensportGraz/Features/Trainings/TrainingsListView.swift | can() → canManage() | ~20 |
+| 20:00 | Edited BlindensportGraz/Features/Trainings/TrainingsListView.swift | 5→1 lines | ~27 |
+| 20:00 | Edited BlindensportGraz/Features/Trainings/TrainingsListView.swift | modified swipeActions() | ~247 |
+| 20:00 | Edited BlindensportGraz/Features/Trainings/TrainingsListView.swift | modified delete() | ~78 |
+| 20:00 | Edited BlindensportGraz/Features/Trainings/TrainingsListView.swift | modified markCancelled() | ~34 |
+| 20:00 | Created BlindensportGrazTests/EventListAccessTests.swift | — | ~1218 |
+| 20:01 | Edited BlindensportGraz/Features/Events/EventsListView.swift | 4→5 lines | ~51 |
+| 20:01 | Edited BlindensportGraz/Features/Tournaments/TournamentsListView.swift | 3→4 lines | ~50 |
+| 20:01 | Edited BlindensportGraz/Features/Teams/TeamsListView.swift | 4→5 lines | ~50 |
+| 20:02 | Session end: 29 writes across 13 files (PendingPush.swift, PendingPushTests.swift, RecordPushQueue.swift, RecordPushQueueTests.swift, SupabaseSync.swift) | 1 reads | ~7078 tok |
+| 20:03 | Session end: 29 writes across 13 files (PendingPush.swift, PendingPushTests.swift, RecordPushQueue.swift, RecordPushQueueTests.swift, SupabaseSync.swift) | 1 reads | ~7078 tok |

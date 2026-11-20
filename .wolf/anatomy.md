@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-18T16:18:53.064Z
-> Files: 273 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T19:01:25.845Z
+> Files: 316 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -213,11 +213,26 @@
 ## BlindensportGraz/Features/Budget/
 
 
+## BlindensportGraz/Features/Catalog/
+
+- `CatalogEntryForm.swift` — / Sheet to add or edit one sport or event type (see `CatalogListsView`). (~1040 tok)
+- `CatalogEntryForm.swift` — Add/edit sheet for one sport or event type; behaviour fixed after creation (~900 tok)
+- `CatalogListsView.swift` — / Verein › "Sportarten und Veranstaltungsarten" (club.manage): the club's (~2137 tok)
+- `CatalogListsView.swift` — Verein › Sportarten und Veranstaltungsarten admin list (add/rename/deactivate/reorder) + CatalogDraft (~1800 tok)
+- `CatalogOptions.swift` — / What the sport and event-type pickers offer: the club's active entries in (~433 tok)
+- `CatalogOptions.swift` — Picker options from ClubSport/EventType (active, ordered, defaults fallback, keeps stored value) (~350 tok)
+- `EventTypePicker.swift` — / "Art der Veranstaltung" picker: the club's active event types with the (~389 tok)
+- `EventTypePicker.swift` — "Art der Veranstaltung" Picker per behaviour; hidden for training/tournament without choice (~350 tok)
+- `SportPicker.swift` — / "Sportart" picker fed by the club's sport list (`ClubSport`), see (~238 tok)
+- `SportPicker.swift` — "Sportart" Picker fed by the club sport list; allowsNone for edit screens (~250 tok)
+
 ## BlindensportGraz/Features/Dashboard/
 
 
 ## BlindensportGraz/Features/Events/
 
+- `EventListAccess.swift` — / What the Events, Trainings and Tournaments lists show, and who may (~366 tok)
+- `EventsListView.swift` — SwiftUI view: EventsListView (~582 tok)
 
 ## BlindensportGraz/Features/Members/
 
@@ -259,19 +274,26 @@
 
 ## BlindensportGraz/Features/Teams/
 
+- `TeamsListView.swift` — SwiftUI view: TeamsListView (~1154 tok)
 
 ## BlindensportGraz/Features/Tournaments/
 
 - `TournamentDocumentsSection.swift` — / "Dokumente" of a tournament (invitation, schedule, results …): every (~1830 tok)
+- `TournamentsListView.swift` — SwiftUI view: TournamentsListView (~916 tok)
 
 ## BlindensportGraz/Features/Trainings/
 
+- `TrainingsListView.swift` — SwiftUI view: TrainingsListView (~3214 tok)
 
 ## BlindensportGraz/Features/Welcome/
 
 
 ## BlindensportGraz/Models/
 
+- `ClubSport.swift` — @Model cache of Supabase `sports` (name, isActive, sortOrder) + defaultNames (~300 tok)
+- `ClubSport.swift` — / One entry of the club's sport list (Supabase `sports`). Admins (~334 tok)
+- `EventType.swift` — @Model cache of `event_types` (name, behavior training/tournament/event) + Behavior enum + defaults (~550 tok)
+- `EventType.swift` — / One entry of the club's list of event types (Supabase `event_types`): (~605 tok)
 - `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~3238 tok)
 - `MemberChangeRequest.swift` — / A club member's own edit to their roster ("Vereinsdaten") data, awaiting (~1630 tok)
 - `PlaceFormat.swift` — appendingForeignCountry: adds ", <country>" unless empty or Österreich (KostZ Ort, PRAE Wohnanschrift, Teilnehmerliste Ort) (~200 tok)
@@ -288,7 +310,10 @@
 
 ## BlindensportGraz/Services/
 
+- `CatalogService.swift` — Online edits of sports/event_types (insert, rename RPC, active, reorder) + refresh (~800 tok)
+- `CatalogService.swift` — / Edits the club's sport and event-type lists directly on the server (an (~894 tok)
 - `MemberChangeRequestService.swift` — / Self-service roster edits awaiting admin review — architecture-review.md (~543 tok)
+- `SportEventService.swift` — / Plain events (not trainings or tournaments, which have their own services). (~303 tok)
 - `TournamentInvitationService.swift` — documents(for:in:) oldest first, add(to:…), save, delete (push to Supabase) (~571 tok)
 
 ## BlindensportGraz/Shared/
@@ -312,7 +337,9 @@
 
 ## BlindensportGraz/Sync/
 
+- `PendingPush.swift` — / Durable outbox for writes to Supabase — architecture-review.md 2.2 / 2.3. (~1534 tok)
 - `PushRegistration.swift` — / Registers this device's APNs token in Supabase (`device_tokens`) so the (~840 tok)
+- `RecordPushQueue.swift` — / Runs the sends for one record one after another, so an older edit (or its (~328 tok)
 - `SyncStatusRow.swift` — / Always-visible sync status for the account screen: "Status: Online / (~1076 tok)
 
 ## BlindensportGraz/Sync/CloudKit/
@@ -321,7 +348,7 @@
 ## BlindensportGraz/Sync/Supabase/
 
 - `SupabaseRows.swift` — One row type per Supabase table (migration 20261013000001_club_data). (~5086 tok)
-- `SupabaseSync.swift` — / Keeps the local SwiftData cache in sync with the club data in Supabase (~4324 tok)
+- `SupabaseSync.swift` — / Keeps the local SwiftData cache in sync with the club data in Supabase (~6768 tok)
 - `SupabaseSync+Models.swift` — Push and pull per table. Pulls fetch rows changed since the table's cursor; (~9626 tok)
 
 ## BlindensportGrazShareExtension/
@@ -330,10 +357,16 @@
 ## BlindensportGrazTests/
 
 - `AccessClaimsTests.swift` — Class: AccessClaimsTests (~917 tok)
+- `CatalogTests.swift` — Picker options, typeName, EventDBRow event_type encode/decode (~1100 tok)
+- `CatalogTests.swift` — Class: CatalogTests (~1378 tok)
+- `EventListAccessTests.swift` — Class: EventListAccessTests (~1218 tok)
 - `GVSCApplicationDocumentTests.swift` — fills the real template; checks XML well-formed, field values, samples cleared, JA/NEIN marks, guardian, file name (~1500 tok)
 - `GVSCApplicationDocumentTests.swift` — Class: GVSCApplicationDocumentTests (~1950 tok)
+- `PendingPushTests.swift` — Class: PendingPushTests (~2099 tok)
+- `RecordPushQueueTests.swift` — Class: RecordPushQueueTests (~488 tok)
 - `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
+- `SupabaseSyncRetryTests.swift` — Struct: Offline (~326 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)
 
 ## BlindensportGrazWidgets/
@@ -452,6 +485,8 @@
 - `20261102000001_gvsc_application.sql` — GVSC Beitrittserklärung: the remaining fields of the club's application (~1953 tok)
 - `20261104000001_tournament_invitations.sql` — Tournament invitation (Einladung): the organiser's PDF/DOCX, uploaded in (~1023 tok)
 - `20261118000001_tournament_documents.sql` — Tournament documents (Dokumente): the single admin-only invitation of (~806 tok)
+- `20261119000001_sports_event_types.sql` — sports + event_types tables, events.event_type, rename RPCs, compat trigger, behaviour lock (~2200 tok)
+- `20261119000001_sports_event_types.sql` — Sports (Sportarten) and event types (Veranstaltungsarten) become tables (~2394 tok)
 
 ## supabase/scripts/
 
@@ -471,6 +506,8 @@
 - `member_private_test.sql` — Run with: supabase test db (~864 tok)
 - `push_test.sql` — Run with: supabase test db (~1767 tok)
 - `rbac_test.sql` — Run with: supabase test db (~2528 tok)
+- `sports_event_types_test.sql` — pgTAP: seed, compat trigger, RLS (admin/coach/pending), rename, behaviour lock (~1500 tok)
+- `sports_event_types_test.sql` — Sports and event types (20261119000001). Run with: supabase test db (~1358 tok)
 - `supabase/migrations/20261014000002_account_admin.sql` — is_blocked, set_account_blocked, delete_account, blocked_accounts; block-aware has_permission/authorize/is_approved (~1200 tok)
 - `supabase/migrations/20261014000003_account_admin_hardening.sql` — account_admin_log, root targets refused, last-root guard counts unblocked roots, calendar token rotation, is_blocked in own-account RPCs, unblocked_user_ids (~2500 tok)
 - `supabase/tests/account_admin_hardening_test.sql` — pgTAP 26 tests for the hardening (~2200 tok)
@@ -578,6 +615,8 @@
 - `AppShell.java` — Class: AppShell (~110 tok)
 - `AttendanceDialog.java` — Roll call for one training or tournament, like the app's (~1659 tok)
 - `BudgetView.java` — Club budget ("Vereinsbudget"): income and expenses per year, with balance. (~2561 tok)
+- `CatalogView.java` — Page "Sportarten und Veranstaltungsarten" (club.manage): grids, add/rename/(de)activate, Nach oben/unten (~1900 tok)
+- `CatalogView.java` — The club's sport list and event-type list (club.manage), tables sports and (~2807 tok)
 - `ChangeRequestsView.java` — Review members' proposed changes to their own entry (Annehmen / Ablehnen), like the app's Änderungsa (~2387 tok)
 - `ClubFields.java` — Form fields shared by the club-data dialogs. (~749 tok)
 - `EventDialog.java` — Create / edit a training, tournament or event. Trainings: start + duration (~2741 tok)
@@ -623,6 +662,16 @@
 
 - `CalendarFeedTest.java` — Port of RootCLI's CalendarFeedTests. (~1022 tok)
 
+## webui/src/test/java/it/a11y/blindensport/webui/club/
+
+- `CatalogTest.java` — WireMock: typeName, event_type only when set, cleanName, rename RPC, sport/type name lists (~1300 tok)
+- `CatalogTest.java` — Sports and event types (migration 20261119000001) as the web UI reads and writes them. (~1546 tok)
+
+## webui/src/test/java/it/a11y/blindensport/webui/mcp/
+
+- `EventTypeArgumentTest.java` — MCP event_type argument: default per kind, case-insensitive match, refusals (~650 tok)
+- `EventTypeArgumentTest.java` — The MCP tools' event_type argument: default per kind, must exist and match the kind. (~706 tok)
+
 ## webui/src/test/java/it/a11y/blindensport/webui/members/
 
 - `ChangeRequestStoreTest.java` — Approve / reject of member change requests against a mocked PostgREST. (~1501 tok)
@@ -639,9 +688,8 @@
 ## webui/src/test/java/it/a11y/blindensport/webui/ui/
 
 - `ChangeRequestDiffTest.java` — Class: ChangeRequestDiffTest (~476 tok)
-- `ReportsViewTest.java` — The Abrechnung page, driven server-side (Karibu) against the mocked Supabase of {@link ReportsFixtur (~1595 tok)
-- `TrainingsfrequenzlisteViewTest.java` — Trainingsfrequenzliste page via Karibu against ReportsFixture (~900 tok)
-
 - `DocumentText.java` — Plain text of PDF (PDFBox)/docx/txt for the MCP get_tournament_document, capped at 60k chars (~800 tok)
+- `ReportsViewTest.java` — The Abrechnung page, driven server-side (Karibu) against the mocked Supabase of {@link ReportsFixtur (~1595 tok)
 - `Storage.java` — Supabase Storage client (upload x-upsert, download, remove by prefixes) with the Postgrest identity (~600 tok)
 - `TournamentDocumentsTest.java` — Unit tests: content types, file-name cleaning, docx/pdf text (~700 tok)
+- `TrainingsfrequenzlisteViewTest.java` — Trainingsfrequenzliste page via Karibu against ReportsFixture (~900 tok)

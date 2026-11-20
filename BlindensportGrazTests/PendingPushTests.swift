@@ -102,6 +102,50 @@ final class PendingPushTests: XCTestCase {
         XCTAssertEqual(PendingPush.all(in: context).map(\.recordName), ["first", "second"])
     }
 
+    // MARK: - versions (two quick edits of one record)
+
+    func testEveryEnqueueForTheSameRecordGetsALaterStamp() throws {
+        let context = try makeContext()
+        let first = PendingPush.enqueue(in: context, operation: PendingPush.saveOperation,
+                                        recordType: "teams", recordName: "A", payload: Data([1]))
+        let second = PendingPush.enqueue(in: context, operation: PendingPush.saveOperation,
+                                         recordType: "teams", recordName: "A", payload: Data([2]))
+
+        XCTAssertGreaterThan(second, first)
+        XCTAssertEqual(PendingPush.all(in: context).first?.enqueuedAt, second)
+    }
+
+    func testNextStampMovesPastAStampFromTheSameInstant() {
+        let instant = Date(timeIntervalSince1970: 1_000)
+        XCTAssertGreaterThan(PendingPush.nextStamp(after: instant, now: instant), instant)
+        XCTAssertGreaterThan(PendingPush.nextStamp(after: instant, now: instant.addingTimeInterval(-5)), instant)
+        XCTAssertEqual(PendingPush.nextStamp(after: instant, now: instant.addingTimeInterval(5)),
+                       instant.addingTimeInterval(5))
+    }
+
+    /// The lost-write race: edit A is sent, edit B is queued while A is in
+    /// flight, A's success arrives. B must stay queued, or a failed send of
+    /// B is never retried.
+    func testConfirmingAnOlderVersionKeepsTheNewerEditQueued() throws {
+        let context = try makeContext()
+        let versionA = PendingPush.enqueue(in: context, operation: PendingPush.saveOperation,
+                                           recordType: "teams", recordName: "A", payload: Data([1]))
+        let versionB = PendingPush.enqueue(in: context, operation: PendingPush.saveOperation,
+                                           recordType: "teams", recordName: "A", payload: Data([2]))
+
+        PendingPush.clear(recordName: "A", recordType: "teams", enqueuedAt: versionA, in: context)
+
+        let row = try XCTUnwrap(PendingPush.all(in: context).first, "edit B must stay in the outbox")
+        XCTAssertEqual(row.payloadData, Data([2]))
+        XCTAssertFalse(PendingPush.isCurrent(recordName: "A", recordType: "teams", enqueuedAt: versionA, in: context))
+        XCTAssertTrue(PendingPush.isCurrent(recordName: "A", recordType: "teams", enqueuedAt: versionB, in: context))
+
+        PendingPush.clear(recordName: "A", recordType: "teams", enqueuedAt: versionB, in: context)
+
+        XCTAssertEqual(PendingPush.count(in: context), 0)
+        XCTAssertFalse(PendingPush.isCurrent(recordName: "A", recordType: "teams", enqueuedAt: versionB, in: context))
+    }
+
     // MARK: - table + id dedupe key
 
     func testSameIDInDifferentTablesQueuesSeparately() throws {

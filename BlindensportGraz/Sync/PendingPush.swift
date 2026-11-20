@@ -52,38 +52,67 @@ extension PendingPush {
     /// pending save (and clears its now-useless payload). Either way the
     /// attempt counter resets, since this is a fresh user action.
     ///
+    /// Returns the row's new `enqueuedAt`, which identifies this version of
+    /// the write: a later enqueue for the same record always gets a later
+    /// stamp, so a send can tell whether its write is still the latest
+    /// (`isCurrent`) and clear only its own version (`clear(…, enqueuedAt:)`).
+    ///
     /// Pure w.r.t. the network (takes only a `ModelContext`), so it's unit-
     /// testable without touching the network — see `PendingPushTests`.
+    @discardableResult
     static func enqueue(in context: ModelContext, operation: String, recordType: String,
-                        recordName: String, payload: Data) {
-        let descriptor = FetchDescriptor<PendingPush>(
-            predicate: #Predicate { $0.recordName == recordName && $0.recordType == recordType }
-        )
-        if let existing = try? context.fetch(descriptor).first {
+                        recordName: String, payload: Data) -> Date {
+        let stamp: Date
+        if let existing = row(recordName: recordName, recordType: recordType, in: context) {
+            stamp = nextStamp(after: existing.enqueuedAt)
             existing.operation = operation
             existing.recordType = recordType
             existing.payloadData = operation == deleteOperation ? Data() : payload
-            existing.enqueuedAt = .now
+            existing.enqueuedAt = stamp
             existing.attemptCount = 0
             existing.lastError = nil
         } else {
-            context.insert(PendingPush(recordType: recordType, recordName: recordName,
-                                       operation: operation,
-                                       payloadData: operation == deleteOperation ? Data() : payload))
+            let pending = PendingPush(recordType: recordType, recordName: recordName,
+                                      operation: operation,
+                                      payloadData: operation == deleteOperation ? Data() : payload)
+            stamp = pending.enqueuedAt
+            context.insert(pending)
         }
         try? context.save()
+        return stamp
+    }
+
+    /// `Date.now`, or just after `previous` when the clock hasn't moved past
+    /// it, so two quick edits never share a stamp.
+    static func nextStamp(after previous: Date, now: Date = .now) -> Date {
+        now > previous ? now : previous.addingTimeInterval(0.001)
     }
 
     /// Removes the pending row for `recordName` once the server has confirmed
-    /// the write. No-op if it was already superseded/removed.
-    static func clear(recordName: String, recordType: String, in context: ModelContext) {
-        let descriptor = FetchDescriptor<PendingPush>(
+    /// (or refused) the write. With `enqueuedAt`, only if the row is still
+    /// that version — a newer edit queued meanwhile stays queued. No-op if
+    /// the row was already removed.
+    static func clear(recordName: String, recordType: String, enqueuedAt: Date? = nil,
+                      in context: ModelContext) {
+        guard let row = row(recordName: recordName, recordType: recordType, in: context) else { return }
+        if let enqueuedAt, row.enqueuedAt != enqueuedAt { return }
+        context.delete(row)
+        try? context.save()
+    }
+
+    /// True while the queued write for this record is still the version
+    /// stamped `enqueuedAt` (not superseded by a newer edit, not cleared).
+    static func isCurrent(recordName: String, recordType: String, enqueuedAt: Date,
+                          in context: ModelContext) -> Bool {
+        row(recordName: recordName, recordType: recordType, in: context)?.enqueuedAt == enqueuedAt
+    }
+
+    private static func row(recordName: String, recordType: String, in context: ModelContext) -> PendingPush? {
+        var descriptor = FetchDescriptor<PendingPush>(
             predicate: #Predicate { $0.recordName == recordName && $0.recordType == recordType }
         )
-        for row in (try? context.fetch(descriptor)) ?? [] {
-            context.delete(row)
-        }
-        try? context.save()
+        descriptor.fetchLimit = 1
+        return try? context.fetch(descriptor).first
     }
 
     static func count(in context: ModelContext) -> Int {
