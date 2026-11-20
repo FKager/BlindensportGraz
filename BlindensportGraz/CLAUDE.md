@@ -36,12 +36,12 @@ All data models use SwiftData's `@Model` protocol as a local offline cache (no C
 - **EventImage**: Photo attached to a `SportEvent` (or, via inheritance, a `Training`/`Tournament`)
 - **EventParticipation**: Link between users and events with status (invited/confirmed/declined)
 
-The `ModelContainer` is initialized in `BlindensportGrazApp.swift` with all 11 model types configured for persistent storage.
+The `ModelContainer` is built in `App/BlindensportGrazApp.swift` from `ModelSchema.schema` (`Models/ModelSchema.swift`), the single list of every model type; register new models there.
 
 ### Application Structure
 ```
 RootView -> Login/Registration (if not authenticated) -> MainTabView
-MainTabView -> TabView (Dashboard, Events, Tournaments, Trainings, Teams, Account)
+MainTabView -> TabView (Übersicht, Events, Turniere, Trainings, Verein, Account)
 ```
 
 Each tab uses `@Query` for data fetching from SwiftData and displays different views:
@@ -56,13 +56,7 @@ Each tab uses `@Query` for data fetching from SwiftData and displays different v
 One SwiftUI view type per file, named after the type (e.g. `TrainingDetailView.swift`); small `private` helper types stay in the file of the view that uses them.
 
 ### Data Flow Pattern
-```swift
-@Environment(\.modelContext) private var modelContext
-@Query(sort: \(ModelField)) private var items: [EntityType]
-// For modifications:
-modelContext.insert(entity)
-try? modelContext.save()
-```
+Views read with `@Query`. Writes go through the matching `*Service` in `Services/`, which saves locally and queues the Supabase push; inserting and saving through `modelContext` in a view skips the sync.
 
 ## Build & Development
 
@@ -117,53 +111,52 @@ open BlindensportGraz.xcodeproj
 
 ## Testing Guidelines
 
-- The app uses SwiftUI's built-in testing infrastructure
-- Test views for data CRUD operations
-- Verify SwiftData persistence across app restarts
-- Test role-based access controls (admin/coach/member)
+Unit tests live in `BlindensportGrazTests/` (XCTest) and run in the Simulator with the `xcodebuild test` command above. Cover CRUD paths, persistence across restarts and permission checks (`can(.permission)`).
 
 ## Key Patterns
 
-### Form Styling
+### Navigation
+Tabs use the `Tab` API in `MainTabView`; each tab has its own `NavigationStack` whose root view calls `.appRouteDestinations(currentUser:)` exactly once. Every pushed screen is a case of `AppRoute` (`App/AppRoute.swift`), linked by value, so destinations are only built when followed:
 ```swift
-Form {
-    Section("Title") {
-        TextField("Label", text: $viewModel.title)
-    }
+NavigationLink(value: AppRoute.team(team)) {
+    TeamRow(team: team)
 }
 ```
+Don't use `NavigationLink { DetailView() }`, and don't add `.appRouteDestinations` to a pushed view (a second registration in one stack is an error).
 
-### List with CRUD
+### Lists
 ```swift
 List {
-    ForEach(items) { item in
-        NavigationLink { DetailView() } label: { Row(item) }
-    }.onDelete(perform: deleteItems)
+    if teams.isEmpty {
+        ContentUnavailableView("Keine Teams", systemImage: "person.3",
+                               description: Text("Lege ein neues Team an."))
+    } else {
+        ForEach(teams) { team in
+            NavigationLink(value: AppRoute.team(team)) { TeamRow(team: team) }
+                .deleteDisabled(!canManageTeams)
+        }
+        .onDelete { offsets in
+            for index in offsets { TeamService.delete(teams[index], modelContext: modelContext) }
+        }
+    }
 }
-.toolbar(.menu)
+.refreshable { await SyncOrchestrationService.syncAll(modelContext: modelContext) }
 ```
+`onDelete` offsets index the collection the `ForEach` shows — resolve them against that same (filtered, sorted) array, never the raw `@Query`. Gate swipe actions and toolbar buttons with `user.can(.permission)`.
 
-### Sheets for Modals
-```swift
-.sheet(isPresented: $showAdd, content: { AddDetailView(currentUser: currentUser) })
-```
+### Writes
+Create, edit and delete through the model's `*Service` (`TeamService.save(team, modelContext:)`, `TeamService.delete(team, modelContext:)`): it saves locally, reports failures and queues the Supabase push. Don't call `modelContext.save()` from a view.
 
-### Navigation Stack Pattern
-```swift
-NavigationStack {
-    ViewContent()
-}.tabItem { Label("Name", systemImage: "icon") }
-```
+### Forms and sheets
+Data entry is a `Form` of `Section`s bound to the model with `@Bindable`. Add/edit forms open with `.sheet(isPresented:)`; use `.sheet(item:)` when the sheet shows an optional value. Errors are kept in an optional `@State` and shown with `.alert`.
 
 ## UI Conventions
 
-- **LinearGradient** backgrounds with blue/purple theme
-- **ZStack** centered icons in circles for avatars
-- **Form** layout for data entry views
-- **List** + **Picker/SegmentedControl** for selection interfaces
-- **LazyVGrid** for card layouts (stats, recent items)
-- **NavigationStack** for hierarchical navigation
-- **TabView** for main app tabs
+- Spacing, radii, colours and the brand fill come from `Theme` (`Shared/Theme.swift`) — no hard-coded values
+- `Form` for data entry, `List` for collections, `ContentUnavailableView` for empty states
+- **ZStack** with `Theme.brandFill` circles for avatars; the initial letter is decorative (`accessibilityHidden`)
+- `LazyVGrid` for card layouts (stats, recent items)
+- Icon-only buttons get an `accessibilityLabel`; tap targets are at least 44×44 pt
 
 ## Localization (German)
 All UI text is in German. Common terms:
@@ -175,7 +168,7 @@ All UI text is in German. Common terms:
 - "Admin" = Administrator
 
 ## Role Hierarchy
-Accounts, roles and approvals live in **Supabase** (`../supabase/`), like all club data since v0.3.0. Roles come from `user_roles`; permissions from `role_permissions` (check with `user.can(.permission)` / `authContext.can(.permission)`, never compare roles directly). The server enforces everything via RLS and RPCs.
+Accounts, roles and approvals live in **Supabase** (`../supabase/`), like all club data. Roles come from `user_roles`; permissions from `role_permissions` (check with `user.can(.permission)` / `authContext.can(.permission)`, never compare roles directly). The server enforces everything via RLS and RPCs.
 1. **root** - admin + assigns roles (`roles.assign`)
 2. **admin** - Full access to all features, approves accounts, reads protected member data
 3. **coach** - Can create/manage events, trainings and teams
@@ -183,7 +176,7 @@ Accounts, roles and approvals live in **Supabase** (`../supabase/`), like all cl
 5. *(no role)* - pending: schedule only until an admin approves the account
 
 ## Database Schema
-All data is stored using SwiftData's persistence layer with relationships:
+Relationships in the local SwiftData models (the Supabase tables in `../supabase/` are the source of truth):
 - Users <-> Teams (via TeamMembership)
 - Users <-> Events (via EventParticipation)
 - Teams <-> Memberships (one-to-many with TeamMembership)

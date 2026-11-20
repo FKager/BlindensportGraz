@@ -2,16 +2,15 @@
 
 @.wolf/OPENWOLF.md
 
-This project uses OpenWolf for context management. Read and follow .wolf/OPENWOLF.md every session. Check .wolf/cerebrum.md before generating code. Check .wolf/anatomy.md before reading files.
+This project uses OpenWolf for context management (protocol imported above).
 
 
-# Requirements
+# Project
 
-Create a SwiftUI iOS app for all possible sport event tasks.
-Including turnaments, trainings, team membership.
-The app should support user account administration.
+Club app for Blindensport Graz: tournaments, trainings, teams and memberships, member and account administration.
+Two front ends share one Supabase backend: the SwiftUI iOS app (`BlindensportGraz/`) and the web UI (`webui/`, Quarkus + Vaadin).
 
 ## Framework
-Use SwiftData and iCloud sync
-The created sport events should be seen by every logged in user.
+SwiftData is a local offline cache only (no CloudKit/iCloud); accounts, roles and club data live in Supabase and sync via `SupabaseSync`.
+Events are visible to every signed-in user; everything else follows the user's role permissions (see BlindensportGraz/CLAUDE.md, Role Hierarchy).
 
