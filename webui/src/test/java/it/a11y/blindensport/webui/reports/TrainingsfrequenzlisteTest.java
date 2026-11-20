@@ -128,6 +128,8 @@ class TrainingsfrequenzlisteTest {
                 TEAMS, MEMBERSHIPS, MEMBERS, ACCOUNTS);
         assertEquals(List.of(LocalDate.of(2026, 7, 7), LocalDate.of(2026, 8, 4)), august.dates());
         assertEquals(2, august.half());
+        assertEquals(8, august.lastMonth());
+        assertEquals("Torball_H2-2026_bis-08", august.label());
         assertEquals(1, august.present(LocalDate.of(2026, 7, 7)));
 
         Trainingsfrequenzliste july = Trainingsfrequenzliste.seasonUpTo("Torball", 7, 2026, events, attendances,

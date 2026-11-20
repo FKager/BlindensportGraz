@@ -218,6 +218,7 @@ public class ReportsResource {
         result.put("sport", list.sport());
         result.put("half", list.half());
         result.put("year", list.year());
+        result.put("lastMonth", list.lastMonth());
         result.put("title", list.title());
         result.put("location", list.location());
         result.put("startTime", list.startTime() == null ? null : list.startTime().toString());

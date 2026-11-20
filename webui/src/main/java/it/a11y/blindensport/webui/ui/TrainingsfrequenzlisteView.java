@@ -32,7 +32,8 @@ import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
 
 /**
  * Sport Austria's Trainingsfrequenzliste: one training sport's attendance
- * per half year, as in the app (Trainings → Berichte). The roster is every
+ * from the start of the half year (Jänner or Juli) to the chosen month, as
+ * in the app (Trainings → Berichte) and the month's Sammelabrechnung. The roster is every
  * member of the teams assigned to that sport's trainings; "j"/"n" per
  * training day. Admins only (club.manage, like the app); reads no private
  * data. The file is made when downloaded, from the current data.
@@ -42,7 +43,7 @@ import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
 @RequiresPermission(Permission.CLUB_MANAGE)
 public class TrainingsfrequenzlisteView extends AdminView {
     private final Select<String> sport = new Select<>();
-    private final Select<Integer> half = new Select<>();
+    private final Select<Integer> month = new Select<>();
     private final Select<Integer> year = new Select<>();
     private final VerticalLayout result = new VerticalLayout();
     private boolean loading;
@@ -50,32 +51,33 @@ public class TrainingsfrequenzlisteView extends AdminView {
     /** What the download link makes; replaced as the choices change. */
     private volatile Request request;
 
-    private record Request(String sport, int half, int year) {
+    private record Request(String sport, int month, int year) {
     }
 
     @Inject
     public TrainingsfrequenzlisteView(AdminSessions sessions) {
         super(sessions, "Trainingsfrequenzliste");
-        add(new Paragraph("Anwesenheit einer Sportart pro Halbjahr auf dem Formular von Sport Austria, wie in der App "
-                + "unter Trainings → „Berichte“: alle Mitglieder der zugeordneten Teams, ein Trainingstag je Spalte, "
+        add(new Paragraph("Anwesenheit einer Sportart auf dem Formular von Sport Austria, wie in der App "
+                + "unter Trainings → „Berichte“: vom Beginn des Halbjahres (Jänner oder Juli) bis zum Ende des "
+                + "gewählten Monats, alle Mitglieder der zugeordneten Teams, ein Trainingstag je Spalte, "
                 + "„j“ oder „n“ je Zelle."));
 
         LocalDate today = LocalDate.now(CLUB_ZONE);
         sport.setLabel("Sportart");
         sport.setEmptySelectionAllowed(false);
-        half.setLabel("Zeitraum");
-        half.setItems(1, 2);
-        half.setItemLabelGenerator(Trainingsfrequenzliste::halfLabel);
-        half.setValue(today.getMonthValue() <= 6 ? 1 : 2);
+        month.setLabel("Monat");
+        month.setItems(IntStream.rangeClosed(1, 12).boxed().toList());
+        month.setItemLabelGenerator(ReportsView::monthLabel);
+        month.setValue(today.getMonthValue());
         year.setLabel("Jahr");
         year.setItems(IntStream.rangeClosed(2020, today.getYear() + 1).boxed().sorted((a, b) -> b - a).toList());
         year.setItemLabelGenerator(String::valueOf);
         year.setValue(today.getYear());
         sport.addValueChangeListener(e -> reload());
-        half.addValueChangeListener(e -> reload());
+        month.addValueChangeListener(e -> reload());
         year.addValueChangeListener(e -> reload());
 
-        HorizontalLayout fields = new HorizontalLayout(sport, half, year);
+        HorizontalLayout fields = new HorizontalLayout(sport, month, year);
         fields.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
         fields.setWrap(true);
         result.setPadding(false);
@@ -110,8 +112,8 @@ public class TrainingsfrequenzlisteView extends AdminView {
             return;
         }
         Trainingsfrequenzliste list = service(session())
-                .trainingsfrequenzliste(sport.getValue(), half.getValue(), year.getValue());
-        result.add(new H2(list.title() + ", " + Trainingsfrequenzliste.halfLabel(list.half()) + " " + list.year()));
+                .trainingsfrequenzlisteUpTo(sport.getValue(), month.getValue(), year.getValue());
+        result.add(new H2(list.title() + ", " + ReportsView.frequenzPeriod(list.lastMonth(), list.year())));
         if (list.dates().isEmpty()) {
             result.add(new Paragraph("Keine Trainings in diesem Zeitraum für diese Sportart."));
             return;
@@ -128,7 +130,7 @@ public class TrainingsfrequenzlisteView extends AdminView {
                     + " Zeilen. " + people(list.missingPeople()) + " fehlen und bitte von Hand nachtragen."));
         }
 
-        request = new Request(list.sport(), list.half(), list.year());
+        request = new Request(list.sport(), list.lastMonth(), list.year());
         result.add(download("Trainingsfrequenzliste herunterladen"));
 
         Grid<Person> grid = new Grid<>();
@@ -152,7 +154,7 @@ public class TrainingsfrequenzlisteView extends AdminView {
                 return DownloadResponse.error(403);
             }
             Trainingsfrequenzliste list = service(admin)
-                    .trainingsfrequenzliste(current.sport(), current.half(), current.year());
+                    .trainingsfrequenzlisteUpTo(current.sport(), current.month(), current.year());
             byte[] file = list.xlsx();
             return new DownloadResponse(new ByteArrayInputStream(file), list.label() + "_Trainingsfrequenzliste.xlsx",
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", file.length);

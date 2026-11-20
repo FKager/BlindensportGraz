@@ -655,7 +655,7 @@
 - `StartView.java` — Start page: the areas this admin may open, as a plain link list. (~418 tok)
 - `TeamsView.java` — Teams and who plays / coaches in them. (~3030 tok)
 - `TournamentDocumentsDialog.java` — A tournament's documents (invitation, schedule, results …): download, (~1859 tok)
-- `TrainingsfrequenzlisteView.java` — /trainingsfrequenzliste page: Sportart/Zeitraum/Jahr, roster grid, xlsx download; club.manage (~1500 tok)
+- `TrainingsfrequenzlisteView.java` — /trainingsfrequenzliste page: Sportart/Monat/Jahr (half-year start → month end), roster grid, xlsx download; club.manage (~1500 tok)
 - `TrainingsfrequenzlisteView.java` — Sport Austria's Trainingsfrequenzliste: one training sport's attendance (~2128 tok)
 - `UiSession.java` — The Vaadin side of a sign-in: the {@link AdminSessions} token lives in the (~464 tok)
 - `WelcomeView.java` — The welcome text the app shows at startup, also before signing in (club.manage). (~876 tok)
