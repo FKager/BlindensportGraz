@@ -127,6 +127,28 @@ public final class ReportService {
                 members(false), club.accounts());
     }
 
+    /**
+     * The Trainingsfrequenzliste of one training sport from the start of
+     * {@code month}'s half year (Jänner or Juli) to the end of {@code month}:
+     * März covers Jänner–März, August covers Juli–August. Reads no private data.
+     */
+    public Trainingsfrequenzliste trainingsfrequenzlisteUpTo(String sport, int month, int year) {
+        if (month < 1 || month > 12) {
+            throw new IllegalArgumentException("Monat muss zwischen 1 und 12 liegen.");
+        }
+        List<ClubEvent> trainings = club.events().stream()
+                .filter(e -> "training".equals(e.kind()) && sport.equals(e.sport()))
+                .filter(e -> {
+                    LocalDate date = LocalDate.ofInstant(e.startDate(), CLUB_ZONE);
+                    return date.getYear() == year && date.getMonthValue() <= month
+                            && (date.getMonthValue() <= 6) == (month <= 6);
+                }).toList();
+        List<Attendance> attendances = trainings.isEmpty() ? List.of()
+                : club.attendances(trainings.stream().map(ClubEvent::id).toList());
+        return Trainingsfrequenzliste.seasonUpTo(sport, month, year, trainings, attendances, club.teams(),
+                club.memberships(), members(false), club.accounts());
+    }
+
     /** Sports that have trainings, for the Trainingsfrequenzliste. */
     public List<String> trainingSports() {
         return Trainingsfrequenzliste.sports(club.events());

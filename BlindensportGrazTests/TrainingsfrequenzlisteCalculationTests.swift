@@ -539,6 +539,13 @@ final class TrainingsfrequenzlisteCalculationTests: XCTestCase {
         XCTAssertEqual(feb.halfYear, .first)
     }
 
+    func testPeriodLabelRunsFromTheSeasonStart() {
+        XCTAssertEqual(TrainingsfrequenzlisteView.monthName(1), "Jänner")
+        XCTAssertEqual(TrainingsfrequenzlisteView.period(throughMonth: 3, year: 2026), "Jänner bis März 2026")
+        XCTAssertEqual(TrainingsfrequenzlisteView.period(throughMonth: 7, year: 2026), "Juli 2026")
+        XCTAssertEqual(TrainingsfrequenzlisteView.period(throughMonth: 12, year: 2026), "Juli bis Dezember 2026")
+    }
+
     // MARK: - Abgesagt
 
     func testCancelledTrainingsGetNoColumnAndBringNoTeam() throws {

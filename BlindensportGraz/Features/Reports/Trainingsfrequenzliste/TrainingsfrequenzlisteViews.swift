@@ -4,13 +4,15 @@ import SwiftData
 /// Admin-only screen (see TrainingsListView's "Berichte" toolbar menu,
 /// alongside PRAE-Berechnung/KostZ-Berechnung — folded in there per user
 /// request, previously its own standalone toolbar button) that exports one
-/// training sport's half-year attendance register — Sport Austria's
+/// training sport's attendance register — Sport Austria's
 /// Trainingsfrequenzliste is filed per federal reporting period (1. Halbjahr
-/// Jänner–Juni, 2. Halbjahr Juli–Dezember), not per calendar month. Unlike
+/// Jänner–Juni, 2. Halbjahr Juli–Dezember); the chosen month ends the list
+/// early, from the half year's start (Jänner or Juli) to that month's end —
+/// the same list as the month's Sammelabrechnung. Unlike
 /// KostZCalculationView (club-wide, no picker), the Trainingsfrequenzliste is
 /// inherently per-sport — the original form has one "Verein/LV" + "Sportart"
 /// line, i.e. one homogenous group per sheet — so this adds a Sportart picker
-/// on top of the Halbjahr/Jahr picker. Scoped by `Training.sport`, not by a
+/// on top of the Monat/Jahr picker. Scoped by `Training.sport`, not by a
 /// hand-picked team (a sport like "Torball" can be trained by several teams
 /// at once, e.g. Damen + Herren) — the roster itself still comes from
 /// whichever teams are actually assigned to trainings of that sport,
@@ -29,7 +31,7 @@ struct TrainingsfrequenzlisteView: View {
     @Query private var trainings: [Training]
 
     @State private var selectedSport: String?
-    @State private var halfYear: HalfYear = Calendar.current.component(.month, from: .now) <= 6 ? .first : .second
+    @State private var month = Calendar.current.component(.month, from: .now)
     @State private var year = Calendar.current.component(.year, from: .now)
     @State private var exportURL: URL?
     @State private var exportError: String?
@@ -46,7 +48,7 @@ struct TrainingsfrequenzlisteView: View {
 
     private var summary: TrainingsfrequenzlisteSummary? {
         guard let sport else { return nil }
-        return TrainingsfrequenzlisteCalculator.summary(sport: sport, halfYear: halfYear, year: year, in: modelContext)
+        return TrainingsfrequenzlisteCalculator.seasonSummary(sport: sport, throughMonth: month, year: year, in: modelContext)
     }
 
     var body: some View {
@@ -62,18 +64,16 @@ struct TrainingsfrequenzlisteView: View {
                                 Text(sport).tag(Optional(sport))
                             }
                         }
-                        Picker("Zeitraum", selection: $halfYear) {
-                            ForEach(HalfYear.allCases) { half in
-                                Text(half.label).tag(half)
+                        Picker("Monat", selection: $month) {
+                            ForEach(1...12, id: \.self) { month in
+                                Text(Self.monthName(month)).tag(month)
                             }
                         }
-                        // The month range each half-year covers is only
-                        // visible once VoiceOver is already browsing the
-                        // options (each option's own label spells it out) —
-                        // this hint surfaces it right when the control
-                        // itself gets focus, audit.md Accessibility Finding 9.
-                        .accessibilityHint("1. Halbjahr: Jänner bis Juni. 2. Halbjahr: Juli bis Dezember.")
+                        // Says right on focus which months the list covers
+                        // (audit.md Accessibility Finding 9).
+                        .accessibilityHint("Die Liste reicht vom Beginn des Halbjahres, Jänner oder Juli, bis zum Ende des gewählten Monats.")
                         Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
+                        LabeledContent("Zeitraum", value: Self.period(throughMonth: month, year: year))
                     }
                 }
 
@@ -125,7 +125,7 @@ struct TrainingsfrequenzlisteView: View {
             } message: {
                 Text(exportError ?? "")
             }
-            .task(id: "\(sport ?? "")-\(halfYear.rawValue)-\(year)") {
+            .task(id: "\(sport ?? "")-\(month)-\(year)") {
                 exportURL = nil
                 guard let summary else { return }
                 do {
@@ -135,5 +135,19 @@ struct TrainingsfrequenzlisteView: View {
                 }
             }
         }
+    }
+
+    /// "März".
+    static func monthName(_ month: Int) -> String {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "de_AT")
+        return calendar.standaloneMonthSymbols[month - 1]
+    }
+
+    /// "Jänner bis März 2026", or "Juli 2026" for a half year's first month.
+    static func period(throughMonth month: Int, year: Int) -> String {
+        let first = month <= 6 ? 1 : 7
+        let to = "\(monthName(month)) \(String(year))"
+        return first == month ? to : "\(monthName(first)) bis \(to)"
     }
 }

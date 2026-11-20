@@ -118,7 +118,7 @@ public class ReportsView extends AdminView {
         LocalDate today = LocalDate.now(CLUB_ZONE);
         month.setLabel("Monat");
         month.setItems(IntStream.rangeClosed(1, 12).boxed().toList());
-        month.setItemLabelGenerator(m -> capitalized(MONTH_NAME.format(LocalDate.of(2000, m, 1))));
+        month.setItemLabelGenerator(ReportsView::monthLabel);
         month.setValue(today.getMonthValue());
         year.setLabel("Jahr");
         year.setItems(IntStream.rangeClosed(2020, today.getYear() + 1).boxed().sorted((a, b) -> b - a).toList());
@@ -507,11 +507,16 @@ public class ReportsView extends AdminView {
         return betrifft + "Zeitraum: " + from + " bis " + to + " (" + days + ")." + ort;
     }
 
+    /** "März". */
+    static String monthLabel(int month) {
+        return capitalized(MONTH_NAME.format(LocalDate.of(2000, month, 1)));
+    }
+
     /** "Juli bis August 2026" (season start to the chosen month), or "Juli 2026" for the season's first month. */
     static String frequenzPeriod(int month, int year) {
         int first = month <= 6 ? 1 : 7;
-        String to = capitalized(MONTH_NAME.format(LocalDate.of(2000, month, 1))) + " " + year;
-        return first == month ? to : capitalized(MONTH_NAME.format(LocalDate.of(2000, first, 1))) + " bis " + to;
+        String to = monthLabel(month) + " " + year;
+        return first == month ? to : monthLabel(first) + " bis " + to;
     }
 
     static String euro(double amount) {

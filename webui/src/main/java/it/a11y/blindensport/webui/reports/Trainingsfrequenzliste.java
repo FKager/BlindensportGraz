@@ -24,13 +24,14 @@ import java.util.TreeSet;
 import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
 
 /**
- * Sport Austria's Trainingsfrequenzliste for one training sport and half
- * year — port of the app's TrainingsfrequenzlisteCalculation.swift and
+ * Sport Austria's Trainingsfrequenzliste for one training sport, from the
+ * start of a half year (Jänner or Juli) to {@code lastMonth} — port of the app's TrainingsfrequenzlisteCalculation.swift and
  * TrainingsfrequenzlisteExport.swift. Cancelled ("Abgesagt") trainings
  * are left out: no date column, and their teams don't join the roster. The template is the club's filled-in
  * Torball 2026 list; its header, dates, names and "j"/"n" cells are
  * overwritten, everything else stays as it is.
  *
+ * @param lastMonth the period's last month (6 or 12 for a whole half year)
  * @param title     P3 "Sportart": the earliest training's title, else the sport
  * @param location  Y3 "Sportstätte": the earliest training's venue; null if none
  * @param startTime H4, the earliest training's start time; null without trainings
@@ -41,7 +42,7 @@ import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
  * @param missingDates  training days that didn't fit the form
  * @param missingPeople people who didn't fit the form
  */
-public record Trainingsfrequenzliste(String sport, int half, int year, String title, String location,
+public record Trainingsfrequenzliste(String sport, int half, int year, int lastMonth, String title, String location,
                                      LocalTime startTime, LocalTime endTime, List<LocalDate> dates,
                                      List<Person> people, List<String> teams, int missingDates,
                                      int missingPeople) {
@@ -73,14 +74,10 @@ public record Trainingsfrequenzliste(String sport, int half, int year, String ti
         }
     }
 
-    /** "1. Halbjahr (Jänner–Juni)". */
-    public static String halfLabel(int half) {
-        return half == 1 ? "1. Halbjahr (Jänner–Juni)" : "2. Halbjahr (Juli–Dezember)";
-    }
-
-    /** "Torball_H1-2026", the app's season-bundle label. */
+    /** "Torball_H1-2026", the app's season-bundle label; "Torball_H1-2026_bis-03" when it ends before the half year. */
     public String label() {
-        return Reports.fileSafe(sport) + "_H" + half + "-" + year;
+        String label = Reports.fileSafe(sport) + "_H" + half + "-" + year;
+        return lastMonth == half * 6 ? label : label + String.format("_bis-%02d", lastMonth);
     }
 
     /** People marked present on {@code date}: the cached value of the "ges. TL" row. */
@@ -185,7 +182,7 @@ public record Trainingsfrequenzliste(String sport, int half, int year, String ti
                 : first.location();
         LocalTime start = first == null ? null : first.startDate().atZone(CLUB_ZONE).toLocalTime();
         LocalTime end = first == null ? null : first.endDate().atZone(CLUB_ZONE).toLocalTime();
-        return new Trainingsfrequenzliste(sport, half, year, title, location, start, end, dates, people, assigned,
+        return new Trainingsfrequenzliste(sport, half, year, lastMonth, title, location, start, end, dates, people, assigned,
                 allDates.size() - dates.size(), roster.size() - people.size());
     }
 

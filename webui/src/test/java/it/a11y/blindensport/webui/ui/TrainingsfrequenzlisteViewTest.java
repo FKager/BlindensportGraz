@@ -8,6 +8,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.select.Select;
@@ -79,12 +80,13 @@ class TrainingsfrequenzlisteViewTest {
     }
 
     @Test
-    void firstHalfShowsRosterAndDownload() {
+    void monthRunsFromJanuaryAndShowsRosterAndDownload() {
         TrainingsfrequenzlisteView view = open("kassa@example.org");
         assertEquals("Torball", find(view, Select.class, "Sportart").getValue());
         find(view, Select.class, "Jahr").setValue(2026);
-        find(view, Select.class, "Zeitraum").setValue(1);
+        find(view, Select.class, "Monat").setValue(4);
 
+        assertTrue(texts(view, H2.class).getFirst().endsWith(", Jänner bis April 2026"), texts(view, H2.class).toString());
         List<String> paragraphs = texts(view, Paragraph.class);
         assertTrue(paragraphs.contains("1 Trainingstag · 2 Personen · Teams: Torball Damen"), paragraphs.toString());
         assertEquals(List.of("Trainingsfrequenzliste herunterladen"), texts(view, Anchor.class));
@@ -93,13 +95,23 @@ class TrainingsfrequenzlisteViewTest {
     }
 
     @Test
-    void secondHalfHasNoTrainings() {
+    void monthBeforeTheTrainingHasNoTrainings() {
         TrainingsfrequenzlisteView view = open("admin@example.org");
         find(view, Select.class, "Jahr").setValue(2026);
-        find(view, Select.class, "Zeitraum").setValue(2);
+        find(view, Select.class, "Monat").setValue(2);
 
         assertTrue(texts(view, Paragraph.class).contains("Keine Trainings in diesem Zeitraum für diese Sportart."));
         assertTrue(texts(view, Anchor.class).isEmpty());
         assertFalse(all(view).anyMatch(Grid.class::isInstance));
+    }
+
+    @Test
+    void secondHalfStartsInJuly() {
+        TrainingsfrequenzlisteView view = open("admin@example.org");
+        find(view, Select.class, "Jahr").setValue(2026);
+        find(view, Select.class, "Monat").setValue(9);
+
+        assertTrue(texts(view, H2.class).getFirst().endsWith(", Juli bis September 2026"), texts(view, H2.class).toString());
+        assertTrue(texts(view, Paragraph.class).contains("Keine Trainings in diesem Zeitraum für diese Sportart."));
     }
 }
