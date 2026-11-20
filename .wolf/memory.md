@@ -4397,3 +4397,41 @@
 | 20:01 | Edited BlindensportGraz/Features/Teams/TeamsListView.swift | 4→5 lines | ~50 |
 | 20:02 | Session end: 29 writes across 13 files (PendingPush.swift, PendingPushTests.swift, RecordPushQueue.swift, RecordPushQueueTests.swift, SupabaseSync.swift) | 1 reads | ~7078 tok |
 | 20:03 | Session end: 29 writes across 13 files (PendingPush.swift, PendingPushTests.swift, RecordPushQueue.swift, RecordPushQueueTests.swift, SupabaseSync.swift) | 1 reads | ~7078 tok |
+| 20:11 | Session end: 29 writes across 13 files (PendingPush.swift, PendingPushTests.swift, RecordPushQueue.swift, RecordPushQueueTests.swift, SupabaseSync.swift) | 1 reads | ~7078 tok |
+
+## Session: 2026-11-20 21:34
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-20 21:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+
+## Session: 2026-11-20 21:35
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
+| 21:40 | Created BlindensportGrazTests/InflectionTests.swift | — | ~276 |
+| 21:42 | Created BlindensportGraz/Shared/Thumbnail.swift | — | ~270 |
+| 21:42 | Created BlindensportGraz/Shared/ThumbnailImage.swift | — | ~307 |
+| 21:42 | Edited BlindensportGraz/Shared/ThumbnailImage.swift | modified task() | ~88 |
+| 21:42 | Created BlindensportGrazTests/ThumbnailTests.swift | — | ~471 |
+| 21:44 | Created BlindensportGraz/Shared/Binding+IsPresent.swift | — | ~138 |
+| 21:44 | Created BlindensportGrazTests/BindingIsPresentTests.swift | — | ~326 |
+| 21:44 | Created BlindensportGraz/Shared/SearchQuery.swift | — | ~140 |
+| 21:44 | Created BlindensportGrazTests/SearchQueryTests.swift | — | ~271 |
+| 21:45 | Created BlindensportGraz/Features/Events/EventAddressSection.swift | — | ~112 |
+| 21:45 | Created BlindensportGraz/Features/Events/EventTeamsPicker.swift | — | ~443 |
+| 21:45 | Created BlindensportGraz/Features/Attendance/PraeTotalRow.swift | — | ~76 |
+| 21:46 | Created BlindensportGraz/Features/Tournaments/TournamentFieldsSections.swift | — | ~295 |
+| 21:46 | Created BlindensportGraz/Features/Trainings/TrainingFieldsSections.swift | — | ~464 |
+| 21:46 | Created BlindensportGraz/Features/Account/AccountProfileHeader.swift | — | ~431 |
+| 21:46 | Created BlindensportGraz/Features/Account/AccountInfoSection.swift | — | ~251 |
+| 21:47 | Created BlindensportGraz/App/LegacyFileCleanup.swift | — | ~284 |
+| 21:48 | Edited BlindensportGraz/App/BlindensportGrazApp.swift | modified init() | ~29 |
+| 21:48 | Created BlindensportGrazTests/LegacyFileCleanupTests.swift | — | ~438 |
+| 21:48 | Edited BlindensportGraz/Sync/Supabase/SupabaseSync.swift | modified rowsToApply() | ~120 |
+| 21:48 | Created BlindensportGrazTests/SupabaseSyncPullTests.swift | — | ~632 |
+| 21:50 | Session end: 21 writes across 20 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~6278 tok |

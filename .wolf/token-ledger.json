@@ -2,12 +2,12 @@
   "version": 1,
   "created_at": "2026-07-12T18:58:28.010Z",
   "lifetime": {
-    "total_tokens_estimated": 28406975,
-    "total_reads": 8598,
-    "total_writes": 16863,
-    "total_sessions": 152,
+    "total_tokens_estimated": 28420331,
+    "total_reads": 8599,
+    "total_writes": 16913,
+    "total_sessions": 155,
     "anatomy_hits": 7223,
-    "anatomy_misses": 1286,
+    "anatomy_misses": 1287,
     "repeated_reads_blocked": 5340,
     "estimated_savings_vs_bare_cli": 27773215
   },
@@ -152609,6 +152609,295 @@
         "output_tokens_estimated": 7078,
         "reads_count": 1,
         "writes_count": 29,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-20-1918",
+      "started": "2026-11-20T18:18:01.834Z",
+      "ended": "2026-11-20T19:11:07.399Z",
+      "reads": [
+        {
+          "file": "/Users/franz/.claude/projects/-Users-franz-dev-BlindensportGraz/4ba503f7-7f15-498f-a902-96f66b705456/tool-results/b0kpquzl0.txt",
+          "tokens_estimated": 0,
+          "was_repeated": false,
+          "anatomy_had_description": false
+        }
+      ],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/PendingPush.swift",
+          "tokens_estimated": 912,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/PendingPushTests.swift",
+          "tokens_estimated": 758,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/RecordPushQueue.swift",
+          "tokens_estimated": 351,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/RecordPushQueueTests.swift",
+          "tokens_estimated": 523,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+          "tokens_estimated": 193,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+          "tokens_estimated": 41,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+          "tokens_estimated": 573,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+          "tokens_estimated": 311,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+          "tokens_estimated": 93,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+          "tokens_estimated": 45,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseSyncRetryTests.swift",
+          "tokens_estimated": 349,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Events/EventListAccess.swift",
+          "tokens_estimated": 392,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Services/SportEventService.swift",
+          "tokens_estimated": 314,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Events/EventsListView.swift",
+          "tokens_estimated": 47,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Events/EventsListView.swift",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Events/EventsListView.swift",
+          "tokens_estimated": 76,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Tournaments/TournamentsListView.swift",
+          "tokens_estimated": 64,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Tournaments/TournamentsListView.swift",
+          "tokens_estimated": 22,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Tournaments/TournamentsListView.swift",
+          "tokens_estimated": 67,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Tournaments/TournamentsListView.swift",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Trainings/TrainingsListView.swift",
+          "tokens_estimated": 21,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Trainings/TrainingsListView.swift",
+          "tokens_estimated": 28,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Trainings/TrainingsListView.swift",
+          "tokens_estimated": 264,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Trainings/TrainingsListView.swift",
+          "tokens_estimated": 84,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Trainings/TrainingsListView.swift",
+          "tokens_estimated": 36,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/EventListAccessTests.swift",
+          "tokens_estimated": 1305,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Events/EventsListView.swift",
+          "tokens_estimated": 54,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Tournaments/TournamentsListView.swift",
+          "tokens_estimated": 53,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Teams/TeamsListView.swift",
+          "tokens_estimated": 53,
+          "action": "edit"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 7078,
+        "reads_count": 1,
+        "writes_count": 29,
+        "repeated_reads_blocked": 0,
+        "anatomy_lookups": 0
+      }
+    },
+    {
+      "id": "session-2026-11-20-2135",
+      "started": "2026-11-20T20:35:53.153Z",
+      "ended": "2026-11-20T20:50:08.610Z",
+      "reads": [],
+      "writes": [
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/InflectionTests.swift",
+          "tokens_estimated": 296,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/Thumbnail.swift",
+          "tokens_estimated": 290,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/ThumbnailImage.swift",
+          "tokens_estimated": 329,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/ThumbnailImage.swift",
+          "tokens_estimated": 94,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/ThumbnailTests.swift",
+          "tokens_estimated": 504,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/Binding+IsPresent.swift",
+          "tokens_estimated": 148,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/BindingIsPresentTests.swift",
+          "tokens_estimated": 350,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Shared/SearchQuery.swift",
+          "tokens_estimated": 150,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SearchQueryTests.swift",
+          "tokens_estimated": 291,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Events/EventAddressSection.swift",
+          "tokens_estimated": 120,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Events/EventTeamsPicker.swift",
+          "tokens_estimated": 474,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Attendance/PraeTotalRow.swift",
+          "tokens_estimated": 81,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Tournaments/TournamentFieldsSections.swift",
+          "tokens_estimated": 316,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Trainings/TrainingFieldsSections.swift",
+          "tokens_estimated": 497,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Account/AccountProfileHeader.swift",
+          "tokens_estimated": 461,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Features/Account/AccountInfoSection.swift",
+          "tokens_estimated": 268,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/App/LegacyFileCleanup.swift",
+          "tokens_estimated": 304,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/App/BlindensportGrazApp.swift",
+          "tokens_estimated": 31,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/LegacyFileCleanupTests.swift",
+          "tokens_estimated": 469,
+          "action": "create"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+          "tokens_estimated": 128,
+          "action": "edit"
+        },
+        {
+          "file": "/Users/franz/dev/BlindensportGraz/BlindensportGrazTests/SupabaseSyncPullTests.swift",
+          "tokens_estimated": 677,
+          "action": "create"
+        }
+      ],
+      "totals": {
+        "input_tokens_estimated": 0,
+        "output_tokens_estimated": 6278,
+        "reads_count": 0,
+        "writes_count": 21,
         "repeated_reads_blocked": 0,
         "anatomy_lookups": 0
       }

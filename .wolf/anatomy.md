@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T19:01:25.845Z
-> Files: 316 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T20:48:54.416Z
+> Files: 335 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -187,9 +187,13 @@
 
 ## BlindensportGraz/App/
 
+- `BlindensportGrazApp.swift` — Struct: BlindensportGrazApp (~2113 tok)
+- `LegacyFileCleanup.swift` — / Removes files earlier versions left on the device. (~284 tok)
 
 ## BlindensportGraz/Features/Account/
 
+- `AccountInfoSection.swift` — / "Kontoinformationen" on the Account tab. (~251 tok)
+- `AccountProfileHeader.swift` — / Top of the Account tab: profile photo (or the name's first letter), (~431 tok)
 - `EditAccountView.swift` — / Edits the own name in the Supabase profile (the only client-writable (~848 tok)
 - `LoginView.swift` — / Email + password or Sign in with Apple, both against Supabase Auth. (~845 tok)
 - `ProfilePhotoImage.swift` — circular photo or SF symbol fallback (~150 tok)
@@ -206,6 +210,7 @@
 
 ## BlindensportGraz/Features/Attendance/
 
+- `PraeTotalRow.swift` — / "Gesamtkosten" under an attendance list; hidden while the total is zero. (~76 tok)
 
 ## BlindensportGraz/Features/Backup/
 
@@ -231,8 +236,10 @@
 
 ## BlindensportGraz/Features/Events/
 
+- `EventAddressSection.swift` — / Editable address of an event, training or tournament. (~112 tok)
 - `EventListAccess.swift` — / What the Events, Trainings and Tournaments lists show, and who may (~366 tok)
 - `EventsListView.swift` — SwiftUI view: EventsListView (~582 tok)
+- `EventTeamsPicker.swift` — / "Beteiligte Teams" while editing an event: tapping a team adds or removes (~443 tok)
 
 ## BlindensportGraz/Features/Members/
 
@@ -279,10 +286,12 @@
 ## BlindensportGraz/Features/Tournaments/
 
 - `TournamentDocumentsSection.swift` — / "Dokumente" of a tournament (invitation, schedule, results …): every (~1830 tok)
+- `TournamentFieldsSections.swift` — / The tournament's own editable fields: name, sport, venue, address, (~295 tok)
 - `TournamentsListView.swift` — SwiftUI view: TournamentsListView (~916 tok)
 
 ## BlindensportGraz/Features/Trainings/
 
+- `TrainingFieldsSections.swift` — / The training's own editable fields: title, sport, venue, address, start, (~464 tok)
 - `TrainingsListView.swift` — SwiftUI view: TrainingsListView (~3214 tok)
 
 ## BlindensportGraz/Features/Welcome/
@@ -320,6 +329,10 @@
 
 - `AccessClaims.swift` — / Fine-grained permissions, mirroring the `app_permission` enum in (~739 tok)
 - `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2375 tok)
+- `Binding+IsPresent.swift` (~138 tok)
+- `SearchQuery.swift` — / How list searches match: ignoring case and accents ("muller" finds (~140 tok)
+- `Thumbnail.swift` — / Small display copies of stored photos. ImageIO reads only as much of the (~270 tok)
+- `ThumbnailImage.swift` — / Shows a stored photo as a thumbnail sized for its frame. The photo data is (~369 tok)
 
 ## BlindensportGraz/Supabase/
 
@@ -348,7 +361,7 @@
 ## BlindensportGraz/Sync/Supabase/
 
 - `SupabaseRows.swift` — One row type per Supabase table (migration 20261013000001_club_data). (~5086 tok)
-- `SupabaseSync.swift` — / Keeps the local SwiftData cache in sync with the club data in Supabase (~6768 tok)
+- `SupabaseSync.swift` — / Keeps the local SwiftData cache in sync with the club data in Supabase (~6880 tok)
 - `SupabaseSync+Models.swift` — Push and pull per table. Pulls fetch rows changed since the table's cursor; (~9626 tok)
 
 ## BlindensportGrazShareExtension/
@@ -357,16 +370,22 @@
 ## BlindensportGrazTests/
 
 - `AccessClaimsTests.swift` — Class: AccessClaimsTests (~917 tok)
+- `BindingIsPresentTests.swift` — Class: BindingIsPresentTests (~326 tok)
 - `CatalogTests.swift` — Picker options, typeName, EventDBRow event_type encode/decode (~1100 tok)
 - `CatalogTests.swift` — Class: CatalogTests (~1378 tok)
 - `EventListAccessTests.swift` — Class: EventListAccessTests (~1218 tok)
 - `GVSCApplicationDocumentTests.swift` — fills the real template; checks XML well-formed, field values, samples cleared, JA/NEIN marks, guardian, file name (~1500 tok)
 - `GVSCApplicationDocumentTests.swift` — Class: GVSCApplicationDocumentTests (~1950 tok)
+- `InflectionTests.swift` — Class: InflectionTests (~276 tok)
+- `LegacyFileCleanupTests.swift` — Class: LegacyFileCleanupTests (~438 tok)
 - `PendingPushTests.swift` — Class: PendingPushTests (~2099 tok)
 - `RecordPushQueueTests.swift` — Class: RecordPushQueueTests (~488 tok)
 - `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
+- `SearchQueryTests.swift` — Class: SearchQueryTests (~271 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
+- `SupabaseSyncPullTests.swift` — Struct: Row (~632 tok)
 - `SupabaseSyncRetryTests.swift` — Struct: Offline (~326 tok)
+- `ThumbnailTests.swift` — Class: ThumbnailTests (~471 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)
 
 ## BlindensportGrazWidgets/
