@@ -34,6 +34,7 @@ struct TeamsListView: View {
                     NavigationLink(value: AppRoute.team(team)) {
                         TeamRow(team: team)
                     }
+                    .deleteDisabled(!canManageTeams)
                 }
                 .onDelete(perform: deleteTeams)
             }

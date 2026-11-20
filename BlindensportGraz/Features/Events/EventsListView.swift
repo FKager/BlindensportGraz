@@ -12,16 +12,9 @@ struct EventsListView: View {
     private var events: [SportEvent]
     @State private var showAdd = false
 
-    var canManageEvents: Bool {
-        guard let user = currentUser else { return false }
-        return user.can(.eventsManage)
-    }
+    var canManageEvents: Bool { EventListAccess.canManage(currentUser) }
 
-    var visibleEvents: [SportEvent] {
-        if (currentUser?.can(.clubManage) ?? false) { return events }
-        let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
-        return events.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
-    }
+    var visibleEvents: [SportEvent] { EventListAccess.visible(events, to: currentUser) }
 
     var body: some View {
         List {
@@ -34,6 +27,7 @@ struct EventsListView: View {
                     NavigationLink(value: AppRoute.event(event)) {
                         EventRow(event: event)
                     }
+                    .deleteDisabled(!canManageEvents)
                 }
                 .onDelete(perform: deleteEvents)
             }
@@ -55,14 +49,10 @@ struct EventsListView: View {
         }
     }
 
-    // Plain `try?` here, outside the service layer, is deliberate: CloudKitSync
-    // never had a remote delete path for plain SportEvent records (see
-    // SportEventService.swift's doc comment) — there is no push/delete call for
-    // PersistenceService to gate on, only the local removal itself.
     private func deleteEvents(at offsets: IndexSet) {
-        for index in offsets {
-            modelContext.delete(events[index])
+        guard canManageEvents else { return }
+        for event in EventListAccess.rows(at: offsets, in: visibleEvents) {
+            SportEventService.delete(event, modelContext: modelContext)
         }
-        try? modelContext.save()
     }
 }

@@ -45,18 +45,25 @@ final class SupabaseSync {
     /// (images, receipts): not pruned during that sync.
     var handoverKeep: Set<UUID> = []
     private var handoverFailed = false
+    /// Serializes the sends for each record (see `send`).
+    private let pushQueue = RecordPushQueue()
     init() {}
 
     // MARK: - Retry
 
     /// Up to 4 attempts (0.5 s / 1 s / 2 s backoff). Returns `.denied` without
     /// retrying when the server refuses the write for good.
-    enum Outcome { case done, failed, denied }
+    /// `isCurrent` is checked before every attempt: once it returns false (a
+    /// newer edit of the same record was queued), this older write stops
+    /// with `.superseded` — the newer send carries the latest data.
+    enum Outcome { case done, failed, denied, superseded }
 
-    func performWithRetry(_ description: String, operation: () async throws -> Void) async -> Outcome {
+    func performWithRetry(_ description: String, isCurrent: () -> Bool = { true },
+                          operation: () async throws -> Void) async -> Outcome {
         let backoffs: [Duration] = [.milliseconds(500), .seconds(1), .seconds(2)]
         var lastError: Error?
         for attempt in 0...backoffs.count {
+            guard isCurrent() else { return .superseded }
             do {
                 try await operation()
                 SyncState.shared.markSynced()
@@ -95,25 +102,38 @@ final class SupabaseSync {
     /// Upsert one row (outbox-backed).
     func save<Row: Encodable>(_ row: Row, table: String, id: UUID) {
         let payload = (try? PostgrestClient.Configuration.jsonEncoder.encode(row)) ?? Data()
-        enqueue(operation: PendingPush.saveOperation, table: table, id: id, payload: payload)
-        Task {
-            let outcome = await performWithRetry("push to \(table) \(id)") {
-                try await self.upsert(payload: payload, table: table)
-            }
-            if outcome != .failed { self.clearOutboxEntry(table: table, id: id) }
+        let version = enqueue(operation: PendingPush.saveOperation, table: table, id: id, payload: payload)
+        send("push to \(table) \(id)", table: table, id: id, version: version) {
+            try await self.upsert(payload: payload, table: table)
         }
     }
 
     /// Delete one row (outbox-backed).
     func delete(table: String, id: UUID) {
-        enqueue(operation: PendingPush.deleteOperation, table: table, id: id, payload: Data())
-        Task {
-            let outcome = await performWithRetry("delete from \(table) \(id)") {
-                try await self.client.from(table).delete().eq("id", value: id.uuidString).execute()
-            }
-            if outcome != .failed { self.clearOutboxEntry(table: table, id: id) }
+        let version = enqueue(operation: PendingPush.deleteOperation, table: table, id: id, payload: Data())
+        send("delete from \(table) \(id)", table: table, id: id, version: version) {
+            try await self.client.from(table).delete().eq("id", value: id.uuidString).execute()
         }
     }
+
+    /// Sends one queued write. Writes for the same record go out one at a
+    /// time (`pushQueue`), a write a newer edit has replaced is skipped, and
+    /// only this write's own outbox version is cleared afterwards — so two
+    /// quick edits can neither arrive in the wrong order nor lose the newer
+    /// one. A failed write stays queued for `drainOutbox`.
+    private func send(_ description: String, table: String, id: UUID, version: Date?,
+                      operation: @escaping @MainActor () async throws -> Void) {
+        pushQueue.enqueue(key: Self.outboxKey(table: table, id: id)) {
+            let outcome = await self.performWithRetry(description,
+                                                      isCurrent: { self.isOutboxEntryCurrent(table: table, id: id, version: version) },
+                                                      operation: operation)
+            if outcome == .done || outcome == .denied {
+                self.clearOutboxEntry(table: table, id: id, version: version)
+            }
+        }
+    }
+
+    static func outboxKey(table: String, id: UUID) -> String { "\(table)/\(id.uuidString)" }
 
     private func upsert(payload: Data, table: String) async throws {
         let row = try PostgrestClient.Configuration.jsonDecoder.decode(AnyJSON.self, from: payload)
@@ -122,16 +142,24 @@ final class SupabaseSync {
 
     // MARK: - Outbox
 
-    private func enqueue(operation: String, table: String, id: UUID, payload: Data) {
-        guard let outboxContext else { return }
-        PendingPush.enqueue(in: outboxContext, operation: operation, recordType: table,
-                            recordName: id.uuidString, payload: payload)
+    /// Returns the queued version's stamp (nil without an outbox, in unit tests).
+    private func enqueue(operation: String, table: String, id: UUID, payload: Data) -> Date? {
+        guard let outboxContext else { return nil }
+        let version = PendingPush.enqueue(in: outboxContext, operation: operation, recordType: table,
+                                          recordName: id.uuidString, payload: payload)
         refreshPendingCount()
+        return version
     }
 
-    private func clearOutboxEntry(table: String, id: UUID) {
-        guard let outboxContext else { return }
-        PendingPush.clear(recordName: id.uuidString, recordType: table, in: outboxContext)
+    private func isOutboxEntryCurrent(table: String, id: UUID, version: Date?) -> Bool {
+        guard let version, let outboxContext else { return true }
+        return PendingPush.isCurrent(recordName: id.uuidString, recordType: table,
+                                     enqueuedAt: version, in: outboxContext)
+    }
+
+    private func clearOutboxEntry(table: String, id: UUID, version: Date?) {
+        guard let outboxContext, let version else { return }
+        PendingPush.clear(recordName: id.uuidString, recordType: table, enqueuedAt: version, in: outboxContext)
         refreshPendingCount()
     }
 
@@ -148,6 +176,9 @@ final class SupabaseSync {
         guard !rows.isEmpty else { refreshPendingCount(); return }
 
         for row in rows where Self.outboxTables.contains(row.recordType) {
+            // A send for this record is still queued or running; it owns the row.
+            if let id = UUID(uuidString: row.recordName),
+               pushQueue.isBusy(Self.outboxKey(table: row.recordType, id: id)) { continue }
             do {
                 if row.operation == PendingPush.deleteOperation {
                     guard let id = UUID(uuidString: row.recordName) else { outboxContext.delete(row); continue }

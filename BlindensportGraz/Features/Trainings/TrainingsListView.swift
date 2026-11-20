@@ -32,10 +32,7 @@ struct TrainingsListView: View {
         @State private var selectedMonth: Int?
         @State private var selectedSport: String?
 
-    var canManageEvents: Bool {
-        guard let user = currentUser else { return false }
-        return user.can(.eventsManage)
-       }
+    var canManageEvents: Bool { EventListAccess.canManage(currentUser) }
 
     // Matches the gating the Trainingsfrequenzliste button used in AccountView
     // before it moved here (see TrainingsfrequenzlisteView's doc comment).
@@ -48,11 +45,7 @@ struct TrainingsListView: View {
         trainings.sorted { $0.startDate > $1.startDate }
     }
 
-    var visibleTrainings: [Training] {
-        if (currentUser?.can(.clubManage) ?? false) { return sortedTrainings }
-        let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
-        return sortedTrainings.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
-    }
+    var visibleTrainings: [Training] { EventListAccess.visible(sortedTrainings, to: currentUser) }
 
     // Sportart choices for the "Sportart"-filter Picker — only sports that
     // actually occur among visibleTrainings, not the fixed AddTrainingView
@@ -108,19 +101,21 @@ struct TrainingsListView: View {
                            TrainingRow(training: training)
                          }
                        .swipeActions(edge: .trailing) {
-                           Button(role: .destructive) {
-                               delete(training)
-                           } label: {
-                               Label("Löschen", systemImage: "trash")
-                           }
-                           .tint(Theme.Fill.danger)
-                           if training.status != Training.cancelledStatus {
-                               Button {
-                                   markCancelled(training)
+                           if canManageEvents {
+                               Button(role: .destructive) {
+                                   delete(training)
                                } label: {
-                                   Label("Abgesagt", systemImage: "xmark.circle")
+                                   Label("Löschen", systemImage: "trash")
                                }
-                               .tint(Theme.Fill.warning)
+                               .tint(Theme.Fill.danger)
+                               if training.status != Training.cancelledStatus {
+                                   Button {
+                                       markCancelled(training)
+                                   } label: {
+                                       Label("Abgesagt", systemImage: "xmark.circle")
+                                   }
+                                   .tint(Theme.Fill.warning)
+                               }
                            }
                        }
                        }
@@ -250,15 +245,10 @@ struct TrainingsListView: View {
         }
     }
 
-    // Routed through TrainingService.delete (phase 14) so the local
-    // reminder — see EventReminderService — gets cancelled; still no
-    // CloudKit delete push, that scoping is unchanged (no CloudKit delete
-    // path exists for Training records, see EventsListView.deleteEvents'
-    // identical comment). Swipe-to-delete replaced the old `.onDelete`
-    // modifier (user request 2026-09-10: "Abgesagt und Löschen als
-    // Swipe-Option") so this now takes the single row's model directly
-    // instead of an IndexSet into visibleTrainings.
+    // TrainingService.delete deletes on the server and cancels the reminder.
+    // Both swipe actions are shown only to managers; the guards keep it that way.
     private func delete(_ training: Training) {
+        guard canManageEvents else { return }
         modelContext.delete(training)
         TrainingService.delete(training, modelContext: modelContext)
     }
@@ -268,6 +258,7 @@ struct TrainingsListView: View {
     // mutation + the standard save/push, same as any other in-place edit in
     // this app.
     private func markCancelled(_ training: Training) {
+        guard canManageEvents else { return }
         training.status = Training.cancelledStatus
         TrainingService.save(training, modelContext: modelContext)
         // A cancelled training never happened, so its attendance is deleted

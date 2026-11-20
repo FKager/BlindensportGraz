@@ -12,16 +12,10 @@ struct TournamentsListView: View {
         @State private var showAdd = false
         @State private var showImportInvitation = false
 
-  var canManageEvents: Bool {
-      guard let user = currentUser else { return false }
-      return user.can(.eventsManage)
-       }
+    var canManageEvents: Bool { EventListAccess.canManage(currentUser) }
 
     var visibleTournaments: [Tournament] {
-        let sorted = tournaments.sorted { $0.startDate > $1.startDate }
-        if (currentUser?.can(.clubManage) ?? false) { return sorted }
-        let myTeamIDs = Set(currentUser?.memberships.map { $0.team.id } ?? [])
-        return sorted.filter { $0.teams.isEmpty || $0.teams.contains(where: { myTeamIDs.contains($0.id) }) }
+        EventListAccess.visible(tournaments.sorted { $0.startDate > $1.startDate }, to: currentUser)
     }
 
    var body: some View {
@@ -35,6 +29,7 @@ struct TournamentsListView: View {
                   NavigationLink(value: AppRoute.tournament(tournament)) {
                       TournamentRow(tournament: tournament)
                   }
+                  .deleteDisabled(!canManageEvents)
               }.onDelete(perform: deleteTournaments)
           }
        }
@@ -74,17 +69,10 @@ struct TournamentsListView: View {
        }
     }
 
-    // Routed through TournamentService.delete (phase 14) so the local
-    // reminder — see EventReminderService — gets cancelled; still no
-    // CloudKit delete push, that scoping is unchanged (no CloudKit delete
-    // path exists for Tournament records, see EventsListView.deleteEvents'
-    // identical comment).
+    // TournamentService.delete deletes on the server and cancels the reminder.
     private func deleteTournaments(at offsets: IndexSet) {
-        // Index into the same collection the ForEach renders, not the raw
-        // @Query — they no longer share an order (see visibleTournaments).
-        let shown = visibleTournaments
-        for index in offsets {
-            let tournament = shown[index]
+        guard canManageEvents else { return }
+        for tournament in EventListAccess.rows(at: offsets, in: visibleTournaments) {
             modelContext.delete(tournament)
             TournamentService.delete(tournament, modelContext: modelContext)
         }
