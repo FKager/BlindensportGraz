@@ -10641,6 +10641,128 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-11-20T21:55:00+01:00"
+    },
+    {
+      "id": "bug-632",
+      "timestamp": "2026-11-20T20:59:05.791Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Supabase/SupabaseAuthService.swift",
+      "root_cause": "6 lines replaced/restructured",
+      "fix": "Rewrote 8→12 lines (6 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T20:59:05.791Z"
+    },
+    {
+      "id": "bug-633",
+      "timestamp": "2026-11-20T20:59:14.278Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Shared/AuthContext.swift",
+      "root_cause": "2 lines replaced/restructured",
+      "fix": "Rewrote 6→11 lines (2 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T20:59:14.278Z"
+    },
+    {
+      "id": "bug-634",
+      "timestamp": "2026-11-20T22:05:00+01:00",
+      "error_message": "Code review: incremental pull can miss rows whose transaction committed after the last pull",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "Server stamps updated_at/deleted_at with now() (transaction start); pull used gte cursor exactly",
+      "fix": "SupabaseSync.queryStart(after:) = cursor - 120 s for fetchChanged and applyDeletions. Tests in SupabaseSyncPullTests",
+      "tags": [
+        "sync",
+        "cursor",
+        "postgres",
+        "now()"
+      ],
+      "related_bugs": [
+        "bug-630"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T22:05:00+01:00"
+    },
+    {
+      "id": "bug-635",
+      "timestamp": "2026-11-20T22:05:00+01:00",
+      "error_message": "Code review: two outbox resends at once (network-return drain + syncAll drain) sent the same writes twice",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "MainTabView called drainOutbox directly while syncAll was draining; no guard",
+      "fix": "runningDrain task: a second call waits for the running drain (like runningSync)",
+      "tags": [
+        "sync",
+        "outbox",
+        "concurrency"
+      ],
+      "related_bugs": [
+        "bug-628"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T22:05:00+01:00"
+    },
+    {
+      "id": "bug-636",
+      "timestamp": "2026-11-20T22:05:00+01:00",
+      "error_message": "Code review: Sign in with Apple nonce would be all zeros if SecRandomCopyBytes failed (status ignored)",
+      "file": "BlindensportGraz/Supabase/SupabaseAuthService.swift",
+      "root_cause": "Return value of SecRandomCopyBytes discarded",
+      "fix": "SystemRandomNumberGenerator + hex helper. Tests: AppleSignInNonceTests",
+      "tags": [
+        "auth",
+        "apple",
+        "nonce",
+        "security"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T22:05:00+01:00"
+    },
+    {
+      "id": "bug-637",
+      "timestamp": "2026-11-20T22:05:00+01:00",
+      "error_message": "Code review: role_permissions changes reached the app only after the user's own role changed",
+      "file": "BlindensportGraz/Shared/AuthContext.swift",
+      "root_cause": "Permission table fetched only on roleChanged in handle()",
+      "fix": "AuthContext.reload() also re-fetches the table and recomputes permissions",
+      "tags": [
+        "auth",
+        "permissions"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T22:05:00+01:00"
+    },
+    {
+      "id": "bug-638",
+      "timestamp": "2026-11-20T22:10:00+01:00",
+      "error_message": "Code review: a failed photo/receipt/document upload was never retried and the next full sync pruned the local copy",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "File uploads used a bare Task with performWithRetry, no outbox entry, so hasPendingPush didn't protect the local copy",
+      "fix": "PendingPush.uploadOperation; SupabaseSync.upload/uploadFile/fileTarget/localFileData; drainOutbox replays uploads (drops if file gone); FileUploadError counts as denied; handoverKeep removed. Tests: SupabaseSyncUploadTests",
+      "tags": [
+        "sync",
+        "outbox",
+        "storage",
+        "upload",
+        "data-loss"
+      ],
+      "related_bugs": [
+        "bug-628",
+        "bug-630"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T22:10:00+01:00"
     }
   ]
 }

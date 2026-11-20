@@ -103,12 +103,16 @@ enum SupabaseAuthService {
 
     // Pass `hashed` to ASAuthorizationAppleIDRequest.nonce and `raw` to
     // signInWithApple(idToken:nonce:).
+    // 32 random bytes from the system's cryptographically secure generator,
+    // which (unlike SecRandomCopyBytes' ignored status) cannot fail silently.
     static func generateNonce() -> (raw: String, hashed: String) {
-        var bytes = [UInt8](repeating: 0, count: 32)
-        _ = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
-        let raw = bytes.map { String(format: "%02x", $0) }.joined()
-        let hashed = SHA256.hash(data: Data(raw.utf8))
-            .map { String(format: "%02x", $0) }.joined()
-        return (raw, hashed)
+        var generator = SystemRandomNumberGenerator()
+        let bytes = (0..<32).map { _ in UInt8.random(in: .min ... .max, using: &generator) }
+        let raw = hex(bytes)
+        return (raw, hex(SHA256.hash(data: Data(raw.utf8))))
+    }
+
+    private static func hex(_ bytes: some Sequence<UInt8>) -> String {
+        bytes.map { ($0 < 16 ? "0" : "") + String($0, radix: 16) }.joined()
     }
 }

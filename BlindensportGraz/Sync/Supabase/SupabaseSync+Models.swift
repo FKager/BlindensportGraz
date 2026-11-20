@@ -559,24 +559,14 @@ extension SupabaseSync {
 
     // MARK: - Images and receipts (Storage + metadata row)
 
-    /// Uploads the file, then the row. Not outbox-backed (like the CloudKit
-    /// asset push before): a failed upload is logged and shown as a sync
-    /// failure; the photo stays on this device.
+    /// Uploads the photo, then its row — outbox-backed (`upload`).
     func pushEventImage(_ image: EventImage) {
-        let row = EventImageDBRow(image)
-        let data = image.imageData
-        Task {
-            _ = await performWithRetry("upload of event image \(image.id)") {
-                try await self.client.storage.from("event-images")
-                    .upload(row.storagePath, data: data, options: FileOptions(contentType: "image/jpeg", upsert: true))
-                try await self.client.from("event_images").upsert(row, onConflict: "id", returning: .minimal).execute()
-            }
-        }
+        upload(EventImageDBRow(image), table: "event_images", id: image.id, data: image.imageData)
     }
 
     func deleteEventImage(_ id: UUID) {
         delete(table: "event_images", id: id)
-        Task { _ = try? await client.storage.from("event-images").remove(paths: [EventImageDBRow.path(for: id)]) }
+        removeStoredFile(bucket: "event-images", path: EventImageDBRow.path(for: id))
     }
 
     func pullEventImages(modelContext: ModelContext) async throws {
@@ -595,20 +585,12 @@ extension SupabaseSync {
     }
 
     func pushExpenseReceipt(_ receipt: ExpenseReceipt) {
-        let row = ExpenseReceiptDBRow(receipt)
-        let data = receipt.imageData
-        Task {
-            _ = await performWithRetry("upload of receipt \(receipt.id)") {
-                try await self.client.storage.from("receipts")
-                    .upload(row.storagePath, data: data, options: FileOptions(contentType: "image/jpeg", upsert: true))
-                try await self.client.from("expense_receipts").upsert(row, onConflict: "id", returning: .minimal).execute()
-            }
-        }
+        upload(ExpenseReceiptDBRow(receipt), table: "expense_receipts", id: receipt.id, data: receipt.imageData)
     }
 
     func deleteExpenseReceipt(_ id: UUID) {
         delete(table: "expense_receipts", id: id)
-        Task { _ = try? await client.storage.from("receipts").remove(paths: [ExpenseReceiptDBRow.path(for: id)]) }
+        removeStoredFile(bucket: "receipts", path: ExpenseReceiptDBRow.path(for: id))
     }
 
     func pullExpenseReceipts(modelContext: ModelContext) async throws {
@@ -628,20 +610,13 @@ extension SupabaseSync {
     }
 
     func pushTournamentInvitation(_ invitation: TournamentInvitation) {
-        let row = TournamentInvitationDBRow(invitation)
-        let data = invitation.fileData
-        Task {
-            _ = await performWithRetry("upload of tournament invitation \(invitation.id)") {
-                try await self.client.storage.from("tournament-invitations")
-                    .upload(row.storagePath, data: data, options: FileOptions(contentType: row.contentType, upsert: true))
-                try await self.client.from("tournament_invitations").upsert(row, onConflict: "id", returning: .minimal).execute()
-            }
-        }
+        upload(TournamentInvitationDBRow(invitation), table: "tournament_invitations", id: invitation.id,
+               data: invitation.fileData)
     }
 
     func deleteTournamentInvitation(_ id: UUID, path: String) {
         delete(table: "tournament_invitations", id: id)
-        Task { _ = try? await client.storage.from("tournament-invitations").remove(paths: [path]) }
+        removeStoredFile(bucket: "tournament-invitations", path: path)
     }
 
     func pullTournamentInvitations(modelContext: ModelContext) async throws {
@@ -658,6 +633,19 @@ extension SupabaseSync {
             modelContext.insert(TournamentInvitation(id: row.id, fileData: data, fileName: row.fileName,
                                                      contentType: row.contentType, uploadedBy: row.uploadedBy,
                                                      uploadedAt: row.uploadedAt, tournament: tournament))
+        }
+    }
+
+    /// Deletes a photo, receipt or document file in Storage after its row.
+    /// A failure leaves an orphaned file (no row points to it any more), so
+    /// it is logged rather than ignored.
+    private func removeStoredFile(bucket: String, path: String) {
+        Task {
+            do {
+                _ = try await client.storage.from(bucket).remove(paths: [path])
+            } catch {
+                logger.error("Storage delete \(bucket, privacy: .public)/\(path, privacy: .public) failed, file left behind: \(String(describing: error), privacy: .public)")
+            }
         }
     }
 
@@ -699,7 +687,7 @@ extension SupabaseSync {
         var offset = 0
         while true {
             var query = client.from("deletions").select()
-            if let since { query = query.gte("deleted_at", value: Self.iso(since)) }
+            if let since { query = query.gte("deleted_at", value: Self.iso(Self.queryStart(after: since))) }
             let page: [DeletionDBRow] = try await query.order("deleted_at", ascending: true)
                 .range(from: offset, to: offset + 999).execute().value
             collected += page

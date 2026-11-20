@@ -41,9 +41,6 @@ final class SupabaseSync {
     }
 
     let defaults = UserDefaults.standard
-    /// Rows uploaded by the CloudKit handover without an outbox entry
-    /// (images, receipts): not pruned during that sync.
-    var handoverKeep: Set<UUID> = []
     private var handoverFailed = false
     /// Serializes the sends for each record (see `send`).
     private let pushQueue = RecordPushQueue()
@@ -86,6 +83,7 @@ final class SupabaseSync {
 
     /// Permission/validation refusals — retrying can't help.
     nonisolated static func isDenied(_ error: Error) -> Bool {
+        if error is FileUploadError { return true }
         if let error = error as? PostgrestError {
             // 42501 RLS / privilege, 23xxx constraint violations, PGRST3xx JWT.
             let code = error.code ?? ""
@@ -101,7 +99,7 @@ final class SupabaseSync {
 
     /// Upsert one row (outbox-backed).
     func save<Row: Encodable>(_ row: Row, table: String, id: UUID) {
-        let payload = (try? PostgrestClient.Configuration.jsonEncoder.encode(row)) ?? Data()
+        let payload = Self.payload(row)
         let version = enqueue(operation: PendingPush.saveOperation, table: table, id: id, payload: payload)
         send("push to \(table) \(id)", table: table, id: id, version: version) {
             try await self.upsert(payload: payload, table: table)
@@ -134,6 +132,93 @@ final class SupabaseSync {
     }
 
     static func outboxKey(table: String, id: UUID) -> String { "\(table)/\(id.uuidString)" }
+
+    /// A row as the JSON PostgREST receives (and the outbox stores).
+    static func payload<Row: Encodable>(_ row: Row) -> Data {
+        (try? PostgrestClient.Configuration.jsonEncoder.encode(row)) ?? Data()
+    }
+
+    // MARK: - Files (Storage + metadata row)
+
+    /// Tables whose rows describe a file in Storage, with the bucket it lives in.
+    static let fileBuckets: [String: String] = [
+        "event_images": "event-images",
+        "expense_receipts": "receipts",
+        "tournament_invitations": "tournament-invitations"
+    ]
+
+    /// Where an upload's file goes.
+    nonisolated struct FileTarget: Equatable {
+        let bucket: String
+        let path: String
+        let contentType: String
+    }
+
+    /// An upload that can never succeed: unknown table or a row without a
+    /// storage path. Treated like a server refusal (`isDenied`), so it is
+    /// dropped instead of retried forever.
+    nonisolated enum FileUploadError: Error {
+        case unknownTable(String)
+        case malformedRow
+    }
+
+    /// Reads the bucket, storage path and content type from the row an
+    /// upload was queued with.
+    static func fileTarget(table: String, payload: Data) throws -> FileTarget {
+        guard let bucket = fileBuckets[table] else { throw FileUploadError.unknownTable(table) }
+        nonisolated struct FileRow: Decodable {
+            let storagePath: String
+            let contentType: String?
+            enum CodingKeys: String, CodingKey {
+                case storagePath = "storage_path"
+                case contentType = "content_type"
+            }
+        }
+        guard let row = try? JSONDecoder().decode(FileRow.self, from: payload), !row.storagePath.isEmpty else {
+            throw FileUploadError.malformedRow
+        }
+        return FileTarget(bucket: bucket, path: row.storagePath, contentType: row.contentType ?? "image/jpeg")
+    }
+
+    /// Uploads a photo, receipt or document: the file to Storage, then its
+    /// row. Outbox-backed like `save`, so a failed upload is retried by
+    /// `drainOutbox` and the local copy is kept until the server has it.
+    func upload<Row: Encodable>(_ row: Row, table: String, id: UUID, data: Data) {
+        let payload = Self.payload(row)
+        let version = enqueue(operation: PendingPush.uploadOperation, table: table, id: id, payload: payload)
+        send("upload to \(table) \(id)", table: table, id: id, version: version) {
+            try await self.uploadFile(table: table, payload: payload, data: data)
+        }
+    }
+
+    private func uploadFile(table: String, payload: Data, data: Data) async throws {
+        let target = try Self.fileTarget(table: table, payload: payload)
+        try await client.storage.from(target.bucket)
+            .upload(target.path, data: data, options: FileOptions(contentType: target.contentType, upsert: true))
+        try await upsert(payload: payload, table: table)
+    }
+
+    /// This device's copy of a queued upload's file; nil once the photo,
+    /// receipt or document was deleted here (the upload is then dropped).
+    func localFileData(table: String, id: UUID) -> Data? {
+        guard let outboxContext else { return nil }
+        switch table {
+        case "event_images":
+            var descriptor = FetchDescriptor<EventImage>(predicate: #Predicate { $0.id == id })
+            descriptor.fetchLimit = 1
+            return try? outboxContext.fetch(descriptor).first?.imageData
+        case "expense_receipts":
+            var descriptor = FetchDescriptor<ExpenseReceipt>(predicate: #Predicate { $0.id == id })
+            descriptor.fetchLimit = 1
+            return try? outboxContext.fetch(descriptor).first?.imageData
+        case "tournament_invitations":
+            var descriptor = FetchDescriptor<TournamentInvitation>(predicate: #Predicate { $0.id == id })
+            descriptor.fetchLimit = 1
+            return try? outboxContext.fetch(descriptor).first?.fileData
+        default:
+            return nil
+        }
+    }
 
     private func upsert(payload: Data, table: String) async throws {
         let row = try PostgrestClient.Configuration.jsonDecoder.decode(AnyJSON.self, from: payload)
@@ -168,9 +253,25 @@ final class SupabaseSync {
         SyncState.shared.setPendingCount(PendingPush.count(in: outboxContext))
     }
 
+    /// The resend in progress, if any. The network coming back and a sync
+    /// starting can both ask for one; the second waits instead of sending
+    /// the same writes again.
+    private var runningDrain: Task<Void, Never>?
+
     /// One attempt per queued write, oldest first; called at the start of
     /// `syncAll` and when the network returns. Refused writes are dropped.
     func drainOutbox() async {
+        if let runningDrain {
+            await runningDrain.value
+            return
+        }
+        let drain = Task { await performDrain() }
+        runningDrain = drain
+        await drain.value
+        runningDrain = nil
+    }
+
+    private func performDrain() async {
         guard let outboxContext else { return }
         let rows = PendingPush.all(in: outboxContext)
         guard !rows.isEmpty else { refreshPendingCount(); return }
@@ -183,6 +284,14 @@ final class SupabaseSync {
                 if row.operation == PendingPush.deleteOperation {
                     guard let id = UUID(uuidString: row.recordName) else { outboxContext.delete(row); continue }
                     try await client.from(row.recordType).delete().eq("id", value: id.uuidString).execute()
+                } else if row.operation == PendingPush.uploadOperation {
+                    guard let id = UUID(uuidString: row.recordName),
+                          let data = localFileData(table: row.recordType, id: id) else {
+                        logger.info("outbox: dropping upload for \(row.recordType, privacy: .public) \(row.recordName, privacy: .public): file no longer on this device")
+                        outboxContext.delete(row)
+                        continue
+                    }
+                    try await uploadFile(table: row.recordType, payload: row.payloadData, data: data)
                 } else {
                     guard !row.payloadData.isEmpty else { outboxContext.delete(row); continue }
                     try await upsert(payload: row.payloadData, table: row.recordType)
@@ -207,7 +316,7 @@ final class SupabaseSync {
         guard let outboxContext else { return false }
         let name = id.uuidString
         let descriptor = FetchDescriptor<PendingPush>(predicate: #Predicate { $0.recordName == name })
-        return handoverKeep.contains(id) || ((try? outboxContext.fetchCount(descriptor)) ?? 0) > 0
+        return ((try? outboxContext.fetchCount(descriptor)) ?? 0) > 0
     }
 
     /// The pulled rows that may overwrite their local copy: not the ones
@@ -228,7 +337,7 @@ final class SupabaseSync {
         var offset = 0
         while true {
             var query = client.from(table).select(columns)
-            if let since { query = query.gte("updated_at", value: Self.iso(since)) }
+            if let since { query = query.gte("updated_at", value: Self.iso(Self.queryStart(after: since))) }
             let page: [Row] = try await query
                 .order("updated_at", ascending: true)
                 .order("id", ascending: true)
@@ -238,6 +347,20 @@ final class SupabaseSync {
             guard page.count == pageSize else { return collected }
             offset += pageSize
         }
+    }
+
+    /// How far before the cursor an incremental pull starts. The server
+    /// stamps `updated_at`/`deleted_at` with `now()`, the time the transaction
+    /// *started*: a save that started earlier but committed after the last
+    /// pull carries a time before the cursor and would otherwise be skipped
+    /// until the next full sync. Re-reading the overlap is harmless — rows
+    /// apply idempotently, unsent local edits are skipped (`rowsToApply`),
+    /// cached files aren't downloaded again.
+    nonisolated static let cursorOverlap: TimeInterval = 120
+
+    /// Where an incremental pull starts for a stored cursor.
+    nonisolated static func queryStart(after cursor: Date) -> Date {
+        cursor.addingTimeInterval(-cursorOverlap)
     }
 
     nonisolated static func iso(_ date: Date) -> String {
@@ -347,7 +470,6 @@ final class SupabaseSync {
         SyncState.shared.markSyncing()
         handoverFailed = false
         await handOverFromCloudKitIfNeeded(modelContext: modelContext)
-        defer { handoverKeep.removeAll() }
         guard !handoverFailed else {
             SyncState.shared.markFailed("Übergabe der lokalen Daten fehlgeschlagen – wird beim nächsten Sync wiederholt.")
             return
@@ -426,7 +548,8 @@ final class SupabaseSync {
     static let outboxTables: Set<String> = [
         "teams", "team_memberships", "members", "member_contacts", "events", "attendances",
         "event_participations", "event_memberships", "budget_entries", "training_favorites",
-        "welcome_content", "member_change_requests"
+        "welcome_content", "member_change_requests",
+        "event_images", "expense_receipts", "tournament_invitations"
     ]
 
     var isHandoverDone: Bool { defaults.bool(forKey: Self.handoverKey) }
@@ -435,9 +558,8 @@ final class SupabaseSync {
     /// may be lost. Uploads every local row the server doesn't have, and
     /// re-sends every row still queued in the CloudKit-era outbox (edits that
     /// never reached CloudKit), before the first pull prunes anything. Rows
-    /// queued here are protected from pruning by their outbox entries
-    /// (`hasPendingPush`); images/receipts, which aren't outbox-backed, via
-    /// `handoverKeep`. The server decides what this account may write;
+    /// queued here, files included, are protected from pruning by their
+    /// outbox entries (`hasPendingPush`). The server decides what this account may write;
     /// refused rows are dropped and then pruned like any other.
     ///
     /// Trade-off: a row deleted in CloudKit that a stale device still holds
@@ -485,17 +607,14 @@ final class SupabaseSync {
             }
             upload = try await missing("event_images")
             for image in all(EventImage.self) where upload(image.id) {
-                handoverKeep.insert(image.id)
                 pushEventImage(image)
             }
             upload = try await missing("expense_receipts")
             for receipt in all(ExpenseReceipt.self) where upload(receipt.id) {
-                handoverKeep.insert(receipt.id)
                 pushExpenseReceipt(receipt)
             }
             upload = try await missing("tournament_invitations")
             for invitation in all(TournamentInvitation.self) where upload(invitation.id) {
-                handoverKeep.insert(invitation.id)
                 pushTournamentInvitation(invitation)
             }
         } catch {

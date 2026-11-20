@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T20:48:54.416Z
-> Files: 335 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T21:04:54.516Z
+> Files: 337 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -328,7 +328,7 @@
 ## BlindensportGraz/Shared/
 
 - `AccessClaims.swift` — / Fine-grained permissions, mirroring the `app_permission` enum in (~739 tok)
-- `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2375 tok)
+- `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2448 tok)
 - `Binding+IsPresent.swift` (~138 tok)
 - `SearchQuery.swift` — / How list searches match: ignoring case and accents ("muller" finds (~140 tok)
 - `Thumbnail.swift` — / Small display copies of stored photos. ImageIO reads only as much of the (~270 tok)
@@ -340,7 +340,7 @@
 - `MemberPrivateSync.swift` — Pushes local svnr/iban/birthDate/lastMedicalExamination edits to Supabase member_private (only with members.private.write and after load) (~400 tok)
 - `SupabaseAccountAdminService.swift` — Root's account administration: block (lock) / unblock and delete another (~356 tok)
 - `SupabaseApprovalService.swift` — Struct: SupabaseApproval (~942 tok)
-- `SupabaseAuthService.swift` — Struct: Row (~1186 tok)
+- `SupabaseAuthService.swift` — Struct: Row (~1243 tok)
 - `SupabaseClientSingleton.swift` — Holds the single shared SupabaseClient for the lifetime of the app. (~296 tok)
 - `SupabaseConfig.swift` — Values come from the SUPABASE_URL / SUPABASE_ANON_KEY build settings (~255 tok)
 - `SupabaseMemberPrivateService.swift` — Sensitive roster fields that no longer travel through the CloudKit public (~1392 tok)
@@ -350,7 +350,7 @@
 
 ## BlindensportGraz/Sync/
 
-- `PendingPush.swift` — / Durable outbox for writes to Supabase — architecture-review.md 2.2 / 2.3. (~1534 tok)
+- `PendingPush.swift` — / Durable outbox for writes to Supabase — architecture-review.md 2.2 / 2.3. (~1598 tok)
 - `PushRegistration.swift` — / Registers this device's APNs token in Supabase (`device_tokens`) so the (~840 tok)
 - `RecordPushQueue.swift` — / Runs the sends for one record one after another, so an older edit (or its (~328 tok)
 - `SyncStatusRow.swift` — / Always-visible sync status for the account screen: "Status: Online / (~1076 tok)
@@ -370,6 +370,7 @@
 ## BlindensportGrazTests/
 
 - `AccessClaimsTests.swift` — Class: AccessClaimsTests (~917 tok)
+- `AppleSignInNonceTests.swift` — Class: AppleSignInNonceTests (~304 tok)
 - `BindingIsPresentTests.swift` — Class: BindingIsPresentTests (~326 tok)
 - `CatalogTests.swift` — Picker options, typeName, EventDBRow event_type encode/decode (~1100 tok)
 - `CatalogTests.swift` — Class: CatalogTests (~1378 tok)
@@ -378,13 +379,14 @@
 - `GVSCApplicationDocumentTests.swift` — Class: GVSCApplicationDocumentTests (~1950 tok)
 - `InflectionTests.swift` — Class: InflectionTests (~276 tok)
 - `LegacyFileCleanupTests.swift` — Class: LegacyFileCleanupTests (~438 tok)
-- `PendingPushTests.swift` — Class: PendingPushTests (~2099 tok)
+- `PendingPushTests.swift` — Class: PendingPushTests (~2416 tok)
 - `RecordPushQueueTests.swift` — Class: RecordPushQueueTests (~488 tok)
 - `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
 - `SearchQueryTests.swift` — Class: SearchQueryTests (~271 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
-- `SupabaseSyncPullTests.swift` — Struct: Row (~632 tok)
+- `SupabaseSyncPullTests.swift` — Struct: Row (~841 tok)
 - `SupabaseSyncRetryTests.swift` — Struct: Offline (~326 tok)
+- `SupabaseSyncUploadTests.swift` — Class: SupabaseSyncUploadTests (~1221 tok)
 - `ThumbnailTests.swift` — Class: ThumbnailTests (~471 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)
 

@@ -17,6 +17,10 @@ import os
 final class PendingPush {
     static let saveOperation = "save"
     static let deleteOperation = "delete"
+    /// A photo, receipt or document: the file goes to Storage, then the row
+    /// (the payload). The file itself is read from this device's copy when
+    /// it is sent, not stored in the outbox.
+    static let uploadOperation = "upload"
 
     @Attribute(.unique) var id: UUID = UUID()
     /// The Supabase table, e.g. "events".
