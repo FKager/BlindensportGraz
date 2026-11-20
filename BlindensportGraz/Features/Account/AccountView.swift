@@ -249,8 +249,6 @@ struct AccountView: View {
         case .new(let member):
             modelContext.insert(member)
             guard MemberService.save(member, modelContext: modelContext) else { return }
-            let allMembers = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
-            MemberBackup.snapshot(members: allMembers)
             // The person's own brand-new entry — fine to fill in; full access
             // still needs an admin's approval.
             requestedMember = member

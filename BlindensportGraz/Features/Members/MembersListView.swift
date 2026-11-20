@@ -157,19 +157,9 @@ struct MembersListView: View {
         Task {
             do {
                 try await MemberService.delete(member, confirmName: typedName, modelContext: modelContext)
-                snapshotRoster()
             } catch {
                 deletionError = "Der Name muss genau stimmen, und du brauchst eine Internetverbindung."
             }
         }
-    }
-
-    private func snapshotRoster() {
-        // Re-fetched rather than using the `members` @Query array directly —
-        // SwiftUI's @Query refresh isn't guaranteed to have landed yet at
-        // this exact point, so a fresh fetch is the only way to be sure the
-        // backup reflects the roster with these entries actually removed.
-        let remaining = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
-        MemberBackup.snapshot(members: remaining)
     }
 }

@@ -98,8 +98,6 @@ struct AddMemberView: View {
                                              defaultFunction: defaultFunction, memberOfGVSC: memberOfGVSC)
                         modelContext.insert(member)
                         MemberService.save(member, modelContext: modelContext)
-                        let allMembers = (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
-                        MemberBackup.snapshot(members: allMembers)
                         dismiss()
                     }
                     .disabled(firstName.trimmingCharacters(in: .whitespaces).isEmpty ||

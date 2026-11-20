@@ -20,10 +20,6 @@
     <string>1</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
-    <key>LSSupportsOpeningDocumentsInPlace</key>
-    <true/>
-    <key>UIFileSharingEnabled</key>
-    <true/>
     <key>NSUbiquitousContainers</key>
     <dict>
         <key>iCloud.it.a11y.BlindensportGraz</key>

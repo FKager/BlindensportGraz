@@ -138,11 +138,7 @@ enum MemberImportExport {
         return url
     }
 
-    /// Same pretty-printed, sorted-key JSON `MemberIO` encoding used by
-    /// `exportFile` — pulled out so `MemberBackup`'s automatic snapshots use
-    /// the exact same serialization instead of a second, hand-maintained copy
-    /// of the field-by-field `MemberIO` construction that could silently
-    /// drift out of sync with it.
+    /// The pretty-printed, sorted-key `MemberIO` JSON that `exportFile` writes.
     static func encodedJSON(for members: [Member]) throws -> Data {
         let rows = members
             .sorted { ($0.lastName, $0.firstName) < ($1.lastName, $1.firstName) }
@@ -306,11 +302,6 @@ enum MemberImportExport {
         }
 
         MemberService.saveBatch(touched, modelContext: modelContext)
-        // One snapshot for the whole batch, not per row — importing a real
-        // club spreadsheet can create dozens of entries at once.
-        if result.created > 0 {
-            MemberBackup.snapshot(members: workingRoster)
-        }
         return result
     }
 
