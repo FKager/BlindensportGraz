@@ -4445,3 +4445,4 @@
 | 22:03 | Edited BlindensportGraz/Sync/PendingPush.swift | 2→6 lines | ~86 |
 | 22:04 | Created BlindensportGrazTests/SupabaseSyncUploadTests.swift | — | ~1221 |
 | 22:04 | Edited BlindensportGrazTests/PendingPushTests.swift | modified testUploadKeepsItsRowPayload() | ~332 |
+| 22:32 | App retries deletions skipped for unsent changes (cursor holds at first skipped entry) + one-time log replay (PR #51, rebased 2026-11-20 onto main) | SupabaseSync(+Models), SyncStateTests | pass | ~10k |

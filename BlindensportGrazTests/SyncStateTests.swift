@@ -54,4 +54,19 @@ final class SyncStateTests: XCTestCase {
         XCTAssertTrue(SyncOrchestrationService.shouldSyncOnForeground(lastSyncedAt: now.addingTimeInterval(-30), now: now))
         XCTAssertTrue(SyncOrchestrationService.shouldSyncOnForeground(lastSyncedAt: now.addingTimeInterval(-3600), now: now))
     }
+
+    // MARK: - Deletions cursor
+
+    func testDeletionsCursorMovesPastTheNewestEntryWhenNothingWasSkipped() {
+        let a = Date(timeIntervalSinceReferenceDate: 100), b = Date(timeIntervalSinceReferenceDate: 200)
+        XCTAssertEqual(SupabaseSync.deletionsCursor(seen: [a, b], skipped: []), b)
+        XCTAssertNil(SupabaseSync.deletionsCursor(seen: [], skipped: []))
+    }
+
+    func testDeletionsCursorStaysAtTheFirstSkippedEntry() {
+        let a = Date(timeIntervalSinceReferenceDate: 100), b = Date(timeIntervalSinceReferenceDate: 200),
+            c = Date(timeIntervalSinceReferenceDate: 300)
+        XCTAssertEqual(SupabaseSync.deletionsCursor(seen: [a, b, c], skipped: [c, b]), b,
+                       "a deletion skipped for an unsent change is fetched again next time")
+    }
 }
