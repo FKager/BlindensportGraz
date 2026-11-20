@@ -4446,3 +4446,20 @@
 | 22:04 | Created BlindensportGrazTests/SupabaseSyncUploadTests.swift | — | ~1221 |
 | 22:04 | Edited BlindensportGrazTests/PendingPushTests.swift | modified testUploadKeepsItsRowPayload() | ~332 |
 | 22:32 | App retries deletions skipped for unsent changes (cursor holds at first skipped entry) + one-time log replay (PR #51, rebased 2026-11-20 onto main) | SupabaseSync(+Models), SyncStateTests | pass | ~10k |
+| 22:06 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:11 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:15 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:18 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:27 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:29 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:32 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:41 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:47 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 22:53 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 23:19 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+| 23:20 | Session end: 28 writes across 26 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~8929 tok |
+
+## Session: 2026-11-20 23:22
+
+| Time | Action | File(s) | Outcome | ~Tokens |
+|------|--------|---------|---------|--------|
