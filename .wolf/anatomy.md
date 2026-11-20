@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T20:59:14.271Z
-> Files: 336 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T21:04:54.516Z
+> Files: 337 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -350,7 +350,7 @@
 
 ## BlindensportGraz/Sync/
 
-- `PendingPush.swift` — / Durable outbox for writes to Supabase — architecture-review.md 2.2 / 2.3. (~1534 tok)
+- `PendingPush.swift` — / Durable outbox for writes to Supabase — architecture-review.md 2.2 / 2.3. (~1598 tok)
 - `PushRegistration.swift` — / Registers this device's APNs token in Supabase (`device_tokens`) so the (~840 tok)
 - `RecordPushQueue.swift` — / Runs the sends for one record one after another, so an older edit (or its (~328 tok)
 - `SyncStatusRow.swift` — / Always-visible sync status for the account screen: "Status: Online / (~1076 tok)
@@ -379,13 +379,14 @@
 - `GVSCApplicationDocumentTests.swift` — Class: GVSCApplicationDocumentTests (~1950 tok)
 - `InflectionTests.swift` — Class: InflectionTests (~276 tok)
 - `LegacyFileCleanupTests.swift` — Class: LegacyFileCleanupTests (~438 tok)
-- `PendingPushTests.swift` — Class: PendingPushTests (~2099 tok)
+- `PendingPushTests.swift` — Class: PendingPushTests (~2416 tok)
 - `RecordPushQueueTests.swift` — Class: RecordPushQueueTests (~488 tok)
 - `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
 - `SearchQueryTests.swift` — Class: SearchQueryTests (~271 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
 - `SupabaseSyncPullTests.swift` — Struct: Row (~841 tok)
 - `SupabaseSyncRetryTests.swift` — Struct: Offline (~326 tok)
+- `SupabaseSyncUploadTests.swift` — Class: SupabaseSyncUploadTests (~1221 tok)
 - `ThumbnailTests.swift` — Class: ThumbnailTests (~471 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)
 

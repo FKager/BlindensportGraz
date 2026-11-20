@@ -10742,6 +10742,27 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-20T22:05:00+01:00"
+    },
+    {
+      "id": "bug-638",
+      "timestamp": "2026-11-20T22:10:00+01:00",
+      "error_message": "Code review: a failed photo/receipt/document upload was never retried and the next full sync pruned the local copy",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "File uploads used a bare Task with performWithRetry, no outbox entry, so hasPendingPush didn't protect the local copy",
+      "fix": "PendingPush.uploadOperation; SupabaseSync.upload/uploadFile/fileTarget/localFileData; drainOutbox replays uploads (drops if file gone); FileUploadError counts as denied; handoverKeep removed. Tests: SupabaseSyncUploadTests",
+      "tags": [
+        "sync",
+        "outbox",
+        "storage",
+        "upload",
+        "data-loss"
+      ],
+      "related_bugs": [
+        "bug-628",
+        "bug-630"
+      ],
+      "occurrences": 1,
+      "last_seen": "2026-11-20T22:10:00+01:00"
     }
   ]
 }
