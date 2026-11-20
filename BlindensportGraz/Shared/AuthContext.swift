@@ -68,10 +68,15 @@ final class AuthContext {
         catch { lastError = error.localizedDescription }
     }
 
-    /// Re-pulls profiles, roles, approvals and private data into the local
-    /// cache — after an admin action changed them on the server.
+    /// Re-pulls the role → permission table, profiles, roles, approvals and
+    /// private data — after an admin action changed them on the server.
+    /// (On sign-in the table is only fetched when the role changes.)
     func reload() async {
         guard let claims else { return }
+        if let table = try? await SupabaseRoleService.fetchPermissionTable() {
+            Permission.serverTable = table
+            permissions = Permission.granted(to: claims.role)
+        }
         await mirrorServerState(for: claims)
     }
 
