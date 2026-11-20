@@ -6,17 +6,16 @@ Deploy the staging app ("BSG Staging", next to the TestFlight app) to "iPhone vo
 (`.github/workflows/ios-device-deploy.yml`), which runs on the self-hosted runner
 registered on this same Mac. This is the user's explicitly preferred deploy path —
 do NOT build/install locally via Xcode's Run action, raw `xcodebuild`, or
-`xcrun devicectl device install/process launch` as a substitute. Those were used
-before this command existed and turned out fragile (Xcode's Cmd+R silently not
-reaching the device, sandboxed `xcodebuild` hitting `errSecInternalComponent`
-codesigning failures) — the workflow's ephemeral CI keychain avoids both problems.
+`xcrun devicectl device install/process launch` as a substitute: Xcode's Cmd+R can
+silently fail to reach the device, and sandboxed `xcodebuild` hits
+`errSecInternalComponent` codesigning failures. The workflow's ephemeral CI keychain avoids both.
 
 Steps:
 
 1. `git status` — if there are uncommitted changes, STOP and tell the user to
    commit first. Do not auto-commit (only commit when explicitly asked).
 2. Make sure what you want on the phone is pushed, then start the run. The
-   workflow is manual only (2026-11-07): a push never deploys, because the
+   workflow is manual only: a push never deploys, because the
    Debug build talks to staging and would replace the TestFlight app. For
    `main`: `gh workflow run "iOS Device Deploy"`. For a branch:
    `gh workflow run "iOS Device Deploy" --ref <branch>`. Start it once.

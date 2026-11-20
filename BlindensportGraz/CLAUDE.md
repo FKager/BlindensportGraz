@@ -36,12 +36,12 @@ All data models use SwiftData's `@Model` protocol as a local offline cache (no C
 - **EventImage**: Photo attached to a `SportEvent` (or, via inheritance, a `Training`/`Tournament`)
 - **EventParticipation**: Link between users and events with status (invited/confirmed/declined)
 
-The `ModelContainer` is initialized in `BlindensportGrazApp.swift` with all 11 model types configured for persistent storage.
+The `ModelContainer` is built in `App/BlindensportGrazApp.swift` from `ModelSchema.schema` (`Models/ModelSchema.swift`), the single list of every model type; register new models there.
 
 ### Application Structure
 ```
 RootView -> Login/Registration (if not authenticated) -> MainTabView
-MainTabView -> TabView (Dashboard, Events, Tournaments, Trainings, Teams, Account)
+MainTabView -> TabView (Übersicht, Events, Turniere, Trainings, Verein, Account)
 ```
 
 Each tab uses `@Query` for data fetching from SwiftData and displays different views:
@@ -56,13 +56,7 @@ Each tab uses `@Query` for data fetching from SwiftData and displays different v
 One SwiftUI view type per file, named after the type (e.g. `TrainingDetailView.swift`); small `private` helper types stay in the file of the view that uses them.
 
 ### Data Flow Pattern
-```swift
-@Environment(\.modelContext) private var modelContext
-@Query(sort: \(ModelField)) private var items: [EntityType]
-// For modifications:
-modelContext.insert(entity)
-try? modelContext.save()
-```
+Views read with `@Query`. Writes go through the matching `*Service` in `Services/`, which saves locally and queues the Supabase push; inserting and saving through `modelContext` in a view skips the sync.
 
 ## Build & Development
 
@@ -117,10 +111,7 @@ open BlindensportGraz.xcodeproj
 
 ## Testing Guidelines
 
-- The app uses SwiftUI's built-in testing infrastructure
-- Test views for data CRUD operations
-- Verify SwiftData persistence across app restarts
-- Test role-based access controls (admin/coach/member)
+Unit tests live in `BlindensportGrazTests/` (XCTest) and run in the Simulator with the `xcodebuild test` command above. Cover CRUD paths, persistence across restarts and permission checks (`can(.permission)`).
 
 ## Key Patterns
 
@@ -175,7 +166,7 @@ All UI text is in German. Common terms:
 - "Admin" = Administrator
 
 ## Role Hierarchy
-Accounts, roles and approvals live in **Supabase** (`../supabase/`), like all club data since v0.3.0. Roles come from `user_roles`; permissions from `role_permissions` (check with `user.can(.permission)` / `authContext.can(.permission)`, never compare roles directly). The server enforces everything via RLS and RPCs.
+Accounts, roles and approvals live in **Supabase** (`../supabase/`), like all club data. Roles come from `user_roles`; permissions from `role_permissions` (check with `user.can(.permission)` / `authContext.can(.permission)`, never compare roles directly). The server enforces everything via RLS and RPCs.
 1. **root** - admin + assigns roles (`roles.assign`)
 2. **admin** - Full access to all features, approves accounts, reads protected member data
 3. **coach** - Can create/manage events, trainings and teams
@@ -183,7 +174,7 @@ Accounts, roles and approvals live in **Supabase** (`../supabase/`), like all cl
 5. *(no role)* - pending: schedule only until an admin approves the account
 
 ## Database Schema
-All data is stored using SwiftData's persistence layer with relationships:
+Relationships in the local SwiftData models (the Supabase tables in `../supabase/` are the source of truth):
 - Users <-> Teams (via TeamMembership)
 - Users <-> Events (via EventParticipation)
 - Teams <-> Memberships (one-to-many with TeamMembership)

@@ -14,15 +14,9 @@ You are working in an OpenWolf-managed project. These rules apply every turn.
 2. Check the `## Do-Not-Repeat` section — these are past mistakes that must not recur.
 3. Follow all conventions in `## Key Learnings` and `## User Preferences`.
 
-## After Actions
+## Cerebrum Learning
 
-1. After every significant action, append a one-line entry to `.wolf/memory.md`:
-   `| HH:MM | description | file(s) | outcome | ~tokens |`
-2. After creating, deleting, or renaming files: update `.wolf/anatomy.md`.
-
-## Cerebrum Learning (MANDATORY — every session)
-
-OpenWolf's value comes from learning across sessions. You MUST update `.wolf/cerebrum.md` whenever you learn something useful. This is not optional.
+OpenWolf's value comes from learning across sessions: update `.wolf/cerebrum.md` when you learn something a later session would otherwise have to rediscover.
 
 **Update `## User Preferences` when the user:**
 - Corrects your approach ("no, do it this way instead")
@@ -48,25 +42,15 @@ OpenWolf's value comes from learning across sessions. You MUST update `.wolf/cer
 - The user explains why they chose approach A over B
 - A trade-off is explicitly discussed
 
-**The bar is LOW.** If in doubt, add it. A cerebrum entry that's slightly redundant costs nothing. A missing entry means the next session repeats the same discovery process.
+Skip what the code, git history or an existing entry already records; cerebrum.md is read before every code change, so each entry costs every session.
 
-## Bug Logging (MANDATORY)
+## Bug Logging
 
-**Log a bug to `.wolf/buglog.json` whenever ANY of these happen:**
-- The user reports an error, bug, or problem
-- A test fails or a command produces an error
-- You fix something that was broken
-- You edit a file more than twice to get it right
-- An import, module, or dependency is missing or wrong
-- A runtime error, type error, or syntax error occurs
-- A build or lint command fails
-- A feature doesn't work as expected
-- You change error handling, try/catch blocks, or validation logic
-- The user says something "doesn't work", "is broken", or "shows wrong X"
+**Log to `.wolf/buglog.json` when you fix a bug:** a failing build, test or command, a runtime/type/syntax error, a wrong dependency, or a problem the user reported. Refactors, new error handling and repeated edits on the way to a feature are not bugs.
 
 **Before fixing:** Read `.wolf/buglog.json` first — the fix may already be known.
 
-**After fixing:** ALWAYS append to `.wolf/buglog.json` with this structure:
+**After fixing:** append to `.wolf/buglog.json` with this structure:
 ```json
 {
   "id": "bug-NNN",
@@ -82,8 +66,6 @@ OpenWolf's value comes from learning across sessions. You MUST update `.wolf/cer
 }
 ```
 
-**The threshold is LOW.** When in doubt, log it. A false positive in the bug log costs nothing. A missed bug means repeating the same mistake later.
-
 ## Token Discipline
 
 - Never re-read a file already read this session unless it was modified since.
@@ -95,13 +77,11 @@ OpenWolf's value comes from learning across sessions. You MUST update `.wolf/cer
 
 When the user asks you to check, evaluate, or improve the design/UI of their app:
 
-1. Run `openwolf designqc` via Bash to capture screenshots.
-   - The command auto-detects a running dev server, or starts one from package.json if needed
-   - Use `--url <url>` only if auto-detection fails
+1. Run `openwolf designqc --url <web UI URL>` via Bash to capture the web UI (this repository has no package.json, so auto-detection finds nothing; designqc does not cover the iOS app).
    - The command saves compressed JPEG screenshots to `.wolf/designqc-captures/`
    - Full pages are captured as sectioned viewport-height images (top, section2, ..., bottom)
 2. Read the captured screenshot images from `.wolf/designqc-captures/` using the Read tool.
-3. Evaluate the design against modern standards (Shadcn UI, Tailwind, clean React patterns):
+3. Evaluate the design against Apple's Human Interface Guidelines (iOS app) or Vaadin's components (web UI), accessibility first (VoiceOver/screen readers, Dynamic Type, WCAG contrast):
    - Spacing and whitespace consistency
    - Typography hierarchy and readability
    - Color contrast and accessibility (WCAG)
@@ -114,22 +94,8 @@ When the user asks you to check, evaluate, or improve the design/UI of their app
 
 **Token awareness:** Each screenshot costs ~2500 tokens. The command compresses images (JPEG quality 70, max width 1200px) to minimize cost. For large apps, use `--routes / /specific-page` to limit captures.
 
-## Reframe — UI Framework Selection
-
-When the user asks to change, pick, migrate, or "reframe" their project's UI framework:
-
-1. Read `.wolf/reframe-frameworks.md` for the full framework knowledge base.
-2. Ask the user the decision questions from the file (current stack, priority, Tailwind usage, theme preference, app type). Stop early once the choice narrows to 1-2 options.
-3. Present a recommendation with reasoning based on the comparison matrix.
-4. Once the user confirms, use the selected framework's prompt from the file — **adapted to the actual project** using `.wolf/anatomy.md` for real file paths, routes, and components.
-5. Execute the migration: install dependencies, update config, refactor components.
-6. After migration, run `openwolf designqc` to verify the new look.
-
-**Do NOT read the entire reframe-frameworks.md into context upfront.** Read the decision questions and comparison matrix first (~50 lines). Only read the specific framework's prompt section after the user chooses.
-
 ## Session End
 
 Before ending or when asked to wrap up:
 
-1. Write a session summary to `.wolf/memory.md`.
-2. Review the session: did you learn anything? Did the user correct you? Did you fix a bug? If yes, update `.wolf/cerebrum.md` and/or `.wolf/buglog.json`.
+Review the session: did you learn anything? Did the user correct you? Did you fix a bug? If yes, update `.wolf/cerebrum.md` and/or `.wolf/buglog.json`.
