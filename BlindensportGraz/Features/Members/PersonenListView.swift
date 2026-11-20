@@ -75,8 +75,7 @@ struct PersonenListView: View {
             case .grazerVSC: return row.memberOfGVSC
             }
         }
-        let needle = searchText.trimmingCharacters(in: .whitespaces).lowercased()
-        let searched = needle.isEmpty ? filtered : filtered.filter { $0.name.lowercased().contains(needle) }
+        let searched = filtered.filter { SearchQuery.matches(searchText, in: $0.name) }
         return searched.sorted {
             let byLast = $0.lastName.localizedCaseInsensitiveCompare($1.lastName)
             if byLast != .orderedSame { return byLast == .orderedAscending }

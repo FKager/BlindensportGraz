@@ -35,15 +35,9 @@ struct UserListView: View {
     private var managesAccounts: Bool { authContext.can(.rolesAssign) }
 
     private var filteredUsers: [User] {
-        let needle = searchText.trimmingCharacters(in: .whitespaces).lowercased()
         // Name-only directory rows (no email) are other accounts' cache
         // entries for non-approvers; admins get full profiles.
-        let accounts = users.filter { !$0.email.isEmpty }
-        guard !needle.isEmpty else { return accounts }
-        return accounts.filter { user in
-            user.displayName.lowercased().contains(needle)
-                || (!user.email.isEmpty && user.email.lowercased().contains(needle))
-        }
+        users.filter { !$0.email.isEmpty && SearchQuery.matches(searchText, in: $0.displayName, $0.email) }
     }
 
     // Extracted from `body` so the `List` modifier chain stays short enough
