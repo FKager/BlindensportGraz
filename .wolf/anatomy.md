@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T20:48:54.416Z
-> Files: 335 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T20:59:14.271Z
+> Files: 336 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -328,7 +328,7 @@
 ## BlindensportGraz/Shared/
 
 - `AccessClaims.swift` — / Fine-grained permissions, mirroring the `app_permission` enum in (~739 tok)
-- `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2375 tok)
+- `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2448 tok)
 - `Binding+IsPresent.swift` (~138 tok)
 - `SearchQuery.swift` — / How list searches match: ignoring case and accents ("muller" finds (~140 tok)
 - `Thumbnail.swift` — / Small display copies of stored photos. ImageIO reads only as much of the (~270 tok)
@@ -340,7 +340,7 @@
 - `MemberPrivateSync.swift` — Pushes local svnr/iban/birthDate/lastMedicalExamination edits to Supabase member_private (only with members.private.write and after load) (~400 tok)
 - `SupabaseAccountAdminService.swift` — Root's account administration: block (lock) / unblock and delete another (~356 tok)
 - `SupabaseApprovalService.swift` — Struct: SupabaseApproval (~942 tok)
-- `SupabaseAuthService.swift` — Struct: Row (~1186 tok)
+- `SupabaseAuthService.swift` — Struct: Row (~1243 tok)
 - `SupabaseClientSingleton.swift` — Holds the single shared SupabaseClient for the lifetime of the app. (~296 tok)
 - `SupabaseConfig.swift` — Values come from the SUPABASE_URL / SUPABASE_ANON_KEY build settings (~255 tok)
 - `SupabaseMemberPrivateService.swift` — Sensitive roster fields that no longer travel through the CloudKit public (~1392 tok)
@@ -370,6 +370,7 @@
 ## BlindensportGrazTests/
 
 - `AccessClaimsTests.swift` — Class: AccessClaimsTests (~917 tok)
+- `AppleSignInNonceTests.swift` — Class: AppleSignInNonceTests (~304 tok)
 - `BindingIsPresentTests.swift` — Class: BindingIsPresentTests (~326 tok)
 - `CatalogTests.swift` — Picker options, typeName, EventDBRow event_type encode/decode (~1100 tok)
 - `CatalogTests.swift` — Class: CatalogTests (~1378 tok)
@@ -383,7 +384,7 @@
 - `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
 - `SearchQueryTests.swift` — Class: SearchQueryTests (~271 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
-- `SupabaseSyncPullTests.swift` — Struct: Row (~632 tok)
+- `SupabaseSyncPullTests.swift` — Struct: Row (~841 tok)
 - `SupabaseSyncRetryTests.swift` — Struct: Offline (~326 tok)
 - `ThumbnailTests.swift` — Class: ThumbnailTests (~471 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)

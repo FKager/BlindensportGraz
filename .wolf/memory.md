@@ -4435,3 +4435,9 @@
 | 21:48 | Edited BlindensportGraz/Sync/Supabase/SupabaseSync.swift | modified rowsToApply() | ~120 |
 | 21:48 | Created BlindensportGrazTests/SupabaseSyncPullTests.swift | — | ~632 |
 | 21:50 | Session end: 21 writes across 20 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~6278 tok |
+| 21:51 | Session end: 21 writes across 20 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~6278 tok |
+| 21:56 | Session end: 21 writes across 20 files (InflectionTests.swift, Thumbnail.swift, ThumbnailImage.swift, ThumbnailTests.swift, Binding+IsPresent.swift) | 0 reads | ~6278 tok |
+| 21:58 | Edited BlindensportGrazTests/SupabaseSyncPullTests.swift | modified testIncrementalPullRereadsRowsStampedShortlyBeforeTheCursor() | ~224 |
+| 21:59 | Edited BlindensportGraz/Supabase/SupabaseAuthService.swift | modified generateNonce() | ~166 |
+| 21:59 | Created BlindensportGrazTests/AppleSignInNonceTests.swift | — | ~304 |
+| 21:59 | Edited BlindensportGraz/Shared/AuthContext.swift | modified reload() | ~142 |
