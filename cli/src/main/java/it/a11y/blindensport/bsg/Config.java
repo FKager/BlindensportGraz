@@ -40,7 +40,7 @@ public record Config(URI baseUrl, String token) {
                 .orElseGet(() -> readTokenFile(home.resolve(".config/blindensport/token")));
         if (!token.startsWith(TOKEN_PREFIX)) {
             throw new Problem("Das ist kein persönliches Token (es beginnt mit " + TOKEN_PREFIX + "). "
-                    + "Erstellen Sie eines in der Web-Oberfläche unter „Persönliche Tokens“.");
+                    + "Erstellen Sie eines in der Web-Oberfläche unter \"Persönliche Tokens\".");
         }
         return new Config(base, token);
     }
@@ -54,7 +54,7 @@ public record Config(URI baseUrl, String token) {
         if (!Files.isRegularFile(file)) {
             throw new Problem("Kein Token gefunden. Setzen Sie BSG_TOKEN oder legen Sie es in " + file
                     + " ab (nur für Sie lesbar: chmod 600). Ein Token erstellen Sie in der Web-Oberfläche "
-                    + "unter „Persönliche Tokens“.");
+                    + "unter \"Persönliche Tokens\".");
         }
         try {
             Set<PosixFilePermission> permissions = Files.getPosixFilePermissions(file);

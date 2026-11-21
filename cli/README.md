@@ -7,6 +7,8 @@ Replaces the Swift `RootCLI` (which used the Supabase service key).
 ## Setup
 
 1. Java 21. Build once: `./mvnw -q package` (makes `target/bsg.jar`).
+   The `./bsg` script finds Java 21 by itself (JAVA_HOME, macOS's
+   `java_home`, Homebrew's `openjdk@21`).
 2. In the web UI, **Persönliche Tokens**: create a token (password
    confirmation), copy it. It is shown once and is valid for 90 days.
 3. Store it so only you can read it:
@@ -17,6 +19,31 @@ Replaces the Swift `RootCLI` (which used the Supabase service key).
    ```
 
    Or set `BSG_TOKEN` for one session. Never pass it as an argument.
+
+## Windows
+
+Works the same in the Command Prompt or PowerShell, with `bsg.bat` instead
+of `./bsg`. GitHub tests it on Windows on every change (workflow
+*bsg Tests*).
+
+1. Java 21, e.g. `winget install EclipseAdoptium.Temurin.21.JDK`, and
+   `JAVA_HOME` pointing to it (the Temurin installer can set it).
+2. Build once in the `cli` folder: `mvnw.cmd -q package`.
+3. Store the token in your profile folder (only you can read it there), in
+   PowerShell, right after copying it:
+
+   ```powershell
+   New-Item -ItemType Directory -Force "$HOME\.config\blindensport" | Out-Null
+   Get-Clipboard | Set-Content -NoNewline "$HOME\.config\blindensport\token"
+   ```
+
+   Or for one session: `set BSG_TOKEN=bsg_mcp_…` (cmd) or
+   `$env:BSG_TOKEN = "bsg_mcp_…"` (PowerShell).
+4. `bsg.bat whoami`, `bsg.bat accounts list`, … as below.
+
+Messages use only characters every Windows console code page has (umlauts
+yes, typographic quotes no), so screen readers such as NVDA read them as
+written.
 
 ## Commands
 

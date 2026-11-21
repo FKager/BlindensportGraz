@@ -30,7 +30,7 @@ import java.util.concurrent.Callable;
         description = "Blindensport Graz: Konten, Rollen und Mitglieder über die Web-Oberfläche.",
         subcommands = {Bsg.WhoAmI.class, Bsg.Accounts.class, Bsg.Members.class},
         footer = {"", "Token: Umgebungsvariable BSG_TOKEN oder Datei ~/.config/blindensport/token (chmod 600).",
-                "Ein Token erstellen Sie in der Web-Oberfläche unter „Persönliche Tokens“."})
+                "Ein Token erstellen Sie in der Web-Oberfläche unter \"Persönliche Tokens\"."})
 public final class Bsg implements Callable<Integer> {
     @Option(names = "--url", description = "Adresse; Standard: BSG_URL, sonst bs.a11y.it",
             scope = CommandLine.ScopeType.INHERIT)
@@ -180,7 +180,7 @@ public final class Bsg implements Callable<Integer> {
                 Bsg bsg = accounts.bsg;
                 String wanted = role.trim().toLowerCase(Locale.ROOT);
                 if (!List.of("member", "coach", "admin", "root", "none").contains(wanted)) {
-                    throw new Config.Problem("Unbekannte Rolle „" + role + "“: member, coach, admin, root oder none.");
+                    throw new Config.Problem("Unbekannte Rolle \"" + role + "\": member, coach, admin, root oder none.");
                 }
                 Map<String, Object> body = new HashMap<>();
                 body.put("role", "none".equals(wanted) ? null : wanted);

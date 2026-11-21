@@ -7,4 +7,23 @@ if [ ! -f "$jar" ]; then
   echo "bsg ist noch nicht gebaut: cd $dir && ./mvnw -q package" >&2
   exit 2
 fi
-exec java -jar "$jar" "$@"
+# Java 21: JAVA_HOME, else macOS's registered JDKs, else Homebrew's openjdk@21
+# (keg-only, so not on the PATH), else whatever java is on the PATH.
+java=""
+if [ -n "$JAVA_HOME" ] && [ -x "$JAVA_HOME/bin/java" ]; then
+  java="$JAVA_HOME/bin/java"
+elif [ -x /usr/libexec/java_home ] && home=$(/usr/libexec/java_home -v 21 2>/dev/null); then
+  java="$home/bin/java"
+else
+  for brew in /opt/homebrew/opt/openjdk@21 /usr/local/opt/openjdk@21; do
+    if [ -x "$brew/bin/java" ]; then java="$brew/bin/java"; break; fi
+  done
+fi
+if [ -z "$java" ] && command -v java >/dev/null 2>&1 && java -version >/dev/null 2>&1; then
+  java=java
+fi
+if [ -z "$java" ]; then
+  echo "Kein Java 21 gefunden. Bitte installieren, z. B.: brew install openjdk@21" >&2
+  exit 2
+fi
+exec "$java" -jar "$jar" "$@"
