@@ -3,6 +3,7 @@ package it.a11y.blindensport.webui.club;
 import com.fasterxml.jackson.databind.JsonNode;
 import it.a11y.blindensport.webui.members.Dates;
 import it.a11y.blindensport.webui.supabase.Postgrest;
+import org.jboss.logging.Logger;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import static it.a11y.blindensport.webui.supabase.Postgrest.order;
  * layout the app syncs. RLS: approved accounts read, events.manage writes.
  */
 public final class TournamentDocuments {
+    private static final Logger LOG = Logger.getLogger(TournamentDocuments.class);
     public static final String TABLE = "tournament_invitations";
     public static final String BUCKET = "tournament-invitations";
     /** The bucket's limit. */
@@ -147,8 +149,9 @@ public final class TournamentDocuments {
         } catch (RuntimeException e) {
             try {
                 db.storage().remove(BUCKET, List.of(path));
-            } catch (RuntimeException ignored) {
-                // the row failed already; an orphaned file is harmless
+            } catch (RuntimeException cleanup) {
+                // The row failed already; an orphaned file is harmless, but worth knowing about.
+                LOG.warnf("Orphaned file %s/%s left after a failed upload: %s", BUCKET, path, cleanup.getMessage());
             }
             throw e;
         }
@@ -169,8 +172,9 @@ public final class TournamentDocuments {
     public void removeFiles(List<Document> documents) {
         try {
             db.storage().remove(BUCKET, documents.stream().map(Document::storagePath).toList());
-        } catch (RuntimeException ignored) {
-            // the tournament is deleted; leftover files are harmless
+        } catch (RuntimeException e) {
+            // The tournament is deleted; leftover files are harmless, but worth knowing about.
+            LOG.warnf("%d file(s) of a deleted tournament left in %s: %s", documents.size(), BUCKET, e.getMessage());
         }
     }
 

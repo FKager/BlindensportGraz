@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-20T21:04:54.516Z
-> Files: 337 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-21T07:57:06.596Z
+> Files: 339 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -561,7 +561,9 @@
 - `AdminSession.java` — One signed-in admin. Holds their Supabase tokens server-side (never sent (~942 tok)
 - `AdminSessions.java` — Sign-in and the in-memory session table shared by the REST API (token in (~1525 tok)
 - `LoginAttemptLimiter.java` — In-memory sliding-window limiter for failed sign-ins (REST and Vaadin (~567 tok)
+- `SecurityHeaders.java` — Vert.x filter adding HSTS, CSP (frame-ancestors etc.), nosniff, Referrer-Policy to every response (~350 tok)
 - `Permission.java` — {@code public.app_permission} values (supabase/migrations/20261008000001_rbac.sql). (~354 tok)
+- `SecurityHeaders.java` — Security headers on every response, whichever proxy is in front (Traefik (~480 tok)
 - `SessionExpiredException.java` — The admin's session ended: timed out, signed out, or Supabase no longer accepts it. (~85 tok)
 - `SignInException.java` — A refused sign-in, with the HTTP status the REST API answers and a German message. (~106 tok)
 
@@ -666,13 +668,15 @@
 
 ## webui/src/main/resources/
 
-- `application.properties` — Supabase project the web admin works on. Admins act with their OWN (~401 tok)
+- `application.properties` — Supabase project the web UI works on. Admins act with their OWN (~594 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/api/
 
 - `ApiTest.java` — The REST contract of the Swift server (session, CSRF, members CRUD, (~4269 tok)
+- `SecurityHeadersTest.java` — security headers on Vaadin, API, calendar, MCP and 404 responses (~300 tok)
 - `ReportsApiTest.java` — /api/reports against a mocked Supabase: permissions, JSON and the files. (~3416 tok)
 - `ReportsFixture.java` — Shared Supabase stubs for invoicing tests: admin/kassa/coach accounts, a Prague tournament, a March training (~1500 tok)
+- `SecurityHeadersTest.java` — Every kind of response carries the security headers from (~374 tok)
 - `SupabaseMock.java` — A WireMock stand-in for the Supabase project (GoTrue + PostgREST) during @QuarkusTest. (~213 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/auth/
