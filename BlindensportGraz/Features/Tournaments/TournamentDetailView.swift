@@ -17,7 +17,7 @@ struct TournamentDetailView: View {
    // Eagerly (re)generated below — same ShareLink convention as every other
    // export in this app; see CalendarEventExport's doc comment for why
    // .ics+ShareLink was chosen over EKEventStore.
-   @State private var icsURL: URL?
+   @State private var icsFile: Result<URL, any Error>?
    // Detail screens open read-only. Only an admin or the root account gets
    // the "Bearbeiten" toolbar toggle that flips this true and unlocks the
    // form (user request 2026-09-08).
@@ -266,16 +266,13 @@ var body: some View {
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
-            if let icsURL {
-                ShareLink(item: icsURL) {
-                    Image(systemName: "calendar.badge.plus")
-                }
-                .accessibilityLabel("Zum Kalender hinzufügen")
-            }
+            ExportShareButton(file: icsFile, label: "Zum Kalender hinzufügen", systemImage: "calendar.badge.plus")
         }
     }
     .task(id: CalendarEventExport.fields(for: tournament)) {
-        icsURL = try? CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: tournament))
+        icsFile = ExportShareButton.prepare("Tournament calendar entry") {
+            try CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: tournament))
+        }
     }
     .sheet(isPresented: $showAddNewMember) {
         AddNewEventMemberView(event: tournament, praeMax: Int(PraeCalculator.dailyCap) * tournament.dayCount)

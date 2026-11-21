@@ -31,6 +31,17 @@ enum MemberService {
         }
     }
 
+    /// Notes on this device that the GVSC application was sent. Local only:
+    /// the server already set `gvsc_applied_at` (`mark_gvsc_application`),
+    /// and a member sending their own application may not write `members`.
+    @discardableResult
+    static func recordApplicationSent(_ member: Member, at date: Date = .now, modelContext: ModelContext) -> Bool {
+        member.gvscAppliedAt = date
+        return PersistenceService.runAndSignal(operation: { try modelContext.save() }, modelName: "Member (GVSC sent)",
+                                               failureMessage: "Das Sendedatum konnte nicht gespeichert werden.",
+                                               onSuccess: {})
+    }
+
     /// Removes an entry for good. The server decides: only root, only an entry
     /// marked "delete", and `confirmName` must be the person's full name
     /// (`delete_member`, the only way to delete a member). So this needs a

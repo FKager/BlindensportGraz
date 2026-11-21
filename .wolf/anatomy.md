@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-21T07:57:06.596Z
-> Files: 339 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-21T07:52:37.268Z
+> Files: 341 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -247,7 +247,7 @@
 - `GVSCApplicationDocument.swift` — / Everything the GVSC Beitrittserklärung asks for, as plain values (so the (~4783 tok)
 - `GVSCApplicationFieldsSections.swift` — GVSCApplicationFields protocol (Member + MemberChangeRequest), isMinor(), GVSCMembershipType, shared Form sections (Mitgliedsart, Staatsbürgerschaft, Mobil, Behinderung, Einwilligungen, Vertreter:in) (~1100 tok)
 - `GVSCApplicationFieldsSections.swift` — / The fields of the GVSC Beitrittserklärung beyond the basic roster data — (~1302 tok)
-- `GVSCApplicationView.swift` — Beitrittserklärung sheet: missing-field checklist, profile photo, QuickLook preview, send via Edge Function (~1500 tok)
+- `GVSCApplicationView.swift` — / Fills the GVSC Beitrittserklärung from the Benutzerverwaltung, shows what (~2309 tok)
 - `GVSCApplicationView.swift` — / Fills the GVSC Beitrittserklärung from the Benutzerverwaltung, shows what (~2207 tok)
 - `MyMemberView.swift` — / Self-service editing of a member's own Grazer VSC roster entry — reachable (~2909 tok)
 
@@ -322,6 +322,7 @@
 - `CatalogService.swift` — Online edits of sports/event_types (insert, rename RPC, active, reorder) + refresh (~800 tok)
 - `CatalogService.swift` — / Edits the club's sport and event-type lists directly on the server (an (~894 tok)
 - `MemberChangeRequestService.swift` — / Self-service roster edits awaiting admin review — architecture-review.md (~543 tok)
+- `MemberService.swift` — / Roster edits — one of audit.md's two explicitly-prioritized areas for (~863 tok)
 - `SportEventService.swift` — / Plain events (not trainings or tournaments, which have their own services). (~303 tok)
 - `TournamentInvitationService.swift` — documents(for:in:) oldest first, add(to:…), save, delete (push to Supabase) (~571 tok)
 
@@ -333,6 +334,7 @@
 - `SearchQuery.swift` — / How list searches match: ignoring case and accents ("muller" finds (~140 tok)
 - `Thumbnail.swift` — / Small display copies of stored photos. ImageIO reads only as much of the (~270 tok)
 - `ThumbnailImage.swift` — / Shows a stored photo as a thumbnail sized for its frame. The photo data is (~369 tok)
+- `ExportShareButton.swift` — toolbar ShareLink for a prepared file; dimmed "nicht möglich" button + logged error on failure; `prepare(_:_:)` (~400 tok)
 
 ## BlindensportGraz/Supabase/
 
@@ -361,7 +363,7 @@
 ## BlindensportGraz/Sync/Supabase/
 
 - `SupabaseRows.swift` — One row type per Supabase table (migration 20261013000001_club_data). (~5086 tok)
-- `SupabaseSync.swift` — / Keeps the local SwiftData cache in sync with the club data in Supabase (~6880 tok)
+- `SupabaseSync.swift` — / Keeps the local SwiftData cache in sync with the club data in Supabase (~9362 tok)
 - `SupabaseSync+Models.swift` — Push and pull per table. Pulls fetch rows changed since the table's cursor; (~9626 tok)
 
 ## BlindensportGrazShareExtension/
@@ -385,7 +387,9 @@
 - `SearchQueryTests.swift` — Class: SearchQueryTests (~271 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
 - `SupabaseSyncPullTests.swift` — Struct: Row (~841 tok)
-- `SupabaseSyncRetryTests.swift` — Struct: Offline (~326 tok)
+- `SupabaseSyncPagingTests.swift` — keyset paging of fetchChanged against a fake table (edit mid-pull, same timestamps) (~1300 tok)
+- `ExportShareButtonTests.swift` — ExportShareButton.prepare keeps errors/files (~250 tok)
+- `SupabaseSyncRetryTests.swift` — Struct: Offline (~911 tok)
 - `SupabaseSyncUploadTests.swift` — Class: SupabaseSyncUploadTests (~1221 tok)
 - `ThumbnailTests.swift` — Class: ThumbnailTests (~471 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)

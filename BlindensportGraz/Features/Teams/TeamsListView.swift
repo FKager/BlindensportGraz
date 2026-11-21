@@ -14,7 +14,7 @@ struct TeamsListView: View {
     // Eager-generation + ShareLink/.fileImporter, not a custom
     // generate-on-tap-then-sheet flow — see MembersListView's identical
     // pattern and cerebrum.md's VoiceOver share-sheet-freeze history.
-    @State private var exportURL: URL?
+    @State private var exportFile: Result<URL, any Error>?
     @State private var showImporter = false
     @State private var importResultMessage: String?
 
@@ -55,10 +55,7 @@ struct TeamsListView: View {
                         .accessibilityLabel("Teams importieren")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if let exportURL {
-                        ShareLink(item: exportURL) { Image(systemName: "square.and.arrow.up") }
-                            .accessibilityLabel("Teams exportieren")
-                    }
+                    ExportShareButton(file: exportFile, label: "Teams exportieren")
                 }
             }
         }
@@ -66,7 +63,7 @@ struct TeamsListView: View {
             AddTeamView()
         }
         .task(id: teams.map(\.id)) {
-            exportURL = try? TeamImportExport.exportFile(teams: teams)
+            exportFile = ExportShareButton.prepare("Teams") { try TeamImportExport.exportFile(teams: teams) }
         }
         .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
             handleImport(result)
