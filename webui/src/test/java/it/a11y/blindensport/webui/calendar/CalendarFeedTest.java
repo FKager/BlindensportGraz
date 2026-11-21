@@ -79,4 +79,24 @@ class CalendarFeedTest {
                 + "DTSTART:20261020T160000Z\r\nDTEND:20261020T180000Z\r\nSUMMARY:Training\r\nLOCATION:Halle\r\n"
                 + "END:VEVENT\r\nEND:VCALENDAR\r\n", CalendarFeed.render(List.of(e), now));
     }
+
+    @Test
+    void longLinesAreFoldedAtSeventyFiveOctetsWithoutSplittingCharacters() {
+        String title = "Österreichische Meisterschaft im Torball für Blinde und Sehbehinderte in Graz – Finale";
+        var e = new CalendarFeed.EventFields("ABC", title, "Halle", Instant.parse("2026-10-20T16:00:00Z"),
+                Instant.parse("2026-10-20T18:00:00Z"), List.of());
+
+        String ics = CalendarFeed.render(List.of(e), Instant.parse("2026-10-17T08:00:00Z"));
+
+        for (String line : ics.split("\r\n")) {
+            assertTrue(line.getBytes(java.nio.charset.StandardCharsets.UTF_8).length <= 75, line);
+        }
+        // Unfolding (drop CRLF + space) gives the original line back.
+        assertTrue(ics.replace("\r\n ", "").contains("SUMMARY:" + title + "\r\n"));
+    }
+
+    @Test
+    void carriageReturnsInTextBecomeEscapedLineBreaks() {
+        assertEquals("a\\nb\\nc", CalendarFeed.escape("a\r\nb\rc"));
+    }
 }

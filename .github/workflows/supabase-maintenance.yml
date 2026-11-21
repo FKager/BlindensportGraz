@@ -70,7 +70,7 @@ jobs:
             echo "run=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@1dedf2c611547ede7232d26866dd3c56ab903bbb # v1.7.3
         if: steps.day.outputs.run == 'true'
         with:
           version: 2.120.0
@@ -92,7 +92,7 @@ jobs:
           shred -u backup/*.sql
           echo "STAMP=$stamp" >> "$GITHUB_ENV"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         if: steps.day.outputs.run == 'true'
         with:
           name: supabase-prod-${{ env.STAMP }}

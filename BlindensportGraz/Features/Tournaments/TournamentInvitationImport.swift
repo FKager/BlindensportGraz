@@ -39,9 +39,12 @@ nonisolated enum TournamentInvitationError: LocalizedError {
     case couldNotReadFile
     case passwordProtected
     case emptyDocument
+    case fileTooLarge
 
     var errorDescription: String? {
         switch self {
+        case .fileTooLarge:
+            return "Die Datei ist zu groß zum Einlesen (höchstens 50 MB)."
         case .unsupportedFileType:
             return "Dieser Dateityp wird nicht unterstützt. Bitte Text, Word (.doc oder .docx) oder PDF verwenden."
         case .couldNotReadFile:
@@ -91,6 +94,9 @@ nonisolated enum TournamentInvitationImporter {
     static func draft(fromFileAt url: URL) async throws -> TournamentDraft {
         let didAccess = url.startAccessingSecurityScopedResource()
         defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
+        if let size = try? url.resourceValues(forKeys: [.fileSizeKey]).fileSize, size > maxFileBytes {
+            throw TournamentInvitationError.fileTooLarge
+        }
         let text = try extractText(from: url)
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw TournamentInvitationError.emptyDocument
@@ -103,7 +109,14 @@ nonisolated enum TournamentInvitationImporter {
 
     // MARK: - Text extraction
 
-    static func extractText(from url: URL) throws -> String {
+    /// The largest invitation file read at all; files come from outside
+    /// (mail from other clubs), so nothing is read whole without a limit.
+    static let maxFileBytes = 50 * 1024 * 1024
+    /// The largest unpacked `word/document.xml`: a .docx is a zip, and a
+    /// small crafted one can unpack to gigabytes and crash the app.
+    static let maxDocumentXMLBytes = 20 * 1024 * 1024
+
+    static func extractText(from url: URL, maxDocumentXMLBytes: Int = maxDocumentXMLBytes) throws -> String {
         switch url.pathExtension.lowercased() {
         case "txt":
             if let text = try? String(contentsOf: url, encoding: .utf8) { return text }
@@ -112,7 +125,7 @@ nonisolated enum TournamentInvitationImporter {
         case "pdf":
             return try extractPDFText(from: url)
         case "docx":
-            return try extractDocxText(from: url)
+            return try extractDocxText(from: url, maxBytes: maxDocumentXMLBytes)
         case "doc":
             return try extractDocText(from: url)
         default:
@@ -144,13 +157,18 @@ nonisolated enum TournamentInvitationImporter {
         }
     }
 
-    private static func extractDocxText(from url: URL) throws -> String {
+    private static func extractDocxText(from url: URL, maxBytes: Int) throws -> String {
         guard let archive = try? Archive(url: url, accessMode: .read, pathEncoding: nil),
               let entry = archive["word/document.xml"] else {
             throw TournamentInvitationError.couldNotReadFile
         }
+        // The size in the zip directory can lie, so the unpacked bytes are counted too.
+        guard entry.uncompressedSize <= UInt64(maxBytes) else { throw TournamentInvitationError.fileTooLarge }
         var data = Data()
-        _ = try archive.extract(entry) { data.append($0) }
+        _ = try archive.extract(entry) { chunk in
+            guard data.count + chunk.count <= maxBytes else { throw TournamentInvitationError.fileTooLarge }
+            data.append(chunk)
+        }
         guard let xml = String(data: data, encoding: .utf8) else {
             throw TournamentInvitationError.couldNotReadFile
         }

@@ -12,9 +12,7 @@ import SwiftData
 /// when there's something the user should actually know about (offline, a
 /// sync that failed after all retries, or writes still queued). Never a
 /// full-screen blocker; a thin banner at the top that pushes content down
-/// via `.safeAreaInset`, matching this app's existing toast-notification
-/// convention (see `BlindensportGrazApp`'s `showToast` NotificationCenter
-/// posts) rather than inventing a new one.
+/// via `.safeAreaInset`.
 struct SyncStatusBanner: View {
     private let syncState = SyncState.shared
     private let networkMonitor = NetworkMonitor.shared

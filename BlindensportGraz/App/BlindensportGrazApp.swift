@@ -16,33 +16,6 @@ struct BlindensportGrazApp: App {
         let schema = AppModelSchema.schema
         let config = AppModelSchema.configuration
 
-        // Phase 7 of the audit.md supergoal run (2026-08-22) changed
-        // User.role/TeamMembership.role/SportEvent.sport from plain String
-        // to closed AppRole/MembershipRole/Sport enums. Confirmed live on a
-        // real device (crash logs pulled via `xcrun devicectl device info
-        // files --domain-type systemCrashLogs`): SwiftData's lightweight
-        // migration does NOT reliably re-read an old plain-String-stored
-        // `role` value as the new enum type — every launch crashed with
-        // `swift_dynamicCastFailure` inside `User.role.getter`, called from
-        // `RootView.resolveAccount()`, for any device carrying data written
-        // before this change. This can't be caught with do/catch below (a
-        // property-getter dynamic-cast failure is a hard SwiftData-internal
-        // fatalError, not a throwable Swift error, so it never reaches the
-        // `catch` block's own reset logic) — it has to be prevented before
-        // `ModelContainer` ever opens the old store. One-time,
-        // version-gated wipe, reusing the exact same "reset and resync from
-        // the server" mechanism the `catch` block below already relies on for
-        // a different migration failure mode (the SportEvent inheritance
-        // refactor) — the server is already this app's established source of
-        // truth, so this is safe, just a client-side no-op on any device
-        // that never had pre-migration data (fresh installs, or a device
-        // that already ran this exact check once).
-        let roleEnumMigrationKey = "didWipeForRoleEnumMigration_2026_08_22"
-        if !UserDefaults.standard.bool(forKey: roleEnumMigrationKey) {
-            BlindensportGrazApp.deleteLocalStore(for: config)
-            UserDefaults.standard.set(true, forKey: roleEnumMigrationKey)
-        }
-
         do {
             modelContainer = try ModelContainer(for: schema, configurations: [config])
             // Give the sync layer a container handle for its PendingPush
@@ -107,50 +80,7 @@ struct BlindensportGrazApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
-                }
+        }
         .modelContainer(modelContainer)
-           }
-       }
-
-// MARK: - Notification Handling for Push Notifications (Toast)
-extension BlindensportGrazApp {
-   func handleEventCreated(_ notification: Notification) {
-       guard let userInfo = notification.userInfo else { return }
-       showNotification(
-           title: "Neues Event erstellt!",
-           body: "Ein neues Sportevent wurde hinzugefügt",
-           subtitle: userInfo["eventTitle"] as? String ?? "Sport"
-         )
-     }
-
-    func handleTournamentCreated(_ notification: Notification) {
-       guard let userInfo = notification.userInfo else { return }
-       showNotification(
-           title: "Neues Turnier erstellt!",
-           body: "Ein neues Turnier wurde hinzugefügt",
-           subtitle: userInfo["tournamentName"] as? String ?? "Sport"
-         )
-     }
-
-    func handleTrainingCreated(_ notification: Notification) {
-       guard let userInfo = notification.userInfo else { return }
-       showNotification(
-           title: "Neues Training erstellt!",
-           body: "Ein neues Training wurde hinzugefügt",
-           subtitle: userInfo["trainingTitle"] as? String ?? "Sport"
-         )
-     }
-
-    private func showNotification(title: String, body: String, subtitle: String?) {
-        // Post notification that can be observed by all views
-       NotificationCenter.default.post(
-           name: NSNotification.Name("showToast"),
-           object: nil,
-           userInfo: [
-                 "title": title,
-                 "body": body,
-                 "subtitle": subtitle ?? ""
-              ]
-         )
-     }
+    }
 }

@@ -12,6 +12,7 @@
 // APNS_PRIVATE_KEY (contents of the .p8), APNS_TOPIC (bundle id).
 import { createClient } from "npm:@supabase/supabase-js@2.45.4";
 import { importPKCS8, SignJWT } from "npm:jose@5.9.6";
+import { timingSafeEqual } from "jsr:@std/crypto@1.0.5/timing-safe-equal";
 
 type Change = "created" | "updated" | "cancelled";
 
@@ -63,6 +64,14 @@ function alertFor(p: Payload) {
   };
 }
 
+/** Compares the shared secret in constant time, so its bytes can't be guessed by timing. */
+function sameSecret(given: string, expected: string): boolean {
+  const encoder = new TextEncoder();
+  const a = encoder.encode(given);
+  const b = encoder.encode(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 /** Logs the database error (function logs) and returns it to the caller —
  * the trigger's pg_net call stores the response in net._http_response. */
 function failed(code: string, step: string, error: { message?: string; code?: string }) {
@@ -73,7 +82,7 @@ function failed(code: string, step: string, error: { message?: string; code?: st
 Deno.serve(async (req) => {
   if (req.method !== "POST") return json(405, { error: "method not allowed" });
   const secret = Deno.env.get("NOTIFY_SCHEDULE_SECRET");
-  if (!secret || req.headers.get("X-Notify-Secret") !== secret) {
+  if (!secret || !sameSecret(req.headers.get("X-Notify-Secret") ?? "", secret)) {
     return json(401, { error: "unauthorized" });
   }
 
@@ -114,7 +123,9 @@ Deno.serve(async (req) => {
   const stale: string[] = [];
   let sent = 0;
 
-  await Promise.all(tokens.map(async ({ token, apns_env }) => {
+  // allSettled: one device that can't be reached (network error) must not
+  // stop the others, or skip the stale-token cleanup below.
+  const results = await Promise.allSettled(tokens.map(async ({ token, apns_env }) => {
     const res = await fetch(`${apnsHosts[apns_env]}/3/device/${token}`, {
       method: "POST",
       headers: {
@@ -134,6 +145,9 @@ Deno.serve(async (req) => {
     console.error(`APNs ${res.status} ${reason} for ${apns_env} token …${token.slice(-6)}`);
     if (res.status === 410 || reason === "BadDeviceToken" || reason === "Unregistered") stale.push(token);
   }));
+  for (const r of results) {
+    if (r.status === "rejected") console.error(`APNs request failed: ${r.reason}`);
+  }
 
   if (stale.length > 0) await admin.from("device_tokens").delete().in("token", stale);
   return json(200, { sent, removed: stale.length });

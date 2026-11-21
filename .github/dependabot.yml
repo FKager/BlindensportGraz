@@ -1,0 +1,29 @@
+# Proposes updates as pull requests. Actions and Docker base images are
+# pinned to exact commits/digests; Dependabot keeps those pins (and the
+# version comments next to them) current. Weekly, grouped, so it stays a
+# handful of PRs.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: docker
+    directory: /webui
+    schedule:
+      interval: weekly
+    groups:
+      docker:
+        patterns: ["*"]
+
+  - package-ecosystem: maven
+    directory: /webui
+    schedule:
+      interval: weekly
+    groups:
+      maven:
+        patterns: ["*"]

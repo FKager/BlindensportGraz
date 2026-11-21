@@ -82,8 +82,29 @@ public final class XlsxPatch {
         return xml.substring(0, cell.start()) + build.apply(styleAttr) + xml.substring(cell.end());
     }
 
+    /**
+     * Escapes {@code &}, {@code <}, {@code >} and drops characters XML 1.0
+     * doesn't allow at all (control characters other than tab, line feed and
+     * carriage return, e.g. a vertical tab pasted from Word): Excel refuses a
+     * file containing one, so one odd character in a name would break the report.
+     */
     public static String escape(String value) {
-        return value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+        StringBuilder result = new StringBuilder(value.length());
+        value.codePoints().filter(XlsxPatch::isXmlChar).forEach(c -> {
+            switch (c) {
+                case '&' -> result.append("&amp;");
+                case '<' -> result.append("&lt;");
+                case '>' -> result.append("&gt;");
+                default -> result.appendCodePoint(c);
+            }
+        });
+        return result.toString();
+    }
+
+    /** XML 1.0 {@code Char}; lone surrogates are dropped too. */
+    private static boolean isXmlChar(int c) {
+        return c == 0x9 || c == 0xA || c == 0xD || (c >= 0x20 && c <= 0xD7FF)
+                || (c >= 0xE000 && c <= 0xFFFD) || (c >= 0x10000 && c <= 0x10FFFF);
     }
 
     private static String replaceBlankCell(String xml, String ref, UnaryOperator<String> build) {

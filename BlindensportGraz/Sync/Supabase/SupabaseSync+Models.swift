@@ -17,9 +17,9 @@ extension SupabaseSync {
         let rows: [Row] = try await fetchChanged(table, since: since, columns: columns)
         for row in rowsToApply(rows, id: rowID) { apply(row) }
         if since == nil, pruneMissing {
-            let keep = Set(rows.map(rowID))
+            let keep = Set(rows.map(rowID)).union(pendingIDs())
             for object in (try? modelContext.fetch(FetchDescriptor<Model>())) ?? []
-            where !keep.contains(modelID(object)) && !hasPendingPush(modelID(object)) {
+            where !keep.contains(modelID(object)) {
                 modelContext.delete(object)
             }
         }
@@ -162,9 +162,9 @@ extension SupabaseSync {
             member.guardianEmail = row.guardianEmail
         }
         if since == nil {
-            let readable = Set(rows.map(\.id))
+            let keep = Set(rows.map(\.id)).union(pendingIDs())
             for member in (try? modelContext.fetch(FetchDescriptor<Member>())) ?? []
-            where !readable.contains(member.id) && !hasPendingPush(member.id) {
+            where !keep.contains(member.id) {
                 member.street = ""; member.zip = ""; member.city = ""; member.country = ""
                 member.email = ""; member.phone = ""; member.notes = ""; member.gender = ""; member.title = ""
                 member.membershipType = ""; member.citizenship = ""; member.mobile = ""
@@ -669,9 +669,9 @@ extension SupabaseSync {
             }
         }
         if since == nil {
-            let keep = Set(rows.map(rowID))
+            let keep = Set(rows.map(rowID)).union(pendingIDs())
             for object in (try? modelContext.fetch(FetchDescriptor<Model>())) ?? []
-            where !keep.contains(modelID(object)) && !hasPendingPush(modelID(object)) {
+            where !keep.contains(modelID(object)) {
                 modelContext.delete(object)
             }
         }

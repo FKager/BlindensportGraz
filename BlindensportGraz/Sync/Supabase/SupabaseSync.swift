@@ -161,7 +161,16 @@ final class SupabaseSync {
 
     /// A row as the JSON PostgREST receives (and the outbox stores).
     static func payload<Row: Encodable>(_ row: Row) -> Data {
-        (try? PostgrestClient.Configuration.jsonEncoder.encode(row)) ?? Data()
+        do {
+            return try PostgrestClient.Configuration.jsonEncoder.encode(row)
+        } catch {
+            // Can't happen for the *DBRow types; if it does, the empty
+            // payload is dropped by drainOutbox instead of sent.
+            Logger(subsystem: "it.a11y.BlindensportGraz", category: "SupabaseSync")
+                .fault("Encoding \(String(describing: Row.self), privacy: .public) failed: \(String(describing: error), privacy: .public)")
+            assertionFailure("Encoding \(Row.self) failed: \(error)")
+            return Data()
+        }
     }
 
     // MARK: - Files (Storage + metadata row)
@@ -356,7 +365,16 @@ final class SupabaseSync {
     /// what the server sent. Once that edit reaches the server its
     /// `updated_at` moves past the cursor, so the next pull brings it back.
     func rowsToApply<Row>(_ rows: [Row], id: (Row) -> UUID) -> [Row] {
-        rows.filter { !hasPendingPush(id($0)) }
+        let pending = pendingIDs()
+        return rows.filter { !pending.contains(id($0)) }
+    }
+
+    /// Every record with an unconfirmed local write, read once — a pull or
+    /// prune of thousands of rows would otherwise ask the outbox per row.
+    func pendingIDs() -> Set<UUID> {
+        guard let outboxContext else { return [] }
+        let rows = (try? outboxContext.fetch(FetchDescriptor<PendingPush>())) ?? []
+        return Set(rows.compactMap { UUID(uuidString: $0.recordName) })
     }
 
     // MARK: - Fetch helpers
@@ -442,10 +460,11 @@ final class SupabaseSync {
     }
 
     nonisolated static func iso(_ date: Date) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return formatter.string(from: date)
+        date.formatted(isoStyle)
     }
+
+    /// `2026-11-21T09:00:00.123Z`; a value type, so one shared copy is safe.
+    private nonisolated static let isoStyle = Date.ISO8601FormatStyle(includingFractionalSeconds: true)
 
     // MARK: - Cursors
 

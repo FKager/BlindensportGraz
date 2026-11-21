@@ -55,11 +55,42 @@ public final class CalendarFeed {
                 "LOCATION:" + escape(e.location()),
                 "END:VEVENT")));
         lines.add("END:VCALENDAR");
-        return String.join("\r\n", lines) + "\r\n";
+        return String.join("\r\n", lines.stream().map(CalendarFeed::fold).toList()) + "\r\n";
+    }
+
+    /** Octets per line, RFC 5545 §3.1; longer lines continue after CRLF + space. */
+    static final int MAX_LINE_OCTETS = 75;
+
+    /**
+     * Folds a content line into pieces of at most {@link #MAX_LINE_OCTETS}
+     * UTF-8 bytes, never inside a character. Short lines stay as they are, so
+     * the usual feed is unchanged byte for byte.
+     */
+    static String fold(String line) {
+        if (line.getBytes(java.nio.charset.StandardCharsets.UTF_8).length <= MAX_LINE_OCTETS) {
+            return line;
+        }
+        StringBuilder out = new StringBuilder();
+        int octets = 0;
+        int limit = MAX_LINE_OCTETS;
+        for (int i = 0; i < line.length(); ) {
+            int cp = line.codePointAt(i);
+            int size = new String(Character.toChars(cp)).getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+            if (octets + size > limit) {
+                out.append("\r\n ");
+                octets = 0;
+                limit = MAX_LINE_OCTETS - 1; // the leading space counts
+            }
+            out.appendCodePoint(cp);
+            octets += size;
+            i += Character.charCount(cp);
+        }
+        return out.toString();
     }
 
     /** RFC 5545 §3.3.11 text escaping — same four characters as the app. */
     static String escape(String text) {
-        return text.replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n");
+        return text.replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;")
+                .replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\\n");
     }
 }

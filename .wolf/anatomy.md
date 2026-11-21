@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-21T07:52:37.268Z
-> Files: 341 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-21T09:14:17.677Z
+> Files: 347 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -151,7 +151,7 @@
 
 ## .github/workflows/
 
-- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~5313 tok)
+- `ios-build-deploy.yml` — CI: iOS Build and Deploy (~6216 tok)
 - `supabase-maintenance.yml` — Supabase maintenance for the Free-plan projects (staging + production): (~1133 tok)
 
 ## .supergoal/implement-the-fixes-and-enhancements-fro-a5zzf8/
@@ -306,7 +306,7 @@
 - `Member.swift` — / Roster administered by admins under "Benutzerverwaltung" (user management). (~3238 tok)
 - `MemberChangeRequest.swift` — / A club member's own edit to their roster ("Vereinsdaten") data, awaiting (~1630 tok)
 - `PlaceFormat.swift` — appendingForeignCountry: adds ", <country>" unless empty or Österreich (KostZ Ort, PRAE Wohnanschrift, Teilnehmerliste Ort) (~200 tok)
-- `TournamentInvitation.swift` — One tournament document ("Dokumente": invitation, schedule, results); many per tournament; PDF/Word/Excel/TXT/images ≤15 MB (contentType, supportedContentTypes, isSupported, maxFileSize); approved read, events.manage write; table tournament_invitations + bucket tournament-invitations (~900 tok)
+- `TournamentInvitation.swift` — / One document of a tournament ("Dokumente": invitation, schedule, (~976 tok)
 
 ## BlindensportGraz/Resources/
 
@@ -331,10 +331,11 @@
 - `AccessClaims.swift` — / Fine-grained permissions, mirroring the `app_permission` enum in (~739 tok)
 - `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2448 tok)
 - `Binding+IsPresent.swift` (~138 tok)
+- `XMLText.swift` — XML text escape for generated .xlsx/.docx; drops XML-forbidden control chars (~300 tok)
+- `ExportShareButton.swift` — toolbar ShareLink for a prepared file; dimmed "nicht möglich" button + logged error on failure; `prepare(_:_:)` (~400 tok)
 - `SearchQuery.swift` — / How list searches match: ignoring case and accents ("muller" finds (~140 tok)
 - `Thumbnail.swift` — / Small display copies of stored photos. ImageIO reads only as much of the (~270 tok)
 - `ThumbnailImage.swift` — / Shows a stored photo as a thumbnail sized for its frame. The photo data is (~369 tok)
-- `ExportShareButton.swift` — toolbar ShareLink for a prepared file; dimmed "nicht möglich" button + logged error on failure; `prepare(_:_:)` (~400 tok)
 
 ## BlindensportGraz/Supabase/
 
@@ -377,6 +378,7 @@
 - `CatalogTests.swift` — Picker options, typeName, EventDBRow event_type encode/decode (~1100 tok)
 - `CatalogTests.swift` — Class: CatalogTests (~1378 tok)
 - `EventListAccessTests.swift` — Class: EventListAccessTests (~1218 tok)
+- `ExportShareButtonTests.swift` — ExportShareButton.prepare keeps errors/files (~250 tok)
 - `GVSCApplicationDocumentTests.swift` — fills the real template; checks XML well-formed, field values, samples cleared, JA/NEIN marks, guardian, file name (~1500 tok)
 - `GVSCApplicationDocumentTests.swift` — Class: GVSCApplicationDocumentTests (~1950 tok)
 - `InflectionTests.swift` — Class: InflectionTests (~276 tok)
@@ -386,12 +388,12 @@
 - `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
 - `SearchQueryTests.swift` — Class: SearchQueryTests (~271 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
-- `SupabaseSyncPullTests.swift` — Struct: Row (~841 tok)
 - `SupabaseSyncPagingTests.swift` — keyset paging of fetchChanged against a fake table (edit mid-pull, same timestamps) (~1300 tok)
-- `ExportShareButtonTests.swift` — ExportShareButton.prepare keeps errors/files (~250 tok)
+- `SupabaseSyncPullTests.swift` — Struct: Row (~841 tok)
 - `SupabaseSyncRetryTests.swift` — Struct: Offline (~911 tok)
 - `SupabaseSyncUploadTests.swift` — Class: SupabaseSyncUploadTests (~1221 tok)
 - `ThumbnailTests.swift` — Class: ThumbnailTests (~471 tok)
+- `TournamentInvitationLimitsTests.swift` — Class: TournamentInvitationLimitsTests (~834 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)
 
 ## BlindensportGrazWidgets/
@@ -565,8 +567,8 @@
 - `AdminSession.java` — One signed-in admin. Holds their Supabase tokens server-side (never sent (~942 tok)
 - `AdminSessions.java` — Sign-in and the in-memory session table shared by the REST API (token in (~1525 tok)
 - `LoginAttemptLimiter.java` — In-memory sliding-window limiter for failed sign-ins (REST and Vaadin (~567 tok)
-- `SecurityHeaders.java` — Vert.x filter adding HSTS, CSP (frame-ancestors etc.), nosniff, Referrer-Policy to every response (~350 tok)
 - `Permission.java` — {@code public.app_permission} values (supabase/migrations/20261008000001_rbac.sql). (~354 tok)
+- `SecurityHeaders.java` — Vert.x filter adding HSTS, CSP (frame-ancestors etc.), nosniff, Referrer-Policy to every response (~350 tok)
 - `SecurityHeaders.java` — Security headers on every response, whichever proxy is in front (Traefik (~480 tok)
 - `SessionExpiredException.java` — The admin's session ended: timed out, signed out, or Supabase no longer accepts it. (~85 tok)
 - `SignInException.java` — A refused sign-in, with the HTTP status the REST API answers and a German message. (~106 tok)
@@ -584,7 +586,13 @@
 
 ## webui/src/main/java/it/a11y/blindensport/webui/mcp/
 
-- `ClubTools.java` — The 19 MCP tools incl. list/get/upload/delete_tournament_document (only delete tool, destructiveHint); protected data never returned, member results are an allow-list (~10500 tok)
+- `MemberTools.java` — MCP tools: whoami, list/get/create/update_member, list/create_team, add_team_member (~2500 tok)
+- `EventTools.java` — MCP tools: list_sports_and_event_types, list/get/create/update_event, set_attendance (~3200 tok)
+- `ReportTools.java` — MCP tools: preview_prae, create_prae_forms, create_tournament_reports (one-time McpFiles links) (~1600 tok)
+- `TournamentDocumentTools.java` — MCP tools: list/get/upload/delete_tournament_document (only delete tool, destructiveHint) (~1400 tok)
+- `McpToolSupport.java` — shared MCP argument parsing + result shapes; member results are an allow-list, protected data never returned (~3500 tok)
+- `McpToolRunner.java` — the one way into a tool: signed-in McpUser, German errors, data-free log line (~350 tok)
+- `AttendanceChange.java` — set_attendance argument record (~120 tok)
 - `McpAuthFilter.java` — Vert.x filter: /mcp needs a personal token (~500 tok)
 - `McpConfig.java` — webui.mcp.public-url (~100 tok)
 - `McpIdentity.java` — Token to McpUser via McpTokens + Access.load, cached 1 min (~600 tok)
@@ -677,9 +685,9 @@
 ## webui/src/test/java/it/a11y/blindensport/webui/api/
 
 - `ApiTest.java` — The REST contract of the Swift server (session, CSRF, members CRUD, (~4269 tok)
-- `SecurityHeadersTest.java` — security headers on Vaadin, API, calendar, MCP and 404 responses (~300 tok)
 - `ReportsApiTest.java` — /api/reports against a mocked Supabase: permissions, JSON and the files. (~3416 tok)
 - `ReportsFixture.java` — Shared Supabase stubs for invoicing tests: admin/kassa/coach accounts, a Prague tournament, a March training (~1500 tok)
+- `SecurityHeadersTest.java` — security headers on Vaadin, API, calendar, MCP and 404 responses (~300 tok)
 - `SecurityHeadersTest.java` — Every kind of response carries the security headers from (~374 tok)
 - `SupabaseMock.java` — A WireMock stand-in for the Supabase project (GoTrue + PostgREST) during @QuarkusTest. (~213 tok)
 
@@ -708,6 +716,10 @@
 - `MemberMappingTest.java` — Ports of RootCLI's MemberStoreTests / MemberPrivateTests (row mapping, no network). (~1474 tok)
 - `ValidationTest.java` — Class: ValidationTest (~251 tok)
 
+## webui/src/test/java/it/a11y/blindensport/webui/prae/
+
+- `PraeFixtureTest.java` — The PRAE scenarios in Shared/ReportFixtures/prae.json, which the app's (~1681 tok)
+
 ## webui/src/test/java/it/a11y/blindensport/webui/reports/
 
 - `ReportsTest.java` — KostZ, TeilnehmerInnenliste and the Sammelabrechnung — ports of the app's KostZCalculationTests and (~4233 tok)
@@ -722,3 +734,22 @@
 - `Storage.java` — Supabase Storage client (upload x-upsert, download, remove by prefixes) with the Postgrest identity (~600 tok)
 - `TournamentDocumentsTest.java` — Unit tests: content types, file-name cleaning, docx/pdf text (~700 tok)
 - `TrainingsfrequenzlisteViewTest.java` — Trainingsfrequenzliste page via Karibu against ReportsFixture (~900 tok)
+
+## Shared/ReportFixtures/
+
+- `prae.json` — PRAE scenarios read by both PraeFixtureTests.swift and PraeFixtureTest.java (~1400 tok)
+
+## BlindensportGrazTests/ (added 2026-11-21)
+
+- `TournamentInvitationLimitsTests.swift` — docx zip-bomb limit, attachmentProblem (~700 tok)
+- `XMLTextTests.swift` — XML escape incl. forbidden control chars (~150 tok)
+- `PraeFixtureTests.swift` — runs Shared/ReportFixtures/prae.json against the Swift calculator (~1300 tok)
+
+## webui tests (added 2026-11-21)
+
+- `PraeFixtureTest.java` — runs Shared/ReportFixtures/prae.json against the Java calculator (~1200 tok)
+- `XlsxPatchEscapeTest.java` — XML escape incl. forbidden control chars (~150 tok)
+
+## .github/
+
+- `dependabot.yml` — weekly grouped updates for actions, webui Docker images and Maven (~150 tok)
