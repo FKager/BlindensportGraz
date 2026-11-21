@@ -63,10 +63,21 @@ Side effect worth knowing: event changes made in the web UI trigger the
 
 ## REST API
 
-All `/api/*` calls need a signed-in session cookie (`bsg_admin_session`,
-HttpOnly, Secure, SameSite=Strict). Changing requests must also send
-`X-Requested-With: blindensport-admin` (anti-CSRF). Errors are
-`{"error": true, "reason": "…"}`.
+All `/api/*` calls need one of:
+
+- **A personal token** (`Authorization: Bearer bsg_mcp_…`), the same tokens
+  as for MCP, created under **Persönliche Tokens**. Used by the `bsg` command
+  line tool. No anti-CSRF header needed. A token keeps the token page's
+  promise here too: protected member data is never returned (as if
+  `members.private.read` were missing) and `DELETE /api/members/{id}` is
+  refused. Writing protected data in an import still works with
+  `members.private.write`.
+- **The session cookie** of `POST /api/session` (`bsg_admin_session`,
+  HttpOnly, Secure, SameSite=Strict). Changing requests must also send
+  `X-Requested-With: blindensport-admin` (anti-CSRF).
+
+Errors are `{"error": true, "reason": "…"}`. The API is described at
+`/q/openapi` (`?format=json`).
 
 | Method | Path | Body | Notes |
 |---|---|---|---|
@@ -77,10 +88,13 @@ HttpOnly, Secure, SameSite=Strict). Changing requests must also send
 | GET | `/api/members/{id}` | — | 404 if unknown |
 | POST | `/api/members` | member fields, `firstName`/`lastName` required | 201 with the new `id` |
 | PUT | `/api/members/{id}` | member fields | Omitted gender/title/sportId/defaultFunction/memberOfGVSC/joinedAt/protected fields keep their value; address/contact/number/notes are replaced; explicit `null` clears `birthDate` / `lastMedicalExamination` |
-| DELETE | `/api/members/{id}` | — | 204, also deletes the protected row |
-| POST | `/api/members/import` | JSON array (app export / `members.example.json` shape, `plz` alias for `zip`) | `{succeeded, failed, total, messages}`; bad rows are skipped one by one |
+| DELETE | `/api/members/{id}` | — | 204, also deletes the protected row; not with a token |
+| POST | `/api/members/import[?mode=fill]` | JSON array (app export shape, `plz` alias for `zip`) | `{succeeded, failed, total, messages}`; bad rows are skipped one by one. `mode=fill` only fills blank fields of entries matched by first + last name, never overwrites |
+| GET | `/api/accounts` | — | App accounts with role, approval, blocked (users.approve or roles.assign) |
+| PUT | `/api/accounts/{id or e-mail}/role` | `{"role": "coach"}` (`null` = pending) | roles.assign; the database refuses self-changes and protects the last root |
 
 ```bash
+curl -H "Authorization: Bearer $BSG_TOKEN" https://<DOMAIN>/api/accounts
 curl -c cookies.txt -H "Content-Type: application/json" -H "X-Requested-With: blindensport-admin" \
   -d '{"email":"admin@example.org","password":"…"}' https://<DOMAIN>/api/session
 curl -b cookies.txt -X POST https://<DOMAIN>/api/members/import \
@@ -139,7 +153,7 @@ the URL from `ServerConfig.clubMembersAPIHost`
 
 `https://bs.a11y.it/mcp` lets MCP clients (Claude Code, for example) work with the club's data: members, teams, trainings, tournaments, attendance and PRAE forms.
 
-Connect with a personal token. Create it in the web UI under **KI-Zugang**, confirm your password, and copy it: it is shown only once. Then, for Claude Code:
+Connect with a personal token. Create it in the web UI under **Persönliche Tokens**, confirm your password, and copy it: it is shown only once. Then, for Claude Code:
 
 ```
 claude mcp add --transport http blindensport https://bs.a11y.it/mcp --header "Authorization: Bearer <token>"

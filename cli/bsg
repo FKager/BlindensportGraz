@@ -1,0 +1,10 @@
+#!/bin/sh
+# Starts bsg from this folder: ./bsg whoami. Build once with ./mvnw package
+# (Java 21). See README.md.
+dir=$(cd "$(dirname "$0")" && pwd)
+jar="$dir/target/bsg.jar"
+if [ ! -f "$jar" ]; then
+  echo "bsg ist noch nicht gebaut: cd $dir && ./mvnw -q package" >&2
+  exit 2
+fi
+exec java -jar "$jar" "$@"

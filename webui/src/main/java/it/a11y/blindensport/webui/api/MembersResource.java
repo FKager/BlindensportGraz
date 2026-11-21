@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.a11y.blindensport.webui.auth.AdminSession;
 import it.a11y.blindensport.webui.auth.Permission;
 import it.a11y.blindensport.webui.members.MemberBulkImport;
+import it.a11y.blindensport.webui.members.MemberFillUpdate;
 import it.a11y.blindensport.webui.members.MemberBulkInput;
 import it.a11y.blindensport.webui.members.MemberInput;
 import it.a11y.blindensport.webui.members.MemberJson;
@@ -120,6 +121,10 @@ public class MembersResource {
     public Response delete(@PathParam("id") String id, @QueryParam("confirm") String confirm,
                            @Context ContainerRequestContext request) {
         AdminSession admin = CurrentAdmin.require(request, Permission.MEMBERS_MANAGE);
+        if (admin.viaToken()) {
+            // The token page promises that a token deletes nothing.
+            throw new ApiException(403, "Mit einem persönlichen Token kann nichts gelöscht werden. Bitte in der App oder der Web-Oberfläche löschen.");
+        }
         MemberStore store = new MemberStore(admin.db());
         if (store.get(id, false).isEmpty()) {
             throw ApiException.notFound(id);
@@ -129,13 +134,16 @@ public class MembersResource {
     }
 
     /**
-     * Bulk create-or-update from a JSON array — the same shape as the app's
-     * export and {@code rootcli import-members}.
+     * Bulk import from a JSON array — the same shape as the app's export.
+     * {@code mode=replace} (default) creates or fully overwrites entries;
+     * {@code mode=fill} only fills blank fields of entries matched by name
+     * ({@link MemberFillUpdate}). Used by {@code bsg members import [--fill]}.
      */
     @POST
     @Path("import")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Map<String, Object> importMembers(String body, @Context ContainerRequestContext request) {
+    public Map<String, Object> importMembers(String body, @QueryParam("mode") String mode,
+                                             @Context ContainerRequestContext request) {
         AdminSession admin = CurrentAdmin.require(request, Permission.MEMBERS_MANAGE);
         List<MemberBulkInput> inputs;
         try {
@@ -150,7 +158,13 @@ public class MembersResource {
         if (inputs.stream().anyMatch(i -> !i.privateData().isEmpty())) {
             requirePermission(admin, Permission.MEMBERS_PRIVATE_WRITE);
         }
-        MemberBulkImport.Result result = MemberBulkImport.run(inputs, new MemberStore(admin.db()), admin.userId());
+        boolean fill = "fill".equals(mode);
+        if (mode != null && !fill && !"replace".equals(mode)) {
+            throw new ApiException(400, "mode must be replace or fill.");
+        }
+        MemberStore store = new MemberStore(admin.db());
+        MemberBulkImport.Result result = fill ? MemberFillUpdate.run(inputs, store, admin.userId())
+                : MemberBulkImport.run(inputs, store, admin.userId());
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("succeeded", result.succeeded());
         response.put("failed", result.failed());

@@ -61,6 +61,11 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-health</artifactId>
         </dependency>
+        <!-- REST API description at /q/openapi (used by the bsg command line tool's docs). -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
+        </dependency>
         <!-- MCP server at /mcp (it.a11y.blindensport.webui.mcp) -->
         <dependency>
             <groupId>io.quarkiverse.mcp</groupId>
