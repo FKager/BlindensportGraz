@@ -1,13 +1,14 @@
-# Tests of the bsg command line tool (cli/, Java 21). The web UI is mocked
-# (WireMock); no secrets needed.
+# Tests of the bsg command line tool (cli/, Java 21) on Linux and Windows.
+# The web UI is mocked (WireMock); no secrets needed. On Windows the start
+# script bsg.bat is also run for real.
 name: bsg Tests
 
 on:
   push:
     branches: [main]
-    paths: ["cli/**", ".github/workflows/bsg-test.yml"]
+    paths: ["cli/**", ".gitattributes", ".github/workflows/bsg-test.yml"]
   pull_request:
-    paths: ["cli/**", ".github/workflows/bsg-test.yml"]
+    paths: ["cli/**", ".gitattributes", ".github/workflows/bsg-test.yml"]
   workflow_dispatch:
 
 permissions:
@@ -15,7 +16,11 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: cli
@@ -29,3 +34,20 @@ jobs:
           cache-dependency-path: cli/pom.xml
       - name: mvn package (tests + jar)
         run: mvn -B package
+      # bsg.bat as a person would run it: the version, then a missing token
+      # (exit code 2, German message with umlauts intact in the console).
+      - name: bsg.bat on Windows
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          call bsg.bat --version || exit /b 1
+          set BSG_TOKEN=
+          set USERPROFILE=%RUNNER_TEMP%\no-home
+          call bsg.bat whoami > out.txt 2>&1
+          set code=%ERRORLEVEL%
+          type out.txt
+          if not "%code%"=="2" (echo expected exit code 2, got %code% & exit /b 1)
+          findstr /c:"Kein Token gefunden" out.txt >nul || (echo message missing & exit /b 1)
+          findstr /c:"Oberfl" out.txt >nul || (echo message missing & exit /b 1)
+          findstr /c:"chmod" out.txt >nul && (echo Unix hint on Windows & exit /b 1)
+          findstr /c:"Benutzerordner" out.txt >nul || (echo Windows hint missing & exit /b 1)

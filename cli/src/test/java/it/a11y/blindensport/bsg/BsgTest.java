@@ -190,8 +190,11 @@ class BsgTest {
         assertTrue(err.toString().contains("Kein Token gefunden"), err.toString());
     }
 
+    /** Unix only: Windows has no such permission bits (a user's profile folder is private there). */
     @Test
     void theTokenFileMustBePrivate() throws IOException {
+        org.junit.jupiter.api.Assumptions.assumeTrue(
+                java.nio.file.FileSystems.getDefault().supportedFileAttributeViews().contains("posix"));
         Path file = home.resolve(".config/blindensport/token");
         Files.createDirectories(file.getParent());
         Files.writeString(file, TOKEN + "\n");
@@ -223,5 +226,32 @@ class BsgTest {
 
         assertEquals(0, run(Map.of("BSG_TOKEN", TOKEN, "BSG_URL", "https://elsewhere.invalid"),
                 "whoami", "--url", "http://localhost:" + server.port()));
+    }
+
+    /** On Windows (no POSIX permissions) a token file is simply read. */
+    @Test
+    void aTokenFileIsReadWherePermissionsCantBeChecked() throws IOException {
+        Path file = home.resolve(".config/blindensport/token");
+        Files.createDirectories(file.getParent());
+        Files.writeString(file, TOKEN + "\r\n");
+        if (java.nio.file.FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
+            Files.setPosixFilePermissions(file, PosixFilePermissions.fromString("rw-------"));
+        }
+        server.stubFor(get("/api/session").willReturn(okJson("{\"email\":\"r@example.org\",\"role\":\"root\",\"permissions\":[]}")));
+
+        assertEquals(0, run(Map.of("BSG_URL", "http://localhost:" + server.port()), "whoami"));
+        server.verify(getRequestedFor(urlEqualTo("/api/session")).withHeader("Authorization", equalTo("Bearer " + TOKEN)));
+    }
+
+    @Test
+    void theMissingTokenHintFitsTheSystem() {
+        Path file = Path.of("token");
+        String unix = Config.missingTokenMessage(file, true);
+        String windows = Config.missingTokenMessage(file, false);
+
+        assertTrue(unix.contains("chmod 600"), unix);
+        assertTrue(!windows.contains("chmod"), windows);
+        assertTrue(windows.contains("Benutzerordner"), windows);
+        assertTrue(windows.contains("Persönliche Tokens"), windows);
     }
 }
