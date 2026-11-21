@@ -1,5 +1,5 @@
 import XCTest
-@testable import CloudKitS2SCore
+@testable import RootCLICore
 
 /// Row mapping between `MemberRecord` and the `members` / `member_contacts`
 /// tables (no network).

@@ -1,5 +1,5 @@
 import Foundation
-import CloudKitS2SCore
+import RootCLICore
 
 /// Supabase account commands: password-reset emails after the v0.2.0 auth
 /// migration, and role assignment. Needs SUPABASE_URL / SUPABASE_SERVICE_KEY.

@@ -10,6 +10,8 @@
 #   functions          deploy notify-schedule
 #   templates          auth e-mail templates (token_hash links)
 #   signup             allow the web UI as redirect target of account emails
+#   password-reauth    password changes need a recent sign-in or the emailed code
+#                      (secure_password_change; run `templates` first for the German code mail)
 #   staging-app        settings for the separate "BSG Staging" app (staging only)
 #   webui           write nuc:~/blindensport-webui/.env for this project and restart
 #
@@ -134,6 +136,8 @@ print(json.dumps({
     "mailer_templates_recovery_content": open(t + "recovery.html").read(),
     "mailer_templates_confirmation_content": open(t + "confirmation.html").read(),
     "mailer_templates_email_change_content": open(t + "email_change.html").read(),
+    "mailer_templates_reauthentication_content": open(t + "reauthentication.html").read(),
+    "mailer_subjects_reauthentication": "Blindensport Graz: Bestätigungscode für dein neues Passwort",
 }))
 PY
     ;;
@@ -145,6 +149,15 @@ PY
       | curl -sS -f -X PATCH "https://api.supabase.com/v1/projects/$REF/config/auth" \
           -H "Authorization: Bearer $(cat $MGMT_TOKEN_FILE)" -H "Content-Type: application/json" \
           --data-binary @- -o /dev/null -w "signup redirect: HTTP %{http_code}\n"
+    ;;
+
+  password-reauth)
+    # Only this setting. Older app builds show "Bitte melde dich erneut an"
+    # instead of asking for the code; signing in again lets them change it.
+    echo '{"security_update_password_require_reauthentication": true}' \
+      | curl -sS -f -X PATCH "https://api.supabase.com/v1/projects/$REF/config/auth" \
+          -H "Authorization: Bearer $(cat $MGMT_TOKEN_FILE)" -H "Content-Type: application/json" \
+          --data-binary @- -o /dev/null -w "password re-authentication: HTTP %{http_code}\n"
     ;;
 
   staging-app)

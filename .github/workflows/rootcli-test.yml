@@ -1,0 +1,30 @@
+# Builds and tests RootCLI (the root admin command line tool: set-role,
+# member import/update, password-reset mails, all via the Supabase service
+# key) and the Shared/ClubSchema package it depends on. Only runs when they
+# change, so the tool keeps working for the rare emergency it's needed for.
+name: RootCLI Tests
+
+on:
+  push:
+    branches: [main]
+    paths: ["RootCLI/**", "Shared/ClubSchema/**", ".github/workflows/rootcli-test.yml"]
+  pull_request:
+    paths: ["RootCLI/**", "Shared/ClubSchema/**", ".github/workflows/rootcli-test.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: ClubSchema tests
+        working-directory: Shared/ClubSchema
+        run: swift test
+      - name: RootCLI build and tests
+        working-directory: RootCLI
+        run: |
+          swift build
+          swift test

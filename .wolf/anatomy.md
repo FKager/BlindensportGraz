@@ -753,3 +753,15 @@
 ## .github/
 
 - `dependabot.yml` — weekly grouped updates for actions, webui Docker images and Maven (~150 tok)
+
+## Added 2026-11-21 (review round 3)
+
+- `BlindensportGraz/Features/Account/PasswordChangeStep.swift` — maps password-change errors to ask-for-code / code-rejected / failed (~250 tok)
+- `BlindensportGrazTests/PasswordChangeStepTests.swift` — reauthentication flow decisions (~350 tok)
+- `BlindensportGrazTests/ReportFixtureSupport.swift` — loads Shared/ReportFixtures, builds roster/context for fixture tests (~700 tok)
+- `BlindensportGrazTests/KostZFixtureTests.swift` / `TrainingsfrequenzlisteFixtureTests.swift` — shared report scenarios, Swift side (~1500 tok each)
+- `webui/src/test/.../reports/KostZFixtureTest.java` / `TrainingsfrequenzlisteFixtureTest.java` — shared report scenarios, Java side (~1500 tok each)
+- `Shared/ReportFixtures/kostz.json`, `trainingsfrequenzliste.json` — shared scenarios (~900 tok each)
+- `supabase/templates/reauthentication.html` — German email with the 6-digit password-change code (~250 tok)
+- `.github/workflows/rootcli-test.yml` — RootCLI + ClubSchema build/tests on change (~200 tok)
+- `RootCLI/Sources/RootCLICore/` — formerly CloudKitS2SCore: Supabase admin client, member store/import (~5000 tok)

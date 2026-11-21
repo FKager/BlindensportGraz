@@ -9,9 +9,9 @@ name: Web UI Tests
 on:
   push:
     branches: [main]
-    paths: ["webui/**", "BlindensportGraz/Resources/PRAE_*", ".github/workflows/webui-test.yml"]
+    paths: ["webui/**", "BlindensportGraz/Resources/PRAE_*", "Shared/ReportFixtures/**", ".github/workflows/webui-test.yml"]
   pull_request:
-    paths: ["webui/**", "BlindensportGraz/Resources/PRAE_*", ".github/workflows/webui-test.yml"]
+    paths: ["webui/**", "BlindensportGraz/Resources/PRAE_*", "Shared/ReportFixtures/**", ".github/workflows/webui-test.yml"]
   workflow_dispatch:
 
 permissions:

@@ -134,13 +134,19 @@ nonisolated enum InvitationDateSelector {
             }
         }
 
-        // 3. Numeric d.m.yyyy the detector misses without leading zeros ("5.3.2026").
-        if let regex = try? NSRegularExpression(pattern: #"(?<![\d.])(\d{1,2})\.(\d{1,2})\.(\d{4})(?!\d)"#) {
+        // 3. Numeric d.m.yyyy, also without leading zeros ("5.3.2026") or with
+        //    a space after the dots ("14. 03. 2026"). Unambiguous in a German
+        //    invitation, so it replaces a detector reading of exactly this text
+        //    (the detector depends on the phone's language: an English iPhone
+        //    may misread it). A detector range that only contains this date
+        //    ("14.03.2026 – 15.03.2026") is kept.
+        if let regex = try? NSRegularExpression(pattern: #"(?<![\d.])(\d{1,2})\.\s?(\d{1,2})\.\s?(\d{4})(?!\d)"#) {
             for match in regex.matches(in: text, range: fullRange) {
                 guard let range = Range(match.range, in: text),
                       let day = intGroup(match, 1, in: text), let month = intGroup(match, 2, in: text),
                       let year = intGroup(match, 3, in: text),
                       let date = validDate(year: year, month: month, day: day, calendar: calendar) else { continue }
+                found.removeAll { $0.range.clamped(to: range) == $0.range && $0.start != date }
                 addUnlessCovered(date, date, range)
             }
         }

@@ -1,0 +1,54 @@
+{
+  "_comment": "KostZ scenarios read by BOTH calculators: KostZFixtureTests.swift (app) and KostZFixtureTest.java (web UI). Times are Austrian local time. People: helpers are sorted by last name, never by first name.",
+  "people": [
+    {"id": "zoe", "first": "Zoe", "last": "Albrecht", "gender": "f"},
+    {"id": "anna", "first": "Anna", "last": "Muster", "gender": "f"},
+    {"id": "bernd", "first": "Bernd", "last": "Berger", "gender": "m"}
+  ],
+  "memberships": [
+    {"id": "m-anna", "person": "anna", "role": "coach"},
+    {"id": "m-zoe", "person": "zoe", "role": "assistant"},
+    {"id": "m-bernd", "person": "bernd", "role": "player"}
+  ],
+  "month": [
+    {
+      "name": "a month's trainings: cancelled ones and tournaments left out, players get nothing",
+      "month": 3, "year": 2026,
+      "trainings": [
+        {"id": "t1", "title": "Torball Training", "day": 3, "hour": 18},
+        {"id": "t2", "title": "Torball Training", "day": 10, "hour": 18},
+        {"id": "t3", "title": "Lauftraining", "day": 12, "hour": 18},
+        {"id": "tc", "title": "Torball Training", "day": 17, "hour": 18, "status": "cancelled"},
+        {"id": "april", "title": "Torball Training", "day": 7, "month": 4, "hour": 18}
+      ],
+      "tournaments": [
+        {"id": "cup", "title": "Cup", "day": 14}
+      ],
+      "attendances": [
+        {"event": "t1", "membership": "m-anna", "attended": true, "amount": 40},
+        {"event": "t2", "membership": "m-anna", "attended": true, "amount": 30},
+        {"event": "t3", "membership": "m-zoe", "attended": true, "amount": 50},
+        {"event": "t2", "membership": "m-zoe", "attended": false, "amount": 20},
+        {"event": "tc", "membership": "m-zoe", "attended": true, "amount": 60},
+        {"event": "cup", "membership": "m-anna", "attended": true, "amount": 100},
+        {"event": "april", "membership": "m-anna", "attended": true, "amount": 90},
+        {"event": "t1", "membership": "m-bernd", "attended": true, "amount": null}
+      ],
+      "expected": {"betrifft": "Torball Training, Lauftraining", "dayCount": 3, "startDay": 3, "endDay": 12,
+                   "people": [["Albrecht", 50], ["Muster", 70]], "total": 120}
+    }
+  ],
+  "tournament": [
+    {
+      "name": "a tournament's own attendance rows, summed per helper",
+      "start": {"year": 2026, "month": 5, "day": 9, "hour": 9},
+      "end": {"year": 2026, "month": 5, "day": 10, "hour": 17},
+      "attendances": [
+        {"membership": "m-anna", "attended": true, "amount": 100},
+        {"membership": "m-zoe", "attended": true, "amount": 60},
+        {"membership": "m-bernd", "attended": true, "amount": 80}
+      ],
+      "expected": {"dayCount": 2, "people": [["Albrecht", 60], ["Muster", 100]], "total": 160}
+    }
+  ]
+}

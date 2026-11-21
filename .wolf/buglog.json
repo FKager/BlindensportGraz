@@ -11047,6 +11047,57 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-21T10:30:00.000Z"
+    },
+    {
+      "id": "bug-656",
+      "timestamp": "2026-11-21T14:00:00.000Z",
+      "error_message": "Shared fixture test: app Trainingsfrequenzliste listed teams as [Torball Herren, Torball Damen], web UI [Torball Damen, Torball Herren]",
+      "file": "BlindensportGraz/Features/Reports/Trainingsfrequenzliste/TrainingsfrequenzlisteCalculation.swift",
+      "root_cause": "teams collected in SwiftData fetch order (unordered), web UI uses order of each team's first training",
+      "fix": "iterate periodTrainings sorted by startDate; TrainingsfrequenzlisteFixtureTests/…FixtureTest.java share trainingsfrequenzliste.json",
+      "tags": [
+        "reports",
+        "trainingsfrequenzliste",
+        "parity",
+        "ordering"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T14:00:00.000Z"
+    },
+    {
+      "id": "bug-657",
+      "timestamp": "2026-11-21T14:00:00.000Z",
+      "error_message": "CI (English/UTC simulator): '14. 03. 2026' read as 28 Feb; German plurals singular",
+      "file": "BlindensportGraz/Features/Tournaments/InvitationDateSelector.swift",
+      "root_cause": "numeric pattern didn't allow a space after the dots, so NSDataDetector (phone-language dependent) decided; tests assumed a German simulator",
+      "fix": "pattern allows \\\\s? after dots and replaces a detector reading of exactly that text (ranges kept); CI runs tests with -testLanguage de -testRegion AT, TEST_RUNNER_TZ=Europe/Vienna",
+      "tags": [
+        "dates",
+        "locale",
+        "ci",
+        "invitation-import"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T14:00:00.000Z"
+    },
+    {
+      "id": "bug-658",
+      "timestamp": "2026-11-21T14:00:00.000Z",
+      "error_message": "Review: a password could be changed from a phone left signed in, without the old password or any confirmation",
+      "file": "BlindensportGraz/Features/Account/SetPasswordView.swift",
+      "root_cause": "secure_password_change off; app had no reauthentication flow",
+      "fix": "PasswordChangeStep: reauthentication_needed -> auth.reauthenticate() mails a 6-digit code, screen asks for it (nonce); reauthentication_not_valid -> own message + new code; German reauthentication.html; config.toml on; cutover.sh password-reauth step (prod flip separate)",
+      "tags": [
+        "auth",
+        "security",
+        "password",
+        "supabase"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T14:00:00.000Z"
     }
   ]
 }
