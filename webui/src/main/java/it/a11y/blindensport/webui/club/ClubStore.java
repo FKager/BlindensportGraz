@@ -13,6 +13,7 @@ import it.a11y.blindensport.webui.club.ClubModels.WelcomeContent;
 import it.a11y.blindensport.webui.members.Dates;
 import it.a11y.blindensport.webui.prae.PraeCalculator;
 import it.a11y.blindensport.webui.supabase.Postgrest;
+import org.jboss.logging.Logger;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -40,6 +41,7 @@ import static it.a11y.blindensport.webui.supabase.Postgrest.order;
  * them from its offline cache too.
  */
 public final class ClubStore {
+    private static final Logger LOG = Logger.getLogger(ClubStore.class);
     private static final String ATTENDANCE_COLUMNS = "id,event_id,membership_id,attended,prae_amount";
     private static final int ATTENDANCE_BATCH = 100;
 
@@ -301,6 +303,8 @@ public final class ClubStore {
             List<String> names = sports().stream().filter(Sport::active).map(Sport::name).toList();
             return names.isEmpty() ? ClubModels.SPORTS : names;
         } catch (RuntimeException e) {
+            // Pickers keep working, but a database or permission problem must show up in the log.
+            LOG.warnf("Sports not readable, using the built-in list: %s", e.getMessage());
             return ClubModels.SPORTS;
         }
     }
@@ -311,6 +315,7 @@ public final class ClubStore {
             return eventTypes().stream().filter(t -> t.active() && t.behavior().equals(behavior))
                     .map(EventType::name).toList();
         } catch (RuntimeException e) {
+            LOG.warnf("Event types not readable, using the default for %s: %s", behavior, e.getMessage());
             String fallback = ClubModels.defaultEventType(behavior);
             return fallback.isEmpty() ? List.of() : List.of(fallback);
         }
