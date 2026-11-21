@@ -49,3 +49,5 @@ jobs:
           if not "%code%"=="2" (echo expected exit code 2, got %code% & exit /b 1)
           findstr /c:"Kein Token gefunden" out.txt >nul || (echo message missing & exit /b 1)
           findstr /c:"Oberfl" out.txt >nul || (echo message missing & exit /b 1)
+          findstr /c:"chmod" out.txt >nul && (echo Unix hint on Windows & exit /b 1)
+          findstr /c:"Benutzerordner" out.txt >nul || (echo Windows hint missing & exit /b 1)

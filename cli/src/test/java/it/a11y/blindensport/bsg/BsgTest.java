@@ -242,4 +242,16 @@ class BsgTest {
         assertEquals(0, run(Map.of("BSG_URL", "http://localhost:" + server.port()), "whoami"));
         server.verify(getRequestedFor(urlEqualTo("/api/session")).withHeader("Authorization", equalTo("Bearer " + TOKEN)));
     }
+
+    @Test
+    void theMissingTokenHintFitsTheSystem() {
+        Path file = Path.of("token");
+        String unix = Config.missingTokenMessage(file, true);
+        String windows = Config.missingTokenMessage(file, false);
+
+        assertTrue(unix.contains("chmod 600"), unix);
+        assertTrue(!windows.contains("chmod"), windows);
+        assertTrue(windows.contains("Benutzerordner"), windows);
+        assertTrue(windows.contains("Persönliche Tokens"), windows);
+    }
 }

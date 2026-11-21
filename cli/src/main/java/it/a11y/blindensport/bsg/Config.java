@@ -50,11 +50,21 @@ public record Config(URI baseUrl, String token) {
                 && ("localhost".equals(uri.getHost()) || "127.0.0.1".equals(uri.getHost()));
     }
 
+    /**
+     * Where to put a token. Mac and Linux: make the file private with chmod.
+     * Windows has no chmod; a file in the user's profile folder is private there.
+     */
+    static String missingTokenMessage(Path file, boolean posix) {
+        String keepPrivate = posix ? " ab (nur für Sie lesbar: chmod 600)."
+                : " ab (im Benutzerordner ist sie nur für Sie lesbar).";
+        return "Kein Token gefunden. Setzen Sie BSG_TOKEN oder legen Sie es in " + file + keepPrivate
+                + " Ein Token erstellen Sie in der Web-Oberfläche unter \"Persönliche Tokens\".";
+    }
+
     private static String readTokenFile(Path file) {
         if (!Files.isRegularFile(file)) {
-            throw new Problem("Kein Token gefunden. Setzen Sie BSG_TOKEN oder legen Sie es in " + file
-                    + " ab (nur für Sie lesbar: chmod 600). Ein Token erstellen Sie in der Web-Oberfläche "
-                    + "unter \"Persönliche Tokens\".");
+            throw new Problem(missingTokenMessage(file,
+                    file.getFileSystem().supportedFileAttributeViews().contains("posix")));
         }
         try {
             Set<PosixFilePermission> permissions = Files.getPosixFilePermissions(file);

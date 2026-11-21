@@ -29,7 +29,7 @@ import java.util.concurrent.Callable;
 @Command(name = "bsg", mixinStandardHelpOptions = true, version = "bsg 1.0.0",
         description = "Blindensport Graz: Konten, Rollen und Mitglieder über die Web-Oberfläche.",
         subcommands = {Bsg.WhoAmI.class, Bsg.Accounts.class, Bsg.Members.class},
-        footer = {"", "Token: Umgebungsvariable BSG_TOKEN oder Datei ~/.config/blindensport/token (chmod 600).",
+        footer = {"", "Token: Umgebungsvariable BSG_TOKEN oder Datei .config/blindensport/token im Benutzerordner.",
                 "Ein Token erstellen Sie in der Web-Oberfläche unter \"Persönliche Tokens\"."})
 public final class Bsg implements Callable<Integer> {
     @Option(names = "--url", description = "Adresse; Standard: BSG_URL, sonst bs.a11y.it",
