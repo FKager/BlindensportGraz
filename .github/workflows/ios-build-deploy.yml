@@ -97,10 +97,17 @@ jobs:
             exit 1
           fi
           echo "Testing on simulator $DEVICE_ID"
-          xcodebuild test \
+          # The runner's Simulator is English and UTC; the app (German UI,
+          # German plurals in Localizable.xcstrings, Austrian dates) and its
+          # tests assume German / Austria / Vienna time, as on the club's
+          # iPhones. TEST_RUNNER_* variables reach the test process without
+          # the prefix.
+          TEST_RUNNER_TZ=Europe/Vienna xcodebuild test \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
             -destination "id=$DEVICE_ID" \
+            -testLanguage de \
+            -testRegion AT \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             | xcbeautify --renderer github-actions
