@@ -10933,6 +10933,120 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-21T09:00:00.000Z"
+    },
+    {
+      "id": "bug-649",
+      "timestamp": "2026-11-21T08:59:55.366Z",
+      "error_message": "Significant refactor of ",
+      "file": ".github/workflows/ios-build-deploy.yml",
+      "root_cause": "4 lines replaced/restructured",
+      "fix": "Rewrote 10→21 lines (4 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "yml"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T08:59:55.366Z"
+    },
+    {
+      "id": "bug-650",
+      "timestamp": "2026-11-21T10:30:00.000Z",
+      "error_message": "Code review: GitHub's iOS check only built the app; the unit tests never ran in CI",
+      "file": ".github/workflows/ios-build-deploy.yml",
+      "root_cause": "build job ran xcodebuild build, no test step",
+      "fix": "Job 'Build and test (unsigned, simulator)': xcodebuild test on the runner's first available iPhone simulator (jq over simctl), unsigned (verified locally: 407 tests pass with CODE_SIGNING_ALLOWED=NO)",
+      "tags": [
+        "ci",
+        "ios",
+        "tests"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T10:30:00.000Z"
+    },
+    {
+      "id": "bug-651",
+      "timestamp": "2026-11-21T10:30:00.000Z",
+      "error_message": "Code review: an imported invitation over 15 MB or of an unsupported type was silently not attached when creating a tournament",
+      "file": "BlindensportGraz/Features/Tournaments/AddTournamentView.swift",
+      "root_cause": "if-condition skipped the attachment without telling anyone",
+      "fix": "TournamentInvitation.attachmentProblem(fileName:size:) shared with TournamentDocumentsSection; the form shows a warning section before saving",
+      "tags": [
+        "swiftui",
+        "silent-failure",
+        "tournament-documents"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T10:30:00.000Z"
+    },
+    {
+      "id": "bug-652",
+      "timestamp": "2026-11-21T10:30:00.000Z",
+      "error_message": "Code review: a crafted .docx invitation (zip bomb) could unpack word/document.xml without limit and crash the app",
+      "file": "BlindensportGraz/Features/Tournaments/TournamentInvitationImport.swift",
+      "root_cause": "archive.extract appended every chunk into memory; no file-size check before reading",
+      "fix": "maxFileBytes 50 MB checked before reading; maxDocumentXMLBytes 20 MB checked against entry.uncompressedSize and counted while extracting (consumer throws fileTooLarge). Tests: TournamentInvitationLimitsTests",
+      "tags": [
+        "security",
+        "zip",
+        "import",
+        "memory"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T10:30:00.000Z"
+    },
+    {
+      "id": "bug-653",
+      "timestamp": "2026-11-21T10:30:00.000Z",
+      "error_message": "Code review: report XML escape didn't drop characters XML 1.0 forbids (e.g. vertical tab pasted from Word), so Excel/Word would refuse the file",
+      "file": "BlindensportGraz/Shared/XMLText.swift",
+      "root_cause": "three copies of a replace-&<>-only escape (Swift) and XlsxPatch.escape (Java)",
+      "fix": "One XMLText.escape (Swift) and XlsxPatch.escape (Java) that also drop non-XML characters; tests XMLTextTests / XlsxPatchEscapeTest",
+      "tags": [
+        "xlsx",
+        "docx",
+        "xml",
+        "reports"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T10:30:00.000Z"
+    },
+    {
+      "id": "bug-654",
+      "timestamp": "2026-11-21T10:30:00.000Z",
+      "error_message": "Code review: notify-schedule aborted all pushes and the stale-token cleanup on one network error; shared secret compared with !==",
+      "file": "supabase/functions/notify-schedule/index.ts",
+      "root_cause": "Promise.all rejects on the first failed fetch; plain string compare",
+      "fix": "Promise.allSettled + logging of rejected sends; constant-time compare via @std/crypto timingSafeEqual (not type-checked locally: Deno not installed)",
+      "tags": [
+        "edge-function",
+        "push",
+        "apns"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T10:30:00.000Z"
+    },
+    {
+      "id": "bug-655",
+      "timestamp": "2026-11-21T10:30:00.000Z",
+      "error_message": "Code review: send-membership-application told unauthorised callers whether a member id exists (404 before the permission check)",
+      "file": "supabase/functions/send-membership-application/index.ts",
+      "root_cause": "member looked up with the service key and 404 returned before mark_gvsc_application checked permission",
+      "fix": "404/500 for the lookup only after mark_gvsc_application succeeded (it checks permission first)",
+      "tags": [
+        "edge-function",
+        "security",
+        "enumeration"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T10:30:00.000Z"
     }
   ]
 }

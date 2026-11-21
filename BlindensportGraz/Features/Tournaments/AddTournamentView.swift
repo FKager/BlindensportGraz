@@ -59,9 +59,25 @@ struct AddTournamentView: View {
         return allTeams.filter { myTeamIDs.contains($0.id) }
     }
 
+    private var canAttachInvitation: Bool { currentUser?.can(.eventsManage) == true }
+
+    /// Why the imported invitation won't be kept as the tournament's first
+    /// document; shown in the form before saving instead of dropping it silently.
+    private var invitationProblem: String? {
+        guard let invitationFile else { return nil }
+        return TournamentInvitation.attachmentProblem(fileName: invitationFile.name, size: invitationFile.data.count)
+    }
+
     var body: some View {
         NavigationStack {
             Form {
+                if let invitationFile, canAttachInvitation, let invitationProblem {
+                    Section {
+                        Label("Die Einladung „\(invitationFile.name)“ wird nicht als Dokument gespeichert: \(invitationProblem)",
+                              systemImage: "exclamationmark.triangle")
+                            .foregroundStyle(Theme.Palette.warning)
+                    }
+                }
                 Section("Turnier") {
                     TextField("Name", text: $title)
                     EventTypePicker(selection: $eventType, behavior: .tournament)
@@ -180,26 +196,13 @@ struct AddTournamentView: View {
                         TournamentService.save(tournament, modelContext: modelContext)
                         // Keep the imported Einladung as the tournament's
                         // first document (uploading needs events.manage).
-                        if let invitationFile, currentUser?.can(.eventsManage) == true,
-                           TournamentInvitation.isSupported(fileName: invitationFile.name),
-                           invitationFile.data.count <= TournamentInvitation.maxFileSize {
+                        if let invitationFile, canAttachInvitation, invitationProblem == nil {
                             TournamentInvitationService.add(to: tournament, data: invitationFile.data,
                                                             fileName: invitationFile.name,
                                                             uploadedBy: currentUser?.id.uuidString ?? "",
                                                             modelContext: modelContext)
                         }
 
-                        // Post notification when tournament is created
-                        NotificationCenter.default.post(
-                            name: NSNotification.Name("TournamentCreated"),
-                            object: nil,
-                            userInfo: [
-                                "message": "Neues Turnier erstellt!",
-                                "title": title,
-                                "sport": sport,
-                                "venue": location
-                            ]
-                        )
 
                         dismiss()
                     }

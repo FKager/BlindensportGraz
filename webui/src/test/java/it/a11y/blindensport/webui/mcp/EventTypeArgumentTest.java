@@ -44,19 +44,19 @@ class EventTypeArgumentTest {
 
     @Test
     void blankMeansTheKindsDefault() {
-        assertEquals("Training", ClubTools.eventType(club, "training", null));
-        assertEquals("Turnier", ClubTools.eventType(club, "tournament", " "));
-        assertEquals("", ClubTools.eventType(club, "event", null));
+        assertEquals("Training", McpToolSupport.eventType(club, "training", null));
+        assertEquals("Turnier", McpToolSupport.eventType(club, "tournament", " "));
+        assertEquals("", McpToolSupport.eventType(club, "event", null));
     }
 
     @Test
     void aListedTypeIsMatchedIgnoringCase() {
-        assertEquals("Kurs", ClubTools.eventType(club, "event", " kurs "));
+        assertEquals("Kurs", McpToolSupport.eventType(club, "event", " kurs "));
     }
 
     @Test
     void anUnknownTypeOrOneWithAnotherBehaviourIsRefused() {
-        assertThrows(IllegalArgumentException.class, () -> ClubTools.eventType(club, "event", "Weltraumflug"));
-        assertThrows(IllegalArgumentException.class, () -> ClubTools.eventType(club, "training", "Kurs"));
+        assertThrows(IllegalArgumentException.class, () -> McpToolSupport.eventType(club, "event", "Weltraumflug"));
+        assertThrows(IllegalArgumentException.class, () -> McpToolSupport.eventType(club, "training", "Kurs"));
     }
 }

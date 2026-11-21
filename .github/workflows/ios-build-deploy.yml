@@ -51,11 +51,11 @@ env:
 
 jobs:
   build:
-    name: Build (unsigned, simulator)
+    name: Build and test (unsigned, simulator)
     runs-on: xcode-27
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Select Xcode
         # The project is in Swift 6 language mode with Swift 6.2+ build
@@ -83,13 +83,31 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      - name: Build for simulator
+      # Builds the app and runs the unit tests (BlindensportGrazTests) in a
+      # Simulator, unsigned like before. The first available iPhone on the
+      # runner is used, so a new runner image needs no edit here.
+      - name: Build and test in the Simulator
         run: |
-          set -o pipefail
-          xcodebuild build \
+          set -euo pipefail
+          DEVICE_ID=$(xcrun simctl list devices available -j \
+            | jq -r '[.devices | to_entries[] | select(.key | test("iOS")) | .value[] | select(.name | startswith("iPhone"))][0].udid // empty')
+          if [ -z "$DEVICE_ID" ]; then
+            echo "::error::No iPhone simulator available on this runner."
+            xcrun simctl list devices available
+            exit 1
+          fi
+          echo "Testing on simulator $DEVICE_ID"
+          # The runner's Simulator is English and UTC; the app (German UI,
+          # German plurals in Localizable.xcstrings, Austrian dates) and its
+          # tests assume German / Austria / Vienna time, as on the club's
+          # iPhones. TEST_RUNNER_* variables reach the test process without
+          # the prefix.
+          TEST_RUNNER_TZ=Europe/Vienna xcodebuild test \
             -project "$PROJECT" \
             -scheme "$SCHEME" \
-            -destination "generic/platform=iOS Simulator" \
+            -destination "id=$DEVICE_ID" \
+            -testLanguage de \
+            -testRegion AT \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             | xcbeautify --renderer github-actions
@@ -101,7 +119,7 @@ jobs:
     runs-on: xcode-27
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Select Xcode
         # See the identical step in the build job above for why this can't
@@ -386,7 +404,7 @@ jobs:
       # build shipped through this workflow before this step existed.
       - name: Upload dSYMs artifact
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: dSYMs-${{ env.MARKETING_VERSION }}-${{ env.BUILD_NUMBER }}
           path: ${{ runner.temp }}/app.xcarchive/dSYMs

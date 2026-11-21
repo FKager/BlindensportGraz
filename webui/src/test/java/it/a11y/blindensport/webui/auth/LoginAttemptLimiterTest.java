@@ -71,4 +71,18 @@ class LoginAttemptLimiterTest {
         assertEquals("10.0.0.3", AdminSessions.clientKey(" ", "10.0.0.3"));
         assertEquals("unknown", AdminSessions.clientKey(null, null));
     }
+
+    @Test
+    void clientsThatNeverComeBackArePrunedOnceThereAreMany() {
+        var clock = new MutableClock();
+        var limiter = new LoginAttemptLimiter(5, Duration.ofMinutes(5), clock);
+        for (int i = 0; i < LoginAttemptLimiter.PRUNE_ALL_ABOVE; i++) {
+            limiter.recordFailure("10.0." + (i / 256) + "." + (i % 256));
+        }
+        clock.now = clock.now.plus(Duration.ofMinutes(6));
+
+        limiter.recordFailure("192.0.2.1");
+
+        assertEquals(1, limiter.trackedClients(), "expired failures of other clients are gone");
+    }
 }

@@ -22,7 +22,7 @@ enum XLSXCellPatch {
 
     static func setText(in xml: String, ref: String, value: String) -> String {
         replaceCell(in: xml, ref: ref) { attrs in
-            "<c r=\"\(ref)\"\(attrs) t=\"inlineStr\"><is><t>\(xmlEscape(value))</t></is></c>"
+            "<c r=\"\(ref)\"\(attrs) t=\"inlineStr\"><is><t>\(XMLText.escape(value))</t></is></c>"
         }
     }
 
@@ -30,13 +30,6 @@ enum XLSXCellPatch {
         replaceCell(in: xml, ref: ref) { attrs in
             "<c r=\"\(ref)\"\(attrs)><v>\(value)</v></c>"
         }
-    }
-
-    static func xmlEscape(_ value: String) -> String {
-        value
-            .replacingOccurrences(of: "&", with: "&amp;")
-            .replacingOccurrences(of: "<", with: "&lt;")
-            .replacingOccurrences(of: ">", with: "&gt;")
     }
 
     // MARK: - Overwriting an already-filled reference file
@@ -76,7 +69,7 @@ enum XLSXCellPatch {
     static func setInlineText(in xml: String, ref: String, value: String) -> String {
         overwriteCell(in: xml, ref: ref) { styleAttr in
             guard !value.isEmpty else { return "<c r=\"\(ref)\"\(styleAttr)/>" }
-            return "<c r=\"\(ref)\"\(styleAttr) t=\"inlineStr\"><is><t>\(xmlEscape(value))</t></is></c>"
+            return "<c r=\"\(ref)\"\(styleAttr) t=\"inlineStr\"><is><t>\(XMLText.escape(value))</t></is></c>"
         }
     }
 

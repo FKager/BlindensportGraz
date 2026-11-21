@@ -287,9 +287,9 @@ nonisolated enum GVSCApplicationDocument {
             let properties = firstMatch(#"<w:pPr>.*?</w:pPr>"#, in: paragraph) ?? ""
             let runProperties = firstMatch(#"<w:r\b[^>]*>\s*(<w:rPr>.*?</w:rPr>)"#, in: paragraph, group: 1) ?? ""
             var result = open + properties
-                + "<w:r>\(runProperties)<w:t xml:space=\"preserve\">\(xmlEscape(label))</w:t></w:r>"
+                + "<w:r>\(runProperties)<w:t xml:space=\"preserve\">\(XMLText.escape(label))</w:t></w:r>"
             if !value.isEmpty {
-                result += "<w:r>\(runProperties)<w:tab/><w:t xml:space=\"preserve\">\(xmlEscape(value))</w:t></w:r>"
+                result += "<w:r>\(runProperties)<w:tab/><w:t xml:space=\"preserve\">\(XMLText.escape(value))</w:t></w:r>"
             }
             return result + "</w:p>"
         }
@@ -331,13 +331,6 @@ nonisolated enum GVSCApplicationDocument {
 
     private static func joined(_ parts: [String], _ separator: String) -> String {
         parts.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }.joined(separator: separator)
-    }
-
-    private static func xmlEscape(_ value: String) -> String {
-        value
-            .replacingOccurrences(of: "&", with: "&amp;")
-            .replacingOccurrences(of: "<", with: "&lt;")
-            .replacingOccurrences(of: ">", with: "&gt;")
     }
 
     private static func asciiFileName(_ value: String) -> String {

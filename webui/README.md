@@ -153,7 +153,7 @@ Coaches, admins and root can create tokens, and a client can do whatever that ac
 
 - **Tokens:** `McpTokens`. A token stands for one Supabase session, opened when its owner confirmed their password. The database (`mcp_tokens`) holds only a hash of the token and the session's refresh token encrypted with a key derived from the token, so neither the database nor this server can use it without the token. No service key is involved.
 - **Permissions:** every call runs with that person's Supabase token, so RLS and the RPCs decide, as in the app. `McpAuthFilter` admits only accounts that may use the web UI. Signing in with Apple gives no password, so those accounts can't create a token.
-- **Protected data:** SVNR, IBAN, birth date, medical exam, disability and consents never appear in a tool result and can't be written, because anything returned reaches the AI behind the client. Member results are built from an allow-list in `ClubTools`.
+- **Protected data:** SVNR, IBAN, birth date, medical exam, disability and consents never appear in a tool result and can't be written, because anything returned reaches the AI behind the client. Member results are built from an allow-list in `McpToolSupport`.
 - **PRAE forms:** they do contain SVNR and IBAN, so `create_prae_forms` returns only a summary and a link to `/mcp-files/{token}`. The link works once, lasts 10 minutes, and the file exists in memory only. Whoever holds the link gets the file.
 - **Tournament documents:** `get_tournament_document` returns the text of a PDF, Word (.docx) or .txt document (PDFBox, `DocumentText`) plus a one-time `/mcp-files/` link to the file itself.
 - **Almost nothing deletes:** the only delete tool is `delete_tournament_document` (marked destructive, needs `events.manage`). A member can only be marked with status `delete`.
@@ -223,7 +223,10 @@ ports), and `webui/traefik-dynamic.yml` is a file-provider route to copy
 into Traefik's dynamic directory (`docker exec -i coolify-proxy sh -c 'cat >
 /traefik/dynamic/blindensport-webui.yml'`). It uses a file route rather
 than Docker labels because Coolify's Traefik v3.1 can't talk to Docker 29
-(API 1.24 vs. minimum 1.40).
+(API 1.24 vs. minimum 1.40). The sign-in limiter's `X-Forwarded-For` rule
+holds there only while Traefik's entrypoints have no
+`forwardedHeaders.insecure` or `forwardedHeaders.trustedIPs`: then Traefik
+replaces whatever a client sends (checked on nuc 2026-11-21).
 
 The image (`webui/Dockerfile`, build context `webui/`) is a multi-stage
 Maven build with a JRE 21 runtime and a non-root user. Vaadin runs in

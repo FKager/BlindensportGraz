@@ -72,6 +72,14 @@ extension TournamentInvitation {
     /// Largest file the bucket accepts (15 MB, see the storage migration).
     nonisolated static let maxFileSize = 15 * 1024 * 1024
 
+    /// Why a file can't be kept as a tournament document, in German for the
+    /// screen; nil if it can.
+    nonisolated static func attachmentProblem(fileName: String, size: Int) -> String? {
+        if !isSupported(fileName: fileName) { return "Dateityp wird nicht unterstützt." }
+        if size > maxFileSize { return "größer als 15 MB." }
+        return nil
+    }
+
     /// Accepted by the bucket? Judged by extension, like `contentType(forFileName:)`.
     nonisolated static func isSupported(fileName: String) -> Bool {
         ["pdf", "docx", "doc", "xlsx", "xls", "txt", "jpg", "jpeg", "png", "heic", "heif"]

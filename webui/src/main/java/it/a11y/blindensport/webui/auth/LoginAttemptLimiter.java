@@ -15,6 +15,9 @@ import java.util.Map;
  * State resets on restart — its job is slowing down guessing, not banning.
  */
 public final class LoginAttemptLimiter {
+    /** Beyond this many tracked clients, everyone's old failures are pruned at once. */
+    static final int PRUNE_ALL_ABOVE = 10_000;
+
     private final Map<String, List<Instant>> failuresByClient = new HashMap<>();
     private final int maxFailures;
     private final Duration window;
@@ -39,7 +42,16 @@ public final class LoginAttemptLimiter {
 
     public synchronized void recordFailure(String client) {
         prune(client);
+        // A client that never comes back is otherwise never pruned, so many
+        // distinct addresses would grow the map for good.
+        if (failuresByClient.size() >= PRUNE_ALL_ABOVE) {
+            List.copyOf(failuresByClient.keySet()).forEach(this::prune);
+        }
         failuresByClient.computeIfAbsent(client, c -> new ArrayList<>()).add(clock.instant());
+    }
+
+    synchronized int trackedClients() {
+        return failuresByClient.size();
     }
 
     /** Only an admin sign-in clears the history — any member's correct password must not. */

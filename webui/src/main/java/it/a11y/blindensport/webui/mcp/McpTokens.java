@@ -45,6 +45,8 @@ public class McpTokens {
     public static final String PREFIX = "bsg_mcp_";
     public static final Duration LIFETIME = Duration.ofDays(90);
     private static final Duration REFRESH_MARGIN = Duration.ofMinutes(1);
+    /** A session nobody used for this long is dropped from memory; the next use signs in again. */
+    static final Duration IDLE_DROP = Duration.ofDays(1);
     private static final int IV_BYTES = 12;
     private static final int TAG_BITS = 128;
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -106,7 +108,13 @@ public class McpTokens {
             live.remove(key);
             return Optional.empty();
         }
+        Instant now = Instant.now();
+        live.values().removeIf(l -> l.idleSince(now).compareTo(IDLE_DROP) > 0);
         return Optional.of(live.computeIfAbsent(key, k -> new Live(token, k)));
+    }
+
+    int liveSessions() {
+        return live.size();
     }
 
     /** One token's Supabase session, refreshed when needed. */
@@ -114,14 +122,20 @@ public class McpTokens {
         private final String token;
         private final String key;
         private GoTrue.Tokens session;
+        private volatile Instant lastUsed = Instant.now();
 
         private Live(String token, String key) {
             this.token = token;
             this.key = key;
         }
 
+        Duration idleSince(Instant now) {
+            return Duration.between(lastUsed, now);
+        }
+
         /** Signs in on first use, and throws {@link SessionExpiredException} if Supabase refuses. */
         public synchronized GoTrue.Tokens session() {
+            lastUsed = Instant.now();
             if (session == null || Instant.now().plus(REFRESH_MARGIN).isAfter(session.expiresAt())) {
                 session = refresh();
             }

@@ -158,6 +158,16 @@ class McpServerTest {
         var list = io.restassured.path.json.JsonPath.from(tools);
         List<String> names = list.getList("result.tools.name");
         assertTrue(names.contains("create_prae_forms"), tools);
+        // The tools live in several classes (MemberTools, EventTools, ReportTools,
+        // TournamentDocumentTools); together they must offer exactly this set.
+        assertEquals(List.of("add_team_member", "create_event", "create_member",
+                        "create_prae_forms", "create_team", "create_tournament_reports",
+                        "delete_tournament_document", "get_event", "get_member",
+                        "get_tournament_document", "list_events", "list_members",
+                        "list_sports_and_event_types", "list_teams", "list_tournament_documents",
+                        "preview_prae", "set_attendance", "update_event",
+                        "update_member", "upload_tournament_document", "whoami"),
+                names.stream().sorted().toList(), tools);
         assertEquals(List.of("delete_tournament_document"),
                 names.stream().filter(n -> n.contains("delete") || n.contains("remove")).toList(), tools);
         List<String> destructive = list.getList("result.tools.findAll { it.annotations.destructiveHint == true }.name");

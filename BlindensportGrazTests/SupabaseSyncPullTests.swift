@@ -66,4 +66,30 @@ final class SupabaseSyncPullTests: XCTestCase {
 
         XCTAssertTrue(sync.rowsToApply([row], id: \.id).isEmpty)
     }
+
+    // MARK: - Outbox lookup and timestamps
+
+    func testPendingIDsListsEveryQueuedRecordOnce() throws {
+        let (sync, outbox) = try makeSync()
+        let a = UUID(), b = UUID()
+        PendingPush.enqueue(in: outbox, operation: PendingPush.saveOperation, recordType: "events",
+                            recordName: a.uuidString, payload: Data([1]))
+        PendingPush.enqueue(in: outbox, operation: PendingPush.deleteOperation, recordType: "teams",
+                            recordName: b.uuidString, payload: Data())
+
+        XCTAssertEqual(sync.pendingIDs(), [a, b])
+    }
+
+    /// ISO 8601 in UTC with milliseconds, as PostgREST expects. Milliseconds
+    /// are cut off, never rounded up: a "changed at or after" query that
+    /// started a fraction later than the real time could miss a row.
+    func testQueryTimestampsNeverRoundUp() throws {
+        let date = Date(timeIntervalSince1970: 1_763_715_600.1239)
+
+        let text = SupabaseSync.iso(date)
+
+        XCTAssertEqual(text, "2025-11-21T09:00:00.123Z")
+        let parsed = try XCTUnwrap(try? Date.ISO8601FormatStyle(includingFractionalSeconds: true).parse(text))
+        XCTAssertLessThanOrEqual(parsed, date)
+    }
 }

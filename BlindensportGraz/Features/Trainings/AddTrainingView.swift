@@ -292,17 +292,6 @@ struct AddTrainingView: View {
                             }
                             seriesResultMessage = message
 
-                            NotificationCenter.default.post(
-                                name: NSNotification.Name("TrainingCreated"),
-                                object: nil,
-                                userInfo: [
-                                    "message": "\(outcome.created) neue Trainings erstellt!",
-                                    "title": title,
-                                    "sport": sport,
-                                    "location": location,
-                                    "durationMinutes": durationMinutes
-                                ]
-                            )
                             showSeriesResultAlert = true
                             return
                         }
@@ -344,18 +333,6 @@ struct AddTrainingView: View {
                         )
                         TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
 
-                        // Post notification when training is created
-                        NotificationCenter.default.post(
-                            name: NSNotification.Name("TrainingCreated"),
-                            object: nil,
-                            userInfo: [
-                                "message": "Neues Training erstellt!",
-                                "title": title,
-                                "sport": sport,
-                                "location": location,
-                                "durationMinutes": durationMinutes
-                            ]
-                        )
 
                         dismiss()
                     }

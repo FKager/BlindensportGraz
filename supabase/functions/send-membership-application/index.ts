@@ -66,12 +66,14 @@ Deno.serve(async (req) => {
   const { data: { user }, error: userError } = await asCaller.auth.getUser();
   if (userError || !user) return json(401, { error: "invalid session" });
 
+  // Authorization first, as the caller: someone without the right learns
+  // nothing about the entry, not even whether it exists.
   const admin = createClient(url, serviceKey);
+  // The previous "beantragt" date, read before marking so a failed send can
+  // restore it. Not returned to the caller before the check below passes.
   const { data: member, error: memberError } = await admin
     .from("members").select("first_name, last_name, gvsc_applied_at")
     .eq("id", memberID).maybeSingle();
-  if (memberError) return json(500, { error: "send_failed" });
-  if (!member) return json(404, { error: "member_not_found" });
 
   // Authorization + "beantragt" mark, as the caller.
   const { data: linkedUserID, error: markError } = await asCaller
@@ -86,6 +88,7 @@ Deno.serve(async (req) => {
     }
     return json(500, { error: "send_failed" });
   }
+  if (memberError || !member) return json(500, { error: "send_failed" });
 
   const name = `${member.first_name} ${member.last_name}`.trim();
   const baseName = fileSafe(`${member.last_name}_${member.first_name}`) || "Mitglied";

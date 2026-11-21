@@ -123,8 +123,8 @@ struct TournamentDocumentsSection: View {
                 problems.append("\(name): konnte nicht gelesen werden.")
                 continue
             }
-            guard data.count <= TournamentInvitation.maxFileSize else {
-                problems.append("\(name): größer als 15 MB.")
+            if let problem = TournamentInvitation.attachmentProblem(fileName: name, size: data.count) {
+                problems.append("\(name): \(problem)")
                 continue
             }
             TournamentInvitationService.add(to: tournament, data: data, fileName: name,

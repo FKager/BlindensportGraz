@@ -136,18 +136,6 @@ struct TrainingSeriesView: View {
             if outcome.skipped > 0 {
                 message += " \(outcome.skipped) übersprungen (bereits vorhanden)."
             }
-            if outcome.created > 0 {
-                NotificationCenter.default.post(
-                    name: NSNotification.Name("TrainingCreated"),
-                    object: nil,
-                    userInfo: [
-                        "message": "\(outcome.created) neue Trainings erstellt!",
-                        "title": favorite.title,
-                        "sport": favorite.sport,
-                        "location": favorite.location
-                    ]
-                )
-            }
             isCreating = false
             resultMessage = message
             isShowingResult = true

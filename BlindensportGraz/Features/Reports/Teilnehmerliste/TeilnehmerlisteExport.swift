@@ -166,7 +166,7 @@ enum TeilnehmerlisteExporter {
 
     private static func setText(in xml: String, ref: String, value: String) -> String {
         replaceCell(in: xml, ref: ref) { attrs in
-            "<c r=\"\(ref)\"\(attrs) t=\"inlineStr\"><is><t>\(xmlEscape(value))</t></is></c>"
+            "<c r=\"\(ref)\"\(attrs) t=\"inlineStr\"><is><t>\(XMLText.escape(value))</t></is></c>"
         }
     }
 
@@ -174,12 +174,5 @@ enum TeilnehmerlisteExporter {
         replaceCell(in: xml, ref: ref) { attrs in
             "<c r=\"\(ref)\"\(attrs)><v>\(value)</v></c>"
         }
-    }
-
-    private static func xmlEscape(_ value: String) -> String {
-        value
-            .replacingOccurrences(of: "&", with: "&amp;")
-            .replacingOccurrences(of: "<", with: "&lt;")
-            .replacingOccurrences(of: ">", with: "&gt;")
     }
 }

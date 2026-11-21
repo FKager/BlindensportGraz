@@ -218,9 +218,12 @@ public class AdminSessions {
 
     /**
      * Rate-limit key: the first X-Forwarded-For hop, else the TCP peer.
-     * Trusting the header is safe ONLY because docker-compose.yml never
-     * publishes this service's port — the sole path in is through Caddy.
-     * Run without that proxy, the header is attacker-controlled.
+     * Trusting the header is safe ONLY because the port is never published
+     * and the proxy in front replaces a client's own header: Caddy
+     * (docker-compose.yml) always does, Traefik (compose.traefik.yml, nuc) as
+     * long as its entrypoints have no forwardedHeaders.insecure/trustedIPs
+     * (checked on nuc 2026-11-21). Run without such a proxy, the header is
+     * attacker-controlled.
      */
     public static String clientKey(String forwardedFor, String remoteAddress) {
         if (forwardedFor != null) {

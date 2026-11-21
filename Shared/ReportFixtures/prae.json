@@ -1,0 +1,111 @@
+{
+  "_comment": "PRAE scenarios read by BOTH calculators: PraeFixtureTests.swift (app) and PraeFixtureTest.java (web UI). One coach, Anna Trainer. Times are Austrian local time. Change an expectation only together with both calculators.",
+  "month": [
+    {
+      "name": "two sessions of one training on the same day are summed; the daily cap is flagged",
+      "month": 7, "year": 2026,
+      "trainings": [
+        {"id": "morning", "title": "Montagstraining", "day": 10, "hour": 10},
+        {"id": "evening", "title": "Montagstraining", "day": 10, "hour": 18}
+      ],
+      "attendances": [
+        {"event": "morning", "attended": true, "amount": 30},
+        {"event": "evening", "attended": true, "amount": 100}
+      ],
+      "expected": [
+        {"purpose": "Montagstraining", "entries": [[10, 130]], "total": 130, "personTotal": 130,
+         "exceedsMonthlyCap": false, "daysExceedingDailyCap": [10]}
+      ]
+    },
+    {
+      "name": "one form per training title; the caps look at the person across forms",
+      "month": 7, "year": 2026,
+      "trainings": [
+        {"id": "m1", "title": "Montagstraining", "day": 1, "hour": 18},
+        {"id": "m2", "title": "Montagstraining", "day": 2, "hour": 18},
+        {"id": "m3", "title": "Montagstraining", "day": 3, "hour": 18},
+        {"id": "m4", "title": "Montagstraining", "day": 4, "hour": 18},
+        {"id": "d4", "title": "Donnerstagstraining", "day": 4, "hour": 20},
+        {"id": "d5", "title": "Donnerstagstraining", "day": 5, "hour": 18},
+        {"id": "d6", "title": "Donnerstagstraining", "day": 6, "hour": 18}
+      ],
+      "attendances": [
+        {"event": "m1", "attended": true, "amount": 120},
+        {"event": "m2", "attended": true, "amount": 120},
+        {"event": "m3", "attended": true, "amount": 120},
+        {"event": "m4", "attended": true, "amount": 120},
+        {"event": "d4", "attended": true, "amount": 100},
+        {"event": "d5", "attended": true, "amount": 100},
+        {"event": "d6", "attended": true, "amount": 100}
+      ],
+      "expected": [
+        {"purpose": "Montagstraining", "entries": [[1, 120], [2, 120], [3, 120], [4, 120]], "total": 480,
+         "personTotal": 780, "exceedsMonthlyCap": true, "daysExceedingDailyCap": [4]},
+        {"purpose": "Donnerstagstraining", "entries": [[4, 100], [5, 100], [6, 100]], "total": 300,
+         "personTotal": 780, "exceedsMonthlyCap": true, "daysExceedingDailyCap": [4]}
+      ]
+    },
+    {
+      "name": "cancelled trainings, absences, missing amounts and other months count for nothing",
+      "month": 7, "year": 2026,
+      "trainings": [
+        {"id": "held", "title": "Montagstraining", "day": 3, "hour": 18},
+        {"id": "cancelled", "title": "Montagstraining", "day": 5, "hour": 18, "status": "cancelled"},
+        {"id": "absent", "title": "Montagstraining", "day": 7, "hour": 18},
+        {"id": "noAmount", "title": "Montagstraining", "day": 9, "hour": 18},
+        {"id": "august", "title": "Montagstraining", "day": 3, "month": 8, "hour": 18}
+      ],
+      "attendances": [
+        {"event": "held", "attended": true, "amount": 50},
+        {"event": "cancelled", "attended": true, "amount": 40},
+        {"event": "absent", "attended": false, "amount": 60},
+        {"event": "noAmount", "attended": true, "amount": null},
+        {"event": "august", "attended": true, "amount": 70}
+      ],
+      "expected": [
+        {"purpose": "Montagstraining", "entries": [[3, 50]], "total": 50, "personTotal": 50,
+         "exceedsMonthlyCap": false, "daysExceedingDailyCap": []}
+      ]
+    },
+    {
+      "name": "exactly at the monthly cap is not over it",
+      "month": 7, "year": 2026,
+      "trainings": [
+        {"id": "a", "title": "Montagstraining", "day": 1, "hour": 18},
+        {"id": "b", "title": "Montagstraining", "day": 8, "hour": 18},
+        {"id": "c", "title": "Montagstraining", "day": 15, "hour": 18},
+        {"id": "d", "title": "Montagstraining", "day": 22, "hour": 18},
+        {"id": "e", "title": "Montagstraining", "day": 29, "hour": 18},
+        {"id": "f", "title": "Montagstraining", "day": 30, "hour": 18}
+      ],
+      "attendances": [
+        {"event": "a", "attended": true, "amount": 120},
+        {"event": "b", "attended": true, "amount": 120},
+        {"event": "c", "attended": true, "amount": 120},
+        {"event": "d", "attended": true, "amount": 120},
+        {"event": "e", "attended": true, "amount": 120},
+        {"event": "f", "attended": true, "amount": 120}
+      ],
+      "expected": [
+        {"purpose": "Montagstraining", "entries": [[1, 120], [8, 120], [15, 120], [22, 120], [29, 120], [30, 120]],
+         "total": 720, "personTotal": 720, "exceedsMonthlyCap": false, "daysExceedingDailyCap": []}
+      ]
+    }
+  ],
+  "tournament": [
+    {
+      "name": "a tournament's amount is spread over its days, the middle day taking the remainder",
+      "start": {"year": 2026, "month": 7, "day": 12, "hour": 9},
+      "end": {"year": 2026, "month": 7, "day": 14, "hour": 17},
+      "amount": 100,
+      "expected": [[12, 33], [13, 34], [14, 33]]
+    },
+    {
+      "name": "a two-day tournament splits evenly",
+      "start": {"year": 2026, "month": 7, "day": 12, "hour": 9},
+      "end": {"year": 2026, "month": 7, "day": 13, "hour": 17},
+      "amount": 60,
+      "expected": [[12, 30], [13, 30]]
+    }
+  ]
+}

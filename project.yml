@@ -19,10 +19,6 @@ packages:
   ZIPFoundation:
     url: https://github.com/weichsel/ZIPFoundation.git
     from: 0.9.0
-  # Shared Member/ClubMember record shape (audit.md Architecture Finding 5) —
-  # also depended on by RootCLI/Package.swift, see Shared/ClubSchema/Package.swift.
-  ClubSchema:
-    path: Shared/ClubSchema
   # Supabase Auth + PostgREST — accounts, roles and all club data (v0.3.0
   # replaced the CloudKit public database).
   Supabase:
@@ -44,7 +40,6 @@ targets:
           - ".claude/**"
     dependencies:
       - package: ZIPFoundation
-      - package: ClubSchema
       - package: Supabase
         product: Supabase
       - sdk: WidgetKit.framework
@@ -192,6 +187,9 @@ targets:
     deploymentTarget: "26.0"
     sources:
       - path: BlindensportGrazTests
+      # Report scenarios shared with the web UI's tests (PraeFixtureTest.java).
+      - path: Shared/ReportFixtures
+        buildPhase: resources
     dependencies:
       - target: BlindensportGraz
     settings:
