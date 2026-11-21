@@ -18,9 +18,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 
-/** The signed-in person's tokens for AI programs (MCP): create, see when they were used, revoke. */
+/** The signed-in person's tokens for AI programs (MCP) and the bsg command line tool: create, see use, revoke. */
 @Route(value = "mcp-tokens", layout = MainLayout.class)
-@PageTitle("KI-Zugang – Blindensport Graz")
+@PageTitle("Persönliche Tokens – Blindensport Graz")
 public class McpTokensView extends AdminView {
     private final McpTokens tokens;
     private final Grid<McpTokens.Info> grid = new Grid<>();
@@ -30,11 +30,11 @@ public class McpTokensView extends AdminView {
 
     @Inject
     public McpTokensView(AdminSessions sessions, McpTokens tokens) {
-        super(sessions, "KI-Zugang");
+        super(sessions, "Persönliche Tokens");
         this.tokens = tokens;
-        add(new Paragraph("Mit einem Token kann ein KI-Programm wie Claude Code in Ihrem Namen arbeiten: alles, was Ihr "
-                + "Konto darf, außer geschützte Daten sehen und Einträge löschen. Behandeln Sie es wie ein Passwort. "
-                + "Es gilt 90 Tage."));
+        add(new Paragraph("Mit einem Token kann ein Programm in Ihrem Namen arbeiten: ein KI-Programm wie Claude Code "
+                + "oder das Kommandozeilen-Programm bsg. Es darf alles, was Ihr Konto darf, außer geschützte Daten "
+                + "sehen und Einträge löschen. Behandeln Sie es wie ein Passwort. Es gilt 90 Tage."));
         label.setWidth("24rem");
         password.setWidth("24rem");
         issued.setWidthFull();

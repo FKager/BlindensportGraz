@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * One signed-in admin. Holds their Supabase tokens server-side (never sent
@@ -30,17 +31,41 @@ public final class AdminSession {
     private Instant lastChecked;
     private boolean ended;
     private boolean allowsPlainAccount;
+    /** Set for a personal token's request: its session belongs to {@link it.a11y.blindensport.webui.mcp.McpTokens}. */
+    private final Supplier<String> borrowedToken;
 
     public AdminSession(Supabase supabase, GoTrue.Tokens tokens, Access access) {
+        this(supabase, tokens.userId(), tokens.email(), tokens, access, null);
+    }
+
+    private AdminSession(Supabase supabase, UUID userId, String email, GoTrue.Tokens tokens, Access access,
+                         Supplier<String> borrowedToken) {
         this.supabase = supabase;
-        this.userId = tokens.userId();
-        this.email = tokens.email();
+        this.userId = userId;
+        this.email = email;
         this.tokens = tokens;
         this.access = access;
+        this.borrowedToken = borrowedToken;
         this.created = Instant.now();
         this.lastSeen = created;
         this.lastChecked = created;
         this.db = supabase.asUser(this::accessToken);
+    }
+
+    /**
+     * One REST request made with a personal token ({@code bsg_mcp_…}, e.g. the
+     * {@code bsg} command line tool). The token's Supabase session is
+     * refreshed and stored by McpTokens; this never refreshes or signs it out
+     * itself, or the stored session would stop working.
+     */
+    public static AdminSession forToken(Supabase supabase, UUID userId, String email, Access access,
+                                        Supplier<String> accessToken) {
+        return new AdminSession(supabase, userId, email, null, access, accessToken);
+    }
+
+    /** Made from a personal token rather than a sign-in. */
+    public boolean viaToken() {
+        return borrowedToken != null;
     }
 
     public UUID userId() {
@@ -92,6 +117,9 @@ public final class AdminSession {
         if (ended) {
             throw new SessionExpiredException();
         }
+        if (borrowedToken != null) {
+            return borrowedToken.get();
+        }
         if (Instant.now().plus(REFRESH_MARGIN).isAfter(tokens.expiresAt())) {
             GoTrue.Tokens fresh = supabase.auth().refresh(tokens.refreshToken()).orElse(null);
             if (fresh == null) {
@@ -136,6 +164,9 @@ public final class AdminSession {
                 return;
             }
             ended = true;
+            if (borrowedToken != null) {
+                return;
+            }
             token = tokens.accessToken();
         }
         supabase.auth().signOut(token);

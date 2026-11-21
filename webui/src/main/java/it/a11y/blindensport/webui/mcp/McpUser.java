@@ -6,13 +6,14 @@ import it.a11y.blindensport.webui.members.MemberStore;
 import it.a11y.blindensport.webui.supabase.Postgrest;
 
 import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * The person an MCP request acts for. All database work runs with their own
  * token (anon key + their JWT), so RLS and the RPCs decide what is allowed,
  * exactly as in the app. The MCP server has no rights of its own.
  */
-public record McpUser(UUID id, String email, Access access, Postgrest db) {
+public record McpUser(UUID id, String email, Access access, Postgrest db, Supplier<String> accessToken) {
     public boolean can(String permission) {
         return access.permissions().contains(permission);
     }

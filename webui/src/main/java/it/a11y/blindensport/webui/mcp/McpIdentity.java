@@ -64,7 +64,7 @@ public class McpIdentity {
         if (!access.canUseWebUi()) {
             return new Outcome(null, Refusal.NO_ACCESS);
         }
-        McpUser user = new McpUser(session.userId(), session.email(), access, db);
+        McpUser user = new McpUser(session.userId(), session.email(), access, db, live.get()::accessToken);
         if (cache.size() >= MAX_CACHED) {
             cache.entrySet().removeIf(e -> !e.getValue().until().isAfter(now));
             if (cache.size() >= MAX_CACHED) {

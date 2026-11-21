@@ -1,7 +1,7 @@
 # anatomy.md
 
-> Auto-maintained by OpenWolf. Last scanned: 2026-11-21T09:14:17.677Z
-> Files: 347 tracked | Anatomy hits: 0 | Misses: 0
+> Auto-maintained by OpenWolf. Last scanned: 2026-11-21T15:08:36.178Z
+> Files: 372 tracked | Anatomy hits: 0 | Misses: 0
 
 ## ../../../../private/tmp/claude-501/-Users-franz-dev-BlindensportGraz/2984f4bf-5d7b-4788-ad30-32ad8fdc94d7/scratchpad/
 
@@ -149,6 +149,10 @@
 
 - `webui-test.yml` — ", ".github/workflows/webui-test.yml"] (~271 tok)
 
+## .github/
+
+- `dependabot.yml` — weekly grouped updates for actions, webui Docker images and Maven (~150 tok)
+
 ## .github/workflows/
 
 - `ios-build-deploy.yml` — CI: iOS Build and Deploy (~6216 tok)
@@ -165,6 +169,15 @@
 
 ## .supergoal/ios-best-practices-review-vR4hEq/phases/
 
+
+## Added 2026-11-21 (review round 3)
+
+- `.github/workflows/rootcli-test.yml` — RootCLI + ClubSchema build/tests on change (~200 tok)
+- `BlindensportGraz/Features/Account/PasswordChangeStep.swift` — maps password-change errors to ask-for-code / code-rejected / failed (~250 tok)
+- `BlindensportGrazTests/PasswordChangeStepTests.swift` — reauthentication flow decisions (~350 tok)
+- `BlindensportGrazTests/ReportFixtureSupport.swift` — loads Shared/ReportFixtures, builds roster/context for fixture tests (~700 tok)
+- `RootCLI/Sources/RootCLICore/` — formerly CloudKitS2SCore: Supabase admin client, member store/import (~5000 tok)
+- `supabase/templates/reauthentication.html` — German email with the 6-digit password-change code (~250 tok)
 
 ## BlindensportGraz.xcodeproj/
 
@@ -331,11 +344,11 @@
 - `AccessClaims.swift` — / Fine-grained permissions, mirroring the `app_permission` enum in (~739 tok)
 - `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2448 tok)
 - `Binding+IsPresent.swift` (~138 tok)
-- `XMLText.swift` — XML text escape for generated .xlsx/.docx; drops XML-forbidden control chars (~300 tok)
 - `ExportShareButton.swift` — toolbar ShareLink for a prepared file; dimmed "nicht möglich" button + logged error on failure; `prepare(_:_:)` (~400 tok)
 - `SearchQuery.swift` — / How list searches match: ignoring case and accents ("muller" finds (~140 tok)
 - `Thumbnail.swift` — / Small display copies of stored photos. ImageIO reads only as much of the (~270 tok)
 - `ThumbnailImage.swift` — / Shows a stored photo as a thumbnail sized for its frame. The photo data is (~369 tok)
+- `XMLText.swift` — XML text escape for generated .xlsx/.docx; drops XML-forbidden control chars (~300 tok)
 
 ## BlindensportGraz/Supabase/
 
@@ -396,6 +409,12 @@
 - `TournamentInvitationLimitsTests.swift` — Class: TournamentInvitationLimitsTests (~834 tok)
 - `TrainingsfrequenzlisteCalculationTests.swift` — Class: TrainingsfrequenzlisteCalculationTests (~8176 tok)
 
+## BlindensportGrazTests/ (added 2026-11-21)
+
+- `PraeFixtureTests.swift` — runs Shared/ReportFixtures/prae.json against the Swift calculator (~1300 tok)
+- `TournamentInvitationLimitsTests.swift` — docx zip-bomb limit, attachmentProblem (~700 tok)
+- `XMLTextTests.swift` — XML escape incl. forbidden control chars (~150 tok)
+
 ## BlindensportGrazWidgets/
 
 
@@ -453,10 +472,18 @@
 ## Shared/ClubSchema/Tests/ClubSchemaTests/
 
 
+## Shared/ReportFixtures/
+
+- `prae.json` — PRAE scenarios read by both PraeFixtureTests.swift and PraeFixtureTest.java (~1400 tok)
+
 ## Web registration (2026-11-07)
 
 - `webui/.../club/PublicSchedule.java` — public_schedule read with no user (~400 tok)
 - `webui/.../ui/PublicHomeView.java` — Start page: upcoming events without an account (~800 tok)
+
+## cli/src/main/java/it/a11y/blindensport/bsg/
+
+- `Bsg.java` — bsg — Blindensport Graz on the command line. Works as the owner of a (~2891 tok)
 
 ## data/
 
@@ -518,6 +545,7 @@
 ## supabase/scripts/
 
 - `cutover.sh` — Club-data cutover (CloudKit -> Supabase) and push setup, for staging and prod. (~2103 tok)
+- `emergency-root.sql` — EMERGENCY ONLY: give one account the root role when no root can sign in (~594 tok)
 - `prod-readonly-check.sh` — Read-only checks against a Supabase project (default: prod). Writes nothing. (~932 tok)
 - `release-testflight.sh` — Tags main as <version>, waits for the TestFlight upload (iOS Build and (~669 tok)
 
@@ -541,6 +569,11 @@
 - `supabase/tests/account_admin_test.sql` — pgTAP 17 tests for block/unblock/delete (~1300 tok)
 - `tournament_invitations_test.sql` — Tournament documents (table tournament_invitations). Run with: supabase test db (~1151 tok)
 
+## webui tests (added 2026-11-21)
+
+- `PraeFixtureTest.java` — runs Shared/ReportFixtures/prae.json against the Java calculator (~1200 tok)
+- `XlsxPatchEscapeTest.java` — XML escape incl. forbidden control chars (~150 tok)
+
 ## webui/
 
 - `compose.traefik.yml` — webui behind an EXISTING Traefik (e.g. Coolify's coolify-proxy on nuc), (~562 tok)
@@ -553,6 +586,7 @@
 
 ## webui/src/main/java/it/a11y/blindensport/webui/api/
 
+- `AccountsResource.java` — App accounts over REST, for the {@code bsg} command line tool: (~1299 tok)
 - `ApiAuthFilter.java` — Everything under /api needs a signed-in admin, except signing in itself; (~563 tok)
 - `ApiException.java` — An API error answered as {@code {"error": true, "reason": "..."}} — the shape Vapor's Abort produced (~184 tok)
 - `ApiExceptionMappers.java` — Every API error as {@code {"error": true, "reason": "..."}} (admin-session.js and scripts read {@cod (~603 tok)
@@ -586,18 +620,18 @@
 
 ## webui/src/main/java/it/a11y/blindensport/webui/mcp/
 
-- `MemberTools.java` — MCP tools: whoami, list/get/create/update_member, list/create_team, add_team_member (~2500 tok)
-- `EventTools.java` — MCP tools: list_sports_and_event_types, list/get/create/update_event, set_attendance (~3200 tok)
-- `ReportTools.java` — MCP tools: preview_prae, create_prae_forms, create_tournament_reports (one-time McpFiles links) (~1600 tok)
-- `TournamentDocumentTools.java` — MCP tools: list/get/upload/delete_tournament_document (only delete tool, destructiveHint) (~1400 tok)
-- `McpToolSupport.java` — shared MCP argument parsing + result shapes; member results are an allow-list, protected data never returned (~3500 tok)
-- `McpToolRunner.java` — the one way into a tool: signed-in McpUser, German errors, data-free log line (~350 tok)
 - `AttendanceChange.java` — set_attendance argument record (~120 tok)
+- `EventTools.java` — MCP tools: list_sports_and_event_types, list/get/create/update_event, set_attendance (~3200 tok)
 - `McpAuthFilter.java` — Vert.x filter: /mcp needs a personal token (~500 tok)
 - `McpConfig.java` — webui.mcp.public-url (~100 tok)
 - `McpIdentity.java` — Token to McpUser via McpTokens + Access.load, cached 1 min (~600 tok)
 - `McpTokens.java` — Personal tokens: create, list, revoke, sealed Supabase session, refresh and rotation (~1800 tok)
+- `McpToolRunner.java` — the one way into a tool: signed-in McpUser, German errors, data-free log line (~350 tok)
+- `McpToolSupport.java` — shared MCP argument parsing + result shapes; member results are an allow-list, protected data never returned (~3500 tok)
 - `McpUser.java` — The person a request acts for; their own Postgrest (~200 tok)
+- `MemberTools.java` — MCP tools: whoami, list/get/create/update_member, list/create_team, add_team_member (~2500 tok)
+- `ReportTools.java` — MCP tools: preview_prae, create_prae_forms, create_tournament_reports (one-time McpFiles links) (~1600 tok)
+- `TournamentDocumentTools.java` — MCP tools: list/get/upload/delete_tournament_document (only delete tool, destructiveHint) (~1400 tok)
 
 ## webui/src/main/java/it/a11y/blindensport/webui/members/
 
@@ -606,6 +640,7 @@
 - `MemberApplication.java` — Beitrittserklärung contact fields (member_contacts) + read-only applied date; LABELS used by change requests (~900 tok)
 - `MemberBulkImport.java` — Bulk create-or-update of roster entries — same per-row rules as RootCLI's (~1010 tok)
 - `MemberBulkInput.java` — Loose, per-row-tolerant import row — the same JSON shape as the app's (~424 tok)
+- `MemberFillUpdate.java` — The non-destructive import ({@code POST /api/members/import?mode=fill}, (~2027 tok)
 - `MemberHealth.java` — disability + consents in member_private (merge upsert of only these columns) (~500 tok)
 - `MemberInput.java` — Body of POST/PUT /api/members (and what the Vaadin form produces): the (~1049 tok)
 - `MemberPrivate.java` — The protected part of a roster entry — SVNR, IBAN, birth date, last (~513 tok)
@@ -690,6 +725,7 @@
 - `SecurityHeadersTest.java` — security headers on Vaadin, API, calendar, MCP and 404 responses (~300 tok)
 - `SecurityHeadersTest.java` — Every kind of response carries the security headers from (~374 tok)
 - `SupabaseMock.java` — A WireMock stand-in for the Supabase project (GoTrue + PostgREST) during @QuarkusTest. (~213 tok)
+- `TokenApiTest.java` — The REST API with a personal token (the MCP tokens), as the {@code bsg} (~2388 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/auth/
 
@@ -735,33 +771,12 @@
 - `TournamentDocumentsTest.java` — Unit tests: content types, file-name cleaning, docx/pdf text (~700 tok)
 - `TrainingsfrequenzlisteViewTest.java` — Trainingsfrequenzliste page via Karibu against ReportsFixture (~900 tok)
 
-## Shared/ReportFixtures/
+## Added 2026-11-21 (bsg)
 
-- `prae.json` — PRAE scenarios read by both PraeFixtureTests.swift and PraeFixtureTest.java (~1400 tok)
-
-## BlindensportGrazTests/ (added 2026-11-21)
-
-- `TournamentInvitationLimitsTests.swift` — docx zip-bomb limit, attachmentProblem (~700 tok)
-- `XMLTextTests.swift` — XML escape incl. forbidden control chars (~150 tok)
-- `PraeFixtureTests.swift` — runs Shared/ReportFixtures/prae.json against the Swift calculator (~1300 tok)
-
-## webui tests (added 2026-11-21)
-
-- `PraeFixtureTest.java` — runs Shared/ReportFixtures/prae.json against the Java calculator (~1200 tok)
-- `XlsxPatchEscapeTest.java` — XML escape incl. forbidden control chars (~150 tok)
-
-## .github/
-
-- `dependabot.yml` — weekly grouped updates for actions, webui Docker images and Maven (~150 tok)
-
-## Added 2026-11-21 (review round 3)
-
-- `BlindensportGraz/Features/Account/PasswordChangeStep.swift` — maps password-change errors to ask-for-code / code-rejected / failed (~250 tok)
-- `BlindensportGrazTests/PasswordChangeStepTests.swift` — reauthentication flow decisions (~350 tok)
-- `BlindensportGrazTests/ReportFixtureSupport.swift` — loads Shared/ReportFixtures, builds roster/context for fixture tests (~700 tok)
-- `BlindensportGrazTests/KostZFixtureTests.swift` / `TrainingsfrequenzlisteFixtureTests.swift` — shared report scenarios, Swift side (~1500 tok each)
-- `webui/src/test/.../reports/KostZFixtureTest.java` / `TrainingsfrequenzlisteFixtureTest.java` — shared report scenarios, Java side (~1500 tok each)
-- `Shared/ReportFixtures/kostz.json`, `trainingsfrequenzliste.json` — shared scenarios (~900 tok each)
-- `supabase/templates/reauthentication.html` — German email with the 6-digit password-change code (~250 tok)
-- `.github/workflows/rootcli-test.yml` — RootCLI + ClubSchema build/tests on change (~200 tok)
-- `RootCLI/Sources/RootCLICore/` — formerly CloudKitS2SCore: Supabase admin client, member store/import (~5000 tok)
+- `cli/` — bsg command line tool: `Bsg.java` (picocli commands whoami, accounts list/set-role, members import [--fill]), `Api.java` (REST client, German errors), `Config.java` (URL/token resolution, token file chmod check), `BsgTest.java` (WireMock), `bsg` wrapper script, README (~4500 tok)
+- `webui/.../api/AccountsResource.java` — GET /api/accounts, PUT /api/accounts/{id|email}/role (~900 tok)
+- `webui/.../members/MemberFillUpdate.java` — fill-only import (mode=fill) (~1100 tok)
+- `webui/src/test/.../mcp/TokenApiTest.java` — REST with personal tokens: access, roles, no protected read, no delete (~1800 tok)
+- `webui/src/test/.../members/MemberFillUpdateTest.java`, `api/OpenApiTest.java` (~700 tok)
+- `supabase/scripts/emergency-root.sql` — make an account root when no root can sign in (dashboard SQL) (~450 tok)
+- `.github/workflows/bsg-test.yml` — bsg tests on cli/ changes (~150 tok)
