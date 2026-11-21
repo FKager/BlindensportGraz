@@ -19,7 +19,7 @@ struct TrainingDetailView: View {
      // Button-triggered second sheet" ShareLink convention as every other
      // export in this app (see CalendarEventExport's doc comment for why
      // .ics+ShareLink was chosen over EKEventStore).
-     @State private var icsURL: URL?
+     @State private var icsFile: Result<URL, any Error>?
 
     var isAdmin: Bool {
         (currentUser?.can(.clubManage) ?? false)
@@ -197,16 +197,13 @@ struct TrainingDetailView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                if let icsURL {
-                    ShareLink(item: icsURL) {
-                        Image(systemName: "calendar.badge.plus")
-                    }
-                    .accessibilityLabel("Zum Kalender hinzufügen")
-                }
+                ExportShareButton(file: icsFile, label: "Zum Kalender hinzufügen", systemImage: "calendar.badge.plus")
             }
         }
         .task(id: CalendarEventExport.fields(for: training)) {
-            icsURL = try? CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: training))
+            icsFile = ExportShareButton.prepare("Training calendar entry") {
+                try CalendarEventExport.icsFile(for: CalendarEventExport.fields(for: training))
+            }
         }
         .sheet(isPresented: $showRollCall) {
             AttendanceRollCallView(event: training)

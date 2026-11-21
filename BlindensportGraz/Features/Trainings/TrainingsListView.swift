@@ -21,7 +21,7 @@ struct TrainingsListView: View {
         // Same eager-generation + ShareLink convention as MembersListView's
         // import/export (see that view's doc comment) — a hand-rolled
         // "generate on tap" flow previously froze the app under VoiceOver.
-        @State private var exportURL: URL?
+        @State private var exportFile: Result<URL, any Error>?
         @State private var showImporter = false
         @State private var importResultMessage: String?
         // Filter option (user request 2026-09-16): "filtering option for
@@ -173,12 +173,7 @@ struct TrainingsListView: View {
                     .accessibilityLabel("Trainings importieren")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if let exportURL {
-                        ShareLink(item: exportURL) {
-                            Image(systemName: "square.and.arrow.up")
-                        }
-                        .accessibilityLabel("Trainings exportieren")
-                    }
+                    ExportShareButton(file: exportFile, label: "Trainings exportieren")
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showAdd = true } label: {
@@ -213,7 +208,7 @@ struct TrainingsListView: View {
             SammelabrechnungSeasonView()
         }
         .task(id: trainings.map(\.id)) {
-            exportURL = try? TrainingImportExport.exportFile(trainings: sortedTrainings)
+            exportFile = ExportShareButton.prepare("Trainings") { try TrainingImportExport.exportFile(trainings: sortedTrainings) }
         }
         .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
             handleImport(result)

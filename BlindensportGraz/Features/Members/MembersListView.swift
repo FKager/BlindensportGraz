@@ -33,7 +33,7 @@ struct MembersListView: View {
     // hand-rolled "generate on tap, then show a share sheet" flow is the
     // specific pattern that previously froze the app under VoiceOver.
     // ShareLink itself, pointed at an already-ready file, is the safe path.
-    @State private var exportURL: URL?
+    @State private var exportFile: Result<URL, any Error>?
     @State private var showImporter = false
     @State private var importResultMessage: String?
     // Roster edits are one of audit.md's two explicitly-prioritized areas
@@ -93,10 +93,7 @@ struct MembersListView: View {
                     .accessibilityLabel("Mitglieder importieren")
             }
             ToolbarItem(placement: .topBarTrailing) {
-                if let exportURL {
-                    ShareLink(item: exportURL) { Image(systemName: "square.and.arrow.up") }
-                        .accessibilityLabel("Mitglieder exportieren")
-                }
+                ExportShareButton(file: exportFile, label: "Mitglieder exportieren")
             }
         }
         .sheet(isPresented: $showAdd) {
@@ -115,7 +112,7 @@ struct MembersListView: View {
             Text(deletionError ?? "")
         }
         .task(id: members.map(\.id)) {
-            exportURL = try? MemberImportExport.exportFile(members: members)
+            exportFile = ExportShareButton.prepare("Members") { try MemberImportExport.exportFile(members: members) }
         }
         .fileImporter(isPresented: $showImporter, allowedContentTypes: [.json]) { result in
             handleImport(result)

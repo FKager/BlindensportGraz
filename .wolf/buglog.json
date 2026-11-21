@@ -10782,6 +10782,122 @@
       ],
       "occurrences": 1,
       "last_seen": "2026-11-10T22:32:10"
+    },
+    {
+      "id": "bug-640",
+      "timestamp": "2026-11-21T07:49:20.835Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "11 lines replaced/restructured",
+      "fix": "Rewrote 19→65 lines (11 removed) | Also: /// Permission/validation refusals — retrying can'; // 42501 RLS / privilege, 23xxx constraint violati",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-11-21T07:50:22.875Z"
+    },
+    {
+      "id": "bug-641",
+      "timestamp": "2026-11-21T07:49:57.405Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call | Also: // Kept for the next drain; the rows after it get a fresh to; if Self.isExpiredSession(error), !refreshedSession {",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 2,
+      "last_seen": "2026-11-21T07:50:28.408Z"
+    },
+    {
+      "id": "bug-642",
+      "timestamp": "2026-11-21T07:51:40.532Z",
+      "error_message": "Significant refactor of ",
+      "file": "BlindensportGraz/Features/Members/GVSCApplicationView.swift",
+      "root_cause": "3 lines replaced/restructured",
+      "fix": "Rewrote 15→21 lines (3 removed)",
+      "tags": [
+        "auto-detected",
+        "refactor",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T07:51:40.532Z"
+    },
+    {
+      "id": "bug-643",
+      "timestamp": "2026-11-21T07:52:30.219Z",
+      "error_message": "Missing await",
+      "file": "BlindensportGrazTests/SupabaseSyncRetryTests.swift",
+      "root_cause": "Async call without await — returned Promise instead of value",
+      "fix": "Added await to async call",
+      "tags": [
+        "auto-detected",
+        "async-fix",
+        "swift"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T07:52:30.219Z"
+    },
+    {
+      "id": "bug-644",
+      "timestamp": "2026-11-21T08:00:00.000Z",
+      "error_message": "Code review: a full pull could delete a row on the device when another row was edited during the pull (offset paging skipped one row, then the prune removed it)",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "fetchChanged paged with .range(offset) ordered by updated_at; an edited row moves to the end and shifts later rows back by one, so one row is never read; full pull prunes rows it did not read, incremental pull skips it for good",
+      "fix": "Keyset paging: PageKey (id + server's exact updated_at text), pageFilter or=(updated_at.gt.\"ts\",and(updated_at.eq.\"ts\",id.gt.id)), collectPages keeps the last copy of a row read twice. Verified against staging public_schedule. Tests: SupabaseSyncPagingTests",
+      "tags": [
+        "sync",
+        "pagination",
+        "prune",
+        "data-loss",
+        "postgrest"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T08:00:00.000Z"
+    },
+    {
+      "id": "bug-645",
+      "timestamp": "2026-11-21T08:00:00.000Z",
+      "error_message": "Code review: an edit was dropped from the outbox when the access token was expired (PGRST301 / Storage 'jwt expired' counted as a permanent refusal)",
+      "file": "BlindensportGraz/Sync/Supabase/SupabaseSync.swift",
+      "root_cause": "isDenied treated every PGRST3xx and Storage 400/401 as final; an expired JWT is transient",
+      "fix": "isExpiredSession (PGRST301, Storage message/error containing 'jwt') is never denied; performWithRetry and performDrain refresh the session (injectable refreshSession) and keep the row. Tests: SupabaseSyncRetryTests",
+      "tags": [
+        "sync",
+        "outbox",
+        "jwt",
+        "data-loss"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T08:00:00.000Z"
+    },
+    {
+      "id": "bug-646",
+      "timestamp": "2026-11-21T08:00:00.000Z",
+      "error_message": "Code review: GVSC application send failed silently when the document could not be built, saved via modelContext in the view; export/calendar share buttons vanished silently on failure",
+      "file": "BlindensportGraz/Features/Members/GVSCApplicationView.swift",
+      "root_cause": "guard let try? ... else return with no message; try? modelContext.save() bypassing MemberService; exportURL = try? ...",
+      "fix": "send() throws into showError (inline + VoiceOver announcement); MemberService.recordApplicationSent (local-only save via PersistenceService.runAndSignal); new Shared/ExportShareButton (dimmed 'nicht möglich' button with reason as hint, logged) in Teams/Members/Trainings lists and Training/Tournament detail",
+      "tags": [
+        "swiftui",
+        "accessibility",
+        "error-handling",
+        "silent-failure"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T08:00:00.000Z"
     }
   ]
 }

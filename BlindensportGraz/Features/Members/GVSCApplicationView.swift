@@ -149,7 +149,7 @@ struct GVSCApplicationView: View {
         do {
             docx = try GVSCApplicationDocument.makeDocx(data)
         } catch {
-            errorMessage = error.localizedDescription
+            showError(error)
         }
         if let photoUserID {
             photo = await SupabaseProfileService.downloadPhoto(userID: photoUserID)
@@ -164,25 +164,31 @@ struct GVSCApplicationView: View {
             try docx.write(to: url, options: .atomic)
             return url
         } catch {
-            errorMessage = error.localizedDescription
+            showError(error)
             return nil
         }
     }
 
     private func send() async {
-        // Rebuilt so it matches the data at the moment of sending.
-        guard let current = try? GVSCApplicationDocument.makeDocx(data) else { return }
         errorMessage = nil
         isSending = true
         defer { isSending = false }
         do {
+            // Rebuilt so it matches the data at the moment of sending.
+            let current = try GVSCApplicationDocument.makeDocx(data)
             let withPhoto = try await SupabaseMembershipApplicationService.send(memberID: member.id, docx: current,
                                                                                  ownPhoto: canEditPhoto)
-            member.gvscAppliedAt = .now
-            try? modelContext.save()
+            MemberService.recordApplicationSent(member, modelContext: modelContext)
             sentWithPhoto = withPhoto
         } catch {
-            errorMessage = error.localizedDescription
+            showError(error)
         }
+    }
+
+    /// Shown in the form and read out, as the message appears away from
+    /// the VoiceOver cursor.
+    private func showError(_ error: any Error) {
+        errorMessage = error.localizedDescription
+        AccessibilityNotification.Announcement(error.localizedDescription).post()
     }
 }

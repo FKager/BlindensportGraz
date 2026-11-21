@@ -44,6 +44,11 @@ final class SupabaseSync {
     private var handoverFailed = false
     /// Serializes the sends for each record (see `send`).
     private let pushQueue = RecordPushQueue()
+    /// Gets a fresh access token after the server called the current one
+    /// expired or invalid (replaceable in tests).
+    var refreshSession: @MainActor () async -> Void = {
+        _ = try? await SupabaseClientSingleton.shared.client.auth.refreshSession()
+    }
     init() {}
 
     // MARK: - Retry
@@ -73,7 +78,11 @@ final class SupabaseSync {
                     return .denied
                 }
                 guard attempt < backoffs.count else { break }
-                try? await Task.sleep(for: backoffs[attempt])
+                if Self.isExpiredSession(error) {
+                    await refreshSession()
+                } else {
+                    try? await Task.sleep(for: backoffs[attempt])
+                }
             }
         }
         logger.error("\(description, privacy: .public) failed after \(backoffs.count + 1) attempts: \(String(describing: lastError), privacy: .public)")
@@ -81,16 +90,33 @@ final class SupabaseSync {
         return .failed
     }
 
-    /// Permission/validation refusals — retrying can't help.
+    /// Permission/validation refusals — retrying can't help. An expired
+    /// or invalid access token is not one: a refreshed session sends the
+    /// same write fine, so it stays queued.
     nonisolated static func isDenied(_ error: Error) -> Bool {
         if error is FileUploadError { return true }
+        if isExpiredSession(error) { return false }
         if let error = error as? PostgrestError {
-            // 42501 RLS / privilege, 23xxx constraint violations, PGRST3xx JWT.
+            // 42501 RLS / privilege, 23xxx constraint violations, other PGRST3xx JWT problems.
             let code = error.code ?? ""
             return code == "42501" || code.hasPrefix("23") || code.hasPrefix("PGRST3")
         }
         if let error = error as? StorageError {
             return ["400", "401", "403", "413"].contains(error.statusCode ?? "")
+        }
+        return false
+    }
+
+    /// The server rejected the access token itself (expired, or signed with
+    /// a key it no longer accepts): PostgREST says PGRST301, Storage puts
+    /// "jwt" in its message (with status 400 or 401).
+    nonisolated static func isExpiredSession(_ error: Error) -> Bool {
+        if let error = error as? PostgrestError {
+            return error.code == "PGRST301"
+        }
+        if let error = error as? StorageError {
+            return error.message.localizedCaseInsensitiveContains("jwt")
+                || (error.error ?? "").localizedCaseInsensitiveContains("jwt")
         }
         return false
     }
@@ -275,6 +301,7 @@ final class SupabaseSync {
         guard let outboxContext else { return }
         let rows = PendingPush.all(in: outboxContext)
         guard !rows.isEmpty else { refreshPendingCount(); return }
+        var refreshedSession = false
 
         for row in rows where Self.outboxTables.contains(row.recordType) {
             // A send for this record is still queued or running; it owns the row.
@@ -305,6 +332,11 @@ final class SupabaseSync {
                 row.attemptCount += 1
                 row.lastAttemptAt = .now
                 row.lastError = String(describing: error)
+                // Kept for the next drain; the rows after it get a fresh token.
+                if Self.isExpiredSession(error), !refreshedSession {
+                    refreshedSession = true
+                    await refreshSession()
+                }
             }
         }
         try? outboxContext.save()
@@ -330,23 +362,69 @@ final class SupabaseSync {
     // MARK: - Fetch helpers
 
     /// Rows changed at/after `since` (all rows when nil), oldest first, paged.
+    /// Every selected column list must include `id` and `updated_at`.
     func fetchChanged<Row: Decodable & Sendable>(_ table: String, since: Date?,
                                                   columns: String = "*") async throws -> [Row] {
-        var collected: [Row] = []
-        let pageSize = 1000
-        var offset = 0
-        while true {
-            var query = client.from(table).select(columns)
-            if let since { query = query.gte("updated_at", value: Self.iso(Self.queryStart(after: since))) }
-            let page: [Row] = try await query
+        let start = since.map { Self.iso(Self.queryStart(after: $0)) }
+        let pageSize = Self.pageSize
+        return try await Self.collectPages(pageSize: pageSize) { after in
+            var query = self.client.from(table).select(columns)
+            if let start { query = query.gte("updated_at", value: start) }
+            if let after { query = query.or(Self.pageFilter(after: after)) }
+            return try await query
                 .order("updated_at", ascending: true)
                 .order("id", ascending: true)
-                .range(from: offset, to: offset + pageSize - 1)
-                .execute().value
-            collected += page
-            guard page.count == pageSize else { return collected }
-            offset += pageSize
+                .limit(pageSize)
+                .execute().data
         }
+    }
+
+    nonisolated static let pageSize = 1000
+
+    /// The last row of a page: where the next page starts.
+    nonisolated struct PageKey: Decodable, Equatable, Sendable {
+        let id: UUID
+        /// The server's own text, so microseconds survive (a `Date` printed
+        /// back would lose them and match the wrong rows).
+        let updatedAt: String
+
+        enum CodingKeys: String, CodingKey {
+            case id
+            case updatedAt = "updated_at"
+        }
+    }
+
+    /// Rows after `key` in `updated_at, id` order. Pages continue from the
+    /// last row read, not by count: a row edited during the pull moves to
+    /// the end, which with offsets shifted the rest back and skipped one —
+    /// and a full pull then deleted the skipped row on this device.
+    nonisolated static func pageFilter(after key: PageKey) -> String {
+        let stamp = "\"\(key.updatedAt)\""
+        let id = key.id.uuidString.lowercased()
+        return "updated_at.gt.\(stamp),and(updated_at.eq.\(stamp),id.gt.\(id))"
+    }
+
+    /// Reads pages until one comes back short. A row edited mid-pull can be
+    /// read twice (old and new version); only its last copy is kept.
+    static func collectPages<Row: Decodable>(
+        pageSize: Int, fetchPage: (PageKey?) async throws -> Data
+    ) async throws -> [Row] {
+        let decoder = PostgrestClient.Configuration.jsonDecoder
+        var rows: [Row] = []
+        var ids: [UUID] = []
+        var after: PageKey?
+        while true {
+            let data = try await fetchPage(after)
+            let page = try decoder.decode([Row].self, from: data)
+            let keys = try decoder.decode([PageKey].self, from: data)
+            rows += page
+            ids += keys.map(\.id)
+            guard keys.count == pageSize, let last = keys.last, last != after else { break }
+            after = last
+        }
+        var lastIndex: [UUID: Int] = [:]
+        for (index, id) in ids.enumerated() { lastIndex[id] = index }
+        return rows.indices.filter { lastIndex[ids[$0]] == $0 }.map { rows[$0] }
     }
 
     /// How far before the cursor an incremental pull starts. The server
