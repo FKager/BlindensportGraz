@@ -45,8 +45,16 @@ enum SupabaseAuthService {
         try await auth.resetPasswordForEmail(email)
     }
 
-    static func updatePassword(_ newPassword: String) async throws {
-        _ = try await auth.update(user: UserAttributes(password: newPassword))
+    /// `nonce` is the code from the confirmation email, needed when the
+    /// server asks to confirm the change (secure_password_change: no
+    /// sign-in within the last 24 hours).
+    static func updatePassword(_ newPassword: String, nonce: String? = nil) async throws {
+        _ = try await auth.update(user: UserAttributes(password: newPassword, nonce: nonce))
+    }
+
+    /// Mails the signed-in account a one-time code to confirm a password change.
+    static func sendReauthenticationCode() async throws {
+        try await auth.reauthenticate()
     }
 
     // Confirmation and recovery links open blindensportgraz://auth-callback.

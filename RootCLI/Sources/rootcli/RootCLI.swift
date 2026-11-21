@@ -1,5 +1,5 @@
 import Foundation
-import CloudKitS2SCore
+import RootCLICore
 
 @main
 struct RootCLI {

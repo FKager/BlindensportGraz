@@ -79,7 +79,7 @@ struct TrainingsfrequenzlisteSummary {
     let year: Int
     let trainingDates: [Date] // sorted ascending, capped at maxDateColumns
     let people: [TrainingsfrequenzlistePerson] // Sportler first then Übungsleiter/Helfer, each block by lastName, capped at maxPersonRows
-    let teams: [Team] // every team assigned to a training in this period, in first-seen order
+    let teams: [Team] // every team assigned to a training in this period, in the order of its first training
 
     // "Sportart:"/"Trainingszeiten:"/"Sportstätte:" header fields — all taken
     // from whichever period training is chronologically earliest
@@ -156,9 +156,11 @@ enum TrainingsfrequenzlisteCalculator {
         // still belongs to the assigned teams and their attendees, just
         // unioned across however many teams train this sport in the period
         // (mirrors TrainingDetailView.allMemberships' team-union approach).
+        // By date, so the teams come in the order of their first training,
+        // as in the web UI (a fetch has no order of its own).
         var seenTeamIDs = Set<UUID>()
         var assignedTeams: [Team] = []
-        for training in periodTrainings {
+        for training in periodTrainings.sorted(by: { $0.startDate < $1.startDate }) {
             for team in training.teams where seenTeamIDs.insert(team.id).inserted {
                 assignedTeams.append(team)
             }

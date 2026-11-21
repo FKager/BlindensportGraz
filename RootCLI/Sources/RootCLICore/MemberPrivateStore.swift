@@ -69,8 +69,8 @@ public struct MemberPrivateStore: Sendable {
         self.supabase = supabase
     }
 
-    /// Every row, keyed by uppercased member id (CloudKit record names are
-    /// uppercase UUIDs, Postgres returns lowercase).
+    /// Every row, keyed by uppercased member id (the app's UUIDs print
+    /// uppercase, Postgres returns lowercase).
     public func all() async throws -> [String: MemberPrivate] {
         let rows = try await supabase.select(table: "member_private",
                                              columns: "member_id,svnr,iban,birth_date,last_medical_examination")
@@ -102,17 +102,6 @@ public struct MemberPrivateStore: Sendable {
         try await supabase.delete(table: "member_private", filters: [("member_id", "eq.\(id)")])
     }
 
-    /// Puts back what was stored before a write whose CloudKit half then
-    /// failed (`previous` nil = there was no row). Best effort: the CloudKit
-    /// error is what the caller reports.
-    public func restore(memberID: String, previous: MemberPrivate?) async {
-        if let previous {
-            try? await save(memberID: memberID, previous)
-        } else {
-            try? await delete(memberID: memberID)
-        }
-    }
-
     private static func key(_ memberID: String) -> String? {
         UUID(uuidString: memberID).map { $0.uuidString.lowercased() }
     }
@@ -125,26 +114,5 @@ extension MemberBulkInput {
                       iban: (iban ?? "").trimmingCharacters(in: .whitespaces),
                       birthDate: MemberBulkImport.parseFlexibleDate(birthDate),
                       lastMedicalExamination: MemberBulkImport.parseFlexibleDate(lastMedicalExamination))
-    }
-}
-
-/// Guard for the generic record tool (`rootcli record set`): protected member fields and the account record types
-/// moved to Supabase in v0.2.0 and must not be written to CloudKit again.
-public enum CloudKitWriteGuard {
-    static let memberTypes: Set<String> = ["ClubMember", "MemberChangeRequest"]
-    static let retiredTypes: Set<String> = ["UserIdentity", "RoleAssignment", "AccountApproval", "RoleChangeLog"]
-
-    /// Throws if writing `fieldNames` to `recordType` would put data back
-    /// into CloudKit that now lives in Supabase.
-    public static func check(recordType: String, fieldNames: some Sequence<String>) throws {
-        if retiredTypes.contains(recordType) {
-            throw CLIError.message("\(recordType) is no longer stored in CloudKit — accounts, roles and approvals live in Supabase.")
-        }
-        if memberTypes.contains(recordType) {
-            let blocked = Set(fieldNames).intersection(MemberPrivate.fieldNames)
-            if !blocked.isEmpty {
-                throw CLIError.message("\(blocked.sorted().joined(separator: ", ")) must not be stored in CloudKit — protected member data lives in Supabase (member_private).")
-            }
-        }
     }
 }

@@ -228,9 +228,10 @@ double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
 enable_confirmations = true
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
-# Off: password changes need an active session; with it on, any session older
-# than 24h would need an emailed re-auth code first.
-secure_password_change = false
+# On since 2026-11-21: a session without a sign-in in the last 24h needs the
+# emailed code (templates/reauthentication.html) to set a new password, so a
+# phone left signed in can't change it alone. Reset links count as a sign-in.
+secure_password_change = true
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
 max_frequency = "60s"
 # Number of characters used in the email OTP.
@@ -262,6 +263,10 @@ content_path = "./supabase/templates/recovery.html"
 [auth.email.template.email_change]
 subject = "Blindensport Graz: Neue E-Mail-Adresse bestätigen"
 content_path = "./supabase/templates/email_change.html"
+
+[auth.email.template.reauthentication]
+subject = "Blindensport Graz: Bestätigungscode für dein neues Passwort"
+content_path = "./supabase/templates/reauthentication.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]

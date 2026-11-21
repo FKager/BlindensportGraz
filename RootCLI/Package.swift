@@ -12,23 +12,23 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "CloudKitS2SCore",
+            name: "RootCLICore",
             dependencies: [
                 .product(name: "ClubSchema", package: "ClubSchema")
             ],
-            path: "Sources/CloudKitS2SCore"
+            path: "Sources/RootCLICore"
         ),
         .executableTarget(
             name: "rootcli",
-            dependencies: ["CloudKitS2SCore"],
+            dependencies: ["RootCLICore"],
             path: "Sources/rootcli"
         ),
-        // Covers CloudKitS2SCore's pure logic (member import/fill, private rows) —
+        // Covers RootCLICore's pure logic (member import/fill, private rows) —
         // no network. Mirrors Shared/ClubSchema's Tests target.
         .testTarget(
-            name: "CloudKitS2SCoreTests",
-            dependencies: ["CloudKitS2SCore"],
-            path: "Tests/CloudKitS2SCoreTests"
+            name: "RootCLICoreTests",
+            dependencies: ["RootCLICore"],
+            path: "Tests/RootCLICoreTests"
         )
     ]
 )

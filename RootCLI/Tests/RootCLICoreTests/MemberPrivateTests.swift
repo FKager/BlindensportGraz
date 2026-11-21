@@ -1,5 +1,5 @@
 import XCTest
-@testable import CloudKitS2SCore
+@testable import RootCLICore
 
 /// Protected member data (svnr, iban, birthDate, lastMedicalExamination)
 /// lives only in Supabase `member_private` — these check the row format and
@@ -39,10 +39,4 @@ final class MemberPrivateTests: XCTestCase {
         XCTAssertEqual(MemberPrivate().row(updatedBy: admin)["updated_by"] as? String, admin.uuidString.lowercased())
     }
 
-    func testWriteGuardBlocksProtectedFieldsAndRetiredTypes() {
-        XCTAssertThrowsError(try CloudKitWriteGuard.check(recordType: "ClubMember", fieldNames: ["firstName", "iban"]))
-        XCTAssertThrowsError(try CloudKitWriteGuard.check(recordType: "UserIdentity", fieldNames: ["email"]))
-        XCTAssertNoThrow(try CloudKitWriteGuard.check(recordType: "ClubMember", fieldNames: ["firstName", "city"]))
-        XCTAssertNoThrow(try CloudKitWriteGuard.check(recordType: "Training", fieldNames: ["svnr"]))
-    }
 }

@@ -1,0 +1,54 @@
+{
+  "_comment": "Trainingsfrequenzliste scenarios read by BOTH calculators: TrainingsfrequenzlisteFixtureTests.swift (app) and TrainingsfrequenzlisteFixtureTest.java (web UI). Times are Austrian local time. Nobody here is on two teams: there the two differ on purpose (the web UI ticks either team's training).",
+  "people": [
+    {"id": "anna", "first": "Anna", "last": "Berger", "gender": "f"},
+    {"id": "erika", "first": "Erika", "last": "Muster", "gender": "f"},
+    {"id": "bernd", "first": "Bernd", "last": "Albrecht", "gender": "m"},
+    {"id": "zoe", "first": "Zoe", "last": "Zach", "gender": "f"},
+    {"id": "fritz", "first": "Fritz", "last": "Fuß", "gender": "m"}
+  ],
+  "teams": [
+    {"id": "damen", "name": "Torball Damen", "sport": "Torball"},
+    {"id": "herren", "name": "Torball Herren", "sport": "Torball"},
+    {"id": "goal", "name": "Goalball", "sport": "Goalball"}
+  ],
+  "memberships": [
+    {"id": "m-anna", "team": "damen", "person": "anna", "role": "player"},
+    {"id": "m-erika", "team": "damen", "person": "erika", "role": "coach"},
+    {"id": "m-bernd", "team": "herren", "person": "bernd", "role": "assistant"},
+    {"id": "m-zoe", "team": "herren", "person": "zoe", "role": "player"},
+    {"id": "m-fritz", "team": "goal", "person": "fritz", "role": "player"}
+  ],
+  "scenarios": [
+    {
+      "name": "first half year: players first, then helpers, each by last name; cancelled, other sports and the second half left out",
+      "sport": "Torball", "half": 1, "year": 2026,
+      "trainings": [
+        {"id": "t2", "title": "Torball Herren", "location": "Halle B", "month": 3, "day": 10, "hour": 17, "teams": ["herren"]},
+        {"id": "t1", "title": "Torball Training", "location": "ODIUM", "month": 1, "day": 7, "hour": 17, "teams": ["damen"]},
+        {"id": "tc", "title": "Torball Training", "location": "ODIUM", "month": 2, "day": 4, "hour": 17, "teams": ["damen"], "status": "cancelled"},
+        {"id": "g1", "title": "Goalball", "location": "Halle G", "month": 2, "day": 1, "hour": 10, "teams": ["goal"], "sport": "Goalball"},
+        {"id": "t7", "title": "Sommer", "location": "Halle C", "month": 7, "day": 1, "hour": 17, "teams": ["damen"]}
+      ],
+      "attendances": [
+        {"event": "t1", "membership": "m-anna", "attended": true},
+        {"event": "t1", "membership": "m-erika", "attended": true},
+        {"event": "t2", "membership": "m-bernd", "attended": true},
+        {"event": "t2", "membership": "m-zoe", "attended": false},
+        {"event": "tc", "membership": "m-anna", "attended": true},
+        {"event": "g1", "membership": "m-fritz", "attended": true}
+      ],
+      "expected": {
+        "dates": ["2026-01-07", "2026-03-10"],
+        "title": "Torball Training", "location": "ODIUM",
+        "teams": ["Torball Damen", "Torball Herren"],
+        "people": [
+          {"last": "Berger", "roleSuffix": null, "attended": ["2026-01-07"]},
+          {"last": "Zach", "roleSuffix": null, "attended": []},
+          {"last": "Albrecht", "roleSuffix": "Helfer", "attended": ["2026-03-10"]},
+          {"last": "Muster", "roleSuffix": "Übungsleiterin", "attended": ["2026-01-07"]}
+        ]
+      }
+    }
+  ]
+}

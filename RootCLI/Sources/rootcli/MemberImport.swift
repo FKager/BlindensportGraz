@@ -1,9 +1,9 @@
 import Foundation
-import CloudKitS2SCore
+import RootCLICore
 
 /// File-loading half of `import-members`/`update-members` — the per-row
 /// decode shape and the actual create-or-replace/fill logic now live in
-/// `CloudKitS2SCore.MemberBulkImport`/`MemberFillUpdate`; webui's
+/// `RootCLICore.MemberBulkImport`/`MemberFillUpdate`; webui's
 /// `POST /api/members/import` (Java) applies the same per-row rules.
 enum MemberImport {
     static func loadRecords(from path: String) throws -> [MemberBulkInput] {

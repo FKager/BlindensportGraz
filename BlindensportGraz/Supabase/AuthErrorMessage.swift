@@ -18,8 +18,10 @@ nonisolated enum AuthErrorMessage {
                 return String(localized: "Zu viele E-Mails in kurzer Zeit. Bitte versuche es später noch einmal.")
             case .samePassword:
                 return String(localized: "Das neue Passwort muss sich vom bisherigen unterscheiden.")
-            case .reauthenticationNeeded, .reauthenticationNotValid:
+            case .reauthenticationNeeded:
                 return String(localized: "Bitte melde dich erneut an und ändere dann das Passwort.")
+            case .reauthenticationNotValid:
+                return String(localized: "Der Bestätigungscode stimmt nicht oder ist abgelaufen. Bitte fordere einen neuen Code an.")
             case .userBanned:
                 return String(localized: "Dieses Konto ist gesperrt. Bitte wende dich an den Verein.")
             case .sessionNotFound, .sessionExpired:
