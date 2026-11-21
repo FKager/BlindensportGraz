@@ -331,7 +331,6 @@
 - `AccessClaims.swift` — / Fine-grained permissions, mirroring the `app_permission` enum in (~739 tok)
 - `AuthContext.swift` — / The signed-in account, its role and permissions — the one place views ask (~2448 tok)
 - `Binding+IsPresent.swift` (~138 tok)
-- `ExportShareButton.swift` — / Toolbar share button for a file the screen prepares ahead of time (~421 tok)
 - `SearchQuery.swift` — / How list searches match: ignoring case and accents ("muller" finds (~140 tok)
 - `Thumbnail.swift` — / Small display copies of stored photos. ImageIO reads only as much of the (~270 tok)
 - `ThumbnailImage.swift` — / Shows a stored photo as a thumbnail sized for its frame. The photo data is (~369 tok)
@@ -378,7 +377,6 @@
 - `CatalogTests.swift` — Picker options, typeName, EventDBRow event_type encode/decode (~1100 tok)
 - `CatalogTests.swift` — Class: CatalogTests (~1378 tok)
 - `EventListAccessTests.swift` — Class: EventListAccessTests (~1218 tok)
-- `ExportShareButtonTests.swift` — Struct: DiskFull (~236 tok)
 - `GVSCApplicationDocumentTests.swift` — fills the real template; checks XML well-formed, field values, samples cleared, JA/NEIN marks, guardian, file name (~1500 tok)
 - `GVSCApplicationDocumentTests.swift` — Class: GVSCApplicationDocumentTests (~1950 tok)
 - `InflectionTests.swift` — Class: InflectionTests (~276 tok)
@@ -388,7 +386,6 @@
 - `ReportPrinterTests.swift` — all 5 report templates render to PDF; combined job page count = sum of singles (~500 tok)
 - `SearchQueryTests.swift` — Class: SearchQueryTests (~271 tok)
 - `SupabaseRowsTests.swift` — Class: SupabaseRowsTests (~1311 tok)
-- `SupabaseSyncPagingTests.swift` — Struct: Row (~1230 tok)
 - `SupabaseSyncPullTests.swift` — Struct: Row (~841 tok)
 - `SupabaseSyncPagingTests.swift` — keyset paging of fetchChanged against a fake table (edit mid-pull, same timestamps) (~1300 tok)
 - `ExportShareButtonTests.swift` — ExportShareButton.prepare keeps errors/files (~250 tok)
@@ -568,7 +565,9 @@
 - `AdminSession.java` — One signed-in admin. Holds their Supabase tokens server-side (never sent (~942 tok)
 - `AdminSessions.java` — Sign-in and the in-memory session table shared by the REST API (token in (~1525 tok)
 - `LoginAttemptLimiter.java` — In-memory sliding-window limiter for failed sign-ins (REST and Vaadin (~567 tok)
+- `SecurityHeaders.java` — Vert.x filter adding HSTS, CSP (frame-ancestors etc.), nosniff, Referrer-Policy to every response (~350 tok)
 - `Permission.java` — {@code public.app_permission} values (supabase/migrations/20261008000001_rbac.sql). (~354 tok)
+- `SecurityHeaders.java` — Security headers on every response, whichever proxy is in front (Traefik (~480 tok)
 - `SessionExpiredException.java` — The admin's session ended: timed out, signed out, or Supabase no longer accepts it. (~85 tok)
 - `SignInException.java` — A refused sign-in, with the HTTP status the REST API answers and a German message. (~106 tok)
 
@@ -673,13 +672,15 @@
 
 ## webui/src/main/resources/
 
-- `application.properties` — Supabase project the web admin works on. Admins act with their OWN (~401 tok)
+- `application.properties` — Supabase project the web UI works on. Admins act with their OWN (~594 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/api/
 
 - `ApiTest.java` — The REST contract of the Swift server (session, CSRF, members CRUD, (~4269 tok)
+- `SecurityHeadersTest.java` — security headers on Vaadin, API, calendar, MCP and 404 responses (~300 tok)
 - `ReportsApiTest.java` — /api/reports against a mocked Supabase: permissions, JSON and the files. (~3416 tok)
 - `ReportsFixture.java` — Shared Supabase stubs for invoicing tests: admin/kassa/coach accounts, a Prague tournament, a March training (~1500 tok)
+- `SecurityHeadersTest.java` — Every kind of response carries the security headers from (~374 tok)
 - `SupabaseMock.java` — A WireMock stand-in for the Supabase project (GoTrue + PostgREST) during @QuarkusTest. (~213 tok)
 
 ## webui/src/test/java/it/a11y/blindensport/webui/auth/

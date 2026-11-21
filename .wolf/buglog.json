@@ -10898,6 +10898,41 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-21T08:00:00.000Z"
+    },
+    {
+      "id": "bug-647",
+      "timestamp": "2026-11-21T09:00:00.000Z",
+      "error_message": "Code review: bs.a11y.it sent no HSTS, CSP, nosniff or Referrer-Policy; first attempt via quarkus.http.header.* left Vaadin pages (/login) and 404s without them (SecurityHeadersTest: expected max-age=... but was null)",
+      "file": "webui/src/main/java/it/a11y/blindensport/webui/auth/SecurityHeaders.java",
+      "root_cause": "No headers configured anywhere; Quarkus' header config only covers Vert.x/RESTEasy routes, not the Undertow servlet Vaadin runs on",
+      "fix": "Vert.x filter SecurityHeaders (priority 1000, addHeadersEndHandler) sets the four headers on every response; SecurityHeadersTest covers /login, /api/session, /calendar, /mcp (401) and 404",
+      "tags": [
+        "webui",
+        "security",
+        "headers",
+        "vaadin",
+        "quarkus"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T09:00:00.000Z"
+    },
+    {
+      "id": "bug-648",
+      "timestamp": "2026-11-21T09:00:00.000Z",
+      "error_message": "Code review: ClubStore sport/event-type fallbacks and TournamentDocuments file cleanups swallowed exceptions without logging",
+      "file": "webui/src/main/java/it/a11y/blindensport/webui/club/ClubStore.java",
+      "root_cause": "catch (RuntimeException) returned a fallback / ignored the error with no log line, hiding database or permission problems",
+      "fix": "LOG.warnf in ClubStore.sportNames/eventTypeNames and both TournamentDocuments cleanup catches (orphaned storage files)",
+      "tags": [
+        "webui",
+        "logging",
+        "error-handling",
+        "silent-failure"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-21T09:00:00.000Z"
     }
   ]
 }
