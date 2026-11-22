@@ -12,11 +12,8 @@ struct MemberListView: View {
     // "Berichte" menu), so neither passes an exportContext and this view
     // stays roster-only for them.
     var exportContext: TeilnehmerlisteContext? = nil
-    // Restricts the displayed/exported roster to memberships matching this
-    // predicate — used by TournamentDetailView's "Teilnehmer Sportler" /
-    // "Teilnehmer Helfer" Berichte entries to split one combined member list
-    // into a role-based pair, each with its own Sport-Austria Excel export.
-    // Events/Trainings don't pass one, so they keep showing everyone.
+    // Restricts the displayed roster to memberships matching this predicate
+    // (not used with an exportContext: then the list is the exported people).
     var membershipFilter: (TeamMembership) -> Bool = { _ in true }
     // "Mitglieder" for the plain Events/Trainings roster; TournamentDetailView
     // overrides this to "Teilnehmer Sportler"/"Teilnehmer Helfer" for its
@@ -49,8 +46,29 @@ struct MemberListView: View {
         }
     }
 
+    /// What the sheet shows. With a TeilnehmerInnenliste export, exactly the
+    /// people in the file (TeilnehmerlisteExporter.sportler/helfer), so the
+    /// list read before exporting is the one exported; otherwise the rosters.
+    private var sections: [(team: Team, memberships: [TeamMembership])] {
+        guard let exportContext else { return dedupedMembershipsByTeam }
+        return Self.sections(teams: teams, people: exportContext.attendedMemberships)
+    }
+
+    /// `people` grouped by the team of their membership: the given teams
+    /// first, in their order (also when empty), then any other team someone
+    /// was present through; each section by last name.
+    static func sections(teams: [Team], people: [TeamMembership]) -> [(team: Team, memberships: [TeamMembership])] {
+        var order = teams
+        for membership in people where !order.contains(where: { $0.id == membership.team.id }) {
+            order.append(membership.team)
+        }
+        return order.map { team in
+            (team, people.filter { $0.team.id == team.id }.sortedByLastName())
+        }
+    }
+
     private var exportText: String {
-        dedupedMembershipsByTeam.map { team, memberships in
+        sections.map { team, memberships in
             let names = memberships.map(\.displayName)
             let noMembers = String(localized: "Keine Mitglieder")
             let lines = names.isEmpty ? noMembers : names.map { "- \($0)" }.joined(separator: "\n")
@@ -61,12 +79,12 @@ struct MemberListView: View {
     var body: some View {
         NavigationStack {
             List {
-                if teams.isEmpty {
+                if sections.isEmpty {
                     ContentUnavailableView("Kein Team zugeordnet",
                                            systemImage: "person.3",
                                            description: Text("Diesem Eintrag ist kein Team zugewiesen."))
                 } else {
-                    ForEach(dedupedMembershipsByTeam, id: \.team.id) { team, memberships in
+                    ForEach(sections, id: \.team.id) { team, memberships in
                         Section(team.name) {
                             if memberships.isEmpty {
                                 Text("Keine Mitglieder")
@@ -119,7 +137,7 @@ struct MemberListView: View {
             .navigationTitle("\(kindLabel) – \(itemName)")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if !teams.isEmpty {
+                if !sections.isEmpty {
                     ToolbarItem(placement: .topBarTrailing) {
                         ShareLink(item: exportText)
                     }

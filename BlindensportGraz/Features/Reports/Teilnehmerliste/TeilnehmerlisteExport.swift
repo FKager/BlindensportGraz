@@ -119,7 +119,11 @@ enum TeilnehmerlisteExporter {
         return result.sortedByLastName()
     }
 
-    /// Players go on the Sportler list (role player only, see TournamentDetailView).
+    /// Players go on the Sportler list: role `.player` only, NOT "not a
+    /// helper". A role this app doesn't know (e.g. "Trainer" typed into an
+    /// imported spreadsheet) becomes `.other`, which must stay off the
+    /// Sportler list; `!isHelfer` would let it in (audit.md Architecture
+    /// Finding 3).
     static func sportler(of event: SportEvent) -> [TeamMembership] {
         attendedMemberships(of: event).filter { $0.role == .player }
     }

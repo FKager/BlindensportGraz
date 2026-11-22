@@ -51,31 +51,6 @@ struct TournamentDetailView: View {
         TeilnehmerlisteExporter.attendedMemberships(of: tournament)
     }
 
-    // Splits the combined roster the old single "Mitgliederliste" used to
-    // show into the two roles the Berichte menu's "Teilnehmer Sportler" /
-    // "Teilnehmer Helfer" entries each export separately (two Sport-Austria
-    // Excel files instead of one mixed one) — mirrors the PRAE-eligibility
-    // role check above (role "coach"/"assistant" = Helfer).
-    private func isHelfer(_ membership: TeamMembership) -> Bool {
-        membership.role.isHelfer
-    }
-
-    // "Teilnehmer Sportler" must only include role == .player — NOT simply
-    // "!isHelfer" — even now that TeamMembership.role is the closed
-    // MembershipRole enum (Phase 7), an unrecognized stored value normalizes
-    // to `.other(String)` (see MembershipRole.swift), which `isHelfer` (and
-    // this check) both correctly treat as "not player" — but `!isHelfer`
-    // would WRONGLY treat it as Sportler. Excel import
-    // (TeamImportExport.importMembership) writes whatever string a
-    // spreadsheet row has, so a mistyped/unexpected role (e.g. "Trainer"
-    // instead of "coach") lands in `.other` — this explicit `== .player`
-    // check is what keeps it out of the Sportler roster; `!isHelfer` alone
-    // would have let it slip in, which is the original confirmed bug this
-    // check exists to prevent (audit.md Architecture Finding 3).
-    private func isSportler(_ membership: TeamMembership) -> Bool {
-        membership.role == .player
-    }
-
     // Live check against the club's name + Sportart + Zeitpunkt uniqueness
     // rule — this screen edits `tournament` through bindings with no explicit
     // save step, so a hard block isn't possible here; instead warn inline the
@@ -293,7 +268,6 @@ var body: some View {
                 attendedMemberships: TeilnehmerlisteExporter.sportler(of: tournament),
                 fileNamePrefix: "TN-Sportler"
             ),
-            membershipFilter: { isSportler($0) && attendance(for: $0)?.attended == true },
             kindLabel: "Teilnehmer Sportler"
         )
     }
@@ -309,7 +283,6 @@ var body: some View {
                 attendedMemberships: TeilnehmerlisteExporter.helfer(of: tournament),
                 fileNamePrefix: "TN-Helfer"
             ),
-            membershipFilter: { isHelfer($0) && attendance(for: $0)?.attended == true },
             kindLabel: "Teilnehmer Helfer"
         )
     }
