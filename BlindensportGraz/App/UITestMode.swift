@@ -6,7 +6,7 @@ import SwiftData
 /// see the same screens on every Mac and in CI. Signed out by default;
 /// - `-ui-testing-sample-schedule`: two upcoming entries in the schedule
 /// - `-ui-testing-signed-in`: signed in as a sample admin (local only, no
-///   token; the server would refuse anything) with a sample team and member.
+///   token; the server would refuse anything) with a sample team, member and event.
 /// Debug builds only; a TestFlight / App Store build ignores all of them.
 enum UITestMode {
     nonisolated static var isActive: Bool {
@@ -50,6 +50,11 @@ enum UITestMode {
             context.insert(member)
             context.insert(TeamMembership(user: admin, team: team, role: .coach))
             context.insert(TeamMembership(member: member, team: team))
+            let party = SportEvent(title: "Vereinsfeier", sport: "", location: "Graz",
+                                   startDate: tomorrow.addingTimeInterval(14 * 86_400),
+                                   endDate: tomorrow.addingTimeInterval(14 * 86_400 + 3 * 3_600))
+            party.kind = "event"
+            context.insert(party)
         }
         try? context.save()
     }

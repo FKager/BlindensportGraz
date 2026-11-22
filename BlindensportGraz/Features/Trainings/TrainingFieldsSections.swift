@@ -17,7 +17,7 @@ struct TrainingFieldsSections: View {
         Section(heading: "Planung") {
             DatePicker("Start", selection: $training.startDate)
                 .onChange(of: training.startDate) { training.recomputeEndDate() }
-            Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
+            NumberPicker("Dauer", value: $training.durationMinutes, values: Array(stride(from: 15, through: 240, by: 15)), text: { "\($0) min" })
                 .onChange(of: training.durationMinutes) { training.recomputeEndDate() }
             StackedField(label: "Schwerpunkt", text: $training.focusArea)
             Picker("Status", selection: $training.status) {

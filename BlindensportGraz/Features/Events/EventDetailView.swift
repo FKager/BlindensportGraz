@@ -153,16 +153,16 @@ struct EventDetailView: View {
                        }
                   }
              }
+            if isEditing {
+                FormActionButtons(primaryTitle: "Fertig", cancelTitle: nil, onPrimary: finishEditing)
+            }
         }
         .navigationTitle(event.title)
         .toolbar {
             if canEdit {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(isEditing ? "Fertig" : "Bearbeiten") {
-                        if isEditing {
-                            SportEventService.save(event, modelContext: modelContext)
-                        }
-                        isEditing.toggle()
+                        if isEditing { finishEditing() } else { isEditing = true }
                     }
                 }
             }
@@ -180,5 +180,11 @@ struct EventDetailView: View {
 
     private func deleteImage(_ image: EventImage) {
         EventImageService.delete(image, modelContext: modelContext)
+    }
+
+    /// Saves and leaves edit mode (bar button and the large one in the form).
+    private func finishEditing() {
+        SportEventService.save(event, modelContext: modelContext)
+        isEditing = false
     }
 }

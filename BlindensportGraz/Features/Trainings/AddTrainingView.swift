@@ -184,7 +184,7 @@ struct AddTrainingView: View {
                             // start date moves past it.
                             if repeatEndDate < startDate { repeatEndDate = startDate }
                         }
-                    Stepper("Dauer: \(durationMinutes) min", value: $durationMinutes, in: 15...240, step: 15)
+                    NumberPicker("Dauer", value: $durationMinutes, values: Array(stride(from: 15, through: 240, by: 15)), text: { "\($0) min" })
                     StackedField(label: "Schwerpunkt", text: $focusArea)
                    }
                 Section(heading: "Wiederholung") {

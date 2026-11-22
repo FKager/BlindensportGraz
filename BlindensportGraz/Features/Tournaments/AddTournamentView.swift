@@ -107,7 +107,7 @@ struct AddTournamentView: View {
                     }
                 }
                 Section(heading: "Details") {
-                    Stepper("Max. Teams: \(maxTeams)", value: $maxTeams, in: 2...64)
+                    NumberPicker("Max. Teams", value: $maxTeams, values: Array(2...64))
                        }
                 if !myTeams.isEmpty {
                     Section(heading: "Beteiligte Teams") {

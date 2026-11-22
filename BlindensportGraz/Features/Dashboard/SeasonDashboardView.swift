@@ -44,7 +44,7 @@ struct SeasonDashboardView: View {
         NavigationStack {
             Form {
                 Section(heading: "Saison") {
-                    Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
+                    NumberPicker("Jahr", value: $year, values: Array(2020...2100))
                 }
 
                 Section(heading: "Überblick") {

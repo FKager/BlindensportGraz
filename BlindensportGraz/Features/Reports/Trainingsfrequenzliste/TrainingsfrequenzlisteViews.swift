@@ -72,7 +72,7 @@ struct TrainingsfrequenzlisteView: View {
                         // Says right on focus which months the list covers
                         // (audit.md Accessibility Finding 9).
                         .accessibilityHint("Die Liste reicht vom Beginn des Halbjahres, Jänner oder Juli, bis zum Ende des gewählten Monats.")
-                        Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
+                        NumberPicker("Jahr", value: $year, values: Array(2020...2100))
                         LabeledContent("Zeitraum", value: Self.period(throughMonth: month, year: year))
                     }
                 }

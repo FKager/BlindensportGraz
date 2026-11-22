@@ -6,6 +6,7 @@ struct MembershipRoleCapsule: View {
     let role: MembershipRole
 
     var body: some View {
-        TagLabel(role.rawValue)
+        // German label; it showed the raw "coach" / "player" (accessibility audit).
+        TagLabel(role.displayLabel)
     }
 }

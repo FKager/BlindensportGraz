@@ -23,6 +23,12 @@ struct MembershipRoleMenu: View {
         } label: {
             MembershipRoleCapsule(role: membership.role)
         }
+        // Plain: a menu in a list row otherwise draws its label dimmed in
+        // the accent colour, which fails contrast on the capsule.
+        .buttonStyle(.plain)
+        // The capsule alone is under the 44 pt minimum tap target.
+        .frame(minWidth: 44, minHeight: 44)
+        .contentShape(Rectangle())
         .accessibilityLabel("Rolle: \(membership.role.displayLabel)")
         .accessibilityHint("Doppeltippen, um die Rolle zu ändern")
         .onChange(of: membership.role, initial: true) { _, stored in
