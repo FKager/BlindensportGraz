@@ -51,6 +51,7 @@
 
 ## Key Learnings
 
+- [2026-11-22] Web UI HTTP sessions: 10 idle minutes without sign-in (SessionCookieSetup → ServletContext.setSessionTimeout), raised to AdminSessions.IDLE_TIMEOUT (30 min) on sign-in and back to 10 on sign-out (UiSession). Vaadin's 5-minute heartbeat keeps open pages alive.
 - [2026-11-22] Web UI log lines name accounts by id, never by e-mail (AdminSessions; MCP already did). Test pattern for log content: attach a java.util.logging.Handler to the class's logger in a @QuarkusTest (ApiTest.theSignInLogHoldsNoEmailAddresses).
 - [2026-11-22] Sports/event-type names change ONLY via rename_sport/rename_event_type (trigger guard_rename, migration 20261122000001, live on prod): the functions set the transaction-local `bsg.catalog_rename` = on around their update. A new rename path must do the same; direct UPDATE of `name` → 42501. is_active/sort_order stay directly writable.
 - [2026-11-22] Web UI `Postgrest.select` pages (PostgREST cuts at max_rows=1000 silently): no order → keyset by key (`id`, or `KEYS` map: user_roles/account_approvals user_id, member_private(_requests) member_id, club_functions function_key, role_permissions role,permission); order → offset + key tie-break + de-dup; explicit `limit` → one request. A new table read whose key isn't `id` must be added to `KEYS`. WireMock stubs see extra `order`/`limit`/`select` params.

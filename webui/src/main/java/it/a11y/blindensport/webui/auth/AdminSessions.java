@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AdminSessions {
     // Log lines name accounts by id, never by e-mail address (like the MCP code):
     // the server log is kept and read outside the app's access rules.
-    static final Duration IDLE_TIMEOUT = Duration.ofMinutes(30);
+    public static final Duration IDLE_TIMEOUT = Duration.ofMinutes(30);
     public static final Duration ABSOLUTE_TIMEOUT = Duration.ofHours(12);
     static final Duration RECHECK_INTERVAL = Duration.ofMinutes(5);
 
