@@ -198,7 +198,7 @@ public final class Bsg implements Callable<Integer> {
     // ----------------------------------------------------------------- members
 
     @Command(name = "members", mixinStandardHelpOptions = true, description = "Mitglieder der Vereinskartei.",
-            subcommands = {Members.Import.class})
+            subcommands = {Members.ListMembers.class, Members.Import.class})
     static final class Members implements Callable<Integer> {
         @ParentCommand
         Bsg bsg;
@@ -210,6 +210,77 @@ public final class Bsg implements Callable<Integer> {
         public Integer call() {
             spec.commandLine().usage(spec.commandLine().getOut());
             return 2;
+        }
+
+        /** Fields bsg never shows, even if a server sent them (a token gets them empty anyway). */
+        static final List<String> PROTECTED = List.of("svnr", "iban", "birthDate", "lastMedicalExamination");
+
+        @Command(name = "list", mixinStandardHelpOptions = true,
+                description = "Mitglieder der Vereinskartei, nach Nachname; ohne geschützte Daten.")
+        static final class ListMembers implements Callable<Integer> {
+            @ParentCommand
+            Members members;
+
+            @Parameters(index = "0", arity = "0..1", paramLabel = "SUCHE",
+                    description = "Teil von Name, E-Mail-Adresse oder Mitgliedsnummer.")
+            String query;
+
+            @Option(names = "--status", paramLabel = "STATUS", description = "Nur new, active oder delete.")
+            String status;
+
+            @Override
+            public Integer call() {
+                Bsg bsg = members.bsg;
+                if (status != null && !List.of("new", "active", "delete").contains(status)) {
+                    throw new Config.Problem("Unbekannter Status \"" + status + "\": new, active oder delete.");
+                }
+                JsonNode all = bsg.api().get("/api/members");
+                String q = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
+                var shown = Api.json().createArrayNode();
+                for (JsonNode m : all) {
+                    String haystack = (m.path("firstName").asText("") + " " + m.path("lastName").asText("") + " "
+                            + m.path("email").asText("") + " " + m.path("memberNumber").asText("")).toLowerCase(Locale.ROOT);
+                    if ((status == null || status.equals(m.path("status").asText()))
+                            && (q.isEmpty() || haystack.contains(q))) {
+                        var copy = m.deepCopy();
+                        if (copy instanceof com.fasterxml.jackson.databind.node.ObjectNode object) {
+                            object.remove(PROTECTED);
+                        }
+                        shown.add(copy);
+                    }
+                }
+                if (bsg.json) {
+                    bsg.printJson(shown);
+                    return 0;
+                }
+                shown.forEach(m -> bsg.out().println(describe(m)));
+                bsg.out().println(shown.size() == 1 ? "1 Mitglied." : shown.size() + " Mitglieder.");
+                return 0;
+            }
+
+            static String describe(JsonNode m) {
+                List<String> parts = new ArrayList<>();
+                String name = (m.path("lastName").asText("") + " " + m.path("firstName").asText("")).trim();
+                String number = m.path("memberNumber").asText("");
+                parts.add(number.isEmpty() ? name : name + " (Nr. " + number + ")");
+                parts.add(switch (m.path("status").asText("")) {
+                    case "new" -> "neu";
+                    case "active" -> "aktiv";
+                    case "delete" -> "zum Löschen markiert";
+                    default -> "Status unbekannt";
+                });
+                for (String field : List.of("city", "email")) {
+                    String value = m.path(field).asText("");
+                    if (!value.isEmpty()) {
+                        parts.add(value);
+                    }
+                }
+                String phone = m.path("phone").asText("");
+                if (!phone.isEmpty()) {
+                    parts.add("Tel. " + phone);
+                }
+                return String.join(", ", parts);
+            }
         }
 
         @Command(name = "import", mixinStandardHelpOptions = true, description = {

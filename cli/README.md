@@ -51,6 +51,7 @@ written.
 ./bsg whoami                                   # who the token belongs to, permissions
 ./bsg accounts list                            # all accounts: role, approval, blocked
 ./bsg accounts set-role anna@example.org coach # member | coach | admin | root | none
+./bsg members list [Suche] [--status new]      # roster by last name, never protected data
 ./bsg members import roster.json               # create or fully overwrite (by id)
 ./bsg members import roster.json --fill        # only fill blank fields (match by name)
 ```

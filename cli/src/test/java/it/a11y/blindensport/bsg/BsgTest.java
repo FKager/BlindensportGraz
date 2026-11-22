@@ -254,4 +254,37 @@ class BsgTest {
         assertTrue(windows.contains("Benutzerordner"), windows);
         assertTrue(windows.contains("Persönliche Tokens"), windows);
     }
+
+    @Test
+    void membersAreListedWithoutProtectedData() {
+        server.stubFor(get("/api/members").willReturn(okJson("[{\"id\":\"A1\",\"firstName\":\"Anna\",\"lastName\":\"Muster\","
+                + "\"memberNumber\":\"7\",\"status\":\"active\",\"city\":\"Graz\",\"email\":\"anna@example.org\","
+                + "\"phone\":\"0316 1\",\"svnr\":\"1234010180\",\"iban\":\"AT61\",\"birthDate\":\"1980-01-01\"},"
+                + "{\"id\":\"B2\",\"firstName\":\"Bernd\",\"lastName\":\"Berger\",\"memberNumber\":\"\",\"status\":\"new\","
+                + "\"city\":\"\",\"email\":\"\",\"phone\":\"\"}]")));
+
+        assertEquals(0, run("members", "list"));
+        String text = out.toString();
+        assertTrue(text.contains("Muster Anna (Nr. 7), aktiv, Graz, anna@example.org, Tel. 0316 1"), text);
+        assertTrue(text.contains("Berger Bernd, neu"), text);
+        assertTrue(text.contains("2 Mitglieder."), text);
+        assertTrue(!text.contains("1234010180") && !text.contains("AT61") && !text.contains("1980"), text);
+    }
+
+    @Test
+    void membersCanBeSearchedAndFilteredAndJsonHasNoProtectedFields() {
+        server.stubFor(get("/api/members").willReturn(okJson("[{\"firstName\":\"Anna\",\"lastName\":\"Muster\","
+                + "\"status\":\"active\",\"email\":\"anna@example.org\",\"svnr\":\"1234010180\"},"
+                + "{\"firstName\":\"Bernd\",\"lastName\":\"Berger\",\"status\":\"new\"}]")));
+
+        assertEquals(0, run("members", "list", "ANNA@", "--json"));
+        assertTrue(out.toString().contains("Muster") && !out.toString().contains("Berger"), out.toString());
+        assertTrue(!out.toString().contains("svnr"), out.toString());
+
+        out.getBuffer().setLength(0);
+        assertEquals(0, run("members", "list", "--status", "new"));
+        assertTrue(out.toString().contains("Berger Bernd, neu") && out.toString().contains("1 Mitglied."), out.toString());
+
+        assertEquals(2, run("members", "list", "--status", "weg"));
+    }
 }
