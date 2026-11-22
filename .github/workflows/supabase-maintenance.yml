@@ -75,21 +75,55 @@ jobs:
         with:
           version: 2.120.0
 
-      - name: Dump and encrypt
+      - name: Dump the database
         if: steps.day.outputs.run == 'true'
         env:
           DB_URL: ${{ secrets.SUPABASE_PROD_DB_URL }}
-          RECIPIENT: ${{ secrets.AGE_RECIPIENT }}
         run: |
           set -euo pipefail
-          sudo apt-get install -y --no-install-recommends age >/dev/null
           mkdir -p backup
           supabase db dump --db-url "$DB_URL" -f backup/schema.sql
           supabase db dump --db-url "$DB_URL" --role-only -f backup/roles.sql
           supabase db dump --db-url "$DB_URL" --data-only --schema auth,public -f backup/data.sql
+
+      # The files (tournament documents, event photos, receipts, profile
+      # photos) live in Supabase Storage, not in the database. Read with a
+      # Storage S3 access key (dashboard: Project Settings → Storage → S3
+      # Access Keys), which can only reach files. Every bucket is copied, so
+      # a new bucket needs no edit here. Without the key the backup still
+      # runs, with a warning.
+      - name: Copy the storage files
+        if: steps.day.outputs.run == 'true'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.SUPABASE_PROD_S3_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SUPABASE_PROD_S3_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-central-1
+          PROD_URL: ${{ vars.SUPABASE_PROD_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ] || [ -z "$PROD_URL" ]; then
+            echo "::warning::Storage files NOT backed up: set SUPABASE_PROD_S3_ACCESS_KEY_ID and SUPABASE_PROD_S3_SECRET_ACCESS_KEY."
+            exit 0
+          fi
+          ref=$(echo "$PROD_URL" | sed -E 's#https://([^.]+)\..*#\1#')
+          endpoint="https://$ref.storage.supabase.co/storage/v1/s3"
+          mkdir -p backup/storage
+          for bucket in $(aws s3api list-buckets --endpoint-url "$endpoint" --query 'Buckets[].Name' --output text); do
+            aws s3 sync "s3://$bucket" "backup/storage/$bucket" --endpoint-url "$endpoint" --only-show-errors
+            echo "$bucket: $(find "backup/storage/$bucket" -type f | wc -l) files"
+          done
+
+      - name: Encrypt
+        if: steps.day.outputs.run == 'true'
+        env:
+          RECIPIENT: ${{ secrets.AGE_RECIPIENT }}
+        run: |
+          set -euo pipefail
+          sudo apt-get install -y --no-install-recommends age >/dev/null
           stamp=$(date -u +%Y-%m-%d)
           tar czf - backup | age -r "$RECIPIENT" > "supabase-prod-$stamp.tar.gz.age"
-          shred -u backup/*.sql
+          find backup -type f -exec shred -u {} +
+          rm -rf backup
           echo "STAMP=$stamp" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

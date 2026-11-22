@@ -11116,6 +11116,23 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-22T10:00:00.000Z"
+    },
+    {
+      "id": "bug-660",
+      "timestamp": "2026-11-22T11:00:00.000Z",
+      "error_message": "Code review: the weekly backup saved only the database; Storage files (tournament documents, photos, receipts) were never backed up, and a restore had never been tried",
+      "file": ".github/workflows/supabase-maintenance.yml",
+      "root_cause": "supabase db dump covers the database only; Storage objects live in the object store",
+      "fix": "backup job copies every bucket via the Storage S3 API (secrets SUPABASE_PROD_S3_ACCESS_KEY_ID/SECRET; warns and continues without them) into the age-encrypted archive; restore tested locally; supabase/RESTORE.md",
+      "tags": [
+        "backup",
+        "storage",
+        "supabase",
+        "restore"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-22T11:00:00.000Z"
     }
   ]
 }
