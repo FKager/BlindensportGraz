@@ -59,9 +59,7 @@ struct MembersListView: View {
     var body: some View {
         List {
             if members.isEmpty {
-                ContentUnavailableView("Keine Mitglieder",
-                                       systemImage: "building.columns",
-                                       description: Text("Lege ein neues Mitglied an."))
+                EmptyStateView("Keine Mitglieder", systemImage: "building.columns", description: "Lege ein neues Mitglied an.")
             } else {
                 ForEach(members) { member in
                     NavigationLink(value: AppRoute.member(member)) {

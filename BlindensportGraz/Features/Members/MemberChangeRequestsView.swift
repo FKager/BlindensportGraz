@@ -31,8 +31,7 @@ struct MemberChangeRequestsView: View {
     var body: some View {
         List {
             if pendingRequests.isEmpty && decidedRequests.isEmpty {
-                ContentUnavailableView("Keine Änderungsanträge", systemImage: "person.crop.circle.badge.checkmark",
-                                       description: Text("Selbst eingereichte Änderungen an Vereinsdaten erscheinen hier zur Prüfung."))
+                EmptyStateView("Keine Änderungsanträge", systemImage: "person.crop.circle.badge.checkmark", description: "Selbst eingereichte Änderungen an Vereinsdaten erscheinen hier zur Prüfung.")
             } else {
                 if !pendingRequests.isEmpty {
                     Section("Offen (\(pendingRequests.count))") {

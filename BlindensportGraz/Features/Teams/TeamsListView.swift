@@ -26,9 +26,7 @@ struct TeamsListView: View {
     var body: some View {
         List {
             if teams.isEmpty {
-                ContentUnavailableView("Keine Teams",
-                                       systemImage: "person.3",
-                                       description: Text("Lege ein neues Team an."))
+                EmptyStateView("Keine Teams", systemImage: "person.3", description: "Lege ein neues Team an.")
             } else {
                 ForEach(teams) { team in
                     NavigationLink(value: AppRoute.team(team)) {

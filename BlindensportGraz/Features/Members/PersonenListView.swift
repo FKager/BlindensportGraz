@@ -93,7 +93,7 @@ struct PersonenListView: View {
             }
 
             if people.isEmpty {
-                ContentUnavailableView("Keine Personen", systemImage: "person.crop.rectangle.stack")
+                EmptyStateView("Keine Personen", systemImage: "person.crop.rectangle.stack")
             } else {
                 ForEach(people) { row in
                     if let member = row.member {

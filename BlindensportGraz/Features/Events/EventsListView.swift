@@ -19,9 +19,7 @@ struct EventsListView: View {
     var body: some View {
         List {
             if visibleEvents.isEmpty {
-                ContentUnavailableView("Keine Events",
-                                       systemImage: "calendar",
-                                       description: Text("Lege ein neues Event an."))
+                EmptyStateView("Keine Events", systemImage: "calendar", description: "Lege ein neues Event an.")
             } else {
                 ForEach(visibleEvents) { event in
                     NavigationLink(value: AppRoute.event(event)) {

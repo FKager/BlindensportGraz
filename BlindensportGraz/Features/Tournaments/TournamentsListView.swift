@@ -21,9 +21,7 @@ struct TournamentsListView: View {
    var body: some View {
        List {
           if visibleTournaments.isEmpty {
-              ContentUnavailableView("Keine Turniere",
-                                    systemImage: "trophy",
-                                    description: Text("Lege ein neues Turnier an."))
+              EmptyStateView("Keine Turniere", systemImage: "trophy", description: "Lege ein neues Turnier an.")
           } else {
               ForEach(visibleTournaments) { tournament in
                   NavigationLink(value: AppRoute.tournament(tournament)) {
