@@ -42,7 +42,7 @@ struct AttendanceTrendsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Bereich") {
+                Section(heading: "Bereich") {
                     Picker("Bereich", selection: $scope) {
                         ForEach(Scope.allCases) { Text($0.rawValue).tag($0) }
                     }
@@ -51,7 +51,7 @@ struct AttendanceTrendsView: View {
 
                     if teams.isEmpty {
                         Text("Keine Teams vorhanden.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         Picker("Team", selection: Binding(
                             get: { selectedTeamID ?? teams.first?.id },
@@ -65,7 +65,7 @@ struct AttendanceTrendsView: View {
                         if scope == .person {
                             if peopleInSelectedTeam.isEmpty {
                                 Text("Keine Mitglieder in diesem Team.")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             } else {
                                 Picker("Person", selection: Binding(
                                     get: { selectedMembershipID ?? peopleInSelectedTeam.first?.id },
@@ -80,7 +80,7 @@ struct AttendanceTrendsView: View {
                     }
                 }
 
-                Section("Anwesenheitsquote") {
+                Section(heading: "Anwesenheitsquote") {
                     if points.isEmpty {
                         EmptyStateView("Noch keine Daten", systemImage: "chart.line.uptrend.xyaxis", description: "Für diese Auswahl liegen noch keine Anwesenheitsdaten vor.")
                     } else {

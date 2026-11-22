@@ -44,7 +44,7 @@ struct AttendanceRollCallView: View {
                                     HStack(spacing: Theme.Spacing.l) {
                                         Image(systemName: isPresent(membership) ? "checkmark.circle.fill" : "circle")
                                             .font(.title2)
-                                            .foregroundStyle(isPresent(membership) ? Theme.Palette.success : Color.secondary)
+                                            .foregroundStyle(isPresent(membership) ? Theme.Palette.success : Theme.Palette.secondary)
                                             .accessibilityHidden(true)
                                         Text(membership.displayName)
                                             .foregroundStyle(.primary)
@@ -74,7 +74,7 @@ struct AttendanceRollCallView: View {
                             Text("\(presentCount) von \(roster.count) anwesend")
                                 .font(.headline)
                                 .textCase(nil)
-                                .foregroundStyle(.primary)
+                                .foregroundStyle(Color.primary)
                         }
                     }
                 }

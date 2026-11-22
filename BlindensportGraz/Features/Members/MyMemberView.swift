@@ -83,7 +83,7 @@ struct MyMemberView: View {
                         .foregroundStyle(Theme.Palette.warning)
                 }
             }
-            Section("Mitglied") {
+            Section(heading: "Mitglied") {
                 TextField("Vorname", text: bindingFor(\.firstName, on: draft))
                 TextField("Nachname", text: bindingFor(\.lastName, on: draft))
                 TextField("Titel", text: bindingFor(\.title, on: draft))
@@ -101,7 +101,7 @@ struct MyMemberView: View {
                 TextField("Ort", text: bindingFor(\.city, on: draft))
                 TextField("Land", text: bindingFor(\.country, on: draft))
             }
-            Section("Kontakt") {
+            Section(heading: "Kontakt") {
                 TextField("E-Mail", text: bindingFor(\.email, on: draft))
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
@@ -120,7 +120,7 @@ struct MyMemberView: View {
                     privateFields(for: draft)
                 }
             } header: {
-                Text("Sportverband & Zahlungsdaten")
+                SectionHeading("Sportverband & Zahlungsdaten")
             } footer: {
                 if !privateEditable {
                     Text("Geburtsdatum, SVNR, IBAN und Untersuchungsdatum kannst du eintragen, sobald dein Konto freigegeben ist.")

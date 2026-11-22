@@ -101,7 +101,7 @@ struct AddTrainingView: View {
         NavigationStack {
             Form {
                 if !favorites.isEmpty || !recentTrainings.isEmpty {
-                    Section("Favoriten") {
+                    Section(heading: "Favoriten") {
                         if !favorites.isEmpty {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack {
@@ -152,7 +152,7 @@ struct AddTrainingView: View {
                         }
                     }
                 }
-                Section("Training") {
+                Section(heading: "Training") {
                     TextField("Titel", text: $title)
                     EventTypePicker(selection: $eventType, behavior: .training)
                     SportPicker(selection: $sport)
@@ -160,13 +160,13 @@ struct AddTrainingView: View {
                     // EventsViews.AddEventView's identical comment.
                     TextField("Veranstaltungsort", text: $location)
                    }
-                Section("Adresse") {
+                Section(heading: "Adresse") {
                     TextField("Straße", text: $street)
                     TextField("PLZ", text: $zip)
                     TextField("Ort", text: $city)
                     TextField("Land", text: $country)
                 }
-                Section("Planung") {
+                Section(heading: "Planung") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
                     DatePicker("Start", selection: $startDate,
                                displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
@@ -179,7 +179,7 @@ struct AddTrainingView: View {
                     Stepper("Dauer: \(durationMinutes) min", value: $durationMinutes, in: 15...240, step: 15)
                     TextField("Schwerpunkt", text: $focusArea)
                    }
-                Section("Wiederholung") {
+                Section(heading: "Wiederholung") {
                     Toggle("Wöchentlich wiederholen", isOn: $isRecurring)
                         .onChange(of: isRecurring) {
                             // Defaults the end date to 8 weeks out the first
@@ -194,11 +194,11 @@ struct AddTrainingView: View {
                                    displayedComponents: [.date])
                         Text("Ein Training wird jede Woche am \(startDate.formatted(.dateTime.weekday(.wide))) erstellt, bis einschließlich \(repeatEndDate.formatted(date: .abbreviated, time: .omitted)).")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
                 if !myTeams.isEmpty {
-                    Section("Beteiligte Teams") {
+                    Section(heading: "Beteiligte Teams") {
                         ForEach(myTeams) { team in
                             Button {
                                 if selectedTeamIDs.contains(team.id) {
@@ -222,15 +222,15 @@ struct AddTrainingView: View {
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                         if let autoTeamNames = Team.autoAssignTeamNames[sport] {
                             Text("Bei \(sport) werden \(autoTeamNames.joined(separator: ", ")) automatisch zugewiesen.")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                     }
                 }
-                Section("Notizen") {
+                Section(heading: "Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }

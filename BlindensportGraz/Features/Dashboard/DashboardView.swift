@@ -113,7 +113,7 @@ struct DashboardView: View {
                 .bold()
             Text("Hier ist dein Überblick")
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.Palette.secondary)
         }
         .padding(.horizontal)
     }

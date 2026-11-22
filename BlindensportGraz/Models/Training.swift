@@ -57,9 +57,8 @@ nonisolated extension Training {
     static let cancelledStatus = "cancelled"
 
     /// Localized label for `status` — the single source both TrainingRow's
-    /// badge and TrainingDetailView's Picker/read-only row draw from, so
-    /// they can't drift apart the way TournamentRow's raw-string badge and
-    /// TournamentDetailView's separate `statusLabel` switch already have.
+    /// badge and TrainingDetailView's Picker/read-only row draw from (same
+    /// as `Tournament.statusLabel`).
     var statusLabel: String {
         switch status {
         case Training.openStatus: return "Offen"

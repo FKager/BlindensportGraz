@@ -17,7 +17,7 @@ struct EventImagesSection: View {
     @State private var selectedItems: [PhotosPickerItem] = []
 
     var body: some View {
-        Section("Bilder (\(images.count))") {
+        Section(heading: "Bilder (\(images.count))") {
             if let featured {
                 Button {
                     showGallery = true
@@ -34,7 +34,7 @@ struct EventImagesSection: View {
                 .padding(Theme.Spacing.xs)
             } else if images.isEmpty {
                 Text("Noch keine Bilder")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             }
 
             HStack {

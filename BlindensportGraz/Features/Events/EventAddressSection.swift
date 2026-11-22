@@ -5,7 +5,7 @@ struct EventAddressSection: View {
     @Bindable var event: SportEvent
 
     var body: some View {
-        Section("Adresse") {
+        Section(heading: "Adresse") {
             TextField("Straße", text: $event.street)
             TextField("PLZ", text: $event.zip)
             TextField("Ort", text: $event.city)

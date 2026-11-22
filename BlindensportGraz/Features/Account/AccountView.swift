@@ -101,13 +101,13 @@ struct AccountView: View {
                             if let appliedAt = member.gvscAppliedAt {
                                 Label("Beitritt beantragt am \(appliedAt.formatted(date: .abbreviated, time: .omitted)) — ein Admin bestätigt die Mitgliedschaft.",
                                       systemImage: "envelope.badge")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             }
                         }
                     } else if awaitingApproval {
                         Label("Freigabe ausstehend: Ein Admin muss bestätigen, dass dieses Konto zu deinem Eintrag in der Benutzerverwaltung gehört.",
                               systemImage: "hourglass")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         Button {
                             showMembershipTypeChoice = true
@@ -134,6 +134,7 @@ struct AccountView: View {
                     }
                 } footer: {
                     Text("Löscht dein Konto endgültig, inklusive aller Team-Mitgliedschaften und Event-Teilnahmen.")
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
             } else {
                 ProgressView()
@@ -283,11 +284,11 @@ struct AccountView: View {
 
     @ViewBuilder
     private func calendarFeedSection(for user: User) -> some View {
-        Section("Kalender-Abo") {
+        Section(heading: "Kalender-Abo") {
             if user.calendarToken.isEmpty {
                 Text("Trage alle Trainings und Turniere, die du sehen kannst, automatisch in deine Kalender-App ein.")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
                 Button {
                     generateCalendarToken(for: user)
                 } label: {
@@ -297,7 +298,7 @@ struct AccountView: View {
                 LabeledContent("Kalender-URL") {
                     Text(calendarFeedURL(for: user))
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                         .lineLimit(2)
                         .truncationMode(.middle)
                 }

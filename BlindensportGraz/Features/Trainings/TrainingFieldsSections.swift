@@ -8,13 +8,13 @@ struct TrainingFieldsSections: View {
     @Environment(\.modelContext) private var modelContext
 
     var body: some View {
-        Section("Training") {
+        Section(heading: "Training") {
             TextField("Titel", text: $training.title)
             SportPicker(selection: $training.sport, allowsNone: true)
             TextField("Veranstaltungsort", text: $training.location)
         }
         EventAddressSection(event: training)
-        Section("Planung") {
+        Section(heading: "Planung") {
             DatePicker("Start", selection: $training.startDate)
                 .onChange(of: training.startDate) { training.recomputeEndDate() }
             Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)

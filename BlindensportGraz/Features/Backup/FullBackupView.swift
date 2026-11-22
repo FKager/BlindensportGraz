@@ -20,10 +20,10 @@ struct FullBackupView: View {
         Form {
             Section {
                 Text("Sichert alle Vereinsdaten (Teams, Mitglieder, App-Konten, Veranstaltungen, Anwesenheiten u. a.) als JSON-Datei. Fotos und Belege sind aus Platzgründen nicht enthalten.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             }
 
-            Section("Sichern") {
+            Section(heading: "Sichern") {
                 if let exportURL {
                     ShareLink(item: exportURL) {
                         Label("Sicherung exportieren", systemImage: "square.and.arrow.up")
@@ -36,10 +36,10 @@ struct FullBackupView: View {
                 }
             }
 
-            Section("Wiederherstellen") {
+            Section(heading: "Wiederherstellen") {
                 Text("Erstellt nur fehlende Datensätze aus einer Sicherungsdatei — bestehende Daten werden nie überschrieben. Gedacht für Notfälle (z. B. Datenverlust) oder Migrationen.")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
                 Button {
                     showImporter = true
                 } label: {

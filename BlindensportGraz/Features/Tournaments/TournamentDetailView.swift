@@ -78,7 +78,7 @@ struct TournamentDetailView: View {
 
         TournamentFieldsSections(tournament: tournament)
         EventTeamsPicker(event: tournament, teams: myTeams)
-        Section("Teilnehmer:innen") {
+        Section(heading: "Teilnehmer:innen") {
             if !allMemberships.isEmpty {
                 ForEach(allMemberships) { membership in
                     // PRAE max scales with the tournament's length: PRAE's
@@ -97,21 +97,11 @@ struct TournamentDetailView: View {
                 Label("Neues Mitglied hinzufügen", systemImage: "person.badge.plus")
             }
         }
-        Section("Notizen") {
+        Section(heading: "Notizen") {
             TextField("Notizen", text: $tournament.notes, axis: .vertical)
                 .lineLimit(3...6)
         }
         TournamentDocumentsSection(tournament: tournament, currentUser: currentUser)
-    }
-
-    // Localized label for `tournament.status` — mirrors the edit Picker's tags.
-    private var statusLabel: String {
-        switch tournament.status {
-        case "planned": return "Geplant"
-        case "ongoing": return "Laufend"
-        case "finished": return "Beendet"
-        default: return tournament.status
-        }
     }
 
     // Default (non-editing) presentation: every empty field is dropped, so
@@ -123,7 +113,7 @@ struct TournamentDetailView: View {
                 .disabled(true)
         }
         if !tournament.sport.isEmpty || !tournament.location.isEmpty {
-            Section("Turnier") {
+            Section(heading: "Turnier") {
                 if tournament.typeName != EventType.Behavior.tournament.defaultTypeName {
                     LabeledContent("Art der Veranstaltung", value: tournament.typeName)
                 }
@@ -136,34 +126,34 @@ struct TournamentDetailView: View {
             }
         }
         if !tournament.fullAddress.isEmpty {
-            Section("Adresse") {
+            Section(heading: "Adresse") {
                 LabeledContent("Adresse", value: tournament.fullAddress)
             }
         }
-        Section("Zeitraum") {
+        Section(heading: "Zeitraum") {
             LabeledContent("Start", value: tournament.startDate.formatted(date: .long, time: .omitted))
             LabeledContent("Ende", value: tournament.endDate.formatted(date: .long, time: .omitted))
         }
-        Section("Details") {
+        Section(heading: "Details") {
             LabeledContent("Max. Teams", value: "\(tournament.maxTeams)")
-            LabeledContent("Status", value: statusLabel)
+            LabeledContent("Status", value: tournament.statusLabel)
         }
         if !tournament.teams.isEmpty {
-            Section("Beteiligte Teams") {
+            Section(heading: "Beteiligte Teams") {
                 ForEach(tournament.teams) { team in
                     Text(team.name)
                 }
             }
         }
         if !attendedMemberships.isEmpty {
-            Section("Teilnehmer:innen") {
+            Section(heading: "Teilnehmer:innen") {
                 ForEach(attendedMemberships) { membership in
                     HStack {
                         Text(membership.displayName)
                         Spacer()
                         if let prae = attendance(for: membership)?.praeAmount, prae > 0 {
                             Text("\(Int(prae)) €")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                     }
                 }
@@ -171,7 +161,7 @@ struct TournamentDetailView: View {
             }
         }
         if !tournament.notes.isEmpty {
-            Section("Notizen") {
+            Section(heading: "Notizen") {
                 Text(tournament.notes)
             }
         }

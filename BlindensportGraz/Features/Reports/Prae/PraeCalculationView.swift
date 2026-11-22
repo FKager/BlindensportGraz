@@ -50,10 +50,10 @@ struct PraeCalculationView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Helfer:in / Trainer:in") {
+                Section(heading: "Helfer:in / Trainer:in") {
                     if eligiblePeople.isEmpty {
                         Text("Keine Teammitglieder mit Rolle „Trainer:in“ oder „Helfer:in“ gefunden.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         Picker("Person", selection: $selectedPersonID) {
                             Text("Bitte wählen").tag(UUID?.none)
@@ -71,7 +71,7 @@ struct PraeCalculationView: View {
                     if selectedPerson != nil {
                         if summaries.isEmpty {
                             Text("Keine Trainings mit hinterlegtem PRAE-Betrag in diesem Monat.")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         } else {
                             Picker("Training", selection: $selectedTraining) {
                                 Text("Bitte wählen").tag(String?.none)
@@ -82,24 +82,24 @@ struct PraeCalculationView: View {
                             if summaries.count > 1 {
                                 Text("Für jedes Training gibt es ein eigenes PRAE-Formular.")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             }
                         }
                     }
                 }
 
                 if let summary {
-                    Section("Einsatztage") {
+                    Section(heading: "Einsatztage") {
                         if summary.entries.isEmpty {
                             Text("Keine Einsatztage mit hinterlegtem PRAE-Betrag in diesem Monat.")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         } else {
                             ForEach(summary.entries) { entry in
                                 HStack {
                                     Text("\(entry.day).")
                                         .frame(width: dayColumnWidth, alignment: .leading)
                                     Text(entry.purpose)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(Theme.Palette.secondary)
                                         .lineLimit(1)
                                     Spacer()
                                     // Over the daily cap: icon + wording, not colour alone.
@@ -141,10 +141,10 @@ struct PraeCalculationView: View {
                         }
                     }
 
-                    Section("Export") {
+                    Section(heading: "Export") {
                         Text("Das offizielle Hauptformular (Name/Adresse vorausgefüllt) muss weiterhin von Hand um Monat/Jahr, Tagesbeträge und die persönliche Unterschrift ergänzt werden — siehe Einsatztage oben.")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                         // ShareLink, not a Button-triggered sheet — this view
                         // is itself already sheet-presented from AccountView,
                         // and nesting a second sheet on top of a sheet is a
@@ -158,7 +158,7 @@ struct PraeCalculationView: View {
                             }
                         } else {
                             Label("PRAE-Formular wird vorbereitet …", systemImage: "doc.fill")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                         if let darstellungURL {
                             ShareLink(item: darstellungURL) {
@@ -166,7 +166,7 @@ struct PraeCalculationView: View {
                             }
                         } else {
                             Label("Darstellung wird vorbereitet …", systemImage: "tablecells.fill")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                         if mainFormURL != nil || darstellungURL != nil {
                             ReportPrintButton(title: "Formular und Darstellung drucken", jobName: "PRAE") {

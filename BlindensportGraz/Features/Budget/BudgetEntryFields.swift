@@ -19,7 +19,7 @@ struct BudgetEntryFields: View {
     static let selectableCategories: [BudgetCategory] = [.fixedSubsidy, .donation, .eventCost, .otherExpense]
 
     var body: some View {
-        Section("Eintrag") {
+        Section(heading: "Eintrag") {
             Picker("Kategorie", selection: $category) {
                 ForEach(Self.selectableCategories, id: \.self) { c in
                     Text(c.displayLabel).tag(c)
@@ -30,7 +30,7 @@ struct BudgetEntryFields: View {
             DatePicker("Datum", selection: $date, displayedComponents: .date)
             TextField("Notiz", text: $note)
         }
-        Section("Verknüpftes Ereignis") {
+        Section(heading: "Verknüpftes Ereignis") {
             Picker("Ereignis", selection: $selectedEventID) {
                 Text("Kein Ereignis").tag(UUID?.none)
                 ForEach(allEvents.sorted { $0.startDate > $1.startDate }) { event in

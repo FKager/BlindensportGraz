@@ -24,18 +24,18 @@ struct AddTeamMemberView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Mitglied") {
+                Section(heading: "Mitglied") {
                     Picker("Mitglied", selection: $selection) {
                         Text("Auswählen").tag(MemberSelection?.none)
                         if !availableUsers.isEmpty {
-                            Section("Registrierte Benutzer") {
+                            Section(heading: "Registrierte Benutzer") {
                                 ForEach(availableUsers) { user in
                                     Text(user.displayName).tag(MemberSelection?.some(.user(user.id)))
                                 }
                             }
                         }
                         if !availableMembers.isEmpty {
-                            Section("Mitglieder ohne Konto") {
+                            Section(heading: "Mitglieder ohne Konto") {
                                 ForEach(availableMembers) { member in
                                     Text(member.fullName).tag(MemberSelection?.some(.member(member.id)))
                                 }
@@ -43,7 +43,7 @@ struct AddTeamMemberView: View {
                         }
                     }
                 }
-                Section("Rolle") {
+                Section(heading: "Rolle") {
                     Picker("Rolle", selection: $role) {
                         Text("Spieler:in").tag("player")
                         Text("Trainer:in").tag("coach")

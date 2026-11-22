@@ -36,7 +36,7 @@ struct AccountProfileHeader: View {
                         .bold()
                     Text(user.email)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                     TagLabel(roleLabel)
                 }
             }

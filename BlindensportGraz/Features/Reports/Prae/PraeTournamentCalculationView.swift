@@ -54,10 +54,10 @@ struct PraeTournamentCalculationView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Helfer:in / Trainer:in") {
+                Section(heading: "Helfer:in / Trainer:in") {
                     if eligiblePeople.isEmpty {
                         Text("Keine Trainer:innen/Helfer:innen mit hinterlegtem PRAE-Betrag bei diesem Turnier.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         Picker("Person", selection: $selectedPersonID) {
                             Text("Bitte wählen").tag(UUID?.none)
@@ -74,25 +74,25 @@ struct PraeTournamentCalculationView: View {
                         }
                         Text("Dieses Turnier läuft über mehrere Monate. Für jeden Monat gibt es ein eigenes PRAE-Formular und eine eigene Darstellung.")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
 
                 if selectedPerson != nil, summary == nil {
-                    Section("Einsatztage") {
+                    Section(heading: "Einsatztage") {
                         Text("Keine Einsatztage mit hinterlegtem PRAE-Betrag bei diesem Turnier.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
 
                 if let summary {
-                    Section("Einsatztage") {
+                    Section(heading: "Einsatztage") {
                         ForEach(summary.entries) { entry in
                             HStack {
                                 Text("\(entry.day).")
                                     .frame(width: dayColumnWidth, alignment: .leading)
                                 Text(entry.purpose)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                                     .lineLimit(1)
                                 Spacer()
                                 // Over the daily cap: icon + wording, not colour alone.
@@ -125,17 +125,17 @@ struct PraeTournamentCalculationView: View {
                         }
                     }
 
-                    Section("Export") {
+                    Section(heading: "Export") {
                         Text("Das offizielle Hauptformular (Name/Adresse vorausgefüllt) muss weiterhin von Hand um Monat/Jahr, Tagesbeträge und die persönliche Unterschrift ergänzt werden — siehe Einsatztage oben.")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                         if let mainFormURL {
                             ShareLink(item: mainFormURL) {
                                 Label("PRAE-Formular exportieren", systemImage: "doc.fill")
                             }
                         } else {
                             Label("PRAE-Formular wird vorbereitet …", systemImage: "doc.fill")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                         if let darstellungURL {
                             ShareLink(item: darstellungURL) {
@@ -143,7 +143,7 @@ struct PraeTournamentCalculationView: View {
                             }
                         } else {
                             Label("Darstellung wird vorbereitet …", systemImage: "tablecells.fill")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                         if mainFormURL != nil || darstellungURL != nil {
                             ReportPrintButton(title: "Formular und Darstellung drucken", jobName: "PRAE \(tournament.title)") {

@@ -22,7 +22,7 @@ struct BlindensportGrazApp: App {
             // outbox (architecture-review.md 2.2). Done here, before any view
             // exists, so the very first push of the session is already durable.
             SupabaseSync.shared.modelContainer = modelContainer
-            UITestMode.insertSampleSchedule(into: modelContainer.mainContext)
+            UITestMode.insertSampleData(into: modelContainer.mainContext)
         } catch {
             // The SportEvent/Training/Tournament inheritance refactor is a
             // bigger schema shape change than SwiftData's automatic

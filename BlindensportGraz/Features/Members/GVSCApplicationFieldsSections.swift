@@ -53,7 +53,7 @@ struct GVSCApplicationFieldsSections<Model: GVSCApplicationFields>: View {
     }
 
     var body: some View {
-        Section("Beitrittserklärung Grazer VSC") {
+        Section(heading: "Beitrittserklärung Grazer VSC") {
             Picker("Mitgliedsart", selection: binding(\.membershipType)) {
                 Text("–").tag("")
                 Text("aktiv").tag(GVSCMembershipType.active)
@@ -69,13 +69,13 @@ struct GVSCApplicationFieldsSections<Model: GVSCApplicationFields>: View {
                 TextField("Behinderungsklasse", text: binding(\.disabilityClass))
                 TextField("Behinderung durch (Arbeit, Freizeit)", text: binding(\.disabilityCause))
             } header: {
-                Text("Behinderung")
+                SectionHeading("Behinderung")
             }
             Section {
                 consentPicker("Datenweitergabe an Fach- und Dachverbände", binding(\.consentDataTransfer))
                 consentPicker("Foto- und Videoaufnahmen", binding(\.consentPhotos))
             } header: {
-                Text("Einwilligungen")
+                SectionHeading("Einwilligungen")
             }
         }
         if model.isMinor() || hasGuardian {
@@ -95,9 +95,10 @@ struct GVSCApplicationFieldsSections<Model: GVSCApplicationFields>: View {
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
             } header: {
-                Text("Gesetzliche:r Vertreter:in")
+                SectionHeading("Gesetzliche:r Vertreter:in")
             } footer: {
                 Text("Nur bei minderjährigen Mitgliedern.")
+                    .foregroundStyle(Theme.Palette.secondary)
             }
         }
     }

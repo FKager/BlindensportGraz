@@ -43,11 +43,11 @@ struct SeasonDashboardView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Saison") {
+                Section(heading: "Saison") {
                     Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
                 }
 
-                Section("Überblick") {
+                Section(heading: "Überblick") {
                     LabeledContent("Trainings", value: "\(summary.trainingsCount)")
                     LabeledContent("Turniere", value: "\(summary.tournamentsCount)")
                     LabeledContent("Anwesenheitsquote",
@@ -55,10 +55,10 @@ struct SeasonDashboardView: View {
                     LabeledContent("PRAE gesamt", value: praeValue)
                 }
 
-                Section("Anwesenheitsquote pro Monat") {
+                Section(heading: "Anwesenheitsquote pro Monat") {
                     if monthlyPoints.isEmpty {
                         Text("Für \(String(year)) liegen noch keine Anwesenheitsdaten vor.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         Chart(monthlyPoints) { point in
                             BarMark(
@@ -90,13 +90,13 @@ struct SeasonDashboardView: View {
                 }
 
                 if !teamRates.isEmpty {
-                    Section("Anwesenheit pro Team") {
+                    Section(heading: "Anwesenheit pro Team") {
                         ForEach(teamRates) { entry in
                             HStack {
                                 Text(entry.team.name)
                                 Spacer()
                                 Text("\(Int((entry.rate * 100).rounded()))%")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             }
                             .accessibilityElement(children: .combine)
                             .accessibilityLabel("\(entry.team.name): \(Int((entry.rate * 100).rounded())) Prozent, \(entry.attendedCount) von \(entry.totalCount) anwesend")

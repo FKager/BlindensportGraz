@@ -40,6 +40,10 @@ enum Theme {
         static let danger = Color(.dangerText)
         /// Informational icons and neutral-positive tags (e.g. "planned").
         static let info = Color(.infoText)
+        /// Secondary text (dates, places, hints) instead of the system
+        /// `.secondary`, which is about 4.3:1 on the light grouped background
+        /// (accessibility audit). At least 6:1 on every system background.
+        static let secondary = Color(.secondaryText)
     }
 
     /// Solid fills behind WHITE text or symbols — swipe actions, prominent

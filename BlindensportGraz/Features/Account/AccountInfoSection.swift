@@ -7,7 +7,7 @@ struct AccountInfoSection: View {
     let isGVSCMember: Bool
 
     var body: some View {
-        Section("Kontoinformationen") {
+        Section(heading: "Kontoinformationen") {
             LabeledContent("E-Mail", value: user.email)
             LabeledContent("Mitglied seit",
                            value: user.createdAt.formatted(date: .abbreviated, time: .omitted))
@@ -16,7 +16,7 @@ struct AccountInfoSection: View {
             LabeledContent("Grazer VSC") {
                 Label(isGVSCMember ? "Mitglied" : "Kein Mitglied",
                       systemImage: isGVSCMember ? "checkmark.seal.fill" : "xmark.seal")
-                    .foregroundStyle(isGVSCMember ? Theme.Palette.success : .secondary)
+                    .foregroundStyle(isGVSCMember ? Theme.Palette.success : Theme.Palette.secondary)
             }
         }
     }

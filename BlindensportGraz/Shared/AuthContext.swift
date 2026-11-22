@@ -49,6 +49,14 @@ final class AuthContext {
         guard listener == nil else { return }
         AuthContext.current = self
         self.modelContext = modelContext
+        if UITestMode.isSignedIn {
+            // UI tests: the sample admin from UITestMode, without a session.
+            claims = UITestMode.adminClaims
+            permissions = Permission.defaults(for: .admin)
+            currentUser = cachedUser(UITestMode.adminID)
+            phase = .signedIn
+            return
+        }
         guard SupabaseConfig.isConfigured else {
             phase = .signedOut
             return

@@ -73,11 +73,11 @@ struct UserApprovalControls: View {
         } else if needsElevatedAccess {
             Label("Nicht freigegeben – nur Termine sichtbar", systemImage: "eye.slash")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.Palette.secondary)
         } else {
             Label("Kein Eintrag in der Benutzerverwaltung verknüpft", systemImage: "questionmark.circle")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.Palette.secondary)
         }
     }
 

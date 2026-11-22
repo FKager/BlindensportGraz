@@ -26,7 +26,7 @@ struct EventRow: View {
                       .lineLimit(1)
                 Text(event.startDate, format: .dateTime.month(.abbreviated))
                       .font(.caption)
-                      .foregroundStyle(.secondary)
+                      .foregroundStyle(Theme.Palette.secondary)
                       .minimumScaleFactor(0.5)
                       .lineLimit(1)
               }
@@ -41,10 +41,10 @@ struct EventRow: View {
                       .font(.headline)
                 Text(subtitle)
                       .font(.subheadline)
-                      .foregroundStyle(.secondary)
+                      .foregroundStyle(Theme.Palette.secondary)
                 Label(event.location, systemImage: "mappin.and.ellipse")
                       .font(.caption)
-                      .foregroundStyle(.secondary)
+                      .foregroundStyle(Theme.Palette.secondary)
               }
           }
           .padding(.vertical, Theme.Spacing.xs)

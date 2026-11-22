@@ -54,10 +54,10 @@ struct TrainingsfrequenzlisteView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Sportart & Zeitraum") {
+                Section(heading: "Sportart & Zeitraum") {
                     if availableSports.isEmpty {
                         Text("Noch kein Training angelegt.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         Picker("Sportart", selection: $selectedSport) {
                             ForEach(availableSports, id: \.self) { sport in
@@ -78,10 +78,10 @@ struct TrainingsfrequenzlisteView: View {
                 }
 
                 if let summary {
-                    Section("Trainingstage") {
+                    Section(heading: "Trainingstage") {
                         if summary.trainingDates.isEmpty {
                             Text("Keine Trainings in diesem Zeitraum für diese Sportart.")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         } else {
                             LabeledContent("Anzahl Trainingstage", value: "\(summary.trainingDates.count)")
                             LabeledContent("Anzahl Mitglieder", value: "\(summary.people.count)")
@@ -91,10 +91,10 @@ struct TrainingsfrequenzlisteView: View {
                         }
                     }
 
-                    Section("Export") {
+                    Section(heading: "Export") {
                         Text("Bildet die Original-Trainingsfrequenzliste (Nr./Vorname/Nachname/Verein je Zeile, ein Trainingstag je Spalte, „j“/„n“ je Zelle, Zeilensumme „ges. TL“) mit den erfassten Anwesenheiten nach — ohne zusätzliche Spalten gegenüber dem Original.")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                         // ShareLink, not a Button-triggered sheet — see KostZCalculationView's
                         // doc comment for why (nested-sheet VoiceOver freeze, cerebrum.md 2026-07-18).
                         if let exportURL {
@@ -103,7 +103,7 @@ struct TrainingsfrequenzlisteView: View {
                             }
                         } else {
                             Label("Trainingsfrequenzliste wird vorbereitet …", systemImage: "doc.fill")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                         if let exportURL {
                             ReportPrintButton(title: "Trainingsfrequenzliste drucken", jobName: "Trainingsfrequenzliste") {

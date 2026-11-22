@@ -45,11 +45,11 @@ struct AddNewEventMemberView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Person") {
+                Section(heading: "Person") {
                     TextField("Vorname", text: $firstName)
                     TextField("Nachname", text: $lastName)
                 }
-                Section("Rolle") {
+                Section(heading: "Rolle") {
                     Picker("Rolle", selection: $role) {
                         Text("Sportler:in").tag(MembershipRole.player)
                         Text("Trainer:in").tag(MembershipRole.coach)
@@ -58,7 +58,7 @@ struct AddNewEventMemberView: View {
                     .pickerStyle(.segmented)
                 }
                 if role.isHelfer {
-                    Section("PRAE (€)") {
+                    Section(heading: "PRAE (€)") {
                         // Exact-amount fallback for when the desired value
                         // doesn't land on the wheel's €5 steps — user
                         // request 2026-09-14, matches TrainingDetailView/
@@ -82,7 +82,7 @@ struct AddNewEventMemberView: View {
                 Section {
                     Text("Wird der Mitgliederliste hinzugefügt (ohne die Kennzeichnung „Mitglied bei Grazer VSC“) und dem Team „\(Self.catchAllTeamName)“ zugeordnet.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
             }
             .navigationTitle("Neues Mitglied")

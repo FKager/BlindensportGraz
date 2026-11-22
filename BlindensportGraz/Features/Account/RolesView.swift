@@ -45,15 +45,16 @@ struct RolesView: View {
                     .disabled(isLoading)
                 }
             } header: {
-                Text("Vereinsfunktionen")
+                SectionHeading("Vereinsfunktionen")
             } footer: {
                 Text("Halten fest, wer welche Funktion hat. Sie geben keine zusätzlichen Rechte.")
+                    .foregroundStyle(Theme.Palette.secondary)
             }
 
             accountSection("Admin", role: .admin)
             accountSection("Root", role: .root)
 
-            Section("Protokoll") {
+            Section(heading: "Protokoll") {
                 NavigationLink(value: AppRoute.roleChangeLog) {
                     Label("Rollenänderungen", systemImage: "clock.arrow.circlepath")
                 }
@@ -75,7 +76,7 @@ struct RolesView: View {
             let holders = accounts(in: role)
             if holders.isEmpty {
                 Text("Niemand")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             }
             ForEach(holders) { user in
                 Text(user.displayName)

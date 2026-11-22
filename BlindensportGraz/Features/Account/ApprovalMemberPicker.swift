@@ -31,7 +31,7 @@ struct ApprovalMemberPicker: View {
                                 if !member.email.isEmpty {
                                     Text(member.email)
                                         .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(Theme.Palette.secondary)
                                 }
                             }
                         }
@@ -43,6 +43,7 @@ struct ApprovalMemberPicker: View {
                     }
                 } footer: {
                     Text("Wähle den Eintrag aus der Benutzerverwaltung, zu dem das Konto von \(user.displayName) (\(user.email)) gehört.")
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
             }
             .navigationTitle("Mitglied auswählen")

@@ -16,3 +16,11 @@ struct SectionHeading: View {
             .foregroundStyle(Color.primary)
     }
 }
+
+extension Section where Parent == SectionHeading, Content: View, Footer == EmptyView {
+    /// `Section("Titel") { … }`, but with the header in full text colour
+    /// (`SectionHeading`); use this instead of the plain title initializer.
+    init(heading: LocalizedStringKey, @ViewBuilder content: () -> Content) {
+        self.init(content: content, header: { SectionHeading(heading) })
+    }
+}

@@ -112,7 +112,7 @@ struct SammelabrechnungView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Zeitraum") {
+                Section(heading: "Zeitraum") {
                     Picker("Monat", selection: $month) {
                         ForEach(1...12, id: \.self) { m in
                             Text(monthName(m)).tag(m)
@@ -128,22 +128,22 @@ struct SammelabrechnungView: View {
                     }
                 }
 
-                Section("Enthaltene Teile") {
+                Section(heading: "Enthaltene Teile") {
                     Toggle("KostZ-Formular", isOn: $includeKostZ)
                     if let frequenzSummary {
                         Toggle("Trainingsfrequenzliste (\(seasonLabel))", isOn: $includeTrainingsfrequenzliste)
                         if frequenzSummary.trainingDates.count >= TrainingsfrequenzlisteCalculator.maxDateColumns {
                             Text("Das Formular hat nur \(TrainingsfrequenzlisteCalculator.maxDateColumns) Spalten für Trainingstage; weitere bitte von Hand nachtragen.")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                     }
                 }
 
-                Section("PRAE (Formular + Darstellung)") {
+                Section(heading: "PRAE (Formular + Darstellung)") {
                     if kostZSummary.personAmounts.isEmpty {
                         Text("Keine Trainer:innen/Helfer:innen mit hinterlegtem PRAE-Betrag in diesem Monat für diese Sportart.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         ForEach(kostZSummary.personAmounts) { entry in
                             Toggle(entry.person.displayName, isOn: praeBinding(for: entry.person.id))
@@ -151,20 +151,20 @@ struct SammelabrechnungView: View {
                     }
                 }
 
-                Section("Export und Druck") {
+                Section(heading: "Export und Druck") {
                     Text("Bündelt die ausgewählten Teile — KostZ-Formular, PRAE-Formular und Darstellung der ausgewählten Trainer:innen/Helfer:innen sowie die Trainingsfrequenzliste der Sportart — als ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                     if !hasSelectedParts {
                         Text("Bitte mindestens einen Teil auswählen.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else if let exportURL {
                         ShareLink(item: exportURL) {
                             Label("Sammelabrechnung exportieren", systemImage: "doc.zipper")
                         }
                     } else {
                         Label("Sammelabrechnung wird vorbereitet …", systemImage: "doc.zipper")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                     if hasSelectedParts {
                         ReportPrintButton(title: "Ausgewählte Teile drucken",

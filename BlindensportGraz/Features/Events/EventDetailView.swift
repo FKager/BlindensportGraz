@@ -58,7 +58,7 @@ struct EventDetailView: View {
             EventImagesSection(images: event.images, currentUser: currentUser, onAdd: addImage, onDelete: deleteImage)
                 .disabled(!isEditing)
 
-            Section("Details") {
+            Section(heading: "Details") {
                 if !event.typeName.isEmpty {
                     LabeledContent("Art der Veranstaltung", value: event.typeName)
                 }
@@ -78,16 +78,16 @@ struct EventDetailView: View {
               }
 
             if !event.notes.isEmpty {
-                Section("Notizen") {
+                Section(heading: "Notizen") {
                     Text(event.notes)
                  }
              }
 
             if isEditing {
                 if !allUsers.isEmpty || !allMembers.isEmpty {
-                    Section("Mitglieder") {
+                    Section(heading: "Mitglieder") {
                         if !allUsers.isEmpty {
-                            Section("Registrierte Benutzer") {
+                            Section(heading: "Registrierte Benutzer") {
                                 ForEach(allUsers) { user in
                                     MemberSelectionRow(name: user.displayName, isSelected: directMembership(forUser: user.id) != nil) {
                                         toggleDirectUser(user)
@@ -96,7 +96,7 @@ struct EventDetailView: View {
                             }
                         }
                         if !allMembers.isEmpty {
-                            Section("Mitglieder ohne Konto") {
+                            Section(heading: "Mitglieder ohne Konto") {
                                 ForEach(allMembers) { member in
                                     MemberSelectionRow(name: member.fullName, isSelected: directMembership(forMember: member.id) != nil) {
                                         toggleDirectMember(member)
@@ -106,21 +106,21 @@ struct EventDetailView: View {
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
             } else if !event.directMembers.isEmpty {
-                Section("Mitglieder") {
+                Section(heading: "Mitglieder") {
                     ForEach(event.directMembers.sortedByLastName()) { membership in
                         Text(membership.displayName)
                     }
                 }
             }
 
-            Section("Teilnehmer (\(event.participations.count))") {
+            Section(heading: "Teilnehmer (\(event.participations.count))") {
                 if event.participations.isEmpty {
                     Text("Noch keine Teilnehmer")
-                          .foregroundStyle(.secondary)
+                          .foregroundStyle(Theme.Palette.secondary)
                   } else {
                      ForEach(event.participations.sorted { ($0.user.lastName, $0.user.firstName) < ($1.user.lastName, $1.user.firstName) }) { p in
                         HStack {
@@ -128,7 +128,7 @@ struct EventDetailView: View {
                             Spacer()
                             Text(p.status)
                                   .font(.caption)
-                                  .foregroundStyle(.secondary)
+                                  .foregroundStyle(Theme.Palette.secondary)
                            }
                       }
 
@@ -148,7 +148,7 @@ struct EventDetailView: View {
                         } else {
                             Text("Nur für Grazer VSC Mitglieder")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                        }
                   }

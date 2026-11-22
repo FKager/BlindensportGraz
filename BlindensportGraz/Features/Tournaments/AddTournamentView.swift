@@ -78,13 +78,13 @@ struct AddTournamentView: View {
                             .foregroundStyle(Theme.Palette.warning)
                     }
                 }
-                Section("Turnier") {
+                Section(heading: "Turnier") {
                     TextField("Name", text: $title)
                     EventTypePicker(selection: $eventType, behavior: .tournament)
                     SportPicker(selection: $sport)
                     TextField("Veranstaltungsort", text: $location)
                      }
-                Section("Adresse") {
+                Section(heading: "Adresse") {
                     TextField("Straße", text: $street)
                     TextField("PLZ", text: $zip)
                     TextField("Ort", text: $city)
@@ -94,7 +94,7 @@ struct AddTournamentView: View {
                     DatePicker("Start", selection: $startDate, displayedComponents: [.date])
                     DatePicker("Ende", selection: $endDate, displayedComponents: [.date])
                 } header: {
-                    Text("Zeitraum")
+                    SectionHeading("Zeitraum")
                 } footer: {
                     if datesMissingFromInvitation {
                         Label("In der Einladung wurde kein Turnierdatum gefunden. Bitte Start und Ende eintragen.",
@@ -102,11 +102,11 @@ struct AddTournamentView: View {
                             .foregroundStyle(Theme.Palette.warning)
                     }
                 }
-                Section("Details") {
+                Section(heading: "Details") {
                     Stepper("Max. Teams: \(maxTeams)", value: $maxTeams, in: 2...64)
                        }
                 if !myTeams.isEmpty {
-                    Section("Beteiligte Teams") {
+                    Section(heading: "Beteiligte Teams") {
                         ForEach(myTeams) { team in
                             Button {
                                 if selectedTeamIDs.contains(team.id) {
@@ -134,15 +134,15 @@ struct AddTournamentView: View {
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                         if let autoTeamNames = Team.autoAssignTeamNames[sport] {
                             Text("Bei \(sport) werden \(autoTeamNames.joined(separator: ", ")) automatisch zugewiesen.")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                     }
                 }
-                Section("Notizen") {
+                Section(heading: "Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }

@@ -35,7 +35,7 @@ struct TournamentDocumentsSection: View {
                                 .foregroundStyle(.primary)
                             Text(detail(for: document))
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                     }
                     .accessibilityHint("Öffnet das Dokument")
@@ -60,10 +60,11 @@ struct TournamentDocumentsSection: View {
                     }
                 }
             } header: {
-                Text("Dokumente (\(documents.count))")
+                SectionHeading("Dokumente (\(documents.count))")
             } footer: {
                 if canManage {
                     Text("Zum Beispiel Einladung, Spielplan oder Ergebnisse — PDF, Word, Excel, Text oder Bild, bis 15 MB. Für alle freigeschalteten Mitglieder sichtbar.")
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
             }
             .fileImporter(isPresented: $showImporter,

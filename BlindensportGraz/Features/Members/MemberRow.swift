@@ -14,13 +14,13 @@ struct MemberRow: View {
                 if !member.fullAddress.isEmpty {
                     Text(member.fullAddress)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
                 // Active is the normal case; only the others need saying.
                 if member.status != MemberStatus.active.rawValue, let status = MemberStatus(rawValue: member.status) {
                     Text(status.label)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
             }
             Spacer()

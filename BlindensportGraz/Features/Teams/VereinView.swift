@@ -38,13 +38,13 @@ private struct VereinHubList: View {
 
     var body: some View {
         List {
-            Section("Teams") {
+            Section(heading: "Teams") {
                 NavigationLink(value: AppRoute.teamsList) {
                     Label("Teams", systemImage: "person.3.fill")
                 }
             }
 
-            Section("Verwaltung") {
+            Section(heading: "Verwaltung") {
                 NavigationLink(value: AppRoute.membersList) {
                     Label("Benutzerverwaltung", systemImage: "list.bullet.rectangle")
                 }
@@ -77,7 +77,7 @@ private struct VereinHubList: View {
                 }
             }
 
-            Section("Finanzen") {
+            Section(heading: "Finanzen") {
                 NavigationLink(value: AppRoute.budget) {
                     Label("Vereinsbudget", systemImage: "eurosign.bank.building")
                 }

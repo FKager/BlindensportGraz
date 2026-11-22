@@ -25,3 +25,16 @@ final class FormMissingInputTests: XCTestCase {
         XCTAssertNil(missing())
     }
 }
+
+/// The tournament list showed the raw status "planned" (accessibility audit).
+@MainActor
+final class TournamentStatusLabelTests: XCTestCase {
+    func testStatusesAreGerman() {
+        let tournament = Tournament(title: "T", sport: "Torball", location: "Graz", startDate: .now, endDate: .now)
+        XCTAssertEqual(tournament.statusLabel, "Geplant")
+        tournament.status = "ongoing"
+        XCTAssertEqual(tournament.statusLabel, "Laufend")
+        tournament.status = "finished"
+        XCTAssertEqual(tournament.statusLabel, "Beendet")
+    }
+}

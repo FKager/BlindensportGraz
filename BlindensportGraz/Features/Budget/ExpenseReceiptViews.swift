@@ -40,10 +40,10 @@ struct ExpenseReceiptsSection: View {
     }
 
     var body: some View {
-        Section("Belege (\(receipts.count))") {
+        Section(heading: "Belege (\(receipts.count))") {
             if receipts.isEmpty {
                 Text("Noch keine Belege")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             } else {
                 ForEach(receipts.sorted { $0.uploadedAt > $1.uploadedAt }) { receipt in
                     VStack(alignment: .leading, spacing: Theme.Spacing.s) {
@@ -60,7 +60,7 @@ struct ExpenseReceiptsSection: View {
                                 Spacer()
                                 Text(receipt.uploadedAt, format: .dateTime.day().month())
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             }
                         }
                         .accessibilityLabel("\(receipt.note.isEmpty ? "Beleg" : receipt.note), hochgeladen am \(receipt.uploadedAt.formatted(.dateTime.day().month().year()))")
