@@ -127,14 +127,14 @@ struct UserListView: View {
                 }
                 Text(user.role.displayLabel)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
                 Text("Konto seit " + user.createdAt.formatted(date: .abbreviated, time: .omitted))
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
                 if !user.email.isEmpty {
                     Text(user.email)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
                 if blockedIDs.contains(user.id) {
                     Label("Gesperrt – kann sich nicht anmelden", systemImage: "lock.fill")

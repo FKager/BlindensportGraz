@@ -32,11 +32,11 @@ struct BudgetView: View {
 
     var body: some View {
         Form {
-            Section("Jahr") {
+            Section(heading: "Jahr") {
                 Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
             }
 
-            Section("Überblick") {
+            Section(heading: "Überblick") {
                 LabeledContent("Einnahmen") {
                     Text(summary.totalIncome, format: .currency(code: "EUR"))
                 }
@@ -53,12 +53,12 @@ struct BudgetView: View {
             categorySection(.fixedSubsidy)
             categorySection(.donation)
 
-            Section("Kosten Veranstaltungen") {
+            Section(heading: "Kosten Veranstaltungen") {
                 HStack {
                     Text("PRAE (Anwesenheit)")
                     Spacer()
                     Text(summary.praeTotal, format: .currency(code: "EUR"))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
                 ForEach(filteredEntries(.eventCost)) { entry in
                     entryRow(entry)
@@ -98,7 +98,7 @@ struct BudgetView: View {
             let rows = filteredEntries(category)
             if rows.isEmpty {
                 Text("Für \(String(year)) wurden noch keine Einträge dieser Art erfasst.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             } else {
                 ForEach(rows) { entry in
                     entryRow(entry)
@@ -129,11 +129,11 @@ struct BudgetView: View {
                         }
                     }
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
                 }
                 Spacer()
                 Text(entry.amount, format: .currency(code: "EUR"))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             }
         }
         .accessibilityElement(children: .combine)

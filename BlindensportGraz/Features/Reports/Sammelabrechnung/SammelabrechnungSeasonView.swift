@@ -34,21 +34,21 @@ struct SammelabrechnungSeasonView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Zeitraum") {
+                Section(heading: "Zeitraum") {
                     Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
                 }
 
-                Section("Export und Druck") {
+                Section(heading: "Export und Druck") {
                     Text("Bündelt alle Monats-Sammelabrechnungen je Sportart, alle Turnier-Sammelabrechnungen sowie alle Trainingsfrequenzlisten dieses Jahres als eine ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                     if let exportURL {
                         ShareLink(item: exportURL) {
                             Label("Saison-Sammelabrechnung exportieren", systemImage: "doc.zipper")
                         }
                     } else {
                         Label("Saison-Sammelabrechnung wird vorbereitet …", systemImage: "doc.zipper")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                     ReportPrintButton(title: "Alle Dokumente drucken", jobName: "Saison-Sammelabrechnung \(String(year))") {
                         try SammelabrechnungExporter.seasonFiles(

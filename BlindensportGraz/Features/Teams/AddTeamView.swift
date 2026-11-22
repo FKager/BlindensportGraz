@@ -13,7 +13,7 @@ struct AddTeamView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Team") {
+                Section(heading: "Team") {
                     TextField("Name", text: $name)
                     SportPicker(selection: $sport)
                     TextField("Beschreibung", text: $descriptionText, axis: .vertical)

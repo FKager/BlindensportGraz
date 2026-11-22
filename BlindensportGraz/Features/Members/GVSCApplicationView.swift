@@ -45,7 +45,7 @@ struct GVSCApplicationView: View {
                     if let appliedAt = member.gvscAppliedAt {
                         Label("Zuletzt gesendet am \(appliedAt.formatted(date: .abbreviated, time: .shortened))",
                               systemImage: "envelope.badge")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
 
@@ -61,7 +61,7 @@ struct GVSCApplicationView: View {
                         }
                     }
                 } header: {
-                    Text("Fehlende Angaben")
+                    SectionHeading("Fehlende Angaben")
                 } footer: {
                     if !missing.isEmpty {
                         Text(canEditPhoto
@@ -73,7 +73,7 @@ struct GVSCApplicationView: View {
                 if let photoUserID, canEditPhoto {
                     ProfilePhotoSection(userID: photoUserID, photo: $photo)
                 } else {
-                    Section("Profilfoto") {
+                    Section(heading: "Profilfoto") {
                         if !photoLoaded && photoUserID != nil {
                             ProgressView()
                         } else if let photo {
@@ -88,7 +88,7 @@ struct GVSCApplicationView: View {
                                   ? "Kein verknüpftes Konto — es wird kein Foto mitgesendet."
                                   : "Kein Profilfoto vorhanden.",
                                   systemImage: "person.crop.circle.badge.questionmark")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                     }
                 }

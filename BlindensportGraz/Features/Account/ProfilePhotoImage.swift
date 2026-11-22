@@ -15,7 +15,7 @@ struct ProfilePhotoImage: View {
             Image(systemName: fallback)
                 .resizable()
                 .scaledToFit()
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.Palette.secondary)
         }
     }
 }

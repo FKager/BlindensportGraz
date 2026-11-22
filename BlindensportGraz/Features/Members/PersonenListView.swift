@@ -132,7 +132,7 @@ struct PersonenListView: View {
                 Text(row.teamCount == 1 ? "1 Team" : "\(row.teamCount) Teams")
             }
             .font(.caption)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(Theme.Palette.secondary)
         }
         .padding(.vertical, Theme.Spacing.xxs)
     }

@@ -21,7 +21,7 @@ struct StatCard: View {
                 .bold()
             Text(title)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.Palette.secondary)
         }
         .card(tint: color)
         .accessibilityElement(children: .combine)

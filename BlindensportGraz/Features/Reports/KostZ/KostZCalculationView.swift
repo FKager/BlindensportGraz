@@ -72,7 +72,7 @@ struct KostZCalculationView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Zeitraum") {
+                Section(heading: "Zeitraum") {
                     Picker("Monat", selection: $month) {
                         ForEach(1...12, id: \.self) { m in
                             Text(monthName(m)).tag(m)
@@ -88,10 +88,10 @@ struct KostZCalculationView: View {
                     }
                 }
 
-                Section("Honorare Trainer:innen / Helfer:innen") {
+                Section(heading: "Honorare Trainer:innen / Helfer:innen") {
                     if summary.personAmounts.isEmpty {
                         Text("Keine Einsätze mit hinterlegtem Betrag in diesem Monat für diese Sportart.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         ForEach(summary.personAmounts) { entry in
                             HStack {
@@ -113,10 +113,10 @@ struct KostZCalculationView: View {
                 ExpenseReceiptsSection(receipts: receipts, currentUser: currentUser,
                                         onAdd: addReceipt, onDelete: deleteReceipt)
 
-                Section("Export") {
+                Section(heading: "Export") {
                     Text("Nur die Zeile „HONORARE / VERGÜTUNGEN“ sowie Zeitraum und Personenanzahl werden vorausgefüllt — alle übrigen Kostenarten, Beilagen-Nummern und der Ort müssen weiterhin von Hand ergänzt werden.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                     // ShareLink, not a Button-triggered sheet — this view is
                     // itself already sheet-presented from AccountView, and
                     // nesting a second sheet on top of a sheet is a known
@@ -129,7 +129,7 @@ struct KostZCalculationView: View {
                         }
                     } else {
                         Label("KostZ-Formular wird vorbereitet …", systemImage: "doc.fill")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                     if let exportURL {
                         ReportPrintButton(title: "KostZ-Formular drucken", jobName: "KostZ") { [exportURL] }

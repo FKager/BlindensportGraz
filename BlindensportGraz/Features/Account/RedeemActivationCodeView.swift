@@ -26,6 +26,7 @@ struct RedeemActivationCodeView: View {
                     }
                 } footer: {
                     Text("Den Code bekommst du von einem Admin. Er gilt 14 Tage und nur für dein Konto.")
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
             }
             .navigationTitle("Aktivierungscode")

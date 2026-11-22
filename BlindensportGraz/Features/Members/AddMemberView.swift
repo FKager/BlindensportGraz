@@ -30,7 +30,7 @@ struct AddMemberView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Mitglied") {
+                Section(heading: "Mitglied") {
                     TextField("Vorname", text: $firstName)
                     TextField("Nachname", text: $lastName)
                     TextField("Titel", text: $title)
@@ -46,7 +46,7 @@ struct AddMemberView: View {
                     TextField("Ort", text: $city)
                     TextField("Land", text: $country)
                 }
-                Section("Kontakt") {
+                Section(heading: "Kontakt") {
                     TextField("E-Mail", text: $email)
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
@@ -54,7 +54,7 @@ struct AddMemberView: View {
                     TextField("Telefon", text: $phone)
                         .keyboardType(.phonePad)
                 }
-                Section("Mitgliedschaft") {
+                Section(heading: "Mitgliedschaft") {
                     Toggle("Mitglied des Grazer VSC", isOn: $memberOfGVSC)
                     TextField("Mitgliedsnummer", text: $memberNumber)
                     DatePicker("Beigetreten", selection: $joinedAt, displayedComponents: .date)
@@ -76,7 +76,7 @@ struct AddMemberView: View {
                     OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $lastMedicalExamination)
                     TextField("Standardfunktion", text: $defaultFunction)
                 }
-                Section("Notizen") {
+                Section(heading: "Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }

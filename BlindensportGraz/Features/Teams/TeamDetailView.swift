@@ -27,17 +27,17 @@ struct TeamDetailView: View {
 
     var body: some View {
         Form {
-            Section("Team") {
+            Section(heading: "Team") {
                 TextField("Name", text: $team.name)
                 SportPicker(selection: $team.sport, allowsNone: true)
                 TextField("Beschreibung", text: $team.descriptionText, axis: .vertical)
                     .lineLimit(2...5)
             }
 
-            Section("Mitglieder (\(team.memberships.count))") {
+            Section(heading: "Mitglieder (\(team.memberships.count))") {
                 if team.memberships.isEmpty {
                     Text("Keine Mitglieder")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 } else {
                     let sortedMemberships = team.memberships.sortedByLastName()
                     ForEach(sortedMemberships) { m in
@@ -46,7 +46,7 @@ struct TeamDetailView: View {
                                 Text(m.displayName)
                                 Text(m.subtitle)
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             }
                             Spacer()
                             if canManageTeams {

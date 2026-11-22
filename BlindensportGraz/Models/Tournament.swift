@@ -7,6 +7,17 @@ final class Tournament: SportEvent {
     var maxTeams: Int = 8
     var status: String = "planned" // "planned", "ongoing", "finished"
 
+    /// German label for `status` (the edit Picker's tags), for TournamentRow's
+    /// badge and TournamentDetailView — the row used to show the raw "planned".
+    var statusLabel: String {
+        switch status {
+        case "planned": return String(localized: "Geplant")
+        case "ongoing": return String(localized: "Laufend")
+        case "finished": return String(localized: "Beendet")
+        default: return status
+        }
+    }
+
     init(id: UUID = UUID(),
          title: String,
          sport: String,

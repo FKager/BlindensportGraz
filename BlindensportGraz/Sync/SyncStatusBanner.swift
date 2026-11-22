@@ -38,7 +38,7 @@ struct SyncStatusBanner: View {
                 banner(
                     text: "Synchronisiert…",
                     systemImage: "arrow.triangle.2.circlepath",
-                    color: .secondary
+                    color: Theme.Palette.secondary
                 )
             } else if syncState.pendingCount > 0 {
                 banner(

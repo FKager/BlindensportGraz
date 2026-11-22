@@ -45,10 +45,10 @@ struct KostZTournamentCalculationView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Honorare Trainer:innen / Helfer:innen") {
+                Section(heading: "Honorare Trainer:innen / Helfer:innen") {
                     if summary.personAmounts.isEmpty {
                         Text("Keine Einsätze mit hinterlegtem PRAE-Betrag bei diesem Turnier.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         ForEach(summary.personAmounts) { entry in
                             HStack {
@@ -70,17 +70,17 @@ struct KostZTournamentCalculationView: View {
                 ExpenseReceiptsSection(receipts: receipts, currentUser: currentUser,
                                         onAdd: addReceipt, onDelete: deleteReceipt)
 
-                Section("Export") {
+                Section(heading: "Export") {
                     Text("Nur die Zeile „HONORARE / VERGÜTUNGEN“ sowie Zeitraum und Personenanzahl werden vorausgefüllt — alle übrigen Kostenarten, Beilagen-Nummern und der Ort müssen weiterhin von Hand ergänzt werden.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                     if let exportURL {
                         ShareLink(item: exportURL) {
                             Label("KostZ-Formular exportieren", systemImage: "doc.fill")
                         }
                     } else {
                         Label("KostZ-Formular wird vorbereitet …", systemImage: "doc.fill")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                     if let exportURL {
                         ReportPrintButton(title: "KostZ-Formular drucken", jobName: "KostZ \(tournament.title)") { [exportURL] }

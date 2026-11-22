@@ -77,7 +77,7 @@ struct TrainingDetailView: View {
 
         TrainingFieldsSections(training: training)
         EventTeamsPicker(event: training, teams: myTeams)
-        Section("Anwesenheit") {
+        Section(heading: "Anwesenheit") {
             if !allMemberships.isEmpty {
                 ForEach(allMemberships) { membership in
                     AttendanceRow(membership: membership, event: training, maxPrae: 90)
@@ -90,7 +90,7 @@ struct TrainingDetailView: View {
                 Label("Neues Mitglied hinzufügen", systemImage: "person.badge.plus")
             }
         }
-        Section("Notizen") {
+        Section(heading: "Notizen") {
             TextField("Notizen", text: $training.notes, axis: .vertical)
                 .lineLimit(3...6)
         }
@@ -105,7 +105,7 @@ struct TrainingDetailView: View {
                 .disabled(true)
         }
         if !training.sport.isEmpty || !training.location.isEmpty {
-            Section("Training") {
+            Section(heading: "Training") {
                 if training.typeName != EventType.Behavior.training.defaultTypeName {
                     LabeledContent("Art der Veranstaltung", value: training.typeName)
                 }
@@ -118,11 +118,11 @@ struct TrainingDetailView: View {
             }
         }
         if !training.fullAddress.isEmpty {
-            Section("Adresse") {
+            Section(heading: "Adresse") {
                 LabeledContent("Adresse", value: training.fullAddress)
             }
         }
-        Section("Planung") {
+        Section(heading: "Planung") {
             LabeledContent("Start", value: training.startDate.formatted(date: .long, time: .shortened))
             LabeledContent("Dauer", value: "\(training.durationMinutes) min")
             if !training.focusArea.isEmpty {
@@ -131,21 +131,21 @@ struct TrainingDetailView: View {
             LabeledContent("Status", value: training.statusLabel)
         }
         if !training.teams.isEmpty {
-            Section("Beteiligte Teams") {
+            Section(heading: "Beteiligte Teams") {
                 ForEach(training.teams) { team in
                     Text(team.name)
                 }
             }
         }
         if !attendedMemberships.isEmpty {
-            Section("Anwesenheit") {
+            Section(heading: "Anwesenheit") {
                 ForEach(attendedMemberships) { membership in
                     HStack {
                         Text(membership.displayName)
                         Spacer()
                         if let prae = attendance(for: membership)?.praeAmount, prae > 0 {
                             Text("\(Int(prae)) €")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                     }
                 }
@@ -153,7 +153,7 @@ struct TrainingDetailView: View {
             }
         }
         if !training.notes.isEmpty {
-            Section("Notizen") {
+            Section(heading: "Notizen") {
                 Text(training.notes)
             }
         }

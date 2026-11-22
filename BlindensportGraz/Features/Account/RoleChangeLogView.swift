@@ -23,42 +23,42 @@ struct RoleChangeLogView: View {
                 EmptyStateView("Keine Rollenänderungen", systemImage: "clock.arrow.circlepath", description: "Änderungen an Benutzerrollen erscheinen hier.")
             } else {
                 if !functionEntries.isEmpty {
-                    Section("Vereinsfunktionen") {
+                    Section(heading: "Vereinsfunktionen") {
                         ForEach(functionEntries) { entry in
                             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                                 Text("\(entry.functionLabel): \(entry.oldLabel) → \(entry.newLabel)")
                                     .font(.body)
                                 Text("Geändert von \(changedByLabel(entry.changedBy)) am \(entry.changedAt.formatted(date: .abbreviated, time: .shortened))")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             }
                             .accessibilityElement(children: .combine)
                         }
                     }
                 }
                 if !accountEntries.isEmpty {
-                    Section("Sperren und Löschen") {
+                    Section(heading: "Sperren und Löschen") {
                         ForEach(accountEntries) { entry in
                             VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                                 Text("\(entry.targetLabel): \(entry.actionLabel)")
                                     .font(.body)
                                 Text("Von \(changedByLabel(entry.actor)) am \(entry.at.formatted(date: .abbreviated, time: .shortened))")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             }
                             .accessibilityElement(children: .combine)
                         }
                     }
                 }
                 if !entries.isEmpty {
-                Section("Rollen") {
+                Section(heading: "Rollen") {
                 ForEach(entries) { entry in
                     VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
                         Text("\(displayName(for: entry.userID)): \(label(entry.oldRole)) → \(label(entry.newRole))")
                             .font(.body)
                         Text("Geändert von \(changedByLabel(entry.changedBy)) am \(entry.changedAt.formatted(date: .abbreviated, time: .shortened))")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                     .accessibilityElement(children: .combine)
                 }

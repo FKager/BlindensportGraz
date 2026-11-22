@@ -43,9 +43,10 @@ struct ProfilePhotoSection: View {
                     .foregroundStyle(Theme.Palette.warning)
             }
         } header: {
-            Text("Profilfoto")
+            SectionHeading("Profilfoto")
         } footer: {
             Text(footer)
+                .foregroundStyle(Theme.Palette.secondary)
         }
         .onChange(of: selectedItem) { _, item in
             guard let item else { return }

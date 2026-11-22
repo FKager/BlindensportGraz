@@ -29,7 +29,7 @@ struct AddEventView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Event") {
+                Section(heading: "Event") {
                     TextField("Titel", text: $title)
                     EventTypePicker(selection: $eventType, behavior: .event)
                     SportPicker(selection: $sport, allowsNone: true)
@@ -39,13 +39,13 @@ struct AddEventView: View {
                     // field below.
                     TextField("Veranstaltungsort", text: $location)
                  }
-                Section("Adresse") {
+                Section(heading: "Adresse") {
                     TextField("Straße", text: $street)
                     TextField("PLZ", text: $zip)
                     TextField("Ort", text: $city)
                     TextField("Land", text: $country)
                 }
-                Section("Zeit") {
+                Section(heading: "Zeit") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
                     DatePicker("Start", selection: $startDate,
                                displayedComponents: includesTime ? [.date, .hourAndMinute] : [.date])
@@ -56,9 +56,9 @@ struct AddEventView: View {
                 // request 2026-09-12) — Training/Tournament keep the
                 // Team-based flow (AddTrainingView/AddTournamentView).
                 if !allUsers.isEmpty || !allMembers.isEmpty {
-                    Section("Mitglieder") {
+                    Section(heading: "Mitglieder") {
                         if !allUsers.isEmpty {
-                            Section("Registrierte Benutzer") {
+                            Section(heading: "Registrierte Benutzer") {
                                 ForEach(allUsers) { user in
                                     MemberSelectionRow(name: user.displayName, isSelected: selectedUserIDs.contains(user.id)) {
                                         if selectedUserIDs.contains(user.id) {
@@ -71,7 +71,7 @@ struct AddEventView: View {
                             }
                         }
                         if !allMembers.isEmpty {
-                            Section("Mitglieder ohne Konto") {
+                            Section(heading: "Mitglieder ohne Konto") {
                                 ForEach(allMembers) { member in
                                     MemberSelectionRow(name: member.fullName, isSelected: selectedMemberIDs.contains(member.id)) {
                                         if selectedMemberIDs.contains(member.id) {
@@ -85,10 +85,10 @@ struct AddEventView: View {
                         }
                         Text("Keine Auswahl = für alle sichtbar")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
-                Section("Notizen") {
+                Section(heading: "Notizen") {
                     TextField("Notizen", text: $notes, axis: .vertical)
                           .lineLimit(3...6)
                   }

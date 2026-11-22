@@ -137,6 +137,7 @@
 		6256F4403547544BA7786B21 /* ThumbnailImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FAD67D4A73B752A1D498F67 /* ThumbnailImage.swift */; };
 		631738EB7BA341502A666EBA /* TournamentInvitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA02186F64DB2504DBC9E87 /* TournamentInvitation.swift */; };
 		64456A19FB310B862D636F3F /* PraeAmountRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E451DBB244FCF38DC0F70D6 /* PraeAmountRow.swift */; };
+		66F90C3B0C4E438FBA95740E /* SignedInAccessibilityAuditUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC07F8E370155D5666D7D1F3 /* SignedInAccessibilityAuditUITests.swift */; };
 		689BF8E4AEBA90505883DDDF /* PlaceFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 154E08DCCEB6EF7B998D9B09 /* PlaceFormat.swift */; };
 		68F7BA704F1B3FBFDAE11155 /* PRAE_Darstellung_Vorlage.xlsx in Resources */ = {isa = PBXBuildFile; fileRef = 57556A329ADF06C866AEC1E3 /* PRAE_Darstellung_Vorlage.xlsx */; };
 		692A74DBA8897838B63C53F4 /* SupabaseProfileService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F79831D8849D6E6C4FA9DD50 /* SupabaseProfileService.swift */; };
@@ -148,6 +149,7 @@
 		7048447C9D782E85F36578E7 /* EventReminderServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24482DBA01ABE94F1CDB7FB9 /* EventReminderServiceTests.swift */; };
 		70642E6CE26BBBA7B289AAFA /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 336F6D138B4853E1ADAB229A /* NetworkMonitor.swift */; };
 		707568CC7E63D265F9A990D8 /* AuthContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEE9F901231F50E9BD5E37D /* AuthContext.swift */; };
+		70B0C5AE474A4FDB36F76B7A /* XCUIApplication+Audit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201C5A8DD48E4959C3A22B26 /* XCUIApplication+Audit.swift */; };
 		7126944015812B8964283BB2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D67DEC7D915A66947A9B3EE5 /* Assets.xcassets */; };
 		71EE76DC72C36A133D5024B4 /* BlindensportGrazWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714939FF80A1EF84FBC7C1B3 /* BlindensportGrazWidgets.swift */; };
 		725192F8CE13F8E0AC9BCE41 /* EventTypePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C4C235EBB6BBADC3352776F /* EventTypePicker.swift */; };
@@ -415,6 +417,7 @@
 		1D3FF9199690B5409ECD729F /* FormMissingInputTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormMissingInputTests.swift; sourceTree = "<group>"; };
 		1DA8116FAF0DC05502D0559C /* KostZExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KostZExport.swift; sourceTree = "<group>"; };
 		1E35A92F9AB34EFB0AB62ECC /* SearchQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchQuery.swift; sourceTree = "<group>"; };
+		201C5A8DD48E4959C3A22B26 /* XCUIApplication+Audit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+Audit.swift"; sourceTree = "<group>"; };
 		2179524F056369A65EE64BE8 /* SammelabrechnungExport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SammelabrechnungExport.swift; sourceTree = "<group>"; };
 		22F8F25F7F2FB67FE353E669 /* GVSCApplicationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GVSCApplicationView.swift; sourceTree = "<group>"; };
 		23949BEFC7EF4DDE0CB66B83 /* UserListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserListView.swift; sourceTree = "<group>"; };
@@ -658,6 +661,7 @@
 		DA56952FB80206E33D7960B8 /* PendingPushTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingPushTests.swift; sourceTree = "<group>"; };
 		DAA86993B03D3A65AC54EA95 /* VereinSplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VereinSplitView.swift; sourceTree = "<group>"; };
 		DBB696A6769854DF75117D6F /* CalendarEventExportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEventExportTests.swift; sourceTree = "<group>"; };
+		DC07F8E370155D5666D7D1F3 /* SignedInAccessibilityAuditUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedInAccessibilityAuditUITests.swift; sourceTree = "<group>"; };
 		DC12924DD4703027ED064C8D /* SetPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPasswordView.swift; sourceTree = "<group>"; };
 		DC8F672F733580B914AEDF93 /* CatalogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogTests.swift; sourceTree = "<group>"; };
 		DCB5C08892B662A58A1035C8 /* MyMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMemberView.swift; sourceTree = "<group>"; };
@@ -1186,6 +1190,8 @@
 			isa = PBXGroup;
 			children = (
 				D7E70A291915EC56ECD0DFCF /* AccessibilityAuditUITests.swift */,
+				DC07F8E370155D5666D7D1F3 /* SignedInAccessibilityAuditUITests.swift */,
+				201C5A8DD48E4959C3A22B26 /* XCUIApplication+Audit.swift */,
 			);
 			path = BlindensportGrazUITests;
 			sourceTree = "<group>";
@@ -1804,6 +1810,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				50E8EFAF484C8FA5BB57E807 /* AccessibilityAuditUITests.swift in Sources */,
+				66F90C3B0C4E438FBA95740E /* SignedInAccessibilityAuditUITests.swift in Sources */,
+				70B0C5AE474A4FDB36F76B7A /* XCUIApplication+Audit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

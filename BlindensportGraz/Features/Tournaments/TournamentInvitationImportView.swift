@@ -46,7 +46,7 @@ struct TournamentInvitationImportView: View {
                         .font(.title3.bold())
                     Text("Wähle eine Einladung als Text-, Word- (.doc, .docx) oder PDF-Datei. Titel, Sportart, Ort und Zeitraum werden automatisch ausgefüllt und können danach noch angepasst werden.")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                     if isProcessing {

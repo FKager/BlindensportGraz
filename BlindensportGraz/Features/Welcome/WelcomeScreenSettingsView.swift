@@ -20,7 +20,7 @@ struct WelcomeScreenSettingsView: View {
                         .foregroundStyle(Theme.Palette.success)
                 } else {
                     Label("Keine welcome.md in der iCloud Drive dieses Geräts gefunden", systemImage: "xmark.icloud")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
                 Button {
                     syncNow()
@@ -28,9 +28,10 @@ struct WelcomeScreenSettingsView: View {
                     Label("Jetzt synchronisieren", systemImage: "arrow.triangle.2.circlepath")
                 }
             } header: {
-                Text("iCloud-Datei")
+                SectionHeading("iCloud-Datei")
             } footer: {
                 Text("Lege welcome.md in \"iCloud Drive/Blindensport Graz\" ab (Dateien-App oder Finder). Von hier aus wird der Inhalt mit allen Mitgliedern geteilt — ein anderes Gerät zeigt die Datei selbst nicht an, nur den bereits geteilten Text unten.")
+                    .foregroundStyle(Theme.Palette.secondary)
             }
 
             if let content {

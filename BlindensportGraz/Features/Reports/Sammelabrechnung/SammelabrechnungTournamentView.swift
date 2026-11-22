@@ -117,22 +117,23 @@ struct SammelabrechnungTournamentView: View {
                                    isOn: documentBinding(for: document.id))
                         }
                     } header: {
-                        Text("Dokumente")
+                        SectionHeading("Dokumente")
                     } footer: {
                         Text("Dokumente werden im Turnier unter „Dokumente“ hinzugefügt oder gelöscht.")
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
 
-                Section("Enthaltene Teile") {
+                Section(heading: "Enthaltene Teile") {
                     Toggle("KostZ-Formular", isOn: $includeKostZ)
                     Toggle("TeilnehmerInnenliste Sportler", isOn: $includeTeilnehmerSportler)
                     Toggle("TeilnehmerInnenliste Helfer", isOn: $includeTeilnehmerHelfer)
                 }
 
-                Section("PRAE (Formular + Darstellung)") {
+                Section(heading: "PRAE (Formular + Darstellung)") {
                     if kostZSummary.personAmounts.isEmpty {
                         Text("Keine Trainer:innen/Helfer:innen mit hinterlegtem PRAE-Betrag bei diesem Turnier.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         ForEach(kostZSummary.personAmounts) { entry in
                             Toggle(entry.person.displayName, isOn: praeBinding(for: entry.person.id))
@@ -140,20 +141,20 @@ struct SammelabrechnungTournamentView: View {
                     }
                 }
 
-                Section("Export und Druck") {
+                Section(heading: "Export und Druck") {
                     Text("Bündelt die ausgewählten Teile — Dokumente, KostZ-Formular, PRAE-Formular/Darstellung der ausgewählten Trainer:innen/Helfer:innen sowie die TeilnehmerInnenliste(n) — als ZIP-Datei oder druckt sie in einem Auftrag.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                     if !hasSelectedParts {
                         Text("Bitte mindestens einen Teil auswählen.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else if let exportURL {
                         ShareLink(item: exportURL) {
                             Label("Sammelabrechnung exportieren", systemImage: "doc.zipper")
                         }
                     } else {
                         Label("Sammelabrechnung wird vorbereitet …", systemImage: "doc.zipper")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                     if hasSelectedParts {
                         ReportPrintButton(title: "Ausgewählte Teile drucken",

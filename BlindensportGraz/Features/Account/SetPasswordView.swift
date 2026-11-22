@@ -53,9 +53,10 @@ struct SetPasswordView: View {
                         }
                         .disabled(isSendingCode)
                     } header: {
-                        Text("Bestätigung")
+                        SectionHeading("Bestätigung")
                     } footer: {
                         Text("Zur Sicherheit haben wir dir einen Code per E-Mail geschickt. Gib ihn hier ein und tippe auf Speichern.")
+                            .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
             }

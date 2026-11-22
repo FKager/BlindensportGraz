@@ -34,7 +34,7 @@ struct MemberChangeRequestsView: View {
                 EmptyStateView("Keine Änderungsanträge", systemImage: "person.crop.circle.badge.checkmark", description: "Selbst eingereichte Änderungen an Vereinsdaten erscheinen hier zur Prüfung.")
             } else {
                 if !pendingRequests.isEmpty {
-                    Section("Offen (\(pendingRequests.count))") {
+                    Section(heading: "Offen (\(pendingRequests.count))") {
                         ForEach(pendingRequests) { request in
                             NavigationLink(value: AppRoute.memberChangeRequest(request, member: member(for: request))) {
                                 row(for: request)
@@ -43,7 +43,7 @@ struct MemberChangeRequestsView: View {
                     }
                 }
                 if !decidedRequests.isEmpty {
-                    Section("Entschieden") {
+                    Section(heading: "Entschieden") {
                         ForEach(decidedRequests.prefix(50)) { request in
                             NavigationLink(value: AppRoute.memberChangeRequest(request, member: member(for: request))) {
                                 row(for: request)
@@ -66,13 +66,13 @@ struct MemberChangeRequestsView: View {
                 Text(member(for: request)?.fullName ?? "\(request.firstName) \(request.lastName)")
                 Text("Beantragt von \(requesterName(request.requestedBy)) am \(request.requestedAt.formatted(date: .abbreviated, time: .shortened))")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             }
             Spacer()
             if request.status != MemberChangeRequest.pendingStatus {
                 Text(request.status == MemberChangeRequest.approvedStatus ? "Angenommen" : "Abgelehnt")
                     .font(.caption)
-                    .foregroundStyle(request.status == MemberChangeRequest.approvedStatus ? Theme.Palette.success : .secondary)
+                    .foregroundStyle(request.status == MemberChangeRequest.approvedStatus ? Theme.Palette.success : Theme.Palette.secondary)
             }
         }
     }

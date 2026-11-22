@@ -50,9 +50,10 @@ struct CatalogListsView: View {
                     Label("Sportart hinzufügen", systemImage: "plus")
                 }
             } header: {
-                Text("Sportarten")
+                SectionHeading("Sportarten")
             } footer: {
                 Text("Deaktivierte Einträge bleiben bei bestehenden Teams und Terminen erhalten, werden aber nicht mehr zur Auswahl angeboten. Umbenennen ändert alle Einträge mit dem alten Namen.")
+                    .foregroundStyle(Theme.Palette.secondary)
             }
 
             Section {
@@ -76,9 +77,10 @@ struct CatalogListsView: View {
                     Label("Veranstaltungsart hinzufügen", systemImage: "plus")
                 }
             } header: {
-                Text("Veranstaltungsarten")
+                SectionHeading("Veranstaltungsarten")
             } footer: {
                 Text("Das Verhalten bestimmt, wo eine Art angeboten wird und wie sie sich verhält: wie ein Training (Anwesenheit, Trainingsberichte), wie ein Turnier (Teams, Dokumente, Abrechnung) oder wie eine Veranstaltung (Personen direkt auswählen).")
+                    .foregroundStyle(Theme.Palette.secondary)
             }
         }
         .navigationTitle("Sportarten und Arten")
@@ -181,23 +183,23 @@ private struct CatalogRow: View {
         HStack {
             if let systemImage {
                 Image(systemName: systemImage)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
                     .accessibilityHidden(true)
             }
             VStack(alignment: .leading) {
                 Text(name)
-                    .foregroundStyle(isActive ? .primary : .secondary)
+                    .foregroundStyle(isActive ? Color.primary : Theme.Palette.secondary)
                 if let detail {
                     Text(detail)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
             }
             Spacer()
             if !isActive {
                 Text("Deaktiviert")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             }
         }
         .accessibilityElement(children: .combine)

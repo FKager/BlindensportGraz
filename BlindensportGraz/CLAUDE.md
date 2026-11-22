@@ -154,6 +154,8 @@ Data entry is a `Form` of `Section`s bound to the model with `@Bindable`. Add/ed
 
 - Spacing, radii, colours and the brand fill come from `Theme` (`Shared/Theme.swift`) — no hard-coded values
 - `Form` for data entry, `List` for collections, `EmptyStateView` (Shared/) for empty states — not ContentUnavailableView (clips its title, grey text under 4.5:1)
+- Secondary text: `Theme.Palette.secondary`, never `.secondary`/`.tertiary` (system grey is ~4.3:1 in light mode); titled sections: `Section(heading: "Titel")` (full-colour `SectionHeading`), not `Section("Titel")`
+- Rows with several columns stack from `.xxLarge` text (`AnyLayout`, see `TrainingRow`); the accessibility audit (BlindensportGrazUITests, signed out and as a sample admin via `UITestMode`) runs in CI
 - **ZStack** with `Theme.brandFill` circles for avatars; the initial letter is decorative (`accessibilityHidden`)
 - `LazyVGrid` for card layouts (stats, recent items)
 - Icon-only buttons get an `accessibilityLabel`; tap targets are at least 44×44 pt

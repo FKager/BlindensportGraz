@@ -86,7 +86,7 @@ struct MemberListView: View {
                         Section(team.name) {
                             if memberships.isEmpty {
                                 Text("Keine Mitglieder")
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             } else {
                                 ForEach(memberships) { membership in
                                     HStack {
@@ -94,7 +94,7 @@ struct MemberListView: View {
                                         Spacer()
                                         Text(membership.role.rawValue)
                                             .font(.caption)
-                                            .foregroundStyle(.secondary)
+                                            .foregroundStyle(Theme.Palette.secondary)
                                     }
                                 }
                             }
@@ -118,7 +118,7 @@ struct MemberListView: View {
                             }
                         } else {
                             Label("TeilnehmerInnenliste wird vorbereitet …", systemImage: "square.and.arrow.up.on.square")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                         if let exportedFileURL {
                             ReportPrintButton(title: "TeilnehmerInnenliste drucken",
@@ -127,7 +127,7 @@ struct MemberListView: View {
                         if exportContext.attendedMemberships.count > TeilnehmerlisteExporter.maxRows {
                             Text("Das Formular fasst nur \(TeilnehmerlisteExporter.maxRows) Personen — es werden nur die ersten \(TeilnehmerlisteExporter.maxRows) von \(exportContext.attendedMemberships.count) exportiert.")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                     }
                 }

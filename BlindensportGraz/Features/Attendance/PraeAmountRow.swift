@@ -30,7 +30,7 @@ struct PraeAmountRow: View {
         HStack {
             Text("PRAE (€)")
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Theme.Palette.secondary)
             Spacer()
             TextField("Betrag", value: $amount, format: .number)
                 .keyboardType(.numberPad)

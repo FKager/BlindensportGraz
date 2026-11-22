@@ -17,7 +17,7 @@ struct MemberDetailView: View {
 
     var body: some View {
         Form {
-            Section("Mitglied") {
+            Section(heading: "Mitglied") {
                 TextField("Vorname", text: $member.firstName)
                 TextField("Nachname", text: $member.lastName)
                 TextField("Titel", text: $member.title)
@@ -33,7 +33,7 @@ struct MemberDetailView: View {
                 TextField("Ort", text: $member.city)
                 TextField("Land", text: $member.country)
             }
-            Section("Kontakt") {
+            Section(heading: "Kontakt") {
                 TextField("E-Mail", text: $member.email)
                     .keyboardType(.emailAddress)
                     .textInputAutocapitalization(.never)
@@ -41,7 +41,7 @@ struct MemberDetailView: View {
                 TextField("Telefon", text: $member.phone)
                     .keyboardType(.phonePad)
             }
-            Section("Mitgliedschaft") {
+            Section(heading: "Mitgliedschaft") {
                 Picker("Status", selection: $member.status) {
                     ForEach(MemberStatus.allCases, id: \.rawValue) { status in
                         Text(status.label).tag(status.rawValue)
@@ -87,7 +87,7 @@ struct MemberDetailView: View {
                 TextField("Standardfunktion", text: $member.defaultFunction)
             }
             GVSCApplicationFieldsSections(model: member, includesPrivate: true)
-            Section("Notizen") {
+            Section(heading: "Notizen") {
                 TextField("Notizen", text: $member.notes, axis: .vertical)
                     .lineLimit(3...6)
             }

@@ -45,14 +45,14 @@ struct TrainingSeriesView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Vorlage") {
+                Section(heading: "Vorlage") {
                     LabeledContent("Training", value: favorite.title)
                     LabeledContent("Sportart", value: favorite.sport)
                     LabeledContent("Wochentag", value: weekdayName)
                     LabeledContent("Uhrzeit", value: "\(favorite.startHour.formatted(.number.precision(.integerLength(2)))):\(favorite.startMinute.formatted(.number.precision(.integerLength(2))))")
                 }
 
-                Section("Serie") {
+                Section(heading: "Serie") {
                     Stepper("Anzahl Wochen: \(weeks)", value: $weeks, in: 2...26)
                     if let first = startDates.first, let last = startDates.last {
                         LabeledContent("Erster Termin", value: first.formatted(date: .abbreviated, time: .shortened))
@@ -74,13 +74,13 @@ struct TrainingSeriesView: View {
                             if takenDates.contains(date) {
                                 Text("vorhanden")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                             }
                         }
-                        .foregroundStyle(takenDates.contains(date) ? .secondary : .primary)
+                        .foregroundStyle(takenDates.contains(date) ? Theme.Palette.secondary : Color.primary)
                     }
                 } header: {
-                    Text("Termine")
+                    SectionHeading("Termine")
                 }
             }
             .navigationTitle("Serie erstellen")

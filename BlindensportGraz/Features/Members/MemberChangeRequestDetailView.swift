@@ -84,21 +84,21 @@ struct MemberChangeRequestDetailView: View {
     var body: some View {
         Form {
             if let member {
-                Section("Änderungen") {
+                Section(heading: "Änderungen") {
                     let changes = diffs(against: member)
                     if changes.isEmpty {
                         Text("Keine Unterschiede mehr zu den aktuellen Vereinsdaten.")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.Palette.secondary)
                     } else {
                         ForEach(changes) { diff in
                             VStack(alignment: .leading, spacing: Theme.Spacing.xxs) {
                                 Text(diff.label)
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.Palette.secondary)
                                 HStack {
                                     Text(diff.oldValue)
                                         .strikethrough()
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(Theme.Palette.secondary)
                                     Image(systemName: "arrow.right")
                                         .accessibilityHidden(true)
                                     Text(diff.newValue)

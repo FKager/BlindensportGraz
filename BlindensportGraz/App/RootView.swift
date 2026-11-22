@@ -125,6 +125,8 @@ struct RootView: View {
     /// Pulls team/event/training/tournament data other users have shared, without
     /// blocking the UI on network/Supabase latency.
     private func triggerBackgroundSync() {
+        // UI tests: no server, no notification permission prompt over the screens under test.
+        guard !UITestMode.isActive else { return }
         Task {
             await SyncOrchestrationService.syncAll(modelContext: modelContext)
             await SyncOrchestrationService.ensureDefaultTeams(modelContext: modelContext)

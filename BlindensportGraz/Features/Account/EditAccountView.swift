@@ -20,7 +20,7 @@ struct EditAccountView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Profil") {
+                Section(heading: "Profil") {
                     TextField("Vorname", text: $firstName)
                         .textContentType(.givenName)
                     TextField("Nachname", text: $lastName)
@@ -37,7 +37,7 @@ struct EditAccountView: View {
                     LabeledContent("Rolle", value: authContext.role?.displayLabel ?? String(localized: "Freigabe ausstehend"))
                     Text("Die Rolle kann nur von einem Root-Benutzer geändert werden.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.Palette.secondary)
                 }
             }
             .navigationTitle("Profil bearbeiten")

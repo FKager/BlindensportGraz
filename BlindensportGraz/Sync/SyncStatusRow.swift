@@ -14,7 +14,7 @@ struct SyncStatusRow: View {
     @State private var isSyncing = false
 
     var body: some View {
-        Section("Synchronisierung") {
+        Section(heading: "Synchronisierung") {
             Button(action: sync) {
                 HStack(alignment: .top, spacing: Theme.Spacing.m) {
                     Image(systemName: systemImage)
@@ -26,7 +26,7 @@ struct SyncStatusRow: View {
                         if let lastSyncedAt = syncState.lastSyncedAt {
                             Text("Zuletzt synchronisiert: \(lastSyncedAt.formatted(.relative(presentation: .named)))")
                                 .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                         }
                         if syncState.pendingCount > 0 {
                             Text(syncState.pendingCount == 1
@@ -38,7 +38,7 @@ struct SyncStatusRow: View {
                         if syncState.status == .failed, let error = syncState.lastError {
                             Text(error)
                                 .font(.caption2.monospaced())
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(Theme.Palette.secondary)
                                 .textSelection(.enabled)
                         }
                     }
@@ -73,7 +73,7 @@ struct SyncStatusRow: View {
     }
 
     private var color: Color {
-        if isBusy { return .secondary }
+        if isBusy { return Theme.Palette.secondary }
         if !networkMonitor.isOnline { return Theme.Palette.warning }
         if syncState.status == .failed { return Theme.Palette.danger }
         return Theme.Palette.success

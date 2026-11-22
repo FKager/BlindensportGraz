@@ -27,10 +27,10 @@ struct TeamRow: View {
                     .font(.headline)
                 Text(team.sport)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
                 Text("^[\(team.memberships.count) Mitglied](inflect: true)")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             }
         }
         .padding(.vertical, Theme.Spacing.xs)

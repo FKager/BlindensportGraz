@@ -10,7 +10,7 @@ struct EventTeamsPicker: View {
 
     var body: some View {
         if !teams.isEmpty {
-            Section("Beteiligte Teams") {
+            Section(heading: "Beteiligte Teams") {
                 ForEach(teams) { team in
                     Button {
                         toggle(team)
@@ -30,7 +30,7 @@ struct EventTeamsPicker: View {
                 }
                 Text("Keine Auswahl = für alle sichtbar")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.Palette.secondary)
             }
         }
     }

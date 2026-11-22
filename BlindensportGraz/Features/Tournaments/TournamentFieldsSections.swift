@@ -6,17 +6,17 @@ struct TournamentFieldsSections: View {
     @Bindable var tournament: Tournament
 
     var body: some View {
-        Section("Turnier") {
+        Section(heading: "Turnier") {
             TextField("Name", text: $tournament.title)
             SportPicker(selection: $tournament.sport, allowsNone: true)
             TextField("Veranstaltungsort", text: $tournament.location)
         }
         EventAddressSection(event: tournament)
-        Section("Zeitraum") {
+        Section(heading: "Zeitraum") {
             DatePicker("Start", selection: $tournament.startDate, displayedComponents: [.date])
             DatePicker("Ende", selection: $tournament.endDate, displayedComponents: [.date])
         }
-        Section("Details") {
+        Section(heading: "Details") {
             Stepper("Max. Teams: \(tournament.maxTeams)", value: $tournament.maxTeams, in: 2...64)
             Picker("Status", selection: $tournament.status) {
                 Text("Geplant").tag("planned")
