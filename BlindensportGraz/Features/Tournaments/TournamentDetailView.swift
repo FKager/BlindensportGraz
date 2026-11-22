@@ -46,8 +46,9 @@ struct TournamentDetailView: View {
     // SportEvent.rosterAcrossTeams (architecture-review.md §1.2).
     var allMemberships: [TeamMembership] { tournament.rosterAcrossTeams }
 
+    /// The same people as the Teilnehmerlisten and the Sammelabrechnung.
     var attendedMemberships: [TeamMembership] {
-        allMemberships.filter { attendance(for: $0)?.attended == true }
+        TeilnehmerlisteExporter.attendedMemberships(of: tournament)
     }
 
     // Splits the combined roster the old single "Mitgliederliste" used to
@@ -289,7 +290,7 @@ var body: some View {
                 ort: tournament.cityWithCountry,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
-                attendedMemberships: attendedMemberships.filter(isSportler),
+                attendedMemberships: TeilnehmerlisteExporter.sportler(of: tournament),
                 fileNamePrefix: "TN-Sportler"
             ),
             membershipFilter: { isSportler($0) && attendance(for: $0)?.attended == true },
@@ -305,7 +306,7 @@ var body: some View {
                 ort: tournament.cityWithCountry,
                 startDate: tournament.startDate,
                 endDate: tournament.endDate,
-                attendedMemberships: attendedMemberships.filter(isHelfer),
+                attendedMemberships: TeilnehmerlisteExporter.helfer(of: tournament),
                 fileNamePrefix: "TN-Helfer"
             ),
             membershipFilter: { isHelfer($0) && attendance(for: $0)?.attended == true },

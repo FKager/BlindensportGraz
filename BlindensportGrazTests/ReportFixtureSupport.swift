@@ -6,7 +6,7 @@ import SwiftData
 /// web UI's Java tests read too.
 @MainActor
 enum ReportFixtureSupport {
-    struct PersonSpec: Decodable { let id: String; let first: String; let last: String; let gender: String }
+    struct PersonSpec: Decodable { let id: String; let first: String; let last: String; let gender: String; let city: String? }
     struct TeamSpec: Decodable { let id: String; let name: String; let sport: String }
     struct MembershipSpec: Decodable { let id: String; let team: String?; let person: String; let role: String }
 
@@ -42,7 +42,7 @@ enum ReportFixtureSupport {
                        in context: ModelContext) -> (teams: [String: Team], memberships: [String: TeamMembership]) {
         var members: [String: Member] = [:]
         for p in people {
-            let member = Member(firstName: p.first, lastName: p.last, gender: p.gender)
+            let member = Member(firstName: p.first, lastName: p.last, city: p.city ?? "", gender: p.gender)
             context.insert(member)
             members[p.id] = member
         }
@@ -62,6 +62,14 @@ enum ReportFixtureSupport {
             membershipByID[m.id] = membership
         }
         return (teamByID, membershipByID)
+    }
+
+    /// A fixture's short attendance id ("a1") as a UUID that sorts the same way.
+    static func uuid(_ short: String) -> UUID {
+        let hex = short.unicodeScalars.map { String(format: "%02x", $0.value) }.joined()
+        let padded = String(repeating: "0", count: max(0, 32 - hex.count)) + hex
+        let s = Array(padded.suffix(32))
+        return UUID(uuidString: "\(String(s[0..<8]))-\(String(s[8..<12]))-\(String(s[12..<16]))-\(String(s[16..<20]))-\(String(s[20..<32]))")!
     }
 
     private final class BundleToken {}
