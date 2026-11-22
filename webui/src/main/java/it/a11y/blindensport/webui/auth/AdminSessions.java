@@ -27,6 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @ApplicationScoped
 public class AdminSessions {
+    // Log lines name accounts by id, never by e-mail address (like the MCP code):
+    // the server log is kept and read outside the app's access rules.
     static final Duration IDLE_TIMEOUT = Duration.ofMinutes(30);
     public static final Duration ABSOLUTE_TIMEOUT = Duration.ofHours(12);
     static final Duration RECHECK_INTERVAL = Duration.ofMinutes(5);
@@ -120,7 +122,7 @@ public class AdminSessions {
         AdminSession session = new AdminSession(supabase, tokens, Access.NONE);
         Access access = Access.load(session.db(), tokens.userId());
         if (anyAccount ? access.blocked() : !access.canUseWebUi()) {
-            LOG.infof("Sign-in refused for %s: role %s", normalized, access.role() == null ? "none" : access.role());
+            LOG.infof("Sign-in refused for account %s: role %s", tokens.userId(), access.role() == null ? "none" : access.role());
             session.end();
             throw new SignInException(403, access.blocked() ? "Dieses Konto ist gesperrt."
                     : "Dieses Konto hat keinen Zugriff auf die Vereinsverwaltung.");
@@ -133,7 +135,7 @@ public class AdminSessions {
         String token = newToken();
         dropExpired(Instant.now());
         sessions.put(token, session);
-        LOG.infof("Admin signed in: %s (%s)", session.email(), access.role());
+        LOG.infof("Signed in: account %s (%s)", session.userId(), access.role());
         return token;
     }
 
@@ -178,7 +180,7 @@ public class AdminSessions {
                 access = Access.load(session.db(), session.userId());
             } catch (RuntimeException e) {
                 // Fail closed, like the Swift server: an unverifiable session ends.
-                LOG.infof("Session recheck failed for %s: %s", session.email(), e.getMessage());
+                LOG.infof("Session recheck failed for account %s: %s", session.userId(), e.getMessage());
                 access = Access.NONE;
             }
             if (session.allowsPlainAccount() ? access.blocked() : !access.canUseWebUi()) {
