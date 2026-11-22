@@ -311,4 +311,38 @@ class ApiTest {
     void healthEndpointIsUp() {
         given().when().get("/q/health/live").then().statusCode(200).body("status", notNullValue());
     }
+
+    /** The server log names accounts by id, never by e-mail address. */
+    @Test
+    void theSignInLogHoldsNoEmailAddresses() {
+        var records = new java.util.concurrent.CopyOnWriteArrayList<String>();
+        var handler = new java.util.logging.Handler() {
+            @Override
+            public void publish(java.util.logging.LogRecord record) {
+                records.add(new java.util.logging.SimpleFormatter().formatMessage(record));
+            }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void close() {
+            }
+        };
+        var logger = java.util.logging.Logger.getLogger(it.a11y.blindensport.webui.auth.AdminSessions.class.getName());
+        logger.addHandler(handler);
+        try {
+            signIn("admin@example.org");
+            given().contentType(ContentType.JSON).header(CSRF, CSRF_VALUE)
+                    .header("X-Forwarded-For", "10.0.0." + IP.incrementAndGet())
+                    .body("{\"email\":\"member@example.org\",\"password\":\"richtig\"}")
+                    .when().post("/api/session").then().statusCode(403);
+        } finally {
+            logger.removeHandler(handler);
+        }
+        org.junit.jupiter.api.Assertions.assertTrue(records.stream().anyMatch(r -> r.contains(ADMIN.toString())), records.toString());
+        org.junit.jupiter.api.Assertions.assertTrue(records.stream().anyMatch(r -> r.contains(MEMBER.toString())), records.toString());
+        org.junit.jupiter.api.Assertions.assertTrue(records.stream().noneMatch(r -> r.contains("@")), records.toString());
+    }
 }
