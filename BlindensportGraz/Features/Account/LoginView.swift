@@ -18,35 +18,28 @@ struct LoginView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Anmelden") {
-                    TextField("E-Mail", text: $email)
+                FormTitleHeader(title: "Anmelden")
+                Section {
+                    StackedField(label: "E-Mail", text: $email)
                         .keyboardType(.emailAddress)
                         .textContentType(.username)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                    SecureField("Passwort", text: $password)
+                    StackedField(label: "Passwort", text: $password, secure: true)
                         .textContentType(.password)
                     if let errorMessage {
                         Label(errorMessage, systemImage: "exclamationmark.triangle")
-                            .font(.caption)
+                            .font(.callout)
                             .foregroundStyle(Theme.Palette.warning)
                     }
-                    Button("Anmelden") { Task { await attemptLogin() } }
-                        .disabled(isWorking || email.trimmingCharacters(in: .whitespaces).isEmpty || password.isEmpty)
-                    Button("Passwort vergessen?") { showReset = true }
                 }
+                FormActionButtons(primaryTitle: "Anmelden", cancelTitle: "Abbrechen", isWorking: isWorking,
+                                  onPrimary: login, onCancel: { dismiss() })
                 Section {
+                    Button("Passwort vergessen?") { showReset = true }
                     Button("Mit Apple anmelden") { Task { await signInWithApple() } }
                         .disabled(isWorking)
-                }
-                Section {
                     Button("Neues Konto erstellen") { showRegister = true }
-                }
-            }
-            .navigationTitle("Anmelden")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
                 }
             }
             .sheet(isPresented: $showRegister) {
@@ -58,6 +51,28 @@ struct LoginView: View {
         }
     }
 
+    /// What's missing before signing in, in German; nil if nothing.
+    static func missingInput(email: String, password: String) -> String? {
+        if email.trimmingCharacters(in: .whitespaces).isEmpty { return String(localized: "Bitte gib deine E-Mail-Adresse ein.") }
+        if password.isEmpty { return String(localized: "Bitte gib dein Passwort ein.") }
+        return nil
+    }
+
+    private func login() {
+        guard !isWorking else { return }
+        if let missing = Self.missingInput(email: email, password: password) {
+            show(missing)
+            return
+        }
+        Task { await attemptLogin() }
+    }
+
+    /// Shown in the form and read out, as it appears away from the VoiceOver cursor.
+    private func show(_ message: String) {
+        errorMessage = message
+        AccessibilityNotification.Announcement(message).post()
+    }
+
     private func attemptLogin() async {
         errorMessage = nil
         isWorking = true
@@ -67,7 +82,7 @@ struct LoginView: View {
                 email: email.trimmingCharacters(in: .whitespaces).lowercased(), password: password)
             dismiss()
         } catch {
-            errorMessage = AuthErrorMessage.text(for: error)
+            show(AuthErrorMessage.text(for: error))
         }
     }
 
@@ -81,7 +96,7 @@ struct LoginView: View {
         } catch where AppleSupabaseSignIn.isCancellation(error) {
             return
         } catch {
-            errorMessage = AuthErrorMessage.text(for: error)
+            show(AuthErrorMessage.text(for: error))
         }
     }
 }

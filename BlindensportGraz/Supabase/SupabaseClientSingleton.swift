@@ -18,6 +18,8 @@ final class SupabaseClientSingleton {
             options: SupabaseClientOptions(
                 auth: .init(
                     redirectToURL: SupabaseConfig.redirectURL,
+                    // UI tests start signed out: their own, always empty Keychain entry.
+                    storageKey: UITestMode.isActive ? "ui-testing-\(UUID().uuidString)" : nil,
                     // Opt in to the next-major behaviour: show the stored
                     // session immediately, refresh in the background.
                     emitLocalSessionAsInitialSession: true

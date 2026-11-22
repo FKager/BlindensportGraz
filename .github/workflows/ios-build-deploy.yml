@@ -83,8 +83,9 @@ jobs:
       - name: Generate Xcode project
         run: xcodegen generate
 
-      # Builds the app and runs the unit tests (BlindensportGrazTests) in a
-      # Simulator, unsigned like before. The first available iPhone on the
+      # Builds the app and runs the unit tests (BlindensportGrazTests) and
+      # the accessibility audit of the public screens (BlindensportGrazUITests)
+      # in a Simulator, unsigned like before. The first available iPhone on the
       # runner is used, so a new runner image needs no edit here.
       - name: Build and test in the Simulator
         run: |

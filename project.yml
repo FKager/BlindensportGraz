@@ -181,6 +181,23 @@ targets:
         Release:
           CODE_SIGN_ENTITLEMENTS: BlindensportGrazShareExtension/BlindensportGrazShareExtension.entitlements
           APP_GROUP_ID: group.it.a11y.BlindensportGraz
+  # Accessibility audit (XCUITest performAccessibilityAudit) of the app's
+  # screens; launches the app with -ui-testing (see App/UITestMode.swift).
+  BlindensportGrazUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: BlindensportGrazUITests
+    dependencies:
+      - target: BlindensportGraz
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: "5Q57Y9YT8J"
+        TEST_TARGET_NAME: BlindensportGraz
+
   BlindensportGrazTests:
     type: bundle.unit-test
     platform: iOS
