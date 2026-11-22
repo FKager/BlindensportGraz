@@ -39,7 +39,7 @@ public class FavoritesView extends AdminView {
     static final Map<Integer, String> WEEKDAY_NAMES = Map.of(1, "Sonntag", 2, "Montag", 3, "Dienstag", 4, "Mittwoch",
             5, "Donnerstag", 6, "Freitag", 7, "Samstag");
 
-    private final Grid<TrainingFavorite> grid = new Grid<>();
+    private final Grid<TrainingFavorite> grid = GermanUi.grid();
     private List<Team> teams = List.of();
     private Map<String, Team> teamsById = Map.of();
 

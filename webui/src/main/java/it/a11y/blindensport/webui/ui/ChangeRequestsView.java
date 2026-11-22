@@ -44,7 +44,7 @@ public class ChangeRequestsView extends AdminView {
             ChangeRequestStore.PENDING, "Offen", ChangeRequestStore.APPROVED, "Angenommen",
             ChangeRequestStore.REJECTED, "Abgelehnt");
 
-    private final Grid<ChangeRequest> grid = new Grid<>();
+    private final Grid<ChangeRequest> grid = GermanUi.grid();
     private final Checkbox showDecided = new Checkbox("Auch entschiedene Anträge zeigen");
     private Map<String, MemberRecord> members = Map.of();
     private List<ChangeRequest> requests = List.of();

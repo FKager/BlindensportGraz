@@ -1,0 +1,53 @@
+# Accessibility check of the web UI (axe-core, WCAG 2.1 A + AA) in a real
+# browser: local Supabase (seed: root@example.test), the web UI container
+# against it, then webui/a11y/axe_check.py over every page, signed out and as
+# root. Fails on findings not in webui/a11y/accepted.txt. No secrets needed.
+name: Web UI Accessibility
+
+on:
+  push:
+    branches: [main]
+    paths: ["webui/**", "supabase/**", ".github/workflows/webui-a11y.yml"]
+  pull_request:
+    paths: ["webui/**", "supabase/**", ".github/workflows/webui-a11y.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  axe:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_AUTH_EXTERNAL_APPLE_SECRET: unused
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: supabase/setup-cli@689adcfb80d947100a1eab127289b97d1fb07b13 # v3.2.0
+        with:
+          version: 3.1.0
+      - name: Start Supabase
+        run: supabase start -x studio,imgproxy,logflare,vector,supavisor,realtime,edge-runtime,postgres-meta,mailpit
+      - name: Build and start the web UI
+        run: |
+          set -euo pipefail
+          eval "$(supabase status -o env | grep -E '^(ANON_KEY|SERVICE_ROLE_KEY)=')"
+          docker build -q -t webui webui/
+          docker run -d --name webui --network host \
+            -e SUPABASE_URL=http://127.0.0.1:54321 \
+            -e SUPABASE_ANON_KEY="$ANON_KEY" -e SUPABASE_SERVICE_KEY="$SERVICE_ROLE_KEY" \
+            -e SESSION_COOKIE_SECURE=false webui
+          for i in $(seq 60); do
+            curl -sf -o /dev/null http://127.0.0.1:8080/ && exit 0
+            sleep 2
+          done
+          docker logs webui
+          exit 1
+      - name: Install Playwright and axe
+        run: |
+          python3 -m pip install -r webui/a11y/requirements.txt
+          python3 -m playwright install --with-deps chromium
+      - name: axe check
+        run: python3 webui/a11y/axe_check.py http://127.0.0.1:8080 root@example.test localroot123
+      - name: Web UI log on failure
+        if: failure()
+        run: docker logs webui 2>&1 | tail -100

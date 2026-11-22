@@ -249,7 +249,7 @@ public class ReportsView extends AdminView {
             result.add(new Paragraph(isTournament ? "Keine Einsätze mit hinterlegtem PRAE-Betrag bei diesem Turnier."
                     : "Keine Einsätze mit hinterlegtem PRAE-Betrag in diesem Monat für diese Sportart."));
         } else {
-            Grid<PersonAmount> grid = new Grid<>();
+            Grid<PersonAmount> grid = GermanUi.grid();
             grid.addColumn(p -> p.person().displayName()).setHeader("Name").setRowHeader(true).setFlexGrow(1);
             grid.addColumn(p -> euro(p.amount())).setHeader("Betrag").setAutoWidth(true);
             grid.addColumn(p -> String.join("; ", warnings.getOrDefault(p.person().id(), List.of())))

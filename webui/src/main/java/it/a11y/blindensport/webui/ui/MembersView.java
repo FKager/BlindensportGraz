@@ -47,7 +47,7 @@ import java.util.stream.Stream;
 @RequiresPermission(Permission.MEMBERS_MANAGE)
 public class MembersView extends AdminView {
     private final ObjectMapper json;
-    private final Grid<MemberRecord> grid = new Grid<>();
+    private final Grid<MemberRecord> grid = GermanUi.grid();
     private final TextField search = new TextField();
     private final Paragraph count = new Paragraph();
     private final Pre importResult = new Pre();

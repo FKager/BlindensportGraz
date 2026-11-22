@@ -1,0 +1,2 @@
+# axe-core findings accepted for the web UI, one "rule-id route" per line
+# ("/" for the start page), each with the reason. Empty: nothing accepted.

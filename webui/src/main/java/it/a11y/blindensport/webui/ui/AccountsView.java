@@ -40,7 +40,7 @@ public class AccountsView extends AdminView {
     static final String PENDING = "Nicht freigegeben";
     static final String BLOCKED = "Gesperrt";
 
-    private final Grid<Account> grid = new Grid<>();
+    private final Grid<Account> grid = GermanUi.grid();
     private final TextField search = new TextField("Suchen");
     private final Select<String> filter = new Select<>();
     private final Paragraph count = new Paragraph();

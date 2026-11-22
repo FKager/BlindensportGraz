@@ -45,7 +45,7 @@ import static it.a11y.blindensport.webui.members.Dates.CLUB_ZONE;
 public class EventsView extends AdminView {
     static final String ALL = "Alle";
 
-    private final Grid<ClubEvent> grid = new Grid<>();
+    private final Grid<ClubEvent> grid = GermanUi.grid();
     private final Select<String> kind = new Select<>();
     private final Checkbox upcoming = new Checkbox("Nur kommende", true);
     private final TextField search = new TextField("Suchen");

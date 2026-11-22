@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @PageTitle("Teams – Blindensport Graz")
 @RequiresPermission(Permission.TEAMS_MANAGE)
 public class TeamsView extends AdminView {
-    private final Grid<Team> grid = new Grid<>();
+    private final Grid<Team> grid = GermanUi.grid();
     private List<Membership> memberships = List.of();
     private Map<String, MemberRecord> members = Map.of();
     private List<MemberRecord> roster = List.of();
@@ -151,7 +151,7 @@ public class TeamsView extends AdminView {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Mitglieder von " + team.name());
         dialog.setWidth("min(48rem, 100vw)");
-        Grid<Membership> list = new Grid<>();
+        Grid<Membership> list = GermanUi.grid();
         list.addColumn(this::personName).setHeader("Name").setRowHeader(true).setAutoWidth(true);
         list.addComponentColumn(m -> {
             Select<String> role = roleSelect(m.role());

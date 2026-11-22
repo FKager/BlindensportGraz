@@ -37,8 +37,8 @@ import java.util.function.Consumer;
 @PageTitle("Sportarten und Veranstaltungsarten – Blindensport Graz")
 @RequiresPermission(Permission.CLUB_MANAGE)
 public class CatalogView extends AdminView {
-    private final Grid<Sport> sports = new Grid<>();
-    private final Grid<EventType> types = new Grid<>();
+    private final Grid<Sport> sports = GermanUi.grid();
+    private final Grid<EventType> types = GermanUi.grid();
     private List<Sport> sportRows = List.of();
     private List<EventType> typeRows = List.of();
 
