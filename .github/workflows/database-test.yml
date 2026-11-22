@@ -28,3 +28,10 @@ jobs:
         run: supabase start -x studio,imgproxy,logflare,vector,supavisor,realtime,edge-runtime,postgres-meta,mailpit
       - name: Run database tests
         run: supabase test db
+      # plpgsql lint of every function (unused/shadowed variables, …).
+      - name: Lint database functions
+        run: supabase db lint --level warning --fail-on warning
+      # Supabase's Security and Performance Advisors (splinter, pinned);
+      # fails on WARN/ERROR findings not accepted in supabase/advisors-accepted.txt.
+      - name: Database advisors
+        run: supabase/scripts/advisors.sh
