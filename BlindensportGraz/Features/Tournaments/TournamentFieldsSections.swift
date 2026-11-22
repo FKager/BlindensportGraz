@@ -7,9 +7,9 @@ struct TournamentFieldsSections: View {
 
     var body: some View {
         Section(heading: "Turnier") {
-            TextField("Name", text: $tournament.title)
+            StackedField(label: "Name", text: $tournament.title)
             SportPicker(selection: $tournament.sport, allowsNone: true)
-            TextField("Veranstaltungsort", text: $tournament.location)
+            StackedField(label: "Veranstaltungsort", text: $tournament.location)
         }
         EventAddressSection(event: tournament)
         Section(heading: "Zeitraum") {

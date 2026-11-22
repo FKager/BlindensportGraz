@@ -27,45 +27,49 @@ struct AddMemberView: View {
     @State private var defaultFunction = ""
     @State private var memberOfGVSC = true
 
+    /// What's missing before saving; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Neues Mitglied")
                 Section(heading: "Mitglied") {
-                    TextField("Vorname", text: $firstName)
-                    TextField("Nachname", text: $lastName)
-                    TextField("Titel", text: $title)
+                    StackedField(label: "Vorname", text: $firstName)
+                    StackedField(label: "Nachname", text: $lastName)
+                    StackedField(label: "Titel", text: $title)
                     Picker("Geschlecht", selection: $gender) {
                         Text("–").tag("")
                         Text("weiblich").tag("f")
                         Text("männlich").tag("m")
                     }
                     OptionalDatePicker(label: "Geburtsdatum", date: $birthDate)
-                    TextField("Straße", text: $street)
-                    TextField("PLZ", text: $zip)
+                    StackedField(label: "Straße", text: $street)
+                    StackedField(label: "PLZ", text: $zip)
                         .keyboardType(.numberPad)
-                    TextField("Ort", text: $city)
-                    TextField("Land", text: $country)
+                    StackedField(label: "Ort", text: $city)
+                    StackedField(label: "Land", text: $country)
                 }
                 Section(heading: "Kontakt") {
-                    TextField("E-Mail", text: $email)
+                    StackedField(label: "E-Mail", text: $email)
                         .keyboardType(.emailAddress)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                    TextField("Telefon", text: $phone)
+                    StackedField(label: "Telefon", text: $phone)
                         .keyboardType(.phonePad)
                 }
                 Section(heading: "Mitgliedschaft") {
                     Toggle("Mitglied des Grazer VSC", isOn: $memberOfGVSC)
-                    TextField("Mitgliedsnummer", text: $memberNumber)
+                    StackedField(label: "Mitgliedsnummer", text: $memberNumber)
                     DatePicker("Beigetreten", selection: $joinedAt, displayedComponents: .date)
-                    TextField("Sport-ID", text: $sportId)
-                    TextField("SVNR", text: $svnr)
+                    StackedField(label: "Sport-ID", text: $sportId)
+                    StackedField(label: "SVNR", text: $svnr)
                     if !Validation.isPlausibleAustrianSVNR(svnr) {
                         Label("SVNR-Format ungewöhnlich", systemImage: "exclamationmark.triangle")
                             .font(.caption)
                             .foregroundStyle(Theme.Palette.warning)
                     }
-                    TextField("IBAN", text: $iban)
+                    StackedField(label: "IBAN", text: $iban)
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
                     if !Validation.ibanChecksumIsValid(iban) {
@@ -74,36 +78,40 @@ struct AddMemberView: View {
                             .foregroundStyle(Theme.Palette.warning)
                     }
                     OptionalDatePicker(label: "Letzte sportärztl. Untersuchung", date: $lastMedicalExamination)
-                    TextField("Standardfunktion", text: $defaultFunction)
+                    StackedField(label: "Standardfunktion", text: $defaultFunction)
                 }
                 Section(heading: "Notizen") {
-                    TextField("Notizen", text: $notes, axis: .vertical)
+                    StackedField(label: "Notizen", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
-            }
-            .navigationTitle("Neues Mitglied")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") {
-                        let member = Member(firstName: firstName, lastName: lastName, street: street,
-                                             zip: zip, city: city, country: country, email: email, phone: phone,
-                                             memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
-                                             gender: gender, title: title, birthDate: birthDate,
-                                             sportId: sportId, svnr: svnr, iban: iban,
-                                             lastMedicalExamination: lastMedicalExamination,
-                                             defaultFunction: defaultFunction, memberOfGVSC: memberOfGVSC)
-                        modelContext.insert(member)
-                        MemberService.save(member, modelContext: modelContext)
-                        dismiss()
-                    }
-                    .disabled(firstName.trimmingCharacters(in: .whitespaces).isEmpty ||
-                              lastName.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
+                FormActionButtons(primaryTitle: "Speichern", cancelTitle: "Abbrechen", message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
         }
+    }
+
+    /// Speichern is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        if firstName.trimmingCharacters(in: .whitespaces).isEmpty ||
+                              lastName.trimmingCharacters(in: .whitespaces).isEmpty {
+            formMessage = String(localized: "Bitte gib Vor- und Nachnamen ein.")
+            AccessibilityNotification.Announcement(formMessage ?? "").post()
+            return
+        }
+        formMessage = nil
+        save()
+    }
+
+    private func save() {
+        let member = Member(firstName: firstName, lastName: lastName, street: street,
+                             zip: zip, city: city, country: country, email: email, phone: phone,
+                             memberNumber: memberNumber, joinedAt: joinedAt, notes: notes,
+                             gender: gender, title: title, birthDate: birthDate,
+                             sportId: sportId, svnr: svnr, iban: iban,
+                             lastMedicalExamination: lastMedicalExamination,
+                             defaultFunction: defaultFunction, memberOfGVSC: memberOfGVSC)
+        modelContext.insert(member)
+        MemberService.save(member, modelContext: modelContext)
+        dismiss()
     }
 }

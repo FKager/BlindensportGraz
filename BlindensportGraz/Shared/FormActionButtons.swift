@@ -8,11 +8,19 @@ struct FormActionButtons: View {
     let primaryTitle: LocalizedStringKey?
     let cancelTitle: LocalizedStringKey
     var isWorking = false
+    /// What's missing or went wrong, shown above the buttons.
+    var message: String?
     var onPrimary: () -> Void = {}
     let onCancel: () -> Void
 
     var body: some View {
         Section {
+            if let message {
+                Label(message, systemImage: "exclamationmark.triangle")
+                    .font(.callout)
+                    .foregroundStyle(Theme.Palette.warning)
+                    .listRowBackground(Color.clear)
+            }
             if let primaryTitle {
                 Button(action: onPrimary) {
                     HStack {

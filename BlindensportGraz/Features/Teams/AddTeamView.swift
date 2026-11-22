@@ -10,32 +10,40 @@ struct AddTeamView: View {
     @State private var sport = "Torball"
     @State private var descriptionText = ""
 
+    /// What's missing before saving; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Neues Team")
                 Section(heading: "Team") {
-                    TextField("Name", text: $name)
+                    StackedField(label: "Name", text: $name)
                     SportPicker(selection: $sport)
-                    TextField("Beschreibung", text: $descriptionText, axis: .vertical)
+                    StackedField(label: "Beschreibung", text: $descriptionText, axis: .vertical)
                         .lineLimit(3...6)
                 }
-            }
-            .navigationTitle("Neues Team")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") {
-                        let team = Team(name: name, sport: sport, descriptionText: descriptionText)
-                        modelContext.insert(team)
-                        TeamService.save(team, modelContext: modelContext)
-                        dismiss()
-                    }
-                    .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
+                FormActionButtons(primaryTitle: "Speichern", cancelTitle: "Abbrechen", message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
         }
+    }
+
+    /// Speichern is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        if name.trimmingCharacters(in: .whitespaces).isEmpty {
+            formMessage = String(localized: "Bitte gib einen Namen ein.")
+            AccessibilityNotification.Announcement(formMessage ?? "").post()
+            return
+        }
+        formMessage = nil
+        save()
+    }
+
+    private func save() {
+        let team = Team(name: name, sport: sport, descriptionText: descriptionText)
+        modelContext.insert(team)
+        TeamService.save(team, modelContext: modelContext)
+        dismiss()
     }
 }

@@ -9,9 +9,9 @@ struct TrainingFieldsSections: View {
 
     var body: some View {
         Section(heading: "Training") {
-            TextField("Titel", text: $training.title)
+            StackedField(label: "Titel", text: $training.title)
             SportPicker(selection: $training.sport, allowsNone: true)
-            TextField("Veranstaltungsort", text: $training.location)
+            StackedField(label: "Veranstaltungsort", text: $training.location)
         }
         EventAddressSection(event: training)
         Section(heading: "Planung") {
@@ -19,7 +19,7 @@ struct TrainingFieldsSections: View {
                 .onChange(of: training.startDate) { training.recomputeEndDate() }
             Stepper("Dauer: \(training.durationMinutes) min", value: $training.durationMinutes, in: 15...240, step: 15)
                 .onChange(of: training.durationMinutes) { training.recomputeEndDate() }
-            TextField("Schwerpunkt", text: $training.focusArea)
+            StackedField(label: "Schwerpunkt", text: $training.focusArea)
             Picker("Status", selection: $training.status) {
                 Text("Offen").tag(Training.openStatus)
                 Text("Durchgeführt").tag(Training.heldStatus)

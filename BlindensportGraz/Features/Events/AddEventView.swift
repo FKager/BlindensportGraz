@@ -26,24 +26,28 @@ struct AddEventView: View {
        @State private var includesTime = true
        @State private var showDuplicateAlert = false
 
+    /// What's missing before saving; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Neues Event")
                 Section(heading: "Event") {
-                    TextField("Titel", text: $title)
+                    StackedField(label: "Titel", text: $title)
                     EventTypePicker(selection: $eventType, behavior: .event)
                     SportPicker(selection: $sport, allowsNone: true)
                     // Relabeled from "Ort" to "Veranstaltungsort" (matches
                     // TournamentsViews' existing wording) so it doesn't
                     // collide with the new address section's "Ort" (city)
                     // field below.
-                    TextField("Veranstaltungsort", text: $location)
+                    StackedField(label: "Veranstaltungsort", text: $location)
                  }
                 Section(heading: "Adresse") {
-                    TextField("Straße", text: $street)
-                    TextField("PLZ", text: $zip)
-                    TextField("Ort", text: $city)
-                    TextField("Land", text: $country)
+                    StackedField(label: "Straße", text: $street)
+                    StackedField(label: "PLZ", text: $zip)
+                    StackedField(label: "Ort", text: $city)
+                    StackedField(label: "Land", text: $country)
                 }
                 Section(heading: "Zeit") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
@@ -89,58 +93,12 @@ struct AddEventView: View {
                     }
                 }
                 Section(heading: "Notizen") {
-                    TextField("Notizen", text: $notes, axis: .vertical)
+                    StackedField(label: "Notizen", text: $notes, axis: .vertical)
                           .lineLimit(3...6)
                   }
-             }
-             .navigationTitle("Neues Event")
-              .navigationBarTitleDisplayMode(.inline)
-              .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                      }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") {
-                        // Same name + Sportart + Zeitpunkt as an existing
-                        // event of any kind → refuse, see SportEvent.duplicate.
-                        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, in: modelContext) != nil {
-                            showDuplicateAlert = true
-                            return
-                        }
-                        let event = SportEvent(
-                            title: title,
-                            sport: sport,
-                            location: location,
-                            street: street,
-                            zip: zip,
-                            city: city,
-                            country: country,
-                            startDate: startDate,
-                            endDate: endDate,
-                            notes: notes,
-                            createdBy: currentUser?.id.uuidString ?? ""
-                            )
-                        event.eventType = eventType
-                        modelContext.insert(event)
-                        SportEventService.save(event, modelContext: modelContext)
-
-                        // Directly-picked people (no Team involved) — see the
-                        // "Mitglieder" section above.
-                        for user in allUsers where selectedUserIDs.contains(user.id) {
-                            let membership = EventMembership(user: user, event: event)
-                            modelContext.insert(membership)
-                            EventMembershipService.save(membership, modelContext: modelContext)
-                        }
-                        for member in allMembers where selectedMemberIDs.contains(member.id) {
-                            let membership = EventMembership(member: member, event: event)
-                            modelContext.insert(membership)
-                            EventMembershipService.save(membership, modelContext: modelContext)
-                        }
-                       dismiss()
-                     }
-                      .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
-                   }
-                }
+                FormActionButtons(primaryTitle: "Speichern", cancelTitle: "Abbrechen", message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
+            }
                 .alert("Bereits vorhanden", isPresented: $showDuplicateAlert) {
                     Button("OK", role: .cancel) {}
                 } message: {
@@ -148,4 +106,54 @@ struct AddEventView: View {
                 }
            }
         }
+
+    /// Speichern is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        if title.trimmingCharacters(in: .whitespaces).isEmpty {
+            formMessage = String(localized: "Bitte gib einen Titel ein.")
+            AccessibilityNotification.Announcement(formMessage ?? "").post()
+            return
+        }
+        formMessage = nil
+        save()
     }
+
+    private func save() {
+         // Same name + Sportart + Zeitpunkt as an existing
+         // event of any kind → refuse, see SportEvent.duplicate.
+         if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, in: modelContext) != nil {
+             showDuplicateAlert = true
+             return
+         }
+         let event = SportEvent(
+             title: title,
+             sport: sport,
+             location: location,
+             street: street,
+             zip: zip,
+             city: city,
+             country: country,
+             startDate: startDate,
+             endDate: endDate,
+             notes: notes,
+             createdBy: currentUser?.id.uuidString ?? ""
+             )
+         event.eventType = eventType
+         modelContext.insert(event)
+         SportEventService.save(event, modelContext: modelContext)
+
+         // Directly-picked people (no Team involved) — see the
+         // "Mitglieder" section above.
+         for user in allUsers where selectedUserIDs.contains(user.id) {
+             let membership = EventMembership(user: user, event: event)
+             modelContext.insert(membership)
+             EventMembershipService.save(membership, modelContext: modelContext)
+         }
+         for member in allMembers where selectedMemberIDs.contains(member.id) {
+             let membership = EventMembership(member: member, event: event)
+             modelContext.insert(membership)
+             EventMembershipService.save(membership, modelContext: modelContext)
+         }
+        dismiss()
+    }
+}

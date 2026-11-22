@@ -97,9 +97,13 @@ struct AddTrainingView: View {
         }
     }
 
+    /// What's missing before saving; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Neues Training")
                 if !favorites.isEmpty || !recentTrainings.isEmpty {
                     Section(heading: "Favoriten") {
                         if !favorites.isEmpty {
@@ -147,24 +151,28 @@ struct AddTrainingView: View {
                             Button {
                                 populateFavoritesFromRecentTrainings()
                             } label: {
-                                Label("Aus letzten Trainings befüllen", systemImage: "arrow.triangle.2.circlepath")
+                                // Icon inline with the text; the Label was cut off at large sizes.
+                                Text("\(Image(systemName: "arrow.triangle.2.circlepath")) Aus letzten Trainings befüllen")
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .accessibilityLabel("Aus letzten Trainings befüllen")
                             }
                         }
                     }
                 }
                 Section(heading: "Training") {
-                    TextField("Titel", text: $title)
+                    StackedField(label: "Titel", text: $title)
                     EventTypePicker(selection: $eventType, behavior: .training)
                     SportPicker(selection: $sport)
                     // Relabeled from "Ort" to "Veranstaltungsort" — see
                     // EventsViews.AddEventView's identical comment.
-                    TextField("Veranstaltungsort", text: $location)
+                    StackedField(label: "Veranstaltungsort", text: $location)
                    }
                 Section(heading: "Adresse") {
-                    TextField("Straße", text: $street)
-                    TextField("PLZ", text: $zip)
-                    TextField("Ort", text: $city)
-                    TextField("Land", text: $country)
+                    StackedField(label: "Straße", text: $street)
+                    StackedField(label: "PLZ", text: $zip)
+                    StackedField(label: "Ort", text: $city)
+                    StackedField(label: "Land", text: $country)
                 }
                 Section(heading: "Planung") {
                     Toggle("Uhrzeit festlegen", isOn: $includesTime)
@@ -177,7 +185,7 @@ struct AddTrainingView: View {
                             if repeatEndDate < startDate { repeatEndDate = startDate }
                         }
                     Stepper("Dauer: \(durationMinutes) min", value: $durationMinutes, in: 15...240, step: 15)
-                    TextField("Schwerpunkt", text: $focusArea)
+                    StackedField(label: "Schwerpunkt", text: $focusArea)
                    }
                 Section(heading: "Wiederholung") {
                     Toggle("Wöchentlich wiederholen", isOn: $isRecurring)
@@ -231,113 +239,11 @@ struct AddTrainingView: View {
                     }
                 }
                 Section(heading: "Notizen") {
-                    TextField("Notizen", text: $notes, axis: .vertical)
+                    StackedField(label: "Notizen", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
-            }
-            .navigationTitle("Neues Training")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") {
-                        var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
-                        // Captured before auto-assigned teams are appended
-                        // below — favorites store only the manually-checked
-                        // selection, see TrainingFavorite.teams' doc comment.
-                        let manuallySelectedTeams = teams
-                        // Business rule, not a UI convenience: applies to
-                        // ANY training of a mapped sport regardless of who
-                        // created it or which teams they personally belong
-                        // to, so this looks at the full `allTeams` query,
-                        // not the role-filtered `myTeams` the checkboxes
-                        // above use.
-                        if let autoTeamNames = Team.autoAssignTeamNames[sport] {
-                            let autoNames = Set(autoTeamNames.map { $0.lowercased() })
-                            for team in allTeams where autoNames.contains(team.name.lowercased()) {
-                                if !teams.contains(where: { $0.id == team.id }) {
-                                    teams.append(team)
-                                }
-                            }
-                        }
-
-                        if isRecurring {
-                            let dates = Training.weeklyRangeDates(from: startDate, through: repeatEndDate)
-                            let outcome = TrainingService.createWeeklySeries(
-                                title: title, sport: sport, location: location,
-                                street: street, zip: zip, city: city, country: country,
-                                startDates: dates, durationMinutes: durationMinutes, focusArea: focusArea, notes: notes,
-                                createdBy: currentUser?.id.uuidString ?? "", teams: teams, eventType: eventType,
-                                modelContext: modelContext
-                            )
-                            guard outcome.created > 0 else {
-                                duplicateAlertMessage = "Für den gewählten Zeitraum gibt es bereits an jedem Termin ein Training mit diesem Titel und dieser Sportart."
-                                showDuplicateAlert = true
-                                return
-                            }
-
-                            let (favorite, evictedID) = TrainingFavorite.recordUsage(
-                                title: title, sport: sport, startDate: startDate,
-                                durationMinutes: durationMinutes,
-                                location: location, street: street, zip: zip, city: city, country: country,
-                                teams: manuallySelectedTeams, in: modelContext
-                            )
-                            TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
-
-                            var message = "\(outcome.created) Training\(outcome.created == 1 ? "" : "s") erstellt."
-                            if outcome.skipped > 0 {
-                                message += " \(outcome.skipped) übersprungen (bereits vorhanden)."
-                            }
-                            seriesResultMessage = message
-
-                            showSeriesResultAlert = true
-                            return
-                        }
-
-                        // Same name + Sportart + Zeitpunkt as an existing
-                        // event of any kind → refuse, see SportEvent.duplicate.
-                        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, in: modelContext) != nil {
-                            duplicateAlertMessage = "Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt."
-                            showDuplicateAlert = true
-                            return
-                        }
-                        let training = Training(
-                            title: title,
-                            sport: sport,
-                            location: location,
-                            street: street,
-                            zip: zip,
-                            city: city,
-                            country: country,
-                            startDate: startDate,
-                            durationMinutes: durationMinutes,
-                            focusArea: focusArea,
-                            notes: notes,
-                            createdBy: currentUser?.id.uuidString ?? "",
-                            teams: teams
-                        )
-                        training.eventType = eventType
-                        modelContext.insert(training)
-                        TrainingService.save(training, modelContext: modelContext)
-
-                        // Auto-add/refresh this name+sport combo in the
-                        // shared Favoriten list (max 5, LRU-evicted) — see
-                        // TrainingFavorite.recordUsage's doc comment.
-                        let (favorite, evictedID) = TrainingFavorite.recordUsage(
-                            title: title, sport: sport, startDate: startDate,
-                            durationMinutes: durationMinutes,
-                            location: location, street: street, zip: zip, city: city, country: country,
-                            teams: manuallySelectedTeams, in: modelContext
-                        )
-                        TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
-
-
-                        dismiss()
-                    }
-                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
+                FormActionButtons(primaryTitle: "Speichern", cancelTitle: "Abbrechen", message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
             .alert("Bereits vorhanden", isPresented: $showDuplicateAlert) {
                 Button("OK", role: .cancel) {}
@@ -353,5 +259,111 @@ struct AddTrainingView: View {
                 TrainingSeriesView(favorite: favorite, allTeams: allTeams, currentUser: currentUser)
             }
         }
+    }
+
+    /// Speichern is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        if title.trimmingCharacters(in: .whitespaces).isEmpty {
+            formMessage = String(localized: "Bitte gib einen Titel ein.")
+            AccessibilityNotification.Announcement(formMessage ?? "").post()
+            return
+        }
+        formMessage = nil
+        save()
+    }
+
+    private func save() {
+        var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
+        // Captured before auto-assigned teams are appended
+        // below — favorites store only the manually-checked
+        // selection, see TrainingFavorite.teams' doc comment.
+        let manuallySelectedTeams = teams
+        // Business rule, not a UI convenience: applies to
+        // ANY training of a mapped sport regardless of who
+        // created it or which teams they personally belong
+        // to, so this looks at the full `allTeams` query,
+        // not the role-filtered `myTeams` the checkboxes
+        // above use.
+        if let autoTeamNames = Team.autoAssignTeamNames[sport] {
+            let autoNames = Set(autoTeamNames.map { $0.lowercased() })
+            for team in allTeams where autoNames.contains(team.name.lowercased()) {
+                if !teams.contains(where: { $0.id == team.id }) {
+                    teams.append(team)
+                }
+            }
+        }
+
+        if isRecurring {
+            let dates = Training.weeklyRangeDates(from: startDate, through: repeatEndDate)
+            let outcome = TrainingService.createWeeklySeries(
+                title: title, sport: sport, location: location,
+                street: street, zip: zip, city: city, country: country,
+                startDates: dates, durationMinutes: durationMinutes, focusArea: focusArea, notes: notes,
+                createdBy: currentUser?.id.uuidString ?? "", teams: teams, eventType: eventType,
+                modelContext: modelContext
+            )
+            guard outcome.created > 0 else {
+                duplicateAlertMessage = "Für den gewählten Zeitraum gibt es bereits an jedem Termin ein Training mit diesem Titel und dieser Sportart."
+                showDuplicateAlert = true
+                return
+            }
+
+            let (favorite, evictedID) = TrainingFavorite.recordUsage(
+                title: title, sport: sport, startDate: startDate,
+                durationMinutes: durationMinutes,
+                location: location, street: street, zip: zip, city: city, country: country,
+                teams: manuallySelectedTeams, in: modelContext
+            )
+            TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
+
+            var message = "\(outcome.created) Training\(outcome.created == 1 ? "" : "s") erstellt."
+            if outcome.skipped > 0 {
+                message += " \(outcome.skipped) übersprungen (bereits vorhanden)."
+            }
+            seriesResultMessage = message
+
+            showSeriesResultAlert = true
+            return
+        }
+
+        // Same name + Sportart + Zeitpunkt as an existing
+        // event of any kind → refuse, see SportEvent.duplicate.
+        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, in: modelContext) != nil {
+            duplicateAlertMessage = "Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt."
+            showDuplicateAlert = true
+            return
+        }
+        let training = Training(
+            title: title,
+            sport: sport,
+            location: location,
+            street: street,
+            zip: zip,
+            city: city,
+            country: country,
+            startDate: startDate,
+            durationMinutes: durationMinutes,
+            focusArea: focusArea,
+            notes: notes,
+            createdBy: currentUser?.id.uuidString ?? "",
+            teams: teams
+        )
+        training.eventType = eventType
+        modelContext.insert(training)
+        TrainingService.save(training, modelContext: modelContext)
+
+        // Auto-add/refresh this name+sport combo in the
+        // shared Favoriten list (max 5, LRU-evicted) — see
+        // TrainingFavorite.recordUsage's doc comment.
+        let (favorite, evictedID) = TrainingFavorite.recordUsage(
+            title: title, sport: sport, startDate: startDate,
+            durationMinutes: durationMinutes,
+            location: location, street: street, zip: zip, city: city, country: country,
+            teams: manuallySelectedTeams, in: modelContext
+        )
+        TrainingFavoriteService.saveResult(favorite: favorite, evictedID: evictedID, modelContext: modelContext)
+
+
+        dismiss()
     }
 }
