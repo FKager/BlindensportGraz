@@ -42,7 +42,7 @@ public class BudgetView extends AdminView {
     private static final NumberFormat EURO = NumberFormat.getCurrencyInstance(GermanUi.LOCALE);
     private static final List<String> CATEGORIES = List.of("fixedSubsidy", "donation", "eventCost", "otherExpense");
 
-    private final Grid<BudgetEntry> grid = new Grid<>();
+    private final Grid<BudgetEntry> grid = GermanUi.grid();
     private final Select<Integer> year = new Select<>();
     private final Paragraph totals = new Paragraph();
     private List<BudgetEntry> entries = List.of();

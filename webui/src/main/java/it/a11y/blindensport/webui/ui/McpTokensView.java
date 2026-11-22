@@ -23,7 +23,7 @@ import java.util.List;
 @PageTitle("Persönliche Tokens – Blindensport Graz")
 public class McpTokensView extends AdminView {
     private final McpTokens tokens;
-    private final Grid<McpTokens.Info> grid = new Grid<>();
+    private final Grid<McpTokens.Info> grid = GermanUi.grid();
     private final TextField label = new TextField("Name des Tokens, z. B. Laptop");
     private final PasswordField password = new PasswordField("Passwort zur Bestätigung");
     private final TextField issued = new TextField("Neues Token, wird nur jetzt angezeigt");

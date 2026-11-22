@@ -133,7 +133,7 @@ public class TrainingsfrequenzlisteView extends AdminView {
         request = new Request(list.sport(), list.lastMonth(), list.year());
         result.add(download("Trainingsfrequenzliste herunterladen"));
 
-        Grid<Person> grid = new Grid<>();
+        Grid<Person> grid = GermanUi.grid();
         grid.addColumn(Person::displayName).setHeader("Name").setRowHeader(true).setFlexGrow(1);
         grid.addColumn(p -> p.roleSuffix() == null ? "Sportler:in" : p.roleSuffix()).setHeader("Funktion")
                 .setAutoWidth(true);

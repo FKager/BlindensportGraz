@@ -4,6 +4,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridI18n;
 import com.vaadin.flow.component.upload.UploadI18N;
 
 import java.time.format.DateTimeFormatter;
@@ -48,6 +50,24 @@ public final class GermanUi {
         picker.setDateAriaLabel(label + " – Datum");
         picker.setTimeAriaLabel(label + " – Uhrzeit");
         return picker;
+    }
+
+    /**
+     * A grid whose screen-reader texts are German: the column sorters were
+     * read as "Sort by Name" (axe check, webui/a11y).
+     */
+    public static <T> Grid<T> grid() {
+        Grid<T> grid = new Grid<>();
+        grid.setI18n(gridI18n());
+        return grid;
+    }
+
+    public static GridI18n gridI18n() {
+        return new GridI18n()
+                .setSorter("Sortieren nach {column}")
+                .setSelectAll("Alle auswählen")
+                .setSelectAllUnavailable("Alle auswählen ist nicht verfügbar")
+                .setSelectRow("Zeile auswählen");
     }
 
     public static UploadI18N uploadI18n(String addFiles, String dropFiles) {
