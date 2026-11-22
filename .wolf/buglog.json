@@ -11098,6 +11098,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-21T14:00:00.000Z"
+    },
+    {
+      "id": "bug-659",
+      "timestamp": "2026-11-22T10:00:00.000Z",
+      "error_message": "Code review: web UI reads were capped at PostgREST max_rows (1000) without notice; attendance batches of 100 events and whole-table reads could silently miss rows in PRAE/KostZ/Trainingsfrequenzliste/Sammelabrechnung",
+      "file": "webui/src/main/java/it/a11y/blindensport/webui/supabase/Postgrest.java",
+      "root_cause": "Postgrest.select sent one request and returned whatever came back",
+      "fix": "select pages: without order keyset by the table key (id, or KEYS map), with order offset pages + key tie-break and de-dup; with limit one request; key column added to select. PostgrestPagingTest",
+      "tags": [
+        "webui",
+        "postgrest",
+        "pagination",
+        "reports",
+        "data-loss"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-22T10:00:00.000Z"
     }
   ]
 }
