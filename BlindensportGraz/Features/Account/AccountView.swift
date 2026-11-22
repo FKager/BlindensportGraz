@@ -188,8 +188,7 @@ struct AccountView: View {
             if let member = requestedMember {
                 MyMemberView(member: member, currentUser: currentUser)
             } else {
-                ContentUnavailableView("Kein Vereinsdateneintrag gefunden",
-                                       systemImage: "exclamationmark.triangle")
+                EmptyStateView("Kein Vereinsdateneintrag gefunden", systemImage: "exclamationmark.triangle")
             }
         }
         // Helfer vs. Sportler selection for a brand-new self-request — sets

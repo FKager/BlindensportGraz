@@ -20,9 +20,7 @@ struct RoleChangeLogView: View {
                 Label(errorMessage, systemImage: "exclamationmark.triangle")
                     .foregroundStyle(Theme.Palette.warning)
             } else if entries.isEmpty, accountEntries.isEmpty, functionEntries.isEmpty, !isLoading {
-                ContentUnavailableView("Keine Rollenänderungen",
-                                       systemImage: "clock.arrow.circlepath",
-                                       description: Text("Änderungen an Benutzerrollen erscheinen hier."))
+                EmptyStateView("Keine Rollenänderungen", systemImage: "clock.arrow.circlepath", description: "Änderungen an Benutzerrollen erscheinen hier.")
             } else {
                 if !functionEntries.isEmpty {
                     Section("Vereinsfunktionen") {

@@ -33,9 +33,7 @@ struct AttendanceRollCallView: View {
         NavigationStack {
             Group {
                 if roster.isEmpty {
-                    ContentUnavailableView("Kein Team zugeordnet",
-                                           systemImage: "person.3",
-                                           description: Text("Diesem Eintrag ist kein Team zugewiesen."))
+                    EmptyStateView("Kein Team zugeordnet", systemImage: "person.3", description: "Diesem Eintrag ist kein Team zugewiesen.")
                 } else {
                     List {
                         Section {

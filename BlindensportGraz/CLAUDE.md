@@ -128,8 +128,8 @@ Don't use `NavigationLink { DetailView() }`, and don't add `.appRouteDestination
 ```swift
 List {
     if teams.isEmpty {
-        ContentUnavailableView("Keine Teams", systemImage: "person.3",
-                               description: Text("Lege ein neues Team an."))
+        EmptyStateView("Keine Teams", systemImage: "person.3",
+                       description: "Lege ein neues Team an.")
     } else {
         ForEach(teams) { team in
             NavigationLink(value: AppRoute.team(team)) { TeamRow(team: team) }
@@ -153,7 +153,7 @@ Data entry is a `Form` of `Section`s bound to the model with `@Bindable`. Add/ed
 ## UI Conventions
 
 - Spacing, radii, colours and the brand fill come from `Theme` (`Shared/Theme.swift`) — no hard-coded values
-- `Form` for data entry, `List` for collections, `ContentUnavailableView` for empty states
+- `Form` for data entry, `List` for collections, `EmptyStateView` (Shared/) for empty states — not ContentUnavailableView (clips its title, grey text under 4.5:1)
 - **ZStack** with `Theme.brandFill` circles for avatars; the initial letter is decorative (`accessibilityHidden`)
 - `LazyVGrid` for card layouts (stats, recent items)
 - Icon-only buttons get an `accessibilityLabel`; tap targets are at least 44×44 pt

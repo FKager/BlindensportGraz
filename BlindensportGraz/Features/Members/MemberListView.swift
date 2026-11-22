@@ -80,9 +80,7 @@ struct MemberListView: View {
         NavigationStack {
             List {
                 if sections.isEmpty {
-                    ContentUnavailableView("Kein Team zugeordnet",
-                                           systemImage: "person.3",
-                                           description: Text("Diesem Eintrag ist kein Team zugewiesen."))
+                    EmptyStateView("Kein Team zugeordnet", systemImage: "person.3", description: "Diesem Eintrag ist kein Team zugewiesen.")
                 } else {
                     ForEach(sections, id: \.team.id) { team, memberships in
                         Section(team.name) {

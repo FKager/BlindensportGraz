@@ -31,9 +31,7 @@ struct RootView: View {
                     }
                 } else {
                     // Profile not cached yet and the server is unreachable.
-                    ContentUnavailableView("Keine Verbindung",
-                                           systemImage: "wifi.slash",
-                                           description: Text("Dein Konto konnte nicht geladen werden. Bitte versuche es später noch einmal."))
+                    EmptyStateView("Keine Verbindung", systemImage: "wifi.slash", description: "Dein Konto konnte nicht geladen werden. Bitte versuche es später noch einmal.")
                 }
             }
         }

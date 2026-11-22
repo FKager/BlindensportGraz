@@ -82,9 +82,7 @@ struct AttendanceTrendsView: View {
 
                 Section("Anwesenheitsquote") {
                     if points.isEmpty {
-                        ContentUnavailableView("Noch keine Daten",
-                                                systemImage: "chart.line.uptrend.xyaxis",
-                                                description: Text("Für diese Auswahl liegen noch keine Anwesenheitsdaten vor."))
+                        EmptyStateView("Noch keine Daten", systemImage: "chart.line.uptrend.xyaxis", description: "Für diese Auswahl liegen noch keine Anwesenheitsdaten vor.")
                     } else {
                         Chart(points) { point in
                             LineMark(

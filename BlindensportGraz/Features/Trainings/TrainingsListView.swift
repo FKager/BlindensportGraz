@@ -92,9 +92,7 @@ struct TrainingsListView: View {
                .pickerStyle(.menu)
            }
            if filteredTrainings.isEmpty {
-               ContentUnavailableView("Keine Trainings",
-                                      systemImage: "figure.run",
-                                      description: Text("Lege ein neues Training an."))
+               EmptyStateView("Keine Trainings", systemImage: "figure.run", description: "Lege ein neues Training an.")
               } else {
                   ForEach(filteredTrainings) { training in
                     NavigationLink(value: AppRoute.training(training)) {

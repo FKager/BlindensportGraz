@@ -55,7 +55,7 @@ struct EventImageGalleryView: View {
             }
             .overlay {
                 if images.isEmpty {
-                    ContentUnavailableView("Keine Bilder", systemImage: "photo")
+                    EmptyStateView("Keine Bilder", systemImage: "photo")
                 }
             }
         }
