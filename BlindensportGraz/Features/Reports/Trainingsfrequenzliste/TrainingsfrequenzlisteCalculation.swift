@@ -166,13 +166,19 @@ enum TrainingsfrequenzlisteCalculator {
             }
         }
 
+        // Attendance per person, not per team membership: someone on two
+        // teams of this sport is listed once and ticked on either team's
+        // training (as in the web UI, Trainingsfrequenzliste.java).
+        func personKey(_ membership: TeamMembership) -> UUID {
+            membership.user?.id ?? membership.member?.id ?? membership.id
+        }
         let allAttendances = (try? context.fetch(FetchDescriptor<Attendance>())) ?? []
-        var attendedDatesByMembershipID: [UUID: [Date: Bool]] = [:]
+        var attendedDatesByPerson: [UUID: [Date: Bool]] = [:]
         for attendance in allAttendances {
             guard attendance.attended, periodTrainingIDs.contains(attendance.event.id) else { continue }
             let day = calendar.startOfDay(for: attendance.event.startDate)
             guard trainingDates.contains(day) else { continue }
-            attendedDatesByMembershipID[attendance.membership.id, default: [:]][day] = true
+            attendedDatesByPerson[personKey(attendance.membership), default: [:]][day] = true
         }
 
         // Every roster member across all assigned teams appears (an admin
@@ -187,8 +193,7 @@ enum TrainingsfrequenzlisteCalculator {
         var memberships: [TeamMembership] = []
         for team in assignedTeams {
             for membership in team.memberships {
-                let key = membership.user?.id ?? membership.member?.id ?? membership.id
-                if seenPersonKeys.insert(key).inserted {
+                if seenPersonKeys.insert(personKey(membership)).inserted {
                     memberships.append(membership)
                 }
             }
@@ -206,7 +211,7 @@ enum TrainingsfrequenzlisteCalculator {
             .map { membership in
                 TrainingsfrequenzlistePerson(
                     membership: membership,
-                    attendedByDate: attendedDatesByMembershipID[membership.id] ?? [:]
+                    attendedByDate: attendedDatesByPerson[personKey(membership)] ?? [:]
                 )
             }
 

@@ -50,43 +50,19 @@ struct SammelabrechnungTournamentView: View {
             .flatMap { PraeCalculator.summaries(for: $0.person, tournament: tournament) }
     }
 
-    // Read straight from tournament.attendances (attended == true) rather
-    // than deriving from tournament.teams/allMemberships — same source
-    // PraeCalculator.summaries(for:tournament:) reads from, and self-contained
-    // without needing TournamentDetailView's own allMemberships/
-    // attendedMemberships to be passed in. Deduped by underlying person,
-    // same identity-key convention as TournamentDetailView.allMemberships/
-    // PraeCalculator.eligiblePeople.
-    private var attendedMemberships: [TeamMembership] {
-        var seenKeys = Set<UUID>()
-        var result: [TeamMembership] = []
-        for attendance in tournament.attendances where attendance.attended {
-            let membership = attendance.membership
-            let key = membership.user?.id ?? membership.member?.id ?? membership.id
-            if seenKeys.insert(key).inserted {
-                result.append(membership)
-            }
-        }
-        return result.sortedByLastName()
-    }
-
-    // Same Sportler/Helfer role split as TournamentDetailView's identically-
-    // named private helpers (see that file's comments for why "== .player",
-    // not "!isHelfer").
-    private func isHelfer(_ membership: TeamMembership) -> Bool { membership.role.isHelfer }
-    private func isSportler(_ membership: TeamMembership) -> Bool { membership.role == .player }
-
+    // Who is listed: TeilnehmerlisteExporter.sportler/helfer, the same rule as
+    // TournamentDetailView and the web UI (shared test: Shared/ReportFixtures/teilnehmerliste.json).
     private var teilnehmerlisteSportlerContext: TeilnehmerlisteContext {
         TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.cityWithCountry,
                                 startDate: tournament.startDate, endDate: tournament.endDate,
-                                attendedMemberships: attendedMemberships.filter(isSportler),
+                                attendedMemberships: TeilnehmerlisteExporter.sportler(of: tournament),
                                 fileNamePrefix: "TN-Sportler")
     }
 
     private var teilnehmerlisteHelferContext: TeilnehmerlisteContext {
         TeilnehmerlisteContext(betrifft: tournament.title, ort: tournament.cityWithCountry,
                                 startDate: tournament.startDate, endDate: tournament.endDate,
-                                attendedMemberships: attendedMemberships.filter(isHelfer),
+                                attendedMemberships: TeilnehmerlisteExporter.helfer(of: tournament),
                                 fileNamePrefix: "TN-Helfer")
     }
 

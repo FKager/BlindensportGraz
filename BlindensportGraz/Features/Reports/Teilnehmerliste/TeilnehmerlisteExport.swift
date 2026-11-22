@@ -99,10 +99,40 @@ enum TeilnehmerlisteExporter {
         return outputURL
     }
 
+    /// Everyone marked present at `event`, once per person (an app account
+    /// or a roster entry), by last name — from the event's attendance rows,
+    /// so someone who attended through a second team's membership, or was
+    /// added to the event directly, is listed too. Two memberships of one
+    /// person: the first attendance row by id decides (the web UI reads them
+    /// in id order). Same rule as Teilnehmerliste.forTournament in the web UI.
+    static func attendedMemberships(of event: SportEvent) -> [TeamMembership] {
+        var seen = Set<UUID>()
+        var result: [TeamMembership] = []
+        let rows = event.attendances.filter(\.attended)
+            .sorted { $0.id.uuidString.lowercased() < $1.id.uuidString.lowercased() }
+        for attendance in rows {
+            let membership = attendance.membership
+            if seen.insert(membership.user?.id ?? membership.member?.id ?? membership.id).inserted {
+                result.append(membership)
+            }
+        }
+        return result.sortedByLastName()
+    }
+
+    /// Players go on the Sportler list (role player only, see TournamentDetailView).
+    static func sportler(of event: SportEvent) -> [TeamMembership] {
+        attendedMemberships(of: event).filter { $0.role == .player }
+    }
+
+    /// Coaches and assistants go on the Helfer list.
+    static func helfer(of event: SportEvent) -> [TeamMembership] {
+        attendedMemberships(of: event).filter { $0.role.isHelfer }
+    }
+
     /// One row per attended membership. Every attendee gets the same TAGE
     /// (day count) since attendance here is a single yes/no per event, not
     /// tracked per individual day within a multi-day tournament.
-    private static func entries(from context: TeilnehmerlisteContext) -> [TeilnehmerlisteEntry] {
+    static func entries(from context: TeilnehmerlisteContext) -> [TeilnehmerlisteEntry] {
         let dayCount = self.dayCount(from: context.startDate, to: context.endDate)
         return context.attendedMemberships.map { membership in
             TeilnehmerlisteEntry(

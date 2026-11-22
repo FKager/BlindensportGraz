@@ -1,0 +1,56 @@
+{
+  "_comment": "TeilnehmerInnenliste scenarios read by BOTH sides: TeilnehmerlisteFixtureTests.swift (app) and TeilnehmerlisteFixtureTest.java (web UI). Everyone present at the tournament, once per person, by last name; players to Sportler, coaches and assistants to Helfer. Times are Austrian local time.",
+  "people": [
+    {"id": "anna", "first": "Anna", "last": "Berger", "gender": "f", "city": "Graz"},
+    {"id": "zoe", "first": "Zoe", "last": "Albrecht", "gender": "f", "city": "Wien"},
+    {"id": "bernd", "first": "Bernd", "last": "Muster", "gender": "m", "city": "Leoben"},
+    {"id": "erika", "first": "Erika", "last": "Huber", "gender": "f", "city": ""},
+    {"id": "fritz", "first": "Fritz", "last": "Zach", "gender": "m", "city": "Graz"}
+  ],
+  "teams": [
+    {"id": "damen", "name": "Torball Damen", "sport": "Torball"},
+    {"id": "herren", "name": "Torball Herren", "sport": "Torball"}
+  ],
+  "memberships": [
+    {"id": "m-anna", "team": "damen", "person": "anna", "role": "player"},
+    {"id": "m-anna2", "team": "herren", "person": "anna", "role": "player"},
+    {"id": "m-zoe", "team": "damen", "person": "zoe", "role": "player"},
+    {"id": "m-bernd", "team": "herren", "person": "bernd", "role": "coach"},
+    {"id": "m-erika", "team": "herren", "person": "erika", "role": "assistant"},
+    {"id": "m-fritz", "team": "herren", "person": "fritz", "role": "player"}
+  ],
+  "scenarios": [
+    {
+      "name": "present people only, once each, split by role, by last name",
+      "start": {"year": 2026, "month": 5, "day": 9, "hour": 9},
+      "end": {"year": 2026, "month": 5, "day": 10, "hour": 17},
+      "attendances": [
+        {"id": "a1", "membership": "m-fritz", "attended": true},
+        {"id": "a2", "membership": "m-anna", "attended": true},
+        {"id": "a3", "membership": "m-anna2", "attended": true},
+        {"id": "a4", "membership": "m-zoe", "attended": false},
+        {"id": "a5", "membership": "m-bernd", "attended": true},
+        {"id": "a6", "membership": "m-erika", "attended": true}
+      ],
+      "expected": {
+        "days": 2,
+        "sportler": [["Berger Anna", "Graz"], ["Zach Fritz", "Graz"]],
+        "helfer": [["Huber Erika", ""], ["Muster Bernd", "Leoben"]]
+      }
+    },
+    {
+      "name": "someone present only through their second team's membership is listed",
+      "start": {"year": 2026, "month": 6, "day": 13, "hour": 9},
+      "end": {"year": 2026, "month": 6, "day": 13, "hour": 18},
+      "attendances": [
+        {"id": "b1", "membership": "m-anna", "attended": false},
+        {"id": "b2", "membership": "m-anna2", "attended": true}
+      ],
+      "expected": {
+        "days": 1,
+        "sportler": [["Berger Anna", "Graz"]],
+        "helfer": []
+      }
+    }
+  ]
+}
