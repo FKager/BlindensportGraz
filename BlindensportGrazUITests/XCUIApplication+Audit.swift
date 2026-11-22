@@ -57,8 +57,13 @@ extension XCUIApplication {
                 return true
             }
             let element = issue.element.map { "\($0.elementType.rawValue) '\($0.label)' id='\($0.identifier)'" } ?? "-"
-            print("A11Y-ISSUE | \(test) | \(issue.compactDescription) | \(element) | \(issue.detailedDescription) | frame=\(issue.element?.frame ?? .zero)")
-            return false
+            // Our own failure with the element in the message: CI's log
+            // formatter hides print output, and the audit's own failure
+            // names only the issue type.
+            let report = "A11Y-ISSUE | \(test) | \(issue.compactDescription) | \(element) | \(issue.detailedDescription) | frame=\(issue.element?.frame ?? .zero)"
+            print(report)
+            XCTFail(report)
+            return true
         }
     }
 

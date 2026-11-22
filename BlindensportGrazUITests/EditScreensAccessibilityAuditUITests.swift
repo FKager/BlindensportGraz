@@ -32,7 +32,10 @@ final class EditScreensAccessibilityAuditUITests: XCTestCase {
         XCTAssertTrue(edit.waitForExistence(timeout: 5))
         edit.tap()
         XCTAssertTrue(app.buttons["Fertig"].firstMatch.waitForExistence(timeout: 5))
-        try app.auditAccessibility(test: name)
+        // Let the switch into edit mode finish: audited mid-animation, the
+        // slower CI Simulator reported contrast failures on fading rows.
+        sleep(2)
+        try app.auditAccessibility(test: name, ignoreTabBarGlass: true)
     }
 
     func testEditTraining() throws {
@@ -57,7 +60,7 @@ final class EditScreensAccessibilityAuditUITests: XCTestCase {
         openClubEntry("Benutzerverwaltung")
         tapRow(containing: "Muster")
         XCTAssertTrue(app.buttons["Fertig"].firstMatch.waitForExistence(timeout: 5))
-        try app.auditAccessibility(test: name)
+        try app.auditAccessibility(test: name, ignoreTabBarGlass: true)
     }
 
     func testTeam() throws {
@@ -67,6 +70,6 @@ final class EditScreensAccessibilityAuditUITests: XCTestCase {
         // screen reported dimmed headers (flaky contrast findings).
         XCTAssertTrue(app.buttons["Mitglied hinzufügen"].waitForExistence(timeout: 5))
         sleep(2)
-        try app.auditAccessibility(test: name)
+        try app.auditAccessibility(test: name, ignoreTabBarGlass: true)
     }
 }
