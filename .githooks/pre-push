@@ -1,0 +1,6 @@
+#!/bin/bash
+# Accessibility audits before a push (scripts/a11y-audit.sh): iOS audit in
+# light + dark if the app changed, web UI axe check if webui/ changed.
+# Activate once per clone: git config core.hooksPath .githooks
+# Skip once: git push --no-verify
+exec "$(git rev-parse --show-toplevel)/scripts/a11y-audit.sh" --pre-push
