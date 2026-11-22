@@ -68,9 +68,13 @@ struct AddTournamentView: View {
         return TournamentInvitation.attachmentProblem(fileName: invitationFile.name, size: invitationFile.data.count)
     }
 
+    /// What's missing before saving; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Neues Turnier")
                 if let invitationFile, canAttachInvitation, let invitationProblem {
                     Section {
                         Label("Die Einladung „\(invitationFile.name)“ wird nicht als Dokument gespeichert: \(invitationProblem)",
@@ -79,16 +83,16 @@ struct AddTournamentView: View {
                     }
                 }
                 Section(heading: "Turnier") {
-                    TextField("Name", text: $title)
+                    StackedField(label: "Name", text: $title)
                     EventTypePicker(selection: $eventType, behavior: .tournament)
                     SportPicker(selection: $sport)
-                    TextField("Veranstaltungsort", text: $location)
+                    StackedField(label: "Veranstaltungsort", text: $location)
                      }
                 Section(heading: "Adresse") {
-                    TextField("Straße", text: $street)
-                    TextField("PLZ", text: $zip)
-                    TextField("Ort", text: $city)
-                    TextField("Land", text: $country)
+                    StackedField(label: "Straße", text: $street)
+                    StackedField(label: "PLZ", text: $zip)
+                    StackedField(label: "Ort", text: $city)
+                    StackedField(label: "Land", text: $country)
                 }
                 Section {
                     DatePicker("Start", selection: $startDate, displayedComponents: [.date])
@@ -143,71 +147,11 @@ struct AddTournamentView: View {
                     }
                 }
                 Section(heading: "Notizen") {
-                    TextField("Notizen", text: $notes, axis: .vertical)
+                    StackedField(label: "Notizen", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
                 }
-            }
-            .navigationTitle("Neues Turnier")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") {
-                        // Same name + Sportart + Datum as an existing event of
-                        // any kind → refuse. Day granularity: the tournament UI
-                        // only picks a date, see SportEvent.duplicate.
-                        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, granularity: .day, in: modelContext) != nil {
-                            showDuplicateAlert = true
-                            return
-                        }
-                        var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
-                        // Same business rule as AddTrainingView: applies to
-                        // ANY tournament of a mapped sport regardless of who
-                        // created it, so this looks at the full `allTeams`
-                        // query, not the role-filtered `myTeams` the
-                        // checkboxes above use.
-                        if let autoTeamNames = Team.autoAssignTeamNames[sport] {
-                            let autoNames = Set(autoTeamNames.map { $0.lowercased() })
-                            for team in allTeams where autoNames.contains(team.name.lowercased()) {
-                                if !teams.contains(where: { $0.id == team.id }) {
-                                    teams.append(team)
-                                }
-                            }
-                        }
-                        let tournament = Tournament(
-                            title: title,
-                            sport: sport,
-                            location: location,
-                            street: street,
-                            zip: zip,
-                            city: city,
-                            country: country,
-                            startDate: startDate,
-                            endDate: endDate,
-                            maxTeams: maxTeams,
-                            notes: notes,
-                            createdBy: currentUser?.id.uuidString ?? "",
-                            teams: teams
-                        )
-                        tournament.eventType = eventType
-                        modelContext.insert(tournament)
-                        TournamentService.save(tournament, modelContext: modelContext)
-                        // Keep the imported Einladung as the tournament's
-                        // first document (uploading needs events.manage).
-                        if let invitationFile, canAttachInvitation, invitationProblem == nil {
-                            TournamentInvitationService.add(to: tournament, data: invitationFile.data,
-                                                            fileName: invitationFile.name,
-                                                            uploadedBy: currentUser?.id.uuidString ?? "",
-                                                            modelContext: modelContext)
-                        }
-
-
-                        dismiss()
-                    }
-                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
+                FormActionButtons(primaryTitle: "Speichern", cancelTitle: "Abbrechen", message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
             .alert("Bereits vorhanden", isPresented: $showDuplicateAlert) {
                 Button("OK", role: .cancel) {}
@@ -215,5 +159,69 @@ struct AddTournamentView: View {
                 Text("Es gibt bereits eine Veranstaltung mit diesem Titel, dieser Sportart und diesem Zeitpunkt.")
             }
         }
+    }
+
+    /// Speichern is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        if title.trimmingCharacters(in: .whitespaces).isEmpty {
+            formMessage = String(localized: "Bitte gib einen Titel ein.")
+            AccessibilityNotification.Announcement(formMessage ?? "").post()
+            return
+        }
+        formMessage = nil
+        save()
+    }
+
+    private func save() {
+        // Same name + Sportart + Datum as an existing event of
+        // any kind → refuse. Day granularity: the tournament UI
+        // only picks a date, see SportEvent.duplicate.
+        if SportEvent.duplicate(title: title, sport: sport, startDate: startDate, granularity: .day, in: modelContext) != nil {
+            showDuplicateAlert = true
+            return
+        }
+        var teams = myTeams.filter { selectedTeamIDs.contains($0.id) }
+        // Same business rule as AddTrainingView: applies to
+        // ANY tournament of a mapped sport regardless of who
+        // created it, so this looks at the full `allTeams`
+        // query, not the role-filtered `myTeams` the
+        // checkboxes above use.
+        if let autoTeamNames = Team.autoAssignTeamNames[sport] {
+            let autoNames = Set(autoTeamNames.map { $0.lowercased() })
+            for team in allTeams where autoNames.contains(team.name.lowercased()) {
+                if !teams.contains(where: { $0.id == team.id }) {
+                    teams.append(team)
+                }
+            }
+        }
+        let tournament = Tournament(
+            title: title,
+            sport: sport,
+            location: location,
+            street: street,
+            zip: zip,
+            city: city,
+            country: country,
+            startDate: startDate,
+            endDate: endDate,
+            maxTeams: maxTeams,
+            notes: notes,
+            createdBy: currentUser?.id.uuidString ?? "",
+            teams: teams
+        )
+        tournament.eventType = eventType
+        modelContext.insert(tournament)
+        TournamentService.save(tournament, modelContext: modelContext)
+        // Keep the imported Einladung as the tournament's
+        // first document (uploading needs events.manage).
+        if let invitationFile, canAttachInvitation, invitationProblem == nil {
+            TournamentInvitationService.add(to: tournament, data: invitationFile.data,
+                                            fileName: invitationFile.name,
+                                            uploadedBy: currentUser?.id.uuidString ?? "",
+                                            modelContext: modelContext)
+        }
+
+
+        dismiss()
     }
 }

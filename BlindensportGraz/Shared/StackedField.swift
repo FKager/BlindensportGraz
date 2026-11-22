@@ -8,6 +8,8 @@ struct StackedField: View {
     let label: LocalizedStringKey
     @Binding var text: String
     var secure = false
+    /// `.vertical` for a multi-line field (notes, descriptions).
+    var axis: Axis = .horizontal
 
     var body: some View {
         VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
@@ -20,7 +22,7 @@ struct StackedField: View {
                 if secure {
                     SecureField(text: $text, prompt: Text(verbatim: "")) { Text(label) }
                 } else {
-                    TextField(text: $text, prompt: Text(verbatim: "")) { Text(label) }
+                    TextField(text: $text, prompt: Text(verbatim: ""), axis: axis) { Text(label) }
                 }
             }
             .accessibilityLabel(Text(label))

@@ -37,9 +37,10 @@ extension XCUIApplication {
                self.navigationBars.firstMatch.frame.contains(CGPoint(x: element.frame.midX, y: element.frame.midY)) {
                 return true
             }
-            // An e-mail address is "not human-readable" to the audit; VoiceOver reads it fine.
-            if issue.auditType == .sufficientElementDescription,
-               let element = issue.element, element.label.contains("@") {
+            // An e-mail address or a date picker's "22.11.2026" is "not
+            // human-readable" to the audit; VoiceOver reads both fine.
+            if issue.auditType == .sufficientElementDescription, let element = issue.element,
+               element.label.contains("@") || element.label.range(of: #"^\d{1,2}\.\d{1,2}\.\d{4}$"#, options: .regularExpression) != nil {
                 return true
             }
             // Same for "Text clipped": the Verein rows flagged this way wrap
