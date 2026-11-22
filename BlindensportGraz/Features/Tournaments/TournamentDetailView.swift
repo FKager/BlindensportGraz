@@ -98,7 +98,7 @@ struct TournamentDetailView: View {
             }
         }
         Section(heading: "Notizen") {
-            TextField("Notizen", text: $tournament.notes, axis: .vertical)
+            StackedField(label: "Notizen", text: $tournament.notes, axis: .vertical)
                 .lineLimit(3...6)
         }
         TournamentDocumentsSection(tournament: tournament, currentUser: currentUser)
@@ -172,6 +172,7 @@ var body: some View {
     Form {
         if isEditing {
             editingSections
+            FormActionButtons(primaryTitle: "Fertig", cancelTitle: nil, onPrimary: finishEditing)
         } else {
             readOnlySections
         }
@@ -182,10 +183,7 @@ var body: some View {
         if canEdit {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(isEditing ? "Fertig" : "Bearbeiten") {
-                    if isEditing {
-                        TournamentService.save(tournament, modelContext: modelContext)
-                    }
-                    isEditing.toggle()
+                    if isEditing { finishEditing() } else { isEditing = true }
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
@@ -302,5 +300,12 @@ var body: some View {
 
     private func deleteImage(_ image: EventImage) {
         EventImageService.delete(image, modelContext: modelContext)
+    }
+
+    /// Saves and leaves edit mode — the "Fertig" button in the bar and the
+    /// large one at the end of the form.
+    private func finishEditing() {
+        TournamentService.save(tournament, modelContext: modelContext)
+        isEditing = false
     }
 }

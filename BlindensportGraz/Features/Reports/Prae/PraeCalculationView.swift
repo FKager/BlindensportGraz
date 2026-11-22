@@ -67,7 +67,7 @@ struct PraeCalculationView: View {
                             Text(monthName(m)).tag(m)
                         }
                     }
-                    Stepper("Jahr: \(String(year))", value: $year, in: 2020...2100)
+                    NumberPicker("Jahr", value: $year, values: Array(2020...2100))
                     if selectedPerson != nil {
                         if summaries.isEmpty {
                             Text("Keine Trainings mit hinterlegtem PRAE-Betrag in diesem Monat.")

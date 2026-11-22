@@ -28,9 +28,9 @@ struct TeamDetailView: View {
     var body: some View {
         Form {
             Section(heading: "Team") {
-                TextField("Name", text: $team.name)
+                StackedField(label: "Name", text: $team.name)
                 SportPicker(selection: $team.sport, allowsNone: true)
-                TextField("Beschreibung", text: $team.descriptionText, axis: .vertical)
+                StackedField(label: "Beschreibung", text: $team.descriptionText, axis: .vertical)
                     .lineLimit(2...5)
             }
 
@@ -48,6 +48,9 @@ struct TeamDetailView: View {
                                     .font(.caption)
                                     .foregroundStyle(Theme.Palette.secondary)
                             }
+                            // One VoiceOver element (name, then subtitle); the
+                            // caption line alone was a too-small target.
+                            .accessibilityElement(children: .combine)
                             Spacer()
                             if canManageTeams {
                                 MembershipRoleMenu(membership: m)

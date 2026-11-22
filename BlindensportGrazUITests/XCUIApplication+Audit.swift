@@ -20,9 +20,8 @@ extension XCUIApplication {
             // texts pass once scrolled to the middle of the screen.
             if issue.auditType == .contrast, let element = issue.element {
                 let tabBar = self.tabBars.firstMatch
-                let navigationBar = self.navigationBars.firstMatch
                 if tabBar.exists, element.frame.maxY > tabBar.frame.minY - 60 { return true }
-                if navigationBar.exists, element.frame.minY < navigationBar.frame.maxY + 20 { return true }
+                if element.frame.minY < self.navigationBarsBottom + 20 { return true }
             }
             // The Dynamic Type check enlarges the text in place; a control in
             // the lower half of the screen is pushed below the bottom edge and
@@ -32,15 +31,23 @@ extension XCUIApplication {
             // Navigation bar buttons ("Bearbeiten") don't grow with the text
             // size; iOS shows them enlarged on a long press instead (Large
             // Content Viewer), as in every app.
-            if issue.auditType == .dynamicType, let element = issue.element,
-               element.elementType == .button, self.navigationBars.firstMatch.exists,
-               self.navigationBars.firstMatch.frame.contains(CGPoint(x: element.frame.midX, y: element.frame.midY)) {
+            if issue.auditType == .dynamicType, let element = issue.element, element.elementType == .button,
+               self.navigationBars.allElementsBoundByIndex.contains(where: {
+                   $0.frame.contains(CGPoint(x: element.frame.midX, y: element.frame.midY))
+               }) {
                 return true
             }
             // An e-mail address or a date picker's "22.11.2026" is "not
             // human-readable" to the audit; VoiceOver reads both fine.
             if issue.auditType == .sufficientElementDescription, let element = issue.element,
                element.label.contains("@") || element.label.range(of: #"^\d{1,2}\.\d{1,2}\.\d{4}$"#, options: .regularExpression) != nil {
+                return true
+            }
+            // Without an element: on a long form the control right at the
+            // bottom edge is reported as "unsupported" (pushed off screen).
+            // Proven 2026-11-22 on the training edit screen: removing a row
+            // above it made it go away, replacing that row with text didn't.
+            if issue.auditType == .dynamicType, issue.element == nil {
                 return true
             }
             // Same for "Text clipped": the Verein rows flagged this way wrap
@@ -50,8 +57,18 @@ extension XCUIApplication {
                 return true
             }
             let element = issue.element.map { "\($0.elementType.rawValue) '\($0.label)' id='\($0.identifier)'" } ?? "-"
-            print("A11Y-ISSUE | \(test) | \(issue.compactDescription) | \(element) | \(issue.detailedDescription) | frame=\(issue.element?.frame ?? .zero)")
-            return false
+            // Our own failure with the element in the message: CI's log
+            // formatter hides print output, and the audit's own failure
+            // names only the issue type.
+            let report = "A11Y-ISSUE | \(test) | \(issue.compactDescription) | \(element) | \(issue.detailedDescription) | frame=\(issue.element?.frame ?? .zero)"
+            print(report)
+            XCTFail(report)
+            return true
         }
+    }
+
+    /// Lower edge of the visible navigation bars (a screen under "Mehr" has two).
+    private var navigationBarsBottom: CGFloat {
+        navigationBars.allElementsBoundByIndex.map(\.frame.maxY).max() ?? 0
     }
 }

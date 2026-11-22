@@ -42,10 +42,14 @@ struct EventRow: View {
                 Text(subtitle)
                       .font(.subheadline)
                       .foregroundStyle(Theme.Palette.secondary)
-                Label(event.location, systemImage: "mappin.and.ellipse")
+                // Icon inline with the text; the Label was cut off at larger sizes.
+                Text("\(Image(systemName: "mappin.and.ellipse")) \(event.location)")
                       .font(.caption)
                       .foregroundStyle(Theme.Palette.secondary)
+                      .accessibilityLabel(event.location)
               }
+              // The text column gets the width first.
+              .layoutPriority(1)
           }
           .padding(.vertical, Theme.Spacing.xs)
       }

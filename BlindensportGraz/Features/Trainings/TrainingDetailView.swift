@@ -91,7 +91,7 @@ struct TrainingDetailView: View {
             }
         }
         Section(heading: "Notizen") {
-            TextField("Notizen", text: $training.notes, axis: .vertical)
+            StackedField(label: "Notizen", text: $training.notes, axis: .vertical)
                 .lineLimit(3...6)
         }
     }
@@ -163,6 +163,7 @@ struct TrainingDetailView: View {
         Form {
             if isEditing {
                 editingSections
+                FormActionButtons(primaryTitle: "Fertig", cancelTitle: nil, onPrimary: finishEditing)
             } else {
                 readOnlySections
             }
@@ -173,10 +174,7 @@ struct TrainingDetailView: View {
             if canEdit {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(isEditing ? "Fertig" : "Bearbeiten") {
-                        if isEditing {
-                            TrainingService.save(training, modelContext: modelContext)
-                        }
-                        isEditing.toggle()
+                        if isEditing { finishEditing() } else { isEditing = true }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -239,5 +237,12 @@ struct TrainingDetailView: View {
 
     private func deleteImage(_ image: EventImage) {
         EventImageService.delete(image, modelContext: modelContext)
+    }
+
+    /// Saves and leaves edit mode — the "Fertig" button in the bar and the
+    /// large one at the end of the form.
+    private func finishEditing() {
+        TrainingService.save(training, modelContext: modelContext)
+        isEditing = false
     }
 }

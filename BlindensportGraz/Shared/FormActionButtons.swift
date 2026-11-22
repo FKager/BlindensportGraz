@@ -6,12 +6,13 @@ import SwiftUI
 /// what's missing instead (see the `onPrimary` of each form).
 struct FormActionButtons: View {
     let primaryTitle: LocalizedStringKey?
-    let cancelTitle: LocalizedStringKey
+    /// nil: no second button (e.g. edit screens, whose edits apply live).
+    let cancelTitle: LocalizedStringKey?
     var isWorking = false
     /// What's missing or went wrong, shown above the buttons.
     var message: String?
     var onPrimary: () -> Void = {}
-    let onCancel: () -> Void
+    var onCancel: () -> Void = {}
 
     var body: some View {
         Section {
@@ -35,14 +36,16 @@ struct FormActionButtons: View {
                 .tint(Theme.Fill.info)
                 .listRowBackground(Color.clear)
             }
-            Button(action: onCancel) {
-                Text(cancelTitle)
-                    .frame(maxWidth: .infinity, minHeight: 44)
+            if let cancelTitle {
+                Button(action: onCancel) {
+                    Text(cancelTitle)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                }
+                .buttonStyle(.bordered)
+                // Primary text colour: the default accent text on the grey button misses the contrast ratio.
+                .tint(.primary)
+                .listRowBackground(Color.clear)
             }
-            .buttonStyle(.bordered)
-            // Primary text colour: the default accent text on the grey button misses the contrast ratio.
-            .tint(.primary)
-            .listRowBackground(Color.clear)
         }
         .listRowSeparator(.hidden)
     }

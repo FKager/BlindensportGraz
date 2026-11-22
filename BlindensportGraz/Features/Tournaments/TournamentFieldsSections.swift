@@ -17,7 +17,7 @@ struct TournamentFieldsSections: View {
             DatePicker("Ende", selection: $tournament.endDate, displayedComponents: [.date])
         }
         Section(heading: "Details") {
-            Stepper("Max. Teams: \(tournament.maxTeams)", value: $tournament.maxTeams, in: 2...64)
+            NumberPicker("Max. Teams", value: $tournament.maxTeams, values: Array(2...64))
             Picker("Status", selection: $tournament.status) {
                 Text("Geplant").tag("planned")
                 Text("Laufend").tag("ongoing")

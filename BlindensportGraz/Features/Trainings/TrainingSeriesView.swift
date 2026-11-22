@@ -53,7 +53,7 @@ struct TrainingSeriesView: View {
                 }
 
                 Section(heading: "Serie") {
-                    Stepper("Anzahl Wochen: \(weeks)", value: $weeks, in: 2...26)
+                    NumberPicker("Anzahl Wochen", value: $weeks, values: Array(2...26))
                     if let first = startDates.first, let last = startDates.last {
                         LabeledContent("Erster Termin", value: first.formatted(date: .abbreviated, time: .shortened))
                         LabeledContent("Letzter Termin", value: last.formatted(date: .abbreviated, time: .shortened))
