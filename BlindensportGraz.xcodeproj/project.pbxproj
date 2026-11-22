@@ -245,6 +245,7 @@
 		BF4898D2C12354648CCBE014 /* MemberDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3038940BF292B84D777EB7F /* MemberDetailView.swift */; };
 		C014E8706A0ED6031A2BB385 /* NextUpCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D941E1D0E574BF3BC68C78 /* NextUpCard.swift */; };
 		C0C89FF72092B14BCB1E512C /* WordDocTextExtractorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 612DD174CFD1EF3663800765 /* WordDocTextExtractorTests.swift */; };
+		C1C42BF7E5CCD6FD93E5EC29 /* ShareExtensionBridgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2628B96DC1E9D759B0199ED9 /* ShareExtensionBridgeTests.swift */; };
 		C1C8ACD93B713447CE6E2E72 /* SyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2D4C251E4C527F6F61763E /* SyncState.swift */; };
 		C1F71A63161562042F3B2CBD /* TeilnehmerlisteExportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB124A80094D1755FCFAB14 /* TeilnehmerlisteExportTests.swift */; };
 		C291CC6B44F6AB0CF1A72B69 /* EventListAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02FDF4F9C10480BAD554F8A /* EventListAccess.swift */; };
@@ -400,6 +401,7 @@
 		23BD9A591EAC63984F914F3D /* MemberService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberService.swift; sourceTree = "<group>"; };
 		24482DBA01ABE94F1CDB7FB9 /* EventReminderServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventReminderServiceTests.swift; sourceTree = "<group>"; };
 		261BF808E3D6B7B141729B65 /* AddTeamMemberView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTeamMemberView.swift; sourceTree = "<group>"; };
+		2628B96DC1E9D759B0199ED9 /* ShareExtensionBridgeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExtensionBridgeTests.swift; sourceTree = "<group>"; };
 		268FF22649C7065870A7870A /* FullBackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullBackupView.swift; sourceTree = "<group>"; };
 		269A5FB5BEA5BD989F15047F /* RoleAssignment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoleAssignment.swift; sourceTree = "<group>"; };
 		27C8820236CCFA2FEADCE405 /* AttendanceTrends.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttendanceTrends.swift; sourceTree = "<group>"; };
@@ -871,6 +873,7 @@
 				6BA4CA288AD96E0CAF4B1494 /* SammelabrechnungSeasonExportTests.swift */,
 				6331B50A5B060D74CC1F836D /* SearchQueryTests.swift */,
 				512697E5A61C2050F2820D64 /* SeasonDashboardTests.swift */,
+				2628B96DC1E9D759B0199ED9 /* ShareExtensionBridgeTests.swift */,
 				76F901CD3511953F34FCF80B /* SupabaseRowsTests.swift */,
 				61C91727D75C945BC188BDC8 /* SupabaseSyncPagingTests.swift */,
 				6A4289EE8DC407713CD37AC1 /* SupabaseSyncPullTests.swift */,
@@ -1759,6 +1762,7 @@
 				9021BDD8FFE458411C3C1FD1 /* SammelabrechnungSeasonExportTests.swift in Sources */,
 				06F616B384F0460077B8BCB0 /* SearchQueryTests.swift in Sources */,
 				422C73C84EAB649F9F71E44F /* SeasonDashboardTests.swift in Sources */,
+				C1C42BF7E5CCD6FD93E5EC29 /* ShareExtensionBridgeTests.swift in Sources */,
 				37E2EA5D7AE268204608DDF0 /* SupabaseRowsTests.swift in Sources */,
 				B0A799E8BD3495BEEF079CD5 /* SupabaseSyncPagingTests.swift in Sources */,
 				D5C6CCAF65719DDFE7D40C6E /* SupabaseSyncPullTests.swift in Sources */,
