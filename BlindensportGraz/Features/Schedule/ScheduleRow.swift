@@ -24,13 +24,15 @@ struct ScheduleRow: View {
                 }
             }
             .font(.subheadline)
-            .foregroundStyle(.secondary)
             if !location.isEmpty {
-                Label(location, systemImage: "mappin.and.ellipse")
+                // Icon and text in one wrapping line; a Label cut the text off at large sizes.
+                Text("\(Image(systemName: "mappin.and.ellipse")) \(location)")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .accessibilityLabel(location)
             }
         }
+        // Date and place in full text colour: the system grey is under 4.5:1 in light mode.
+        .foregroundStyle(Color.primary)
         .padding(.vertical, Theme.Spacing.xxs)
         .accessibilityElement(children: .combine)
     }

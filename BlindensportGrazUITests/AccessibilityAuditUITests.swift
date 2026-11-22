@@ -11,7 +11,7 @@ final class AccessibilityAuditUITests: XCTestCase {
     override func setUp() async throws {
         continueAfterFailure = true
         app = XCUIApplication()
-        app.launchArguments = ["-ui-testing"]
+        app.launchArguments = ["-ui-testing", "-ui-testing-sample-schedule"]
         app.launch()
         XCTAssertTrue(app.tabBars.buttons["Übersicht"].waitForExistence(timeout: 15), "the app starts signed out")
     }
@@ -44,7 +44,16 @@ final class AccessibilityAuditUITests: XCTestCase {
     }
 
     func testOverview() throws {
+        XCTAssertTrue(app.staticTexts["Blindenfußballtraining"].waitForExistence(timeout: 5))
         try audit(ignoreTabBarGlass: true)
+    }
+
+    func testEmptyOverview() throws {
+        app.terminate()
+        app.launchArguments = ["-ui-testing"]
+        app.launch()
+        XCTAssertTrue(app.staticTexts["Noch nichts geplant"].waitForExistence(timeout: 15))
+        try audit()
     }
 
     func testAccount() throws {

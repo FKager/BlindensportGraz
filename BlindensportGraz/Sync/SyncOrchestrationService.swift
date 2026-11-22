@@ -21,6 +21,8 @@ enum SyncOrchestrationService {
     }
 
     static func syncAll(modelContext: ModelContext) async {
+        // UI tests see only their own sample data (UITestMode), never a server's.
+        guard !UITestMode.isActive else { return }
         await SupabaseSync.shared.syncAll(modelContext: modelContext)
     }
 

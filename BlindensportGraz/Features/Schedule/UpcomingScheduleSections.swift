@@ -33,8 +33,21 @@ struct UpcomingScheduleSections: View {
         let upcomingEvents = upcoming(events)
 
         if upcomingTrainings.isEmpty, upcomingTournaments.isEmpty, upcomingEvents.isEmpty {
-            ContentUnavailableView("Noch nichts geplant", systemImage: "calendar",
-                                   description: Text("Sobald etwas ansteht, siehst du es hier."))
+            // Own empty state instead of ContentUnavailableView: its title is
+            // cut off at large text sizes and its grey text is under 4.5:1.
+            VStack(spacing: Theme.Spacing.s) {
+                Image(systemName: "calendar")
+                    .font(.largeTitle)
+                    .accessibilityHidden(true)
+                Text("Noch nichts geplant")
+                    .font(.title2.bold())
+                    .accessibilityAddTraits(.isHeader)
+                Text("Sobald etwas ansteht, siehst du es hier.")
+            }
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, Theme.Spacing.xxl)
+            .listRowBackground(Color.clear)
         }
         if !upcomingTrainings.isEmpty {
             Section {
