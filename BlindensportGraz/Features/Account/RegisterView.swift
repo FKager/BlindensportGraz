@@ -19,6 +19,7 @@ struct RegisterView: View {
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Neues Konto")
                 if awaitingConfirmation {
                     Section {
                         Label("Fast geschafft! Wir haben dir eine E-Mail an \(email) geschickt. Öffne den Link darin auf diesem iPhone, um dein Konto zu bestätigen.",
@@ -29,65 +30,83 @@ struct RegisterView: View {
                         Text("Keine E-Mail bekommen? Wenn du schon ein Konto hast (auch aus der früheren App-Version), melde dich nicht neu an, sondern tippe beim Anmelden auf „Passwort vergessen“.")
                             .font(.footnote)
                     }
+                    FormActionButtons(primaryTitle: nil, cancelTitle: "Fertig", onCancel: { dismiss() })
                 } else {
-                    Section("Konto") {
-                        TextField("Vorname", text: $firstName)
+                    Section {
+                        StackedField(label: "Vorname", text: $firstName)
                             .textContentType(.givenName)
-                        TextField("Nachname", text: $lastName)
+                        StackedField(label: "Nachname", text: $lastName)
                             .textContentType(.familyName)
-                        TextField("E-Mail", text: $email)
+                        StackedField(label: "E-Mail", text: $email)
                             .keyboardType(.emailAddress)
                             .textContentType(.username)
                             .textInputAutocapitalization(.never)
                             .autocorrectionDisabled()
                         if !email.isEmpty, !Validation.isPlausibleEmail(email) {
                             Label("Ungültige E-Mail-Adresse", systemImage: "exclamationmark.triangle")
-                                .font(.caption)
+                                .font(.callout)
                                 .foregroundStyle(Theme.Palette.warning)
                         }
-                        if let errorMessage {
-                            Label(errorMessage, systemImage: "exclamationmark.triangle")
-                                .font(.caption)
-                                .foregroundStyle(Theme.Palette.warning)
-                        }
+                    } header: {
+                        SectionHeading("Konto")
                     }
-                    Section("Passwort") {
-                        SecureField("Passwort", text: $password)
+                    Section {
+                        StackedField(label: "Passwort", text: $password, secure: true)
                             .textContentType(.newPassword)
-                        SecureField("Passwort wiederholen", text: $passwordConfirm)
+                        StackedField(label: "Passwort wiederholen", text: $passwordConfirm, secure: true)
                             .textContentType(.newPassword)
                         if !password.isEmpty, !Validation.passwordMeetsMinimumStrength(password) {
                             Label("Mindestens 10 Zeichen, mit Buchstaben und Ziffern", systemImage: "exclamationmark.triangle")
-                                .font(.caption)
+                                .font(.callout)
                                 .foregroundStyle(Theme.Palette.warning)
                         }
                         if !passwordConfirm.isEmpty, password != passwordConfirm {
                             Label("Passwörter stimmen nicht überein", systemImage: "exclamationmark.triangle")
-                                .font(.caption)
+                                .font(.callout)
                                 .foregroundStyle(Theme.Palette.warning)
                         }
+                        if let errorMessage {
+                            Label(errorMessage, systemImage: "exclamationmark.triangle")
+                                .font(.callout)
+                                .foregroundStyle(Theme.Palette.warning)
+                        }
+                    } header: {
+                        SectionHeading("Passwort")
                     }
-                }
-            }
-            .navigationTitle("Neues Konto")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(awaitingConfirmation ? "Fertig" : "Abbrechen") { dismiss() }
-                }
-                if !awaitingConfirmation {
-                    ToolbarItem(placement: .confirmationAction) {
-                        Button("Erstellen") { Task { await create() } }
-                            .disabled(isCreating ||
-                                      firstName.trimmingCharacters(in: .whitespaces).isEmpty ||
-                                      lastName.trimmingCharacters(in: .whitespaces).isEmpty ||
-                                      !Validation.isPlausibleEmail(email) ||
-                                      !Validation.passwordMeetsMinimumStrength(password) ||
-                                      password != passwordConfirm)
-                    }
+                    FormActionButtons(primaryTitle: "Erstellen", cancelTitle: "Abbrechen", isWorking: isCreating,
+                                      onPrimary: submit, onCancel: { dismiss() })
                 }
             }
         }
+    }
+
+    /// What's missing before creating the account, in German; nil if nothing.
+    static func missingInput(firstName: String, lastName: String, email: String,
+                             password: String, passwordConfirm: String) -> String? {
+        if firstName.trimmingCharacters(in: .whitespaces).isEmpty { return String(localized: "Bitte gib deinen Vornamen ein.") }
+        if lastName.trimmingCharacters(in: .whitespaces).isEmpty { return String(localized: "Bitte gib deinen Nachnamen ein.") }
+        if !Validation.isPlausibleEmail(email) { return String(localized: "Bitte gib eine gültige E-Mail-Adresse ein.") }
+        if !Validation.passwordMeetsMinimumStrength(password) {
+            return String(localized: "Das Passwort braucht mindestens 10 Zeichen, mit Buchstaben und Ziffern.")
+        }
+        if password != passwordConfirm { return String(localized: "Die beiden Passwörter stimmen nicht überein.") }
+        return nil
+    }
+
+    private func submit() {
+        guard !isCreating else { return }
+        if let missing = Self.missingInput(firstName: firstName, lastName: lastName, email: email,
+                                           password: password, passwordConfirm: passwordConfirm) {
+            show(missing)
+            return
+        }
+        Task { await create() }
+    }
+
+    /// Shown in the form and read out, as it appears away from the VoiceOver cursor.
+    private func show(_ message: String) {
+        errorMessage = message
+        AccessibilityNotification.Announcement(message).post()
     }
 
     private func create() async {
@@ -108,7 +127,7 @@ struct RegisterView: View {
                 dismiss()
             }
         } catch {
-            errorMessage = AuthErrorMessage.text(for: error)
+            show(AuthErrorMessage.text(for: error))
         }
     }
 }

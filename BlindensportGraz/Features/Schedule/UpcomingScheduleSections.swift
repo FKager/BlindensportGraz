@@ -37,18 +37,24 @@ struct UpcomingScheduleSections: View {
                                    description: Text("Sobald etwas ansteht, siehst du es hier."))
         }
         if !upcomingTrainings.isEmpty {
-            Section("Trainings") {
+            Section {
                 ForEach(upcomingTrainings) { ScheduleRow(title: $0.title, start: $0.startDate, end: $0.endDate, location: $0.location) }
+            } header: {
+                SectionHeading("Trainings")
             }
         }
         if !upcomingTournaments.isEmpty {
-            Section("Turniere") {
+            Section {
                 ForEach(upcomingTournaments) { ScheduleRow(title: $0.title, start: $0.startDate, end: $0.endDate, location: $0.location) }
+            } header: {
+                SectionHeading("Turniere")
             }
         }
         if !upcomingEvents.isEmpty {
-            Section("Events") {
+            Section {
                 ForEach(upcomingEvents) { ScheduleRow(title: $0.title, start: $0.startDate, end: $0.endDate, location: $0.location) }
+            } header: {
+                SectionHeading("Events")
             }
         }
     }

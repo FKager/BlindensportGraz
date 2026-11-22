@@ -40,6 +40,6 @@ nonisolated enum AppModelSchema {
     /// Local store only — cross-user sharing is `SupabaseSync`'s manual
     /// sync layer, not SwiftData's automatic mirroring.
     static var configuration: ModelConfiguration {
-        ModelConfiguration(schema: schema, isStoredInMemoryOnly: false, cloudKitDatabase: .none)
+        ModelConfiguration(schema: schema, isStoredInMemoryOnly: UITestMode.isActive, cloudKitDatabase: .none)
     }
 }
