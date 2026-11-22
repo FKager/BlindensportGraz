@@ -86,6 +86,7 @@ enum ShareExtensionBridge {
         guard url.scheme == urlScheme, url.host == importHost,
               let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
               let fileName = components.queryItems?.first(where: { $0.name == "file" })?.value,
+              isInboxFileName(fileName),
               let dir = containerDirectory else { return nil }
         let fileURL = dir.appendingPathComponent(fileName)
         guard FileManager.default.fileExists(atPath: fileURL.path) else { return nil }
@@ -96,7 +97,26 @@ enum ShareExtensionBridge {
     /// done with it (success, failure, or the user dismissing without
     /// finishing), so each shared file is offered exactly once.
     static func cleanup(_ url: URL) {
+        guard let dir = containerDirectory, isInInbox(url, inbox: dir) else { return }
         try? FileManager.default.removeItem(at: url)
+    }
+
+    /// A name `store(fileAt:)` makes: a UUID, a dot, and the original
+    /// extension (letters and digits only, possibly empty). The name comes
+    /// from a link any website or app can open, so anything else — "../",
+    /// "/", a second dot — is refused: it could point outside the inbox, and
+    /// the import would offer that file and delete it afterwards.
+    nonisolated static func isInboxFileName(_ name: String) -> Bool {
+        let parts = name.split(separator: ".", maxSplits: 1, omittingEmptySubsequences: false)
+        guard parts.count == 2, UUID(uuidString: String(parts[0])) != nil else { return false }
+        let fileExtension = parts[1]
+        return fileExtension.count <= 10
+            && fileExtension.allSatisfy { $0.isASCII && ($0.isLetter || $0.isNumber) }
+    }
+
+    /// True only for a file directly inside `inbox` (after resolving "..").
+    nonisolated static func isInInbox(_ url: URL, inbox: URL) -> Bool {
+        url.standardizedFileURL.deletingLastPathComponent().path == inbox.standardizedFileURL.path
     }
 
     /// Files older than this are dropped instead of offered — a share the

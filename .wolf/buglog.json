@@ -11116,6 +11116,24 @@
       "related_bugs": [],
       "occurrences": 1,
       "last_seen": "2026-11-22T10:00:00.000Z"
+    },
+    {
+      "id": "bug-660",
+      "timestamp": "2026-11-22T10:20:00.000Z",
+      "error_message": "Code review: blindensportgraz://import-invitation?file=<name> used the name unchecked; '../' could point outside the share inbox, and the import would offer and then delete that file",
+      "file": "BlindensportGraz/Shared/ShareExtensionBridge.swift",
+      "root_cause": "resolveIncoming appended the link's file name to the inbox path; cleanup removed whatever URL it got",
+      "fix": "isInboxFileName (UUID + '.' + alphanumeric extension only) guards resolveIncoming; cleanup only removes files directly in the inbox (isInInbox). ShareExtensionBridgeTests",
+      "tags": [
+        "ios",
+        "security",
+        "deep-link",
+        "path-traversal",
+        "share-extension"
+      ],
+      "related_bugs": [],
+      "occurrences": 1,
+      "last_seen": "2026-11-22T10:20:00.000Z"
     }
   ]
 }
