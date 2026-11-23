@@ -58,4 +58,20 @@ final class FormsAccessibilityAuditUITests: XCTestCase {
         app.buttons["Neues Mitglied"].firstMatch.tap()
         try auditForm(titled: "Neues Mitglied")
     }
+
+    func testNewBudgetEntry() throws {
+        openClubEntry("Vereinsbudget")
+        app.buttons["Eintrag hinzufügen"].firstMatch.tap()
+        try auditForm(titled: "Neuer Eintrag")
+    }
+
+    func testEditProfile() throws {
+        app.tabBars.buttons["Mehr"].tap()
+        app.cells.containing(.staticText, identifier: "Account").firstMatch.tap()
+        let edit = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Profil bearbeiten'")).firstMatch
+        if !edit.waitForExistence(timeout: 3) { app.swipeUp() }
+        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        edit.tap()
+        try auditForm(titled: "Profil bearbeiten")
+    }
 }
