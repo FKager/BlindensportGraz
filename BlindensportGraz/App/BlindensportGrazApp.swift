@@ -9,6 +9,9 @@ struct BlindensportGrazApp: App {
 
     init() {
         LegacyFileCleanup.removeMemberBackups()
+        if UITestMode.isActive {
+            UIView.setAnimationsEnabled(false)
+        }
 
         // Declared once in ModelSchema.swift — shared with the App Shortcuts
         // intents (and, later, a widget), which open their own read-only
@@ -81,6 +84,9 @@ struct BlindensportGrazApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                // UI tests: no animations, so the accessibility audit never
+                // measures a screen mid-transition (fading text failed contrast).
+                .transaction { if UITestMode.isActive { $0.disablesAnimations = true } }
         }
         .modelContainer(modelContainer)
     }
