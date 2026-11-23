@@ -21,9 +21,13 @@ struct AddTeamMemberView: View {
     @State private var selection: MemberSelection?
     @State private var role = "player"
 
+    /// What's missing; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Mitglied hinzufügen")
                 Section(heading: "Mitglied") {
                     Picker("Mitglied", selection: $selection) {
                         Text("Auswählen").tag(MemberSelection?.none)
@@ -51,9 +55,9 @@ struct AddTeamMemberView: View {
                     }
                     .pickerStyle(.segmented)
                 }
+                FormActionButtons(primaryTitle: "Hinzufügen", cancelTitle: "Abbrechen", message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
-            .navigationTitle("Mitglied hinzufügen")
-            .navigationBarTitleDisplayMode(.inline)
             // Pre-fills Rolle from the picked Member's own defaultFunction
             // (e.g. the Sportler/Helfer choice made at self-service
             // registration time, see AccountView's "Mitgliedschaft
@@ -69,32 +73,6 @@ struct AddTeamMemberView: View {
             .onChange(of: selection) { _, newValue in
                 role = defaultRole(for: newValue)
             }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Hinzufügen") {
-                        let membership: TeamMembership?
-                        switch selection {
-                        case .user(let id):
-                            guard let user = availableUsers.first(where: { $0.id == id }) else { membership = nil; break }
-                            membership = TeamMembership(user: user, team: team, role: MembershipRole.normalize(role))
-                        case .member(let id):
-                            guard let member = availableMembers.first(where: { $0.id == id }) else { membership = nil; break }
-                            membership = TeamMembership(member: member, team: team, role: MembershipRole.normalize(role))
-                        case nil:
-                            membership = nil
-                        }
-                        if let membership {
-                            modelContext.insert(membership)
-                            TeamMembershipService.save(membership, modelContext: modelContext)
-                        }
-                        dismiss()
-                    }
-                    .disabled(selection == nil)
-                }
-            }
         }
     }
 
@@ -106,5 +84,41 @@ struct AddTeamMemberView: View {
         guard case .member(let id) = selection,
               let member = availableMembers.first(where: { $0.id == id }) else { return "player" }
         return member.preferredMembershipRoleRawValue
+    }
+
+    /// "Hinzufügen" is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        if selection == nil {
+            show(String(localized: "Bitte wähle zuerst eine Person aus."))
+            return
+        }
+        formMessage = nil
+        performPrimary()
+    }
+
+    private func performPrimary() {
+        let membership: TeamMembership?
+        switch selection {
+        case .user(let id):
+            guard let user = availableUsers.first(where: { $0.id == id }) else { membership = nil; break }
+            membership = TeamMembership(user: user, team: team, role: MembershipRole.normalize(role))
+        case .member(let id):
+            guard let member = availableMembers.first(where: { $0.id == id }) else { membership = nil; break }
+            membership = TeamMembership(member: member, team: team, role: MembershipRole.normalize(role))
+        case nil:
+            membership = nil
+        }
+        if let membership {
+            modelContext.insert(membership)
+            TeamMembershipService.save(membership, modelContext: modelContext)
+        }
+        dismiss()
+
+    }
+
+    /// Shown above the buttons and read out, as it appears away from the VoiceOver cursor.
+    private func show(_ message: String) {
+        formMessage = message
+        AccessibilityNotification.Announcement(message).post()
     }
 }

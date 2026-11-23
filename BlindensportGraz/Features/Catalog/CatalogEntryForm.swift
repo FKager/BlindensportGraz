@@ -27,11 +27,15 @@ struct CatalogEntryForm: View {
         }
     }
 
+    /// What's missing; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: title)
                 Section {
-                    TextField("Name", text: $draft.name)
+                    StackedField(label: "Name", text: $draft.name)
                         .textInputAutocapitalization(.words)
                     if draft.kind == .eventType {
                         if isNew {
@@ -58,21 +62,8 @@ struct CatalogEntryForm: View {
                             .foregroundStyle(Theme.Palette.warning)
                     }
                 }
-            }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    if isSaving {
-                        ProgressView()
-                    } else {
-                        Button("Speichern") { Task { await save() } }
-                            .disabled(CatalogService.clean(draft.name).isEmpty)
-                    }
-                }
+                FormActionButtons(primaryTitle: "Speichern", cancelTitle: "Abbrechen", isWorking: isSaving, message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
             .interactiveDismissDisabled(isSaving)
         }
@@ -100,5 +91,26 @@ struct CatalogEntryForm: View {
             return String(localized: "Nur Admins dürfen diese Listen ändern.")
         }
         return AuthErrorMessage.text(for: error)
+    }
+
+    /// "Speichern" is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        guard !isSaving else { return }
+        if CatalogService.clean(draft.name).isEmpty {
+            show(String(localized: "Bitte gib einen Namen ein."))
+            return
+        }
+        formMessage = nil
+        performPrimary()
+    }
+
+    private func performPrimary() {
+        Task { await save() }
+    }
+
+    /// Shown above the buttons and read out, as it appears away from the VoiceOver cursor.
+    private func show(_ message: String) {
+        formMessage = message
+        AccessibilityNotification.Announcement(message).post()
     }
 }

@@ -42,12 +42,16 @@ struct AddNewEventMemberView: View {
             && !lastName.trimmingCharacters(in: .whitespaces).isEmpty
     }
 
+    /// What's missing; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Neues Mitglied")
                 Section(heading: "Person") {
-                    TextField("Vorname", text: $firstName)
-                    TextField("Nachname", text: $lastName)
+                    StackedField(label: "Vorname", text: $firstName)
+                    StackedField(label: "Nachname", text: $lastName)
                 }
                 Section(heading: "Rolle") {
                     Picker("Rolle", selection: $role) {
@@ -84,17 +88,8 @@ struct AddNewEventMemberView: View {
                         .font(.caption)
                         .foregroundStyle(Theme.Palette.secondary)
                 }
-            }
-            .navigationTitle("Neues Mitglied")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Hinzufügen") { addMember() }
-                        .disabled(!canSave)
-                }
+                FormActionButtons(primaryTitle: "Hinzufügen", cancelTitle: "Abbrechen", message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
         }
     }
@@ -148,5 +143,25 @@ struct AddNewEventMemberView: View {
         }
 
         dismiss()
+    }
+
+    /// "Hinzufügen" is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        if !canSave {
+            show(String(localized: "Bitte gib Vor- und Nachnamen ein."))
+            return
+        }
+        formMessage = nil
+        performPrimary()
+    }
+
+    private func performPrimary() {
+        addMember()
+    }
+
+    /// Shown above the buttons and read out, as it appears away from the VoiceOver cursor.
+    private func show(_ message: String) {
+        formMessage = message
+        AccessibilityNotification.Announcement(message).post()
     }
 }

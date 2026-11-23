@@ -42,9 +42,13 @@ struct TrainingSeriesView: View {
         return date.formatted(.dateTime.weekday(.wide))
     }
 
+    /// What's missing; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Serie erstellen")
                 Section(heading: "Vorlage") {
                     LabeledContent("Training", value: favorite.title)
                     LabeledContent("Sportart", value: favorite.sport)
@@ -82,21 +86,8 @@ struct TrainingSeriesView: View {
                 } header: {
                     SectionHeading("Termine")
                 }
-            }
-            .navigationTitle("Serie erstellen")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    if isCreating {
-                        ProgressView()
-                    } else {
-                        Button("Erstellen") { createSeries() }
-                            .disabled(startDates.count == takenDates.count)
-                    }
-                }
+                FormActionButtons(primaryTitle: "Erstellen", cancelTitle: "Abbrechen", isWorking: isCreating, message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
             .alert("Serie erstellt", isPresented: $isShowingResult, presenting: resultMessage) { _ in
                 Button("OK") { dismiss() }
@@ -140,5 +131,26 @@ struct TrainingSeriesView: View {
             resultMessage = message
             isShowingResult = true
         }
+    }
+
+    /// "Erstellen" is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        guard !isCreating else { return }
+        if startDates.count == takenDates.count {
+            show(String(localized: "Alle Termine dieser Serie gibt es schon."))
+            return
+        }
+        formMessage = nil
+        performPrimary()
+    }
+
+    private func performPrimary() {
+        createSeries()
+    }
+
+    /// Shown above the buttons and read out, as it appears away from the VoiceOver cursor.
+    private func show(_ message: String) {
+        formMessage = message
+        AccessibilityNotification.Announcement(message).post()
     }
 }

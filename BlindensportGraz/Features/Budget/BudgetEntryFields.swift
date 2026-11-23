@@ -20,10 +20,22 @@ struct BudgetEntryFields: View {
 
     var body: some View {
         Section(heading: "Eintrag") {
-            Picker("Kategorie", selection: $category) {
-                ForEach(Self.selectableCategories, id: \.self) { c in
-                    Text(c.displayLabel).tag(c)
+            // Label above, value as a menu button below: in one row the menu
+            // cut long values like "Sonstige Ausgabe" off at larger text
+            // sizes, and the list style drew the value in a too-light grey
+            // (accessibility audit).
+            VStack(alignment: .leading, spacing: Theme.Spacing.xs) {
+                Text("Kategorie")
+                    .font(.subheadline)
+                    .accessibilityHidden(true)
+                Picker("Kategorie", selection: $category) {
+                    ForEach(Self.selectableCategories, id: \.self) { c in
+                        Text(c.displayLabel).tag(c)
+                    }
                 }
+                .labelsHidden()
+                .pickerStyle(.menu)
+                .accessibilityLabel("Kategorie")
             }
             TextField("Betrag (€)", value: $amount, format: .number)
                 .keyboardType(.decimalPad)

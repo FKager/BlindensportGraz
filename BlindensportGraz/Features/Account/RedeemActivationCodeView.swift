@@ -11,11 +11,15 @@ struct RedeemActivationCodeView: View {
     @State private var isWorking = false
     @State private var errorMessage: String?
 
+    /// What's missing; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Aktivierungscode")
                 Section {
-                    TextField("Aktivierungscode", text: $code)
+                    StackedField(label: "Aktivierungscode", text: $code)
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
                         .textContentType(.oneTimeCode)
@@ -28,17 +32,8 @@ struct RedeemActivationCodeView: View {
                     Text("Den Code bekommst du von einem Admin. Er gilt 14 Tage und nur für dein Konto.")
                         .foregroundStyle(Theme.Palette.secondary)
                 }
-            }
-            .navigationTitle("Aktivierungscode")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Einlösen") { Task { await redeem() } }
-                        .disabled(isWorking || ActivationCode.normalized(code).count != 8)
-                }
+                FormActionButtons(primaryTitle: "Einlösen", cancelTitle: "Abbrechen", isWorking: isWorking, message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
         }
     }
@@ -57,5 +52,26 @@ struct RedeemActivationCodeView: View {
         } catch {
             errorMessage = AuthErrorMessage.text(for: error)
         }
+    }
+
+    /// "Einlösen" is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        guard !isWorking else { return }
+        if ActivationCode.normalized(code).count != 8 {
+            show(String(localized: "Der Code hat 8 Zeichen."))
+            return
+        }
+        formMessage = nil
+        performPrimary()
+    }
+
+    private func performPrimary() {
+        Task { await redeem() }
+    }
+
+    /// Shown above the buttons and read out, as it appears away from the VoiceOver cursor.
+    private func show(_ message: String) {
+        formMessage = message
+        AccessibilityNotification.Announcement(message).post()
     }
 }
