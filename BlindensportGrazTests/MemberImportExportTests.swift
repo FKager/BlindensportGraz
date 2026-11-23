@@ -61,7 +61,7 @@ final class MemberImportExportTests: XCTestCase {
 
     /// No `id` in the row, but the email matches an existing roster entry —
     /// should update that entry, not create a duplicate. Covers importing a
-    /// file that was hand-written or exported from RootCLI (which doesn't
+    /// file that was hand-written or exported for `bsg members import` (which doesn't
     /// necessarily assign the same ids as the app).
     func testImportMatchesExistingByEmailWhenNoID() throws {
         let container = try makeContainer()
@@ -83,7 +83,7 @@ final class MemberImportExportTests: XCTestCase {
     }
 
     /// Entries missing firstName/lastName are skipped individually rather
-    /// than aborting the whole import — matches RootCLI's import-members
+    /// than aborting the whole import — matches the web UI import (`bsg members import`)
     /// behavior for the same file format.
     func testImportSkipsEntriesMissingRequiredFields() throws {
         let container = try makeContainer()
@@ -104,7 +104,7 @@ final class MemberImportExportTests: XCTestCase {
         XCTAssertEqual(all.first?.firstName, "Peter")
     }
 
-    /// "yyyy-MM-dd" is the format used in RootCLI/members.example.json —
+    /// "yyyy-MM-dd" is the format used in the bsg / web UI roster files —
     /// files without a full ISO8601 joinedAt must still import correctly.
     func testImportAcceptsPlainDateJoinedAt() throws {
         let container = try makeContainer()

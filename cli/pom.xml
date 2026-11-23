@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- bsg: command line tool for Blindensport Graz root/admin tasks, talking to
-     the web UI's REST API with a personal token (replaces RootCLI). -->
+     the web UI's REST API with a personal token (replaced the Swift RootCLI, removed 2026-11-23). -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">

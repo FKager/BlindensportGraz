@@ -16,7 +16,7 @@ final class RoleAssignment {
     var userID: UUID = UUID()
     /// `AppRole.rawValue`.
     var role: String = AppRole.member.rawValue
-    /// The assigning root user's `User.id.uuidString`, or "system:rootcli".
+    /// The assigning root user's `User.id.uuidString`, or "system:rootcli" (the old RootCLI, removed 2026-11-23).
     var assignedBy: String = ""
     var assignedAt: Date = Date.now
 

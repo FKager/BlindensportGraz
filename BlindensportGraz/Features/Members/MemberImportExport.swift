@@ -2,9 +2,9 @@ import Foundation
 import SwiftData
 
 /// JSON shape for one roster member, shared by export and import. Field names
-/// intentionally match RootCLI's `MemberBulkInput`/`members.example.json` and
+/// intentionally match the web UI's `MemberBulkInput` (webui/…/members) and
 /// webui's REST payloads (`/api/members`) exactly, so a file exported here can be
-/// fed to `rootcli import-members` (or vice versa) with no conversion.
+/// fed to `bsg members import` (POST /api/members/import) (or vice versa) with no conversion.
 /// `joinedAt`/`birthDate`/`lastMedicalExamination` are plain strings (not
 /// native JSON dates) accepting ISO8601, "yyyy-MM-dd", or "dd.MM.yyyy" —
 /// see `MemberImportExport.parseFlexibleDate`. `zip` also accepts the
@@ -203,14 +203,14 @@ enum MemberImportExport {
     /// falling back to email or first+last name (same rule as
     /// `Member.checkMembership`'s account matching), and either updates
     /// that entry in place or inserts a new `Member`. Entries missing
-    /// firstName/lastName are skipped, matching RootCLI's import-members
+    /// firstName/lastName are skipped, matching the web UI import
     /// behavior, so one bad row doesn't abort the whole file.
     ///
     /// Updating an existing entry is non-destructive: a field is only filled
     /// in when it's currently blank on the existing record AND the incoming
     /// row has a non-empty value for it — existing data is never overwritten
     /// or blanked out by an empty/absent value in the file. This mirrors
-    /// RootCLI's `MemberFillUpdate` (see cerebrum.md 2026-08-01), so
+    /// the web UI's `MemberFillUpdate` (`bsg members import --fill`) (see cerebrum.md 2026-08-01), so
     /// re-importing an updated/extended roster export in-app behaves the same
     /// way the CLI's `update-members` does. `memberOfGVSC` is a Bool with no
     /// "blank" state, so it's only set on creation (defaulting true), never
@@ -333,7 +333,7 @@ enum MemberImportExport {
         }
     }
 
-    /// Accepts "yyyy-MM-dd" or full ISO8601; mirrors RootCLI's
+    /// Accepts "yyyy-MM-dd" or full ISO8601; mirrors the web UI import's
     /// `MemberImport.parseJoinedAt` exactly so both tools parse the same
     /// files identically.
     private static func parseJoinedAt(_ raw: String?) -> Date? {

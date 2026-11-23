@@ -7,7 +7,7 @@ import SwiftData
 ///
 /// Binary fields (`EventImage`/`ExpenseReceipt`'s `imageData`) are
 /// deliberately excluded — same precedent as `CKFieldCoding`'s generic
-/// record encoder on the RootCLI side, which doesn't handle CKAsset either.
+/// record encoder of the old RootCLI, which doesn't handle CKAsset either.
 /// Relationships are recorded as the related record's `id` (a UUID string),
 /// exactly like every `CloudKitSync+*.swift` push function already does —
 /// this file mirrors that field shape, just targeting a JSON dict instead
