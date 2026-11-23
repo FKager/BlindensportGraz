@@ -10,8 +10,8 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 /**
- * Bulk create-or-update of roster entries — same per-row rules as RootCLI's
- * {@code MemberBulkImport} (shared with {@code rootcli import-members}):
+ * Bulk create-or-update of roster entries ({@code POST /api/members/import},
+ * {@code bsg members import}; same per-row rules as the former RootCLI):
  * a provided {@code id} must be a UUID and updates that entry in place; no
  * {@code id} mints a new one, so re-importing an id-less file duplicates.
  * Bad rows are skipped individually, never the batch. Protected fields are

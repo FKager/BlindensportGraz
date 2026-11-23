@@ -23,7 +23,7 @@ final class RoleChangeLog {
     // The acting admin/root's own User.id (as a UUID string), or a fixed
     // "system:<mechanism>" tag for grants that happen without an acting
     // user in the loop (e.g. "system:designatedRoot" for the bootstrap
-    // auto-grant, "system:rootcli" for a RootCLI-issued change).
+    // auto-grant, "system:rootcli" for a change by the old RootCLI (removed 2026-11-23)).
     var changedBy: String = ""
     var changedAt: Date = Date.now
 

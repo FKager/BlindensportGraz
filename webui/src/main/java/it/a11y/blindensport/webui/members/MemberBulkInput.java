@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 /**
  * Loose, per-row-tolerant import row — the same JSON shape as the app's
- * export, {@code RootCLI/members.example.json} and {@code rootcli import-members}.
+ * export and {@code bsg members import}.
  * Every field is optional so one bad row never sinks the whole array; {@code plz}
  * is accepted as an alias for {@code zip} (the club's source rosters use both).
  */

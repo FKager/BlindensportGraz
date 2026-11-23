@@ -1,7 +1,7 @@
 import XCTest
 @testable import BlindensportGraz
 
-/// Roles are granted only server-side (Supabase `set_user_role`, RootCLI with
+/// Roles are granted only server-side (Supabase `set_user_role`, `bsg accounts set-role` with
 /// the service key). The app must not contain any client-side elevation path.
 @MainActor
 final class NoClientRoleGrantTests: XCTestCase {

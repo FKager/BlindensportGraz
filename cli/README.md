@@ -2,7 +2,7 @@
 
 Accounts, roles and the roster, through the web UI's REST API (`/api`) with
 a **personal token**, so the same rules apply as in the app and the web UI.
-Replaces the Swift `RootCLI` (which used the Supabase service key).
+Replaced the Swift `RootCLI` (which used the Supabase service key; removed 2026-11-23).
 
 ## Setup
 

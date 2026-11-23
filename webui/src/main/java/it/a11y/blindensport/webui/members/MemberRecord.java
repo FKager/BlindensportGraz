@@ -8,8 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * One roster entry as the API and the UI see it — the same shape as
- * {@code ClubSchema.ClubMemberRecord} (Shared/ClubSchema). Stored across
+ * One roster entry as the API and the UI see it — the same shape as the
+ * app's {@code Member}. Stored across
  * {@code members} (names, readable by approved accounts), {@code member_contacts}
  * (address/contact) and {@code member_private} (protected fields).
  * {@code id} is the uppercase UUID string the app uses.

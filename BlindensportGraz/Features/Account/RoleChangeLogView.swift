@@ -93,7 +93,7 @@ struct RoleChangeLogView: View {
         users.first { $0.id == userID }?.displayName ?? "?"
     }
 
-    /// nil = system (migration, seed, RootCLI with the service key).
+    /// nil = system (migration, seed, the old RootCLI with the service key).
     private func changedByLabel(_ changedBy: UUID?) -> String {
         guard let changedBy else { return String(localized: "System") }
         return users.first { $0.id == changedBy }?.displayName ?? changedBy.uuidString
