@@ -22,10 +22,11 @@ struct SetPasswordView: View {
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: title)
                 Section {
-                    SecureField("Neues Passwort", text: $password)
+                    StackedField(label: "Neues Passwort", text: $password, secure: true)
                         .textContentType(.newPassword)
-                    SecureField("Passwort wiederholen", text: $passwordConfirm)
+                    StackedField(label: "Passwort wiederholen", text: $passwordConfirm, secure: true)
                         .textContentType(.newPassword)
                     if !password.isEmpty, !Validation.passwordMeetsMinimumStrength(password) {
                         Label("Mindestens 10 Zeichen, mit Buchstaben und Ziffern", systemImage: "exclamationmark.triangle")
@@ -45,7 +46,7 @@ struct SetPasswordView: View {
                 }
                 if askingForCode {
                     Section {
-                        TextField("Bestätigungscode", text: $code)
+                        StackedField(label: "Bestätigungscode", text: $code)
                             .textContentType(.oneTimeCode)
                             .keyboardType(.numberPad)
                         Button(isSendingCode ? "Code wird gesendet …" : "Neuen Code senden") {
@@ -59,22 +60,8 @@ struct SetPasswordView: View {
                             .foregroundStyle(Theme.Palette.secondary)
                     }
                 }
-            }
-            .navigationTitle(title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") {
-                        dismiss()
-                        onComplete()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") { Task { await save() } }
-                        .disabled(isSaving || !Validation.passwordMeetsMinimumStrength(password)
-                                  || password != passwordConfirm
-                                  || (askingForCode && PasswordChangeStep.cleanedCode(code).count < 6))
-                }
+                FormActionButtons(primaryTitle: "Speichern", cancelTitle: "Abbrechen", isWorking: isSaving,
+                                  onPrimary: attemptSave, onCancel: { dismiss(); onComplete() })
             }
         }
     }
@@ -117,5 +104,28 @@ struct SetPasswordView: View {
     private func show(_ message: String) {
         errorMessage = message
         AccessibilityNotification.Announcement(message).post()
+    }
+
+    /// "Speichern" is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        guard !isSaving else { return }
+        if !Validation.passwordMeetsMinimumStrength(password) {
+            show(String(localized: "Das Passwort braucht mindestens 10 Zeichen, mit Buchstaben und Ziffern."))
+            return
+        }
+        if password != passwordConfirm {
+            show(String(localized: "Die beiden Passwörter stimmen nicht überein."))
+            return
+        }
+        if askingForCode && PasswordChangeStep.cleanedCode(code).count < 6 {
+            show(String(localized: "Bitte gib den Code aus der E-Mail ein."))
+            return
+        }
+        errorMessage = nil
+        performPrimary()
+    }
+
+    private func performPrimary() {
+        Task { await save() }
     }
 }

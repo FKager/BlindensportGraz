@@ -17,13 +17,17 @@ struct EditAccountView: View {
     @State private var isSaving = false
     @State private var errorMessage: String?
 
+    /// What's missing; shown above the buttons and read out.
+    @State private var formMessage: String?
+
     var body: some View {
         NavigationStack {
             Form {
+                FormTitleHeader(title: "Profil bearbeiten")
                 Section(heading: "Profil") {
-                    TextField("Vorname", text: $firstName)
+                    StackedField(label: "Vorname", text: $firstName)
                         .textContentType(.givenName)
-                    TextField("Nachname", text: $lastName)
+                    StackedField(label: "Nachname", text: $lastName)
                         .textContentType(.familyName)
                     LabeledContent("E-Mail", value: user.email)
                     if let errorMessage {
@@ -39,17 +43,8 @@ struct EditAccountView: View {
                         .font(.caption)
                         .foregroundStyle(Theme.Palette.secondary)
                 }
-            }
-            .navigationTitle("Profil bearbeiten")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Abbrechen") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Speichern") { Task { await save() } }
-                        .disabled(isSaving || nameIsBlank)
-                }
+                FormActionButtons(primaryTitle: "Speichern", cancelTitle: "Abbrechen", isWorking: isSaving, message: formMessage,
+                                  onPrimary: attemptSave, onCancel: { dismiss() })
             }
             .onAppear {
                 firstName = user.firstName
@@ -80,5 +75,26 @@ struct EditAccountView: View {
         } catch {
             errorMessage = AuthErrorMessage.text(for: error)
         }
+    }
+
+    /// "Speichern" is never greyed out: it says what's missing instead.
+    private func attemptSave() {
+        guard !isSaving else { return }
+        if nameIsBlank {
+            show(String(localized: "Bitte gib deinen Namen ein."))
+            return
+        }
+        formMessage = nil
+        performPrimary()
+    }
+
+    private func performPrimary() {
+        Task { await save() }
+    }
+
+    /// Shown above the buttons and read out, as it appears away from the VoiceOver cursor.
+    private func show(_ message: String) {
+        formMessage = message
+        AccessibilityNotification.Announcement(message).post()
     }
 }
