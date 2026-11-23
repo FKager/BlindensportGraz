@@ -1,7 +1,8 @@
 """Accessibility check of the web UI with axe-core (WCAG 2.1 A + AA).
 
 Opens every page in a headless Chromium, signed out and then signed in as
-the local root from supabase/seed.sql, and runs axe on it. Fails on every
+the local root from supabase/seed.sql (with sample-data.sql loaded, so
+tables and reports have rows), and runs axe on it. Fails on every
 violation not listed in accepted.txt (one "rule-id route" per line, with a
 reason as a comment). CI: .github/workflows/webui-a11y.yml.
 

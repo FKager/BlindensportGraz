@@ -1,5 +1,6 @@
 # Accessibility check of the web UI (axe-core, WCAG 2.1 A + AA) in a real
-# browser: local Supabase (seed: root@example.test), the web UI container
+# browser: local Supabase (seed: root@example.test, plus webui/a11y/sample-data.sql
+# so the tables have rows), the web UI container
 # against it, then webui/a11y/axe_check.py over every page, signed out and as
 # root. Fails on findings not in webui/a11y/accepted.txt. No secrets needed.
 name: Web UI Accessibility
@@ -27,6 +28,11 @@ jobs:
           version: 3.1.0
       - name: Start Supabase
         run: supabase start -x studio,imgproxy,logflare,vector,supavisor,realtime,edge-runtime,postgres-meta,mailpit
+      # Rows for the tables, lists and reports (fixed ids, local data only).
+      - name: Load sample data
+        run: |
+          db=$(docker ps --format '{{.Names}}' | grep '^supabase_db_' | head -1)
+          docker exec -i "$db" psql -U postgres -v ON_ERROR_STOP=1 -q < webui/a11y/sample-data.sql
       - name: Build and start the web UI
         run: |
           set -euo pipefail

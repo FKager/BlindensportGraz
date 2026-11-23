@@ -9,7 +9,8 @@
 #   Simulator, light AND dark mode, German / Austria / Vienna time like CI.
 # Web UI (webui/, supabase/migrations, supabase/seed.sql changed):
 #   axe-core over every page (webui/a11y/axe_check.py) against local
-#   Supabase (seed root) and the web UI container on port 8091.
+#   Supabase (seed root + webui/a11y/sample-data.sql, which stays in the
+#   local database) and the web UI container on port 8091.
 #
 # "Changed" = differs from origin/main (commits, uncommitted and untracked
 # files). A passing state is remembered (.git/a11y-audit/), so the second
@@ -188,6 +189,9 @@ audit_web() {
         echo "web: local Supabase has no seed root (root@example.test); run 'supabase db reset' (wipes local data)" >> "$FINDINGS"
         return 1
     fi
+    # Sample rows (fixed ids, idempotent) so tables and reports have content.
+    docker exec -i "$db" psql -U postgres -v ON_ERROR_STOP=1 -q < webui/a11y/sample-data.sql > "$WORK/web-data.log" 2>&1 \
+        || { { echo "web: sample data failed:"; tail -5 "$WORK/web-data.log"; } >> "$FINDINGS"; return 1; }
     local anon service
     anon=$(supabase status -o env 2>/dev/null | sed -n 's/^ANON_KEY="\{0,1\}\([^"]*\)"\{0,1\}$/\1/p')
     service=$(supabase status -o env 2>/dev/null | sed -n 's/^SERVICE_ROLE_KEY="\{0,1\}\([^"]*\)"\{0,1\}$/\1/p')
