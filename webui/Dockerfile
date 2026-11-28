@@ -28,7 +28,7 @@ RUN mvn -B -q package -DskipTests
 # ================================
 # Run image
 # ================================
-FROM eclipse-temurin:24-jre@sha256:8cb2387a28af84cf0db0948d9c67d4480192f4e567027a3963f145d218e8b4f2
+FROM eclipse-temurin:25-jre@sha256:4ed132f6832e9804b123e89a849a7b4502756ae64a4ee08ebab939d9d5d0a9fa
 
 RUN useradd --user-group --create-home --system --home-dir /app webui
 WORKDIR /app
